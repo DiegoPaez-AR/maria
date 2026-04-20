@@ -1,0 +1,54 @@
+# Dependencias
+node_modules/
+
+# Sesión de WhatsApp Web (LocalAuth)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Base de datos (SQLite + WAL/SHM)
+db/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.db
+
+# Credenciales / tokens
+token.json
+credentials.json
+.env
+.env.*
+.github-token
+
+# Logs
+*.log
+logs/
+
+# Whisper
+whisper.cpp/
+*.bin
+
+# Audios temporales
+tmp/
+temp/
+*.ogg
+*.mp3
+*.wav
+*.m4a
+
+# Archivos editor / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Archivos huérfanos
+maria.db
+maria.sqlite
+
+# Backups locales
+*.bak
+
+# Typo del huérfano (doble L)
+*.sqllite
+
+# Libreta legacy (ya migrada a la DB)
+contactos.json
