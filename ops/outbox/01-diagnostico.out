@@ -1,0 +1,90 @@
+# ejecutado: 2026-04-21T11:18:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Primer test del canal inbox: diagnóstico general del VPS.
+#   # Objetivo: confirmar que el cron toma este script, lo ejecuta,
+#   # y deja el output en ops/outbox/01-diagnostico.out
+#   
+#   echo "=== uname / uptime ==="
+#   uname -a
+#   uptime
+#   
+#   echo ""
+#   echo "=== disco ==="
+#   df -h / | tail -1
+#   
+#   echo ""
+#   echo "=== memoria ==="
+#   free -h
+#   
+#   echo ""
+#   echo "=== pm2 list ==="
+#   pm2 list 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g'
+#   
+#   echo ""
+#   echo "=== crontab -l ==="
+#   crontab -l
+#   
+#   echo ""
+#   echo "=== tamaño db ==="
+#   ls -lh /root/secretaria/db/maria.sqlite 2>/dev/null || echo "db no encontrada en path esperado"
+#   
+#   echo ""
+#   echo "=== últimos 5 eventos en maria.sqlite ==="
+#   sqlite3 /root/secretaria/db/maria.sqlite \
+#     'SELECT id, timestamp, canal, direccion, substr(COALESCE(cuerpo,""),1,80) FROM eventos ORDER BY id DESC LIMIT 5' 2>&1
+#   
+#   echo ""
+#   echo "=== git status del repo ==="
+#   cd /root/secretaria && git log --oneline -5 && git status --short
+
+# ───── output ─────
+=== uname / uptime ===
+Linux ubuntu-4gb-nbg1-2 6.8.0-110-generic #110-Ubuntu SMP PREEMPT_DYNAMIC Thu Mar 19 15:09:20 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+ 11:18:01 up 3 days, 16:23,  0 user,  load average: 0.00, 0.02, 0.00
+
+=== disco ===
+/dev/sda1        38G  7.5G   29G  21% /
+
+=== memoria ===
+               total        used        free      shared  buff/cache   available
+Mem:           3.7Gi       1.1Gi       319Mi       5.0Mi       2.6Gi       2.7Gi
+Swap:             0B          0B          0B
+
+=== pm2 list ===
+┌────┬──────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ maria    │ default     │ 1.0.0   │ fork    │ 121861   │ 4h     │ 15   │ online    │ 0%       │ 162.1mb  │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+=== crontab -l ===
+* * * * * cd /root/secretaria && bash ops/cron.sh >> /root/secretaria/ops/.cron.log 2>&1
+
+=== tamaño db ===
+-rw-r--r-- 1 root root 288K Apr 20 15:22 /root/secretaria/db/maria.sqlite
+
+=== últimos 5 eventos en maria.sqlite ===
+567|2026-04-21 10:45:40|whatsapp|saliente|⏰ *En 15min*: Yoga (08:00 a. m.)
+566|2026-04-21 09:58:24|whatsapp|saliente|*Martes 21/04*
+📅 08:00–12:00 Yoga
+📅 15:30–20:00 Personal
+
+*Pendientes tuyos:*
+1.
+565|2026-04-21 09:58:13|whatsapp|entrante|Si, pásame la agenda del día, pendientes y cumpleaños
+564|2026-04-21 09:57:38|whatsapp|saliente|¡Buen día, Diego! 🌅
+
+Hoy tenés Yoga de 8 a 12 y el bloque Personal de 15:30 a 20
+563|2026-04-21 09:57:27|whatsapp|entrante|Hola maria, buen día
+
+=== git status del repo ===
+ea53a6c ops: primer test del inbox — diagnóstico VPS
+0e3c924 ops: snapshot 2026-04-21T11:17:01-03:00
+e4e89df ops: snapshot 2026-04-21T11:16:01-03:00
+00cbb15 ops: snapshot 2026-04-21T11:15:01-03:00
+1e1e8c5 ops: snapshot 2026-04-21T11:14:01-03:00
+?? ops/outbox/01-diagnostico.out
+
+# exit=0
