@@ -91,7 +91,7 @@ async function main() {
         waClient: client, intervaloMs: PROGRAMADOS_MS,
       });
 
-      console.log('▸ arrancando morning-brief (6:30am hora AR)');
+      console.log('▸ arrancando morning-brief (4am hora AR, ventana 4h)');
       briefInterval = iniciarMorningBrief({
         waClient: client, intervaloMs: BRIEF_MS,
       });

@@ -1,10 +1,12 @@
-// morning-brief.js — envía a Diego un brief por WhatsApp a las 6:30am (hora AR)
+// morning-brief.js — envía a Diego un brief por WhatsApp en la madrugada (hora AR)
 //
 // Contenido: fecha, agenda del día, cumpleaños del día, pendientes.
 // (Diego pidió NO incluir emails.)
 //
 // Implementación: setInterval cada 60s, chequea la hora local en MARIA_TZ.
-// Si coincide con HH:MM objetivo y todavía no se mandó hoy, compone y envía.
+// Si ya estamos dentro de la ventana de envío (target … target+VENTANA_H) y todavía
+// no se mandó hoy, compone y envía. La ventana da margen para reintentar si un
+// tick falla por WA frame muerto + pm2 restart (~20s) o por otra caída puntual.
 // Usamos mem.estado como flag "último día enviado" para idempotencia.
 //
 // Uso:
@@ -16,9 +18,10 @@ const g   = require('./google');
 
 const DIEGO_WA_CUS = process.env.DIEGO_WA || '541132317896@c.us';
 const TZ           = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
-const BRIEF_HORA   = process.env.BRIEF_HORA   || '06';
-const BRIEF_MINUTO = process.env.BRIEF_MINUTO || '30';
-const ESTADO_KEY   = 'morning_brief_ultimo_dia';
+const BRIEF_HORA    = process.env.BRIEF_HORA    || '04';
+const BRIEF_MINUTO  = process.env.BRIEF_MINUTO  || '00';
+const BRIEF_VENTANA_H = Number(process.env.BRIEF_VENTANA_H || 4); // reintenta dentro de esta ventana en horas
+const ESTADO_KEY    = 'morning_brief_ultimo_dia';
 
 const DIAS_SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -148,7 +151,14 @@ async function enviarBrief(waClient) {
 
 async function tick(waClient) {
   const t = horaMinTZ();
-  if (t.hora !== BRIEF_HORA || t.minuto !== BRIEF_MINUTO) return;
+
+  // Ventana de envío: [target, target + BRIEF_VENTANA_H). Si un tick falla
+  // (frame muerto → pm2 restart, ~20s down), el próximo tick dentro de la
+  // ventana reintenta. Fuera de la ventana no disparamos (evita briefs tardíos
+  // si Maria recién arrancó a mitad del día sin haber mandado el de hoy).
+  const minsDesdeTarget = (Number(t.hora)   - Number(BRIEF_HORA))   * 60
+                        + (Number(t.minuto) - Number(BRIEF_MINUTO));
+  if (minsDesdeTarget < 0 || minsDesdeTarget >= BRIEF_VENTANA_H * 60) return;
 
   const ultimoDia = mem.getEstado(ESTADO_KEY);
   if (ultimoDia === t.yyyymmdd) return; // ya mandamos hoy
@@ -167,7 +177,7 @@ async function tick(waClient) {
 }
 
 function iniciarMorningBrief({ waClient, intervaloMs = 60_000 } = {}) {
-  console.log(`[morning-brief] activo, disparo a las ${BRIEF_HORA}:${BRIEF_MINUTO} (${TZ})`);
+  console.log(`[morning-brief] activo, disparo a las ${BRIEF_HORA}:${BRIEF_MINUTO} (${TZ}), ventana ${BRIEF_VENTANA_H}h`);
   return setInterval(() => {
     tick(waClient).catch(err => console.error('[morning-brief] tick:', err));
   }, intervaloMs);
