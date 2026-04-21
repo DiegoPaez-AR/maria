@@ -1,0 +1,52 @@
+# ejecutado: 2026-04-21T11:33:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Verificar que pm2 levantó con la config nueva del brief (4:00, ventana 4h)
+#   echo "=== pm2 logs maria --lines 40 --nostream ==="
+#   pm2 logs maria --lines 40 --nostream 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | tail -40
+
+# ───── output ─────
+=== pm2 logs maria --lines 40 --nostream ===
+1|maria    | ▸ arrancando dispatcher de programados (cada 60s)
+1|maria    | ▸ arrancando morning-brief (6:30am hora AR)
+1|maria    | [morning-brief] activo, disparo a las 06:30 (America/Argentina/Buenos_Aires)
+1|maria    | ▸ arrancando meeting-prep (cada 5min)
+1|maria    | [meeting-prep] activo, chequeo cada 5min, alerta 15min antes
+1|maria    | [WA ←] Diego Paez (34342575317160@lid): Hola maria, buen día
+1|maria    | [WA →] Diego Paez: ¡Buen día, Diego! 🌅
+1|maria    | 
+1|maria    | Hoy tenés Yoga de 8 a 12 y el bloque Personal de 15:30 a 20hs. Mañana miércoles viene más movido: la Reunión Números con Fabio a las 9, y 
+1|maria    | [WA ←] Diego Paez (34342575317160@lid): Si, pásame la agenda del día, pendientes y cumpleaños
+1|maria    | [WA →] Diego Paez: *Martes 21/04*
+1|maria    | 📅 08:00–12:00 Yoga
+1|maria    | 📅 15:30–20:00 Personal
+1|maria    | 
+1|maria    | *Pendientes tuyos:*
+1|maria    | 1. Subir web de Gabi Isola en Lovable
+1|maria    | 2. Pedir presupuesto DC Iplan
+1|maria    | 3. Pedir pre
+1|maria    | [programados] 1 mensaje(s) debidos, despachando…
+1|maria    | [programados] ✓ id=6 (whatsapp/34342575317160@lid) [meeting_prep:2g3bldk466u8up7fjmgrb2r7s2_20260421T110000Z]
+1|maria    | 
+1|maria    | ▸ SIGINT recibido, cerrando…
+1|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|maria    | ▸ Maria iniciando…
+1|maria    |   Diego WA:    541132317896@c.us
+1|maria    |   Diego email: diego@paez.is
+1|maria    |   Gmail poll:  cada 60s
+1|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|maria    | ✓ whisper OK
+1|maria    | ✓ contacto Diego asegurado
+1|maria    | [WA authenticated]
+1|maria    | ✅ [WA ready] Maria conectada
+1|maria    | ▸ arrancando poll de Gmail (cada 60s)
+1|maria    | ▸ arrancando loop de recordatorios (cada 30min)
+1|maria    | ▸ arrancando dispatcher de programados (cada 60s)
+1|maria    | ▸ arrancando morning-brief (4am hora AR, ventana 4h)
+1|maria    | [morning-brief] activo, disparo a las 04:00 (America/Argentina/Buenos_Aires), ventana 4h
+1|maria    | ▸ arrancando meeting-prep (cada 5min)
+1|maria    | [meeting-prep] activo, chequeo cada 5min, alerta 15min antes
+
+
+# exit=0
