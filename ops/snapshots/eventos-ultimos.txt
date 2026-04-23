@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1035  2026-04-23 18:46:01  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+1034  2026-04-23 18:46:01  whatsapp  saliente   5491124577217@c.us                             Hola Pablo, soy Maria, la asistente de Diego Paez. ¿Tenés disponibilidad hoy para una reunión de media hora con Diego? El tema sería CAPAs. Avisame qué horario te vendría bien. ¡Gracias!              
+
+1033  2026-04-23 18:46:01  whatsapp  saliente   34342575317160@lid                             Le escribo ahora.                                                                                                                                                                                       
+
+1032  2026-04-23 18:45:48  whatsapp  entrante   34342575317160@lid                             escribile a Pablo para ver si tiene tiempo hoy para una reu de media hora, tema: CAPAs                                                                                                                  
+
+1031  2026-04-23 18:45:35  sistema   interno                                                   acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+1030  2026-04-23 18:45:35  whatsapp  saliente   34342575317160@lid                             Anotado, le agrego el mail a Pablo Petrillo.                                                                                                                                                            
+
+1029  2026-04-23 18:45:19  whatsapp  entrante   34342575317160@lid                             pablo.petrillo@luftlatam.com                                                                                                                                                                            
+
+1028  2026-04-23 18:45:07  sistema   interno                                                   contacto vcard: Pablo Petrillo → 5491124577217@c.us                                                                                                                                                     
+
 1027  2026-04-23 18:34:36  whatsapp  entrante   222788661055558@lid                            Gracias!                                                                                                                                                                                                
 
 1026  2026-04-23 18:34:36  sistema   interno                                                   unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · 222788661055558@lid es Farinelli (restaurante): Maria les escribió a pedido de Diego para pedir el menú y luego las milanesitas + alfajor; 
@@ -227,28 +243,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 937   2026-04-23 14:11:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
 
 936   2026-04-23 13:01:21  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s)                                                                                                                                                                   
-
-935   2026-04-23 12:05:22  sistema   interno                                                   acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-934   2026-04-23 12:05:22  whatsapp  saliente   34342575317160@lid                             Anotado — Brian IONQ.                                                                                                                                                                                   
-
-933   2026-04-23 12:05:14  whatsapp  entrante   34342575317160@lid                             agregame este pendiente: Brian IONQ                                                                                                                                                                     
-
-932   2026-04-23 11:50:14  whatsapp  entrante   34342575317160@lid                             gracias                                                                                                                                                                                                 
-
-931   2026-04-23 11:50:10  whatsapp  entrante   34342575317160@lid                             si, ya las revise y corregi                                                                                                                                                                             
-
-930   2026-04-23 11:49:31  whatsapp  saliente   34342575317160@lid                             *Resumen del día — jueves 23/04*                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                       
-                                                                                               *Agenda de hoy:*                                                                                                                                                                                        
-                                                                                               • 08:00–12:00 Yoga                                                                                                                                                                                      
-                                                                                               • 12:00–13:00 GN + VR Weekly (Meet)                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                       
-                                                                                               *Emails:* Sin novedades, bandeja limpia.                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                       
-                                                                                               *Tus pendientes:*                                                                                                                                                                                       
-                                                                                               • Presupuesto DC Iplan, Telecentr                                                                                                                                                                       
-
-929   2026-04-23 11:49:09  whatsapp  entrante   34342575317160@lid                             fijate ahora si me podes pasar el resumen diario                                                                                                                                                        
-
-928   2026-04-23 11:46:21  sistema   interno                                                   Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos                                                                                                                     
