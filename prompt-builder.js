@@ -235,7 +235,9 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
   { "tipo": "confirmar_prospecto_pendiente", "canal": "whatsapp"|"gmail", "remitente_id": "<id del remitente>", "nombre": "Nombre si querés pisar el sugerido" (opcional), "wa_cus": "..." (opcional), "email": "..." (opcional), "calendar_id": "..." (opcional) }
       // Solo owner. Confirma la creación de un prospecto detectado en [PROSPECTOS PENDIENTES]. Crea el usuario con los datos sugeridos (pisables por los que pases acá).
   { "tipo": "rechazar_prospecto_pendiente", "canal": "whatsapp"|"gmail", "remitente_id": "<id del remitente>" }
-      // Solo owner. Descarta el prospecto (el remitente queda como desconocido; si vuelve a escribir, arrancamos de cero).` : '';
+      // Solo owner. Descarta el prospecto (el remitente queda como desconocido; si vuelve a escribir, arrancamos de cero).
+  { "tipo": "buscar_contacto_global", "nombre": "..." (opcional), "whatsapp": "..." (opcional), "email": "..." (opcional) }
+      // Solo owner. Busca en la libreta de contactos de TODOS los usuarios activos (cross-usuario). Pasá al menos uno de nombre/whatsapp/email. Devuelve la lista de matches con { usuario, nombre, whatsapp, email, notas }. Usala cuando el owner te pregunte "¿quién es X?", "¿tengo el teléfono de Y?", "¿alguno de mis asistidos conoce a Z?" — el aislamiento de AGENDA/HISTORIAL/PENDIENTES sigue firme, pero los contactos son metadata que vos (como asistente del owner) sí podés consultar cross-usuario.` : '';
 
   const lineaOwner = esOwner
     ? `Además sos OWNER: podés crear / actualizar / borrar usuarios, y confirmar o rechazar prospectos pendientes. Usuarios activos actualmente: ${listaUsuarios}.`
@@ -250,8 +252,9 @@ ${lineaOwner}
 
 REGLA DE AISLAMIENTO (dura):
 - Todo el contexto de este prompt (agenda, historial, pendientes, contactos, hechos, programados) pertenece EXCLUSIVAMENTE a ${usuario.nombre}.
-- NUNCA compartas información de OTROS usuarios con ${usuario.nombre}. Los demás usuarios son privados entre sí. Si ${usuario.nombre} pregunta por otro usuario, respondé que por política no compartís info de otras personas que asistís.
-- Cualquier acción que emitas (crear_evento, responder_email, enviar_wa, agregar_pendiente, recordar_hecho, etc.) se guarda asociada a ${usuario.nombre}.
+- NUNCA compartas información de OTROS usuarios con ${usuario.nombre}. Los demás usuarios son privados entre sí. Si ${usuario.nombre} pregunta por otro usuario (sus mensajes, agenda, pendientes), respondé que por política no compartís info de otras personas que asistís.
+- Cualquier acción que emitas (crear_evento, responder_email, enviar_wa, agregar_pendiente, recordar_hecho, etc.) se guarda asociada a ${usuario.nombre}.${esOwner ? `
+- EXCEPCIÓN para vos (owner): la LIBRETA DE CONTACTOS es metadata administrativa — sí podés consultarla cross-usuario usando \`buscar_contacto_global\`. El aislamiento aplica a conversaciones/agenda/pendientes, NO a "¿quién es X?" o "¿tengo el teléfono de Y?". Si te pregunto por un contacto que no está en MI libreta pero podría estar en la de otro asistido, usá \`buscar_contacto_global\` en vez de decir "no lo tengo" o invocar aislamiento.` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [INSTRUCCIONES BASE]

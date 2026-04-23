@@ -63,6 +63,7 @@ async function ejecutarUna(accion, ctx) {
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
     case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
+    case 'buscar_contacto_global': return _buscarContactoGlobal(accion, ctx);
     case 'confirmar_prospecto_pendiente':
       return _confirmarProspectoPendiente(accion, ctx);
     case 'rechazar_prospecto_pendiente':
@@ -332,6 +333,35 @@ function _borrarUsuario(a, ctx) {
   const u = usuarios.desactivar(a.id);
   console.log(`[executor] usuario desactivado: id=${u.id} nombre=${u.nombre}`);
   return { id: u.id, nombre: u.nombre, desactivado: true };
+}
+
+// Owner-only: busca en la libreta de contactos de CUALQUIER usuario activo.
+// Uso típico: el owner pregunta "quién es X?" o "tengo el teléfono de Y?" y
+// Maria necesita mirar cross-usuario (no solo la libreta del owner).
+// El aislamiento de conversaciones/calendario NO aplica acá — los contactos
+// son metadata que el owner puede inspeccionar como administrador.
+function _buscarContactoGlobal(a, ctx) {
+  if (!usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('buscar_contacto_global: solo el owner');
+  }
+  if (!a.nombre && !a.whatsapp && !a.email) {
+    throw new Error('buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email');
+  }
+  const resultados = mem.buscarContactoCrossUsuario({
+    whatsapp: a.whatsapp || null,
+    email: a.email || null,
+    nombre: a.nombre || null,
+  });
+  return resultados.map(c => {
+    const u = usuarios.obtener(c.usuario_id);
+    return {
+      usuario: u ? { id: u.id, nombre: u.nombre, rol: u.rol } : { id: c.usuario_id, nombre: '(usuario desconocido)' },
+      nombre: c.nombre,
+      whatsapp: c.whatsapp,
+      email: c.email,
+      notas: c.notas,
+    };
+  });
 }
 
 // ─── Prospectos pendientes (confirmación del owner antes de crear) ──────
