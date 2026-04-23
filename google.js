@@ -391,6 +391,54 @@ async function marcarLeido(messageId) {
 }
 
 /**
+ * Busca mensajes de Gmail intercambiados con `email` en los últimos `dias`
+ * (tanto entrantes como salientes). Devuelve una lista con { id, saliente,
+ * fecha, asunto, snippet } ordenada por fecha ascendente.
+ *
+ * Usado por unknown-flow / context-fetcher para darle al LLM el historial
+ * reciente con un remitente desconocido.
+ */
+async function buscarMensajesCon(email, { dias = 14, max = 50 } = {}) {
+  if (!email) return [];
+  const e = String(email).trim().toLowerCase();
+  if (!e.includes('@')) return [];
+  const auth = await autenticar();
+  const q = `(from:${e} OR to:${e}) newer_than:${dias}d`;
+  const list = await _gmail(auth).users.messages.list({
+    userId: 'me', q, maxResults: max,
+  });
+  const ids = (list.data.messages || []).map(m => m.id);
+  const mensajes = [];
+  for (const id of ids) {
+    try {
+      const m = await _gmail(auth).users.messages.get({
+        userId: 'me', id, format: 'metadata',
+        metadataHeaders: ['From', 'To', 'Subject', 'Date'],
+      });
+      const headers = Object.fromEntries((m.data.payload?.headers || []).map(h => [h.name, h.value]));
+      const from = (headers.From || '').toLowerCase();
+      // "saliente" desde Maria = from contiene nuestro email; si no tenemos
+      // match exacto, nos basamos en si el from incluye el email del contacto
+      // (entrante) o no (saliente).
+      const saliente = !from.includes(e);
+      const fechaIso = headers.Date ? new Date(headers.Date).toISOString() : '';
+      mensajes.push({
+        id,
+        saliente,
+        fecha: fechaIso,
+        asunto: headers.Subject || '',
+        snippet: m.data.snippet || '',
+      });
+    } catch {
+      // si un mensaje no se puede leer, lo salteamos
+    }
+  }
+  // ordenar por fecha ascendente
+  mensajes.sort((a, b) => String(a.fecha).localeCompare(String(b.fecha)));
+  return mensajes;
+}
+
+/**
  * Responde a un email (mantiene threading).
  */
 async function responderEmail(messageId, textoRespuesta) {
@@ -440,6 +488,7 @@ module.exports = {
   leerEmail,
   marcarLeido,
   responderEmail,
+  buscarMensajesCon,
   // constantes
   SCOPES,
   TIMEZONE,

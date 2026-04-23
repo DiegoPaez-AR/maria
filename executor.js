@@ -61,7 +61,12 @@ async function ejecutarUna(accion, ctx) {
     case 'recordar_hecho':     return _recordarHecho(accion, ctx);
     case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
+    case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
+    case 'confirmar_prospecto_pendiente':
+      return _confirmarProspectoPendiente(accion, ctx);
+    case 'rechazar_prospecto_pendiente':
+      return _rechazarProspectoPendiente(accion, ctx);
     default:
       throw new Error(`Tipo de acción desconocido: ${accion.tipo}`);
   }
@@ -289,18 +294,33 @@ function _crearUsuario(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('crear_usuario: solo el owner puede crear usuarios');
   }
-  _requerir(a, ['nombre', 'calendar_id']);
+  _requerir(a, ['nombre']);
   const u = usuarios.crear({
     nombre: a.nombre,
     wa_cus: a.wa_cus || null,
     email: a.email || null,
-    calendar_id: a.calendar_id,
+    calendar_id: a.calendar_id || null,
     tz: a.tz || null,
     brief_hora: a.brief_hora || null,
     brief_minuto: a.brief_minuto || null,
   });
-  console.log(`[executor] usuario creado: id=${u.id} nombre=${u.nombre}`);
-  return { id: u.id, nombre: u.nombre, creado: true };
+  console.log(`[executor] usuario creado: id=${u.id} nombre=${u.nombre}${u.calendar_id ? '' : ' (sin calendar_id todavía)'}`);
+  return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null };
+}
+
+function _actualizarUsuario(a, ctx) {
+  if (!usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('actualizar_usuario: solo el owner puede actualizar usuarios');
+  }
+  _requerir(a, ['id']);
+  const patch = {};
+  for (const k of ['nombre', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto']) {
+    if (a[k] !== undefined) patch[k] = a[k];
+  }
+  if (!Object.keys(patch).length) throw new Error('actualizar_usuario: no hay campos para cambiar');
+  const u = usuarios.actualizar(a.id, patch);
+  console.log(`[executor] usuario actualizado: id=${u.id} nombre=${u.nombre} campos=${Object.keys(patch).join(',')}`);
+  return { id: u.id, nombre: u.nombre, actualizado: true, campos: Object.keys(patch) };
 }
 
 function _borrarUsuario(a, ctx) {
@@ -312,6 +332,70 @@ function _borrarUsuario(a, ctx) {
   const u = usuarios.desactivar(a.id);
   console.log(`[executor] usuario desactivado: id=${u.id} nombre=${u.nombre}`);
   return { id: u.id, nombre: u.nombre, desactivado: true };
+}
+
+// ─── Prospectos pendientes (confirmación del owner antes de crear) ──────
+//
+// Cuando unknown-flow LLM-detecta que un remitente es probablemente un
+// "prospecto" (alguien al que el owner le pidió a Maria que agregue),
+// NO lo crea automáticamente. Guarda el estado y le pregunta al owner por
+// WA. El owner responde afirmativa o negativamente, y Claude (en el prompt
+// del owner) emite una de estas dos acciones.
+//
+// El estado vive en estado_usuario[owner.id] con clave
+// `unknown_pending:<canal>:<remitenteId>` — lo leemos acá para armar el
+// create + sacar el estado + reprocesar el mensaje original.
+
+const unknownFlow = require('./unknown-flow');
+
+function _confirmarProspectoPendiente(a, ctx) {
+  if (!usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('confirmar_prospecto_pendiente: solo el owner');
+  }
+  _requerir(a, ['canal', 'remitente_id']);
+  const pend = unknownFlow.leerProspectoPendiente(a.canal, a.remitente_id);
+  if (!pend) throw new Error(`no hay prospecto pendiente para canal=${a.canal} remitente=${a.remitente_id}`);
+
+  // Datos del usuario nuevo: mergear lo que vino en la acción con lo
+  // detectado en el prospecto (nombre sugerido por LLM, wa_cus/email
+  // derivados del remitente).
+  const nombre = a.nombre || pend.nombre_sugerido;
+  if (!nombre) throw new Error('confirmar_prospecto_pendiente: falta `nombre` (no había sugerido tampoco)');
+
+  const wa_cus = a.wa_cus !== undefined ? a.wa_cus : pend.wa_cus_sugerido;
+  const email  = a.email  !== undefined ? a.email  : pend.email_sugerido;
+  const calendar_id = a.calendar_id !== undefined ? a.calendar_id : null;
+
+  const u = usuarios.crear({
+    nombre,
+    wa_cus: wa_cus || null,
+    email:  email  || null,
+    calendar_id: calendar_id || null,
+    tz: a.tz || null,
+    brief_hora: a.brief_hora || null,
+    brief_minuto: a.brief_minuto || null,
+  });
+  unknownFlow.limpiarProspectoPendiente(a.canal, a.remitente_id);
+  console.log(`[executor] prospecto confirmado: id=${u.id} nombre=${u.nombre} canal=${a.canal} remitente=${a.remitente_id}`);
+  return {
+    id: u.id,
+    nombre: u.nombre,
+    creado: true,
+    calendar_id: u.calendar_id || null,
+    prospecto_cerrado: { canal: a.canal, remitente_id: a.remitente_id },
+  };
+}
+
+function _rechazarProspectoPendiente(a, ctx) {
+  if (!usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('rechazar_prospecto_pendiente: solo el owner');
+  }
+  _requerir(a, ['canal', 'remitente_id']);
+  const pend = unknownFlow.leerProspectoPendiente(a.canal, a.remitente_id);
+  if (!pend) throw new Error(`no hay prospecto pendiente para canal=${a.canal} remitente=${a.remitente_id}`);
+  unknownFlow.limpiarProspectoPendiente(a.canal, a.remitente_id);
+  console.log(`[executor] prospecto rechazado: canal=${a.canal} remitente=${a.remitente_id}`);
+  return { rechazado: true, canal: a.canal, remitente_id: a.remitente_id };
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────

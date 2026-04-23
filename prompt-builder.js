@@ -15,6 +15,7 @@ const path = require('path');
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const unknownFlow = require('./unknown-flow');
 
 const INSTRUCCIONES_PATH = process.env.INSTRUCCIONES_PATH || path.join(__dirname, 'instrucciones.txt');
 
@@ -206,15 +207,38 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
 
   // Dinámico según rol
   const esOwner = usuario.rol === 'owner';
-  const listaUsuarios = usuarios.listarActivos().map(u => `${u.id}: ${u.nombre}${u.rol === 'owner' ? ' (owner)' : ''}`).join(', ');
+  const listaUsuarios = usuarios.listarActivos().map(u => `${u.id}: ${u.nombre}${u.rol === 'owner' ? ' (owner)' : ''}${u.calendar_id ? '' : ' [sin calendar]'}`).join(', ');
+
+  // Prospectos pendientes de confirmación (sólo relevante para el owner).
+  const prospectos = esOwner ? unknownFlow.listarProspectosPendientes() : [];
+  const seccionProspectos = esOwner
+    ? (prospectos.length
+        ? prospectos.map(p => {
+            const cuando = String(p.ts || p.actualizado || '').slice(0, 16).replace('T', ' ');
+            const sug = p.nombre_sugerido || '(sin nombre detectado)';
+            const wa  = p.wa_cus_sugerido ? ` wa_cus=${p.wa_cus_sugerido}` : '';
+            const em  = p.email_sugerido  ? ` email=${p.email_sugerido}`  : '';
+            const msg = (p.original_body || '').replace(/\s+/g, ' ').slice(0, 160);
+            const razon = p.razon ? ` · razón: ${p.razon}` : '';
+            return `- [${p.canal}|${p.remitente_id}] desde ${cuando} · sugerido: "${sug}"${wa}${em}${razon}\n  mensaje: "${msg}"`;
+          }).join('\n')
+        : '(no hay prospectos pendientes)')
+    : '';
 
   const accionesOwner = esOwner ? `
-  { "tipo": "crear_usuario", "nombre": "Nombre", "wa_cus": "549XXX...@c.us" (opcional), "email": "...@..." (opcional), "calendar_id": "email-que-compartió-el-calendar@gmail.com", "tz": "America/..." (opcional), "brief_hora": "07" (opcional), "brief_minuto": "00" (opcional) }
-      // Solo owner. Crea un nuevo usuario. El calendar_id es obligatorio — es el gmail con el que comparte su Google Calendar a maria.paez.secre@gmail.com.
-  { "tipo": "borrar_usuario", "id": 3 }      // Solo owner. Desactiva al usuario (soft delete). No se puede borrar al owner.` : '';
+  { "tipo": "crear_usuario", "nombre": "Nombre", "wa_cus": "549XXX...@c.us" (opcional), "email": "...@..." (opcional), "calendar_id": "email@..." (opcional, completar después con actualizar_usuario cuando comparta su calendar), "tz": "America/..." (opcional), "brief_hora": "07" (opcional), "brief_minuto": "00" (opcional) }
+      // Solo owner. Crea un nuevo usuario. Sin calendar_id puede existir como "prospecto" pero no se le pueden crear eventos hasta que lo complete.
+  { "tipo": "actualizar_usuario", "id": 3, "nombre": "...", "wa_cus": "...", "email": "...", "calendar_id": "...", "tz": "...", "brief_hora": "...", "brief_minuto": "..." }
+      // Solo owner. Cambia campos parciales de un usuario existente (ej. agregar calendar_id cuando finalmente lo compartió).
+  { "tipo": "borrar_usuario", "id": 3 }
+      // Solo owner. Desactiva al usuario (soft delete). No se puede borrar al owner.
+  { "tipo": "confirmar_prospecto_pendiente", "canal": "whatsapp"|"gmail", "remitente_id": "<id del remitente>", "nombre": "Nombre si querés pisar el sugerido" (opcional), "wa_cus": "..." (opcional), "email": "..." (opcional), "calendar_id": "..." (opcional) }
+      // Solo owner. Confirma la creación de un prospecto detectado en [PROSPECTOS PENDIENTES]. Crea el usuario con los datos sugeridos (pisables por los que pases acá).
+  { "tipo": "rechazar_prospecto_pendiente", "canal": "whatsapp"|"gmail", "remitente_id": "<id del remitente>" }
+      // Solo owner. Descarta el prospecto (el remitente queda como desconocido; si vuelve a escribir, arrancamos de cero).` : '';
 
   const lineaOwner = esOwner
-    ? `Además sos OWNER: podés crear o borrar usuarios con las acciones \`crear_usuario\` y \`borrar_usuario\`. Usuarios activos actualmente: ${listaUsuarios}.`
+    ? `Además sos OWNER: podés crear / actualizar / borrar usuarios, y confirmar o rechazar prospectos pendientes. Usuarios activos actualmente: ${listaUsuarios}.`
     : '';
 
   return `Sos Maria, secretaria personal con memoria persistente y acceso a WhatsApp, Gmail y Google Calendar. Servís a varios usuarios desde una misma instancia.
@@ -271,6 +295,12 @@ ${libreta}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [CONTACTO QUE TE ESCRIBE AHORA]
 ${contacto}
+${esOwner ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[PROSPECTOS PENDIENTES DE CONFIRMACIÓN — sólo vos (owner) los podés cerrar]
+(Remitentes desconocidos que el LLM sospecha que son alguien que me pediste agregar. Cada uno espera que le digas "sí creá" o "no descartá". Los cerrás con \`confirmar_prospecto_pendiente\` o \`rechazar_prospecto_pendiente\` — nunca creas usuarios automáticamente. Si ${usuario.nombre} te habla sobre uno, interpretá su respuesta y emití la acción.)
+${seccionProspectos}
+` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [FORMATO DE RESPUESTA — CANAL ${canal.toUpperCase()}]
