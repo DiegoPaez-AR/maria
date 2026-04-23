@@ -1,0 +1,195 @@
+# ejecutado: 2026-04-23T14:53:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/usr/bin/env bash
+#   # Verifica que el deploy de "tercero_de_usuario" + aviso de cierre mejorado
+#   # haya tomado bien, y deja visible el logging nuevo para que Diego pueda
+#   # confirmar el flujo la próxima vez que escriba un tercero desde un número
+#   # no registrado.
+#   set -u
+#   
+#   cd /root/secretaria
+#   
+#   echo "=== pm2 status ==="
+#   pm2 status --no-color || true
+#   
+#   echo
+#   echo "=== pm2 describe maria (uptime, created_at, restart_time) ==="
+#   pm2 describe maria 2>/dev/null | \
+#     grep -E '(status|uptime|restart time|created at|script path|pid|script args)' | \
+#     head -20 || true
+#   
+#   echo
+#   echo "=== node --check unknown-flow.js ==="
+#   node --check unknown-flow.js && echo OK || echo FAIL
+#   
+#   echo
+#   echo "=== grep categoría tercero_de_usuario ==="
+#   grep -c '"tercero_de_usuario"\|=== '"'"'tercero_de_usuario'"'"'' unknown-flow.js || true
+#   echo "(esperamos ≥ 4: 2 en prompt, 2 en handlers)"
+#   grep -n 'tercero_de_usuario' unknown-flow.js | head -20
+#   
+#   echo
+#   echo "=== grep función _routearComoTerceroDeUsuario ==="
+#   grep -n '_routearComoTerceroDeUsuario\|unknown_llm_tercero' unknown-flow.js | head -10
+#   
+#   echo
+#   echo "=== grep aviso de cierre nuevo ==="
+#   grep -n 'no pude identificar para quién\|Lo asumí erróneo' unknown-flow.js
+#   
+#   echo
+#   echo "=== grep logging de traza ==="
+#   grep -n 'LLM pre-pass inputs:\|LLM resolucion:\|unknown_llm_trace' unknown-flow.js
+#   
+#   echo
+#   echo "=== último commit ==="
+#   git log -1 --oneline
+#   
+#   echo
+#   echo "=== tail 40 del OUT log (buscar reinicio nuevo y posible tráfico) ==="
+#   tail -40 /root/.pm2/logs/maria-out.log 2>/dev/null || echo "(no hay out log)"
+#   
+#   echo
+#   echo "=== tail 20 del ERR log ==="
+#   tail -20 /root/.pm2/logs/maria-error.log 2>/dev/null || echo "(no hay err log)"
+#   
+#   echo
+#   echo "=== últimos 5 eventos de traza LLM (si hubo algún tráfico desconocido) ==="
+#   sqlite3 -header -column /root/secretaria/db/maria.sqlite "
+#     SELECT id, timestamp, cuerpo
+#     FROM eventos
+#     WHERE canal = 'sistema' AND cuerpo LIKE 'unknown-flow/%'
+#     ORDER BY id DESC LIMIT 5;
+#   " 2>/dev/null || echo "(sin eventos de traza todavía — esperá a que llegue un desconocido)"
+#   
+#   echo
+#   echo "=== estado_usuario: prospectos pendientes actuales ==="
+#   sqlite3 -header -column /root/secretaria/db/maria.sqlite "
+#     SELECT usuario_id, clave, actualizado
+#     FROM estado_usuario
+#     WHERE clave LIKE 'unknown_pending:%' OR clave LIKE 'unknown:%';
+#   " 2>/dev/null || true
+
+# ───── output ─────
+=== pm2 status ===
+┌────┬──────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ maria    │ default     │ 1.0.0   │ fork    │ 380687   │ 0s     │ 36   │ online    │ 0%       │ 66.2mb   │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+=== pm2 describe maria (uptime, created_at, restart_time) ===
+│ status            │ online                          │
+│ uptime            │ 0s                              │
+│ script path       │ /root/secretaria/index.js       │
+│ script args       │ N/A                             │
+│ pid path          │ /root/.pm2/pids/maria-1.pid     │
+│ created at        │ 2026-04-23T17:53:02.719Z        │
+
+=== node --check unknown-flow.js ===
+OK
+
+=== grep categoría tercero_de_usuario ===
+4
+(esperamos ≥ 4: 2 en prompt, 2 en handlers)
+13://        b) tercero_de_usuario → el remitente es un tercero (no usuario)
+254:  B) "tercero_de_usuario" — NO es un usuario, pero hay evidencia clara en el
+282:- Si la razón para usuario_activo o tercero_de_usuario no es obvia, preferí
+289:  "resolucion": "usuario_activo" | "tercero_de_usuario" | "prospecto_pendiente" | "desconocido",
+381:  if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
+468:  console.log(`[unknown-flow/wa] tercero_de_usuario: ${from} → contexto de ${match.nombre} (id=${match.id})`);
+656:  if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
+680:      console.log(`[unknown-flow/gmail] tercero_de_usuario: ${email.de} → contexto de ${match.nombre}`);
+
+=== grep función _routearComoTerceroDeUsuario ===
+384:      return await _routearComoTerceroDeUsuario({
+448:async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, reprocesarComoUsuario }) {
+456:    metadata: { tipo: 'unknown_llm_tercero', messageId, razon },
+665:        metadata: { tipo: 'unknown_llm_tercero', messageId: email.id, razon: llm.razon },
+
+=== grep aviso de cierre nuevo ===
+577:    `❌ Cerré el thread con *${pushname || from}* (${from}) por WA — no pude identificar para quién.\n\n` +
+580:    `Lo asumí erróneo. Si era para vos, avisame y te paso el contenido.`
+770:    `❌ Cerré el thread de email con ${email.de} — no pude identificar para quién.\n\n` +
+774:    `Lo asumí erróneo. Si era para vos, avisame y te paso el contenido.`
+
+=== grep logging de traza ===
+297:  console.log(`[unknown-flow/${canal}] LLM pre-pass inputs: hist_wa=${histWA.total || 0}${histWA.error ? `(err:${histWA.error})` : ''} hist_mail=${histMail.total || 0}${histMail.error ? `(err:${histMail.error})` : ''} hist_owner=${histOwner.total || 0}${histOwner.error ? `(err:${histOwner.error})` : ''} remitente=${from || senderEmail || '?'}`);
+304:    console.log(`[unknown-flow/${canal}] LLM resolucion: ${json.resolucion}${json.usuario_id ? ` usuario_id=${json.usuario_id}` : ''}${json.nombre_sugerido ? ` sugerido="${json.nombre_sugerido}"` : ''} · ${json.razon || '(sin razón)'}`);
+313:          tipo: 'unknown_llm_trace',
+
+=== último commit ===
+8a4bd0a1 ops: verificación tercero_de_usuario + aviso cierre mejorado
+
+=== tail 40 del OUT log (buscar reinicio nuevo y posible tráfico) ===
+[WA change_state] OPENING
+[WA change_state] PAIRING
+[WA change_state] CONNECTED
+[recordatorios/Diego/tarea] ping → 34342575317160@lid (6)
+[unknown-flow/wa] primer contacto de 137456250806423@lid — preguntando
+[unknown-flow/wa] cerrado 137456250806423@lid — sin match
+[WA ←] Diego (34342575317160@lid): hernan te esta contactando para que lo agregues como usuario, te acordas que te lo pedi hace un rato. te esta preguntando como hacer para compartirte el calenda
+[WA →] Diego/Diego: Sí, me acordé — lo tengo. Le escribo ahora con las instrucciones para compartir el calendario.
+[WA acciones/Diego] 1/1 ejecutadas
+[WA change_state] OPENING
+[WA change_state] PAIRING
+[WA change_state] CONNECTED
+[WA change_state] OPENING
+[WA change_state] PAIRING
+[WA change_state] CONNECTED
+
+▸ SIGINT recibido, cerrando…
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ Maria iniciando…
+  Owner:      Diego (id=1)
+  Usuarios:   1 activo(s) → Diego
+  Gmail poll: cada 60s
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ whisper OK
+[WA authenticated]
+✅ [WA ready] Maria conectada
+▸ arrancando poll de Gmail (cada 60s)
+▸ arrancando loop de recordatorios (cada 30min)
+▸ arrancando dispatcher de programados (cada 60s)
+▸ arrancando morning-brief (por usuario, ventana 4h)
+[morning-brief] activo, ventana 4h, cada usuario en su tz
+▸ arrancando meeting-prep (cada 5min)
+[meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+[WA ←] Diego (34342575317160@lid): podras pedir el menu del dia en farinelli?
+[WA ←] Diego (34342575317160@lid): podras pedir el menu del dia en farinelli?
+[WA →] Diego/Diego: Claro, le pregunto ahora.
+[WA acciones/Diego] 1/1 ejecutadas
+[unknown-flow/wa] primer contacto de 222788661055558@lid — preguntando (FSM)
+
+▸ SIGINT recibido, cerrando…
+
+=== tail 20 del ERR log ===
+    at Module.require (node:internal/modules/cjs/loader:1225:19)
+    at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/root/secretaria/index.js:22:13) {
+  code: 'SQLITE_ERROR'
+}
+SqliteError: no such column: usuario_id
+    at Database.exec (/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:9:14)
+    at Object.<anonymous> (/root/secretaria/memory.js:44:4)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at Module.load (node:internal/modules/cjs/loader:1197:32)
+    at Module._load (node:internal/modules/cjs/loader:1013:12)
+    at Module.require (node:internal/modules/cjs/loader:1225:19)
+    at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/root/secretaria/index.js:22:13) {
+  code: 'SQLITE_ERROR'
+}
+[WA/Diego] Claude falló: claude exit 1: 
+
+=== últimos 5 eventos de traza LLM (si hubo algún tráfico desconocido) ===
+
+=== estado_usuario: prospectos pendientes actuales ===
+usuario_id  clave                                 actualizado        
+----------  ------------------------------------  -------------------
+1           unknown:whatsapp:222788661055558@lid  2026-04-23 17:36:44
+
+# exit=0
