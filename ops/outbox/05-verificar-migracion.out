@@ -1,0 +1,171 @@
+# ejecutado: 2026-04-23T11:59:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Verificar que tras el fix del memory.js:
+#   #  - Maria arrancó sin errores de SQLITE
+#   #  - las tablas operativas tienen columna usuario_id
+#   #  - estado_usuario existe
+#   #  - usuarios tiene al owner bootstrapeado
+#   #  - los datos legacy se backfillearon a usuario_id=1
+#   
+#   set -u
+#   DB=/root/secretaria/db/maria.sqlite
+#   
+#   echo "=== pm2 status maria ==="
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   try:
+#       procs = json.load(sys.stdin)
+#       for p in procs:
+#           if p['name'] != 'maria': continue
+#           s = p.get('pm2_env', {})
+#           print(f\"  status={s.get('status')} restarts={s.get('restart_time')}\")
+#   except Exception as e:
+#       print(f'  (error pm2 jlist: {e})')
+#   "
+#   
+#   echo
+#   echo "=== últimos 40 logs (sin color) ==="
+#   pm2 logs maria --lines 40 --nostream 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | tail -40
+#   
+#   echo
+#   echo "=== tablas ==="
+#   sqlite3 "$DB" "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+#   
+#   echo
+#   echo "=== columnas usuario_id por tabla ==="
+#   for t in eventos pendientes programados contactos hechos; do
+#     has=$(sqlite3 "$DB" "SELECT COUNT(*) FROM pragma_table_info('$t') WHERE name='usuario_id';")
+#     echo "  $t.usuario_id = $has"
+#   done
+#   has_eu=$(sqlite3 "$DB" "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='estado_usuario';")
+#   echo "  estado_usuario existe = $has_eu"
+#   
+#   echo
+#   echo "=== usuarios ==="
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, rol, wa_cus, wa_lid, email, calendar_id, tz, brief_hora, activo FROM usuarios ORDER BY id;"
+#   
+#   echo
+#   echo "=== counts por usuario_id ==="
+#   for t in eventos pendientes programados contactos hechos; do
+#     has=$(sqlite3 "$DB" "SELECT COUNT(*) FROM pragma_table_info('$t') WHERE name='usuario_id';")
+#     if [ "$has" = "1" ]; then
+#       echo "─ $t ─"
+#       sqlite3 -header -column "$DB" "SELECT usuario_id, COUNT(*) AS n FROM $t GROUP BY usuario_id;"
+#     fi
+#   done
+#   
+#   echo
+#   echo "=== estado_usuario (migración de claves per-user) ==="
+#   sqlite3 -header -column "$DB" "SELECT usuario_id, clave, substr(valor_json,1,60) AS valor FROM estado_usuario ORDER BY usuario_id, clave;" 2>/dev/null || echo "  (tabla no existe todavía)"
+#   
+#   echo
+#   echo "=== estado (debe NO tener diego_wa_lid ni morning_brief_ultimo_dia si migró) ==="
+#   sqlite3 -header -column "$DB" "SELECT clave, substr(valor_json,1,60) AS valor FROM estado ORDER BY clave;"
+
+# ───── output ─────
+=== pm2 status maria ===
+  status=online restarts=34
+
+=== últimos 40 logs (sin color) ===
+1|maria    | 
+1|maria    | *Emails:* Sin novedades, bandeja limpia.
+1|maria    | 
+1|maria    | *Tus pendie
+1|maria    | [WA ←] Diego Paez (34342575317160@lid): si, ya las revise y corregi
+1|maria    | [WA ←] Diego Paez (34342575317160@lid): gracias
+1|maria    | [WA ←] Diego Paez (34342575317160@lid): agregame este pendiente: Brian IONQ
+1|maria    | [WA →] Diego Paez: Anotado — Brian IONQ.
+1|maria    | [WA acciones] 1/1 ejecutadas
+1|maria    | [meeting-prep] + id=11 GN + VR Weekly @ 2026-04-23T14:45:00.000Z
+1|maria    | 
+1|maria    | ▸ SIGINT recibido, cerrando…
+1|maria    | [memory] owner creado: Diego (id=1)
+1|maria    | [memory] migración: eventos.usuario_id agregado y backfill → 1
+1|maria    | [memory] migración: pendientes.usuario_id agregado y backfill → 1
+1|maria    | [memory] migración: programados.usuario_id agregado y backfill → 1
+1|maria    | [memory] migración: contactos recreado con (usuario_id, nombre) UNIQUE
+1|maria    | [memory] migración: hechos recreado con (usuario_id, clave) UNIQUE
+1|maria    | [memory] migración: diego_wa_lid → usuarios.wa_lid
+1|maria    | [memory] migración: estado.morning_brief_ultimo_dia → estado_usuario[1].morning_brief_ultimo_dia
+1|maria    | [memory] migración: estado.ultimo_recordatorio_tareas → estado_usuario[1].ultimo_recordatorio_tareas
+1|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|maria    | ▸ Maria iniciando…
+1|maria    |   Owner:      Diego (id=1)
+1|maria    |   Usuarios:   1 activo(s) → Diego
+1|maria    |   Gmail poll: cada 60s
+1|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|maria    | ✓ whisper OK
+1|maria    | [WA authenticated]
+1|maria    | ✅ [WA ready] Maria conectada
+1|maria    | ▸ arrancando poll de Gmail (cada 60s)
+1|maria    | ▸ arrancando loop de recordatorios (cada 30min)
+1|maria    | ▸ arrancando dispatcher de programados (cada 60s)
+1|maria    | [programados] 1 mensaje(s) debidos, despachando…
+1|maria    | ▸ arrancando morning-brief (por usuario, ventana 4h)
+1|maria    | [morning-brief] activo, ventana 4h, cada usuario en su tz
+1|maria    | ▸ arrancando meeting-prep (cada 5min)
+1|maria    | [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+1|maria    | [programados] ✓ id=11 (whatsapp/34342575317160@lid) [meeting_prep:eclncjav5ls9lp0s7tmbrevkhr_20260423T150000Z]
+
+
+=== tablas ===
+contactos
+estado
+estado_usuario
+eventos
+hechos
+pendientes
+programados
+sqlite_sequence
+usuarios
+
+=== columnas usuario_id por tabla ===
+  eventos.usuario_id = 1
+  pendientes.usuario_id = 1
+  programados.usuario_id = 1
+  contactos.usuario_id = 1
+  hechos.usuario_id = 1
+  estado_usuario existe = 1
+
+=== usuarios ===
+id  nombre  rol    wa_cus             wa_lid              email          calendar_id    tz                              brief_hora  activo
+--  ------  -----  -----------------  ------------------  -------------  -------------  ------------------------------  ----------  ------
+1   Diego   owner  541132317896@c.us  34342575317160@lid  diego@paez.is  diego@paez.is  America/Argentina/Buenos_Aires  04          1     
+
+=== counts por usuario_id ===
+─ eventos ─
+usuario_id  n  
+----------  ---
+1           939
+─ pendientes ─
+usuario_id  n 
+----------  --
+1           22
+─ programados ─
+usuario_id  n 
+----------  --
+1           11
+─ contactos ─
+usuario_id  n 
+----------  --
+1           29
+─ hechos ─
+usuario_id  n
+----------  -
+1           3
+
+=== estado_usuario (migración de claves per-user) ===
+usuario_id  clave                       valor                     
+----------  --------------------------  --------------------------
+1           morning_brief_ultimo_dia    "2026-04-22"              
+1           ultimo_recordatorio_tareas  "2026-04-22T15:45:17.081Z"
+
+=== estado (debe NO tener diego_wa_lid ni morning_brief_ultimo_dia si migró) ===
+clave             valor                                                       
+----------------  ------------------------------------------------------------
+gmail:procesados  ["19da23792d396f0a","19da5d89d1262ddf","19da5de059b746e8","1
+pendientes        []                                                          
+
+# exit=0
