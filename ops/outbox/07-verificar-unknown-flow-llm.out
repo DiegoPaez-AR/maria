@@ -1,0 +1,226 @@
+# ejecutado: 2026-04-23T14:19:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Verificar que el refactor de unknown-flow con LLM pre-pass + prospectos
+#   # pendientes arrancó limpio. Corre post-deploy (cron tira git pull + pm2 reload).
+#   #
+#   # Chequea:
+#   #  1) pm2 status (no crash loop).
+#   #  2) Archivos nuevos presentes.
+#   #  3) Que Maria cargó los módulos (`context-fetcher`, `unknown-flow` refactor,
+#   #     nuevas acciones en executor).
+#   #  4) Estado actual de prospectos pendientes en estado_usuario.
+#   #  5) Últimos eventos relevantes (unknown_pending_*, acciones confirmar/rechazar).
+#   #  6) Últimos logs de pm2.
+#   
+#   set -u
+#   DB=/root/secretaria/db/maria.sqlite
+#   REPO=/root/secretaria
+#   
+#   echo "=== pm2 status ==="
+#   pm2 status 2>&1 | sed 's/\x1b\[[0-9;]*m//g'
+#   
+#   echo
+#   echo "=== archivos nuevos / modificados ==="
+#   ls -la "$REPO/context-fetcher.js" 2>&1 || echo "context-fetcher.js NO EXISTE"
+#   echo "--- head de unknown-flow.js (primeras 5 líneas) ---"
+#   head -5 "$REPO/unknown-flow.js"
+#   
+#   echo
+#   echo "=== chequeo de sintaxis (node --check) ==="
+#   for f in context-fetcher.js unknown-flow.js google.js usuarios.js executor.js prompt-builder.js; do
+#     if node --check "$REPO/$f" 2>&1; then
+#       echo "OK  $f"
+#     else
+#       echo "FAIL $f"
+#     fi
+#   done
+#   
+#   echo
+#   echo "=== acciones registradas en executor.js (grep 'case .tipo.') ==="
+#   grep -n "case '" "$REPO/executor.js" | sed 's/^/  /'
+#   
+#   echo
+#   echo "=== exports de unknown-flow.js ==="
+#   grep -A 20 "^module.exports" "$REPO/unknown-flow.js" | head -30
+#   
+#   echo
+#   echo "=== prospectos pendientes en estado_usuario ==="
+#   sqlite3 -header -column "$DB" "SELECT usuario_id, clave, substr(valor_json,1,200) AS valor, actualizado FROM estado_usuario WHERE clave LIKE 'unknown_pending:%' ORDER BY actualizado DESC;"
+#   
+#   echo
+#   echo "=== estados FSM legacy (unknown:* que todavía siguen abiertos) ==="
+#   sqlite3 -header -column "$DB" "SELECT usuario_id, clave, substr(valor_json,1,200) AS valor, actualizado FROM estado_usuario WHERE clave LIKE 'unknown:%' AND clave NOT LIKE 'unknown_pending:%' ORDER BY actualizado DESC;"
+#   
+#   echo
+#   echo "=== últimos 30 eventos con metadata tipo unknown_* ==="
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, usuario_id, canal, direccion, substr(de,1,25) AS de, substr(cuerpo,1,60) AS cuerpo, substr(metadata_json,1,120) AS meta FROM eventos WHERE metadata_json LIKE '%unknown_%' ORDER BY id DESC LIMIT 30;"
+#   
+#   echo
+#   echo "=== usuarios actuales ==="
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, rol, wa_cus, wa_lid, email, calendar_id, activo, creado FROM usuarios ORDER BY id;"
+#   
+#   echo
+#   echo "=== últimos 80 logs pm2 ==="
+#   pm2 logs maria --lines 80 --nostream 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | tail -80
+
+# ───── output ─────
+=== pm2 status ===
+┌────┬──────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ maria    │ default     │ 1.0.0   │ fork    │ 377842   │ 0s     │ 35   │ online    │ 0%       │ 71.0mb   │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+=== archivos nuevos / modificados ===
+-rw-r--r-- 1 root root 5349 Apr 23 14:19 /root/secretaria/context-fetcher.js
+--- head de unknown-flow.js (primeras 5 líneas) ---
+// unknown-flow.js — flujo de "remitente desconocido" con LLM pre-pass.
+//
+// Cuando a Maria le escribe alguien por WA o Gmail que NO matchea con
+// ningún usuario activo, entramos acá. Hay dos capas:
+//
+
+=== chequeo de sintaxis (node --check) ===
+OK  context-fetcher.js
+OK  unknown-flow.js
+OK  google.js
+OK  usuarios.js
+OK  executor.js
+OK  prompt-builder.js
+
+=== acciones registradas en executor.js (grep 'case .tipo.') ===
+  51:    case 'crear_evento':       return await _crearEvento(accion, ctx);
+  52:    case 'modificar_evento':   return await _modificarEvento(accion, ctx);
+  53:    case 'borrar_evento':      return await _borrarEvento(accion, ctx);
+  54:    case 'responder_email':    return await _responderEmail(accion, ctx);
+  55:    case 'enviar_wa':          return await _enviarWA(accion, ctx);
+  56:    case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
+  57:    case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
+  58:    case 'upsert_contacto':    return _upsertContacto(accion, ctx);
+  59:    case 'programar_mensaje':  return _programarMensaje(accion, ctx);
+  60:    case 'cancelar_programado':return _cancelarProgramado(accion, ctx);
+  61:    case 'recordar_hecho':     return _recordarHecho(accion, ctx);
+  62:    case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
+  63:    case 'crear_usuario':      return _crearUsuario(accion, ctx);
+  64:    case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
+  65:    case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
+  66:    case 'confirmar_prospecto_pendiente':
+  68:    case 'rechazar_prospecto_pendiente':
+
+=== exports de unknown-flow.js ===
+module.exports = {
+  handleWA,
+  handleEmail,
+  matchearUsuario,
+  // legacy FSM (por compatibilidad):
+  leerEstado,
+  guardarEstado,
+  limpiarEstado,
+  // prospectos pendientes (usado por executor y prompt-builder):
+  leerProspectoPendiente,
+  guardarProspectoPendiente,
+  limpiarProspectoPendiente,
+  listarProspectosPendientes,
+};
+
+=== prospectos pendientes en estado_usuario ===
+
+=== estados FSM legacy (unknown:* que todavía siguen abiertos) ===
+
+=== últimos 30 eventos con metadata tipo unknown_* ===
+id   timestamp            usuario_id  canal     direccion  de                   cuerpo                                                        meta                                                                                 
+---  -------------------  ----------  --------  ---------  -------------------  ------------------------------------------------------------  -------------------------------------------------------------------------------------
+971  2026-04-23 16:38:07  1           whatsapp  saliente   34342575317160@lid   ❌ Cerré el thread con *Hernan Fulco* (137456250806423@lid) p  {"tipo":"unknown_flow_aviso"}                                                        
+970  2026-04-23 16:37:46  1           whatsapp  saliente   34342575317160@lid   🚪 Te escribe alguien por WA que no conozco: *Hernan Fulco* (  {"tipo":"unknown_flow_aviso"}                                                        
+969  2026-04-23 16:37:46  1           whatsapp  entrante   137456250806423@lid  Hola, cómo hago para compartirte los datos?                   {"tipo":"unknown_first","messageId":"false_137456250806423@lid_3A959272370FF3D1A56E"}
+
+=== usuarios actuales ===
+id  nombre  rol    wa_cus             wa_lid              email          calendar_id    activo  creado             
+--  ------  -----  -----------------  ------------------  -------------  -------------  ------  -------------------
+1   Diego   owner  541132317896@c.us  34342575317160@lid  diego@paez.is  diego@paez.is  1       2026-04-23 14:58:03
+
+=== últimos 80 logs pm2 ===
+1|maria    | [WA acciones] 1/1 ejecutadas
+1|maria    | [meeting-prep] + id=11 GN + VR Weekly @ 2026-04-23T14:45:00.000Z
+1|maria    | 
+1|maria    | ▸ SIGINT recibido, cerrando…
+1|maria    | [memory] owner creado: Diego (id=1)
+1|maria    | [memory] migración: eventos.usuario_id agregado y backfill → 1
+1|maria    | [memory] migración: pendientes.usuario_id agregado y backfill → 1
+1|maria    | [memory] migración: programados.usuario_id agregado y backfill → 1
+1|maria    | [memory] migración: contactos recreado con (usuario_id, nombre) UNIQUE
+1|maria    | [memory] migración: hechos recreado con (usuario_id, clave) UNIQUE
+1|maria    | [memory] migración: diego_wa_lid → usuarios.wa_lid
+1|maria    | [memory] migración: estado.morning_brief_ultimo_dia → estado_usuario[1].morning_brief_ultimo_dia
+1|maria    | [memory] migración: estado.ultimo_recordatorio_tareas → estado_usuario[1].ultimo_recordatorio_tareas
+1|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|maria    | ▸ Maria iniciando…
+1|maria    |   Owner:      Diego (id=1)
+1|maria    |   Usuarios:   1 activo(s) → Diego
+1|maria    |   Gmail poll: cada 60s
+1|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|maria    | ✓ whisper OK
+1|maria    | [WA authenticated]
+1|maria    | ✅ [WA ready] Maria conectada
+1|maria    | ▸ arrancando poll de Gmail (cada 60s)
+1|maria    | ▸ arrancando loop de recordatorios (cada 30min)
+1|maria    | ▸ arrancando dispatcher de programados (cada 60s)
+1|maria    | [programados] 1 mensaje(s) debidos, despachando…
+1|maria    | ▸ arrancando morning-brief (por usuario, ventana 4h)
+1|maria    | [morning-brief] activo, ventana 4h, cada usuario en su tz
+1|maria    | ▸ arrancando meeting-prep (cada 5min)
+1|maria    | [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+1|maria    | [programados] ✓ id=11 (whatsapp/34342575317160@lid) [meeting_prep:eclncjav5ls9lp0s7tmbrevkhr_20260423T150000Z]
+1|maria    | [WA ←] Diego (34342575317160@lid): todo bien maria, como estas con tu upgrade?
+1|maria    | [WA →] Diego/Diego: ¡Todo bien, gracias! El upgrade va bien, ya estoy operativa con todo conectado. 😊 ¿Necesitás algo antes del GN + VR Weekly que arranca ahora?
+1|maria    | [WA ←] Diego (34342575317160@lid): ya estoy en ella
+1|maria    | [WA ←] Diego (34342575317160@lid): que datos tenes en el contacto de ruben ward?
+1|maria    | [WA →] Diego/Diego: De Rubén Ward tengo:
+1|maria    | 
+1|maria    | 📱 WA: +54 9 11 5402-4727
+1|maria    | 📧 ruben.ward@sondeosglobal.com
+1|maria    | 
+1|maria    | También hay otro ID de WA registrado (184052384567499@lid) que se auto-agregó c
+1|maria    | [WA ←] Diego (34342575317160@lid): agregalo a ruben como usuario, mandale un whatsapp presentandote y diciendo que vas a trabajar como su sectretaria personal. Pedile que te comparta el calendari
+1|maria    | [WA →] Diego/Diego: Le mando el WA a Rubén ahora presentándome y pidiéndole el calendario. Una vez que lo comparta, lo activo como usuario.
+1|maria    | 
+1|maria    | Una cosa: no tengo registrado mi número
+1|maria    | [WA acciones/Diego] 1/1 ejecutadas
+1|maria    | 📒 [WA vcard/Diego] MarIA Paez → 5491179043441@c.us
+1|maria    | [WA ←] Diego (34342575317160@lid): y tenes tu mail?
+1|maria    | [WA →] Diego/Diego: Sí, mi mail es maria.paez.secre@gmail.com — ya se lo incluí en el mensaje a Rubén.
+1|maria    | 📒 [WA vcard/Diego] Hernan Fulco → 5491126829596@c.us
+1|maria    | [WA ←] Diego (34342575317160@lid): hernan.fulco@sondeosglobal.com
+1|maria    | [WA →] Diego/Diego: Listo, le agrego el mail a Hernan Fulco.
+1|maria    | [WA acciones/Diego] 1/1 ejecutadas
+1|maria    | [WA ←] Diego (34342575317160@lid): lo podes agregar como usuario tambien, y al igual que con Ruben, mandale mensaje presentandote
+1|maria    | [WA →] Diego/Diego: Claro, le mando el mensaje a Hernán ahora. Una vez que comparta el calendario lo activo como usuario.
+1|maria    | [WA acciones/Diego] 1/1 ejecutadas
+1|maria    | [WA ←] Diego (34342575317160@lid): y hace los mismo con Doris tambien
+1|maria    | [WA ←] Diego (34342575317160@lid): ya tenes el contacto
+1|maria    | [WA →] Diego/Diego: Dale, le escribo a Doris ahora.
+1|maria    | [WA →] Diego/Diego: Le mando el WA a Doris ahora.
+1|maria    | [WA acciones/Diego] 1/1 ejecutadas
+1|maria    | [WA acciones/Diego] 1/1 ejecutadas
+1|maria    | [WA change_state] OPENING
+1|maria    | [WA change_state] PAIRING
+1|maria    | [WA change_state] CONNECTED
+1|maria    | [recordatorios/Diego/tarea] ping → 34342575317160@lid (6)
+1|maria    | [unknown-flow/wa] primer contacto de 137456250806423@lid — preguntando
+1|maria    | [unknown-flow/wa] cerrado 137456250806423@lid — sin match
+1|maria    | [WA ←] Diego (34342575317160@lid): hernan te esta contactando para que lo agregues como usuario, te acordas que te lo pedi hace un rato. te esta preguntando como hacer para compartirte el calenda
+1|maria    | [WA →] Diego/Diego: Sí, me acordé — lo tengo. Le escribo ahora con las instrucciones para compartir el calendario.
+1|maria    | [WA acciones/Diego] 1/1 ejecutadas
+1|maria    | [WA change_state] OPENING
+1|maria    | [WA change_state] PAIRING
+1|maria    | [WA change_state] CONNECTED
+1|maria    | [WA change_state] OPENING
+1|maria    | [WA change_state] PAIRING
+1|maria    | [WA change_state] CONNECTED
+1|maria    | 
+1|maria    | ▸ SIGINT recibido, cerrando…
+
+
+# exit=0
