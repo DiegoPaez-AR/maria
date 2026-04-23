@@ -1,22 +1,26 @@
-// index.js — entry point unificado de Maria
+// index.js — entry point unificado de Maria (multi-user)
 //
-// Reemplaza la división whatsapp.js + maria.js por un único proceso que:
+// Un solo proceso que:
 //   1) arranca el cliente de WhatsApp (whatsapp-handler.js)
-//   2) cuando WA está listo, inicia el poll de Gmail (gmail-handler.js)
-//   3) ambos comparten memory (SQLite) y google.js
+//   2) cuando WA está listo, inicia el poll de Gmail + loops por usuario
+//      (recordatorios, programados, morning-brief, meeting-prep)
+//   3) todos comparten memory (SQLite, multi-user) y google.js
 //
 // Variables de entorno útiles:
-//   DIEGO_WA        → wa id de Diego (default 541132317896@c.us)
-//   DIEGO_EMAIL     → email de Diego (default diego@paez.is)
-//   GMAIL_POLL_MS   → intervalo de poll en ms (default 60000)
-//   CHROME_BIN      → binary de Chrome (default /usr/bin/google-chrome)
-//   MARIA_DB        → path de sqlite (default ./db/maria.sqlite)
-//   MARIA_CALENDAR_ID, MARIA_TZ → ver google.js
-//   WHISPER_BIN, WHISPER_MODEL, WHISPER_LANG → ver transcribir.js
+//   OWNER_NOMBRE      → nombre del owner (default Diego) — solo para el
+//                       bootstrap inicial si la DB está vacía
+//   DIEGO_WA          → wa_cus del owner para bootstrap (default 541132317896@c.us)
+//   DIEGO_EMAIL       → email del owner para bootstrap (default diego@paez.is)
+//   OWNER_CALENDAR_ID → calendar id del owner (default = su email)
+//   MARIA_TZ          → tz del owner para bootstrap
+//   GMAIL_POLL_MS     → intervalo de poll de Gmail (default 60000)
+//   CHROME_BIN        → binary de Chrome (default /usr/bin/google-chrome)
+//   MARIA_DB          → path de sqlite (default ./db/maria.sqlite)
 
 const path = require('path');
 
 const mem = require('./memory');
+const usuarios = require('./usuarios');
 const { verificarDependencias } = require('./transcribir');
 const { crearClienteWA } = require('./whatsapp-handler');
 const { iniciarPoll } = require('./gmail-handler');
@@ -25,8 +29,6 @@ const { iniciarProgramados } = require('./programados');
 const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
 
-const DIEGO_WA        = process.env.DIEGO_WA        || '541132317896@c.us';
-const DIEGO_EMAIL     = process.env.DIEGO_EMAIL     || 'diego@paez.is';
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 60_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
 const PROGRAMADOS_MS  = Number(process.env.PROGRAMADOS_MS  || 60_000);
@@ -43,9 +45,13 @@ let waClient = null;
 async function main() {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('▸ Maria iniciando…');
-  console.log(`  Diego WA:    ${DIEGO_WA}`);
-  console.log(`  Diego email: ${DIEGO_EMAIL}`);
-  console.log(`  Gmail poll:  cada ${GMAIL_POLL_MS/1000}s`);
+
+  // Usuarios (owner se bootstrapea automáticamente en memory.js)
+  const owner = usuarios.obtenerOwner();
+  const activos = usuarios.listarActivos();
+  console.log(`  Owner:      ${owner ? `${owner.nombre} (id=${owner.id})` : '(no definido!)'}`);
+  console.log(`  Usuarios:   ${activos.length} activo(s) → ${activos.map(u => u.nombre).join(', ')}`);
+  console.log(`  Gmail poll: cada ${GMAIL_POLL_MS/1000}s`);
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
   // 1) Whisper
@@ -58,24 +64,17 @@ async function main() {
     console.log('✓ whisper OK');
   }
 
-  // 2) Asegurar que Diego está en contactos
-  mem.upsertContacto({
-    nombre: 'Diego',
-    whatsapp: DIEGO_WA,
-    email: DIEGO_EMAIL,
-    notas: 'jefe / titular',
-  });
-  console.log('✓ contacto Diego asegurado');
-
-  // 3) Migración oportunista de contactos.json
-  try {
-    const n = mem.importarDesdeContactosJson(path.join(__dirname, 'contactos.json'));
-    if (n) console.log(`✓ importados ${n} contactos de contactos.json`);
-  } catch (err) {
-    console.warn('[warn] importando contactos.json:', err.message);
+  // 2) Migración oportunista de contactos.json → libreta del owner
+  if (owner) {
+    try {
+      const n = mem.importarDesdeContactosJson(owner.id, path.join(__dirname, 'contactos.json'));
+      if (n) console.log(`✓ importados ${n} contactos de contactos.json (owner=${owner.nombre})`);
+    } catch (err) {
+      console.warn('[warn] importando contactos.json:', err.message);
+    }
   }
 
-  // 4) WhatsApp — cuando esté listo arrancamos Gmail + recordatorios
+  // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
   waClient = crearClienteWA({
     onReady: (client) => {
       console.log(`▸ arrancando poll de Gmail (cada ${GMAIL_POLL_MS/1000}s)`);
@@ -91,7 +90,7 @@ async function main() {
         waClient: client, intervaloMs: PROGRAMADOS_MS,
       });
 
-      console.log('▸ arrancando morning-brief (4am hora AR, ventana 4h)');
+      console.log('▸ arrancando morning-brief (por usuario, ventana 4h)');
       briefInterval = iniciarMorningBrief({
         waClient: client, intervaloMs: BRIEF_MS,
       });
@@ -102,8 +101,9 @@ async function main() {
       });
 
       mem.log({
+        usuarioId: owner?.id || null,
         canal: 'sistema', direccion: 'interno',
-        cuerpo: 'Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos',
+        cuerpo: `Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (${activos.length} usuarios)`,
       });
     },
   });
@@ -127,7 +127,7 @@ function shutdown(sig) {
   const done = () => process.exit(0);
   if (waClient) {
     waClient.destroy().then(done).catch(done);
-    setTimeout(done, 5000).unref(); // por las dudas
+    setTimeout(done, 5000).unref();
   } else {
     done();
   }

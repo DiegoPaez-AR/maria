@@ -1,36 +1,30 @@
-// meeting-prep.js — programa avisos 15min antes de cada reunión
+// meeting-prep.js — programa avisos 15min antes de cada reunión, POR usuario
 //
-// Loop cada N minutos (default 5). Para cada evento en las próximas 2h:
-//   - si no está marcado como all-day
-//   - si todavía falta al menos unos minutos antes del "cuándo" de envío
-//   - si NO existe ya un programado con razon='meeting_prep:<eventoId>'
-// crea un programado para 15min antes del evento, texto precompuesto.
+// Loop cada N minutos. Para cada usuario activo:
+//   - lista eventos próximos de SU calendario
+//   - para cada evento en las próximas 2h no all-day:
+//     - si NO existe ya un programado con razon='meeting_prep:<usuarioId>:<eventoId>'
+//       crea un programado para 15min antes del evento con destino = WA del usuario.
 //
 // El dispatch lo hace programados.js. Acá solo agendamos.
-//
-// Uso:
-//   const { iniciarMeetingPrep } = require('./meeting-prep');
-//   const interval = iniciarMeetingPrep({ waClient });   // waClient se pasa por simetría, no se usa acá
-//   // (waClient es usado por programados.js cuando el programado vence)
 
 const mem = require('./memory');
 const g   = require('./google');
+const usuarios = require('./usuarios');
 
-const DIEGO_WA_CUS   = process.env.DIEGO_WA || '541132317896@c.us';
-const TZ             = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
-const MINUTOS_ANTES  = Number(process.env.MEETING_PREP_MIN_ANTES || 15);
-const VENTANA_HORAS  = Number(process.env.MEETING_PREP_VENTANA_H || 2);
+const MINUTOS_ANTES = Number(process.env.MEETING_PREP_MIN_ANTES || 15);
+const VENTANA_HORAS = Number(process.env.MEETING_PREP_VENTANA_H || 2);
 
-function _razonPara(eventoId) { return `meeting_prep:${eventoId}`; }
+function _razonPara(usuario, eventoId) { return `meeting_prep:${usuario.id}:${eventoId}`; }
 
-function _destinoDiegoWA() {
-  const lid = mem.getEstado('diego_wa_lid');
-  return lid || DIEGO_WA_CUS;
+function _destinoWA(usuario) {
+  return usuario.wa_lid || usuario.wa_cus || null;
 }
 
-function _componerTexto(e) {
+function _componerTexto(e, usuario) {
+  const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
   const d = new Date(e.start);
-  const hm = d.toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+  const hm = d.toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
   const lugar = e.ubicacion ? ` @${e.ubicacion}` : '';
   const asistentes = (e.attendees || []).filter(a => a).slice(0, 6).join(', ');
   let txt = `⏰ *En ${MINUTOS_ANTES}min*: ${e.summary} (${hm})${lugar}`;
@@ -42,13 +36,21 @@ function _componerTexto(e) {
   return txt;
 }
 
-async function tick() {
+async function _tickUsuario(usuario) {
+  const destino = _destinoWA(usuario);
+  if (!destino) return 0;
+  if (!usuario.calendar_id) return 0;
+
   let eventos;
   try {
-    eventos = await g.listarEventosProximos({ dias: Math.max(1, Math.ceil(VENTANA_HORAS / 24)), max: 30 });
+    eventos = await g.listarEventosProximos({
+      dias: Math.max(1, Math.ceil(VENTANA_HORAS / 24)),
+      max: 30,
+      calendarId: usuario.calendar_id,
+    });
   } catch (err) {
-    console.warn('[meeting-prep] listar calendario falló:', err.message);
-    return;
+    console.warn(`[meeting-prep/${usuario.nombre}] listar cal falló:`, err.message);
+    return 0;
   }
 
   const ahora = Date.now();
@@ -60,42 +62,52 @@ async function tick() {
     if (!e.start) continue;
     const inicio = new Date(e.start).getTime();
     if (isNaN(inicio)) continue;
-    if (inicio < ahora) continue;          // ya arrancó
-    if (inicio > limite) continue;         // fuera de ventana
+    if (inicio < ahora)   continue;
+    if (inicio > limite)  continue;
 
     const cuandoAlerta = new Date(inicio - MINUTOS_ANTES * 60 * 1000);
-    if (cuandoAlerta.getTime() <= ahora) continue; // ya pasó la ventana de alerta
+    if (cuandoAlerta.getTime() <= ahora) continue;
 
-    const razon = _razonPara(e.id);
-    if (mem.existeProgramadoFuturo(razon)) continue; // ya agendado
+    const razon = _razonPara(usuario, e.id);
+    if (mem.existeProgramadoFuturo(razon)) continue;
 
     try {
       const id = mem.programarMensaje({
+        usuarioId: usuario.id,
         cuando: cuandoAlerta,
         canal: 'whatsapp',
-        destino: _destinoDiegoWA(),
+        destino,
         asunto: null,
-        texto: _componerTexto(e),
+        texto: _componerTexto(e, usuario),
         razon,
         metadata: { eventoId: e.id, summary: e.summary, inicio: e.start },
       });
       programados++;
-      console.log(`[meeting-prep] + id=${id} ${e.summary} @ ${cuandoAlerta.toISOString()}`);
+      console.log(`[meeting-prep/${usuario.nombre}] + id=${id} ${e.summary} @ ${cuandoAlerta.toISOString()}`);
     } catch (err) {
-      console.error('[meeting-prep] programar falló:', err.message);
+      console.error(`[meeting-prep/${usuario.nombre}] programar falló:`, err.message);
     }
   }
-  if (programados) {
+  return programados;
+}
+
+async function tick() {
+  const activos = usuarios.listarActivos();
+  let total = 0;
+  for (const u of activos) {
+    try { total += await _tickUsuario(u); }
+    catch (err) { console.error(`[meeting-prep/${u.nombre}] tick:`, err.message); }
+  }
+  if (total) {
     mem.log({
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `meeting-prep: ${programados} alerta(s) agendada(s)`,
+      cuerpo: `meeting-prep: ${total} alerta(s) agendada(s) (${activos.length} usuarios)`,
     });
   }
 }
 
 function iniciarMeetingPrep({ intervaloMs = 5 * 60_000 } = {}) {
-  console.log(`[meeting-prep] activo, chequeo cada ${intervaloMs/60_000}min, alerta ${MINUTOS_ANTES}min antes`);
-  // Tick inicial inmediato
+  console.log(`[meeting-prep] activo, cada ${intervaloMs/60_000}min, alerta ${MINUTOS_ANTES}min antes (multi-user)`);
   tick().catch(err => console.error('[meeting-prep] tick inicial:', err));
   return setInterval(() => {
     tick().catch(err => console.error('[meeting-prep] tick:', err));

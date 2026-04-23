@@ -1,37 +1,30 @@
-// morning-brief.js — envía a Diego un brief por WhatsApp en la madrugada (hora AR)
+// morning-brief.js — envía a cada usuario activo un brief por WA en la madrugada
 //
-// Contenido: fecha, agenda del día, cumpleaños del día, pendientes.
-// (Diego pidió NO incluir emails.)
+// Contenido por usuario: fecha, agenda del día (su calendario), cumples,
+// pendientes. NO incluye emails.
 //
-// Implementación: setInterval cada 60s, chequea la hora local en MARIA_TZ.
-// Si ya estamos dentro de la ventana de envío (target … target+VENTANA_H) y todavía
-// no se mandó hoy, compone y envía. La ventana da margen para reintentar si un
-// tick falla por WA frame muerto + pm2 restart (~20s) o por otra caída puntual.
-// Usamos mem.estado como flag "último día enviado" para idempotencia.
-//
-// Uso:
-//   const { iniciarMorningBrief } = require('./morning-brief');
-//   const interval = iniciarMorningBrief({ waClient });
+// Implementación: setInterval cada 60s. Para cada usuario activo:
+//   - chequea la hora local en SU tz
+//   - si estamos en ventana [brief_hora:brief_minuto, +VENTANA_H) y no se
+//     mandó hoy (estado_usuario.morning_brief_ultimo_dia) → compone y envía.
+// La ventana da margen para reintentar si un tick falla por frame muerto o
+// por otra caída puntual.
 
 const mem = require('./memory');
 const g   = require('./google');
+const usuarios = require('./usuarios');
 
-const DIEGO_WA_CUS = process.env.DIEGO_WA || '541132317896@c.us';
-const TZ           = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
-const BRIEF_HORA    = process.env.BRIEF_HORA    || '04';
-const BRIEF_MINUTO  = process.env.BRIEF_MINUTO  || '00';
-const BRIEF_VENTANA_H = Number(process.env.BRIEF_VENTANA_H || 4); // reintenta dentro de esta ventana en horas
-const ESTADO_KEY    = 'morning_brief_ultimo_dia';
+const BRIEF_VENTANA_H = Number(process.env.BRIEF_VENTANA_H || 4);
+const ESTADO_KEY      = 'morning_brief_ultimo_dia';
 
 const DIAS_SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
 // ─── Helpers de tiempo ──────────────────────────────────────────────────
 
-function horaMinTZ(date = new Date()) {
-  // Devuelve {hora, minuto, yyyymmdd} en la TZ configurada
+function horaMinEnTz(tz, date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: TZ,
+    timeZone: tz,
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit',
     hour12: false,
@@ -48,136 +41,129 @@ function horaMinTZ(date = new Date()) {
 
 // ─── Composición del brief ──────────────────────────────────────────────
 
-function _salto(linea) { return linea ? linea + '\n' : ''; }
-
-async function _agendaHoy() {
-  // Eventos de hoy, filtrando los que empiezan hoy (TZ local)
-  const hoy = horaMinTZ();
-  const prox = await g.listarEventosProximos({ dias: 1, max: 20 });
+async function _agendaHoy(usuario) {
+  const hoy = horaMinEnTz(usuario.tz || 'America/Argentina/Buenos_Aires');
+  const prox = await g.listarEventosProximos({ dias: 1, max: 20, calendarId: usuario.calendar_id });
   const items = prox.filter(e => {
-    if (e.allDay) {
-      return e.start && e.start.startsWith(hoy.yyyymmdd);
-    }
-    const d = horaMinTZ(new Date(e.start));
+    if (e.allDay) return e.start && e.start.startsWith(hoy.yyyymmdd);
+    const d = horaMinEnTz(usuario.tz, new Date(e.start));
     return d.yyyymmdd === hoy.yyyymmdd;
   });
   if (!items.length) return '(sin eventos hoy)';
   return items.map(e => {
     if (e.allDay) return `• todo el día — ${e.summary}${e.ubicacion ? ' @' + e.ubicacion : ''}`;
-    const hm = new Date(e.start).toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+    const hm = new Date(e.start).toLocaleTimeString('es-AR', { timeZone: usuario.tz, hour: '2-digit', minute: '2-digit' });
     return `• ${hm} — ${e.summary}${e.ubicacion ? ' @' + e.ubicacion : ''}`;
   }).join('\n');
 }
 
-async function _cumplesHoy() {
+async function _cumplesHoy(usuario) {
+  // listarCumples usa su propio calendarId (contactos compartidos). Si no
+  // está configurado, devolvemos null silenciosamente.
   try {
-    const hoy = horaMinTZ();
+    const hoy = horaMinEnTz(usuario.tz);
     const lista = await g.listarCumples({ dias: 2 });
-    const items = lista.filter(e => {
-      const start = e.start || '';
-      return start.startsWith(hoy.yyyymmdd);
-    });
+    const items = lista.filter(e => (e.start || '').startsWith(hoy.yyyymmdd));
     if (!items.length) return null;
     return items.map(e => `🎂 ${e.summary}`).join('\n');
   } catch (err) {
-    console.warn('[morning-brief] cumples falló:', err.message);
+    console.warn(`[morning-brief/${usuario.nombre}] cumples falló:`, err.message);
     return null;
   }
 }
 
-function _pendientesLista() {
-  const ps = mem.listarPendientes();
+function _pendientesLista(usuario) {
+  const ps = mem.listarPendientes(usuario.id);
   if (!ps.length) return null;
   return ps.map((p, i) => `${i+1}. ${p.desc}`).join('\n');
 }
 
-async function componerBrief() {
-  const t = horaMinTZ();
+async function componerBrief(usuario) {
+  const t = horaMinEnTz(usuario.tz);
   const dowIdx = new Date(Date.UTC(t.year, t.mes - 1, t.dia)).getUTCDay();
   const fecha  = `${DIAS_SEMANA[dowIdx]} ${t.dia} de ${MESES[t.mes - 1]}`;
 
-  const [agenda, cumples] = await Promise.all([_agendaHoy(), _cumplesHoy()]);
-  const pendientes = _pendientesLista();
+  const [agenda, cumples] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario)]);
+  const pendientes = _pendientesLista(usuario);
 
-  let out = `☀️ *Buen día, Diego.* ${fecha}.\n\n`;
+  let out = `☀️ *Buen día, ${usuario.nombre}.* ${fecha}.\n\n`;
   out += `*📅 Agenda del día*\n${agenda}\n`;
-  if (cumples) {
-    out += `\n*Cumpleaños hoy*\n${cumples}\n`;
-  }
-  if (pendientes) {
-    out += `\n*📝 Pendientes*\n${pendientes}\n`;
-  }
+  if (cumples)   out += `\n*Cumpleaños hoy*\n${cumples}\n`;
+  if (pendientes) out += `\n*📝 Pendientes*\n${pendientes}\n`;
   return out.trim();
 }
 
 // ─── Envío ───────────────────────────────────────────────────────────────
 
-async function enviarBrief(waClient) {
+async function enviarBrief(waClient, usuario) {
   if (!waClient) {
-    console.warn('[morning-brief] no hay waClient — salteo el envío');
+    console.warn(`[morning-brief/${usuario.nombre}] no hay waClient — salteo`);
     return false;
   }
 
-  const texto = await componerBrief();
+  const destino = usuario.wa_lid || usuario.wa_cus;
+  if (!destino) {
+    console.warn(`[morning-brief/${usuario.nombre}] sin destino WA — salteo`);
+    return false;
+  }
 
-  // Resolver destino (@c.us legacy → @lid)
-  let destino = DIEGO_WA_CUS;
-  const lid = mem.getEstado('diego_wa_lid');
-  if (lid) destino = lid;
+  const texto = await componerBrief(usuario);
 
   try {
     await waClient.sendMessage(destino, texto);
   } catch (err) {
-    const esLidError = /No LID for user|invalid wid|not.{0,10}registered/i.test(err.message || '');
-    if (esLidError && lid && lid !== destino) {
-      await waClient.sendMessage(lid, texto);
-      destino = lid;
-    } else {
-      if (waClient._watchdogFrameMuerto) waClient._watchdogFrameMuerto(err, 'morning-brief');
-      throw err;
-    }
+    if (waClient._watchdogFrameMuerto) waClient._watchdogFrameMuerto(err, `morning-brief/${usuario.nombre}`);
+    throw err;
   }
 
   mem.log({
+    usuarioId: usuario.id,
     canal: 'whatsapp', direccion: 'saliente',
     de: destino, cuerpo: texto,
     metadata: { tipo: 'morning_brief' },
   });
-  console.log(`[morning-brief] ✓ enviado a ${destino}`);
+  console.log(`[morning-brief/${usuario.nombre}] ✓ enviado a ${destino}`);
   return true;
 }
 
 // ─── Loop ────────────────────────────────────────────────────────────────
 
-async function tick(waClient) {
-  const t = horaMinTZ();
+async function tickUsuario(waClient, usuario) {
+  const tz        = usuario.tz || 'America/Argentina/Buenos_Aires';
+  const briefHora   = usuario.brief_hora   || '04';
+  const briefMinuto = usuario.brief_minuto || '00';
+  const t = horaMinEnTz(tz);
 
-  // Ventana de envío: [target, target + BRIEF_VENTANA_H). Si un tick falla
-  // (frame muerto → pm2 restart, ~20s down), el próximo tick dentro de la
-  // ventana reintenta. Fuera de la ventana no disparamos (evita briefs tardíos
-  // si Maria recién arrancó a mitad del día sin haber mandado el de hoy).
-  const minsDesdeTarget = (Number(t.hora)   - Number(BRIEF_HORA))   * 60
-                        + (Number(t.minuto) - Number(BRIEF_MINUTO));
+  const minsDesdeTarget = (Number(t.hora)   - Number(briefHora))   * 60
+                        + (Number(t.minuto) - Number(briefMinuto));
   if (minsDesdeTarget < 0 || minsDesdeTarget >= BRIEF_VENTANA_H * 60) return;
 
-  const ultimoDia = mem.getEstado(ESTADO_KEY);
+  const ultimoDia = mem.getEstadoUsuario(usuario.id, ESTADO_KEY);
   if (ultimoDia === t.yyyymmdd) return; // ya mandamos hoy
 
   try {
-    const ok = await enviarBrief(waClient);
-    if (ok) mem.setEstado(ESTADO_KEY, t.yyyymmdd);
+    const ok = await enviarBrief(waClient, usuario);
+    if (ok) mem.setEstadoUsuario(usuario.id, ESTADO_KEY, t.yyyymmdd);
   } catch (err) {
-    console.error('[morning-brief] enviar falló:', err.message);
+    console.error(`[morning-brief/${usuario.nombre}] enviar falló:`, err.message);
     mem.log({
+      usuarioId: usuario.id,
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `morning-brief falló: ${err.message}`,
+      cuerpo: `morning-brief falló (${usuario.nombre}): ${err.message}`,
     });
-    // NO marcamos como enviado — reintentamos en el próximo tick (dentro del mismo minuto)
+  }
+}
+
+async function tick(waClient) {
+  const activos = usuarios.listarActivos();
+  for (const u of activos) {
+    try { await tickUsuario(waClient, u); }
+    catch (err) { console.error(`[morning-brief/${u.nombre}] tick:`, err.message); }
   }
 }
 
 function iniciarMorningBrief({ waClient, intervaloMs = 60_000 } = {}) {
-  console.log(`[morning-brief] activo, disparo a las ${BRIEF_HORA}:${BRIEF_MINUTO} (${TZ}), ventana ${BRIEF_VENTANA_H}h`);
+  console.log(`[morning-brief] activo, ventana ${BRIEF_VENTANA_H}h, cada usuario en su tz`);
   return setInterval(() => {
     tick(waClient).catch(err => console.error('[morning-brief] tick:', err));
   }, intervaloMs);

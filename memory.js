@@ -1,16 +1,23 @@
-// memory.js — capa de persistencia SQLite para Maria
-// Memoria cross-canal (WhatsApp + Gmail + Calendar + eventos internos)
+// memory.js — capa de persistencia SQLite para Maria (multi-usuario)
 //
-// Tablas:
-//   - eventos    → todo lo que pasa (mensajes, emails, acciones), cronológico
-//   - estado     → pares clave/valor para cosas pendientes, contadores, flags
-//   - contactos  → libreta propia de Maria (nombre → whatsapp + email + notas)
+// Maria es una sola (un WA, un gmail, un proceso) pero sirve a varios usuarios.
+// Todo dato operativo (eventos, pendientes, contactos, hechos, programados,
+// estado de ciclo) se aísla por `usuario_id`. Maria NUNCA mezcla info entre
+// usuarios.
 //
-// Uso:
-//   const mem = require('./memory');
-//   mem.log({ canal: 'whatsapp', direccion: 'entrante', de: '541132317896@c.us', cuerpo: 'hola' });
-//   const recientes = mem.recientes({ limit: 20 });
-//   const contexto  = mem.contextoCrossCanal({ desdeHoras: 24 });
+// Tablas principales:
+//   - usuarios       → registro de cada persona a la que Maria sirve
+//   - eventos        → log cross-canal POR USUARIO (mensajes, emails, sistema)
+//   - estado         → kv GLOBAL de Maria (ej. 'gmail:procesados')
+//   - estado_usuario → kv por usuario (ej. 'morning_brief_ultimo_dia')
+//   - contactos      → libreta de cada usuario (nombre único POR usuario)
+//   - pendientes     → cola de cosas en el aire de cada usuario
+//   - programados    → mensajes diferidos (dispatch global, contenido por usuario)
+//   - hechos         → preferencias persistentes (clave única POR usuario)
+//
+// Migración idempotente: chequea con PRAGMA table_info si cada columna/tabla ya
+// existe. En un DB viejo (pre-multiusuario) hace ALTER/recreate y backfill todo
+// a usuario_id=1 (Diego). En un DB nuevo crea el schema directo.
 
 const path = require('path');
 const fs = require('fs');
@@ -25,12 +32,36 @@ const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
-// ─── Schema ───────────────────────────────────────────────────────────────
+// Env de fallback para el bootstrap inicial (solo si `usuarios` está vacía).
+const OWNER_NOMBRE   = process.env.OWNER_NOMBRE   || 'Diego';
+const OWNER_WA_CUS   = process.env.DIEGO_WA       || '541132317896@c.us';
+const OWNER_EMAIL    = process.env.DIEGO_EMAIL    || 'diego@paez.is';
+const OWNER_CAL_ID   = process.env.OWNER_CALENDAR_ID || OWNER_EMAIL;
+const OWNER_TZ       = process.env.MARIA_TZ       || 'America/Argentina/Buenos_Aires';
+
+// ─── Schema base (idempotente) ────────────────────────────────────────────
 
 db.exec(`
+CREATE TABLE IF NOT EXISTS usuarios (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre       TEXT NOT NULL UNIQUE,
+  wa_lid       TEXT UNIQUE,
+  wa_cus       TEXT UNIQUE,
+  email        TEXT UNIQUE,
+  calendar_id  TEXT,
+  rol          TEXT NOT NULL DEFAULT 'usuario' CHECK(rol IN ('owner','usuario')),
+  tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
+  brief_hora   TEXT DEFAULT '04',
+  brief_minuto TEXT DEFAULT '00',
+  activo       INTEGER NOT NULL DEFAULT 1,
+  creado       DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado  DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS eventos (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  usuario_id     INTEGER REFERENCES usuarios(id),
   canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
   direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
   de             TEXT,
@@ -40,10 +71,10 @@ CREATE TABLE IF NOT EXISTS eventos (
   tipo_original  TEXT,
   metadata_json  TEXT
 );
-
 CREATE INDEX IF NOT EXISTS idx_eventos_ts       ON eventos(timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_eventos_canal_ts ON eventos(canal, timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_eventos_de       ON eventos(de);
+CREATE INDEX IF NOT EXISTS idx_eventos_usuario  ON eventos(usuario_id, timestamp DESC);
 
 CREATE TABLE IF NOT EXISTS estado (
   clave       TEXT PRIMARY KEY,
@@ -51,46 +82,35 @@ CREATE TABLE IF NOT EXISTS estado (
   actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS contactos (
-  id        INTEGER PRIMARY KEY AUTOINCREMENT,
-  nombre    TEXT UNIQUE NOT NULL,
-  whatsapp  TEXT,
-  email     TEXT,
-  notas     TEXT,
-  creado    DATETIME DEFAULT CURRENT_TIMESTAMP,
-  actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS estado_usuario (
+  usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+  clave       TEXT NOT NULL,
+  valor_json  TEXT NOT NULL,
+  actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (usuario_id, clave)
 );
-
-CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp ON contactos(whatsapp);
-CREATE INDEX IF NOT EXISTS idx_contactos_email    ON contactos(email);
 
 CREATE TABLE IF NOT EXISTS programados (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
   creado        DATETIME DEFAULT CURRENT_TIMESTAMP,
-  cuando        TEXT NOT NULL,                  -- ISO UTC
+  usuario_id    INTEGER REFERENCES usuarios(id),
+  cuando        TEXT NOT NULL,
   canal         TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail')),
   destino       TEXT NOT NULL,
   asunto        TEXT,
   texto         TEXT NOT NULL,
-  enviado       INTEGER NOT NULL DEFAULT 0,     -- 0=pendiente, 1=enviado, -1=cancelado
-  razon         TEXT,                            -- p.ej. 'morning_brief', 'meeting_prep', 'usuario'
+  enviado       INTEGER NOT NULL DEFAULT 0,
+  razon         TEXT,
   metadata_json TEXT
 );
-CREATE INDEX IF NOT EXISTS idx_prog_cuando ON programados(cuando, enviado);
-CREATE INDEX IF NOT EXISTS idx_prog_razon  ON programados(razon, enviado);
-
-CREATE TABLE IF NOT EXISTS hechos (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  clave       TEXT UNIQUE NOT NULL,
-  valor       TEXT NOT NULL,
-  fuente      TEXT,
-  creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
-  actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+CREATE INDEX IF NOT EXISTS idx_prog_cuando  ON programados(cuando, enviado);
+CREATE INDEX IF NOT EXISTS idx_prog_razon   ON programados(razon, enviado);
+CREATE INDEX IF NOT EXISTS idx_prog_usuario ON programados(usuario_id, enviado);
 
 CREATE TABLE IF NOT EXISTS pendientes (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
   creado              DATETIME DEFAULT CURRENT_TIMESTAMP,
+  usuario_id          INTEGER REFERENCES usuarios(id),
   desc                TEXT NOT NULL,
   estado              TEXT NOT NULL DEFAULT 'abierto' CHECK(estado IN ('abierto','cerrado','cancelado')),
   cerrado             DATETIME,
@@ -102,23 +122,251 @@ CREATE TABLE IF NOT EXISTS pendientes (
   email_message_id    TEXT,
   meta_json           TEXT
 );
-CREATE INDEX IF NOT EXISTS idx_pendientes_estado ON pendientes(estado, creado);
-CREATE INDEX IF NOT EXISTS idx_pendientes_remit  ON pendientes(remitente, estado);
+CREATE INDEX IF NOT EXISTS idx_pendientes_estado   ON pendientes(estado, creado);
+CREATE INDEX IF NOT EXISTS idx_pendientes_remit    ON pendientes(remitente, estado);
+CREATE INDEX IF NOT EXISTS idx_pendientes_usuario  ON pendientes(usuario_id, estado, creado);
 `);
+
+// ─── Helpers de introspección ─────────────────────────────────────────────
+
+function _tieneColumna(tabla, col) {
+  try {
+    const cols = db.prepare(`PRAGMA table_info(${tabla})`).all();
+    return cols.some(c => c.name === col);
+  } catch { return false; }
+}
+
+function _tablaExiste(nombre) {
+  const row = db.prepare(`SELECT name FROM sqlite_master WHERE type='table' AND name = ?`).get(nombre);
+  return !!row;
+}
+
+// ─── Bootstrap del owner ──────────────────────────────────────────────────
+// Si no hay ningún owner, creamos uno desde env (primer deploy multiusuario
+// o DB nuevo). Lo hacemos ANTES de las migraciones para que el backfill
+// (usuario_id=1) tenga FK válida.
+
+function _asegurarOwner() {
+  const yaOwner = db.prepare(`SELECT id FROM usuarios WHERE rol = 'owner' LIMIT 1`).get();
+  if (yaOwner) return yaOwner.id;
+  // Si hay algún usuario pero ninguno es owner (raro), promovemos el de id=1.
+  const algunUsuario = db.prepare(`SELECT id FROM usuarios ORDER BY id ASC LIMIT 1`).get();
+  if (algunUsuario) {
+    db.prepare(`UPDATE usuarios SET rol = 'owner' WHERE id = ?`).run(algunUsuario.id);
+    return algunUsuario.id;
+  }
+  // Crear owner desde env.
+  const info = db.prepare(`
+    INSERT INTO usuarios (nombre, wa_cus, email, calendar_id, rol, tz, activo)
+    VALUES (?, ?, ?, ?, 'owner', ?, 1)
+  `).run(OWNER_NOMBRE, OWNER_WA_CUS, OWNER_EMAIL, OWNER_CAL_ID, OWNER_TZ);
+  console.log(`[memory] owner creado: ${OWNER_NOMBRE} (id=${info.lastInsertRowid})`);
+  return info.lastInsertRowid;
+}
+
+const OWNER_ID = _asegurarOwner();
+
+// ─── Migraciones idempotentes ─────────────────────────────────────────────
+
+function _migrarAgregarUsuarioId(tabla) {
+  if (_tieneColumna(tabla, 'usuario_id')) return false;
+  db.exec(`ALTER TABLE ${tabla} ADD COLUMN usuario_id INTEGER REFERENCES usuarios(id)`);
+  db.prepare(`UPDATE ${tabla} SET usuario_id = ? WHERE usuario_id IS NULL`).run(OWNER_ID);
+  console.log(`[memory] migración: ${tabla}.usuario_id agregado y backfill → ${OWNER_ID}`);
+  return true;
+}
+
+// Tablas que ya existían pre-multiusuario y solo les falta usuario_id:
+for (const t of ['eventos', 'pendientes', 'programados']) {
+  _migrarAgregarUsuarioId(t);
+}
+
+// `contactos` necesita recreate: el UNIQUE sobre `nombre` pasa a ser por usuario.
+function _migrarContactos() {
+  if (!_tablaExiste('contactos')) {
+    db.exec(`
+      CREATE TABLE contactos (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(usuario_id, nombre)
+      );
+      CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp ON contactos(whatsapp);
+      CREATE INDEX IF NOT EXISTS idx_contactos_email    ON contactos(email);
+      CREATE INDEX IF NOT EXISTS idx_contactos_usuario  ON contactos(usuario_id, nombre);
+    `);
+    return;
+  }
+  // Ya tiene usuario_id y uniqueness compuesto? Si no, recreate.
+  const cols = db.prepare(`PRAGMA table_info(contactos)`).all();
+  const tieneUsuario = cols.some(c => c.name === 'usuario_id');
+  // Detectar uniqueness compuesto inspeccionando los índices.
+  const idx = db.prepare(`PRAGMA index_list(contactos)`).all();
+  let tieneUniqueCompuesto = false;
+  for (const i of idx) {
+    if (!i.unique) continue;
+    const cols2 = db.prepare(`PRAGMA index_info(${i.name})`).all().map(c => c.name).sort();
+    if (cols2.length === 2 && cols2.includes('usuario_id') && cols2.includes('nombre')) {
+      tieneUniqueCompuesto = true;
+      break;
+    }
+  }
+  if (tieneUsuario && tieneUniqueCompuesto) return;
+
+  db.exec('BEGIN');
+  try {
+    db.exec(`
+      CREATE TABLE contactos_new (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(usuario_id, nombre)
+      );
+    `);
+    // Copiar datos: si existe columna usuario_id la usamos; si no, todo al owner.
+    if (tieneUsuario) {
+      db.exec(`INSERT INTO contactos_new (id, usuario_id, nombre, whatsapp, email, notas, creado, actualizado)
+               SELECT id, COALESCE(usuario_id, ${OWNER_ID}), nombre, whatsapp, email, notas, creado, actualizado FROM contactos`);
+    } else {
+      db.exec(`INSERT INTO contactos_new (id, usuario_id, nombre, whatsapp, email, notas, creado, actualizado)
+               SELECT id, ${OWNER_ID}, nombre, whatsapp, email, notas, creado, actualizado FROM contactos`);
+    }
+    db.exec('DROP TABLE contactos');
+    db.exec('ALTER TABLE contactos_new RENAME TO contactos');
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp ON contactos(whatsapp)`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_email    ON contactos(email)`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_usuario  ON contactos(usuario_id, nombre)`);
+    db.exec('COMMIT');
+    console.log('[memory] migración: contactos recreado con (usuario_id, nombre) UNIQUE');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+_migrarContactos();
+
+// `hechos` lo mismo: clave única era global, pasa a per-user.
+function _migrarHechos() {
+  if (!_tablaExiste('hechos')) {
+    db.exec(`
+      CREATE TABLE hechos (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        clave       TEXT NOT NULL,
+        valor       TEXT NOT NULL,
+        fuente      TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(usuario_id, clave)
+      );
+    `);
+    return;
+  }
+  const cols = db.prepare(`PRAGMA table_info(hechos)`).all();
+  const tieneUsuario = cols.some(c => c.name === 'usuario_id');
+  const idx = db.prepare(`PRAGMA index_list(hechos)`).all();
+  let tieneUniqueCompuesto = false;
+  for (const i of idx) {
+    if (!i.unique) continue;
+    const cols2 = db.prepare(`PRAGMA index_info(${i.name})`).all().map(c => c.name).sort();
+    if (cols2.length === 2 && cols2.includes('usuario_id') && cols2.includes('clave')) {
+      tieneUniqueCompuesto = true;
+      break;
+    }
+  }
+  if (tieneUsuario && tieneUniqueCompuesto) return;
+
+  db.exec('BEGIN');
+  try {
+    db.exec(`
+      CREATE TABLE hechos_new (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        clave       TEXT NOT NULL,
+        valor       TEXT NOT NULL,
+        fuente      TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(usuario_id, clave)
+      );
+    `);
+    if (tieneUsuario) {
+      db.exec(`INSERT INTO hechos_new (id, usuario_id, clave, valor, fuente, creado, actualizado)
+               SELECT id, COALESCE(usuario_id, ${OWNER_ID}), clave, valor, fuente, creado, actualizado FROM hechos`);
+    } else {
+      db.exec(`INSERT INTO hechos_new (id, usuario_id, clave, valor, fuente, creado, actualizado)
+               SELECT id, ${OWNER_ID}, clave, valor, fuente, creado, actualizado FROM hechos`);
+    }
+    db.exec('DROP TABLE hechos');
+    db.exec('ALTER TABLE hechos_new RENAME TO hechos');
+    db.exec('COMMIT');
+    console.log('[memory] migración: hechos recreado con (usuario_id, clave) UNIQUE');
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
+}
+_migrarHechos();
+
+// Migrar estado → estado_usuario las keys que son per-user.
+// Claves conocidas por usuario: morning_brief_ultimo_dia, ultimo_recordatorio_consultas,
+// ultimo_recordatorio_tareas. Y 'diego_wa_lid' pasa a la columna usuarios.wa_lid.
+function _migrarEstadoUsuario() {
+  // wa_lid → columna del owner
+  const lidRow = db.prepare(`SELECT valor_json FROM estado WHERE clave = 'diego_wa_lid'`).get();
+  if (lidRow) {
+    let lid = null;
+    try { lid = JSON.parse(lidRow.valor_json); } catch { lid = lidRow.valor_json; }
+    if (lid && typeof lid === 'string') {
+      db.prepare(`UPDATE usuarios SET wa_lid = ? WHERE id = ? AND (wa_lid IS NULL OR wa_lid = '')`).run(lid, OWNER_ID);
+    }
+    db.prepare(`DELETE FROM estado WHERE clave = 'diego_wa_lid'`).run();
+    console.log('[memory] migración: diego_wa_lid → usuarios.wa_lid');
+  }
+
+  // Mover keys per-user a estado_usuario (y borrarlas de estado).
+  const clavesPerUser = [
+    'morning_brief_ultimo_dia',
+    'ultimo_recordatorio_consultas',
+    'ultimo_recordatorio_tareas',
+  ];
+  for (const clave of clavesPerUser) {
+    const row = db.prepare(`SELECT valor_json FROM estado WHERE clave = ?`).get(clave);
+    if (!row) continue;
+    db.prepare(`
+      INSERT OR REPLACE INTO estado_usuario (usuario_id, clave, valor_json, actualizado)
+      VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+    `).run(OWNER_ID, clave, row.valor_json);
+    db.prepare(`DELETE FROM estado WHERE clave = ?`).run(clave);
+    console.log(`[memory] migración: estado.${clave} → estado_usuario[${OWNER_ID}].${clave}`);
+  }
+}
+_migrarEstadoUsuario();
 
 // ─── Eventos ──────────────────────────────────────────────────────────────
 
 const insertEvento = db.prepare(`
-  INSERT INTO eventos (canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json)
-  VALUES (@canal, @direccion, @de, @nombre, @asunto, @cuerpo, @tipo_original, @metadata_json)
+  INSERT INTO eventos (usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json)
+  VALUES (@usuario_id, @canal, @direccion, @de, @nombre, @asunto, @cuerpo, @tipo_original, @metadata_json)
 `);
 
 /**
- * Registrar un evento. Pasar al menos {canal, direccion}.
- * Ej: log({ canal:'whatsapp', direccion:'entrante', de:'541132317896@c.us', cuerpo:'hola' })
+ * Registrar un evento. `usuarioId` es requerido salvo para eventos de 'sistema'
+ * sin contexto de usuario (ej. boot/shutdown global).
  */
 function log(evt) {
   const row = {
+    usuario_id: evt.usuarioId ?? null,
     canal: evt.canal,
     direccion: evt.direccion,
     de: evt.de || null,
@@ -132,61 +380,52 @@ function log(evt) {
   return info.lastInsertRowid;
 }
 
-const qRecientes = db.prepare(`
-  SELECT id, timestamp, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+const qRecientesUsuario = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
+  WHERE usuario_id = ? OR (usuario_id IS NULL AND canal = 'sistema')
   ORDER BY timestamp DESC, id DESC
   LIMIT ?
 `);
-
-function recientes({ limit = 20 } = {}) {
-  return qRecientes.all(limit).map(hidratar);
+function recientes(usuarioId, { limit = 20 } = {}) {
+  return qRecientesUsuario.all(usuarioId, limit).map(hidratar);
 }
 
-const qPorCanal = db.prepare(`
-  SELECT id, timestamp, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+const qPorCanalUsuario = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
-  WHERE canal = ?
+  WHERE canal = ? AND (usuario_id = ? OR (usuario_id IS NULL AND canal = 'sistema'))
   ORDER BY timestamp DESC, id DESC
   LIMIT ?
 `);
-
-function porCanal(canal, { limit = 20 } = {}) {
-  return qPorCanal.all(canal, limit).map(hidratar);
+function porCanal(usuarioId, canal, { limit = 20 } = {}) {
+  return qPorCanalUsuario.all(canal, usuarioId, limit).map(hidratar);
 }
 
-const qPorContacto = db.prepare(`
-  SELECT id, timestamp, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+const qPorContactoUsuario = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
-  WHERE de = ? OR nombre = ?
+  WHERE usuario_id = ? AND (de = ? OR nombre = ?)
   ORDER BY timestamp DESC, id DESC
   LIMIT ?
 `);
-
-function porContacto(identificador, { limit = 20 } = {}) {
-  return qPorContacto.all(identificador, identificador, limit).map(hidratar);
+function porContacto(usuarioId, identificador, { limit = 20 } = {}) {
+  return qPorContactoUsuario.all(usuarioId, identificador, identificador, limit).map(hidratar);
 }
 
-const qDesdeHoras = db.prepare(`
-  SELECT id, timestamp, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+const qDesdeHorasUsuario = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
-  WHERE timestamp >= datetime('now', ?)
+  WHERE (usuario_id = ? OR (usuario_id IS NULL AND canal = 'sistema'))
+    AND timestamp >= datetime('now', ?)
   ORDER BY timestamp ASC, id ASC
 `);
-
-/**
- * Devuelve todos los eventos desde hace N horas (útil para prompt cross-canal).
- */
-function desdeHoras(horas) {
-  return qDesdeHoras.all(`-${Number(horas)} hours`).map(hidratar);
+function desdeHoras(usuarioId, horas) {
+  return qDesdeHorasUsuario.all(usuarioId, `-${Number(horas)} hours`).map(hidratar);
 }
 
-/**
- * Arma un bloque de texto cross-canal listo para inyectar en el prompt de Claude.
- * Agrupa WA + Gmail + Calendar en orden cronológico.
- */
-function contextoCrossCanal({ desdeHoras: horas = 24, max = 50 } = {}) {
-  const evs = desdeHoras(horas).slice(-max);
+function contextoCrossCanal(usuarioId, { desdeHoras: horas = 24, max = 50 } = {}) {
+  const evs = desdeHoras(usuarioId, horas).slice(-max);
   if (!evs.length) return '(sin actividad reciente)';
   return evs.map(formatearParaPrompt).join('\n');
 }
@@ -196,15 +435,9 @@ function formatearParaPrompt(e) {
   const flecha = e.direccion === 'entrante' ? '→' : (e.direccion === 'saliente' ? '←' : '·');
   const quien = e.nombre || e.de || '?';
   const cuerpo = (e.cuerpo || '').replace(/\s+/g, ' ').slice(0, 300);
-  if (e.canal === 'gmail') {
-    return `[${ts}] ${flecha} GMAIL ${quien} | "${e.asunto || ''}" | ${cuerpo}`;
-  }
-  if (e.canal === 'calendar') {
-    return `[${ts}] ${flecha} CAL ${quien} | ${cuerpo}`;
-  }
-  if (e.canal === 'sistema') {
-    return `[${ts}] · SIS ${cuerpo}`;
-  }
+  if (e.canal === 'gmail')    return `[${ts}] ${flecha} GMAIL ${quien} | "${e.asunto || ''}" | ${cuerpo}`;
+  if (e.canal === 'calendar') return `[${ts}] ${flecha} CAL ${quien} | ${cuerpo}`;
+  if (e.canal === 'sistema')  return `[${ts}] · SIS ${cuerpo}`;
   return `[${ts}] ${flecha} WA ${quien}: ${cuerpo}`;
 }
 
@@ -216,47 +449,46 @@ function hidratar(row) {
   return row;
 }
 
-// ─── Estado (pendientes, flags, contadores) ──────────────────────────────
+// ─── Estado GLOBAL (kv compartido de Maria) ──────────────────────────────
+// Solo para flags a nivel proceso: ej. 'gmail:procesados' (inbox único).
 
 const upsertEstado = db.prepare(`
   INSERT INTO estado (clave, valor_json, actualizado)
   VALUES (?, ?, CURRENT_TIMESTAMP)
-  ON CONFLICT(clave) DO UPDATE SET
-    valor_json = excluded.valor_json,
-    actualizado = CURRENT_TIMESTAMP
+  ON CONFLICT(clave) DO UPDATE SET valor_json = excluded.valor_json, actualizado = CURRENT_TIMESTAMP
 `);
 const qEstado = db.prepare(`SELECT valor_json FROM estado WHERE clave = ?`);
 const delEstado = db.prepare(`DELETE FROM estado WHERE clave = ?`);
-const qTodoEstado = db.prepare(`SELECT clave, valor_json, actualizado FROM estado`);
 
-function setEstado(clave, valor) {
-  upsertEstado.run(clave, JSON.stringify(valor));
-}
-
+function setEstado(clave, valor) { upsertEstado.run(clave, JSON.stringify(valor)); }
 function getEstado(clave) {
   const row = qEstado.get(clave);
   if (!row) return null;
   try { return JSON.parse(row.valor_json); } catch { return null; }
 }
+function borrarEstado(clave) { delEstado.run(clave); }
 
-function borrarEstado(clave) {
-  delEstado.run(clave);
+// ─── Estado POR USUARIO ──────────────────────────────────────────────────
+
+const upsertEstadoUsuario = db.prepare(`
+  INSERT INTO estado_usuario (usuario_id, clave, valor_json, actualizado)
+  VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+  ON CONFLICT(usuario_id, clave) DO UPDATE SET valor_json = excluded.valor_json, actualizado = CURRENT_TIMESTAMP
+`);
+const qEstadoUsuario = db.prepare(`SELECT valor_json FROM estado_usuario WHERE usuario_id = ? AND clave = ?`);
+const delEstadoUsuario = db.prepare(`DELETE FROM estado_usuario WHERE usuario_id = ? AND clave = ?`);
+
+function setEstadoUsuario(usuarioId, clave, valor) {
+  upsertEstadoUsuario.run(usuarioId, clave, JSON.stringify(valor));
 }
-
-function todoEstado() {
-  const out = {};
-  for (const r of qTodoEstado.all()) {
-    try { out[r.clave] = JSON.parse(r.valor_json); } catch { out[r.clave] = r.valor_json; }
-  }
-  return out;
+function getEstadoUsuario(usuarioId, clave) {
+  const row = qEstadoUsuario.get(usuarioId, clave);
+  if (!row) return null;
+  try { return JSON.parse(row.valor_json); } catch { return null; }
 }
+function borrarEstadoUsuario(usuarioId, clave) { delEstadoUsuario.run(usuarioId, clave); }
 
-// ─── Pendientes (tabla dedicada, antes era un blob JSON en estado) ───────
-//
-// Un "pendiente" es algo que Maria dejó en el aire y tiene que retomar.
-// Campos "conocidos" van en columnas propias para consultas SQL; el resto
-// del meta queda en meta_json. Soft-delete: quitar NO borra — marca
-// estado='cerrado', así queda auditable.
+// ─── Pendientes ──────────────────────────────────────────────────────────
 
 const CAMPOS_META_CONOCIDOS = new Set([
   'remitente', 'canal_origen', 'de', 'email', 'messageId', 'ultimo_recordatorio',
@@ -287,13 +519,11 @@ function _rehidratarPendiente(row) {
   if (row.email_message_id) meta.messageId    = row.email_message_id;
   if (row.ultimo_recordatorio) meta.ultimo_recordatorio = row.ultimo_recordatorio;
   if (row.meta_json) {
-    try {
-      const extra = JSON.parse(row.meta_json);
-      Object.assign(meta, extra);
-    } catch {}
+    try { Object.assign(meta, JSON.parse(row.meta_json)); } catch {}
   }
   return {
     id: row.id,
+    usuario_id: row.usuario_id,
     desc: row.desc,
     creado: row.creado,
     estado: row.estado,
@@ -304,15 +534,15 @@ function _rehidratarPendiente(row) {
 }
 
 const insertPendiente = db.prepare(`
-  INSERT INTO pendientes (desc, remitente, canal_origen, destino_wa, destino_email, email_message_id, meta_json)
-  VALUES (@desc, @remitente, @canal_origen, @destino_wa, @destino_email, @email_message_id, @meta_json)
+  INSERT INTO pendientes (usuario_id, desc, remitente, canal_origen, destino_wa, destino_email, email_message_id, meta_json)
+  VALUES (@usuario_id, @desc, @remitente, @canal_origen, @destino_wa, @destino_email, @email_message_id, @meta_json)
 `);
-const qPendientesAbiertos = db.prepare(`
-  SELECT * FROM pendientes WHERE estado = 'abierto' ORDER BY creado ASC, id ASC
+const qPendientesAbiertosUsuario = db.prepare(`
+  SELECT * FROM pendientes WHERE usuario_id = ? AND estado = 'abierto' ORDER BY creado ASC, id ASC
 `);
 const qPendientePorId = db.prepare(`SELECT * FROM pendientes WHERE id = ?`);
-const qPendientePorDesc = db.prepare(`
-  SELECT * FROM pendientes WHERE estado = 'abierto' AND desc = ? ORDER BY creado ASC LIMIT 1
+const qPendientePorDescUsuario = db.prepare(`
+  SELECT * FROM pendientes WHERE usuario_id = ? AND estado = 'abierto' AND desc = ? ORDER BY creado ASC LIMIT 1
 `);
 const cerrarPendienteStmt = db.prepare(`
   UPDATE pendientes SET estado = 'cerrado', cerrado = CURRENT_TIMESTAMP WHERE id = ?
@@ -321,10 +551,12 @@ const marcarRecordatorioStmt = db.prepare(`
   UPDATE pendientes SET ultimo_recordatorio = ? WHERE id = ?
 `);
 
-function agregarPendiente(desc, meta = {}) {
+function agregarPendiente(usuarioId, desc, meta = {}) {
+  if (!usuarioId) throw new Error('agregarPendiente: usuarioId requerido');
   if (!desc) throw new Error('agregarPendiente: desc requerido');
   const { conocidos, resto } = _descomponerMeta(meta);
   const info = insertPendiente.run({
+    usuario_id: usuarioId,
     desc,
     ...conocidos,
     meta_json: Object.keys(resto).length ? JSON.stringify(resto) : null,
@@ -332,8 +564,9 @@ function agregarPendiente(desc, meta = {}) {
   return info.lastInsertRowid;
 }
 
-function listarPendientes() {
-  return qPendientesAbiertos.all().map(_rehidratarPendiente);
+function listarPendientes(usuarioId) {
+  if (!usuarioId) throw new Error('listarPendientes: usuarioId requerido');
+  return qPendientesAbiertosUsuario.all(usuarioId).map(_rehidratarPendiente);
 }
 
 function obtenerPendiente(id) {
@@ -341,28 +574,27 @@ function obtenerPendiente(id) {
 }
 
 /**
- * Cierra un pendiente. Acepta:
- *   - número → id
- *   - string → desc literal (cierra el más viejo abierto con ese desc)
- *   - objeto {id|desc|indice} → compatibilidad con la API vieja (indice 1-based)
- * Devuelve el row cerrado o null si no encontró nada.
+ * Cierra un pendiente perteneciente a `usuarioId`. Acepta id numérico, desc
+ * literal u objeto. Si el pendiente no es del usuario, devuelve null (evita
+ * que un usuario cierre el pendiente de otro).
  */
-function quitarPendiente(arg) {
+function quitarPendiente(usuarioId, arg) {
+  if (!usuarioId) throw new Error('quitarPendiente: usuarioId requerido');
   let id = null;
 
   if (typeof arg === 'number') {
     id = arg;
   } else if (typeof arg === 'string') {
-    const row = qPendientePorDesc.get(arg);
+    const row = qPendientePorDescUsuario.get(usuarioId, arg);
     if (row) id = row.id;
   } else if (arg && typeof arg === 'object') {
     if (typeof arg.id === 'number') {
       id = arg.id;
     } else if (typeof arg.desc === 'string') {
-      const row = qPendientePorDesc.get(arg.desc);
+      const row = qPendientePorDescUsuario.get(usuarioId, arg.desc);
       if (row) id = row.id;
     } else if (typeof arg.indice === 'number') {
-      const abiertos = qPendientesAbiertos.all();
+      const abiertos = qPendientesAbiertosUsuario.all(usuarioId);
       const idx = arg.indice - 1;
       if (idx >= 0 && idx < abiertos.length) id = abiertos[idx].id;
     }
@@ -371,6 +603,7 @@ function quitarPendiente(arg) {
   if (id == null) return null;
   const antes = qPendientePorId.get(id);
   if (!antes || antes.estado !== 'abierto') return null;
+  if (antes.usuario_id !== usuarioId) return null; // aislamiento
   cerrarPendienteStmt.run(id);
   return _rehidratarPendiente(qPendientePorId.get(id));
 }
@@ -379,17 +612,16 @@ function marcarRecordatorioPendiente(id, ts = new Date().toISOString()) {
   marcarRecordatorioStmt.run(ts, id);
 }
 
-// Migración oportunista: si existe el blob viejo en `estado.pendientes`, lo
-// movemos a la tabla y borramos la key. Corre una vez (idempotente: si el
-// blob ya no está, no hace nada).
-function _migrarPendientesViejos() {
+// Migración legacy: blob JSON en estado.pendientes → tabla. Muy antigua, queda
+// como red de seguridad por si algún DB intermedio aún tiene rastros.
+function _migrarPendientesBlob() {
   const viejos = getEstado('pendientes');
   if (!Array.isArray(viejos) || !viejos.length) return 0;
   let n = 0;
   const tx = db.transaction((lista) => {
     for (const p of lista) {
       if (!p || !p.desc) continue;
-      agregarPendiente(p.desc, p.meta || {});
+      agregarPendiente(OWNER_ID, p.desc, p.meta || {});
       n++;
     }
   });
@@ -398,69 +630,74 @@ function _migrarPendientesViejos() {
   return n;
 }
 try {
-  const n = _migrarPendientesViejos();
-  if (n) console.log(`[memory] migrados ${n} pendiente(s) del blob JSON a la tabla`);
+  const n = _migrarPendientesBlob();
+  if (n) console.log(`[memory] migrados ${n} pendiente(s) del blob JSON (legacy)`);
 } catch (err) {
-  console.warn('[memory] migración de pendientes falló:', err.message);
+  console.warn('[memory] migración legacy de pendientes falló:', err.message);
 }
 
 // ─── Contactos ────────────────────────────────────────────────────────────
 
 const insertContacto = db.prepare(`
-  INSERT INTO contactos (nombre, whatsapp, email, notas)
-  VALUES (@nombre, @whatsapp, @email, @notas)
-  ON CONFLICT(nombre) DO UPDATE SET
+  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas)
+  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas)
+  ON CONFLICT(usuario_id, nombre) DO UPDATE SET
     whatsapp = COALESCE(excluded.whatsapp, contactos.whatsapp),
     email    = COALESCE(excluded.email,    contactos.email),
     notas    = COALESCE(excluded.notas,    contactos.notas),
     actualizado = CURRENT_TIMESTAMP
 `);
-const qContactoPorNombre   = db.prepare(`SELECT * FROM contactos WHERE nombre = ? COLLATE NOCASE`);
-const qContactoPorWhatsapp = db.prepare(`SELECT * FROM contactos WHERE whatsapp = ?`);
-const qContactoPorEmail    = db.prepare(`SELECT * FROM contactos WHERE email = ? COLLATE NOCASE`);
-const qContactosTodos      = db.prepare(`SELECT * FROM contactos ORDER BY nombre COLLATE NOCASE`);
+const qContactoPorNombre   = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND nombre = ? COLLATE NOCASE`);
+const qContactoPorWhatsapp = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND whatsapp = ?`);
+const qContactoPorEmail    = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND email = ? COLLATE NOCASE`);
+const qContactosTodos      = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? ORDER BY nombre COLLATE NOCASE`);
 
-function upsertContacto({ nombre, whatsapp = null, email = null, notas = null }) {
+function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null }) {
+  if (!usuarioId) throw new Error('upsertContacto: usuarioId requerido');
   if (!nombre) throw new Error('upsertContacto: nombre requerido');
-  insertContacto.run({ nombre, whatsapp, email, notas });
-  return qContactoPorNombre.get(nombre);
+  insertContacto.run({ usuario_id: usuarioId, nombre, whatsapp, email, notas });
+  return qContactoPorNombre.get(usuarioId, nombre);
 }
 
-function buscarContacto({ nombre, whatsapp, email } = {}) {
-  if (nombre)   return qContactoPorNombre.get(nombre)   || null;
-  if (whatsapp) return qContactoPorWhatsapp.get(whatsapp) || null;
-  if (email)    return qContactoPorEmail.get(email)    || null;
+function buscarContacto({ usuarioId, nombre, whatsapp, email } = {}) {
+  if (!usuarioId) throw new Error('buscarContacto: usuarioId requerido');
+  if (nombre)   return qContactoPorNombre.get(usuarioId, nombre)   || null;
+  if (whatsapp) return qContactoPorWhatsapp.get(usuarioId, whatsapp) || null;
+  if (email)    return qContactoPorEmail.get(usuarioId, email)    || null;
   return null;
 }
 
-function todosLosContactos() {
-  return qContactosTodos.all();
+function todosLosContactos(usuarioId) {
+  if (!usuarioId) throw new Error('todosLosContactos: usuarioId requerido');
+  return qContactosTodos.all(usuarioId);
 }
 
-// ─── Programados (mensajes diferidos) ────────────────────────────────────
+// ─── Programados ─────────────────────────────────────────────────────────
 
 const insertProgramado = db.prepare(`
-  INSERT INTO programados (cuando, canal, destino, asunto, texto, razon, metadata_json)
-  VALUES (@cuando, @canal, @destino, @asunto, @texto, @razon, @metadata_json)
+  INSERT INTO programados (usuario_id, cuando, canal, destino, asunto, texto, razon, metadata_json)
+  VALUES (@usuario_id, @cuando, @canal, @destino, @asunto, @texto, @razon, @metadata_json)
 `);
 const qProgramadosDebidos = db.prepare(`
   SELECT * FROM programados WHERE enviado = 0 AND cuando <= ? ORDER BY cuando ASC
 `);
-const qProgramadosProximos = db.prepare(`
-  SELECT * FROM programados WHERE enviado = 0 ORDER BY cuando ASC LIMIT ?
+const qProgramadosProximosUsuario = db.prepare(`
+  SELECT * FROM programados WHERE usuario_id = ? AND enviado = 0 ORDER BY cuando ASC LIMIT ?
 `);
 const qProgramadoPorRazonDesde = db.prepare(`
   SELECT * FROM programados WHERE razon = ? AND cuando >= ? ORDER BY cuando ASC LIMIT 1
 `);
-const updProgramadoEnviado  = db.prepare(`UPDATE programados SET enviado = 1 WHERE id = ?`);
+const updProgramadoEnviado   = db.prepare(`UPDATE programados SET enviado = 1 WHERE id = ?`);
 const updProgramadoCancelado = db.prepare(`UPDATE programados SET enviado = -1 WHERE id = ?`);
 
-function programarMensaje({ cuando, canal, destino, asunto = null, texto, razon = null, metadata = null }) {
+function programarMensaje({ usuarioId, cuando, canal, destino, asunto = null, texto, razon = null, metadata = null }) {
+  if (!usuarioId) throw new Error('programarMensaje: usuarioId requerido');
   if (!cuando || !canal || !destino || !texto) {
     throw new Error('programarMensaje: faltan cuando/canal/destino/texto');
   }
   const cuandoIso = cuando instanceof Date ? cuando.toISOString() : new Date(cuando).toISOString();
   const info = insertProgramado.run({
+    usuario_id: usuarioId,
     cuando: cuandoIso, canal, destino,
     asunto: asunto || null,
     texto,
@@ -473,8 +710,9 @@ function programadosDebidos(hasta = new Date()) {
   const iso = hasta instanceof Date ? hasta.toISOString() : new Date(hasta).toISOString();
   return qProgramadosDebidos.all(iso).map(hidratar);
 }
-function proximosProgramados({ max = 10 } = {}) {
-  return qProgramadosProximos.all(max).map(hidratar);
+function proximosProgramados(usuarioId, { max = 10 } = {}) {
+  if (!usuarioId) throw new Error('proximosProgramados: usuarioId requerido');
+  return qProgramadosProximosUsuario.all(usuarioId, max).map(hidratar);
 }
 function existeProgramadoFuturo(razon, desde = new Date()) {
   const iso = desde instanceof Date ? desde.toISOString() : new Date(desde).toISOString();
@@ -483,33 +721,39 @@ function existeProgramadoFuturo(razon, desde = new Date()) {
 function marcarProgramadoEnviado(id) { updProgramadoEnviado.run(id); }
 function cancelarProgramado(id)      { updProgramadoCancelado.run(id); }
 
-// ─── Hechos (preferencias persistentes sobre Diego) ──────────────────────
+// ─── Hechos ──────────────────────────────────────────────────────────────
 
 const upsertHecho = db.prepare(`
-  INSERT INTO hechos (clave, valor, fuente)
-  VALUES (@clave, @valor, @fuente)
-  ON CONFLICT(clave) DO UPDATE SET
+  INSERT INTO hechos (usuario_id, clave, valor, fuente)
+  VALUES (@usuario_id, @clave, @valor, @fuente)
+  ON CONFLICT(usuario_id, clave) DO UPDATE SET
     valor = excluded.valor,
     fuente = COALESCE(excluded.fuente, hechos.fuente),
     actualizado = CURRENT_TIMESTAMP
 `);
-const qHechos     = db.prepare(`SELECT clave, valor, fuente, actualizado FROM hechos ORDER BY clave`);
-const delHecho    = db.prepare(`DELETE FROM hechos WHERE clave = ?`);
+const qHechosUsuario = db.prepare(`SELECT clave, valor, fuente, actualizado FROM hechos WHERE usuario_id = ? ORDER BY clave`);
+const delHecho       = db.prepare(`DELETE FROM hechos WHERE usuario_id = ? AND clave = ?`);
 
-function recordarHecho({ clave, valor, fuente = null }) {
+function recordarHecho({ usuarioId, clave, valor, fuente = null }) {
+  if (!usuarioId) throw new Error('recordarHecho: usuarioId requerido');
   if (!clave || !valor) throw new Error('recordarHecho: clave y valor requeridos');
-  upsertHecho.run({ clave, valor, fuente });
+  upsertHecho.run({ usuario_id: usuarioId, clave, valor, fuente });
   return { clave, valor };
 }
-function olvidarHecho(clave) {
-  delHecho.run(clave);
+function olvidarHecho(usuarioId, clave) {
+  if (!usuarioId) throw new Error('olvidarHecho: usuarioId requerido');
+  delHecho.run(usuarioId, clave);
   return { clave, olvidado: true };
 }
-function listarHechos() { return qHechos.all(); }
+function listarHechos(usuarioId) {
+  if (!usuarioId) throw new Error('listarHechos: usuarioId requerido');
+  return qHechosUsuario.all(usuarioId);
+}
 
-// ─── Migración desde contactos.json (opcional) ───────────────────────────
+// ─── Import contactos.json (legacy, para el owner) ───────────────────────
 
-function importarDesdeContactosJson(rutaJson) {
+function importarDesdeContactosJson(usuarioId, rutaJson) {
+  if (!usuarioId) throw new Error('importarDesdeContactosJson: usuarioId requerido');
   if (!fs.existsSync(rutaJson)) return 0;
   const raw = fs.readFileSync(rutaJson, 'utf8').trim();
   if (!raw) return 0;
@@ -520,6 +764,7 @@ function importarDesdeContactosJson(rutaJson) {
     if (!nombre) continue;
     const d = typeof data === 'string' ? { whatsapp: data } : (data || {});
     upsertContacto({
+      usuarioId,
       nombre,
       whatsapp: d.whatsapp || d.wa || null,
       email:    d.email    || null,
@@ -533,22 +778,30 @@ function importarDesdeContactosJson(rutaJson) {
 // ─── Exports ──────────────────────────────────────────────────────────────
 
 module.exports = {
-  db,                       // para queries ad-hoc
+  db,
+  OWNER_ID,           // id del owner bootstrapeado (usado en fallbacks)
+  // eventos
   log,
   recientes,
   porCanal,
   porContacto,
   desdeHoras,
   contextoCrossCanal,
+  // estado global
   setEstado,
   getEstado,
   borrarEstado,
-  todoEstado,
+  // estado por usuario
+  setEstadoUsuario,
+  getEstadoUsuario,
+  borrarEstadoUsuario,
+  // pendientes
   agregarPendiente,
   listarPendientes,
   obtenerPendiente,
   quitarPendiente,
   marcarRecordatorioPendiente,
+  // contactos
   upsertContacto,
   buscarContacto,
   todosLosContactos,

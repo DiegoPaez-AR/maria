@@ -1,25 +1,25 @@
-// whatsapp-handler.js — handler unificado de mensajes de WhatsApp
+// whatsapp-handler.js — handler unificado de mensajes de WhatsApp (multi-user)
 //
-// Reemplaza toda la lógica de whatsapp.js (procesarMensajeDiego / procesarMensajeExterno).
-// Ahora es canal-agnóstico: cualquier mensaje entrante pasa por la misma pipeline:
-//
-//   1) si es vcard → upsertContacto y confirmamos
+// Pipeline canal-agnóstico. Cada mensaje entrante:
+//   0) resolver quién es el remitente vía usuarios.resolverPorWa(msg.from).
+//      - si es un usuario registrado → pipeline normal con ctx.usuario = él.
+//      - si es desconocido → delegamos a unknown-flow (pide a quién va, matchea,
+//        y cuando matchea re-entra a esta misma pipeline como si el mensaje le
+//        hubiera llegado directo al usuario destinatario).
+//   1) si es vcard → upsertContacto (libreta del usuario)
 //   2) si es audio → transcribir con whisper
-//   3) log al memory (canal='whatsapp', direccion='entrante')
-//   4) construir prompt con contexto cross-canal
-//   5) invocar Claude (stdin) → JSON { respuesta, acciones, razonamiento }
+//   3) log al memory (usuario_id=usuario.id, canal='whatsapp', dir='entrante')
+//   4) construir prompt con contexto del usuario
+//   5) invocar Claude → { respuesta, acciones, razonamiento }
 //   6) enviar respuesta por WA + log saliente
-//   7) ejecutar acciones (crear_evento, enviar_wa, responder_email, …)
-//
-// Uso:
-//   const { crearClienteWA } = require('./whatsapp-handler');
-//   const client = crearClienteWA({ onReady: (c) => { ... } });
-//   client.initialize();
+//   7) ejecutar acciones con ctx = { usuario, waClient, canalOrigen }
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 
 const mem = require('./memory');
+const usuarios = require('./usuarios');
+const unknownFlow = require('./unknown-flow');
 const { transcribirAudio } = require('./transcribir');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSON } = require('./claude-client');
@@ -85,7 +85,6 @@ function crearClienteWA({ onReady } = {}) {
     setTimeout(() => process.exit(1), 500);
     return true;
   }
-  // Lo adjuntamos al client para que el resto del handler lo use.
   client._watchdogFrameMuerto = _suicidarSiFrameMuerto;
 
   // ─── Mensajes entrantes ─────────────────────────────────────────────────
@@ -110,14 +109,24 @@ function crearClienteWA({ onReady } = {}) {
 async function handleMessage(client, msg) {
   if (msg.fromMe) return;
 
+  // Resolver pushname y messageId temprano (los usa todo el flujo).
+  let pushname = null;
+  try {
+    const contact = await msg.getContact();
+    pushname = contact?.pushname || contact?.name || null;
+  } catch {}
   const messageId = msg.id?._serialized || msg.id?.id || null;
 
-  // 1) vCard → upsert contacto
+  // Caso especial: vCard → libreta del usuario que la manda.
+  // Si el que la manda es desconocido, salteamos (no es un mensaje de texto,
+  // que la pida un usuario real).
   if (msg.type === 'vcard') {
-    return await _manejarVCard(client, msg);
+    const usuario = usuarios.resolverPorWa(msg.from);
+    if (!usuario) return; // vcards de desconocidos las ignoramos
+    return await _manejarVCard(client, msg, usuario);
   }
 
-  // 2) Cuerpo: texto o audio transcripto
+  // Extraer cuerpo (texto o audio transcripto).
   let cuerpo = (msg.body || '').trim();
   let esAudio = false;
 
@@ -147,78 +156,80 @@ async function handleMessage(client, msg) {
 
   if (!cuerpo) return; // imágenes, stickers, etc. — ignoramos por ahora
 
-  // 3) Identificar remitente
-  let pushname = null;
-  try {
-    const contact = await msg.getContact();
-    pushname = contact?.pushname || contact?.name || null;
-  } catch {}
-  const contactoDB = mem.buscarContacto({ whatsapp: msg.from });
-  const nombre = contactoDB?.nombre || pushname || msg.from;
+  // ─── Resolver usuario ──────────────────────────────────────────────────
+  let usuario = usuarios.resolverPorWa(msg.from);
 
-  // Capturar el @lid de Diego la primera vez que escribe, para poder
-  // responderle después (WA Web moderno no acepta @c.us para usuarios
-  // que no están en la libreta de Maria).
-  const pareceDiego =
-    contactoDB?.nombre === 'Diego' ||
-    pushname === 'Diego Paez' ||
-    msg.from === (process.env.DIEGO_WA || '541132317896@c.us');
-  if (pareceDiego && msg.from && msg.from.endsWith('@lid')) {
-    const actual = mem.getEstado('diego_wa_lid');
-    if (actual !== msg.from) {
-      mem.setEstado('diego_wa_lid', msg.from);
-      // También actualizamos el contacto para que el próximo mensaje lo
-      // matchee por whatsapp directamente (sin depender del pushname).
-      try {
-        mem.upsertContacto({ nombre: 'Diego', whatsapp: msg.from });
-      } catch (e) {
-        console.warn('[WA] upsertContacto(Diego) falló:', e.message);
-      }
-      console.log(`[WA] capturado @lid de Diego: ${msg.from}`);
-      mem.log({
-        canal: 'sistema', direccion: 'interno',
-        cuerpo: `LID de Diego actualizado: ${msg.from}`,
-      });
-    }
+  if (!usuario) {
+    // Desconocido → flujo separado. unknownFlow.handleWA se encarga del
+    // ida/vuelta y, si matchea a un usuario, nos llama de vuelta con
+    // reprocesarComoUsuario para que procesemos el mensaje original como si
+    // le hubiera llegado directo a ese usuario.
+    await unknownFlow.handleWA({
+      client,
+      msg,
+      cuerpo,
+      reprocesarComoUsuario: async (usuarioDestino, entrada) => {
+        await _procesarComoUsuario({
+          client,
+          usuario: usuarioDestino,
+          entrada,
+          msgOriginal: msg,
+        });
+      },
+    });
+    return;
   }
 
-  // Auto-upsert de terceros nuevos — así cuando Diego le pida a Maria
-  // responderles, el wa id queda accesible en la libreta.
-  if (!pareceDiego && !contactoDB && pushname && msg.from) {
-    try {
-      mem.upsertContacto({
-        nombre: pushname,
-        whatsapp: msg.from,
-        notas: 'auto-agregado al recibir primer mensaje',
-      });
-      console.log(`[WA] auto-agregado contacto: ${pushname} → ${msg.from}`);
-      mem.log({
-        canal: 'sistema', direccion: 'interno',
-        cuerpo: `contacto auto-agregado: ${pushname} → ${msg.from}`,
-      });
-    } catch (e) {
-      // Puede fallar si ya existe alguien con ese nombre pero otro whatsapp —
-      // no lo pisamos (COALESCE en el upsert), seguimos normal.
-    }
+  // Capturar el @lid del usuario la primera vez que escribe (WA Web moderno).
+  if (msg.from && msg.from.endsWith('@lid') && usuario.wa_lid !== msg.from) {
+    usuarios.setWaLid(usuario.id, msg.from);
+    usuario = usuarios.obtener(usuario.id); // reload
+    console.log(`[WA] capturado @lid de ${usuario.nombre}: ${msg.from}`);
+    mem.log({
+      usuarioId: usuario.id,
+      canal: 'sistema', direccion: 'interno',
+      cuerpo: `LID de ${usuario.nombre} actualizado: ${msg.from}`,
+    });
   }
 
+  const nombre = usuario.nombre || pushname || msg.from;
   console.log(`[WA ←] ${nombre} (${msg.from})${esAudio ? ' 🎤' : ''}: ${cuerpo.slice(0, 160)}`);
 
-  // 4) Log entrante
+  // Log entrante + pipeline.
   mem.log({
+    usuarioId: usuario.id,
     canal: 'whatsapp', direccion: 'entrante',
     de: msg.from, nombre, cuerpo,
     tipo_original: msg.type,
     metadata: { messageId, esAudio, pushname },
   });
 
-  // 5) Construir prompt
+  await _procesarComoUsuario({
+    client,
+    usuario,
+    entrada: {
+      de: msg.from,
+      nombre,
+      cuerpo,
+      esAudio,
+      messageId,
+    },
+    msgOriginal: msg,
+  });
+}
+
+/**
+ * Pipeline post-resolución de usuario: prompt → Claude → respuesta →
+ * acciones. Se invoca tanto para mensajes de usuarios conocidos como para
+ * mensajes reencaminados desde unknown-flow.
+ */
+async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
   const prompt = await construirPrompt({
+    usuario,
     canal: 'whatsapp',
-    entrada: { de: msg.from, nombre, cuerpo, esAudio, messageId },
+    entrada,
   });
 
-  // 6) Invocar Claude
   let respuesta = '';
   let acciones = [];
   let razonamiento = null;
@@ -228,45 +239,55 @@ async function handleMessage(client, msg) {
     acciones     = Array.isArray(json.acciones) ? json.acciones : [];
     razonamiento = json.razonamiento || null;
   } catch (err) {
-    console.error('[WA] Claude falló:', err.message);
+    console.error(`[WA/${usuario.nombre}] Claude falló:`, err.message);
     mem.log({
+      usuarioId: usuario.id,
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `Claude falló en WA: ${err.message}`,
-      metadata: { from: msg.from, messageId },
+      cuerpo: `Claude falló en WA (${usuario.nombre}): ${err.message}`,
+      metadata: { from: entrada.de, messageId: entrada.messageId },
     });
-    await client.sendMessage(msg.from, '(Maria tuvo un problema — avisale a Diego)');
+    // Silencio: NO mandamos "Maria tuvo un problema" — Diego prefiere silencio
+    // a ruido. Si pasa seguido, se ve en los logs.
     return;
   }
 
-  // 7) Enviar respuesta
-  if (respuesta.trim()) {
+  // Destino de la respuesta: SIEMPRE al usuario atendido (no al remitente).
+  // - Flujo normal: entrada.de == usuario.wa_lid, coinciden.
+  // - Flujo reprocesado desde unknown-flow: entrada.de es el desconocido,
+  //   pero la respuesta de Claude está dirigida al usuario (ej. "te escribió
+  //   Juan, te agendo pendiente"), así que va a su WA.
+  const destinoRespuesta = usuario.wa_lid || usuario.wa_cus || entrada.de;
+
+  if (respuesta.trim() && destinoRespuesta) {
     try {
-      await client.sendMessage(msg.from, respuesta);
+      await client.sendMessage(destinoRespuesta, respuesta);
       mem.log({
+        usuarioId: usuario.id,
         canal: 'whatsapp', direccion: 'saliente',
-        de: msg.from, nombre, cuerpo: respuesta,
-        metadata: { razonamiento, inReplyTo: messageId },
+        de: destinoRespuesta, nombre: entrada.nombre, cuerpo: respuesta,
+        metadata: { razonamiento, inReplyTo: entrada.messageId },
       });
-      console.log(`[WA →] ${nombre}: ${respuesta.slice(0, 160)}`);
+      console.log(`[WA →] ${usuario.nombre}/${entrada.nombre || destinoRespuesta}: ${respuesta.slice(0, 160)}`);
     } catch (err) {
       console.error('[WA] enviar respuesta falló:', err.message);
       if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta');
     }
   }
 
-  // 8) Ejecutar acciones
   if (acciones.length) {
     const resultados = await ejecutarAcciones(acciones, {
-      waClient: client, canalOrigen: 'whatsapp',
+      usuario,
+      waClient: client,
+      canalOrigen: 'whatsapp',
     });
     const ok = resultados.filter(r => r.ok).length;
-    console.log(`[WA acciones] ${ok}/${resultados.length} ejecutadas`);
+    console.log(`[WA acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
   }
 }
 
 // ─── vCard ─────────────────────────────────────────────────────────────
 
-async function _manejarVCard(client, msg) {
+async function _manejarVCard(client, msg, usuario) {
   const nombreMatch = msg.body.match(/FN:(.+)/);
   const telMatch    = msg.body.match(/TEL[^:]*:(.+)/);
   if (!nombreMatch || !telMatch) return;
@@ -276,13 +297,14 @@ async function _manejarVCard(client, msg) {
   if (!nombre || !numero) return;
   const waId = numero.endsWith('@c.us') ? numero : `${numero}@c.us`;
 
-  mem.upsertContacto({ nombre, whatsapp: waId });
+  mem.upsertContacto({ usuarioId: usuario.id, nombre, whatsapp: waId });
   mem.log({
+    usuarioId: usuario.id,
     canal: 'sistema', direccion: 'interno',
     cuerpo: `contacto vcard: ${nombre} → ${waId}`,
     metadata: { origen: msg.from },
   });
-  console.log(`📒 [WA vcard] ${nombre} → ${waId}`);
+  console.log(`📒 [WA vcard/${usuario.nombre}] ${nombre} → ${waId}`);
   await client.sendMessage(msg.from, `📒 Guardé el contacto de ${nombre}.`);
 }
 

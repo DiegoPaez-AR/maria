@@ -1,42 +1,27 @@
 // prompt-builder.js — arma el prompt completo que va a `claude -p`
 //
-// Consume: memory.js + google.js + instrucciones.txt
-// Produce: un string listo para pipear a Claude, que va a responder JSON estructurado.
+// Maria sirve a varios usuarios con fuerte aislamiento. Este builder recibe
+// `usuario` (id, nombre, rol, calendar_id, tz, ...) y TODO el contexto se
+// filtra por ese usuario_id. Maria nunca ve info de otros usuarios mientras
+// está trabajando para éste.
 //
-// El JSON que esperamos de Claude:
-// {
-//   "respuesta": "texto que Maria le devuelve al usuario por el mismo canal",
-//   "acciones": [
-//     { "tipo": "crear_evento",    "summary": "...", "start": "...", "end": "...", "descripcion": "..." },
-//     { "tipo": "modificar_evento","id": "...", "summary": "...", "start": "...", "end": "..." },
-//     { "tipo": "borrar_evento",   "id": "..." },
-//     { "tipo": "responder_email", "messageId": "...", "texto": "..." },
-//     { "tipo": "enviar_wa",       "a": "541...@c.us", "texto": "..." },
-//     { "tipo": "agregar_pendiente","desc": "...", "meta": {...} },
-//     { "tipo": "upsert_contacto", "nombre": "...", "whatsapp": "...", "email": "...", "notas": "..." }
-//   ],
-//   "razonamiento": "opcional — 1 línea explicando por qué Maria tomó esta decisión (para debug)"
-// }
-//
-// Uso:
-//   const { construirPrompt } = require('./prompt-builder');
-//   const prompt = await construirPrompt({
-//     canal: 'whatsapp',
-//     entrada: { de: '541...@c.us', nombre: 'Diego', cuerpo: 'qué tengo mañana?', esAudio: false }
-//   });
+// El JSON esperado de Claude sigue siendo el mismo (ver lista de acciones
+// abajo). Las acciones nuevas para el owner son:
+//   - crear_usuario (owner-only)
+//   - borrar_usuario (owner-only)
 
 const fs = require('fs');
 const path = require('path');
 const mem = require('./memory');
 const g   = require('./google');
+const usuarios = require('./usuarios');
 
 const INSTRUCCIONES_PATH = process.env.INSTRUCCIONES_PATH || path.join(__dirname, 'instrucciones.txt');
-const TZ = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
 
 const DIAS_SEMANA = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const MESES       = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
-// ─── Secciones del prompt ─────────────────────────────────────────────────
+// ─── Secciones ────────────────────────────────────────────────────────────
 
 function seccionInstrucciones() {
   try {
@@ -47,62 +32,54 @@ function seccionInstrucciones() {
   }
 }
 
-function seccionFechaHora() {
+function seccionFechaHora(tz) {
   const ahora = new Date();
-  // Formato localizado "sábado 18 de abril de 2026, 16:32"
   const str = ahora.toLocaleString('es-AR', {
-    timeZone: TZ,
+    timeZone: tz,
     weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   });
-  return `Ahora: ${str} (zona ${TZ}). ISO: ${ahora.toISOString()}`;
+  return `Ahora: ${str} (zona ${tz}). ISO: ${ahora.toISOString()}`;
 }
 
-async function seccionAgenda({ dias = 7 } = {}) {
+async function seccionAgenda(usuario, { dias = 7 } = {}) {
   let eventos;
-  try { eventos = await g.listarEventosProximos({ dias, max: 30 }); }
-  catch (err) { return `(error leyendo calendario: ${err.message})`; }
-  if (!eventos.length) return '(sin eventos en los próximos ' + dias + ' días)';
+  try {
+    eventos = await g.listarEventosProximos({ dias, max: 30, calendarId: usuario.calendar_id });
+  } catch (err) {
+    return `(error leyendo calendario: ${err.message})`;
+  }
+  if (!eventos.length) return `(sin eventos en los próximos ${dias} días)`;
   return eventos.map(e => {
-    const cuando = _formatearFechaEvento(e);
+    const cuando = _formatearFechaEvento(e, usuario.tz);
     const lugar  = e.ubicacion ? ` — @${e.ubicacion}` : '';
     const meet   = e.meetLink ? ` [meet]` : '';
     return `- [${e.id}] ${cuando}  ${e.summary}${lugar}${meet}`;
   }).join('\n');
 }
 
-function _formatearFechaEvento(e) {
+function _formatearFechaEvento(e, tz) {
   if (e.allDay) {
-    // "2026-04-20" → "lun 20/04"
     const d = new Date(e.start + 'T00:00:00');
     return `${DIAS_SEMANA[d.getDay()].slice(0,3)} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} (todo el día)`;
   }
   const d = new Date(e.start);
-  const hh = d.toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
-  // Mostrar también hora de fin para que Claude detecte solapamientos de un vistazo.
+  const hh = d.toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
   let rango = hh;
   if (e.end) {
     const df = new Date(e.end);
-    const hhFin = df.toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+    const hhFin = df.toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
     rango = `${hh}-${hhFin}`;
   }
   return `${DIAS_SEMANA[d.getDay()].slice(0,3)} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${rango}`;
 }
 
-async function seccionEmails({ max = 10 } = {}) {
-  let emails;
-  try { emails = await g.listarEmailsNoLeidos({ max }); }
-  catch (err) { return `(error leyendo Gmail: ${err.message})`; }
-  if (!emails.length) return '(sin emails no leídos)';
-  return emails.map(e => `- [${e.id}] De: ${e.de} | "${e.asunto}" | ${_cortar(e.snippet, 120)}`).join('\n');
+function seccionHistorial(usuario, { horas = 48, max = 50 } = {}) {
+  return mem.contextoCrossCanal(usuario.id, { desdeHoras: horas, max });
 }
 
-function seccionHistorial({ horas = 48, max = 50 } = {}) {
-  return mem.contextoCrossCanal({ desdeHoras: horas, max });
-}
-
-function seccionPendientes({ tipo = null } = {}) {
-  let p = mem.listarPendientes();
+function seccionPendientes(usuario, { tipo = null } = {}) {
+  let p = mem.listarPendientes(usuario.id);
   if (tipo) p = p.filter(x => (x.meta?.tipo || 'consulta') === tipo);
   if (!p.length) {
     if (tipo === 'tarea')    return '(sin tareas activas)';
@@ -120,8 +97,8 @@ function seccionPendientes({ tipo = null } = {}) {
   }).join('\n');
 }
 
-function seccionLibreta() {
-  const todos = mem.todosLosContactos();
+function seccionLibreta(usuario) {
+  const todos = mem.todosLosContactos(usuario.id);
   if (!todos.length) return '(libreta vacía)';
   return todos.map(c => {
     const campos = [c.nombre];
@@ -132,8 +109,8 @@ function seccionLibreta() {
   }).join('\n');
 }
 
-function seccionHechos() {
-  const hs = mem.listarHechos();
+function seccionHechos(usuario) {
+  const hs = mem.listarHechos(usuario.id);
   if (!hs.length) return '(sin hechos guardados todavía)';
   return hs.map(h => {
     const fuente = h.fuente ? ` [${h.fuente}]` : '';
@@ -141,25 +118,23 @@ function seccionHechos() {
   }).join('\n');
 }
 
-function seccionProgramados({ max = 10 } = {}) {
-  const ps = mem.proximosProgramados({ max });
+function seccionProgramados(usuario, { max = 10 } = {}) {
+  const ps = mem.proximosProgramados(usuario.id, { max });
   if (!ps.length) return '(no hay mensajes programados)';
   return ps.map(p => {
-    // formatear cuando como "lun 20/04 06:30"
     const d = new Date(p.cuando);
-    const cuando = `${DIAS_SEMANA[d.getDay()].slice(0,3)} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${d.toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' })}`;
+    const cuando = `${DIAS_SEMANA[d.getDay()].slice(0,3)} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${d.toLocaleTimeString('es-AR', { timeZone: usuario.tz, hour: '2-digit', minute: '2-digit' })}`;
     const razon = p.razon ? ` [${p.razon}]` : '';
     const txt = (p.texto || '').replace(/\s+/g, ' ').slice(0, 100);
     return `- [id:${p.id}] ${cuando} → ${p.canal}/${p.destino}${razon}: ${txt}`;
   }).join('\n');
 }
 
-function seccionContacto({ de, nombre, email }) {
-  // Buscar por identificadores disponibles
+function seccionContacto(usuario, { de, nombre, email }) {
   let c = null;
-  if (nombre) c = mem.buscarContacto({ nombre });
-  if (!c && de)    c = mem.buscarContacto({ whatsapp: de });
-  if (!c && email) c = mem.buscarContacto({ email });
+  if (nombre) c = mem.buscarContacto({ usuarioId: usuario.id, nombre });
+  if (!c && de)    c = mem.buscarContacto({ usuarioId: usuario.id, whatsapp: de });
+  if (!c && email) c = mem.buscarContacto({ usuarioId: usuario.id, email });
   if (!c) return `(contacto no registrado — id: ${nombre || de || email || 'desconocido'})`;
   const partes = [
     `Nombre: ${c.nombre}`,
@@ -184,8 +159,6 @@ function seccionMensajeEntrante({ canal, entrada }) {
   return lineas.join('\n');
 }
 
-// ─── Prompt completo ──────────────────────────────────────────────────────
-
 function seccionFormatoCanal(canal) {
   if (canal === 'whatsapp') {
     return `Estás respondiendo por WhatsApp. Reglas de formato:
@@ -206,28 +179,55 @@ function seccionFormatoCanal(canal) {
   return '(canal sin reglas específicas de formato)';
 }
 
-async function construirPrompt({ canal, entrada, horasHistorial = 48, diasAgenda = 7 }) {
-  const [agenda, emails] = await Promise.all([
-    seccionAgenda({ dias: diasAgenda }),
-    seccionEmails({ max: 10 }),
+// ─── Prompt completo ──────────────────────────────────────────────────────
+
+async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, diasAgenda = 7 }) {
+  if (!usuario || !usuario.id) throw new Error('construirPrompt: usuario requerido');
+  const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
+
+  const [agenda] = await Promise.all([
+    seccionAgenda(usuario, { dias: diasAgenda }),
   ]);
   const instrucciones = seccionInstrucciones();
-  const fecha         = seccionFechaHora();
-  const historial     = seccionHistorial({ horas: horasHistorial });
-  const consultas     = seccionPendientes({ tipo: 'consulta' });
-  const tareas        = seccionPendientes({ tipo: 'tarea' });
-  const hechos        = seccionHechos();
-  const programados   = seccionProgramados({ max: 10 });
-  const libreta       = seccionLibreta();
-  const contacto      = seccionContacto({
+  const fecha         = seccionFechaHora(tz);
+  const historial     = seccionHistorial(usuario, { horas: horasHistorial });
+  const consultas     = seccionPendientes(usuario, { tipo: 'consulta' });
+  const tareas        = seccionPendientes(usuario, { tipo: 'tarea' });
+  const hechos        = seccionHechos(usuario);
+  const programados   = seccionProgramados(usuario, { max: 10 });
+  const libreta       = seccionLibreta(usuario);
+  const contacto      = seccionContacto(usuario, {
     de: entrada.de,
     nombre: entrada.nombre,
     email: entrada.email || (canal === 'gmail' ? entrada.de : null),
   });
-  const mensaje       = seccionMensajeEntrante({ canal, entrada });
-  const formato       = seccionFormatoCanal(canal);
+  const mensaje = seccionMensajeEntrante({ canal, entrada });
+  const formato = seccionFormatoCanal(canal);
 
-  return `Sos Maria, la secretaria personal de Diego. Tenés memoria persistente y acceso a WhatsApp, Gmail y Google Calendar.
+  // Dinámico según rol
+  const esOwner = usuario.rol === 'owner';
+  const listaUsuarios = usuarios.listarActivos().map(u => `${u.id}: ${u.nombre}${u.rol === 'owner' ? ' (owner)' : ''}`).join(', ');
+
+  const accionesOwner = esOwner ? `
+  { "tipo": "crear_usuario", "nombre": "Nombre", "wa_cus": "549XXX...@c.us" (opcional), "email": "...@..." (opcional), "calendar_id": "email-que-compartió-el-calendar@gmail.com", "tz": "America/..." (opcional), "brief_hora": "07" (opcional), "brief_minuto": "00" (opcional) }
+      // Solo owner. Crea un nuevo usuario. El calendar_id es obligatorio — es el gmail con el que comparte su Google Calendar a maria.paez.secre@gmail.com.
+  { "tipo": "borrar_usuario", "id": 3 }      // Solo owner. Desactiva al usuario (soft delete). No se puede borrar al owner.` : '';
+
+  const lineaOwner = esOwner
+    ? `Además sos OWNER: podés crear o borrar usuarios con las acciones \`crear_usuario\` y \`borrar_usuario\`. Usuarios activos actualmente: ${listaUsuarios}.`
+    : '';
+
+  return `Sos Maria, secretaria personal con memoria persistente y acceso a WhatsApp, Gmail y Google Calendar. Servís a varios usuarios desde una misma instancia.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[USUARIO QUE ESTÁS ATENDIENDO]
+Estás trabajando PARA ${usuario.nombre} (id=${usuario.id}, rol=${usuario.rol}).
+${lineaOwner}
+
+REGLA DE AISLAMIENTO (dura):
+- Todo el contexto de este prompt (agenda, historial, pendientes, contactos, hechos, programados) pertenece EXCLUSIVAMENTE a ${usuario.nombre}.
+- NUNCA compartas información de OTROS usuarios con ${usuario.nombre}. Los demás usuarios son privados entre sí. Si ${usuario.nombre} pregunta por otro usuario, respondé que por política no compartís info de otras personas que asistís.
+- Cualquier acción que emitas (crear_evento, responder_email, enviar_wa, agregar_pendiente, recordar_hecho, etc.) se guarda asociada a ${usuario.nombre}.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [INSTRUCCIONES BASE]
@@ -238,44 +238,34 @@ ${instrucciones}
 ${fecha}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[AGENDA DE DIEGO — próximos ${diasAgenda} días]
+[AGENDA DE ${usuario.nombre.toUpperCase()} — próximos ${diasAgenda} días]
 ${agenda}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[EMAILS NO LEÍDOS]
-${emails}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[HISTORIAL CROSS-CANAL — últimas ${horasHistorial}hs]
+[HISTORIAL CROSS-CANAL DE ${usuario.nombre.toUpperCase()} — últimas ${horasHistorial}hs]
 (→ entrante, ← saliente, · interno; WA=WhatsApp, GMAIL, CAL=Calendar, SIS=Sistema)
 ${historial}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[CONSULTAS ABIERTAS — cosas que te preguntó un tercero y necesitás input de Diego, o que Diego te pidió preguntarle a alguien]
-(Se cierran cuando Diego o el tercero responde. Emití quitar_pendiente apenas se resuelva.)
+[CONSULTAS ABIERTAS — cosas que preguntó un tercero y necesitás input de ${usuario.nombre}, o que ${usuario.nombre} te pidió preguntarle a alguien]
+(Se cierran cuando ${usuario.nombre} o el tercero responde. Emití quitar_pendiente apenas se resuelva.)
 ${consultas}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[TAREAS DE DIEGO — cosas que él mismo anotó y va a hacer él]
-(Son SUS tareas personales — vos sos el inbox. SOLO las cerrás si Diego dice explícitamente "listo", "hecho", "ya", "completé", "terminé", "cerrá X" sobre una tarea puntual. NUNCA cierres por "dale", "bueno", "después", "lo veo", "avanzo", "me encargo" — eso es ack, no cierre. Ante cualquier duda, dejala abierta.)
+[TAREAS DE ${usuario.nombre.toUpperCase()} — cosas que ${usuario.nombre} se anotó para hacer]
+(Son SUS tareas personales — vos sos el inbox. SOLO las cerrás si ${usuario.nombre} dice explícitamente "listo", "hecho", "ya", "completé", "terminé", "cerrá X" sobre una tarea puntual. NUNCA cierres por "dale", "bueno", "después", "lo veo", "avanzo", "me encargo" — eso es ack, no cierre. Ante cualquier duda, dejala abierta.)
 ${tareas}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[HECHOS SOBRE DIEGO — preferencias/datos que te pidió recordar]
-(Usá esto como contexto permanente: preferencias, restricciones, datos personales
-que le sirven a Diego que vos recuerdes entre conversaciones.)
+[HECHOS SOBRE ${usuario.nombre.toUpperCase()} — preferencias/datos que te pidió recordar]
 ${hechos}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[MENSAJES PROGRAMADOS — cola de envíos diferidos]
-(Esto es lo que ya está agendado para mandarse en el futuro. NO vuelvas a programar
-lo mismo si ya aparece acá. Si Diego pide cancelar, usá el id entre corchetes.)
+[MENSAJES PROGRAMADOS — cola de envíos diferidos de ${usuario.nombre}]
 ${programados}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[LIBRETA DE CONTACTOS]
-(Usá estos WA ids / emails para escribirle a alguien. Si un nombre no está acá
-pero te escribió antes por WA, el wa id lo podés recuperar del [HISTORIAL].)
+[LIBRETA DE CONTACTOS DE ${usuario.nombre.toUpperCase()}]
 ${libreta}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -293,102 +283,133 @@ ${mensaje}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [TU TAREA]
 
-Analizá el mensaje en el contexto de todo lo de arriba (agenda, emails, historial, pendientes) y respondé.
+Analizá el mensaje en el contexto de todo lo de arriba y respondé.
 
 IMPORTANTE: Tu respuesta TIENE que ser un único objeto JSON válido, sin texto antes ni después, sin markdown, sin \`\`\`. Schema:
 
 {
-  "respuesta": "string - el texto que le vas a mandar al usuario por el mismo canal que entró el mensaje. Tono conversacional, como secretaria cercana, no formal.",
+  "respuesta": "string - el texto que le vas a mandar al usuario por el mismo canal. Tono conversacional, como secretaria cercana.",
   "acciones": [ /* array de 0+ acciones a ejecutar después de mandar la respuesta */ ],
   "razonamiento": "string opcional - 1 línea, para debug"
 }
 
 Tipos de acción disponibles:
 
-  { "tipo": "crear_evento", "summary": "título", "start": "2026-04-20T10:00:00-03:00", "end": "2026-04-20T11:00:00-03:00", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false }
-      // meet: default true si tiene hora (genera link de Google Meet automático). Pasá false para recordatorios personales sin invitados.
-      // forzar: default false. Solo usá "forzar": true si Diego confirmó explícitamente que quiere pisar un evento existente.
-  { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "forzar": false }   // solo los campos que cambian; "forzar" saltea check de conflicto
+  { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false }
+  { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "forzar": false }
   { "tipo": "borrar_evento", "id": "<id>" }
-  { "tipo": "responder_email", "messageId": "<id del email>", "texto": "..." }
+  { "tipo": "responder_email", "messageId": "<id>", "texto": "..." }
   { "tipo": "enviar_wa", "a": "541...@c.us", "texto": "..." }
-  { "tipo": "agregar_pendiente", "desc": "...", "meta": { "tipo": "consulta"|"tarea", "remitente": "Natali", "canal_origen": "gmail", "messageId": "...", "de": "..." } }
-      // meta.tipo = "consulta"  → hay que preguntarle/responderle a alguien (Diego o tercero). Se cierra cuando se resuelve.
-      // meta.tipo = "tarea"     → Diego mismo te lo dicta como recordatorio propio. Solo se cierra con "listo/hecho/ya/completé/terminé".
-      // Si no ponés tipo, se asume "consulta".
-  { "tipo": "quitar_pendiente", "id": 42 }      // usá el id entre corchetes [id:N] de [CONSULTAS ABIERTAS] o [TAREAS DE DIEGO]. También podés pasar "desc" literal.
+  { "tipo": "agregar_pendiente", "desc": "...", "meta": { "tipo": "consulta"|"tarea", "remitente": "...", "canal_origen": "gmail", "messageId": "...", "de": "..." } }
+  { "tipo": "quitar_pendiente", "id": 42 }
   { "tipo": "upsert_contacto", "nombre": "...", "whatsapp": "...", "email": "...", "notas": "..." }
-  { "tipo": "programar_mensaje", "cuando": "2026-04-20T06:30:00-03:00", "canal": "whatsapp", "destino": "541132317896@c.us", "asunto": null, "texto": "...", "razon": "usuario" }   // programa un mensaje para mandarlo en el futuro. canal = "whatsapp" | "gmail". razon libre (ej. "usuario", "recordatorio", "seguimiento").
-  { "tipo": "cancelar_programado", "id": 42 }   // cancela un mensaje programado por id (ver [MENSAJES PROGRAMADOS])
-  { "tipo": "recordar_hecho", "clave": "preferencia_desayuno", "valor": "café negro sin azúcar", "fuente": "WA 2026-04-19" }   // guarda/actualiza un hecho durable sobre Diego (preferencias, datos, restricciones).
-  { "tipo": "olvidar_hecho", "clave": "preferencia_desayuno" }   // borra un hecho que ya no aplica
+  { "tipo": "programar_mensaje", "cuando": "ISO", "canal": "whatsapp"|"gmail", "destino": "...", "asunto": null, "texto": "...", "razon": "usuario" }
+  { "tipo": "cancelar_programado", "id": 42 }
+  { "tipo": "recordar_hecho", "clave": "snake_case", "valor": "...", "fuente": "..." }
+  { "tipo": "olvidar_hecho", "clave": "..." }${accionesOwner}
 
 Reglas:
-- Si el mensaje es de Diego y te pide agendar/modificar algo: hacelo directo con crear_evento/modificar_evento.
-- AGENDA SIN PISAR: Antes de crear o mover un evento, chequeá en [AGENDA DE DIEGO] que el rango start→end NO se superponga con otro evento CON HORA (cada uno muestra "HH:MM-HH:MM"). Los eventos "(todo el día)" son contexto (ubicación, viaje, feriado, cumple) y NO bloquean — podés agendar reuniones en un día que ya tenga un all-day. Si detectás conflicto real (horario pisa con otro horario):
-    · Con Diego pidiéndolo directo: respondele "ya tenés X a esa hora — ¿lo piso, lo movemos, o te ofrezco otro horario?" y NO emitas crear_evento todavía (esperá su respuesta). Si Diego confirma pisar ("pisalo", "metelo igual", "dale", "sí piso"), emití crear_evento con "forzar": true — el sistema no te va a rebotar.
-    · Con un tercero negociando una reunión: NUNCA le confirmes un horario sin antes verificar el slot. Si el horario que el tercero propone está ocupado, ofrecele 2-3 alternativas tomadas de los huecos libres de la agenda ("esa hora no me funciona, ¿te sirve mañana 11hs o 15hs?"). Solo comprometé un horario cuando sepas que está libre. El "forzar": true es solo para cuando Diego te dio OK explícito — nunca uses forzar con un tercero.
-- REUNIONES CON MEET: Cuando crees un evento que es una reunión (con attendees, o que el contexto indique "reunión"/"llamada"/"meet"/"videollamada"), NO hace falta que pidas Meet — se agrega automático con conferenceData. Si el evento es un recordatorio personal sin invitados (ej. "recordame ir al banco"), pasá "meet": false para no generar link inútil. En tu respuesta podés mencionar "te paso el link por Calendar" — Google le manda la invitación con el Meet adentro a todos los attendees.
-- LENGUAJE TENTATIVO (importante, evita mentir): Vos respondés ANTES de que se ejecuten las acciones — o sea, en el momento de escribir la "respuesta" todavía no sabés si el crear_evento / modificar_evento / responder_email / enviar_wa funcionó. Por eso, cuando vas a emitir una acción, usá tiempo futuro en la respuesta, NO pasado ni "listo/hecho":
-    · ✅ "te la agendo" / "le respondo ahora" / "te la paso a las 15" / "le escribo a Juan"
-    · ❌ "listo, agendada" / "ya le respondí" / "se la pasé" / "ya le escribí a Juan"
-  Si la acción falla, el próximo mensaje te va a llegar con el error en el [HISTORIAL] como evento del canal "sistema" — ahí le avisás a Diego que no pudo completarse y le ofrecés alternativa.
-- RESPUESTA VACÍA ES OK (no respondas por respuesta): No estás obligada a contestar siempre. Si el mensaje entrante es un ack sin acción requerida ("dale", "ok", "gracias", "perfecto", "no te preocupes, ya está"), o si tu respuesta solo repetiría algo que ya dijiste, devolvé respuesta: "" y el sistema no manda nada. Podés tener respuesta vacía Y acciones al mismo tiempo (ej. quitar_pendiente sin hablarle al usuario). Mejor callarte que mandar un mensaje decorativo.
-- NO MANDES REDUNDANCIA a terceros: Antes de escribirle a una persona, mirá [HISTORIAL CROSS-CANAL] y fijate cuál fue tu último mensaje saliente a ese contacto. Si la info que ibas a mandar ahora ya está cubierta en ese último mensaje (horarios ya ofrecidos, pregunta ya hecha, "lo consulto y te aviso" ya dicho), NO mandes nada nuevo — quedaría redundante o contradictorio. Solo volvé a escribirle cuando tengas info genuinamente nueva (confirmación final, cambio de horario, nueva alternativa).
-    · Caso clásico: venís negociando con un tercero (le ofreciste horarios y estás esperando su elección) → mientras tanto le preguntás a Diego → Diego te da OK → NO le remandás al tercero lo que ya estaba en su cancha. Hacés quitar_pendiente de la consulta interna y listo. La pelota ya estaba del lado del tercero.
-- Si es de un tercero pidiendo algo que requiere a Diego (reunión, decisión, permiso, confirmación): NO resuelvas sin consultarle. Emití DOS acciones en conjunto:
-    1) enviar_wa a Diego (usá "a": "541132317896@c.us" — el sistema resuelve el @lid automáticamente) con la pregunta concreta y el contexto mínimo.
-    2) agregar_pendiente con desc = lo que le debés contestar al tercero, y meta = { remitente, canal_origen, messageId (si es email), de }.
-  Al tercero respondele algo breve tipo "lo consulto con Diego y te confirmo". NO le confirmes ni inventes respuesta en nombre de Diego.
-- Si Diego te responde a una CONSULTA (la ves en [CONSULTAS ABIERTAS] o en el historial): ejecutá lo que dijo Y emití un quitar_pendiente con el id del pendiente resuelto. Para saber A QUIÉN escribirle:
-    · Si el pendiente tiene "destino:" (meta.de), usalo tal cual en "a" del enviar_wa (o en el To del responder_email).
-    · Si no hay destino pero tenés el nombre del remitente, buscalo en [LIBRETA DE CONTACTOS] y usá su WA id / email.
-    · NUNCA le pidas a Diego el número si el tercero ya te escribió — su wa id está en la libreta o en el historial. Si de verdad no lo encontrás, avisale a Diego que no lo tenés pero NO frenes la respuesta pidiéndoselo; dejá el pendiente abierto.
-- TAREAS de Diego: son distintas de consultas. Agregalas con meta.tipo="tarea" cuando Diego te dicta algo para sí mismo ("acordate que tengo que X", "anotá: hacer Y", "agregá Z al pendiente", "te dejo esto pendiente mío"). NO las cierres a menos que Diego diga textualmente "listo X", "hecho X", "ya hice X", "completé X", "terminé X", "cerrá X" — refiriéndose a esa tarea específica. Si dice "dale", "bueno", "veo", "después", "avanzo", "me encargo", "más tarde" → NO es cierre, es ack, dejala abierta.
-- Si ya hay un pendiente en la cola para el mismo remitente y misma consulta/tarea, NO lo dupliques.
-- Si ves un email no leído relevante al mensaje actual, mencionalo en la respuesta.
-- Fechas/horas SIEMPRE en ISO con timezone (-03:00 para Argentina).
-- Si no hay nada que hacer más que responder, "acciones": [].
-- No inventes IDs. Los ids de agenda van entre corchetes en [AGENDA]. Los messageId de emails SOLO son válidos si vienen en [EMAILS NO LEÍDOS] o en el [MENSAJE ENTRANTE] actual (campo ID). Si no tenés el id explícito NO emitas responder_email — mandale un enviar_wa a Diego mejor.
+- Si el mensaje es de ${usuario.nombre} y te pide agendar/modificar algo: hacelo directo con crear_evento/modificar_evento.
+- AGENDA SIN PISAR: Antes de crear o mover un evento, chequeá en [AGENDA] que el rango start→end NO se superponga con otro evento CON HORA. Los eventos "(todo el día)" son contexto y NO bloquean. Si hay conflicto real:
+    · Con ${usuario.nombre} pidiéndolo directo: preguntale "ya tenés X a esa hora — ¿lo piso, lo movemos, o te ofrezco otro horario?" y NO emitas crear_evento todavía. Si confirma ("pisalo", "sí piso"), emití con "forzar": true.
+    · Con un tercero: NUNCA confirmes un horario sin verificar el slot. Ofrecé 2-3 alternativas de huecos libres.
+- REUNIONES CON MEET: Default Meet on para eventos con hora. "meet": false solo para recordatorios personales sin invitados.
+- LENGUAJE TENTATIVO: Las acciones se ejecutan DESPUÉS de tu respuesta. Usá futuro en el texto:
+    · ✅ "te la agendo" / "le respondo ahora" / "le escribo a Juan"
+    · ❌ "listo, agendada" / "ya le respondí" / "ya le escribí"
+- RESPUESTA VACÍA ES OK: Si el mensaje es un ack sin acción ("dale", "ok", "gracias", "perfecto"), o tu respuesta solo repetiría algo ya dicho, devolvé respuesta: "". El sistema no manda nada.
+- NO MANDES REDUNDANCIA a terceros: Si ya les dijiste algo y la pelota está en su cancha, NO vuelvas a escribirles hasta tener info nueva.
+- Si es de un tercero pidiendo algo que requiere a ${usuario.nombre} (reunión, decisión): NO resuelvas sin consultarle. Emití:
+    1) enviar_wa a ${usuario.nombre} (usá su wa del contacto) con la pregunta concreta.
+    2) agregar_pendiente con desc = lo que le debés contestar al tercero, y meta con remitente, canal_origen, messageId, de.
+  Al tercero respondele "lo consulto con ${usuario.nombre} y te confirmo". NO inventes respuesta en su nombre.
+- Si ${usuario.nombre} te responde a una CONSULTA: ejecutá lo que dijo Y emití un quitar_pendiente con el id. Para saber a quién escribir:
+    · Si el pendiente tiene "destino:", usalo.
+    · Si no, buscá en [LIBRETA] por nombre.
+- TAREAS: cerralas solo con "listo/hecho/ya/completé/terminé" explícito sobre esa tarea.
+- No dupliques pendientes para mismo remitente + misma consulta.
+- Fechas/horas SIEMPRE en ISO con timezone (${tz}).
+- No inventes IDs. Los ids válidos vienen entre corchetes en [AGENDA] o en el [MENSAJE ENTRANTE] (campo ID).
 
 Internet:
-- Tenés WebSearch y WebFetch disponibles. Usalos libremente cuando necesites info externa: teléfono/dirección/horario de un restaurante o local, datos públicos de una empresa o persona, horarios de vuelos, clima, etc.
-- No busques info privada de Diego en la web. No inventes si no encontrás — decí que no lo encontraste.
+- Tenés WebSearch y WebFetch. Usalos para info pública (teléfonos, direcciones, clima, horarios, etc.).
+- No busques info privada de ${usuario.nombre}. No inventes si no encontrás.
 
-Hechos persistentes (recordar_hecho / olvidar_hecho):
-- Si Diego te dice algo que es una preferencia durable, una restricción, un dato personal que va a servir en el futuro ("no tomo café después de las 4", "mi dentista se llama Laura", "prefiero reuniones de 30 min, no 1hs", "soy alérgico al maní"), emití recordar_hecho con una clave corta en snake_case y el valor en texto libre. NO guardes datos efímeros (estado de ánimo hoy, qué comió al mediodía, dónde está ahora mismo) — esos van al historial, no a hechos.
-- Si un hecho guardado ya no aplica o Diego lo corrige, emití olvidar_hecho con la clave vieja y recordar_hecho con la nueva si corresponde.
-- Antes de crear una clave nueva, fijate si ya hay una similar en [HECHOS SOBRE DIEGO] y actualizala en vez de duplicar.
+Hechos persistentes:
+- Si ${usuario.nombre} te dice algo durable (preferencia, restricción, dato personal), emití recordar_hecho con clave en snake_case.
+- No guardes efímero (estado de ánimo, comida del día).
 
-Mensajes programados (programar_mensaje / cancelar_programado):
-- Si Diego te pide "recordame a las 17 que llame a X", "mandame un WA mañana a la mañana con tal cosa", "si no te responde para el martes, insistile", emití programar_mensaje con la fecha/hora ISO con timezone (-03:00 para Argentina), canal ('whatsapp' o 'gmail'), destino (wa id o email — si es Diego usá "541132317896@c.us" y el sistema resuelve el @lid), y razón libre (ej. "recordatorio", "seguimiento").
-- Antes de programar, fijate en [MENSAJES PROGRAMADOS] si ya hay algo equivalente para no duplicar.
-- Si Diego pide cancelar, usá cancelar_programado con el id que aparece entre corchetes en [MENSAJES PROGRAMADOS].
-- NO uses programar_mensaje para el brief matutino ni para avisos de reuniones — esos los maneja el sistema solo.
+Mensajes programados:
+- Si pide "recordame a las 17", "insistile el martes", etc., emití programar_mensaje con ISO-${tz} y canal/destino.
+- No uses programar_mensaje para el brief matutino ni avisos de reuniones — los maneja el sistema.
 
-Contactos (gestión autónoma):
-- Si te llega por cualquier canal info nueva de un contacto (nombre+teléfono, nombre+email, o actualización de alguno existente) O si buscaste en web y encontraste el contacto de un lugar/persona que puede serle útil a Diego a futuro, emití upsert_contacto para guardarlo. Ejemplos:
-    · Alguien te escribe por primera vez desde un email que no tenías → guardá nombre + email.
-    · Diego te pide buscar el teléfono de "La Parolaccia Palermo" → después de la búsqueda, emití upsert_contacto({ nombre: "La Parolaccia Palermo", whatsapp: "...", notas: "restaurante — dirección ..." }).
-    · Un remitente menciona su mail/tel en la firma y no coincide con el que tenías → actualizá con upsert_contacto (el upsert no pisa datos existentes con null).
-- Cuando tengas dudas del nombre canónico, usá el que ya usa Diego para referirse a esa persona/lugar.
+Contactos:
+- Si te llega info nueva de un contacto (nombre+tel/email), emití upsert_contacto. Se guarda en la libreta de ${usuario.nombre}.
 
 Devolvé SOLO el JSON, nada más.`;
 }
 
-function _cortar(s, n) {
-  if (!s) return '';
-  s = String(s).replace(/\s+/g, ' ').trim();
-  return s.length > n ? s.slice(0, n - 1) + '…' : s;
+// ─── Prompt especial para remitente desconocido ──────────────────────────
+//
+// Cuando alguien escribe a Maria y no matchea con ningún usuario activo,
+// entramos en este modo: Maria le pregunta para quién va el mensaje.
+// Si ya preguntó y el desconocido respondió, Maria trata de identificar
+// al usuario destinatario del mensaje.
+
+async function construirPromptDesconocido({ canal, entrada, estado, ownerUsuario }) {
+  const activos = usuarios.listarActivos();
+  const lista = activos.map(u => `- ${u.nombre}${u.rol === 'owner' ? ' (owner)' : ''}`).join('\n');
+
+  const primeraVez = !estado; // todavía no le preguntamos
+  const mensaje = seccionMensajeEntrante({ canal, entrada });
+
+  const ownerWa = ownerUsuario?.wa_lid || ownerUsuario?.wa_cus || '';
+
+  const contexto = primeraVez
+    ? `Es la PRIMERA VEZ que este remitente te escribe. No sabés para quién va.`
+    : `Ya le preguntaste antes ("${estado.ask_at}") y está respondiendo. El mensaje original que mandó era: "${estado.original_body}". Ahora te contesta.`;
+
+  return `Sos Maria, secretaria que asiste a varios usuarios. Un REMITENTE DESCONOCIDO te acaba de escribir (no matchea con ningún usuario registrado).
+
+Usuarios que asistís (privados entre sí, no reveles nombres salvo que sea estrictamente necesario para ruteo):
+${lista || '(sin usuarios activos)'}
+
+Canal: ${canal}
+${contexto}
+
+${mensaje}
+
+TU TAREA:
+${primeraVez
+  ? `1. Respondé AMABLEMENTE pidiéndole que te diga para quién va el mensaje. Tono cálido, breve. No reveles la lista de usuarios — solo "para quién es este mensaje".
+2. Emití una sola acción: enviar_wa a ${ownerWa} (el owner) avisándole que escribió un desconocido, citando brevemente el mensaje.`
+  : `1. Tratá de identificar si el remitente está nombrando a alguno de los usuarios que asistís. Mirá nombres EXACTOS o primeros nombres. No inventes.
+2. Si matcheás inequívocamente con un usuario: emití acción "rutear_a_usuario" con "id": <id>, y respondele al desconocido algo tipo "Listo, se lo paso. Gracias." Además emití enviar_wa al owner (${ownerWa}) avisando que routeaste.
+3. Si NO matcheás o es ambiguo: respondé "Perdón, no conozco esa persona. Cierro acá." y emití acción "cerrar_desconocido" y enviar_wa al owner.`
+}
+
+IMPORTANTE: Respondé con JSON válido, sin markdown:
+{
+  "respuesta": "texto a mandar al desconocido (tono amable, breve)",
+  "acciones": [ ... ],
+  "razonamiento": "opcional"
+}
+
+Acciones disponibles en este modo:
+  { "tipo": "enviar_wa", "a": "<wa del owner>", "texto": "..." }
+  { "tipo": "rutear_a_usuario", "id": 2 }              // routea el mensaje original al usuario id
+  { "tipo": "cerrar_desconocido" }                      // cierra el thread, limpia estado
+
+Devolvé SOLO el JSON.`;
 }
 
 module.exports = {
   construirPrompt,
-  // exportados para test / debug
+  construirPromptDesconocido,
+  // exportados para test
   seccionInstrucciones,
   seccionFechaHora,
   seccionAgenda,
-  seccionEmails,
   seccionHistorial,
   seccionPendientes,
   seccionContacto,

@@ -1,48 +1,46 @@
 // programados.js — loop que despacha mensajes programados cuando llega su hora
 //
-// Cada N segundos (default 60s) escanea la tabla `programados` buscando registros
-// con enviado=0 y cuando<=ahora, y los envía por el canal que corresponda (WA o Gmail).
-// Al enviarse los marca como enviado=1. Si falla, deja enviado=0 pero loguea a memory
-// (reintenta en el próximo ciclo — útil si WA Web aún no está ready o el token de
-// Google está renovándose).
+// Cada N segundos (default 60s) escanea la tabla `programados` buscando
+// registros con enviado=0 y cuando<=ahora, y los envía por el canal que
+// corresponda (WA o Gmail). Al enviarse los marca como enviado=1. Si falla,
+// deja enviado=0 pero loguea a memory (reintenta en el próximo ciclo).
 //
-// Uso:
-//   const { iniciarProgramados } = require('./programados');
-//   const interval = iniciarProgramados({ waClient, intervaloMs: 60000 });
-//   // luego: clearInterval(interval)
+// Multi-user: no filtramos por usuario — procesamos todos los debidos. El
+// destino de cada programado es explícito (wa_cus / wa_lid / email). Para
+// WA resolvemos el destino a @lid si el destino coincide con algún usuario
+// registrado.
 
 const mem = require('./memory');
 const g   = require('./google');
+const usuarios = require('./usuarios');
 
-const DIEGO_WA_CUS = process.env.DIEGO_WA || '541132317896@c.us';
-
-function _esDiego(dest) {
-  const soloDig = String(dest || '').replace(/\D/g, '');
-  const diegoDig = DIEGO_WA_CUS.replace(/\D/g, '');
-  return soloDig === diegoDig && soloDig.length > 0;
+/**
+ * Si `destino` coincide con el wa_cus de algún usuario que ya tiene wa_lid,
+ * devolvemos el wa_lid. Si no, devolvemos destino tal cual.
+ */
+function _resolverDestinoWA(destino) {
+  if (!destino) return destino;
+  const u = usuarios.resolverPorWa(destino);
+  if (u && u.wa_lid && destino !== u.wa_lid) return u.wa_lid;
+  return destino;
 }
 
 async function _enviarWA(waClient, prog) {
   if (!waClient) throw new Error('waClient no disponible');
 
-  // Si apunta al @c.us legacy de Diego, resolver al @lid capturado.
-  let destino = prog.destino;
-  const apuntaADiego = _esDiego(destino);
-  if (apuntaADiego) {
-    const lid = mem.getEstado('diego_wa_lid');
-    if (lid) destino = lid;
-  }
-
+  const destino = _resolverDestinoWA(prog.destino);
   try {
     await waClient.sendMessage(destino, prog.texto);
     return destino;
   } catch (err) {
+    // Si falló por LID stale y el destino original es @c.us, reintentamos
+    // buscando el lid otra vez (pudo haberse actualizado mientras tanto).
     const esLidError = /No LID for user|invalid wid|not.{0,10}registered/i.test(err.message || '');
-    if (esLidError && apuntaADiego) {
-      const lid = mem.getEstado('diego_wa_lid');
-      if (lid && lid !== destino) {
-        await waClient.sendMessage(lid, prog.texto);
-        return lid;
+    if (esLidError && prog.destino && prog.destino.endsWith('@c.us')) {
+      const u = usuarios.resolverPorWa(prog.destino);
+      if (u && u.wa_lid && u.wa_lid !== destino) {
+        await waClient.sendMessage(u.wa_lid, prog.texto);
+        return u.wa_lid;
       }
     }
     throw err;
@@ -50,7 +48,6 @@ async function _enviarWA(waClient, prog) {
 }
 
 async function _enviarGmail(prog) {
-  // Gmail "directo" — sin inReplyTo. Usamos enviarEmail si existe, sino fallback.
   if (typeof g.enviarEmail === 'function') {
     await g.enviarEmail({
       to: prog.destino,
@@ -75,6 +72,7 @@ async function procesarUno(waClient, prog) {
 
     mem.marcarProgramadoEnviado(prog.id);
     mem.log({
+      usuarioId: prog.usuario_id || null,
       canal: prog.canal, direccion: 'saliente',
       de: destinoFinal, asunto: prog.asunto || null, cuerpo: prog.texto,
       metadata: {
@@ -88,6 +86,7 @@ async function procesarUno(waClient, prog) {
   } catch (err) {
     console.error(`[programados] ✗ id=${prog.id} falló:`, err.message);
     mem.log({
+      usuarioId: prog.usuario_id || null,
       canal: 'sistema', direccion: 'interno',
       cuerpo: `programado id=${prog.id} falló: ${err.message}`,
       metadata: { programadoId: prog.id, canal: prog.canal, destino: prog.destino, razon: prog.razon },

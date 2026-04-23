@@ -23,9 +23,10 @@ const SCOPES = [
 const TOKEN_PATH = process.env.GOOGLE_TOKEN_PATH || path.join(__dirname, 'token.json');
 const CRED_PATH  = process.env.GOOGLE_CRED_PATH  || path.join(__dirname, 'credentials.json');
 
-// Por defecto Maria opera sobre TU calendario, no el suyo.
-const CALENDAR_ID_DEFAULT = process.env.MARIA_CALENDAR_ID || 'diego@paez.is';
-const TIMEZONE            = process.env.MARIA_TZ          || 'America/Argentina/Buenos_Aires';
+// Multi-usuario: ya no hay un calendarId "default". Cada usuario tiene el
+// suyo (columna usuarios.calendar_id). Todas las ops de Calendar reciben el
+// calendarId explícito del usuario que está siendo servido.
+const TIMEZONE = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
 
 // Calendario de cumpleaños. Si está seteado por env, ese gana. Si no,
 // lo auto-descubrimos buscando en `listarCalendarios` uno cuyo summary
@@ -88,7 +89,8 @@ async function listarCalendarios() {
 /**
  * Lista eventos próximos. Por defecto del calendario de Diego.
  */
-async function listarEventosProximos({ dias = 7, max = 20, calendarId = CALENDAR_ID_DEFAULT } = {}) {
+async function listarEventosProximos({ dias = 7, max = 20, calendarId } = {}) {
+  if (!calendarId) throw new Error('listarEventosProximos: calendarId requerido');
   const auth = await autenticar();
   const ahora = new Date();
   const hasta = new Date(ahora.getTime() + dias * 24 * 3600 * 1000);
@@ -134,7 +136,8 @@ function _normalizarEvento(e) {
  * (conferenceDataVersion=1). Pasá `meet: false` explícito para eventos sin videoconf
  * (ej. un evento personal tipo "recordatorio me levanto 7am").
  */
-async function crearEvento({ summary, descripcion, ubicacion, start, end, attendees = [], calendarId = CALENDAR_ID_DEFAULT, meet }) {
+async function crearEvento({ summary, descripcion, ubicacion, start, end, attendees = [], calendarId, meet }) {
+  if (!calendarId) throw new Error('crearEvento: calendarId requerido');
   const auth = await autenticar();
   const startFmt = _formatearFecha(start);
   const endFmt   = _formatearFecha(end);
@@ -179,7 +182,8 @@ async function crearEvento({ summary, descripcion, ubicacion, start, end, attend
  *    no bloquean horarios específicos del día).
  *  - Eventos declinados por el propio dueño del calendario.
  */
-async function buscarConflictos({ start, end, calendarId = CALENDAR_ID_DEFAULT, excluirEventoId = null } = {}) {
+async function buscarConflictos({ start, end, calendarId, excluirEventoId = null } = {}) {
+  if (!calendarId) throw new Error('buscarConflictos: calendarId requerido');
   const auth = await autenticar();
   const sISO = (start instanceof Date ? start : new Date(start)).toISOString();
   const eISO = (end   instanceof Date ? end   : new Date(end)).toISOString();
@@ -207,7 +211,8 @@ async function buscarConflictos({ start, end, calendarId = CALENDAR_ID_DEFAULT, 
 /**
  * Modifica campos de un evento existente. Patch: solo cambia lo que pasás.
  */
-async function modificarEvento({ id, summary, descripcion, ubicacion, start, end, calendarId = CALENDAR_ID_DEFAULT }) {
+async function modificarEvento({ id, summary, descripcion, ubicacion, start, end, calendarId }) {
+  if (!calendarId) throw new Error('modificarEvento: calendarId requerido');
   const auth = await autenticar();
   const body = {};
   if (summary     !== undefined) body.summary     = summary;
@@ -219,7 +224,8 @@ async function modificarEvento({ id, summary, descripcion, ubicacion, start, end
   return _normalizarEvento(r.data);
 }
 
-async function borrarEvento({ id, calendarId = CALENDAR_ID_DEFAULT }) {
+async function borrarEvento({ id, calendarId }) {
+  if (!calendarId) throw new Error('borrarEvento: calendarId requerido');
   const auth = await autenticar();
   await _cal(auth).events.delete({ calendarId, eventId: id, sendUpdates: 'all' });
   return true;
@@ -436,6 +442,5 @@ module.exports = {
   responderEmail,
   // constantes
   SCOPES,
-  CALENDAR_ID_DEFAULT,
   TIMEZONE,
 };

@@ -1,22 +1,24 @@
-// gmail-handler.js — poll de Gmail para emails no leídos
+// gmail-handler.js — poll de Gmail para emails no leídos (multi-user)
 //
-// Cada `intervaloMs`:
-//   1) lista emails no leídos
-//   2) filtra los ya procesados (tracking en `estado` → 'gmail:procesados')
-//   3) para cada uno: log entrante → prompt → Claude → ejecutar acciones
+// Maria tiene UN gmail (maria.paez.secre@gmail.com). Todos los usuarios le
+// escriben al mismo inbox. Por cada email nuevo:
+//   0) resolver al usuario por el header From:
+//      - si matchea → pipeline normal (usuario = él).
+//      - si no matchea → unknown-flow.handleEmail(): pregunta a quién va y,
+//        si matchea después, re-entra a la pipeline como si el email le
+//        hubiera llegado directo al usuario destinatario.
+//   1) log entrante (usuario_id)
+//   2) prompt con contexto del usuario
+//   3) Claude → { respuesta, acciones, razonamiento }
+//   4) si respuesta no vacía → acción responder_email contra este messageId
+//   5) ejecutar acciones (ctx.usuario, ctx.waClient para notificaciones)
 //
-// Convención: si Claude devuelve `respuesta` con contenido, lo wrapeamos como
-// `responder_email` contra el messageId actual. Esto mantiene la simetría con
-// WA (respuesta = lo que le decís al emisor) sin que Claude tenga que
-// duplicar la intención. Si Claude quiere hacer algo distinto (ej. no
-// responder pero notificar a Diego por WA), simplemente deja respuesta=''
-// y emite acciones.
-//
-// Emails procesados con respuesta=vacía se quedan sin leer en Gmail — Diego
-// decide qué hacer con ellos (pero NO los reprocesamos).
+// Tracking: set global `gmail:procesados` (inbox único, no por usuario).
 
 const mem = require('./memory');
 const g   = require('./google');
+const usuarios = require('./usuarios');
+const unknownFlow = require('./unknown-flow');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSON } = require('./claude-client');
 const { ejecutarAcciones } = require('./executor');
@@ -53,17 +55,43 @@ async function procesarUnEmail(id, { waClient } = {}) {
   const emailCuerpo = (email.cuerpo || email.snippet || '').slice(0, 4000);
   console.log(`[GMAIL ←] ${email.de} | "${email.asunto}"`);
 
-  // Log entrante
+  // ─── Resolver usuario por From ────────────────────────────────────────
+  const usuario = usuarios.resolverPorEmailFrom(email.de);
+
+  if (!usuario) {
+    // Desconocido → unknown flow. responderEmailFn usa g.responderEmail.
+    await unknownFlow.handleEmail({
+      waClient,
+      email: { ...email, id, cuerpo: emailCuerpo },
+      responderEmailFn: async (messageId, texto) => {
+        return await g.responderEmail(messageId, texto);
+      },
+      reprocesarComoUsuario: async (usuarioDestino, entrada) => {
+        // En el reprocesado, no auto-responder por email — unknown-flow ya le
+        // mandó al desconocido un "se lo paso a <user>". Claude debe usar
+        // enviar_wa para notificar al usuario destinatario.
+        await _procesarComoUsuario({
+          usuario: usuarioDestino,
+          entrada,
+          waClient,
+          autoResponderEmail: false,
+        });
+      },
+    });
+    return;
+  }
+
+  // Log entrante (usuario conocido).
   mem.log({
+    usuarioId: usuario.id,
     canal: 'gmail', direccion: 'entrante',
     de: email.de, asunto: email.asunto, cuerpo: emailCuerpo,
     tipo_original: 'email',
     metadata: { messageId: id, threadId: email.threadId, fecha: email.fecha },
   });
 
-  // Prompt
-  const prompt = await construirPrompt({
-    canal: 'gmail',
+  await _procesarComoUsuario({
+    usuario,
     entrada: {
       de: email.de,
       email: email.de,
@@ -71,9 +99,22 @@ async function procesarUnEmail(id, { waClient } = {}) {
       cuerpo: emailCuerpo,
       messageId: id,
     },
+    waClient,
+  });
+}
+
+/**
+ * Pipeline post-resolución: prompt → Claude → respuesta → acciones.
+ * Se llama tanto para emails de usuarios conocidos como para reencauzados
+ * desde unknown-flow.
+ */
+async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderEmail = true }) {
+  const prompt = await construirPrompt({
+    usuario,
+    canal: 'gmail',
+    entrada,
   });
 
-  // Claude
   let respuesta = '';
   let acciones = [];
   let razonamiento = null;
@@ -83,10 +124,11 @@ async function procesarUnEmail(id, { waClient } = {}) {
     acciones     = Array.isArray(json.acciones) ? json.acciones : [];
     razonamiento = json.razonamiento || null;
   } catch (err) {
-    console.error(`[GMAIL] Claude falló en ${id}:`, err.message);
+    console.error(`[GMAIL/${usuario.nombre}] Claude falló en ${entrada.messageId}:`, err.message);
     mem.log({
+      usuarioId: usuario.id,
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `Claude falló procesando email ${id}: ${err.message}`,
+      cuerpo: `Claude falló procesando email ${entrada.messageId} (${usuario.nombre}): ${err.message}`,
     });
     return;
   }
@@ -94,33 +136,34 @@ async function procesarUnEmail(id, { waClient } = {}) {
   // Si hay respuesta y Claude no incluyó ya un responder_email para este id,
   // lo agregamos automático.
   const yaResponde = acciones.some(
-    a => a.tipo === 'responder_email' && a.messageId === id
+    a => a.tipo === 'responder_email' && a.messageId === entrada.messageId
   );
-  if (respuesta.trim() && !yaResponde) {
+  if (respuesta.trim() && !yaResponde && autoResponderEmail) {
     acciones.unshift({
       tipo: 'responder_email',
-      messageId: id,
-      asunto: email.asunto,
+      messageId: entrada.messageId,
+      asunto: entrada.asunto,
       texto: respuesta,
     });
-    // Nota: el log saliente lo hace executor._responderEmail, no duplicamos.
     if (razonamiento) {
       mem.log({
+        usuarioId: usuario.id,
         canal: 'sistema', direccion: 'interno',
-        cuerpo: `razonamiento Gmail ${id}: ${razonamiento}`,
+        cuerpo: `razonamiento Gmail ${entrada.messageId} (${usuario.nombre}): ${razonamiento}`,
       });
     }
   }
 
-  // Ejecutar acciones
   if (acciones.length) {
     const resultados = await ejecutarAcciones(acciones, {
-      waClient, canalOrigen: 'gmail',
+      usuario,
+      waClient,
+      canalOrigen: 'gmail',
     });
     const ok = resultados.filter(r => r.ok).length;
-    console.log(`[GMAIL acciones] ${ok}/${resultados.length} ejecutadas`);
+    console.log(`[GMAIL acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
   } else {
-    console.log(`[GMAIL] ${id} — sin acciones ni respuesta, queda no-leído`);
+    console.log(`[GMAIL/${usuario.nombre}] ${entrada.messageId} — sin acciones ni respuesta, queda no-leído`);
   }
 }
 

@@ -1,27 +1,22 @@
-// recordatorios.js — re-ping de pendientes a Diego por WhatsApp
+// recordatorios.js — re-ping de pendientes POR usuario por WhatsApp
 //
 // Hay dos tipos de pendientes con reglas distintas:
-//   · consulta → Maria le preguntó algo a Diego y espera respuesta.
+//   · consulta → Maria le preguntó algo al usuario y espera respuesta.
 //                 UMBRAL 2h, COOLDOWN 3h (insiste rápido si no contestó).
-//   · tarea    → Diego mismo se anotó algo para hacer él.
+//   · tarea    → el usuario mismo se anotó algo para hacer él.
 //                 UMBRAL 24h, COOLDOWN 24h (una vez por día, no spam).
 //
-// Para cada tipo tenemos su propio flag global de cooldown + un
-// `ultimo_recordatorio` por pendiente para no repetir el mismo item
-// varias veces en el mismo ping.
-//
-// Cuando Diego responde, prompt-builder hace que Claude emita un
-// `quitar_pendiente` → salen de la cola. Las tareas solo se cierran
-// si Diego dice explícitamente "listo/hecho/ya/completé/terminé".
+// Multi-user: iteramos usuarios.listarActivos(). Cada usuario tiene sus
+// propios pendientes, su propio cooldown (en estado_usuario) y su propio
+// destino WA (wa_lid || wa_cus).
 
 const mem = require('./memory');
+const usuarios = require('./usuarios');
 
 const CONSULTA_UMBRAL_H   = Number(process.env.RECORDATORIO_CONSULTA_UMBRAL_H   || 2);
 const CONSULTA_COOLDOWN_H = Number(process.env.RECORDATORIO_CONSULTA_COOLDOWN_H || 3);
 const TAREA_UMBRAL_H      = Number(process.env.RECORDATORIO_TAREA_UMBRAL_H     || 24);
 const TAREA_COOLDOWN_H    = Number(process.env.RECORDATORIO_TAREA_COOLDOWN_H   || 24);
-
-const DIEGO_WA_CUS = process.env.DIEGO_WA || '541132317896@c.us';
 
 const KEY_ULT_CONSULTA = 'ultimo_recordatorio_consultas';
 const KEY_ULT_TAREA    = 'ultimo_recordatorio_tareas';
@@ -50,8 +45,8 @@ function _horasDesde(isoTs) {
   return (Date.now() - t) / 3_600_000;
 }
 
-function _resolverDestino() {
-  return mem.getEstado('diego_wa_lid') || DIEGO_WA_CUS;
+function _destinoWA(usuario) {
+  return usuario.wa_lid || usuario.wa_cus || null;
 }
 
 function _tipoDe(p) {
@@ -73,12 +68,14 @@ function _formatearTexto(tipo, candidatos) {
 }
 
 /**
- * Procesa UN tipo (consulta o tarea). Devuelve { enviado, cuantos, motivo }.
+ * Procesa UN tipo para UN usuario. Devuelve { enviado, cuantos, motivo }.
  */
-async function _procesarTipo(tipo, pendientes, { waClient }) {
+async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
   const cfg = CONFIG[tipo];
+  const destino = _destinoWA(usuario);
+  if (!destino) return { enviado: false, motivo: 'sin-destino-wa' };
 
-  const ultimoGlobal = mem.getEstado(cfg.keyGlobal);
+  const ultimoGlobal = mem.getEstadoUsuario(usuario.id, cfg.keyGlobal);
   if (ultimoGlobal && _horasDesde(ultimoGlobal) < cfg.cooldownH) {
     return { enviado: false, motivo: 'cooldown-global' };
   }
@@ -95,19 +92,19 @@ async function _procesarTipo(tipo, pendientes, { waClient }) {
   if (!candidatos.length) return { enviado: false, motivo: 'sin-candidatos' };
 
   const texto = _formatearTexto(tipo, candidatos);
-  const destino = _resolverDestino();
 
   try {
     await waClient.sendMessage(destino, texto);
   } catch (err) {
-    console.error(`[recordatorios/${tipo}] falló sendMessage:`, err.message);
+    console.error(`[recordatorios/${usuario.nombre}/${tipo}] falló sendMessage:`, err.message);
     mem.log({
+      usuarioId: usuario.id,
       canal: 'sistema', direccion: 'interno',
       cuerpo: `recordatorio ${tipo} falló: ${err.message}`,
       metadata: { destino, cuantos: candidatos.length, tipo },
     });
     if (waClient._watchdogFrameMuerto) {
-      waClient._watchdogFrameMuerto(err, `recordatorios/${tipo}`);
+      waClient._watchdogFrameMuerto(err, `recordatorios/${usuario.nombre}/${tipo}`);
     }
     return { enviado: false, motivo: 'error', error: err.message };
   }
@@ -116,35 +113,35 @@ async function _procesarTipo(tipo, pendientes, { waClient }) {
   for (const c of candidatos) {
     mem.marcarRecordatorioPendiente(c.id, ahora);
   }
-  mem.setEstado(cfg.keyGlobal, ahora);
+  mem.setEstadoUsuario(usuario.id, cfg.keyGlobal, ahora);
 
   mem.log({
+    usuarioId: usuario.id,
     canal: 'whatsapp', direccion: 'saliente',
     de: destino, cuerpo: texto,
     metadata: { tipo: 'recordatorio', subtipo: tipo, cuantos: candidatos.length },
   });
-  console.log(`[recordatorios/${tipo}] pingeado a Diego (${candidatos.length})`);
+  console.log(`[recordatorios/${usuario.nombre}/${tipo}] ping → ${destino} (${candidatos.length})`);
 
   return { enviado: true, cuantos: candidatos.length };
 }
 
 /**
- * Una pasada del loop. Procesa consultas y tareas por separado.
+ * Una pasada del loop: para cada usuario activo procesa consulta y tarea.
  */
 async function tickOnce({ waClient } = {}) {
   if (!waClient) return { enviado: false, motivo: 'no-waClient' };
 
-  const pendientes = mem.listarPendientes();
-  if (!pendientes.length) return { enviado: false, motivo: 'vacio' };
-
-  const resConsulta = await _procesarTipo('consulta', pendientes, { waClient });
-  const resTarea    = await _procesarTipo('tarea',    pendientes, { waClient });
-
-  return {
-    enviado: resConsulta.enviado || resTarea.enviado,
-    consulta: resConsulta,
-    tarea:    resTarea,
-  };
+  const activos = usuarios.listarActivos();
+  const resultados = [];
+  for (const u of activos) {
+    const pendientes = mem.listarPendientes(u.id);
+    if (!pendientes.length) continue;
+    const resConsulta = await _procesarTipoUsuario('consulta', u, pendientes, { waClient });
+    const resTarea    = await _procesarTipoUsuario('tarea',    u, pendientes, { waClient });
+    resultados.push({ usuario: u.nombre, consulta: resConsulta, tarea: resTarea });
+  }
+  return { resultados };
 }
 
 /**
@@ -156,8 +153,8 @@ function iniciarRecordatorios({ waClient, intervaloMs = 30 * 60_000 } = {}) {
       console.error('[recordatorios] tick error:', err.message)
     );
   };
-  // No arrancamos con un tick inmediato — damos tiempo a que Diego mande
-  // algún mensaje y capturemos su @lid antes del primer ping.
+  // No arrancamos con un tick inmediato — damos tiempo a que los usuarios
+  // manden algún mensaje y capturemos su @lid antes del primer ping.
   return setInterval(tick, intervaloMs);
 }
 
