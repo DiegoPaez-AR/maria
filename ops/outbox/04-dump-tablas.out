@@ -1,0 +1,224 @@
+# ejecutado: 2026-04-23T11:48:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Dump del contenido de todas las tablas de Maria.
+#   # Cada tabla en bloque separado, con header y formato columna.
+#   # Los campos largos (cuerpo de logs, valor_json, meta) se truncan para no
+#   # reventar la salida.
+#   
+#   set -u
+#   DB=/root/secretaria/db/maria.sqlite
+#   
+#   echo "=== DB: $DB ==="
+#   echo "=== tablas ==="
+#   sqlite3 "$DB" "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+#   echo
+#   
+#   for t in $(sqlite3 "$DB" "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;"); do
+#     echo "──────────────────────────────────────────────────────────────"
+#     echo "=== $t ==="
+#     echo "schema:"
+#     sqlite3 "$DB" ".schema $t"
+#     count=$(sqlite3 "$DB" "SELECT COUNT(*) FROM $t;")
+#     echo "count: $count"
+#     if [ "$count" -gt 0 ]; then
+#       echo "contenido:"
+#       case "$t" in
+#         log)
+#           sqlite3 -header -column "$DB" "SELECT id, ts, canal, direccion, de, substr(cuerpo,1,60) AS cuerpo, substr(metadata,1,40) AS meta FROM log ORDER BY id DESC LIMIT 30;"
+#           echo "(mostrando últimos 30)"
+#           ;;
+#         estado)
+#           sqlite3 -header -column "$DB" "SELECT clave, substr(valor_json,1,80) AS valor FROM estado ORDER BY clave;"
+#           ;;
+#         estado_usuario)
+#           sqlite3 -header -column "$DB" "SELECT usuario_id, clave, substr(valor_json,1,80) AS valor FROM estado_usuario ORDER BY usuario_id, clave;"
+#           ;;
+#         pendientes)
+#           sqlite3 -header -column "$DB" "SELECT id, usuario_id, substr(desc,1,40) AS desc, estado, creado, substr(meta,1,40) AS meta, ultimo_recordatorio FROM pendientes ORDER BY id DESC;"
+#           ;;
+#         eventos)
+#           sqlite3 -header -column "$DB" "SELECT id, usuario_id, substr(summary,1,40) AS summary, start, fin, substr(ubicacion,1,30) AS ubicacion FROM eventos ORDER BY start DESC LIMIT 30;"
+#           ;;
+#         contactos)
+#           sqlite3 -header -column "$DB" "SELECT id, usuario_id, nombre, substr(canal,1,10) AS canal, valor, substr(alias,1,30) AS alias FROM contactos ORDER BY usuario_id, nombre;"
+#           ;;
+#         hechos)
+#           sqlite3 -header -column "$DB" "SELECT id, usuario_id, substr(hecho,1,80) AS hecho, creado FROM hechos ORDER BY id DESC;"
+#           ;;
+#         programados)
+#           sqlite3 -header -column "$DB" "SELECT id, usuario_id, cuando, canal, destino, substr(texto,1,40) AS texto, estado, substr(razon,1,40) AS razon FROM programados ORDER BY id DESC LIMIT 30;"
+#           ;;
+#         usuarios)
+#           sqlite3 -header -column "$DB" "SELECT id, nombre, rol, wa_cus, wa_lid, email, calendar_id, tz, brief_hora, brief_minuto, activo, creado FROM usuarios ORDER BY id;"
+#           ;;
+#         *)
+#           sqlite3 -header -column "$DB" "SELECT * FROM $t LIMIT 30;"
+#           ;;
+#       esac
+#     fi
+#     echo
+#   done
+
+# ───── output ─────
+=== DB: /root/secretaria/db/maria.sqlite ===
+=== tablas ===
+contactos
+estado
+eventos
+hechos
+pendientes
+programados
+sqlite_sequence
+usuarios
+
+──────────────────────────────────────────────────────────────
+=== contactos ===
+schema:
+CREATE TABLE contactos (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre      TEXT UNIQUE NOT NULL,
+  whatsapp    TEXT,
+  email       TEXT,
+  notas       TEXT,
+  creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_contactos_whatsapp ON contactos(whatsapp);
+CREATE INDEX idx_contactos_email    ON contactos(email);
+count: 29
+contenido:
+Error: in prepare, no such column: usuario_id
+  SELECT id, usuario_id, nombre, substr(canal,1,10) AS canal, valor, substr(alia
+             ^--- error here
+
+──────────────────────────────────────────────────────────────
+=== estado ===
+schema:
+CREATE TABLE estado (
+  clave       TEXT PRIMARY KEY,
+  valor_json  TEXT NOT NULL,
+  actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+count: 5
+contenido:
+clave                       valor                                                                        
+--------------------------  -----------------------------------------------------------------------------
+diego_wa_lid                "34342575317160@lid"                                                         
+gmail:procesados            ["19da23792d396f0a","19da5d89d1262ddf","19da5de059b746e8","19daaae0d96af236"]
+morning_brief_ultimo_dia    "2026-04-22"                                                                 
+pendientes                  []                                                                           
+ultimo_recordatorio_tareas  "2026-04-22T15:45:17.081Z"                                                   
+
+──────────────────────────────────────────────────────────────
+=== eventos ===
+schema:
+CREATE TABLE eventos (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
+  direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
+  de             TEXT,
+  nombre         TEXT,
+  asunto         TEXT,
+  cuerpo         TEXT,
+  tipo_original  TEXT,
+  metadata_json  TEXT
+);
+CREATE INDEX idx_eventos_ts       ON eventos(timestamp DESC);
+CREATE INDEX idx_eventos_canal_ts ON eventos(canal, timestamp DESC);
+CREATE INDEX idx_eventos_de       ON eventos(de);
+count: 937
+contenido:
+Error: in prepare, no such column: usuario_id
+  SELECT id, usuario_id, substr(summary,1,40) AS summary, start, fin, substr(ubi
+             ^--- error here
+
+──────────────────────────────────────────────────────────────
+=== hechos ===
+schema:
+CREATE TABLE hechos (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  clave       TEXT UNIQUE NOT NULL,
+  valor       TEXT NOT NULL,
+  fuente      TEXT,
+  creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+count: 3
+contenido:
+Error: in prepare, no such column: usuario_id
+  SELECT id, usuario_id, substr(hecho,1,80) AS hecho, creado FROM hechos ORDER B
+             ^--- error here
+
+──────────────────────────────────────────────────────────────
+=== pendientes ===
+schema:
+CREATE TABLE pendientes (
+  id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+  creado              DATETIME DEFAULT CURRENT_TIMESTAMP,
+  desc                TEXT NOT NULL,
+  estado              TEXT NOT NULL DEFAULT 'abierto' CHECK(estado IN ('abierto','cerrado','cancelado')),
+  cerrado             DATETIME,
+  ultimo_recordatorio DATETIME,
+  remitente           TEXT,
+  canal_origen        TEXT,
+  destino_wa          TEXT,
+  destino_email       TEXT,
+  email_message_id    TEXT,
+  meta_json           TEXT
+);
+CREATE INDEX idx_pendientes_estado ON pendientes(estado, creado);
+CREATE INDEX idx_pendientes_remit  ON pendientes(remitente, estado);
+count: 22
+contenido:
+Error: in prepare, no such column: usuario_id
+  SELECT id, usuario_id, substr(desc,1,40) AS desc, estado, creado, substr(meta,
+             ^--- error here
+
+──────────────────────────────────────────────────────────────
+=== programados ===
+schema:
+CREATE TABLE programados (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  creado        DATETIME DEFAULT CURRENT_TIMESTAMP,
+  cuando        TEXT NOT NULL,                  -- ISO UTC
+  canal         TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail')),
+  destino       TEXT NOT NULL,
+  asunto        TEXT,
+  texto         TEXT NOT NULL,
+  enviado       INTEGER NOT NULL DEFAULT 0,     -- 0=pendiente, 1=enviado, -1=cancelado
+  razon         TEXT,                            -- p.ej. 'morning_brief', 'meeting_prep', 'usuario'
+  metadata_json TEXT
+);
+CREATE INDEX idx_prog_cuando ON programados(cuando, enviado);
+CREATE INDEX idx_prog_razon  ON programados(razon, enviado);
+count: 11
+contenido:
+Error: in prepare, no such column: usuario_id
+  SELECT id, usuario_id, cuando, canal, destino, substr(texto,1,40) AS texto, es
+             ^--- error here
+
+──────────────────────────────────────────────────────────────
+=== usuarios ===
+schema:
+CREATE TABLE usuarios (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre       TEXT NOT NULL UNIQUE,
+  wa_lid       TEXT UNIQUE,
+  wa_cus       TEXT UNIQUE,
+  email        TEXT UNIQUE,
+  calendar_id  TEXT,
+  rol          TEXT NOT NULL DEFAULT 'usuario' CHECK(rol IN ('owner','usuario')),
+  tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
+  brief_hora   TEXT DEFAULT '04',
+  brief_minuto TEXT DEFAULT '00',
+  activo       INTEGER NOT NULL DEFAULT 1,
+  creado       DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado  DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+count: 0
+
+
+# exit=0
