@@ -416,14 +416,9 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
       metadata: { tipo: 'unknown_llm_rute', messageId, a_usuario: match.id, razon },
     });
   }
-  try {
-    await client.sendMessage(from, `Listo, se lo paso a ${match.nombre}. Gracias.`);
-  } catch (err) {
-    console.error('[unknown-flow/wa] ack falló:', err.message);
-  }
-  await _notificarOwner(client,
-    `🔎 Me escribió *${pushname || from}* (${from}) y el LLM lo identificó como *${match.nombre}* (id=${match.id}).${capturadoLid ? ' (Capturé su @lid.)' : ''}\nRazón: ${razon || '(sin razón)'}\n\nMensaje: "${cuerpo.slice(0, 400)}"\n\nLo ruteo a su cuenta.`
-  );
+  // No ack-eamos al remitente ni avisamos al owner — la respuesta del LLM del
+  // usuario (via reprocesarComoUsuario) es la que le contesta al remitente.
+  // Si alguien quiere ver la ruta, queda en el evento mem.log de arriba.
   try {
     await reprocesarComoUsuario(match, {
       de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
@@ -431,7 +426,7 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
   } catch (err) {
     console.error('[unknown-flow/wa] reprocesar falló:', err.message);
   }
-  console.log(`[unknown-flow/wa] LLM routeó ${from} → ${match.nombre} (id=${match.id})`);
+  console.log(`[unknown-flow/wa] LLM routeó ${from} → ${match.nombre} (id=${match.id})${capturadoLid ? ' [@lid capturado]' : ''}`);
   return true;
 }
 
@@ -455,9 +450,8 @@ async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cue
     de: from, nombre: pushname, cuerpo,
     metadata: { tipo: 'unknown_llm_tercero', messageId, razon },
   });
-  await _notificarOwner(client,
-    `🔗 Me escribió *${quien}* (${from}) por WA. El LLM detectó que es un tercero relacionado a una gestión de *${match.nombre}* (id=${match.id}).\nRazón: ${razon || '(sin razón)'}\n\nMensaje: "${cuerpo.slice(0, 400)}"\n\nLo proceso en el contexto de ${match.nombre}.`
-  );
+  // No avisamos al owner ni ack-eamos al tercero — el LLM del usuario decide
+  // qué responder en el reprocesarComoUsuario de abajo.
   try {
     await reprocesarComoUsuario(match, {
       de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
@@ -465,7 +459,7 @@ async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cue
   } catch (err) {
     console.error('[unknown-flow/wa] reprocesar tercero falló:', err.message);
   }
-  console.log(`[unknown-flow/wa] tercero_de_usuario: ${from} → contexto de ${match.nombre} (id=${match.id})`);
+  console.log(`[unknown-flow/wa] tercero_de_usuario: ${from} (${quien}) → contexto de ${match.nombre} (id=${match.id})`);
   return true;
 }
 
@@ -530,9 +524,9 @@ async function _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId
       metadata: { tipo: 'unknown_first', messageId },
     });
   }
-  await _notificarOwner(client,
-    `🚪 Te escribe alguien por WA que no conozco: *${pushname || from}* (${from}).\n\nMensaje: "${cuerpo.slice(0, 400)}"\n\nLe pregunté para quién va.`
-  );
+  // No avisamos al owner acá — si el remitente responde bien, Maria resuelve
+  // sola. Si no responde o responde mal, el cierre (_handleWA_FSM_segunda
+  // branch sin match) le avisa con contenido.
   console.log(`[unknown-flow/wa] primer contacto de ${from} — preguntando (FSM)`);
   return true;
 }
@@ -545,15 +539,11 @@ async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado, r
       usuarios.setWaLid(match.id, from);
       capturadoLid = true;
     }
-    try {
-      await client.sendMessage(from, `Listo, se lo paso a ${match.nombre}. Gracias.`);
-    } catch (err) {
-      console.error('[unknown-flow/wa] ack falló:', err.message);
-    }
-    await _notificarOwner(client,
-      `➡️ Routeé el mensaje de *${pushname || from}* (${from}) a *${match.nombre}* (id=${match.id}).${capturadoLid ? ` (Capturé su @lid.)` : ''}\n\nMensaje original: "${(estado.original_body || '').slice(0, 400)}"`
-    );
+    // No ack-eamos al remitente ni avisamos al owner — la respuesta del
+    // reprocesarComoUsuario de abajo se encarga de contestarle. El hecho
+    // queda en la consola y en el historial del usuario.
     limpiarEstado('whatsapp', from);
+    if (capturadoLid) console.log(`[unknown-flow/wa] @lid capturado para ${match.nombre}: ${from}`);
     try {
       await reprocesarComoUsuario(match, {
         de: from, nombre: pushname || from,
@@ -631,14 +621,8 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
           metadata: { tipo: 'unknown_llm_rute', messageId: email.id, a_usuario: match.id, razon: llm.razon },
         });
       }
-      try {
-        await responderEmailFn(email.id, `Gracias, se lo paso a ${match.nombre}.\n\nSaludos,\nMaría`);
-      } catch (err) {
-        console.error('[unknown-flow/gmail] ack falló:', err.message);
-      }
-      await _notificarOwner(waClient,
-        `🔎 Me escribió ${email.de} por email y el LLM lo identificó como *${match.nombre}* (id=${match.id}).\nRazón: ${llm.razon || '(sin razón)'}\n\nAsunto: "${email.asunto || ''}"\n\nLo ruteo a su cuenta.`
-      );
+      // No ack-eamos ni avisamos al owner — la respuesta del LLM del usuario
+      // (via reprocesarComoUsuario) se encarga de contestarle al remitente.
       try {
         await reprocesarComoUsuario(match, {
           de: email.de, email: email.de,
@@ -664,10 +648,8 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
         de: email.de, asunto: email.asunto, cuerpo,
         metadata: { tipo: 'unknown_llm_tercero', messageId: email.id, razon: llm.razon },
       });
-      // NO respondemos al tercero acá — el prompt del usuario decide.
-      await _notificarOwner(waClient,
-        `🔗 Me escribió ${email.de} por email. El LLM detectó que es un tercero relacionado a una gestión de *${match.nombre}* (id=${match.id}).\nRazón: ${llm.razon || '(sin razón)'}\n\nAsunto: "${email.asunto || ''}"\n\nLo proceso en el contexto de ${match.nombre}.`
-      );
+      // NO respondemos al tercero ni avisamos al owner — el prompt del
+      // usuario decide qué hacer con el mensaje en el reprocesar de abajo.
       try {
         await reprocesarComoUsuario(match, {
           de: email.de, email: email.de,
@@ -725,9 +707,8 @@ María`;
       metadata: { tipo: 'unknown_first', messageId: email.id },
     });
   }
-  await _notificarOwner(waClient,
-    `🚪 Te escribe alguien por email que no conozco: ${email.de}.\n\nAsunto: "${email.asunto || '(sin asunto)'}"\nMensaje: "${(email.cuerpo || email.snippet || '').slice(0, 400)}"\n\nLe pregunté para quién va.`
-  );
+  // No avisamos al owner acá — si responden bien, Maria resuelve sola. El
+  // cierre (_handleEmail_FSM_segunda sin match) le avisa con contenido.
   console.log(`[unknown-flow/gmail] primer contacto de ${email.de} (FSM)`);
   return true;
 }
@@ -736,14 +717,7 @@ async function _handleEmail_FSM_segunda({ waClient, email, estado, reprocesarCom
   const remitenteId = email.de;
   const match = matchearUsuario(email.cuerpo || email.snippet || '');
   if (match) {
-    try {
-      await responderEmailFn(email.id, `Gracias, se lo paso a ${match.nombre}.\n\nSaludos,\nMaría`);
-    } catch (err) {
-      console.error('[unknown-flow/gmail] ack falló:', err.message);
-    }
-    await _notificarOwner(waClient,
-      `➡️ Routeé el email de ${email.de} a *${match.nombre}* (id=${match.id}).\n\nAsunto: "${estado.asunto || ''}"\nOriginal: "${(estado.original_body || '').slice(0, 400)}"`
-    );
+    // No ack-eamos ni avisamos — la respuesta del reprocesar se encarga.
     limpiarEstado('gmail', remitenteId);
     try {
       await reprocesarComoUsuario(match, {
