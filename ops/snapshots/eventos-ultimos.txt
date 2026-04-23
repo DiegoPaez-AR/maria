@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1057  2026-04-23 19:24:50  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+1056  2026-04-23 19:24:50  whatsapp  saliente   5491159050287@c.us                             Hola Mariela! Te escribo de parte de Hernan para avisarte que esta noche tienen cena de sushi a las 21hs. ¡Que disfruten!                                                                               
+
+1055  2026-04-23 19:24:50  whatsapp  saliente   137456250806423@lid                            ¡Perfecto, le escribo ahora!                                                                                                                                                                            
+
+1054  2026-04-23 19:24:39  whatsapp  entrante   137456250806423@lid                            Si por favor.                                                                                                                                                                                           
+
+1053  2026-04-23 19:24:27  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
+
+1052  2026-04-23 19:24:27  calendar  saliente                                                  creado: Cena Sushi con Mariela (2026-04-23T21:00:00-03:00 → 2026-04-23T23:00:00-03:00)                                                                                                                  
+
+1051  2026-04-23 19:24:26  whatsapp  saliente   137456250806423@lid                            Te la agendo para esta noche a las 21hs. ¿Querés que le mande un WA a Mariela para avisarle o confirmarlo con ella?                                                                                     
+
+1050  2026-04-23 19:24:02  whatsapp  entrante   137456250806423@lid                            Agendar una reunión con Mariela para hoy a las 21hs para cenar Sushi.                                                                                                                                   
+
 1049  2026-04-23 19:23:31  sistema   interno                                                   contacto vcard: Mariela Nigro → 5491159050287@c.us                                                                                                                                                      
 
 1048  2026-04-23 18:50:37  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -217,19 +233,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 958   2026-04-23 15:27:37  whatsapp  saliente   5491126829596@c.us                             Hola Hernán, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá.                     
                                                                                                                                                                                                                                                                                                        
                                                                                                Para poder manejar                                                                                                                                                                                      
-
-957   2026-04-23 15:27:30  whatsapp  saliente   34342575317160@lid                             Claro, le mando el mensaje a Hernán ahora. Una vez que comparta el calendario lo activo como usuario.                                                                                                   
-
-956   2026-04-23 15:27:08  whatsapp  entrante   34342575317160@lid                             lo podes agregar como usuario tambien, y al igual que con Ruben, mandale mensaje presentandote                                                                                                          
-
-955   2026-04-23 15:22:34  sistema   interno                                                   acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-954   2026-04-23 15:22:34  whatsapp  saliente   34342575317160@lid                             Listo, le agrego el mail a Hernan Fulco.                                                                                                                                                                
-
-953   2026-04-23 15:22:26  whatsapp  entrante   34342575317160@lid                             hernan.fulco@sondeosglobal.com                                                                                                                                                                          
-
-952   2026-04-23 15:22:24  sistema   interno                                                   contacto vcard: Hernan Fulco → 5491126829596@c.us                                                                                                                                                       
-
-951   2026-04-23 15:16:28  whatsapp  saliente   34342575317160@lid                             Sí, mi mail es maria.paez.secre@gmail.com — ya se lo incluí en el mensaje a Rubén.                                                                                                                      
-
-950   2026-04-23 15:16:08  whatsapp  entrante   34342575317160@lid                             y tenes tu mail?                                                                                                                                                                                        
