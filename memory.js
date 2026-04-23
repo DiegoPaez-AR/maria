@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS eventos (
 CREATE INDEX IF NOT EXISTS idx_eventos_ts       ON eventos(timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_eventos_canal_ts ON eventos(canal, timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_eventos_de       ON eventos(de);
-CREATE INDEX IF NOT EXISTS idx_eventos_usuario  ON eventos(usuario_id, timestamp DESC);
+-- idx_eventos_usuario se crea después de las migraciones (requiere columna usuario_id)
 
 CREATE TABLE IF NOT EXISTS estado (
   clave       TEXT PRIMARY KEY,
@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS programados (
 );
 CREATE INDEX IF NOT EXISTS idx_prog_cuando  ON programados(cuando, enviado);
 CREATE INDEX IF NOT EXISTS idx_prog_razon   ON programados(razon, enviado);
-CREATE INDEX IF NOT EXISTS idx_prog_usuario ON programados(usuario_id, enviado);
+-- idx_prog_usuario se crea después de las migraciones (requiere columna usuario_id)
 
 CREATE TABLE IF NOT EXISTS pendientes (
   id                  INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS pendientes (
 );
 CREATE INDEX IF NOT EXISTS idx_pendientes_estado   ON pendientes(estado, creado);
 CREATE INDEX IF NOT EXISTS idx_pendientes_remit    ON pendientes(remitente, estado);
-CREATE INDEX IF NOT EXISTS idx_pendientes_usuario  ON pendientes(usuario_id, estado, creado);
+-- idx_pendientes_usuario se crea después de las migraciones (requiere columna usuario_id)
 `);
 
 // ─── Helpers de introspección ─────────────────────────────────────────────
@@ -180,6 +180,14 @@ function _migrarAgregarUsuarioId(tabla) {
 for (const t of ['eventos', 'pendientes', 'programados']) {
   _migrarAgregarUsuarioId(t);
 }
+
+// Índices que dependen de usuario_id (los creamos acá porque en el exec inicial
+// la columna podía no existir todavía en DBs viejos).
+db.exec(`
+  CREATE INDEX IF NOT EXISTS idx_eventos_usuario     ON eventos(usuario_id, timestamp DESC);
+  CREATE INDEX IF NOT EXISTS idx_prog_usuario        ON programados(usuario_id, enviado);
+  CREATE INDEX IF NOT EXISTS idx_pendientes_usuario  ON pendientes(usuario_id, estado, creado);
+`);
 
 // `contactos` necesita recreate: el UNIQUE sobre `nombre` pasa a ser por usuario.
 function _migrarContactos() {
