@@ -10,12 +10,19 @@
 //        a) usuario_activo   → el remitente ES uno de los usuarios activos
 //                              (quizás desde un número/email nuevo).
 //                              Ruteamos directo.
-//        b) prospecto_pendiente → el owner nos pidió recientemente que
+//        b) tercero_de_usuario → el remitente es un tercero (no usuario)
+//                              respondiendo/consultando sobre algo que
+//                              uno de los usuarios me pidió gestionar
+//                              (ej. "pedile el menú a X" → X me responde).
+//                              Procesamos el mensaje en el contexto de
+//                              ese usuario — el prompt normal ya sabe
+//                              manejar "tercero pidiendo algo".
+//        c) prospecto_pendiente → el owner nos pidió recientemente que
 //                              agreguemos a alguien y este remitente encaja.
 //                              Guardamos el pedido como "pending" y NOTIFICAMOS
 //                              al owner pidiendo confirmación explícita.
 //                              NUNCA creamos usuarios automáticamente.
-//        c) desconocido      → no hay contexto suficiente. Caemos al flujo
+//        d) desconocido      → no hay contexto suficiente. Caemos al flujo
 //                              viejo (FSM: preguntar "para quién va",
 //                              matchear contra usuarios activos en el
 //                              próximo mensaje).
@@ -238,31 +245,48 @@ ${seccionHistOwner}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 TAREA:
-Clasificá el remitente en UNA de estas tres opciones:
+Clasificá el remitente en UNA de estas cuatro opciones:
 
   A) "usuario_activo" — es UNO de los usuarios activos de la lista de arriba
      (por ej., escribiendo desde un número/email nuevo, pero el historial
      deja claro que es la misma persona). Devolvé el "usuario_id" exacto.
 
-  B) "prospecto_pendiente" — el owner (${owner.nombre}) te pidió a vos
-     recientemente que agregaras a alguien, y este remitente encaja con esa
-     descripción. Devolvé "nombre_sugerido" (el nombre que el owner mencionó).
-     IMPORTANTE: nunca creamos usuarios automáticamente — acá sólo marcamos
-     que *probablemente* haya que crearlo; el owner confirmará.
+  B) "tercero_de_usuario" — NO es un usuario, pero hay evidencia clara en el
+     historial (WA Maria ↔ remitente, y/o WA Maria ↔ owner) de que este
+     mensaje es parte de una gestión que ${owner.nombre} u otro usuario me
+     pidió llevar adelante. Ejemplos típicos:
+       · Maria le escribió hace poco a este número/email a pedido del usuario
+         (ej. "pedile el menú a X") y ahora el tercero responde.
+       · El owner mencionó en su historial un nombre/apodo que matchea con
+         el pushname/asunto del remitente, en un contexto de gestión.
+     Devolvé "usuario_id" = id del usuario dueño de la gestión (si hay duda
+     entre varios usuarios, elegí el owner).
 
-  C) "desconocido" — no hay contexto suficiente para clasificarlo como A o B.
+  C) "prospecto_pendiente" — el owner (${owner.nombre}) te pidió a vos
+     recientemente que agregaras a alguien COMO USUARIO (no como contacto de
+     gestión), y este remitente encaja con esa descripción. Devolvé
+     "nombre_sugerido" (el nombre que el owner mencionó). IMPORTANTE: nunca
+     creamos usuarios automáticamente — acá sólo marcamos que *probablemente*
+     haya que crearlo; el owner confirmará.
+
+  D) "desconocido" — no hay contexto suficiente para clasificarlo como A, B o C.
 
 Reglas:
 - Ante duda, elegí "desconocido". Es MUCHO mejor preguntar que asumir mal.
 - NO inventes usuarios que no estén en la lista.
-- Si la razón para usuario_activo no es obvia, preferí prospecto_pendiente o
-  desconocido.
+- Diferenciá bien B vs C: B es un contacto puntual que responde sobre una
+  gestión. C es alguien que el owner pidió agregar PERMANENTEMENTE como
+  usuario (con su propio calendario, su propia libreta, etc.). Si el owner
+  dijo "pedile X a Pepe", Pepe es B. Si dijo "agregame a Pepe como usuario",
+  Pepe es C.
+- Si la razón para usuario_activo o tercero_de_usuario no es obvia, preferí
+  prospecto_pendiente o desconocido.
 - Si ya hay un prospecto pendiente para este mismo remitente (lista de arriba),
   devolvé "desconocido" — ya está esperando confirmación.
 
 Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
 {
-  "resolucion": "usuario_activo" | "prospecto_pendiente" | "desconocido",
+  "resolucion": "usuario_activo" | "tercero_de_usuario" | "prospecto_pendiente" | "desconocido",
   "usuario_id": <int | null>,
   "nombre_sugerido": <string | null>,
   "wa_cus_sugerido": <string | null>,
@@ -270,12 +294,37 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
   "razon": "una línea explicando por qué"
 }`;
 
+  console.log(`[unknown-flow/${canal}] LLM pre-pass inputs: hist_wa=${histWA.total || 0}${histWA.error ? `(err:${histWA.error})` : ''} hist_mail=${histMail.total || 0}${histMail.error ? `(err:${histMail.error})` : ''} hist_owner=${histOwner.total || 0}${histOwner.error ? `(err:${histOwner.error})` : ''} remitente=${from || senderEmail || '?'}`);
   try {
     const { json, raw } = await invocarClaudeJSON(prompt, { timeoutMs: 90_000 });
-    if (!json || !json.resolucion) return null;
+    if (!json || !json.resolucion) {
+      console.warn(`[unknown-flow/${canal}] LLM devolvió respuesta sin resolucion`);
+      return null;
+    }
+    console.log(`[unknown-flow/${canal}] LLM resolucion: ${json.resolucion}${json.usuario_id ? ` usuario_id=${json.usuario_id}` : ''}${json.nombre_sugerido ? ` sugerido="${json.nombre_sugerido}"` : ''} · ${json.razon || '(sin razón)'}`);
+    // Dejamos traza persistente en eventos para que Diego pueda revisar
+    // después qué vio el LLM y por qué decidió lo que decidió.
+    try {
+      mem.log({
+        usuarioId: owner.id,
+        canal: 'sistema', direccion: 'interno',
+        cuerpo: `unknown-flow/${canal} LLM: ${json.resolucion}${json.usuario_id ? ` usuario_id=${json.usuario_id}` : ''} · ${json.razon || ''}`,
+        metadata: {
+          tipo: 'unknown_llm_trace',
+          canal, from: from || senderEmail, pushname,
+          hist_wa_total: histWA.total || 0,
+          hist_mail_total: histMail.total || 0,
+          hist_owner_total: histOwner.total || 0,
+          resolucion: json.resolucion,
+          usuario_id: json.usuario_id || null,
+          nombre_sugerido: json.nombre_sugerido || null,
+          razon: json.razon || null,
+        },
+      });
+    } catch {}
     return { ...json, raw };
   } catch (err) {
-    console.error('[unknown-flow] LLM pre-pass falló:', err.message);
+    console.error(`[unknown-flow/${canal}] LLM pre-pass falló:`, err.message);
     return null;
   }
 }
@@ -329,6 +378,17 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
     // LLM alucinó id → fallback al FSM abajo.
   }
 
+  if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
+    const match = usuarios.obtener(llm.usuario_id);
+    if (match && match.activo) {
+      return await _routearComoTerceroDeUsuario({
+        client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
+        reprocesarComoUsuario,
+      });
+    }
+    // LLM alucinó id → fallback al FSM abajo.
+  }
+
   if (llm && llm.resolucion === 'prospecto_pendiente') {
     return await _abrirProspectoPendiente({
       client, canal: 'whatsapp', from, pushname, cuerpo, messageId, llm,
@@ -372,6 +432,40 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
     console.error('[unknown-flow/wa] reprocesar falló:', err.message);
   }
   console.log(`[unknown-flow/wa] LLM routeó ${from} → ${match.nombre} (id=${match.id})`);
+  return true;
+}
+
+/**
+ * El remitente no es un usuario, pero es un tercero respondiéndole a Maria
+ * algo que uno de los usuarios le pidió gestionar (ej. pedile el menú a X).
+ * Reprocesamos el mensaje en el contexto del usuario dueño de la gestión —
+ * el prompt normal del usuario sabe manejar "te escribe un tercero".
+ *
+ * No ack-eamos al tercero: quien decide qué responder es el LLM del prompt
+ * del usuario (puede ser responder directo, puede ser preguntarle al usuario
+ * antes, etc.).
+ */
+async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, reprocesarComoUsuario }) {
+  const quien = pushname || from;
+  // Loggear el mensaje entrante en el bucket del USUARIO (no del owner) para
+  // que aparezca en su historial cross-canal cuando armemos su próximo prompt.
+  mem.log({
+    usuarioId: match.id,
+    canal: 'whatsapp', direccion: 'entrante',
+    de: from, nombre: pushname, cuerpo,
+    metadata: { tipo: 'unknown_llm_tercero', messageId, razon },
+  });
+  await _notificarOwner(client,
+    `🔗 Me escribió *${quien}* (${from}) por WA. El LLM detectó que es un tercero relacionado a una gestión de *${match.nombre}* (id=${match.id}).\nRazón: ${razon || '(sin razón)'}\n\nMensaje: "${cuerpo.slice(0, 400)}"\n\nLo proceso en el contexto de ${match.nombre}.`
+  );
+  try {
+    await reprocesarComoUsuario(match, {
+      de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
+    });
+  } catch (err) {
+    console.error('[unknown-flow/wa] reprocesar tercero falló:', err.message);
+  }
+  console.log(`[unknown-flow/wa] tercero_de_usuario: ${from} → contexto de ${match.nombre} (id=${match.id})`);
   return true;
 }
 
@@ -477,8 +571,13 @@ async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado, r
   } catch (err) {
     console.error('[unknown-flow/wa] cerrar falló:', err.message);
   }
+  const msgOriginal = (estado?.original_body || '').slice(0, 400);
+  const respuestaDesc = cuerpo.slice(0, 400);
   await _notificarOwner(client,
-    `❌ Cerré el thread con *${pushname || from}* (${from}) por WA — no matcheé con ningún usuario.\n\nÚltimo mensaje: "${cuerpo.slice(0, 400)}"`
+    `❌ Cerré el thread con *${pushname || from}* (${from}) por WA — no pude identificar para quién.\n\n` +
+    `Mensaje original: "${msgOriginal}"\n` +
+    `Su respuesta a "¿para quién va?": "${respuestaDesc}"\n\n` +
+    `Lo asumí erróneo. Si era para vos, avisame y te paso el contenido.`
   );
   limpiarEstado('whatsapp', from);
   console.log(`[unknown-flow/wa] FSM cerrado ${from} — sin match`);
@@ -550,6 +649,35 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
         console.error('[unknown-flow/gmail] reprocesar falló:', err.message);
       }
       console.log(`[unknown-flow/gmail] LLM routeó ${email.de} → ${match.nombre}`);
+      return true;
+    }
+  }
+
+  if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
+    const match = usuarios.obtener(llm.usuario_id);
+    if (match && match.activo) {
+      // Log en bucket del usuario destinatario para que aparezca en su
+      // historial cross-canal.
+      mem.log({
+        usuarioId: match.id,
+        canal: 'gmail', direccion: 'entrante',
+        de: email.de, asunto: email.asunto, cuerpo,
+        metadata: { tipo: 'unknown_llm_tercero', messageId: email.id, razon: llm.razon },
+      });
+      // NO respondemos al tercero acá — el prompt del usuario decide.
+      await _notificarOwner(waClient,
+        `🔗 Me escribió ${email.de} por email. El LLM detectó que es un tercero relacionado a una gestión de *${match.nombre}* (id=${match.id}).\nRazón: ${llm.razon || '(sin razón)'}\n\nAsunto: "${email.asunto || ''}"\n\nLo proceso en el contexto de ${match.nombre}.`
+      );
+      try {
+        await reprocesarComoUsuario(match, {
+          de: email.de, email: email.de,
+          asunto: email.asunto, cuerpo,
+          messageId: email.id,
+        });
+      } catch (err) {
+        console.error('[unknown-flow/gmail] reprocesar tercero falló:', err.message);
+      }
+      console.log(`[unknown-flow/gmail] tercero_de_usuario: ${email.de} → contexto de ${match.nombre}`);
       return true;
     }
   }
@@ -635,8 +763,15 @@ async function _handleEmail_FSM_segunda({ waClient, email, estado, reprocesarCom
   } catch (err) {
     console.error('[unknown-flow/gmail] cerrar falló:', err.message);
   }
+  const asuntoOrig = estado?.asunto || email.asunto || '(sin asunto)';
+  const msgOriginal = (estado?.original_body || '').slice(0, 400);
+  const respuestaDesc = (email.cuerpo || email.snippet || '').slice(0, 400);
   await _notificarOwner(waClient,
-    `❌ Cerré el thread de email con ${email.de} — no matcheé con ningún usuario.\n\nÚltimo mensaje: "${(email.cuerpo || '').slice(0, 400)}"`
+    `❌ Cerré el thread de email con ${email.de} — no pude identificar para quién.\n\n` +
+    `Asunto: "${asuntoOrig}"\n` +
+    `Mensaje original: "${msgOriginal}"\n` +
+    `Su respuesta a "¿para quién va?": "${respuestaDesc}"\n\n` +
+    `Lo asumí erróneo. Si era para vos, avisame y te paso el contenido.`
   );
   limpiarEstado('gmail', remitenteId);
   return true;
