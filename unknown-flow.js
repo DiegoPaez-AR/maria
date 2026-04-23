@@ -171,6 +171,53 @@ async function _notificarOwner(waClient, texto) {
   }
 }
 
+// ─── Pre-pass: lookup en tabla contactos (cross-usuario) ────────────────
+
+/**
+ * Antes de gastar un LLM call, chequeamos si el remitente ya está registrado
+ * como contacto de alguno de los usuarios activos. Es el caso típico:
+ *   - Hernán tiene a Mariela cargada en su libreta.
+ *   - Mariela escribe desde su número.
+ *   - Match directo → tercero_de_usuario de Hernán.
+ *
+ * Devuelve:
+ *   null                                          → no hay match
+ *   { match: {contacto, usuario} }                → match único claro
+ *   { ambiguo: [{contacto, usuario}, ...] }       → varios usuarios tienen
+ *                                                    contactos que matchean
+ *                                                    (lo pasamos al LLM como
+ *                                                    info adicional).
+ */
+function _lookupEnContactos({ from, senderEmail }) {
+  const hits = [];
+  const vistos = new Set();
+  const agregar = (contactosMatched) => {
+    for (const c of contactosMatched) {
+      const u = usuarios.obtener(c.usuario_id);
+      if (!u || !u.activo) continue;
+      const key = `${c.id}`;
+      if (vistos.has(key)) continue;
+      vistos.add(key);
+      hits.push({ contacto: c, usuario: u });
+    }
+  };
+  if (from) {
+    agregar(mem.buscarContactoCrossUsuario({ whatsapp: from }));
+  }
+  if (senderEmail) {
+    agregar(mem.buscarContactoCrossUsuario({ email: senderEmail }));
+  }
+  if (hits.length === 0) return null;
+  // Si todos los hits apuntan al MISMO usuario, lo consideramos match único
+  // (aunque haya varios contactos del mismo usuario que matcheen por razones
+  // raras — ej. misma persona cargada dos veces con variantes de nombre).
+  const uniqUsuarios = new Set(hits.map(h => h.usuario.id));
+  if (uniqUsuarios.size === 1) {
+    return { match: hits[0] };
+  }
+  return { ambiguo: hits };
+}
+
 // ─── LLM pre-pass ───────────────────────────────────────────────────────
 
 /**
@@ -181,7 +228,7 @@ async function _notificarOwner(waClient, texto) {
  *
  * Si algo falla (fetch, LLM, JSON), devuelve null y el caller cae al FSM.
  */
-async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asunto, waClient }) {
+async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asunto, waClient, contactosAmbiguos = null }) {
   const owner = _estadoOwner();
   if (!owner) return null;
 
@@ -221,6 +268,12 @@ async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asu
     ? `[HISTORIAL WA MARIA ↔ OWNER (${owner.nombre}) — 14d, ${histOwner.total} msgs]\n${histOwner.lineas.join('\n')}`
     : `[HISTORIAL WA MARIA ↔ OWNER — 14d]\n(vacío)`;
 
+  // Si el lookup cross-usuario encontró matches en >1 usuario, mostrárselos
+  // al LLM para que decida de cuál se trata.
+  const seccionContactosAmbiguos = (contactosAmbiguos && contactosAmbiguos.length)
+    ? `[LIBRETA DE CONTACTOS — matches ambiguos (mismo número/email está cargado en varios usuarios)]\n${contactosAmbiguos.map(h => `  - usuario="${h.usuario.nombre}" (id=${h.usuario.id}) tiene a "${h.contacto.nombre}"${h.contacto.notas ? ` — notas: ${h.contacto.notas}` : ''}`).join('\n')}`
+    : '';
+
   const prompt = `Sos Maria, asistente multi-usuario. Te escribió alguien por ${canal} y NO matchea con ningún usuario activo. Tu tarea es clasificar quién es.
 
 [USUARIOS ACTIVOS]
@@ -228,6 +281,8 @@ ${listaUsuarios}
 
 [PROSPECTOS PENDIENTES DE CONFIRMACIÓN (ya avisados al owner, esperan su OK)]
 ${listaPendientes}
+
+${seccionContactosAmbiguos}
 
 [REMITENTE ACTUAL]
 - Canal: ${canal}
@@ -362,9 +417,23 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
     return await _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado: estadoFSM, reprocesarComoUsuario });
   }
 
-  // Primera vez → LLM pre-pass.
+  // Pre-pass barato: ¿está `from` en la libreta de algún usuario? Si hay
+  // match único → rutear directo como tercero de ese usuario sin LLM.
+  const lookupContactos = _lookupEnContactos({ from, senderEmail: null });
+  if (lookupContactos && lookupContactos.match) {
+    const { contacto, usuario } = lookupContactos.match;
+    console.log(`[unknown-flow/wa] match en contactos: ${from} = "${contacto.nombre}" de ${usuario.nombre} (id=${usuario.id})`);
+    return await _routearComoTerceroDeUsuario({
+      client, match: usuario, from, pushname, cuerpo, messageId,
+      razon: `matcheo por libreta: "${contacto.nombre}" está registrado en los contactos de ${usuario.nombre}`,
+      reprocesarComoUsuario,
+    });
+  }
+
+  // Primera vez → LLM pre-pass (eventualmente con info de contactos ambiguos).
   const llm = await _resolverConLLM({
     canal: 'whatsapp', cuerpo, from, pushname, waClient: client,
+    contactosAmbiguos: lookupContactos?.ambiguo || null,
   });
 
   if (llm && llm.resolucion === 'usuario_activo' && llm.usuario_id) {
@@ -603,11 +672,41 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
     return await _handleEmail_FSM_segunda({ waClient, email, estado: estadoFSM, reprocesarComoUsuario, responderEmailFn });
   }
 
-  // LLM pre-pass.
   const cuerpo = email.cuerpo || email.snippet || '';
+
+  // Pre-pass barato: ¿está senderEmail en la libreta de algún usuario? Si hay
+  // match único → rutear directo como tercero sin LLM.
+  const lookupContactos = _lookupEnContactos({ from: null, senderEmail });
+  if (lookupContactos && lookupContactos.match) {
+    const { contacto, usuario } = lookupContactos.match;
+    console.log(`[unknown-flow/gmail] match en contactos: ${senderEmail} = "${contacto.nombre}" de ${usuario.nombre} (id=${usuario.id})`);
+    mem.log({
+      usuarioId: usuario.id,
+      canal: 'gmail', direccion: 'entrante',
+      de: email.de, asunto: email.asunto, cuerpo,
+      metadata: {
+        tipo: 'unknown_llm_tercero', messageId: email.id,
+        razon: `matcheo por libreta: "${contacto.nombre}" está en contactos de ${usuario.nombre}`,
+        via: 'contactos_lookup',
+      },
+    });
+    try {
+      await reprocesarComoUsuario(usuario, {
+        de: email.de, email: email.de,
+        asunto: email.asunto, cuerpo,
+        messageId: email.id,
+      });
+    } catch (err) {
+      console.error('[unknown-flow/gmail] reprocesar tercero falló:', err.message);
+    }
+    return true;
+  }
+
+  // LLM pre-pass.
   const llm = await _resolverConLLM({
     canal: 'gmail', cuerpo, from: remitenteId, senderEmail,
     asunto: email.asunto, waClient,
+    contactosAmbiguos: lookupContactos?.ambiguo || null,
   });
 
   if (llm && llm.resolucion === 'usuario_activo' && llm.usuario_id) {

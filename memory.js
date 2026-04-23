@@ -680,6 +680,62 @@ function todosLosContactos(usuarioId) {
   return qContactosTodos.all(usuarioId);
 }
 
+// Lookup cross-usuario: dado un whatsapp / email / nombre, devuelve TODOS los
+// contactos (de cualquier usuario) que matcheen. Pensado para el unknown-flow
+// y para la herramienta owner-only `buscar_contacto_global`.
+//
+// - whatsapp: match exacto (case-sensitive porque JIDs son literales).
+// - email: match case-insensitive.
+// - nombre: match case-insensitive (COLLATE NOCASE), parcial con LIKE.
+//
+// Devuelve array (posiblemente vacío). Si hay que resolver unicidad, lo hace
+// el caller.
+const qContactoXUWhatsapp = db.prepare(`SELECT * FROM contactos WHERE whatsapp = ?`);
+const qContactoXUEmail    = db.prepare(`SELECT * FROM contactos WHERE email = ? COLLATE NOCASE`);
+const qContactoXUNombre   = db.prepare(`SELECT * FROM contactos WHERE nombre LIKE ? COLLATE NOCASE ORDER BY nombre`);
+const qContactoXUTodos    = db.prepare(`SELECT * FROM contactos WHERE whatsapp IS NOT NULL`);
+
+// Deja solo dígitos. Útil para comparar JIDs ("5491123456789@c.us") contra
+// números guardados en formato humano ("+54 9 11 2345-6789").
+function _soloDigitos(s) { return String(s || '').replace(/\D+/g, ''); }
+
+// Match "flexible" por dígitos: dos números matchean si uno termina con el
+// otro con al menos 8 dígitos en común (cubre casos con/sin país, con/sin 9
+// de celular Argentina, con/sin 15 argentino legacy).
+function _matchNumeroFlex(a, b) {
+  const da = _soloDigitos(a);
+  const db_ = _soloDigitos(b);
+  if (!da || !db_ || da.length < 8 || db_.length < 8) return false;
+  return da.endsWith(db_) || db_.endsWith(da);
+}
+
+function buscarContactoCrossUsuario({ whatsapp = null, email = null, nombre = null } = {}) {
+  const resultados = [];
+  const vistos = new Set();
+  const push = (row) => {
+    if (!row || vistos.has(row.id)) return;
+    vistos.add(row.id);
+    resultados.push(row);
+  };
+  if (whatsapp) {
+    // 1) match exacto (usa índice idx_contactos_whatsapp).
+    for (const r of qContactoXUWhatsapp.all(whatsapp)) push(r);
+    // 2) si no hubo exact, scan con comparación flexible por dígitos.
+    if (resultados.length === 0) {
+      for (const r of qContactoXUTodos.all()) {
+        if (_matchNumeroFlex(r.whatsapp, whatsapp)) push(r);
+      }
+    }
+  }
+  if (email) {
+    for (const r of qContactoXUEmail.all(email)) push(r);
+  }
+  if (nombre) {
+    for (const r of qContactoXUNombre.all(`%${nombre}%`)) push(r);
+  }
+  return resultados;
+}
+
 // ─── Programados ─────────────────────────────────────────────────────────
 
 const insertProgramado = db.prepare(`
@@ -812,6 +868,7 @@ module.exports = {
   // contactos
   upsertContacto,
   buscarContacto,
+  buscarContactoCrossUsuario,
   todosLosContactos,
   importarDesdeContactosJson,
   // programados
