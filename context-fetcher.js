@@ -105,7 +105,16 @@ function _formatearEmail(e) {
  *  - dias:   ventana (default 14)
  */
 function historialOwnerConMaria(mem, owner, { dias = 14, max = 80 } = {}) {
-  if (!mem || !owner) return { ok: false, lineas: [], total: 0 };
+  return historialUsuarioConMaria(mem, owner, { dias, max });
+}
+
+/**
+ * Historial reciente usuario ↔ Maria (WA) desde nuestros eventos. Generaliza
+ * historialOwnerConMaria para cualquier usuario activo, no solo el owner.
+ * Útil para el LLM pre-pass que ahora mira gestiones de todos los usuarios.
+ */
+function historialUsuarioConMaria(mem, usuario, { dias = 14, max = 80 } = {}) {
+  if (!mem || !usuario) return { ok: false, lineas: [], total: 0 };
   try {
     const desde = new Date(Date.now() - dias * MS_DIA).toISOString();
     const filas = mem.db.prepare(`
@@ -114,10 +123,10 @@ function historialOwnerConMaria(mem, owner, { dias = 14, max = 80 } = {}) {
       WHERE usuario_id = ? AND canal = 'whatsapp' AND timestamp >= ?
       ORDER BY timestamp DESC
       LIMIT ?
-    `).all(owner.id, desde, max);
+    `).all(usuario.id, desde, max);
     const lineas = filas.reverse().map(f => {
       const ts = String(f.timestamp).slice(0, 16).replace('T', ' ');
-      const dir = f.direccion === 'entrante' ? `→ ${owner.nombre}` : (f.direccion === 'saliente' ? '← Maria' : '· sistema');
+      const dir = f.direccion === 'entrante' ? `→ ${usuario.nombre}` : (f.direccion === 'saliente' ? '← Maria' : '· sistema');
       const t = (f.cuerpo || '').replace(/\s+/g, ' ').slice(0, 260);
       return `[${dir}] ${ts} · ${t}`;
     });
@@ -127,8 +136,25 @@ function historialOwnerConMaria(mem, owner, { dias = 14, max = 80 } = {}) {
   }
 }
 
+/**
+ * Historiales WA de CADA usuario activo ↔ Maria. Devuelve un array
+ * { usuario: {id, nombre, rol}, ok, lineas, total } por cada usuario activo
+ * pasado. Usado por unknown-flow para clasificar terceros cuyo "dueño" no es
+ * el owner (ej. Hernán le pidió a Maria que gestione algo y ahora responde
+ * un tercero — la evidencia está en el bucket de Hernán, no del owner).
+ */
+function historialesDeTodosLosUsuarios(mem, usuariosActivos, { dias = 14, maxPorUsuario = 60 } = {}) {
+  if (!Array.isArray(usuariosActivos)) return [];
+  return usuariosActivos.map(u => {
+    const res = historialUsuarioConMaria(mem, u, { dias, max: maxPorUsuario });
+    return { usuario: { id: u.id, nombre: u.nombre, rol: u.rol }, ...res };
+  });
+}
+
 module.exports = {
   historialWA,
   historialEmail,
   historialOwnerConMaria,
+  historialUsuarioConMaria,
+  historialesDeTodosLosUsuarios,
 };

@@ -242,7 +242,11 @@ async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asu
   const promHistMail  = senderEmail
     ? ctxFetcher.historialEmail(_google(), senderEmail, { dias: 14, max: 50 })
     : Promise.resolve({ ok: true, lineas: [], total: 0 });
-  const histOwner = ctxFetcher.historialOwnerConMaria(mem, owner, { dias: 14, max: 80 });
+  // Historiales de todos los usuarios activos (no solo owner). Clave para
+  // detectar terceros ligados a gestiones de usuarios que no sean owner.
+  const historialesUsuarios = ctxFetcher.historialesDeTodosLosUsuarios(mem, activos, { dias: 14, maxPorUsuario: 60 });
+  const histOwner = historialesUsuarios.find(h => h.usuario.id === owner.id)
+    || ctxFetcher.historialUsuarioConMaria(mem, owner, { dias: 14, max: 80 });
 
   const [histWA, histMail] = await Promise.all([promHistWA, promHistMail]);
 
@@ -264,9 +268,17 @@ async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asu
         ? `[HISTORIAL GMAIL MARIA ↔ REMITENTE — 14d, ${histMail.total} msgs]\n${histMail.lineas.join('\n')}`
         : `[HISTORIAL GMAIL MARIA ↔ REMITENTE — 14d]\n(vacío${histMail.error ? ` · error: ${histMail.error}` : ''})`)
     : '';
-  const seccionHistOwner = histOwner.lineas.length
-    ? `[HISTORIAL WA MARIA ↔ OWNER (${owner.nombre}) — 14d, ${histOwner.total} msgs]\n${histOwner.lineas.join('\n')}`
-    : `[HISTORIAL WA MARIA ↔ OWNER — 14d]\n(vacío)`;
+  // Historiales de todos los usuarios activos (incluye owner) con Maria.
+  // Cada usuario tiene su propio bucket; esto permite detectar que una
+  // gestión en curso pertenece a otro usuario (ej. Hernán le pidió a Maria
+  // que le avise a Mariela — la evidencia está en el bucket de Hernán).
+  const seccionHistUsuarios = historialesUsuarios
+    .filter(h => h.lineas && h.lineas.length)
+    .map(h => {
+      const tag = h.usuario.rol === 'owner' ? ' (owner)' : '';
+      return `[HISTORIAL WA MARIA ↔ ${h.usuario.nombre}${tag} — 14d, ${h.total} msgs]\n${h.lineas.join('\n')}`;
+    })
+    .join('\n\n') || '[HISTORIALES WA MARIA ↔ USUARIOS — 14d]\n(todos vacíos)';
 
   // Si el lookup cross-usuario encontró matches en >1 usuario, mostrárselos
   // al LLM para que decida de cuál se trata.
@@ -296,7 +308,7 @@ ${seccionHistWA}
 
 ${seccionHistMail}
 
-${seccionHistOwner}
+${seccionHistUsuarios}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 TAREA:
@@ -307,15 +319,19 @@ Clasificá el remitente en UNA de estas cuatro opciones:
      deja claro que es la misma persona). Devolvé el "usuario_id" exacto.
 
   B) "tercero_de_usuario" — NO es un usuario, pero hay evidencia clara en el
-     historial (WA Maria ↔ remitente, y/o WA Maria ↔ owner) de que este
-     mensaje es parte de una gestión que ${owner.nombre} u otro usuario me
-     pidió llevar adelante. Ejemplos típicos:
+     historial (WA Maria ↔ remitente, y/o WA Maria ↔ CUALQUIERA de los
+     usuarios activos — ver la sección de historiales, hay uno por usuario)
+     de que este mensaje es parte de una gestión que algún usuario me pidió
+     llevar adelante. La gestión puede haber sido pedida por el owner o por
+     otro usuario — mirá todos los bucket para encontrarla. Ejemplos típicos:
        · Maria le escribió hace poco a este número/email a pedido del usuario
          (ej. "pedile el menú a X") y ahora el tercero responde.
-       · El owner mencionó en su historial un nombre/apodo que matchea con
+       · Un usuario mencionó en SU historial un nombre/apodo que matchea con
          el pushname/asunto del remitente, en un contexto de gestión.
-     Devolvé "usuario_id" = id del usuario dueño de la gestión (si hay duda
-     entre varios usuarios, elegí el owner).
+     Devolvé "usuario_id" = id del usuario dueño de la gestión (el que se lo
+     pidió a Maria originalmente). Si hay evidencia en varios buckets, elegí
+     el usuario cuyo historial tenga la conexión más clara con el mensaje
+     actual (quién le pidió a Maria gestionar esto).
 
   C) "prospecto_pendiente" — el owner (${owner.nombre}) te pidió a vos
      recientemente que agregaras a alguien COMO USUARIO (no como contacto de
@@ -349,7 +365,8 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
   "razon": "una línea explicando por qué"
 }`;
 
-  console.log(`[unknown-flow/${canal}] LLM pre-pass inputs: hist_wa=${histWA.total || 0}${histWA.error ? `(err:${histWA.error})` : ''} hist_mail=${histMail.total || 0}${histMail.error ? `(err:${histMail.error})` : ''} hist_owner=${histOwner.total || 0}${histOwner.error ? `(err:${histOwner.error})` : ''} remitente=${from || senderEmail || '?'}`);
+  const resumenUsuarios = historialesUsuarios.map(h => `${h.usuario.nombre}=${h.total || 0}`).join(', ') || '(sin usuarios)';
+  console.log(`[unknown-flow/${canal}] LLM pre-pass inputs: hist_wa=${histWA.total || 0}${histWA.error ? `(err:${histWA.error})` : ''} hist_mail=${histMail.total || 0}${histMail.error ? `(err:${histMail.error})` : ''} hist_usuarios={${resumenUsuarios}} remitente=${from || senderEmail || '?'} contactos_ambiguos=${contactosAmbiguos?.length || 0}`);
   try {
     const { json, raw } = await invocarClaudeJSON(prompt, { timeoutMs: 90_000 });
     if (!json || !json.resolucion) {
@@ -370,6 +387,8 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
           hist_wa_total: histWA.total || 0,
           hist_mail_total: histMail.total || 0,
           hist_owner_total: histOwner.total || 0,
+          hist_usuarios_totales: Object.fromEntries(historialesUsuarios.map(h => [h.usuario.nombre, h.total || 0])),
+          contactos_ambiguos: contactosAmbiguos?.length || 0,
           resolucion: json.resolucion,
           usuario_id: json.usuario_id || null,
           nombre_sugerido: json.nombre_sugerido || null,
