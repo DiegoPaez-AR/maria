@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1126  2026-04-24 00:25:48  whatsapp  saliente   34342575317160@lid   ¿Me mandás la reserva? No tengo el detalle del vuelo, así te la reenvío a ella.                                                                                                                         
+
+1125  2026-04-24 00:25:37  whatsapp  entrante   34342575317160@lid   Mándale a isabel la reserva de su vuelo al Sur                                                                                                                                                          
+
 1124  2026-04-24 00:24:09  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 1123  2026-04-24 00:24:09  whatsapp  saliente   34342575317160@lid   Anotado, le agrego el mail a Isabel.                                                                                                                                                                    
@@ -219,7 +223,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 1028  2026-04-23 18:45:07  sistema   interno                         contacto vcard: Pablo Petrillo → 5491124577217@c.us                                                                                                                                                     
 
 1027  2026-04-23 18:34:36  whatsapp  entrante   222788661055558@lid  Gracias!                                                                                                                                                                                                
-
-1026  2026-04-23 18:34:36  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · 222788661055558@lid es Farinelli (restaurante): Maria les escribió a pedido de Diego para pedir el menú y luego las milanesitas + alfajor; 
-
-1025  2026-04-23 18:27:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (2 usuarios)                                                                                                        
