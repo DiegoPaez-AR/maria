@@ -1,5 +1,16 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1136  2026-04-24 00:28:12  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+1135  2026-04-24 00:28:12  whatsapp  saliente   5491134602030@c.us   Hola Isabel, soy Maria, la asistente de Diego. Te paso los datos de tu vuelo al Sur:                                                                                                                    
+                                                                                                                                                                                                                                                                             
+                                                                     ✈️ *Ida — martes 14 de julio*                                                                                                                                                                           
+                                                                     Aerolíneas Argentinas AR 1656                                                                                                                                                                           
+                                                                     Aeroparque (AEP) → San Martín de los Andes (CPC)                                                                                                                                                        
+                                                                     Salid                                                                                                                                                                                                   
+
+1134  2026-04-24 00:28:12  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo a Isabel ahora con los datos de los dos vuelos.                                                                                                                                    
+
 1133  2026-04-24 00:27:47  whatsapp  entrante   34342575317160@lid   AEROLINEAS ARGENTINAS Número de vuelo AR 1656                                                                                                                                                           
                                                                      CONFIRMADO      martes, 14 julio                                                                                                                                                                        
                                                                      Salida: AEP AEROPARQUE JORGE NEWBERY                                                                                                                                                                    
@@ -225,9 +236,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 1038  2026-04-23 18:48:25  whatsapp  saliente   34342575317160@lid   Perfecto, le consulto a Diego y te confirmo.                                                                                                                                                            
 
 1037  2026-04-23 18:47:54  whatsapp  entrante   56775390834853@lid   Hola, cómo estás? Podría mañana. 2pm ó 4pm.                                                                                                                                                             
-
-1036  2026-04-23 18:47:54  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Diego pidió a Maria que le escribiera a Pablo Petrillo (pablo.petrillo@luftlatam.com) para consultar disponibilidad hoy para una reunión de
-
-1035  2026-04-23 18:46:01  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-1034  2026-04-23 18:46:01  whatsapp  saliente   5491124577217@c.us   Hola Pablo, soy Maria, la asistente de Diego Paez. ¿Tenés disponibilidad hoy para una reunión de media hora con Diego? El tema sería CAPAs. Avisame qué horario te vendría bien. ¡Gracias!              
