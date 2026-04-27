@@ -439,6 +439,50 @@ async function buscarMensajesCon(email, { dias = 14, max = 50 } = {}) {
 }
 
 /**
+ * Envía un email nuevo (sin threading). Diferencias con responderEmail:
+ *  - no requiere messageId previo
+ *  - no setea In-Reply-To/References/threadId
+ *  - acepta to/cc/bcc como string o array, y replyTo opcional
+ *
+ * Devuelve { id, threadId } del mensaje enviado.
+ */
+async function enviarEmail({ to, asunto, texto, cc, bcc, replyTo }) {
+  if (!to)                                      throw new Error('enviarEmail: falta "to"');
+  if (asunto === undefined || asunto === null)  throw new Error('enviarEmail: falta "asunto"');
+  if (texto  === undefined || texto  === null)  throw new Error('enviarEmail: falta "texto"');
+
+  const auth = await autenticar();
+
+  const tos  = Array.isArray(to)  ? to.join(', ')  : to;
+  const ccs  = cc  ? (Array.isArray(cc)  ? cc.join(', ')  : cc)  : null;
+  const bccs = bcc ? (Array.isArray(bcc) ? bcc.join(', ') : bcc) : null;
+
+  const rawLines = [
+    `From: ${_encodeHeader(FROM_NAME)} <${FROM_EMAIL}>`,
+    `To: ${tos}`,
+  ];
+  if (ccs)     rawLines.push(`Cc: ${ccs}`);
+  if (bccs)    rawLines.push(`Bcc: ${bccs}`);
+  if (replyTo) rawLines.push(`Reply-To: ${replyTo}`);
+  rawLines.push(
+    `Subject: ${_encodeHeader(asunto)}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: text/plain; charset=UTF-8`,
+    `Content-Transfer-Encoding: 8bit`,
+    ``,
+    texto,
+  );
+  const raw = Buffer.from(rawLines.join('\r\n')).toString('base64')
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  const r = await _gmail(auth).users.messages.send({
+    userId: 'me',
+    requestBody: { raw },
+  });
+  return { id: r.data.id, threadId: r.data.threadId };
+}
+
+/**
  * Responde a un email (mantiene threading).
  */
 async function responderEmail(messageId, textoRespuesta) {
@@ -487,6 +531,7 @@ module.exports = {
   listarEmailsNoLeidos,
   leerEmail,
   marcarLeido,
+  enviarEmail,
   responderEmail,
   buscarMensajesCon,
   // constantes
