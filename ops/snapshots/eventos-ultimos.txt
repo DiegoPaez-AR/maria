@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                          
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1232  2026-04-27 01:24:28  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                             
+
+1231  2026-04-27 01:24:28  sistema   interno                         acción ejecutada: cancelar_programado                                                                                                                                           
+
+1230  2026-04-27 01:24:28  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo el miércoles.                                                                                                                                              
+
+1229  2026-04-27 01:24:03  whatsapp  entrante   34342575317160@lid   Escribirle en un par de días                                                                                                                                                    
+
 1228  2026-04-27 01:23:32  sistema   interno                         programado id=29 falló: google.enviarEmail no está implementado — usá canal whatsapp por ahora                                                                                  
 
 1227  2026-04-27 01:22:32  sistema   interno                         programado id=29 falló: google.enviarEmail no está implementado — usá canal whatsapp por ahora                                                                                  
@@ -271,11 +279,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                      14:15                                                                                                                                                                           
                                                                                                                                                                                                                                                      
                                                                      Verifique el horario de vuelo ante                                                                                                                                              
-
-1132  2026-04-24 00:27:10  whatsapp  saliente   34342575317160@lid   No me llegó la imagen, solo el texto del mensaje. ¿Me pasás los datos del vuelo por texto (fecha, vuelo, horario)? Con eso le escribo a Isabel.                                 
-
-1131  2026-04-24 00:26:48  whatsapp  entrante   34342575317160@lid   Acá va de nuevo                                                                                                                                                                 
-
-1130  2026-04-24 00:26:47  whatsapp  saliente   34342575317160@lid   No puedo reenviar imágenes por WhatsApp, solo texto. Tendrías que reenviarla vos directamente a Isabel, o mandármela de nuevo y yo le escribo con los datos.                    
-
-1129  2026-04-24 00:26:35  whatsapp  entrante   34342575317160@lid   Si no la podes leer, solo reenvíasela                                                                                                                                           
