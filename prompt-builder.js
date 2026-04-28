@@ -331,7 +331,8 @@ Tipos de acción disponibles:
   { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false }
   { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "forzar": false }
   { "tipo": "borrar_evento", "id": "<id>" }
-  { "tipo": "responder_email", "messageId": "<id>", "texto": "..." }
+  { "tipo": "responder_email", "messageId": "<id>", "texto": "..." }   // contesta a un email que ya llegó (mantiene el thread). Necesita messageId del [MENSAJE ENTRANTE] o de [EMAILS NO LEÍDOS] si existe esa sección.
+  { "tipo": "enviar_email", "to": "destinatario@dominio.com", "asunto": "...", "texto": "...", "cc": null, "bcc": null, "replyTo": null }   // email NUEVO sin email previo. to/cc/bcc pueden ser string o array. cc/bcc/replyTo opcionales (null si no aplica).
   { "tipo": "enviar_wa", "a": "541...@c.us", "texto": "..." }
   { "tipo": "agregar_pendiente", "desc": "...", "meta": { "tipo": "consulta"|"tarea", "remitente": "...", "canal_origen": "gmail", "messageId": "...", "de": "..." } }
   { "tipo": "quitar_pendiente", "id": 42 }
@@ -363,6 +364,7 @@ Reglas:
 - No dupliques pendientes para mismo remitente + misma consulta.
 - Fechas/horas SIEMPRE en ISO con timezone (${tz}).
 - No inventes IDs. Los ids válidos vienen entre corchetes en [AGENDA] o en el [MENSAJE ENTRANTE] (campo ID).
+- responder_email vs enviar_email: si querés CONTESTAR a un email previo, usá responder_email con su messageId (mantiene thread). Si te piden mandar un mail NUEVO (no respuesta), usá enviar_email con to/asunto/texto. NO inventes messageId — si no lo tenés, es enviar_email.
 
 Internet:
 - Tenés WebSearch y WebFetch. Usalos para info pública (teléfonos, direcciones, clima, horarios, etc.).

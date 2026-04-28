@@ -52,6 +52,7 @@ async function ejecutarUna(accion, ctx) {
     case 'modificar_evento':   return await _modificarEvento(accion, ctx);
     case 'borrar_evento':      return await _borrarEvento(accion, ctx);
     case 'responder_email':    return await _responderEmail(accion, ctx);
+    case 'enviar_email':       return await _enviarEmail(accion, ctx);
     case 'enviar_wa':          return await _enviarWA(accion, ctx);
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
@@ -162,6 +163,36 @@ async function _responderEmail(a, ctx) {
     metadata: { inReplyTo: a.messageId },
   });
   return { messageId: a.messageId, enviado: true };
+}
+
+// Email nuevo (sin thread previo). Diferencias con _responderEmail:
+//  - no requiere messageId
+//  - acepta to/cc/bcc (string o array) y replyTo opcional
+//  - devuelve { id, threadId } del mensaje nuevo
+async function _enviarEmail(a, ctx) {
+  _requerir(a, ['to', 'asunto', 'texto']);
+  const r = await g.enviarEmail({
+    to: a.to,
+    asunto: a.asunto,
+    texto: a.texto,
+    cc: a.cc || null,
+    bcc: a.bcc || null,
+    replyTo: a.replyTo || null,
+  });
+  mem.log({
+    usuarioId: ctx.usuario.id,
+    canal: 'gmail', direccion: 'saliente',
+    asunto: a.asunto,
+    cuerpo: a.texto,
+    metadata: {
+      to: a.to,
+      cc: a.cc || null,
+      bcc: a.bcc || null,
+      messageId: r.id,
+      threadId: r.threadId,
+    },
+  });
+  return { messageId: r.id, threadId: r.threadId, enviado: true };
 }
 
 // ─── WhatsApp ─────────────────────────────────────────────────────────────
