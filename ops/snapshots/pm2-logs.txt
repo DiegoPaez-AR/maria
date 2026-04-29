@@ -1,9 +1,3 @@
-0|maria    | [WA authenticated]
-0|maria    | ✅ [WA ready] Maria conectada
-0|maria    | ▸ arrancando poll de Gmail (cada 60s)
-0|maria    | ▸ arrancando loop de recordatorios (cada 30min)
-0|maria    | ▸ arrancando dispatcher de programados (cada 60s)
-0|maria    | ▸ arrancando morning-brief (por usuario, ventana 4h)
 0|maria    | [morning-brief] activo, ventana 4h, cada usuario en su tz
 0|maria    | ▸ arrancando meeting-prep (cada 5min)
 0|maria    | [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
@@ -197,4 +191,10 @@
 0|maria    | Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=219146579128474@lid contactos_ambiguos=0
 0|maria    | [unknown-flow/whatsapp] LLM resolucion: desconocido · El remitente 219146579128474@lid con pushname 'Wal' no matchea con ningún usuario activo ni hay evidencia en los historiales de que Maria haya contactado a este número o que algún usuario haya pedido gestionar algo con alguien llamado 'Wal'.
 0|maria    | [unknown-flow/wa] primer contacto de 219146579128474@lid — preguntando (FSM)
+0|maria    | [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=0(err:Cannot read properties of undefined (reading 'waitForChatLoading')
+0|maria    | Object.<anonymous> (https://static.whatsapp.net/rsrc.php/v4iyqc4/yj/l/es_LA-j/z814v5zcJGU.js:2126:1607)
+0|maria    | Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=227143674011812@lid contactos_ambiguos=0
+0|maria    | [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=0(err:Cannot read properties of undefined (reading 'waitForChatLoading')
+0|maria    | Object.<anonymous> (https://static.whatsapp.net/rsrc.php/v4iyqc4/yj/l/es_LA-j/z814v5zcJGU.js:2126:1607)
+0|maria    | Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=227143674011812@lid contactos_ambiguos=0
 
