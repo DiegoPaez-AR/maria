@@ -1,5 +1,33 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1578  2026-04-29 19:50:53  whatsapp  entrante   219146579128474@lid                                  gracias                                                                                                                                                                                                 
+
+1577  2026-04-29 19:50:53  sistema   interno                                                         unknown-flow/whatsapp LLM: desconocido · El remitente 219146579128474@lid con pushname 'Wal' no matchea con ningún usuario activo ni hay evidencia en los historiales de que Maria haya contactado a est
+
+1576  2026-04-29 19:50:21  sistema   interno                                                         acción ejecutada: enviar_email                                                                                                                                                                          
+
+1575  2026-04-29 19:50:21  gmail     saliente                                                        Hola Walter y Nicolás,                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                             
+                                                                                                     Les escribo de parte de Hernan Fulco para invitarlos a la Capacitación de Multichannel.                                                                                                                 
+                                                                                                                                                                                                                                                                                                             
+                                                                                                     Fecha: martes 5 de mayo de 2026                                                                                                                                                                         
+                                                                                                     Hora: 11:00 hs (duración: 2 horas)                                                                                                                                                                      
+                                                                                                     Participantes: Walte                                                                                                                                                                                    
+
+1574  2026-04-29 19:50:21  sistema   interno                                                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+1573  2026-04-29 19:50:21  whatsapp  saliente   5491150080522@c.us                                   Hola Nicolás, te escribo de parte de Hernan Fulco. Quedás invitado a la *Capacitación de Multichannel* para el *martes 5 de mayo a las 11:00 hs* (duración 2 horas). También participa Walter Vera. Vas 
+
+1572  2026-04-29 19:50:21  sistema   interno                                                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+1571  2026-04-29 19:50:21  whatsapp  saliente   5491138433288@c.us                                   Hola Walter, te escribo de parte de Hernan Fulco. Quedás invitado a la *Capacitación de Multichannel* para el *martes 5 de mayo a las 11:00 hs* (duración 2 horas). También participa Nicolás Kosinski. 
+
+1570  2026-04-29 19:50:20  sistema   interno                                                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+1569  2026-04-29 19:50:20  calendar  saliente                                                        creado: Capacitación de Multichannel (2026-05-05T11:00:00-03:00 → 2026-05-05T13:00:00-03:00) · Meet: https://meet.google.com/jmg-bidy-skw                                                               
+
+1568  2026-04-29 19:50:19  whatsapp  saliente   137456250806423@lid                                  Perfecto, te la agendo para el martes 5 a las 11hs. Les mando la invitación a Walter y a Nicolás por WA y mail ahora.                                                                                   
+
 1567  2026-04-29 19:49:28  whatsapp  entrante   137456250806423@lid                                  Perfecto. Por favor envíale a él y a Nicolás Kosinski una cita para el martes 5 a las 11hs con una duración de 2 horas para la Capacitación de Multichannel. Envíala por whatsapp y mail por favor.     
 
 1566  2026-04-29 19:48:20  whatsapp  saliente   137456250806423@lid                                  Sí, tengo a Walter Vera registrado. Su WhatsApp es +54 9 11 3843-3288 y su email es wvera@froneus.com. Es de Froneus.                                                                                   
@@ -271,27 +299,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 1479  2026-04-28 00:05:36  whatsapp  saliente   34342575317160@lid                                   Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
                                                                                                                                                                                                                                                                                                              
                                                                                                      1. Confirmar con Gustavo Aragón reunión con Diego — opciones propuestas: lunes 4/5 a las 15:30 o martes 5/5 a las 17:00. Esperando respuesta por email. — de Gu                                         
-
-1478  2026-04-27 23:38:48  whatsapp  saliente   34342575317160@lid                                   Me encantaría, pero no puedo — el sistema todavía no tiene implementado el envío de emails nuevos desde cero. Solo puedo *responder* emails que lleguen (eso sí funciona). Por eso estaban fallando todo
-
-1477  2026-04-27 23:38:35  whatsapp  entrante   34342575317160@lid                                   me podes mandar un mail de prueba a ver si funciona? gracias                                                                                                                                            
-
-1476  2026-04-27 23:35:36  sistema   interno                                                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (2 usuarios)                                                                                                        
-
-1475  2026-04-27 23:35:29  sistema   interno                                                         shutdown por SIGINT                                                                                                                                                                                     
-
-1474  2026-04-27 23:18:31  sistema   interno                                                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (2 usuarios)                                                                                                        
-
-1473  2026-04-27 23:18:22  sistema   interno                                                         shutdown por SIGINT                                                                                                                                                                                     
-
-1472  2026-04-27 20:57:26  whatsapp  saliente   34342575317160@lid                                   No tengo señal de que esté andando — el sistema no me avisó ningún cambio. Si querés, probamos mandar algo ahora y vemos si pasa.                                                                       
-
-1471  2026-04-27 20:57:14  whatsapp  entrante   34342575317160@lid                                   Se anda el mail o todavía sí es sin funcionar el mail.                                                                                                                                                  
-
-1470  2026-04-27 20:56:30  whatsapp  saliente   34342575317160@lid                                   Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                                                             
-                                                                                                     1. Confirmar con Gustavo Aragón reunión con Diego — opciones propuestas: lunes 4/5 a las 15:30 o martes 5/5 a las 17:00. Esperando respuesta por email. — de Gu                                         
-
-1469  2026-04-27 18:31:25  sistema   interno                                                         acción ejecutada: cancelar_programado                                                                                                                                                                   
-
-1468  2026-04-27 18:31:25  whatsapp  saliente   34342575317160@lid                                   Entendido, cancelo el reintento — el email no está funcionando y no tiene sentido que siga golpeando. Cuando quieras le mando el mensaje a Gustavo por otro lado, o lo retomamos cuando el email esté an
