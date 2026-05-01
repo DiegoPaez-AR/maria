@@ -1,8 +1,27 @@
 [TAILING] Tailing last 200 lines for [maria] process (change the value with --lines option)
 /root/.pm2/logs/maria-error.log last 200 lines:
+0|maria    | [WA watchdog] frame muerto detectado en morning-brief/Diego — saliendo: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+0|maria    | [morning-brief/Diego] enviar falló: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+
 /root/.pm2/logs/maria-out.log last 200 lines:
 0|maria    | [GMAIL poll] 1 email(s) nuevo(s)
 0|maria    | [GMAIL ←] Nicolas Kosinski <nkosinski@froneus.com> | "Re: Capacitación de Multichannel — martes 5 de mayo, 11:00 hs"
 0|maria    | [unknown-flow/gmail] match en contactos: nkosinski@froneus.com = "Nicolás Kosinski" de Hernan Fulco (id=2)
 0|maria    | [GMAIL acciones/Hernan Fulco] 1/1 ejecutadas
+0|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | ▸ Maria iniciando…
+0|maria    |   Owner:      Diego (id=1)
+0|maria    |   Usuarios:   2 activo(s) → Diego, Hernan Fulco
+0|maria    |   Gmail poll: cada 60s
+0|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | ✓ whisper OK
+0|maria    | [WA authenticated]
+0|maria    | ✅ [WA ready] Maria conectada
+0|maria    | ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | ▸ arrancando loop de recordatorios (cada 30min)
+0|maria    | ▸ arrancando dispatcher de programados (cada 60s)
+0|maria    | ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria    | [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria    | ▸ arrancando meeting-prep (cada 5min)
+0|maria    | [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
 
