@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1687  2026-05-02 22:58:28  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
+
+1686  2026-05-02 22:58:28  whatsapp  saliente   13059858123@c.us                          Hola Lucas, soy María, secretaria de Diego Páez. Te escribo para coordinar una reunión con Diego para el *lunes 4 de mayo a las 15:00 hs.* (Argentina), una hora. ¿Te viene bien? En cuanto confirmes te
+
+1685  2026-05-02 22:58:28  sistema   interno                                              acción ejecutada: crear_evento                                                                                                                                                                          
+
+1684  2026-05-02 22:58:28  calendar  saliente                                             creado: Reunión Diego / Lucas Capurro (2026-05-04T15:00:00-03:00 → 2026-05-04T16:00:00-03:00) · Meet: https://meet.google.com/zvi-jkmj-mys                                                              
+
+1683  2026-05-02 22:58:27  whatsapp  saliente   34342575317160@lid                        Te lo agendo el lunes 4/5 a las 15:00 hs. — es el primer hueco de una hora que tenés libre después de las tres reuniones de la mañana. Le escribo a Lucas por WhatsApp para avisarle.                   
+
 1682  2026-05-02 22:57:39  whatsapp  entrante   34342575317160@lid                        Con él una hora, en cualquier momento tenga libre la agenda del problema.                                                                                                                               
 
 1681  2026-05-02 22:57:19  whatsapp  saliente   34342575317160@lid                        ¡Claro! ¿Qué día y a qué hora te viene bien la semana que viene? Y ¿cuánto tiempo le damos?                                                                                                             
@@ -332,13 +342,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                           Maria Pa                                                                                                                                                                                                
 
 1588  2026-04-29 19:56:59  sistema   interno                                              acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-1587  2026-04-29 19:56:59  whatsapp  saliente   137456250806423@lid                       ¡Hola Nico, todo bien! 😊 Vi tu mail sobre sumar a Cruiz y Nyarema a la capacitación. Lo estoy coordinando con Hernan y te confirmo.                                                                     
-
-1586  2026-04-29 19:56:53  whatsapp  saliente   137456250806423@lid                       Perfecto, lo consulto con Hernan y te confirmo!                                                                                                                                                         
-
-1585  2026-04-29 19:56:20  whatsapp  entrante   227143674011812@lid                       Gracias!                                                                                                                                                                                                
-
-1584  2026-04-29 19:56:20  sistema   interno                                              unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=2 · Pushname 'Nico' = Nicolás Kosinski (nkosinski@froneus.com), a quien Maria le escribió a las 19:50 de hoy por pedido de Hernan Fulco invitán
-
-1583  2026-04-29 19:56:18  whatsapp  entrante   227143674011812@lid                       Hola María cómo andas ?                                                                                                                                                                                 
