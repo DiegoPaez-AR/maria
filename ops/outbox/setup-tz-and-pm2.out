@@ -1,0 +1,206 @@
+# ejecutado: 2026-05-02T09:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # setup-tz-and-pm2.sh — one-shot:
+#   #   1) setea TZ del VPS a America/Argentina/Buenos_Aires si hace falta
+#   #   2) recrea el proceso pm2 'maria' usando ecosystem.config.js
+#   #      (para que tome log_date_format y TZ)
+#   #   3) reporta estado final
+#   #
+#   # Idempotente: si ya está todo bien, no rompe nada.
+#   
+#   set -u
+#   
+#   echo "=== TZ ANTES ==="
+#   timedatectl 2>&1 | grep -E "Time zone|Local time" || true
+#   date
+#   
+#   CURRENT_TZ=$(timedatectl show --value -p Timezone 2>/dev/null || cat /etc/timezone 2>/dev/null || echo unknown)
+#   TARGET_TZ="America/Argentina/Buenos_Aires"
+#   
+#   if [ "$CURRENT_TZ" != "$TARGET_TZ" ]; then
+#     echo ""
+#     echo ">> TZ actual ($CURRENT_TZ) != $TARGET_TZ → seteando"
+#     timedatectl set-timezone "$TARGET_TZ" 2>&1
+#   else
+#     echo ""
+#     echo ">> TZ ya es $TARGET_TZ — sin cambios"
+#   fi
+#   
+#   echo ""
+#   echo "=== TZ DESPUES ==="
+#   timedatectl 2>&1 | grep -E "Time zone|Local time" || true
+#   date
+#   
+#   echo ""
+#   echo "=== pm2 describe maria (ANTES) ==="
+#   pm2 describe maria 2>&1 | grep -E "script path|exec mode|status|cwd|out log|error log|created at|restart" || pm2 describe maria 2>&1 | head -40
+#   
+#   cd /root/secretaria || { echo "no se pudo cd a /root/secretaria"; exit 1; }
+#   
+#   if [ ! -f ecosystem.config.js ]; then
+#     echo ""
+#     echo "ERROR: no existe ecosystem.config.js en /root/secretaria — abortando"
+#     exit 1
+#   fi
+#   
+#   echo ""
+#   echo "=== ecosystem.config.js ==="
+#   cat ecosystem.config.js
+#   
+#   echo ""
+#   echo "=== Deploy: delete + start con ecosystem ==="
+#   pm2 delete maria 2>&1 || echo "(maria no existía, ok)"
+#   pm2 start ecosystem.config.js 2>&1
+#   pm2 save 2>&1
+#   
+#   echo ""
+#   echo ">> esperando 8s para que arranque..."
+#   sleep 8
+#   
+#   echo ""
+#   echo "=== pm2 list (DESPUES) ==="
+#   pm2 list 2>&1
+#   
+#   echo ""
+#   echo "=== pm2 describe maria (DESPUES) ==="
+#   pm2 describe maria 2>&1 | grep -E "script path|exec mode|status|cwd|out log|error log|node args|env: TZ|TZ:" | head -20
+#   
+#   echo ""
+#   echo "=== pm2 logs maria (DESPUES, 30 lineas) ==="
+#   pm2 logs maria --lines 30 --nostream 2>&1 | tail -40
+#   
+#   echo ""
+#   echo "=== fin ==="
+
+# ───── output ─────
+=== TZ ANTES ===
+               Local time: Sat 2026-05-02 09:22:02 -03
+                Time zone: America/Argentina/Buenos_Aires (-03, -0300)
+Sat May  2 09:22:02 AM -03 2026
+
+>> TZ ya es America/Argentina/Buenos_Aires — sin cambios
+
+=== TZ DESPUES ===
+               Local time: Sat 2026-05-02 09:22:02 -03
+                Time zone: America/Argentina/Buenos_Aires (-03, -0300)
+Sat May  2 09:22:02 AM -03 2026
+
+=== pm2 describe maria (ANTES) ===
+│ status            │ online                          │
+│ restarts          │ 7                               │
+│ script path       │ /root/secretaria/index.js       │
+│ error log path    │ /root/.pm2/logs/maria-error.log │
+│ out log path      │ /root/.pm2/logs/maria-out.log   │
+│ exec cwd          │ /root/secretaria                │
+│ exec mode         │ fork_mode                       │
+│ unstable restarts │ 0                               │
+│ created at        │ 2026-05-02T12:22:02.513Z        │
+
+=== ecosystem.config.js ===
+// ecosystem.config.js — config de pm2 para Maria
+//
+// Cambios respecto a `pm2 start index.js --name maria`:
+//   - log_date_format: prepende timestamp a cada línea de log → mejor debug.
+//   - TZ: fuerza hora Argentina dentro del proceso (independiente del VPS).
+//   - autorestart + max_memory_restart: protección básica.
+//
+// Deploy:
+//   pm2 delete maria
+//   pm2 start ecosystem.config.js
+//   pm2 save
+//
+// (lo hace ops/inbox/setup-tz-and-pm2.sh la primera vez)
+
+module.exports = {
+  apps: [{
+    name: 'maria',
+    script: 'index.js',
+    cwd: '/root/secretaria',
+    autorestart: true,
+    max_memory_restart: '1G',
+    log_date_format: 'YYYY-MM-DD HH:mm:ss',
+    merge_logs: true,
+    env: {
+      NODE_ENV: 'production',
+      TZ: 'America/Argentina/Buenos_Aires',
+    },
+  }],
+};
+
+=== Deploy: delete + start con ecosystem ===
+[PM2] Applying action deleteProcessId on app [maria](ids: [ 0 ])
+[PM2] [maria](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2][WARN] Applications maria not running, starting...
+[PM2] App [maria] launched (1 instances)
+┌────┬──────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria    │ default     │ 1.0.0   │ fork    │ 1897843  │ 0s     │ 0    │ online    │ 0%       │ 11.5mb   │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+
+>> esperando 8s para que arranque...
+
+=== pm2 list (DESPUES) ===
+┌────┬──────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria    │ default     │ 1.0.0   │ fork    │ 1897843  │ 8s     │ 0    │ online    │ 0%       │ 183.5mb  │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+=== pm2 describe maria (DESPUES) ===
+│ status            │ online                          │
+│ script path       │ /root/secretaria/index.js       │
+│ error log path    │ /root/.pm2/logs/maria-error.log │
+│ out log path      │ /root/.pm2/logs/maria-out.log   │
+│ exec cwd          │ /root/secretaria                │
+│ exec mode         │ fork_mode                       │
+
+=== pm2 logs maria (DESPUES, 30 lineas) ===
+[TAILING] Tailing last 30 lines for [maria] process (change the value with --lines option)
+/root/.pm2/logs/maria-error.log last 30 lines:
+0|maria    | [WA watchdog] frame muerto detectado en morning-brief/Diego — saliendo: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+0|maria    | [morning-brief/Diego] enviar falló: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+
+/root/.pm2/logs/maria-out.log last 30 lines:
+0|maria    | [WA ←] Diego (34342575317160@lid): Agrégame esta tarea:Fernando tasación y entrevistas
+0|maria    | [WA →] Diego/Diego: Anotada 👌
+0|maria    | [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | [WA ←] Diego (34342575317160@lid): Agrégame esta tarea: Fulco Guevara
+0|maria    | [WA →] Diego/Diego: Anotada 👌
+0|maria    | [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | [WA ←] Diego (34342575317160@lid): Agrégame esta tarea:pagar a ani
+0|maria    | [WA →] Diego/Diego: Anotada 👌
+0|maria    | [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | [programados] 2 mensaje(s) debidos, despachando…
+0|maria    | [programados] ✓ id=72 (whatsapp/137456250806423@lid) [meeting_prep:2:1qkppgget26r5n8olbag2goq2e_20260502T120000Z]
+0|maria    | [programados] ✓ id=73 (whatsapp/137456250806423@lid) [meeting_prep:2:5qf71mnpue1s7ccnd1aih0n45c_20260502T120000Z]
+0|maria    | 
+0|maria    | ▸ SIGINT recibido, cerrando…
+0|maria    | 2026-05-02 09:22:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-02 09:22:05: ▸ Maria iniciando…
+0|maria    | 2026-05-02 09:22:05:   Owner:      Diego (id=1)
+0|maria    | 2026-05-02 09:22:05:   Usuarios:   2 activo(s) → Diego, Hernan Fulco
+0|maria    | 2026-05-02 09:22:05:   Gmail poll: cada 60s
+0|maria    | 2026-05-02 09:22:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-02 09:22:05: ✓ whisper OK
+0|maria    | 2026-05-02 09:22:10: [WA authenticated]
+0|maria    | 2026-05-02 09:22:10: ✅ [WA ready] Maria conectada
+0|maria    | 2026-05-02 09:22:10: ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | 2026-05-02 09:22:10: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria    | 2026-05-02 09:22:10: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria    | 2026-05-02 09:22:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria    | 2026-05-02 09:22:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria    | 2026-05-02 09:22:10: ▸ arrancando meeting-prep (cada 5min)
+0|maria    | 2026-05-02 09:22:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+
+
+=== fin ===
+
+# exit=0
