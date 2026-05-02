@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1696  2026-05-02 23:01:14  whatsapp  saliente   34342575317160@lid                        Hola Lucas, gracias por escribir. Soy la secretaria personal de Diego, así que solo puedo ayudarlo a él. Para reservas propias vas a necesitar contactar directamente al restaurante. ¡Suerte!          
+
+1695  2026-05-02 23:01:06  whatsapp  entrante   53463870402755@lid                        María podes hacerme una reserva en un restaurante                                                                                                                                                       
+
+1694  2026-05-02 23:01:06  sistema   interno                                              unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Es el Lucas al que Maria le escribió hace horas por WA a pedido de Diego para coordinar una reunión (historial Diego 2026-05-02 22:58); el 
+
 1693  2026-05-02 23:00:08  sistema   interno                                              acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 1692  2026-05-02 23:00:08  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
@@ -328,9 +334,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 1598  2026-04-29 19:58:13  whatsapp  saliente   137456250806423@lid                       Perfecto, les mando la invitación a *cruiz@froneus.com* y *nyarema@froneus.com* y le confirmo a Nico.                                                                                                   
 
 1597  2026-04-29 19:57:17  whatsapp  entrante   137456250806423@lid                       sí, perfecto                                                                                                                                                                                            
-
-1596  2026-04-29 19:57:06  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
-
-1595  2026-04-29 19:57:06  whatsapp  saliente   137456250806423@lid                       Hernan, Nico me pidió por mail agregar a *cruiz@froneus.com* y *nyarema@froneus.com* a la Capacitación de Multichannel del 5/5. ¿Los sumo al evento?                                                    
-
-1594  2026-04-29 19:57:00  sistema   interno                                              acción ejecutada: agregar_pendiente                                                                                                                                                                     
