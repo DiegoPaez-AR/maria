@@ -1,0 +1,47 @@
+# ejecutado: 2026-05-03T11:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Verifica que el patch de debug @lid está en el código corriendo en el VPS
+#   cd /root/secretaria
+#   echo "═══ commit actual ═══"
+#   git log --oneline -1
+#   echo ""
+#   echo "═══ buscar wa-debug en handler ═══"
+#   grep -c "wa-debug @lid" whatsapp-handler.js && echo "(patch presente)" || echo "(patch ausente)"
+#   echo ""
+#   echo "═══ pm2 maria status ═══"
+#   pm2 jlist | python3 -c "
+#   import json, sys
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p['name'] == 'maria':
+#           e = p.get('pm2_env', {})
+#           print(f\"status={e.get('status')} restarts={e.get('restart_time')} pid={p.get('pid')} uptime_s={int((__import__('time').time()*1000 - e.get('pm_uptime',0))/1000)}\")
+#   "
+#   echo ""
+#   echo "═══ ult 6 logs ═══"
+#   pm2 logs maria --lines 6 --nostream 2>&1 | tail -8
+
+# ───── output ─────
+═══ commit actual ═══
+224ef9a89 ops: verificar que el patch de debug @lid esta deployado
+
+═══ buscar wa-debug en handler ═══
+7
+(patch presente)
+
+═══ pm2 maria status ═══
+status=online restarts=5 pid=2129238 uptime_s=120
+
+═══ ult 6 logs ═══
+/root/.pm2/logs/maria-out.log last 6 lines:
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria    | 2026-05-03 11:25:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria    | 2026-05-03 11:25:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+
+
+# exit=0
