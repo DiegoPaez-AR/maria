@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1789  2026-05-03 20:39:53  whatsapp  entrante   53463870402755@lid   Lucas@capurro.com.ar                                                                                                                                                                                    
+
+1788  2026-05-03 20:39:40  whatsapp  saliente   53463870402755@lid   Claro Lucas! No tengo tu mail registrado — me lo pasás y te mando el invite ahora.                                                                                                                      
+
+1787  2026-05-03 20:39:24  whatsapp  entrante   53463870402755@lid   No me podes mandar un invite por mail?                                                                                                                                                                  
+
+1786  2026-05-03 20:39:09  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+1785  2026-05-03 20:39:09  whatsapp  saliente   99827991994407@lid   Hola Sofia! Lo consulto con Diego y te confirmo en cuanto me responda 😊                                                                                                                                 
+
+1784  2026-05-03 20:39:08  whatsapp  saliente   34342575317160@lid   Diego, te escribió Sofia preguntando si querés que te pida helado a Freddo. ¿Le digo que sí? Si es así, avisame qué querés pedir y a dónde lo mando.                                                    
+
 1783  2026-05-03 20:38:33  whatsapp  entrante   99827991994407@lid   María me pedis helado a Freddo ?                                                                                                                                                                        
 
 1782  2026-05-03 20:38:32  sistema   interno                         unknown-flow/whatsapp LLM: desconocido · No hay mención de 'Sofia', de Freddo ni de ningún pedido de helado en ninguno de los historiales; el ID 99827991994407@lid no coincide con ningún usuario activ
@@ -224,15 +236,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 1691  2026-05-02 23:00:08  whatsapp  saliente   34342575317160@lid   Diego, Lucas me dice que el lunes 4/5 a las 15:00 no le viene bien. ¿Qué otro día y horario de la semana que viene te sirve para juntarte con él una hora?                                              
 
 1690  2026-05-02 23:00:08  whatsapp  saliente   34342575317160@lid   Entendido, Lucas. Lo consulto con Diego y te confirmo un nuevo horario, no te preocupes.                                                                                                                
-
-1689  2026-05-02 22:59:38  whatsapp  entrante   53463870402755@lid   Hola, no puedo el martes y esa hora me complica                                                                                                                                                         
-
-1688  2026-05-02 22:59:38  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Diego (id=1) le pidió a Maria organizar una reunión con Lucas; Maria le escribió a este número anoche coordinando el lunes 4/5 a las 15hs, 
-
-1687  2026-05-02 22:58:28  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-1686  2026-05-02 22:58:28  whatsapp  saliente   13059858123@c.us     Hola Lucas, soy María, secretaria de Diego Páez. Te escribo para coordinar una reunión con Diego para el *lunes 4 de mayo a las 15:00 hs.* (Argentina), una hora. ¿Te viene bien? En cuanto confirmes te
-
-1685  2026-05-02 22:58:28  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-1684  2026-05-02 22:58:28  calendar  saliente                        creado: Reunión Diego / Lucas Capurro (2026-05-04T15:00:00-03:00 → 2026-05-04T16:00:00-03:00) · Meet: https://meet.google.com/zvi-jkmj-mys                                                              

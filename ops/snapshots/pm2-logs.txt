@@ -1,12 +1,3 @@
-0|maria    | 2026-05-03 00:20:23: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=0(err:Cannot read properties of undefined (reading 'waitForChatLoading')
-0|maria    | 2026-05-03 00:20:23: Object.<anonymous> (https://static.whatsapp.net/rsrc.php/v4iw-14/y1/l/es_LA-j/YZYGBv5-puF.js:2148:1607)
-0|maria    | 2026-05-03 00:20:23: Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=53463870402755@lid contactos_ambiguos=0
-0|maria    | 2026-05-03 00:20:43: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Diego (id=1) le pidió a Maria coordinar una reunión con Lucas; Maria le escribió a Lucas por WA, negociaron horarios, y ahora Lucas responde 'Ok dale me mandas el invite?' — claramente es el tercero de esa gestión confirmando el horario y pidiendo el link de Meet.
-0|maria    | 2026-05-03 00:21:00: [WA →usr] Diego (34342575317160@lid): Diego, Lucas confirmó la reunión del martes 5/5 pero no aclaró si prefiere las 12:00 o las 18:00. Le pregunté para confirmar y apenas me responda le mando el in
-0|maria    | 2026-05-03 00:21:00: [WA →3ro] Diego/Lucas: ¡Genial! ¿Te viene mejor a las *12:00* o a las *18:00* del martes?
-0|maria    | 2026-05-03 00:21:00: [unknown-flow/wa] tercero_de_usuario: 53463870402755@lid (Lucas) → contexto de Diego (id=1)
-0|maria    | 2026-05-03 00:25:54: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=0(err:Cannot read properties of undefined (reading 'waitForChatLoading')
-0|maria    | 2026-05-03 00:25:54: Object.<anonymous> (https://static.whatsapp.net/rsrc.php/v4iw-14/y1/l/es_LA-j/YZYGBv5-puF.js:2148:1607)
 0|maria    | 2026-05-03 00:25:54: Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=53463870402755@lid contactos_ambiguos=0
 0|maria    | 2026-05-03 00:26:22: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Lucas es el tercero con quien Diego le pidió a Maria coordinar una reunión; Maria le preguntó si prefería las 12:00 o las 18:00 del martes, y '18' es claramente su respuesta eligiendo las 18:00 hs.
 0|maria    | 2026-05-03 00:26:34: [WA →usr] Diego (34342575317160@lid): Diego, Lucas confirmó para el martes 5/5 a las 18:00. Ya le agendo la reunión y le mando el invite.
@@ -197,4 +188,13 @@
 0|maria    | 2026-05-03 17:38:04: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=3 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=99827991994407@lid contactos_ambiguos=0
 0|maria    | 2026-05-03 17:38:32: [unknown-flow/whatsapp] LLM resolucion: desconocido · No hay mención de 'Sofia', de Freddo ni de ningún pedido de helado en ninguno de los historiales; el ID 99827991994407@lid no coincide con ningún usuario activo ni con ningún tercero vinculado a una gestión previa.
 0|maria    | 2026-05-03 17:38:33: [unknown-flow/wa] primer contacto de 99827991994407@lid — preguntando (FSM)
+0|maria    | 2026-05-03 17:39:08: [WA →usr] Diego (34342575317160@lid): Diego, te escribió Sofia preguntando si querés que te pida helado a Freddo. ¿Le digo que sí? Si es así, avisame qué querés pedir y a dónde lo mando.
+0|maria    | 2026-05-03 17:39:09: [WA →3ro] Diego/Sofia: Hola Sofia! Lo consulto con Diego y te confirmo en cuanto me responda 😊
+0|maria    | 2026-05-03 17:39:09: [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | 2026-05-03 17:39:09: [unknown-flow/wa] FSM routeó 99827991994407@lid → Diego
+0|maria    | 2026-05-03 17:39:24: [unknown-flow/wa] match en contactos: 53463870402755@lid = "Lucas Capurro" de Diego (id=1)
+0|maria    | 2026-05-03 17:39:40: [WA →3ro] Diego/Lucas: Claro Lucas! No tengo tu mail registrado — me lo pasás y te mando el invite ahora.
+0|maria    | 2026-05-03 17:39:40: [unknown-flow/wa] tercero_de_usuario: 53463870402755@lid (Lucas) → contexto de Diego (id=1)
+0|maria    | 2026-05-03 17:39:49: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=7 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=99827991994407@lid contactos_ambiguos=0
+0|maria    | 2026-05-03 17:39:53: [unknown-flow/wa] match en contactos: 53463870402755@lid = "Lucas Capurro" de Diego (id=1)
 
