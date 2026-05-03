@@ -445,6 +445,7 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
     return await _routearComoTerceroDeUsuario({
       client, match: usuario, from, pushname, cuerpo, messageId,
       razon: `matcheo por libreta: "${contacto.nombre}" está registrado en los contactos de ${usuario.nombre}`,
+      via: 'libreta',
       reprocesarComoUsuario,
     });
   }
@@ -460,6 +461,7 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
     if (match && match.activo) {
       return await _routearAUsuarioActivo({
         client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
+        via: 'llm',
         reprocesarComoUsuario,
       });
     }
@@ -471,6 +473,7 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
     if (match && match.activo) {
       return await _routearComoTerceroDeUsuario({
         client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
+        via: 'llm',
         reprocesarComoUsuario,
       });
     }
@@ -487,7 +490,7 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
   return await _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId });
 }
 
-async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, messageId, razon, reprocesarComoUsuario }) {
+async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', reprocesarComoUsuario }) {
   // Capturar @lid si corresponde.
   let capturadoLid = false;
   if (from && from.endsWith('@lid') && !match.wa_lid) {
@@ -501,7 +504,7 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
       usuarioId: owner.id,
       canal: 'whatsapp', direccion: 'entrante',
       de: from, nombre: pushname, cuerpo,
-      metadata: { tipo: 'unknown_llm_rute', messageId, a_usuario: match.id, razon },
+      metadata: { tipo: 'unknown_llm_rute', messageId, a_usuario: match.id, razon, via },
     });
   }
   // No ack-eamos al remitente ni avisamos al owner — la respuesta del LLM del
@@ -510,6 +513,7 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
   try {
     await reprocesarComoUsuario(match, {
       de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
+      contextoRemitente: { esTercero: false, razon, via, identificadoComo: 'usuario_activo' },
     });
   } catch (err) {
     console.error('[unknown-flow/wa] reprocesar falló:', err.message);
@@ -528,7 +532,7 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
  * del usuario (puede ser responder directo, puede ser preguntarle al usuario
  * antes, etc.).
  */
-async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, reprocesarComoUsuario }) {
+async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', reprocesarComoUsuario }) {
   const quien = pushname || from;
   // Loggear el mensaje entrante en el bucket del USUARIO (no del owner) para
   // que aparezca en su historial cross-canal cuando armemos su próximo prompt.
@@ -536,13 +540,14 @@ async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cue
     usuarioId: match.id,
     canal: 'whatsapp', direccion: 'entrante',
     de: from, nombre: pushname, cuerpo,
-    metadata: { tipo: 'unknown_llm_tercero', messageId, razon },
+    metadata: { tipo: 'unknown_llm_tercero', messageId, razon, via },
   });
   // No avisamos al owner ni ack-eamos al tercero — el LLM del usuario decide
   // qué responder en el reprocesarComoUsuario de abajo.
   try {
     await reprocesarComoUsuario(match, {
       de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
+      contextoRemitente: { esTercero: true, razon, via, identificadoComo: 'tercero_de_usuario' },
     });
   } catch (err) {
     console.error('[unknown-flow/wa] reprocesar tercero falló:', err.message);
@@ -637,6 +642,12 @@ async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado, r
         de: from, nombre: pushname || from,
         cuerpo: estado.original_body, esAudio: false,
         messageId: estado.messageId,
+        contextoRemitente: {
+          esTercero: true,
+          razon: `el desconocido respondió "${cuerpo.slice(0, 120)}" cuando le pregunté para quién era el mensaje, y matcheamos por nombre con ${match.nombre}`,
+          via: 'fsm_manual',
+          identificadoComo: 'tercero_de_usuario',
+        },
       });
     } catch (err) {
       console.error('[unknown-flow/wa] reprocesar falló:', err.message);
@@ -714,6 +725,12 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
         de: email.de, email: email.de,
         asunto: email.asunto, cuerpo,
         messageId: email.id,
+        contextoRemitente: {
+          esTercero: true,
+          razon: `matcheo por libreta: "${contacto.nombre}" está registrado en los contactos de ${usuario.nombre}`,
+          via: 'libreta',
+          identificadoComo: 'tercero_de_usuario',
+        },
       });
     } catch (err) {
       console.error('[unknown-flow/gmail] reprocesar tercero falló:', err.message);
@@ -746,6 +763,12 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
           de: email.de, email: email.de,
           asunto: email.asunto, cuerpo,
           messageId: email.id,
+          contextoRemitente: {
+            esTercero: false,
+            razon: llm.razon || '',
+            via: 'llm',
+            identificadoComo: 'usuario_activo',
+          },
         });
       } catch (err) {
         console.error('[unknown-flow/gmail] reprocesar falló:', err.message);
@@ -773,6 +796,12 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
           de: email.de, email: email.de,
           asunto: email.asunto, cuerpo,
           messageId: email.id,
+          contextoRemitente: {
+            esTercero: true,
+            razon: llm.razon || '',
+            via: 'llm',
+            identificadoComo: 'tercero_de_usuario',
+          },
         });
       } catch (err) {
         console.error('[unknown-flow/gmail] reprocesar tercero falló:', err.message);
@@ -837,12 +866,19 @@ async function _handleEmail_FSM_segunda({ waClient, email, estado, reprocesarCom
   if (match) {
     // No ack-eamos ni avisamos — la respuesta del reprocesar se encarga.
     limpiarEstado('gmail', remitenteId);
+    const respDescTrunc = (email.cuerpo || email.snippet || '').slice(0, 120);
     try {
       await reprocesarComoUsuario(match, {
         de: email.de, email: email.de,
         asunto: estado.asunto || email.asunto,
         cuerpo: estado.original_body || email.cuerpo,
         messageId: estado.messageId || email.id,
+        contextoRemitente: {
+          esTercero: true,
+          razon: `el desconocido respondió "${respDescTrunc}" cuando le pregunté para quién era el email, y matcheamos por nombre con ${match.nombre}`,
+          via: 'fsm_manual',
+          identificadoComo: 'tercero_de_usuario',
+        },
       });
     } catch (err) {
       console.error('[unknown-flow/gmail] reprocesar falló:', err.message);

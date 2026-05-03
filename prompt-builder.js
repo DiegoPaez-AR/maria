@@ -186,6 +186,19 @@ function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
     const quien = nombre || de || '(?)';
     lineas.push('');
     lineas.push(`⚠️ TERCERO: este mensaje NO viene de ${usuario.nombre} (el usuario atendido). Lo escribió ${quien}, que es un tercero. Ojo con los slots de respuesta — ver [TU TAREA].`);
+    // Si unknown-flow nos dio una razón explícita de por qué reconocimos a
+    // este tercero (ej. "es el Lucas con quien Maria viene coordinando una
+    // reunión a pedido de Diego"), pasársela al LLM como ANCLA al hilo
+    // activo. Sin esto el LLM tiende a interpretar cada mensaje del tercero
+    // como un primer contacto suelto y alucina contexto.
+    const ctxRem = entrada.contextoRemitente || null;
+    if (ctxRem && ctxRem.razon) {
+      const viaTxt = ctxRem.via ? ` (vía ${ctxRem.via})` : '';
+      lineas.push(`   Por qué lo reconocemos${viaTxt}: ${ctxRem.razon}`);
+      lineas.push(`   → Su mensaje actual debe interpretarse en relación a ese contexto, NO como un primer contacto. Si algo del mensaje no calza con el hilo activo, preguntale en vez de improvisar respuesta genérica.`);
+    } else {
+      lineas.push(`   (no tenemos razón explícita registrada — usá [HISTORIAL CROSS-CANAL] y [LIBRETA] para ubicar al remitente en el contexto de ${usuario.nombre}).`);
+    }
   }
   lineas.push(``);
   lineas.push(`Mensaje:`);
