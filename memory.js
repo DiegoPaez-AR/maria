@@ -663,6 +663,15 @@ const qContactosTodos      = db.prepare(`SELECT * FROM contactos WHERE usuario_i
 function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null }) {
   if (!usuarioId) throw new Error('upsertContacto: usuarioId requerido');
   if (!nombre) throw new Error('upsertContacto: nombre requerido');
+  // Sanitizer: el @lid es un identificador rotativo de WA, no es estable —
+  // descartamos para que la columna `whatsapp` solo guarde @c.us o número
+  // limpio. Sin sanitizer, los auto-agregados quedan inservibles cuando WA
+  // rota el lid. Si solo viene @lid, dejamos null y se va a poblar la próxima
+  // vez que esa persona escriba (el handler resuelve el @c.us via getContact).
+  if (whatsapp && typeof whatsapp === 'string' && whatsapp.endsWith('@lid')) {
+    console.warn(`[upsertContacto] descarto whatsapp=@lid para "${nombre}" (no es estable)`);
+    whatsapp = null;
+  }
   insertContacto.run({ usuario_id: usuarioId, nombre, whatsapp, email, notas });
   return qContactoPorNombre.get(usuarioId, nombre);
 }

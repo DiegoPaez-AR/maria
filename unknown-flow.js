@@ -188,7 +188,7 @@ async function _notificarOwner(waClient, texto) {
  *                                                    (lo pasamos al LLM como
  *                                                    info adicional).
  */
-function _lookupEnContactos({ from, senderEmail }) {
+function _lookupEnContactos({ from, senderEmail, cusReal = null }) {
   const hits = [];
   const vistos = new Set();
   const agregar = (contactosMatched) => {
@@ -203,6 +203,11 @@ function _lookupEnContactos({ from, senderEmail }) {
   };
   if (from) {
     agregar(mem.buscarContactoCrossUsuario({ whatsapp: from }));
+    // Si from es @lid y todavía no matcheamos nada, intentar con el @c.us real
+    // que nos da msg.getContact() (cusReal). El @lid rota; el @c.us es estable.
+    if (hits.length === 0 && from.endsWith('@lid') && cusReal && cusReal !== from && cusReal.endsWith('@c.us')) {
+      agregar(mem.buscarContactoCrossUsuario({ whatsapp: cusReal }));
+    }
   }
   if (senderEmail) {
     agregar(mem.buscarContactoCrossUsuario({ email: senderEmail }));
@@ -408,11 +413,15 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
 /**
  * Handler para WhatsApp. Devuelve true si fue procesado acá.
  */
-async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
+async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsuario }) {
   const from = msg.from;
   const pushname = msg._data?.notifyName || null;
   const messageId = msg.id?._serialized || null;
   const owner = _estadoOwner();
+  // cusReal = @c.us real del remitente (resuelto vía msg.getContact()), aunque
+  // msg.from sea @lid. Es la clave estable; el @lid rota.
+  const _cusCand = contact?.id?._serialized || null;
+  const cusReal = (_cusCand && _cusCand.endsWith('@c.us') && _cusCand !== from) ? _cusCand : null;
 
   // Si YA hay un prospecto pendiente para este remitente, registramos el
   // mensaje y esperamos al owner — no volvemos a molestar.
@@ -438,7 +447,9 @@ async function handleWA({ client, msg, cuerpo, reprocesarComoUsuario }) {
 
   // Pre-pass barato: ¿está `from` en la libreta de algún usuario? Si hay
   // match único → rutear directo como tercero de ese usuario sin LLM.
-  const lookupContactos = _lookupEnContactos({ from, senderEmail: null });
+  // Si from es @lid, también probamos con cusReal (el @c.us que nos da
+  // msg.getContact()).
+  const lookupContactos = _lookupEnContactos({ from, senderEmail: null, cusReal });
   if (lookupContactos && lookupContactos.match) {
     const { contacto, usuario } = lookupContactos.match;
     console.log(`[unknown-flow/wa] match en contactos: ${from} = "${contacto.nombre}" de ${usuario.nombre} (id=${usuario.id})`);
