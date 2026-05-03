@@ -146,7 +146,32 @@ function seccionContacto(usuario, { de, nombre, email }) {
   return partes.join(' | ');
 }
 
-function seccionMensajeEntrante({ canal, entrada }) {
+/**
+ * ¿El remitente del mensaje entrante es el mismo usuario que estoy atendiendo?
+ * Devuelve true en flujo normal (Diego me escribe a mí), false cuando
+ * unknown-flow reprocesó un mensaje de tercero como si fuera del usuario
+ * (Lucas le escribe a Maria → reproceso como Diego, pero el remitente sigue
+ * siendo Lucas).
+ */
+function _remitenteEsUsuarioAtendido({ canal, entrada, usuario }) {
+  if (!usuario || !entrada) return true;
+  if (canal === 'whatsapp') {
+    const de = entrada.de || '';
+    if (!de) return true;
+    return de === usuario.wa_lid || de === usuario.wa_cus;
+  }
+  if (canal === 'gmail') {
+    const raw = (entrada.email || entrada.de || '').toLowerCase();
+    const m = raw.match(/<([^>]+)>/);
+    const remEmail = (m ? m[1] : raw).trim();
+    const usrEmail = (usuario.email || '').toLowerCase().trim();
+    if (!remEmail || !usrEmail) return true;
+    return remEmail === usrEmail;
+  }
+  return true;
+}
+
+function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
   const { de, nombre, asunto, cuerpo, esAudio, messageId } = entrada;
   const lineas = [`Canal: ${canal}`];
   if (nombre) lineas.push(`De: ${nombre}${de ? ` (${de})` : ''}`);
@@ -154,6 +179,14 @@ function seccionMensajeEntrante({ canal, entrada }) {
   if (asunto) lineas.push(`Asunto: ${asunto}`);
   if (messageId) lineas.push(`ID: ${messageId}`);
   if (esAudio) lineas.push(`Tipo: audio (transcripto automáticamente)`);
+
+  // Marcar tercero — esto es CRÍTICO para que el LLM sepa a quién dirigir
+  // `respuesta_a_usuario` vs `respuesta_a_remitente`.
+  if (usuario && !_remitenteEsUsuarioAtendido({ canal, entrada, usuario })) {
+    const quien = nombre || de || '(?)';
+    lineas.push('');
+    lineas.push(`⚠️ TERCERO: este mensaje NO viene de ${usuario.nombre} (el usuario atendido). Lo escribió ${quien}, que es un tercero. Ojo con los slots de respuesta — ver [TU TAREA].`);
+  }
   lineas.push(``);
   lineas.push(`Mensaje:`);
   lineas.push(cuerpo || '(vacío)');
@@ -202,8 +235,10 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
     nombre: entrada.nombre,
     email: entrada.email || (canal === 'gmail' ? entrada.de : null),
   });
-  const mensaje = seccionMensajeEntrante({ canal, entrada });
+  const mensaje = seccionMensajeEntrante({ canal, entrada, usuario });
   const formato = seccionFormatoCanal(canal);
+  const esTercero = !_remitenteEsUsuarioAtendido({ canal, entrada, usuario });
+  const remitenteNombre = entrada.nombre || entrada.de || entrada.email || 'el remitente';
 
   // Dinámico según rol
   const esOwner = usuario.rol === 'owner';
@@ -321,10 +356,19 @@ Analizá el mensaje en el contexto de todo lo de arriba y respondé.
 IMPORTANTE: Tu respuesta TIENE que ser un único objeto JSON válido, sin texto antes ni después, sin markdown, sin \`\`\`. Schema:
 
 {
-  "respuesta": "string - el texto que le vas a mandar al usuario por el mismo canal. Tono conversacional, como secretaria cercana.",
-  "acciones": [ /* array de 0+ acciones a ejecutar después de mandar la respuesta */ ],
+  "respuesta_a_usuario": "string - texto para ${usuario.nombre} (el USUARIO ATENDIDO). Se le manda por su canal habitual. Tono conversacional, como secretaria cercana. Dejá '' si no tenés nada que decirle a ${usuario.nombre} en este turno.",
+  "respuesta_a_remitente": "string - texto para QUIEN ESCRIBIÓ este mensaje. Se le manda por el mismo canal por el que escribió. Dejá '' si no tenés nada que decirle. ${esTercero ? `EN ESTE TURNO el remitente es ${remitenteNombre} (un tercero, NO ${usuario.nombre}).` : `EN ESTE TURNO el remitente y el usuario atendido son la misma persona (${usuario.nombre}); con poner el texto en cualquiera de los dos slots alcanza — usá UNO solo, no repitas.`}",
+  "acciones": [ /* array de 0+ acciones a ejecutar después de mandar las respuestas */ ],
   "razonamiento": "string opcional - 1 línea, para debug"
 }
+
+Reglas duras sobre los slots de respuesta:
+- \`respuesta_a_usuario\` SIEMPRE termina en el chat/inbox de ${usuario.nombre}. NUNCA pongas acá un texto que arranque con "Hola <nombre del tercero>" o que esté redactado para un tercero — confunde al usuario y se ve horrible.
+- \`respuesta_a_remitente\` termina en el chat/inbox de quien escribió el mensaje actual${esTercero ? ` (ahora: ${remitenteNombre})` : ''}. Si querés saludarlo o contestarle, va acá.
+- Si ${esTercero ? 'el tercero' : 'el remitente'} no necesita respuesta inmediata, dejá \`respuesta_a_remitente\`: "". Si ${usuario.nombre} no necesita aviso, dejá \`respuesta_a_usuario\`: "". Las dos vacías = silencio total.${esTercero ? `
+- ⚠️ ATENCIÓN — ESTE ES UN TURNO DE TERCERO: ${remitenteNombre} le escribió a Maria pero quien atendés es ${usuario.nombre}. Lo más común es: poner en \`respuesta_a_remitente\` un acuse para ${remitenteNombre} ("lo consulto con ${usuario.nombre} y te confirmo", o la respuesta directa si tenés toda la info), y en \`respuesta_a_usuario\` un aviso para ${usuario.nombre} contándole qué pasó y qué necesitás (ej. "te escribió ${remitenteNombre} diciendo X — ¿qué le contesto?"). Cualquier cosa más larga o que requiera info de ${usuario.nombre} → consultásela primero.` : ''}
+
+LEGACY: Si por alguna razón devolvés solo \`"respuesta": "..."\`, el sistema lo trata según el canal: en WhatsApp lo manda al usuario atendido, en email lo usa como respuesta al thread del entrante. PREFERÍ los slots nuevos — son explícitos y evitan ambigüedad.
 
 Tipos de acción disponibles:
 
@@ -351,12 +395,12 @@ Reglas:
 - LENGUAJE TENTATIVO: Las acciones se ejecutan DESPUÉS de tu respuesta. Usá futuro en el texto:
     · ✅ "te la agendo" / "le respondo ahora" / "le escribo a Juan"
     · ❌ "listo, agendada" / "ya le respondí" / "ya le escribí"
-- RESPUESTA VACÍA ES OK: Si el mensaje es un ack sin acción ("dale", "ok", "gracias", "perfecto"), o tu respuesta solo repetiría algo ya dicho, devolvé respuesta: "". El sistema no manda nada.
-- NO MANDES REDUNDANCIA a terceros: Si ya les dijiste algo y la pelota está en su cancha, NO vuelvas a escribirles hasta tener info nueva.
+- RESPUESTA VACÍA ES OK: Si el mensaje es un ack sin acción ("dale", "ok", "gracias", "perfecto"), o tu respuesta solo repetiría algo ya dicho, dejá los dos slots de respuesta como "". El sistema no manda nada (silencio total).
+- NO MANDES REDUNDANCIA a terceros: Si ya les dijiste algo y la pelota está en su cancha, NO vuelvas a escribirles hasta tener info nueva (\`respuesta_a_remitente\`: "").
 - Si es de un tercero pidiendo algo que requiere a ${usuario.nombre} (reunión, decisión): NO resuelvas sin consultarle. Emití:
-    1) enviar_wa a ${usuario.nombre} (usá su wa del contacto) con la pregunta concreta.
+    1) En \`respuesta_a_usuario\`, contale a ${usuario.nombre} qué pasó y qué necesitás (no hace falta enviar_wa por separado — el slot ya se le manda a ${usuario.nombre} por su canal).
     2) agregar_pendiente con desc = lo que le debés contestar al tercero, y meta con remitente, canal_origen, messageId, de.
-  Al tercero respondele "lo consulto con ${usuario.nombre} y te confirmo". NO inventes respuesta en su nombre.
+    3) En \`respuesta_a_remitente\`, decile al tercero "lo consulto con ${usuario.nombre} y te confirmo". NO inventes respuesta en su nombre.
 - Si ${usuario.nombre} te responde a una CONSULTA: ejecutá lo que dijo Y emití un quitar_pendiente con el id. Para saber a quién escribir:
     · Si el pendiente tiene "destino:", usalo.
     · Si no, buscá en [LIBRETA] por nombre.

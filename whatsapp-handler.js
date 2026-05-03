@@ -230,12 +230,19 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
     entrada,
   });
 
-  let respuesta = '';
+  let respUsr = '';
+  let respRem = '';
   let acciones = [];
   let razonamiento = null;
   try {
     const { json } = await invocarClaudeJSON(prompt);
-    respuesta    = (json.respuesta || '').toString();
+    respUsr      = (json.respuesta_a_usuario   || '').toString();
+    respRem      = (json.respuesta_a_remitente || '').toString();
+    // Compat: si solo viene `respuesta` legacy, en WA se trata como
+    // respuesta al usuario atendido (mantiene comportamiento previo).
+    if (!respUsr && !respRem && json.respuesta) {
+      respUsr = json.respuesta.toString();
+    }
     acciones     = Array.isArray(json.acciones) ? json.acciones : [];
     razonamiento = json.razonamiento || null;
   } catch (err) {
@@ -251,26 +258,66 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
     return;
   }
 
-  // Destino de la respuesta: SIEMPRE al usuario atendido (no al remitente).
-  // - Flujo normal: entrada.de == usuario.wa_lid, coinciden.
-  // - Flujo reprocesado desde unknown-flow: entrada.de es el desconocido,
-  //   pero la respuesta de Claude está dirigida al usuario (ej. "te escribió
-  //   Juan, te agendo pendiente"), así que va a su WA.
-  const destinoRespuesta = usuario.wa_lid || usuario.wa_cus || entrada.de;
+  // Destinos:
+  //   destinoUsuario   = wa del usuario atendido (Diego)
+  //   destinoRemitente = wa de quien escribió este mensaje (puede ser el
+  //                      usuario en flujo normal, o un tercero si vino
+  //                      reprocesado desde unknown-flow).
+  const destinoUsuario   = usuario.wa_lid || usuario.wa_cus || null;
+  const destinoRemitente = entrada.de || destinoUsuario;
+  const remitenteEsUsuario =
+    !!destinoUsuario && !!entrada.de &&
+    (entrada.de === usuario.wa_lid || entrada.de === usuario.wa_cus);
 
-  if (respuesta.trim() && destinoRespuesta) {
+  // 1) Mandar al usuario atendido (si hay texto y destino).
+  if (respUsr.trim() && destinoUsuario) {
     try {
-      await client.sendMessage(destinoRespuesta, respuesta);
+      await client.sendMessage(destinoUsuario, respUsr);
       mem.log({
         usuarioId: usuario.id,
         canal: 'whatsapp', direccion: 'saliente',
-        de: destinoRespuesta, nombre: entrada.nombre, cuerpo: respuesta,
-        metadata: { razonamiento, inReplyTo: entrada.messageId },
+        de: destinoUsuario, nombre: usuario.nombre, cuerpo: respUsr,
+        metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_usuario' },
       });
-      console.log(`[WA →] ${usuario.nombre}/${entrada.nombre || destinoRespuesta}: ${respuesta.slice(0, 160)}`);
+      console.log(`[WA →usr] ${usuario.nombre} (${destinoUsuario}): ${respUsr.slice(0, 160)}`);
     } catch (err) {
-      console.error('[WA] enviar respuesta falló:', err.message);
-      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta');
+      console.error('[WA] enviar respuesta_a_usuario falló:', err.message);
+      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta_a_usuario');
+    }
+  }
+
+  // 2) Mandar al remitente (si hay texto, hay destino, y NO es el mismo
+  //    chat que el usuario — evitamos doble mensaje en flujo normal).
+  if (respRem.trim() && destinoRemitente && !remitenteEsUsuario) {
+    try {
+      await client.sendMessage(destinoRemitente, respRem);
+      mem.log({
+        usuarioId: usuario.id,
+        canal: 'whatsapp', direccion: 'saliente',
+        de: destinoRemitente, nombre: entrada.nombre, cuerpo: respRem,
+        metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_remitente', tercero: true },
+      });
+      console.log(`[WA →3ro] ${usuario.nombre}/${entrada.nombre || destinoRemitente}: ${respRem.slice(0, 160)}`);
+    } catch (err) {
+      console.error('[WA] enviar respuesta_a_remitente falló:', err.message);
+      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta_a_remitente');
+    }
+  } else if (respRem.trim() && remitenteEsUsuario && !respUsr.trim()) {
+    // Caso edge: flujo normal y el LLM puso el texto en respuesta_a_remitente
+    // en vez de respuesta_a_usuario. Para no perder el mensaje, lo mandamos
+    // al usuario (que es el remitente).
+    try {
+      await client.sendMessage(destinoUsuario, respRem);
+      mem.log({
+        usuarioId: usuario.id,
+        canal: 'whatsapp', direccion: 'saliente',
+        de: destinoUsuario, nombre: usuario.nombre, cuerpo: respRem,
+        metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_remitente_redirected_to_usuario' },
+      });
+      console.log(`[WA →usr] ${usuario.nombre} (${destinoUsuario}) [via respuesta_a_remitente]: ${respRem.slice(0, 160)}`);
+    } catch (err) {
+      console.error('[WA] enviar respuesta (redirect) falló:', err.message);
+      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage redirect');
     }
   }
 

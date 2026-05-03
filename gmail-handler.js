@@ -115,12 +115,20 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     entrada,
   });
 
-  let respuesta = '';
+  let respUsr = '';
+  let respRem = '';
   let acciones = [];
   let razonamiento = null;
   try {
     const { json } = await invocarClaudeJSON(prompt);
-    respuesta    = (json.respuesta || '').toString();
+    respUsr      = (json.respuesta_a_usuario   || '').toString();
+    respRem      = (json.respuesta_a_remitente || '').toString();
+    // Compat: si solo viene `respuesta` legacy, en Gmail se trata como
+    // respuesta al remitente del thread (mantiene comportamiento previo:
+    // auto-responder al messageId).
+    if (!respUsr && !respRem && json.respuesta) {
+      respRem = json.respuesta.toString();
+    }
     acciones     = Array.isArray(json.acciones) ? json.acciones : [];
     razonamiento = json.razonamiento || null;
   } catch (err) {
@@ -133,25 +141,59 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     return;
   }
 
-  // Si hay respuesta y Claude no incluyó ya un responder_email para este id,
-  // lo agregamos automático.
+  // ¿El remitente del email es el mismo usuario atendido?
+  const rawDe = (entrada.email || entrada.de || '').toLowerCase();
+  const m = rawDe.match(/<([^>]+)>/);
+  const remEmail = (m ? m[1] : rawDe).trim();
+  const usrEmail = (usuario.email || '').toLowerCase().trim();
+  const remitenteEsUsuario = !!remEmail && !!usrEmail && remEmail === usrEmail;
+
+  // 1) respuesta_a_remitente → responder_email al thread del entrante.
+  //    autoResponderEmail puede haberse seteado en false desde unknown-flow
+  //    para evitar contestar autoresponder; si está en false, NO autoreplico
+  //    aunque haya texto (el LLM puede emitir responder_email a mano).
   const yaResponde = acciones.some(
     a => a.tipo === 'responder_email' && a.messageId === entrada.messageId
   );
-  if (respuesta.trim() && !yaResponde && autoResponderEmail) {
+  if (respRem.trim() && !yaResponde && autoResponderEmail) {
     acciones.unshift({
       tipo: 'responder_email',
       messageId: entrada.messageId,
       asunto: entrada.asunto,
-      texto: respuesta,
+      texto: respRem,
     });
-    if (razonamiento) {
-      mem.log({
-        usuarioId: usuario.id,
-        canal: 'sistema', direccion: 'interno',
-        cuerpo: `razonamiento Gmail ${entrada.messageId} (${usuario.nombre}): ${razonamiento}`,
-      });
+  }
+
+  // 2) respuesta_a_usuario → enviar_wa al wa del usuario, PERO solo si:
+  //    a) el remitente es un tercero (si fuera el mismo usuario, ya cubre
+  //       respuesta_a_remitente y duplicaría el contenido), y
+  //    b) el usuario tiene wa configurado.
+  if (respUsr.trim() && !remitenteEsUsuario) {
+    const waUsuario = usuario.wa_lid || usuario.wa_cus;
+    if (waUsuario) {
+      // No duplicar si el LLM ya emitió un enviar_wa equivalente.
+      const yaAvisa = acciones.some(
+        a => a.tipo === 'enviar_wa' &&
+             (a.a === waUsuario || a.a === usuario.wa_lid || a.a === usuario.wa_cus)
+      );
+      if (!yaAvisa) {
+        acciones.push({
+          tipo: 'enviar_wa',
+          a: waUsuario,
+          texto: respUsr,
+        });
+      }
+    } else {
+      console.warn(`[GMAIL/${usuario.nombre}] respuesta_a_usuario presente pero el usuario no tiene wa configurado — se descarta`);
     }
+  }
+
+  if (razonamiento && (respRem.trim() || respUsr.trim())) {
+    mem.log({
+      usuarioId: usuario.id,
+      canal: 'sistema', direccion: 'interno',
+      cuerpo: `razonamiento Gmail ${entrada.messageId} (${usuario.nombre}): ${razonamiento}`,
+    });
   }
 
   if (acciones.length) {
