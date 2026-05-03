@@ -1,0 +1,122 @@
+# ejecutado: 2026-05-03T12:04:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # DIAGNOSTICO URGENTE: Maria dejó de contestar WA después del patch debug
+#   cd /root/secretaria
+#   echo "═══ pm2 status ═══"
+#   pm2 jlist | python3 -c "
+#   import json, sys, time
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p['name'] == 'maria':
+#           e = p.get('pm2_env', {})
+#           up = e.get('pm_uptime', 0)
+#           ago = int((time.time()*1000 - up)/1000) if up else -1
+#           print(f\"status={e.get('status')} restarts={e.get('restart_time')} pid={p.get('pid')} uptime_s={ago}\")
+#   "
+#   
+#   echo ""
+#   echo "═══ últimos 80 logs de maria (out+err mezclados) ═══"
+#   pm2 logs maria --lines 80 --nostream 2>&1 | tail -85
+#   
+#   echo ""
+#   echo "═══ tail del error log ═══"
+#   tail -50 /root/.pm2/logs/maria-error.log 2>&1
+
+# ───── output ─────
+═══ pm2 status ═══
+status=online restarts=5 pid=2129238 uptime_s=2340
+
+═══ últimos 80 logs de maria (out+err mezclados) ═══
+0|maria    | [WA watchdog] frame muerto detectado en morning-brief/Diego — saliendo: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+0|maria    | [morning-brief/Diego] enviar falló: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+
+/root/.pm2/logs/maria-out.log last 80 lines:
+0|maria    | 2026-05-03 07:03:10: [meeting-prep/Hernan Fulco] + id=77 Cumple Fabian  @ 2026-05-03T11:45:00.000Z
+0|maria    | 2026-05-03 08:45:09: [programados] 4 mensaje(s) debidos, despachando…
+0|maria    | 2026-05-03 08:45:09: [programados] ✓ id=74 (whatsapp/137456250806423@lid) [meeting_prep:2:1qkppgget26r5n8olbag2goq2e_20260503T120000Z]
+0|maria    | 2026-05-03 08:45:16: [programados] ✓ id=75 (whatsapp/137456250806423@lid) [meeting_prep:2:2div6m4da003o1gpapet52kut5]
+0|maria    | 2026-05-03 08:45:16: [programados] ✓ id=76 (whatsapp/137456250806423@lid) [meeting_prep:2:5qf71mnpue1s7ccnd1aih0n45c_20260503T120000Z]
+0|maria    | 2026-05-03 08:45:17: [programados] ✓ id=77 (whatsapp/137456250806423@lid) [meeting_prep:2:_60s3id9n84r4cba46osjab9k6p2k2b9o88o32b9j8gp46e9n74o38ea36s_20260503T120000Z]
+0|maria    | 2026-05-03 10:01:02: 
+0|maria    | 2026-05-03 10:01:02: ▸ SIGINT recibido, cerrando…
+0|maria    | 2026-05-03 10:01:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-03 10:01:04: ▸ Maria iniciando…
+0|maria    | 2026-05-03 10:01:04:   Owner:      Diego (id=1)
+0|maria    | 2026-05-03 10:01:04:   Usuarios:   2 activo(s) → Diego, Hernan Fulco
+0|maria    | 2026-05-03 10:01:04:   Gmail poll: cada 60s
+0|maria    | 2026-05-03 10:01:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-03 10:01:04: ✓ whisper OK
+0|maria    | 2026-05-03 10:01:09: [WA authenticated]
+0|maria    | 2026-05-03 10:01:09: ✅ [WA ready] Maria conectada
+0|maria    | 2026-05-03 10:01:09: ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | 2026-05-03 10:01:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria    | 2026-05-03 10:01:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria    | 2026-05-03 10:01:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria    | 2026-05-03 10:01:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria    | 2026-05-03 10:01:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria    | 2026-05-03 10:01:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria    | 2026-05-03 10:01:26: 
+0|maria    | 2026-05-03 10:01:26: ▸ SIGINT recibido, cerrando…
+0|maria    | 2026-05-03 10:01:28: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-03 10:01:28: ▸ Maria iniciando…
+0|maria    | 2026-05-03 10:01:28:   Owner:      Diego (id=1)
+0|maria    | 2026-05-03 10:01:28:   Usuarios:   2 activo(s) → Diego, Hernan Fulco
+0|maria    | 2026-05-03 10:01:28:   Gmail poll: cada 60s
+0|maria    | 2026-05-03 10:01:28: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-03 10:01:28: ✓ whisper OK
+0|maria    | 2026-05-03 10:01:32: [WA authenticated]
+0|maria    | 2026-05-03 10:01:32: [WA loading] 100% - WhatsApp
+0|maria    | 2026-05-03 10:01:32: ✅ [WA ready] Maria conectada
+0|maria    | 2026-05-03 10:01:32: ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | 2026-05-03 10:01:32: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria    | 2026-05-03 10:01:32: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria    | 2026-05-03 10:01:32: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria    | 2026-05-03 10:01:32: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria    | 2026-05-03 10:01:32: ▸ arrancando meeting-prep (cada 5min)
+0|maria    | 2026-05-03 10:01:32: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria    | 2026-05-03 10:56:46: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=4 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=144036744671299@lid contactos_ambiguos=0
+0|maria    | 2026-05-03 10:57:04: [unknown-flow/whatsapp] LLM resolucion: desconocido · El remitente 'Chino' no coincide con ningún usuario activo, no hay mención de ese apodo ni de Farinelli en ningún historial de gestión, y nadie pidió agregarlo como usuario.
+0|maria    | 2026-05-03 10:57:05: [unknown-flow/wa] primer contacto de 144036744671299@lid — preguntando (FSM)
+0|maria    | 2026-05-03 10:58:16: [WA →usr] Diego (34342575317160@lid): Diego, te escribió alguien que se llama Chino pidiendo hacer una reserva en Farinelli. Dice que es para vos. ¿Querés que la gestione? Si es así, avisame para qu
+0|maria    | 2026-05-03 10:58:17: [WA →3ro] Diego/Chino: Hola Chino, lo consulto con Diego y te confirmo. En cuanto me responda te aviso.
+0|maria    | 2026-05-03 10:58:17: [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | 2026-05-03 10:58:17: [unknown-flow/wa] FSM routeó 144036744671299@lid → Diego
+0|maria    | 2026-05-03 11:25:02: 
+0|maria    | 2026-05-03 11:25:02: ▸ SIGINT recibido, cerrando…
+0|maria    | 2026-05-03 11:25:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-03 11:25:04: ▸ Maria iniciando…
+0|maria    | 2026-05-03 11:25:04:   Owner:      Diego (id=1)
+0|maria    | 2026-05-03 11:25:04:   Usuarios:   2 activo(s) → Diego, Hernan Fulco
+0|maria    | 2026-05-03 11:25:04:   Gmail poll: cada 60s
+0|maria    | 2026-05-03 11:25:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria    | 2026-05-03 11:25:04: ✓ whisper OK
+0|maria    | 2026-05-03 11:25:08: [WA authenticated]
+0|maria    | 2026-05-03 11:25:08: [WA loading] 100% - WhatsApp
+0|maria    | 2026-05-03 11:25:08: ✅ [WA ready] Maria conectada
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria    | 2026-05-03 11:25:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria    | 2026-05-03 11:25:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria    | 2026-05-03 12:01:54: [wa-debug @lid] msg.from=232637088149596@lid pushname=Natali msg.author=n/a
+0|maria    | 2026-05-03 12:01:54: [wa-debug @lid] contact.id._serialized=5491150105262@c.us contact.id.user=5491150105262 contact.id.server=c.us
+0|maria    | 2026-05-03 12:01:54: [wa-debug @lid] contact.number=232637088149596 contact.isMyContact=false contact.isWAContact=true
+0|maria    | 2026-05-03 12:01:54: [wa-debug @lid] msg._data subset={"from":"232637088149596@lid","id":{"fromMe":false,"remote":"232637088149596@lid","id":"3A88C17CC18F8478D6B8","_serialized":"false_232637088149596@lid_3A88C17CC18F8478D6B8"},"notifyName":"Natali"}
+0|maria    | 2026-05-03 12:01:54: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=2 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=232637088149596@lid contactos_ambiguos=0
+0|maria    | 2026-05-03 12:02:35: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Pushname 'Natali' coincide con Natali Funez (esposa de Diego, registrada en memoria); su pedido de la carta de Farinelli está directamente conectado con la gestión de reserva en Farinelli que Diego solicitó hoy a las 13:57.
+0|maria    | 2026-05-03 12:02:59: [WA ←] Diego (34342575317160@lid): hola maria, no tengo nada en agenda hoy, no?
+0|maria    | 2026-05-03 12:03:09: [WA →usr] Diego (34342575317160@lid): Exacto, hoy no tenés nada en agenda. Día libre 😊
+0|maria    | 2026-05-03 12:03:34: [WA →3ro] Diego/Natali: Hola Natali! Encontré una versión de la carta pero es bastante básica — tiene postres (tiramisú, profiteroles, galletas, magdalenas, pastel de zanahoria), ensal
+0|maria    | 2026-05-03 12:03:34: [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | 2026-05-03 12:03:34: [unknown-flow/wa] tercero_de_usuario: 232637088149596@lid (Natali) → contexto de Diego (id=1)
+
+
+═══ tail del error log ═══
+[WA watchdog] frame muerto detectado en morning-brief/Diego — saliendo: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+[morning-brief/Diego] enviar falló: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
+
+# exit=0
