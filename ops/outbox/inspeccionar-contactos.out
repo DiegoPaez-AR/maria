@@ -1,0 +1,105 @@
+# ejecutado: 2026-05-03T11:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Diagnostico: ver schema de tabla contactos + filas de Diego (usuario_id=1).
+#   # Buscamos especificamente a Santiago / Chino para entender por que el lookup
+#   # no matcheo el @lid de Santiago.
+#   DB=/root/secretaria/db/maria.sqlite
+#   
+#   echo "═══ schema contactos ═══"
+#   sqlite3 "$DB" '.schema contactos'
+#   
+#   echo ""
+#   echo "═══ contactos de Diego (id=1) ═══"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, nombre, COALESCE(whatsapp,'') AS wa, COALESCE(email,'') AS email, COALESCE(notas,'') AS notas FROM contactos WHERE usuario_id=1 ORDER BY nombre LIMIT 80"
+#   
+#   echo ""
+#   echo "═══ contactos donde nombre LIKE '%santi%' o '%chino%' (cualquier usuario) ═══"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, usuario_id, nombre, COALESCE(whatsapp,'') AS wa, COALESCE(email,'') AS email FROM contactos WHERE nombre LIKE '%santi%' OR nombre LIKE '%Santi%' OR nombre LIKE '%chino%' OR nombre LIKE '%Chino%'"
+#   
+#   echo ""
+#   echo "═══ eventos del @lid 144036744671299 (lo que vio Maria) ═══"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, timestamp, direccion, substr(COALESCE(cuerpo,''),1,80) AS cuerpo FROM eventos WHERE de='144036744671299@lid' OR para='144036744671299@lid' ORDER BY id DESC LIMIT 10"
+#   
+#   echo ""
+#   echo "═══ prospectos pendientes activos (whatsapp) ═══"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, canal, remitente_id, COALESCE(nombre_sugerido,'') AS sugerido, ts, COALESCE(estado,'') AS estado FROM prospectos_pendientes WHERE canal='whatsapp' ORDER BY id DESC LIMIT 10" 2>&1
+
+# ───── output ─────
+═══ schema contactos ═══
+CREATE TABLE IF NOT EXISTS "contactos" (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(usuario_id, nombre)
+      );
+CREATE INDEX idx_contactos_whatsapp ON contactos(whatsapp);
+CREATE INDEX idx_contactos_email    ON contactos(email);
+CREATE INDEX idx_contactos_usuario  ON contactos(usuario_id, nombre);
+
+═══ contactos de Diego (id=1) ═══
+id  nombre                    wa                   email                           notas                                                                                                                                                           
+--  ------------------------  -------------------  ------------------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+40  5491161310664             5491161310664@c.us                                                                                                                                                                                                   
+47  Agustina Acevedo          56715194151079@lid   aagustinaacevedo@hotmail.es     auto-agregado al recibir primer mensaje                                                                                                                         
+57  Ana Carina                180444528156752@lid                                  auto-agregado al recibir primer mensaje                                                                                                                         
+45  Carina Pubill             5492616564399@c.us   carinapubill21@gmail.com                                                                                                                                                                        
+22  Caseros Restaurante       5491136621659@c.us                                                                                                                                                                                                   
+61  Delta Airlines Argentina                                                       Teléfono gratuito: 0800-666-0133 | Línea directa: +54 11 3991-9030 | Oficina Buenos Aires: Carlos Pellegrini 1141 | Aeropuerto Ezeiza: +54 11 4480-0429         
+33  Diego                     541132317896@c.us    diego@paez.is                   jefe / titular                                                                                                                                                  
+32  Diego Paez                541132317896@c.us    diego@paez.is                   El propio Diego                                                                                                                                                 
+48  Doris Capurro             105171031949561@lid  doris@capurro.com.ar            auto-agregado al recibir primer mensaje                                                                                                                         
+42  F A R I N E L L I         222788661055558@lid                                  auto-agregado al recibir primer mensaje                                                                                                                         
+64  FC                        59854798495914@lid                                   auto-agregado al recibir primer mensaje                                                                                                                         
+26  Farinelli Arroyo          5491156920073@c.us                                                                                                                                                                                                   
+89  Franco Contatece                                                               Contacto de Claro, está siguiendo el presupuesto de datacenter (pendiente #3 de Diego)                                                                          
+85  Gustavo Raul Aragon                            gustavoraularagon@gmail.com     Reunión agendada martes 5/5 a las 17:00 hs.                                                                                                                     
+75  Hernan Fulco              5491126829596@c.us   hernan.fulco@sondeosglobal.com                                                                                                                                                                  
+81  Isabel Imperiale          5491134602030@c.us   isabelimperiale@gmail.com       Mamá de Diego                                                                                                                                                   
+23  La Parolaccia Palermo     5491153027613@c.us                                                                                                                                                                                                   
+90  Lucas Capurro             13059858123@c.us                                                                                                                                                                                                     
+16  Manuel Paez               5491168295181@c.us   manuel@paez.is                  Hijo de Diego                                                                                                                                                   
+74  MarIA Paez                5491179043441@c.us                                                                                                                                                                                                   
+65  Marcos                    59854798495914@lid                                   se identificó como Marcos al escribir por primera vez                                                                                                           
+72  Matias Pacheco            74775397445863@lid                                   auto-agregado al recibir primer mensaje                                                                                                                         
+38  Narda Comedor             541161310664@c.us                                    Restaurante en Sucre 664, Belgrano, Buenos Aires. Tel/WA: +54 11 6131-0664. Reservas por WhatsApp. Horario domingos: 8:30–19:00, resto de la semana: 8:30–23:00.
+15  Natali Funez              5491150105262@c.us   nfunez@iplan.com.ar             Mujer de Diego Paez                                                                                                                                             
+25  Nika Club Omakase         5491130215648@c.us                                                                                                                                                                                                   
+77  Pablo Petrillo            5491124577217@c.us   pablo.petrillo@luftlatam.com                                                                                                                                                                    
+17  Paloma Paez               5491132339295@c.us   paloma.paez@gmail.com           Hija de Diego                                                                                                                                                   
+24  Poch Burgers              5491137646922@c.us                                                                                                                                                                                                   
+53  Romi Rios                 207352548585582@lid                                  auto-agregado al recibir primer mensaje                                                                                                                         
+46  Romina                    5491135589891@c.us   romina.rios@ebuono.com.ar                                                                                                                                                                       
+70  Ruben Ward                5491154024727@c.us   ruben.ward@sondeosglobal.com                                                                                                                                                                    
+73  Rubén Ward                184052384567499@lid                                  auto-agregado al recibir primer mensaje                                                                                                                         
+60  Santi Capurro             134076010885285@lid                                  auto-agregado al recibir primer mensaje                                                                                                                         
+58  Santiago Capurro          5491166010010@c.us   santiago@capurro.com.ar                                                                                                                                                                         
+18  Santiago Paez             5491164393520@c.us   santiago@paez.is                Hijo de Diego                                                                                                                                                   
+41  nardacomedor              224390734164124@lid                                  auto-agregado al recibir primer mensaje                                                                                                                         
+
+═══ contactos donde nombre LIKE '%santi%' o '%chino%' (cualquier usuario) ═══
+id  usuario_id  nombre            wa                   email                  
+--  ----------  ----------------  -------------------  -----------------------
+18  1           Santiago Paez     5491164393520@c.us   santiago@paez.is       
+58  1           Santiago Capurro  5491166010010@c.us   santiago@capurro.com.ar
+60  1           Santi Capurro     134076010885285@lid                         
+
+═══ eventos del @lid 144036744671299 (lo que vio Maria) ═══
+Error: in prepare, no such column: para
+  po FROM eventos WHERE de='144036744671299@lid' OR para='144036744671299@lid' O
+                                      error here ---^
+
+═══ prospectos pendientes activos (whatsapp) ═══
+Error: in prepare, no such table: prospectos_pendientes
+
+# exit=0
