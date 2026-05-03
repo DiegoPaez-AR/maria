@@ -1,5 +1,31 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1798  2026-05-03 20:40:48  sistema   interno                         acción ejecutada: enviar_email                                                                                                                                                                          
+
+1797  2026-05-03 20:40:48  gmail     saliente                        Hola Lucas,                                                                                                                                                                                             
+                                                                                                                                                                                                                                                                             
+                                                                     Te comparto los detalles de la reunión con Diego:                                                                                                                                                       
+                                                                                                                                                                                                                                                                             
+                                                                     Fecha: Martes 5 de mayo de 2026                                                                                                                                                                         
+                                                                     Horario: 18:00 – 19:00 hs (Argentina)                                                                                                                                                                   
+                                                                     Google Meet: https://meet.google.com/nea-igts-fxx                                                                                                                                                       
+                                                                                                                                                                                                                                                                             
+                                                                     ¡Hasta el marte                                                                                                                                                                                         
+
+1796  2026-05-03 20:40:47  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+1795  2026-05-03 20:40:47  whatsapp  saliente   53463870402755@lid   Perfecto, te mando el invite ahora mismo a Lucas@capurro.com.ar 👍                                                                                                                                       
+
+1794  2026-05-03 20:40:40  whatsapp  saliente   34342575317160@lid   Guardé el mail de Lucas y le mando el invite ahora.                                                                                                                                                     
+
+1793  2026-05-03 20:40:23  whatsapp  saliente   99827991994407@lid   Sofia, yo manejo todo por mensaje — no hago llamadas. Le acabo de escribir a Diego de urgente, en cuanto me responda te confirmo.                                                                       
+
+1792  2026-05-03 20:40:23  whatsapp  saliente   34342575317160@lid   Diego, Sofia está apurada esperando tu respuesta sobre el pedido de Freddo. ¿Querés o no? Si sí, decime qué pedís.                                                                                      
+
+1791  2026-05-03 20:40:11  whatsapp  entrante   99827991994407@lid   Ok llámalo por favor que estoy apurada                                                                                                                                                                  
+
+1790  2026-05-03 20:40:11  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sofia inició la conversación preguntando si pedía helado a Freddo para Diego; Maria ya consultó a Diego (historial 20:39) y Sofia ahora sig
+
 1789  2026-05-03 20:39:53  whatsapp  entrante   53463870402755@lid   Lucas@capurro.com.ar                                                                                                                                                                                    
 
 1788  2026-05-03 20:39:40  whatsapp  saliente   53463870402755@lid   Claro Lucas! No tengo tu mail registrado — me lo pasás y te mando el invite ahora.                                                                                                                      
@@ -218,21 +244,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       Que no me respondiste más.                                                                                                                                                                             
 
 1699  2026-05-03 00:50:47  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Diego pidió el 2026-05-02 22:56 coordinar una reunión con Lucas; Maria le escribió por WA esa misma noche, Lucas respondió que el lunes 4/5
-
-1698  2026-05-03 00:32:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (2 usuarios)                                                                                                        
-
-1697  2026-05-03 00:32:01  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-1696  2026-05-02 23:01:14  whatsapp  saliente   34342575317160@lid   Hola Lucas, gracias por escribir. Soy la secretaria personal de Diego, así que solo puedo ayudarlo a él. Para reservas propias vas a necesitar contactar directamente al restaurante. ¡Suerte!          
-
-1695  2026-05-02 23:01:06  whatsapp  entrante   53463870402755@lid   María podes hacerme una reserva en un restaurante                                                                                                                                                       
-
-1694  2026-05-02 23:01:06  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Es el Lucas al que Maria le escribió hace horas por WA a pedido de Diego para coordinar una reunión (historial Diego 2026-05-02 22:58); el 
-
-1693  2026-05-02 23:00:08  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-1692  2026-05-02 23:00:08  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-1691  2026-05-02 23:00:08  whatsapp  saliente   34342575317160@lid   Diego, Lucas me dice que el lunes 4/5 a las 15:00 no le viene bien. ¿Qué otro día y horario de la semana que viene te sirve para juntarte con él una hora?                                              
-
-1690  2026-05-02 23:00:08  whatsapp  saliente   34342575317160@lid   Entendido, Lucas. Lo consulto con Diego y te confirmo un nuevo horario, no te preocupes.                                                                                                                

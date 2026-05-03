@@ -1,12 +1,3 @@
-0|maria    | 2026-05-03 00:25:54: Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=53463870402755@lid contactos_ambiguos=0
-0|maria    | 2026-05-03 00:26:22: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Lucas es el tercero con quien Diego le pidió a Maria coordinar una reunión; Maria le preguntó si prefería las 12:00 o las 18:00 del martes, y '18' es claramente su respuesta eligiendo las 18:00 hs.
-0|maria    | 2026-05-03 00:26:34: [WA →usr] Diego (34342575317160@lid): Diego, Lucas confirmó para el martes 5/5 a las 18:00. Ya le agendo la reunión y le mando el invite.
-0|maria    | 2026-05-03 00:26:34: [WA →3ro] Diego/Lucas: Perfecto, Lucas! Te agendo para el *martes 5/5 a las 18:00 hs.* (Argentina). En un momento te mando el link de Meet.
-0|maria    | 2026-05-03 00:26:36: [WA acciones/Diego] 1/1 ejecutadas
-0|maria    | 2026-05-03 00:26:36: [unknown-flow/wa] tercero_de_usuario: 53463870402755@lid (Lucas) → contexto de Diego (id=1)
-0|maria    | 2026-05-03 00:38:02: 
-0|maria    | 2026-05-03 00:38:02: ▸ SIGINT recibido, cerrando…
-0|maria    | 2026-05-03 00:38:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 0|maria    | 2026-05-03 00:38:05: ▸ Maria iniciando…
 0|maria    | 2026-05-03 00:38:05:   Owner:      Diego (id=1)
 0|maria    | 2026-05-03 00:38:05:   Usuarios:   2 activo(s) → Diego, Hernan Fulco
@@ -197,4 +188,13 @@
 0|maria    | 2026-05-03 17:39:40: [unknown-flow/wa] tercero_de_usuario: 53463870402755@lid (Lucas) → contexto de Diego (id=1)
 0|maria    | 2026-05-03 17:39:49: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=7 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=99827991994407@lid contactos_ambiguos=0
 0|maria    | 2026-05-03 17:39:53: [unknown-flow/wa] match en contactos: 53463870402755@lid = "Lucas Capurro" de Diego (id=1)
+0|maria    | 2026-05-03 17:40:11: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Sofia inició la conversación preguntando si pedía helado a Freddo para Diego; Maria ya consultó a Diego (historial 20:39) y Sofia ahora sigue up en esa misma gestión.
+0|maria    | 2026-05-03 17:40:13: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=10 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=232637088149596@lid contactos_ambiguos=0
+0|maria    | 2026-05-03 17:40:23: [WA →usr] Diego (34342575317160@lid): Diego, Sofia está apurada esperando tu respuesta sobre el pedido de Freddo. ¿Querés o no? Si sí, decime qué pedís.
+0|maria    | 2026-05-03 17:40:23: [WA →3ro] Diego/Sofia: Sofia, yo manejo todo por mensaje — no hago llamadas. Le acabo de escribir a Diego de urgente, en cuanto me responda te confirmo.
+0|maria    | 2026-05-03 17:40:23: [unknown-flow/wa] tercero_de_usuario: 99827991994407@lid (Sofia) → contexto de Diego (id=1)
+0|maria    | 2026-05-03 17:40:40: [WA →usr] Diego (34342575317160@lid): Guardé el mail de Lucas y le mando el invite ahora.
+0|maria    | 2026-05-03 17:40:47: [WA →3ro] Diego/Lucas: Perfecto, te mando el invite ahora mismo a Lucas@capurro.com.ar 👍
+0|maria    | 2026-05-03 17:40:48: [WA acciones/Diego] 2/2 ejecutadas
+0|maria    | 2026-05-03 17:40:48: [unknown-flow/wa] tercero_de_usuario: 53463870402755@lid (Lucas) → contexto de Diego (id=1)
 
