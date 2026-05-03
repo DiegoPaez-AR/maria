@@ -1,12 +1,3 @@
-[TAILING] Tailing last 200 lines for [maria] process (change the value with --lines option)
-/root/.pm2/logs/maria-error.log last 200 lines:
-0|maria    | [WA watchdog] frame muerto detectado en morning-brief/Diego — saliendo: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
-0|maria    | [morning-brief/Diego] enviar falló: Attempted to use detached Frame '473F1A30297850A94801C30A498E3D17'.
-
-/root/.pm2/logs/maria-out.log last 200 lines:
-0|maria    | [GMAIL poll] 1 email(s) nuevo(s)
-0|maria    | [GMAIL ←] Nicolas Kosinski <nkosinski@froneus.com> | "Re: Capacitación de Multichannel — martes 5 de mayo, 11:00 hs"
-0|maria    | [unknown-flow/gmail] match en contactos: nkosinski@froneus.com = "Nicolás Kosinski" de Hernan Fulco (id=2)
 0|maria    | [GMAIL acciones/Hernan Fulco] 1/1 ejecutadas
 0|maria    | ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 0|maria    | ▸ Maria iniciando…
@@ -194,4 +185,16 @@
 0|maria    | 2026-05-02 22:00:56: [WA] transcribiendo audio…
 0|maria    | 2026-05-02 22:01:00: [WA audio→texto] Fíjate si tengo algún espacio para Marte, ¡somí arcabéns!
 0|maria    | 2026-05-02 22:01:00: [WA ←] Diego (34342575317160@lid) 🎤: Fíjate si tengo algún espacio para Marte, ¡somí arcabéns!
+0|maria    | 2026-05-02 22:01:14: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=0(err:Cannot read properties of undefined (reading 'waitForChatLoading')
+0|maria    | 2026-05-02 22:01:14: Object.<anonymous> (https://static.whatsapp.net/rsrc.php/v4iw-14/y1/l/es_LA-j/YZYGBv5-puF.js:2148:1607)
+0|maria    | 2026-05-02 22:01:14: Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=53463870402755@lid contactos_ambiguos=0
+0|maria    | 2026-05-02 22:01:30: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Diego le pidió a Maria coordinar una reunión con Lucas; Maria le escribió a este número a pedido de Diego y hay intercambio activo sobre disponibilidad horaria — Lucas responde 'Ok' en ese contexto.
+0|maria    | 2026-05-02 22:01:34: [WA →usr] Diego (34342575317160@lid): El martes 5/5 tenés esto:
+0|maria    | 2026-05-02 22:01:34: 
+0|maria    | 2026-05-02 22:01:34: • 08:00–12:00 Yoga
+0|maria    | 2026-05-02 22:01:34: • 12:00–15:30 *libre* ✅
+0|maria    | 2026-05-02 22:01:34: • 15:30–17:00 Personal
+0|maria    | 2026-05-02 22:01:34: • 17:00–18:00 Reunión con Gustavo Aragón
+0|maria    | 2026-05-02 22:01:34: • Después de las 18:00 *li
+0|maria    | 2026-05-02 22:02:00: [WA] transcribiendo audio…
 
