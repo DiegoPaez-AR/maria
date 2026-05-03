@@ -111,9 +111,11 @@ async function handleMessage(client, msg) {
 
   // Resolver pushname y messageId temprano (los usa todo el flujo).
   let pushname = null;
+  let _contactRef = null; // [debug @lid] guardado para dump de inspección
   try {
     const contact = await msg.getContact();
     pushname = contact?.pushname || contact?.name || null;
+    _contactRef = contact;
   } catch {}
   const messageId = msg.id?._serialized || msg.id?.id || null;
 
@@ -160,6 +162,36 @@ async function handleMessage(client, msg) {
   let usuario = usuarios.resolverPorWa(msg.from);
 
   if (!usuario) {
+    // [debug @lid] — dump temporal: cuando un desconocido escribe con @lid,
+    // queremos saber si msg.getContact() expone el @c.us real (vía
+    // contact.id._serialized, contact.number, _data.id, etc). Esto se quita
+    // cuando tengamos los datos.
+    if (msg.from && msg.from.endsWith('@lid')) {
+      try {
+        const c = _contactRef;
+        const cId = c?.id;
+        const cData = c?._data || null;
+        console.log(`[wa-debug @lid] msg.from=${msg.from} pushname=${pushname || 'n/a'} msg.author=${msg.author || 'n/a'}`);
+        console.log(`[wa-debug @lid] contact.id._serialized=${cId?._serialized || 'n/a'} contact.id.user=${cId?.user || 'n/a'} contact.id.server=${cId?.server || 'n/a'}`);
+        console.log(`[wa-debug @lid] contact.number=${c?.number || 'n/a'} contact.isMyContact=${c?.isMyContact} contact.isWAContact=${c?.isWAContact}`);
+        if (cData) {
+          const keys = Object.keys(cData).join(',');
+          console.log(`[wa-debug @lid] contact._data keys=${keys}`);
+          const safe = {};
+          for (const k of ['id','phoneNumber','phone','jid','lid','pn','phoneNumberFormatted','number','formattedName','name','shortName','pushname','verifiedName']) {
+            if (cData[k] !== undefined) safe[k] = cData[k];
+          }
+          console.log(`[wa-debug @lid] contact._data subset=${JSON.stringify(safe).slice(0,800)}`);
+        }
+        if (msg._data) {
+          const m = msg._data;
+          const subset = { from: m.from, author: m.author, id: m.id, notifyName: m.notifyName, senderObj: m.senderObj };
+          console.log(`[wa-debug @lid] msg._data subset=${JSON.stringify(subset).slice(0,800)}`);
+        }
+      } catch (err) {
+        console.log(`[wa-debug @lid] dump falló: ${err.message}`);
+      }
+    }
     // Desconocido → flujo separado. unknownFlow.handleWA se encarga del
     // ida/vuelta y, si matchea a un usuario, nos llama de vuelta con
     // reprocesarComoUsuario para que procesemos el mensaje original como si
