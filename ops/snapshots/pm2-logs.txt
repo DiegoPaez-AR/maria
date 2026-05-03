@@ -1,10 +1,3 @@
-0|maria    | ✓ whisper OK
-0|maria    | [WA authenticated]
-0|maria    | ✅ [WA ready] Maria conectada
-0|maria    | ▸ arrancando poll de Gmail (cada 60s)
-0|maria    | ▸ arrancando loop de recordatorios (cada 30min)
-0|maria    | ▸ arrancando dispatcher de programados (cada 60s)
-0|maria    | ▸ arrancando morning-brief (por usuario, ventana 4h)
 0|maria    | [morning-brief] activo, ventana 4h, cada usuario en su tz
 0|maria    | ▸ arrancando meeting-prep (cada 5min)
 0|maria    | [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
@@ -197,4 +190,11 @@
 0|maria    | 2026-05-02 22:02:34: [WA →usr] Diego (34342575317160@lid): Le mando las dos opciones a Lucas ahora.
 0|maria    | 2026-05-02 22:02:35: [WA acciones/Diego] 3/3 ejecutadas
 0|maria    | 2026-05-02 22:02:37: [WA ←] Diego (34342575317160@lid): Si
+0|maria    | 2026-05-03 00:20:23: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=0(err:Cannot read properties of undefined (reading 'waitForChatLoading')
+0|maria    | 2026-05-03 00:20:23: Object.<anonymous> (https://static.whatsapp.net/rsrc.php/v4iw-14/y1/l/es_LA-j/YZYGBv5-puF.js:2148:1607)
+0|maria    | 2026-05-03 00:20:23: Generator.next (<anonymous>)) hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60} remitente=53463870402755@lid contactos_ambiguos=0
+0|maria    | 2026-05-03 00:20:43: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Diego (id=1) le pidió a Maria coordinar una reunión con Lucas; Maria le escribió a Lucas por WA, negociaron horarios, y ahora Lucas responde 'Ok dale me mandas el invite?' — claramente es el tercero de esa gestión confirmando el horario y pidiendo el link de Meet.
+0|maria    | 2026-05-03 00:21:00: [WA →usr] Diego (34342575317160@lid): Diego, Lucas confirmó la reunión del martes 5/5 pero no aclaró si prefiere las 12:00 o las 18:00. Le pregunté para confirmar y apenas me responda le mando el in
+0|maria    | 2026-05-03 00:21:00: [WA →3ro] Diego/Lucas: ¡Genial! ¿Te viene mejor a las *12:00* o a las *18:00* del martes?
+0|maria    | 2026-05-03 00:21:00: [unknown-flow/wa] tercero_de_usuario: 53463870402755@lid (Lucas) → contexto de Diego (id=1)
 
