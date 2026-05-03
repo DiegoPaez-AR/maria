@@ -37,7 +37,7 @@ async function historialWA(waClient, from, { dias = 14, max = 200 } = {}) {
     const lineas = filtrados.map(_formatearWA).filter(Boolean);
     return { ok: true, lineas, total: filtrados.length };
   } catch (err) {
-    return { ok: false, lineas: [], total: 0, error: err.message };
+    return { ok: false, lineas: [], total: 0, error: err.message.split('\n')[0] };
   }
 }
 
@@ -79,7 +79,7 @@ async function historialEmail(g, email, { dias = 14, max = 50 } = {}) {
     const lineas = (mensajes || []).map(_formatearEmail).filter(Boolean);
     return { ok: true, lineas, total: mensajes.length };
   } catch (err) {
-    return { ok: false, lineas: [], total: 0, error: err.message };
+    return { ok: false, lineas: [], total: 0, error: err.message.split('\n')[0] };
   }
 }
 
@@ -132,7 +132,7 @@ function historialUsuarioConMaria(mem, usuario, { dias = 14, max = 80 } = {}) {
     });
     return { ok: true, lineas, total: filas.length };
   } catch (err) {
-    return { ok: false, lineas: [], total: 0, error: err.message };
+    return { ok: false, lineas: [], total: 0, error: err.message.split('\n')[0] };
   }
 }
 
