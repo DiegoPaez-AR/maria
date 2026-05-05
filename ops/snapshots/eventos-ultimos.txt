@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1889  2026-05-05 14:34:52  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+1888  2026-05-05 14:34:52  calendar  saliente                        creado: Reunión con Doris Capurro (2026-05-05T14:45:00-03:00 → 2026-05-05T15:45:00-03:00)                                                                                                               
+
+1887  2026-05-05 14:34:52  whatsapp  saliente   34342575317160@lid   Va, la agendo ahora.                                                                                                                                                                                    
+
+1886  2026-05-05 14:34:35  whatsapp  entrante   34342575317160@lid   Si                                                                                                                                                                                                      
+
+1885  2026-05-05 14:34:12  whatsapp  saliente   34342575317160@lid   Va para hoy. Eso sí, a las 3:30 ya tenés un bloque Personal agendado hasta las 5 — la reunión con Doris (2:45–3:45) lo pisa parcialmente. ¿La agendo igual?                                             
+
 1884  2026-05-05 14:33:52  whatsapp  entrante   34342575317160@lid   Hoy                                                                                                                                                                                                     
 
 1883  2026-05-05 14:33:33  whatsapp  saliente   34342575317160@lid   ¿Para qué día la agendo?                                                                                                                                                                                
@@ -245,13 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 1791  2026-05-03 20:40:11  whatsapp  entrante   99827991994407@lid   Ok llámalo por favor que estoy apurada                                                                                                                                                                  
 
 1790  2026-05-03 20:40:11  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sofia inició la conversación preguntando si pedía helado a Freddo para Diego; Maria ya consultó a Diego (historial 20:39) y Sofia ahora sig
-
-1789  2026-05-03 20:39:53  whatsapp  entrante   53463870402755@lid   Lucas@capurro.com.ar                                                                                                                                                                                    
-
-1788  2026-05-03 20:39:40  whatsapp  saliente   53463870402755@lid   Claro Lucas! No tengo tu mail registrado — me lo pasás y te mando el invite ahora.                                                                                                                      
-
-1787  2026-05-03 20:39:24  whatsapp  entrante   53463870402755@lid   No me podes mandar un invite por mail?                                                                                                                                                                  
-
-1786  2026-05-03 20:39:09  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-1785  2026-05-03 20:39:09  whatsapp  saliente   99827991994407@lid   Hola Sofia! Lo consulto con Diego y te confirmo en cuanto me responda 😊                                                                                                                                 
