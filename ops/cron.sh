@@ -93,7 +93,7 @@ if [ -f "$DB" ]; then
     'SELECT clave, valor, COALESCE(fuente,""), actualizado FROM hechos ORDER BY clave' \
     > ops/snapshots/hechos.txt 2>&1
   sqlite3 -header -column "$DB" \
-    'SELECT id, cuando, canal, destino, substr(COALESCE(texto,""),1,100) AS texto, COALESCE(razon,"") FROM mensajes_programados WHERE enviado=0 ORDER BY cuando LIMIT 20' \
+    'SELECT id, cuando, canal, destino, substr(COALESCE(texto,""),1,100) AS texto, COALESCE(razon,"") FROM programados WHERE enviado=0 ORDER BY cuando LIMIT 20' \
     > ops/snapshots/programados.txt 2>&1
 fi
 
