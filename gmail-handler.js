@@ -87,8 +87,25 @@ async function procesarUnEmail(id, { waClient } = {}) {
     canal: 'gmail', direccion: 'entrante',
     de: email.de, asunto: email.asunto, cuerpo: emailCuerpo,
     tipo_original: 'email',
-    metadata: { messageId: id, threadId: email.threadId, fecha: email.fecha },
+    metadata: { messageId: id, threadId: email.threadId, fecha: email.fecha, para: email.para, cc: email.cc },
   });
+
+  // Computar otros destinatarios (To+Cc menos María menos el usuario atendido).
+  // Si la lista no es vacía y el remitente ES el usuario, estamos en una
+  // cadena multi-destinatario: el usuario sumó a Maria para coordinar con
+  // terceros. El prompt-builder usa esto para inyectar instrucciones.
+  const _split = (h) => (h || '').split(',').map(s => s.trim()).filter(Boolean);
+  const _emailOf = (s) => {
+    const m = String(s).match(/<([^>]+)>/);
+    return (m ? m[1] : s).trim().toLowerCase();
+  };
+  const meEmail = (g.MARIA_EMAIL || '').toLowerCase();
+  const usrEmail = (usuario.email || '').toLowerCase();
+  const otrosDestinatarios = [..._split(email.para), ..._split(email.cc)]
+    .filter(s => {
+      const e = _emailOf(s);
+      return e && e !== meEmail && e !== usrEmail;
+    });
 
   await _procesarComoUsuario({
     usuario,
@@ -98,6 +115,9 @@ async function procesarUnEmail(id, { waClient } = {}) {
       asunto: email.asunto,
       cuerpo: emailCuerpo,
       messageId: id,
+      para: email.para || '',
+      cc: email.cc || '',
+      otrosDestinatarios,
     },
     waClient,
   });

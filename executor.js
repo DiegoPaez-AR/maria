@@ -154,15 +154,23 @@ async function _borrarEvento(a, ctx) {
 
 async function _responderEmail(a, ctx) {
   _requerir(a, ['messageId', 'texto']);
-  await g.responderEmail(a.messageId, a.texto);
+  const r = await g.responderEmail(a.messageId, a.texto, {
+    replyAll: !!a.replyAll,
+    cc: a.cc, // si viene undefined no overridea; si viene null lo limpia
+  });
   mem.log({
     usuarioId: ctx.usuario.id,
     canal: 'gmail', direccion: 'saliente',
     asunto: `Re: ${a.asunto || ''}`,
     cuerpo: a.texto,
-    metadata: { inReplyTo: a.messageId },
+    metadata: {
+      inReplyTo: a.messageId,
+      replyAll: !!a.replyAll,
+      to: r?.to || null,
+      cc: r?.cc || null,
+    },
   });
-  return { messageId: a.messageId, enviado: true };
+  return { messageId: a.messageId, enviado: true, to: r?.to, cc: r?.cc, replyAll: !!a.replyAll };
 }
 
 // Email nuevo (sin thread previo). Diferencias con _responderEmail:

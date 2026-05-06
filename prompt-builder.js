@@ -172,13 +172,33 @@ function _remitenteEsUsuarioAtendido({ canal, entrada, usuario }) {
 }
 
 function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
-  const { de, nombre, asunto, cuerpo, esAudio, messageId } = entrada;
+  const { de, nombre, asunto, cuerpo, esAudio, messageId, para, cc, otrosDestinatarios } = entrada;
   const lineas = [`Canal: ${canal}`];
   if (nombre) lineas.push(`De: ${nombre}${de ? ` (${de})` : ''}`);
   else if (de) lineas.push(`De: ${de}`);
+  if (canal === 'gmail') {
+    if (para) lineas.push(`To: ${para}`);
+    if (cc)   lineas.push(`Cc: ${cc}`);
+  }
   if (asunto) lineas.push(`Asunto: ${asunto}`);
   if (messageId) lineas.push(`ID: ${messageId}`);
   if (esAudio) lineas.push(`Tipo: audio (transcripto automáticamente)`);
+
+  // CASO CADENA: el remitente ES el usuario atendido pero hay otros
+  // destinatarios además de Maria. El usuario sumó a Maria al hilo para
+  // que coordine con terceros. NO debe responderle al usuario presentándose
+  // — debe coordinar con los otros.
+  const esCadenaConTerceros = canal === 'gmail'
+    && usuario
+    && _remitenteEsUsuarioAtendido({ canal, entrada, usuario })
+    && Array.isArray(otrosDestinatarios)
+    && otrosDestinatarios.length > 0;
+  if (esCadenaConTerceros) {
+    lineas.push('');
+    lineas.push(`⚠️ CADENA CON TERCEROS: este email lo escribió ${usuario.nombre} (tu usuario, NO un tercero) y te sumó a un hilo con: ${otrosDestinatarios.join(', ')}.`);
+    lineas.push(`   Tu interlocutor son los OTROS destinatarios, NO ${usuario.nombre} — él te sumó a propósito para que vos coordines con ellos. NO te presentes a ${usuario.nombre}, ya te conoce.`);
+    lineas.push(`   Para responder al hilo, emití responder_email con "replyAll": true (mantiene a todos en la cadena, incluido ${usuario.nombre}). Si necesitás info que solo ${usuario.nombre} tiene, usá respuesta_a_usuario (le va por WhatsApp aparte) y NO respondas el email todavía.`);
+  }
 
   // Marcar tercero — esto es CRÍTICO para que el LLM sepa a quién dirigir
   // `respuesta_a_usuario` vs `respuesta_a_remitente`.
@@ -388,7 +408,7 @@ Tipos de acción disponibles:
   { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false }
   { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "forzar": false }
   { "tipo": "borrar_evento", "id": "<id>" }
-  { "tipo": "responder_email", "messageId": "<id>", "texto": "..." }   // contesta a un email que ya llegó (mantiene el thread). Necesita messageId del [MENSAJE ENTRANTE] o de [EMAILS NO LEÍDOS] si existe esa sección.
+  { "tipo": "responder_email", "messageId": "<id>", "texto": "...", "replyAll": false, "cc": null }   // contesta a un email que ya llegó (mantiene el thread). Necesita messageId del [MENSAJE ENTRANTE] o de [EMAILS NO LEÍDOS] si existe esa sección. replyAll=true incluye a todos los destinatarios originales (To+Cc) menos vos — usalo cuando el usuario te sumó a un hilo para coordinar con terceros (ver warning ⚠️ CADENA CON TERCEROS si aparece). cc opcional fuerza una lista de copia específica (string o array). Si no usás cc, dejalo en null.
   { "tipo": "enviar_email", "to": "destinatario@dominio.com", "asunto": "...", "texto": "...", "cc": null, "bcc": null, "replyTo": null }   // email NUEVO sin email previo. to/cc/bcc pueden ser string o array. cc/bcc/replyTo opcionales (null si no aplica).
   { "tipo": "enviar_wa", "a": "541...@c.us", "texto": "..." }
   { "tipo": "agregar_pendiente", "desc": "...", "meta": { "tipo": "consulta"|"tarea", "remitente": "...", "canal_origen": "gmail", "messageId": "...", "de": "..." } }

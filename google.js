@@ -351,6 +351,8 @@ async function leerEmail(messageId) {
     threadId: m.data.threadId,
     de: headers.From || '',
     para: headers.To || '',
+    cc: headers.Cc || '',
+    messageIdHeader: headers['Message-ID'] || headers['Message-Id'] || '',
     asunto: headers.Subject || '',
     fecha: headers.Date || '',
     snippet: m.data.snippet || '',
@@ -485,24 +487,61 @@ async function enviarEmail({ to, asunto, texto, cc, bcc, replyTo }) {
 /**
  * Responde a un email (mantiene threading).
  */
-async function responderEmail(messageId, textoRespuesta) {
+async function responderEmail(messageId, textoRespuesta, opts = {}) {
+  const { replyAll = false, cc: ccOverride } = opts;
   const auth = await autenticar();
   const original = await leerEmail(messageId);
 
-  const to      = original.de;
+  // Helpers para normalizar listas de direcciones de un header (To/Cc).
+  const _split = (h) => (h || '').split(',').map(s => s.trim()).filter(Boolean);
+  const _emailOf = (s) => {
+    const m = String(s).match(/<([^>]+)>/);
+    return (m ? m[1] : s).trim().toLowerCase();
+  };
+  const meEmail = FROM_EMAIL.toLowerCase();
+
+  let to;
+  let cc = null;
+
+  if (replyAll) {
+    // To = sender + (originalTo - maria), dedup por email.
+    const otrosTo = _split(original.para).filter(s => _emailOf(s) !== meEmail);
+    const senderEmail = _emailOf(original.de);
+    const toList = [original.de];
+    for (const x of otrosTo) {
+      if (_emailOf(x) !== senderEmail) toList.push(x);
+    }
+    to = toList.join(', ');
+    // Cc = originalCc - maria.
+    const ccList = _split(original.cc).filter(s => _emailOf(s) !== meEmail);
+    cc = ccList.length ? ccList.join(', ') : null;
+  } else {
+    to = original.de;
+  }
+  // Override explícito de cc desde el caller (ej: Claude pidió cc específico).
+  if (ccOverride !== undefined) cc = ccOverride || null;
+
   const asunto  = original.asunto.startsWith('Re:') ? original.asunto : `Re: ${original.asunto}`;
+  // Para threading correcto entre clientes (Outlook, Apple Mail, otros Gmail),
+  // In-Reply-To/References deben ser el Message-ID RFC822 del header, no el
+  // id de la API de Gmail. Caemos al messageId como fallback si no lo tenemos.
+  const inReplyTo = original.messageIdHeader || `<${messageId}@mail.gmail.com>`;
+
   const rawLines = [
     `From: ${_encodeHeader(FROM_NAME)} <${FROM_EMAIL}>`,
     `To: ${to}`,
+  ];
+  if (cc) rawLines.push(`Cc: ${cc}`);
+  rawLines.push(
     `Subject: ${_encodeHeader(asunto)}`,
-    `In-Reply-To: ${messageId}`,
-    `References: ${messageId}`,
+    `In-Reply-To: ${inReplyTo}`,
+    `References: ${inReplyTo}`,
     `MIME-Version: 1.0`,
     `Content-Type: text/plain; charset=UTF-8`,
     `Content-Transfer-Encoding: 8bit`,
     ``,
     textoRespuesta,
-  ];
+  );
   const raw = Buffer.from(rawLines.join('\r\n')).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
   await _gmail(auth).users.messages.send({
@@ -510,7 +549,7 @@ async function responderEmail(messageId, textoRespuesta) {
     requestBody: { raw, threadId: original.threadId },
   });
   await marcarLeido(messageId);
-  return true;
+  return { to, cc, replyAll };
 }
 
 // ─── Exports ──────────────────────────────────────────────────────────────
@@ -537,4 +576,6 @@ module.exports = {
   // constantes
   SCOPES,
   TIMEZONE,
+  MARIA_EMAIL: FROM_EMAIL,
+  MARIA_FROM_NAME: FROM_NAME,
 };
