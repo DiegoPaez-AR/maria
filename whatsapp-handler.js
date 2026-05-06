@@ -155,7 +155,23 @@ async function handleMessage(client, msg) {
     }
   }
 
-  if (!cuerpo) return; // imágenes, stickers, etc. — ignoramos por ahora
+  // Si no hay texto pero el mensaje tiene media (PDF, imagen, video, doc),
+  // armamos un cuerpo sintético "(adjuntó X)" para que el LLM se entere y
+  // pueda emitir reenviar_wa si el usuario lo pide. NO descargamos los bytes
+  // — el forward nativo de WA usa getMessageById(...).forward() y no necesita
+  // la copia local. Stickers / mensajes vacíos siguen ignorados.
+  let mediaMeta = null;
+  if (!cuerpo) {
+    if (msg.hasMedia && msg.type !== 'sticker') {
+      const filename = msg._data?.filename || null;
+      const mime     = msg._data?.mimetype || msg.type || 'archivo';
+      const sizeKb   = msg._data?.size ? Math.round(msg._data.size / 1024) : null;
+      mediaMeta = { filename, mime, sizeKb };
+      cuerpo = `(adjuntó ${filename || mime}${sizeKb ? `, ${sizeKb} KB` : ''})`;
+    } else {
+      return; // sticker, vacío, raros — siguen ignorados
+    }
+  }
 
   // ─── Resolver usuario ──────────────────────────────────────────────────
   let usuario = usuarios.resolverPorWa(msg.from);
@@ -203,7 +219,10 @@ async function handleMessage(client, msg) {
     canal: 'whatsapp', direccion: 'entrante',
     de: msg.from, nombre, cuerpo,
     tipo_original: msg.type,
-    metadata: { messageId, esAudio, pushname },
+    metadata: {
+      messageId, esAudio, pushname,
+      ...(mediaMeta ? { esMedia: true, ...mediaMeta } : {}),
+    },
   });
 
   await _procesarComoUsuario({
@@ -215,6 +234,7 @@ async function handleMessage(client, msg) {
       cuerpo,
       esAudio,
       messageId,
+      ...(mediaMeta ? { esMedia: true, mediaMeta } : {}),
     },
     msgOriginal: msg,
   });

@@ -446,7 +446,13 @@ function formatearParaPrompt(e) {
   if (e.canal === 'gmail')    return `[${ts}] ${flecha} GMAIL ${quien} | "${e.asunto || ''}" | ${cuerpo}`;
   if (e.canal === 'calendar') return `[${ts}] ${flecha} CAL ${quien} | ${cuerpo}`;
   if (e.canal === 'sistema')  return `[${ts}] · SIS ${cuerpo}`;
-  return `[${ts}] ${flecha} WA ${quien}: ${cuerpo}`;
+  // WhatsApp: si es un mensaje con media, exponer el wa_msg_id explícito al
+  // final para que el LLM pueda emitir reenviar_wa con el id correcto.
+  let suffix = '';
+  if (e.metadata?.esMedia && e.metadata?.messageId) {
+    suffix = ` [wa_msg_id=${e.metadata.messageId}]`;
+  }
+  return `[${ts}] ${flecha} WA ${quien}: ${cuerpo}${suffix}`;
 }
 
 function hidratar(row) {

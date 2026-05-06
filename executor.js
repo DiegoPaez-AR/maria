@@ -54,6 +54,7 @@ async function ejecutarUna(accion, ctx) {
     case 'responder_email':    return await _responderEmail(accion, ctx);
     case 'enviar_email':       return await _enviarEmail(accion, ctx);
     case 'enviar_wa':          return await _enviarWA(accion, ctx);
+    case 'reenviar_wa':        return await _reenviarWA(accion, ctx);
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
     case 'upsert_contacto':    return _upsertContacto(accion, ctx);
@@ -204,6 +205,35 @@ async function _enviarEmail(a, ctx) {
 }
 
 // ─── WhatsApp ─────────────────────────────────────────────────────────────
+
+// Reenvía un mensaje WA usando forward NATIVO de whatsapp-web.js. No descarga
+// ni re-procesa el media — levanta el msg original con getMessageById y lo
+// forwardea al destino. Funciona con cualquier tipo (PDF, imagen, video, audio,
+// documento, sticker, vCard, ubicación, hasta texto). El destino recibe el
+// mensaje marcado como "Reenviado". Si WA purgó el media del CDN (>30 días)
+// o el mensaje no existe, falla con error explícito.
+async function _reenviarWA(a, ctx) {
+  _requerir(a, ['messageId', 'a']);
+  if (!ctx.waClient) throw new Error('reenviar_wa: waClient no disponible');
+  const destino = _resolverDestinoWA(a.a);
+  let original;
+  try {
+    original = await ctx.waClient.getMessageById(a.messageId);
+  } catch (err) {
+    throw new Error(`reenviar_wa: no encontré mensaje ${a.messageId}: ${err.message}`);
+  }
+  if (!original) throw new Error(`reenviar_wa: mensaje ${a.messageId} no existe (puede haber sido purgado)`);
+  await original.forward(destino);
+  mem.log({
+    usuarioId: ctx.usuario.id,
+    canal: 'whatsapp', direccion: 'saliente',
+    de: null,
+    cuerpo: `(forward de ${a.messageId} → ${destino})`,
+    tipo_original: 'forward',
+    metadata: { forwardOf: a.messageId, a: destino },
+  });
+  return { messageId: a.messageId, forwardedTo: destino };
+}
 
 /**
  * Resuelve un destino WA: si el `a` coincide con el wa_cus de algún usuario
