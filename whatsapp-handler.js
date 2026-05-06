@@ -255,13 +255,13 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
       cuerpo: `Claude falló en WA (${usuario.nombre}): ${err.message}`,
       metadata: { from: entrada.de, messageId: entrada.messageId },
     });
-    // Silencio: NO mandamos "Maria tuvo un problema" — Diego prefiere silencio
+    // Silencio: NO mandamos "Maria tuvo un problema" — el usuario prefiere silencio
     // a ruido. Si pasa seguido, se ve en los logs.
     return;
   }
 
   // Destinos:
-  //   destinoUsuario   = wa del usuario atendido (Diego)
+  //   destinoUsuario   = wa del usuario atendido
   //   destinoRemitente = wa de quien escribió este mensaje (puede ser el
   //                      usuario en flujo normal, o un tercero si vino
   //                      reprocesado desde unknown-flow).

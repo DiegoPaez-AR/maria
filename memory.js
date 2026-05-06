@@ -17,7 +17,7 @@
 //
 // Migración idempotente: chequea con PRAGMA table_info si cada columna/tabla ya
 // existe. En un DB viejo (pre-multiusuario) hace ALTER/recreate y backfill todo
-// a usuario_id=1 (Diego). En un DB nuevo crea el schema directo.
+// a usuario_id=1 (el owner). En un DB nuevo crea el schema directo.
 
 const path = require('path');
 const fs = require('fs');

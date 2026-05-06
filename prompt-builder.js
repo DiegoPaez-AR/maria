@@ -148,9 +148,9 @@ function seccionContacto(usuario, { de, nombre, email }) {
 
 /**
  * ¿El remitente del mensaje entrante es el mismo usuario que estoy atendiendo?
- * Devuelve true en flujo normal (Diego me escribe a mí), false cuando
+ * Devuelve true en flujo normal (el usuario atendido me escribe a mí), false cuando
  * unknown-flow reprocesó un mensaje de tercero como si fuera del usuario
- * (Lucas le escribe a Maria → reproceso como Diego, pero el remitente sigue
+ * (un tercero le escribe a Maria → reproceso como el usuario atendido, pero el remitente sigue
  * siendo Lucas).
  */
 function _remitenteEsUsuarioAtendido({ canal, entrada, usuario }) {
@@ -211,7 +211,7 @@ function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
     lineas.push(`⚠️ TERCERO: este mensaje NO viene de ${usuario.nombre} (el usuario atendido). Lo escribió ${quien}, que es un tercero. Ojo con los slots de respuesta — ver [TU TAREA].`);
     // Si unknown-flow nos dio una razón explícita de por qué reconocimos a
     // este tercero (ej. "es el Lucas con quien Maria viene coordinando una
-    // reunión a pedido de Diego"), pasársela al LLM como ANCLA al hilo
+    // reunión a pedido del usuario"), pasársela al LLM como ANCLA al hilo
     // activo. Sin esto el LLM tiende a interpretar cada mensaje del tercero
     // como un primer contacto suelto y alucina contexto.
     const ctxRem = entrada.contextoRemitente || null;

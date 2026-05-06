@@ -87,7 +87,7 @@ async function listarCalendarios() {
 }
 
 /**
- * Lista eventos próximos. Por defecto del calendario de Diego.
+ * Lista eventos próximos. Por defecto del calendario del usuario atendido.
  */
 async function listarEventosProximos({ dias = 7, max = 20, calendarId } = {}) {
   if (!calendarId) throw new Error('listarEventosProximos: calendarId requerido');

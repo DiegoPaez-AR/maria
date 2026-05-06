@@ -379,7 +379,7 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
       return null;
     }
     console.log(`[unknown-flow/${canal}] LLM resolucion: ${json.resolucion}${json.usuario_id ? ` usuario_id=${json.usuario_id}` : ''}${json.nombre_sugerido ? ` sugerido="${json.nombre_sugerido}"` : ''} · ${json.razon || '(sin razón)'}`);
-    // Dejamos traza persistente en eventos para que Diego pueda revisar
+    // Dejamos traza persistente en eventos para que el owner pueda revisar
     // después qué vio el LLM y por qué decidió lo que decidió.
     try {
       mem.log({
