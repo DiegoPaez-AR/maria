@@ -197,7 +197,10 @@ function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
     lineas.push('');
     lineas.push(`⚠️ CADENA CON TERCEROS: este email lo escribió ${usuario.nombre} (tu usuario, NO un tercero) y te sumó a un hilo con: ${otrosDestinatarios.join(', ')}.`);
     lineas.push(`   Tu interlocutor son los OTROS destinatarios, NO ${usuario.nombre} — él te sumó a propósito para que vos coordines con ellos. NO te presentes a ${usuario.nombre}, ya te conoce.`);
-    lineas.push(`   Para responder al hilo, emití responder_email con "replyAll": true (mantiene a todos en la cadena, incluido ${usuario.nombre}). Si necesitás info que solo ${usuario.nombre} tiene, usá respuesta_a_usuario (le va por WhatsApp aparte) y NO respondas el email todavía.`);
+    lineas.push(`   PROTOCOLO PARA ESTE TURNO (override del default de [TU TAREA]):`);
+    lineas.push(`   - Si necesitás info de ${usuario.nombre} para coordinar (horarios, lugar, decisión): respuesta_a_remitente debe ser "" (NO mandes acuse al hilo, ni siquiera "lo consulto y te confirmo" — ${usuario.nombre} ya sabe que está coordinando, no hace falta avisar a los terceros). Mandá SOLO respuesta_a_usuario por WhatsApp preguntándole qué proponer/decidir, sin "lo consulto" ni preámbulos. Cuando ${usuario.nombre} responda, en el siguiente turno emitís responder_email con "replyAll": true al hilo.`);
+    lineas.push(`   - Si ya tenés toda la info necesaria (ej. ${usuario.nombre} ya te dejó horarios/preferencias en [HECHOS] o agenda libre clara): respondé al hilo directo con responder_email + "replyAll": true, y dejá respuesta_a_usuario vacía salvo que valga avisarle algo nuevo.`);
+    lineas.push(`   - Esta regla pisa la del default ("decile al tercero 'lo consulto y te confirmo'") — esa aplica solo a mensajes que un tercero escribe DIRECTO a Maria, no a cadenas donde el remitente es ${usuario.nombre}.`);
   }
 
   // Marcar tercero — esto es CRÍTICO para que el LLM sepa a quién dirigir
