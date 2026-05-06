@@ -1,0 +1,33 @@
+# ejecutado: 2026-05-05T22:59:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   echo "── pm2 env ──"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p['name']=='maria':
+#           env = p.get('pm2_env',{})
+#           print('uptime_ms:', env.get('pm_uptime'))
+#           print('restart_time:', env.get('restart_time'))
+#           print('GMAIL_POLL_MS env:', env.get('GMAIL_POLL_MS','(unset → usa default)'))
+#   "
+#   echo
+#   echo "── log de arranque (Gmail poll cada Xs / arrancando poll) ──"
+#   pm2 logs maria --lines 1000 --nostream 2>&1 | grep -E 'Gmail poll: cada|arrancando poll de Gmail' | tail -5
+
+# ───── output ─────
+── pm2 env ──
+uptime_ms: 1778032622280
+restart_time: 7
+GMAIL_POLL_MS env: (unset → usa default)
+
+── log de arranque (Gmail poll cada Xs / arrancando poll) ──
+0|maria    | 2026-05-03 11:25:08: ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | 2026-05-03 12:14:04:   Gmail poll: cada 60s
+0|maria    | 2026-05-03 12:14:09: ▸ arrancando poll de Gmail (cada 60s)
+0|maria    | 2026-05-05 22:57:04:   Gmail poll: cada 300s
+0|maria    | 2026-05-05 22:57:08: ▸ arrancando poll de Gmail (cada 300s)
+
+# exit=0
