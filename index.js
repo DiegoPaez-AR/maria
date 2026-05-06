@@ -13,7 +13,7 @@
 //   DIEGO_EMAIL       → email del owner para bootstrap (default diego@paez.is)
 //   OWNER_CALENDAR_ID → calendar id del owner (default = su email)
 //   MARIA_TZ          → tz del owner para bootstrap
-//   GMAIL_POLL_MS     → intervalo de poll de Gmail (default 60000)
+//   GMAIL_POLL_MS     → intervalo de poll de Gmail (default 300000)
 //   CHROME_BIN        → binary de Chrome (default /usr/bin/google-chrome)
 //   MARIA_DB          → path de sqlite (default ./db/maria.sqlite)
 
@@ -29,7 +29,7 @@ const { iniciarProgramados } = require('./programados');
 const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
 
-const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 60_000);
+const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
 const PROGRAMADOS_MS  = Number(process.env.PROGRAMADOS_MS  || 60_000);
 const BRIEF_MS        = Number(process.env.BRIEF_MS        || 60_000);

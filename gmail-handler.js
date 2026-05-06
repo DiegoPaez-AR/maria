@@ -241,7 +241,7 @@ async function pollOnce({ waClient, maxPorRonda = 5 } = {}) {
  * Arranca el poll cada `intervaloMs`. Dispara una vez inmediatamente.
  * Devuelve el handle del setInterval por si querés cancelarlo.
  */
-function iniciarPoll({ waClient, intervaloMs = 60_000 } = {}) {
+function iniciarPoll({ waClient, intervaloMs = 300_000 } = {}) {
   const tick = () => {
     pollOnce({ waClient }).catch(err =>
       console.error('[GMAIL] tick error:', err.message)
