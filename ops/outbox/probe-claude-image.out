@@ -1,0 +1,77 @@
+# ejecutado: 2026-05-06T23:58:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   # Probar si claude -p (no-interactivo) lee imágenes vía @path o necesita otra forma.
+#   set +e
+#   
+#   WORKDIR=/tmp/maria-imgtest
+#   rm -rf "$WORKDIR"
+#   mkdir -p "$WORKDIR"
+#   IMG="$WORKDIR/evento.png"
+#   
+#   echo "── 1. Generando imagen de prueba con ImageMagick ──"
+#   # String simple que claude debería poder leer
+#   convert -size 600x200 xc:white -gravity center \
+#     -font DejaVu-Sans -pointsize 22 \
+#     -fill black -annotate 0 "Conferencia AI 2026\nViernes 15 de mayo, 18hs\nCentro Cultural Recoleta" \
+#     "$IMG" 2>&1
+#   ls -la "$IMG" 2>&1
+#   echo
+#   
+#   echo "── 2. claude --version ──"
+#   claude --version 2>&1
+#   echo
+#   
+#   echo "── 3. PRUEBA A: pasar @path en el texto del prompt por stdin ──"
+#   PROMPT_A="leé el siguiente flyer de evento y respondé SOLO con un JSON {\"titulo\":\"\",\"fecha\":\"\",\"hora\":\"\",\"lugar\":\"\"}: @${IMG}"
+#   echo "  prompt: $PROMPT_A"
+#   echo "  --- output ---"
+#   echo "$PROMPT_A" | claude -p 2>&1 | head -30
+#   echo "  --- fin output ---"
+#   echo
+#   
+#   echo "── 4. PRUEBA B: pasar el path absoluto sin @ ──"
+#   PROMPT_B="leé el flyer de evento en el archivo ${IMG} y respondé SOLO JSON {\"titulo\":\"\",\"fecha\":\"\",\"hora\":\"\",\"lugar\":\"\"}"
+#   echo "$PROMPT_B" | claude -p 2>&1 | head -30
+#   echo "  --- fin output B ---"
+#   echo
+#   
+#   echo "── 5. PRUEBA C: --help para ver flags relacionados con imagen / file / image ──"
+#   claude --help 2>&1 | grep -iE 'image|file|attach|input|media' | head -20
+#   echo
+#   
+#   echo "── 6. cleanup ──"
+#   rm -rf "$WORKDIR"
+
+# ───── output ─────
+── 1. Generando imagen de prueba con ImageMagick ──
+ops/inbox/probe-claude-image.sh: line 12: convert: command not found
+ls: cannot access '/tmp/maria-imgtest/evento.png': No such file or directory
+
+── 2. claude --version ──
+2.1.110 (Claude Code)
+
+── 3. PRUEBA A: pasar @path en el texto del prompt por stdin ──
+  prompt: leé el siguiente flyer de evento y respondé SOLO con un JSON {"titulo":"","fecha":"","hora":"","lugar":""}: @/tmp/maria-imgtest/evento.png
+  --- output ---
+Necesito que apruebes el permiso para leer el archivo `/tmp/maria-imgtest/evento.png`.
+  --- fin output ---
+
+── 4. PRUEBA B: pasar el path absoluto sin @ ──
+No tengo permiso para leer ese archivo. Necesitás autorizar el acceso a `/tmp/maria-imgtest/evento.png` en el diálogo de permisos.
+  --- fin output B ---
+
+── 5. PRUEBA C: --help para ver flags relacionados con imagen / file / image ──
+  --bare                                            Minimal mode: skip hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, and CLAUDE.md auto-discovery. Sets CLAUDE_CODE_SIMPLE=1. Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read). 3P providers (Bedrock/Vertex/Foundry) use their own credentials. Skills still resolve via /skill-name. Explicitly provide context via: --system-prompt[-file], --append-system-prompt[-file], --add-dir (CLAUDE.md dirs), --mcp-config, --settings, --agents, --plugin-dir.
+  -d, --debug [filter]                              Enable debug mode with optional category filtering (e.g., "api,hooks" or "!1p,!file")
+  --debug-file <path>                               Write debug logs to a specific file path (implicitly enables debug mode)
+  --file <specs...>                                 File resources to download at startup. Format: file_id:relative_path (e.g., --file file_abc:doc.txt file_def:img.png)
+  --input-format <format>                           Input format (only works with --print): "text" (default), or "stream-json" (realtime streaming input) (choices: "text", "stream-json")
+  --mcp-config <configs...>                         Load MCP servers from JSON files or strings (space-separated)
+  --replay-user-messages                            Re-emit user messages from stdin back on stdout for acknowledgment (only works with --input-format=stream-json and --output-format=stream-json)
+  --settings <file-or-json>                         Path to a settings JSON file or a JSON string to load additional settings from
+
+── 6. cleanup ──
+
+# exit=0
