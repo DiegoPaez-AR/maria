@@ -1,0 +1,69 @@
+# ejecutado: 2026-05-07T00:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "── 0. instalar reportlab (PDF) ──"
+#   apt-get install -qy python3-reportlab 2>&1 | tail -3
+#   python3 -c "import reportlab; print('  reportlab OK')" || { echo "FAIL reportlab"; exit 1; }
+#   
+#   WORKDIR=/tmp/maria-pdftest
+#   rm -rf "$WORKDIR"
+#   mkdir -p "$WORKDIR"
+#   PDF="$WORKDIR/menu.pdf"
+#   
+#   echo "── 1. Generar PDF de prueba (carta de un restaurante) ──"
+#   python3 - <<'PY'
+#   from reportlab.pdfgen import canvas
+#   from reportlab.lib.pagesizes import A4
+#   c = canvas.Canvas("/tmp/maria-pdftest/menu.pdf", pagesize=A4)
+#   c.setFont("Helvetica-Bold", 22)
+#   c.drawString(72, 780, "Bistro Del Sol — Carta de Otoño")
+#   c.setFont("Helvetica", 14)
+#   c.drawString(72, 740, "Entradas")
+#   c.drawString(90, 720, "  Burrata con tomate ahumado — $8500")
+#   c.drawString(90, 700, "  Empanadas de cordero (3 u.) — $6200")
+#   c.drawString(72, 660, "Principales")
+#   c.drawString(90, 640, "  Bagel de trucha ahumada — $14500")
+#   c.drawString(90, 620, "  Risotto de hongos — $13200")
+#   c.drawString(90, 600, "  Bife de chorizo con papas rotas — $18900")
+#   c.drawString(72, 560, "Postres")
+#   c.drawString(90, 540, "  Cheesecake de frutos rojos — $5800")
+#   c.drawString(90, 520, "  Helado artesanal (3 sabores) — $4900")
+#   c.setFont("Helvetica-Oblique", 10)
+#   c.drawString(72, 480, "Horario: martes a domingo, 12 a 16 y 20 a 24 hs")
+#   c.save()
+#   print("  PDF OK")
+#   PY
+#   ls -la "$PDF"
+#   echo
+#   
+#   echo "── 2. PRUEBA — claude -p --allowedTools Read con @path al PDF ──"
+#   PROMPT="leé el PDF en @${PDF} (es la carta de un restaurante) y respondé SOLO un objeto JSON con campos: nombre_restaurante, principales (array de objetos con nombre y precio), horario. Sin markdown, sin texto extra."
+#   echo "  --- output ---"
+#   echo "$PROMPT" | timeout 120 claude -p --allowedTools "Read" 2>&1 | head -40
+#   echo "  --- fin ---"
+#   echo
+#   
+#   echo "── 3. cleanup ──"
+#   rm -rf "$WORKDIR"
+
+# ───── output ─────
+── 0. instalar reportlab (PDF) ──
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+  reportlab OK
+── 1. Generar PDF de prueba (carta de un restaurante) ──
+  PDF OK
+-rw-r--r-- 1 root root 2086 May  7 00:08 /tmp/maria-pdftest/menu.pdf
+
+── 2. PRUEBA — claude -p --allowedTools Read con @path al PDF ──
+  --- output ---
+{"nombre_restaurante":"Bistro Del Sol","principales":[{"nombre":"Bagel de trucha ahumada","precio":14500},{"nombre":"Risotto de hongos","precio":13200},{"nombre":"Bife de chorizo con papas rotas","precio":18900}],"horario":"martes a domingo, 12 a 16 y 20 a 24 hs"}
+  --- fin ---
+
+── 3. cleanup ──
+
+# exit=0
