@@ -10,7 +10,7 @@ const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 // Herramientas de Claude permitidas. Por default dejamos las web para que
 // Maria pueda buscar info (teléfonos de restaurantes, direcciones, horarios).
 // Si querés sumar más o restar, seteá CLAUDE_ALLOWED_TOOLS="WebSearch,WebFetch".
-const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch,Read')
+const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch,Read,mcp__playwright')
   .split(',').map(s => s.trim()).filter(Boolean);
 
 /**
@@ -23,6 +23,15 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [] } = {}) {
       // Claude Code acepta `--allowedTools "A B"` o `--allowedTools A --allowedTools B`.
       // Usamos la forma plural separada por espacios para robustez.
       args.push('--allowedTools', ALLOWED_TOOLS.join(' '));
+    }
+    // MCP config: si existe el archivo (default ./mcp-config.json), lo cargamos.
+    // Da acceso a Playwright MCP para navegación web interactiva (formularios,
+    // sitios JS-only, paneles privados). El server se levanta lazy — solo
+    // arranca si el LLM efectivamente invoca alguna tool del namespace.
+    const fs = require('fs');
+    const mcpCfg = process.env.CLAUDE_MCP_CONFIG || './mcp-config.json';
+    if (fs.existsSync(mcpCfg)) {
+      args.push('--mcp-config', mcpCfg);
     }
     args.push(...extraArgs);
     const p = spawn(CLAUDE_BIN, args, { stdio: ['pipe', 'pipe', 'pipe'] });
