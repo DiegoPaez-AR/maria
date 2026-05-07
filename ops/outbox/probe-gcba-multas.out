@@ -1,0 +1,40 @@
+# ejecutado: 2026-05-07T00:44:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   cat > /tmp/mcp-playwright.json <<'JSON'
+#   {
+#     "mcpServers": {
+#       "playwright": {
+#         "command": "npx",
+#         "args": ["-y", "@playwright/mcp@latest", "--headless"]
+#       }
+#     }
+#   }
+#   JSON
+#   
+#   PROMPT='Usá Playwright MCP. 
+#   1) Navegá a https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito
+#   2) Seleccioná el radio "una patente"
+#   3) Ingresá la patente "AD4090WX" en el input
+#   4) Click en "Consultar"  
+#   5) Esperá el resultado o el captcha bloqueante.
+#   6) Devolveme un JSON: {"resultado":"ok"|"captcha_bloqueado"|"otro","detalle":"...lo que pasó..."}
+#   Sin texto extra fuera del JSON.'
+#   
+#   echo "$PROMPT" | timeout 240 claude -p \
+#     --mcp-config /tmp/mcp-playwright.json \
+#     --allowedTools "mcp__playwright" \
+#     2>&1 | tail -40
+#   echo "exit=$?"
+#   rm -f /tmp/mcp-playwright.json
+
+# ───── output ─────
+```json
+{"resultado":"captcha_bloqueado","detalle":"El reCAPTCHA activó un desafío visual de selección de imágenes (grid 4x4 con bocas de incendios). No es posible resolverlo de forma automatizada."}
+```
+exit=0
+
+# exit=0
