@@ -1,0 +1,127 @@
+# ejecutado: 2026-05-07T00:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "── 1. claude --version ──"
+#   claude --version 2>&1
+#   echo
+#   
+#   echo "── 2. flags MCP-related en --help ──"
+#   claude --help 2>&1 | grep -iE 'mcp|tool|allowed|permission' | head -20
+#   echo
+#   
+#   echo "── 3. Verificar que npx + @playwright/mcp pueden instalarse/correr ──"
+#   # El primer call de npx descarga el paquete. Lo hacemos con un timeout corto
+#   # para verificar que arranca, sin esperar el listen.
+#   echo "  warmup: npx @playwright/mcp@latest --help"
+#   timeout 60 npx -y @playwright/mcp@latest --help 2>&1 | head -30
+#   echo "  warmup exit=$?"
+#   echo
+#   
+#   echo "── 4. Crear mcp-config.json ──"
+#   cat > /tmp/mcp-playwright.json <<'JSON'
+#   {
+#     "mcpServers": {
+#       "playwright": {
+#         "command": "npx",
+#         "args": ["-y", "@playwright/mcp@latest", "--headless"]
+#       }
+#     }
+#   }
+#   JSON
+#   cat /tmp/mcp-playwright.json
+#   echo
+#   
+#   echo "── 5. PRUEBA: claude -p con MCP playwright ──"
+#   # Siguiendo la doc: hay que mencionar 'Playwright MCP' en el prompt para que
+#   # Claude no caiga en Bash u otra cosa. Tools: tenemos que permitir mcp__playwright__*
+#   PROMPT='Usá la tool Playwright MCP para navegar a https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infracciones/?actas=transito y describime brevemente qué elementos de formulario ves en la página (botones, inputs, dropdowns). Respondé en 5 líneas máximo.'
+#   echo "$PROMPT" | timeout 240 claude -p \
+#     --mcp-config /tmp/mcp-playwright.json \
+#     --allowedTools "mcp__playwright" \
+#     2>&1 | tail -60
+#   echo "  exit=$?"
+#   echo
+#   
+#   echo "── 6. cleanup ──"
+#   rm -f /tmp/mcp-playwright.json
+
+# ───── output ─────
+── 1. claude --version ──
+2.1.110 (Claude Code)
+
+── 2. flags MCP-related en --help ──
+  --add-dir <directories...>                        Additional directories to allow tool access to
+  --allow-dangerously-skip-permissions              Enable bypassing all permission checks as an option, without it being enabled by default. Recommended only for sandboxes with no internet access.
+  --allowedTools, --allowed-tools <tools...>        Comma or space-separated list of tool names to allow (e.g. "Bash(git *) Edit")
+  --bare                                            Minimal mode: skip hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, and CLAUDE.md auto-discovery. Sets CLAUDE_CODE_SIMPLE=1. Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read). 3P providers (Bedrock/Vertex/Foundry) use their own credentials. Skills still resolve via /skill-name. Explicitly provide context via: --system-prompt[-file], --append-system-prompt[-file], --add-dir (CLAUDE.md dirs), --mcp-config, --settings, --agents, --plugin-dir.
+  --brief                                           Enable SendUserMessage tool for agent-to-user communication
+  --dangerously-skip-permissions                    Bypass all permission checks. Recommended only for sandboxes with no internet access.
+  --disallowedTools, --disallowed-tools <tools...>  Comma or space-separated list of tool names to deny (e.g. "Bash(git *) Edit")
+  --mcp-config <configs...>                         Load MCP servers from JSON files or strings (space-separated)
+  --mcp-debug                                       [DEPRECATED. Use --debug instead] Enable MCP debug mode (shows MCP server errors)
+  --permission-mode <mode>                          Permission mode to use for the session (choices: "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan")
+  --strict-mcp-config                               Only use MCP servers from --mcp-config, ignoring all other MCP configurations
+  --tools <tools...>                                Specify the list of available tools from the built-in set. Use "" to disable all tools, "default" to use all tools, or specify tool names (e.g. "Bash,Edit,Read").
+  doctor                                            Check the health of your Claude Code auto-updater. Note: The workspace trust dialog is skipped and stdio servers from .mcp.json are spawned for health checks. Only use this command in directories you trust.
+  mcp                                               Configure and manage MCP servers
+
+── 3. Verificar que npx + @playwright/mcp pueden instalarse/correr ──
+  warmup: npx @playwright/mcp@latest --help
+Usage: Playwright MCP [options]
+
+Options:
+  -V, --version                         output the version number
+  --allowed-hosts <hosts...>            comma-separated list of hosts this
+                                        server is allowed to serve from.
+                                        Defaults to the host the server is bound
+                                        to. Pass '*' to disable the host check.
+  --allowed-origins <origins>           semicolon-separated list of TRUSTED
+                                        origins to allow the browser to request.
+                                        Default is to allow all.
+                                        Important: *does not* serve as a
+                                        security boundary and *does not* affect
+                                        redirects.
+  --allow-unrestricted-file-access      allow access to files outside of the
+                                        workspace roots. Also allows
+                                        unrestricted access to file:// URLs. By
+                                        default access to file system is
+                                        restricted to workspace root directories
+                                        (or cwd if no roots are configured)
+                                        only, and navigation to file:// URLs is
+                                        blocked.
+  --blocked-origins <origins>           semicolon-separated list of origins to
+                                        block the browser from requesting.
+                                        Blocklist is evaluated before allowlist.
+                                        If used without the allowlist, requests
+                                        not matching the blocklist are still
+                                        allowed.
+                                        Important: *does not* serve as a
+                                        security boundary and *does not* affect
+  warmup exit=0
+
+── 4. Crear mcp-config.json ──
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--headless"]
+    }
+  }
+}
+
+── 5. PRUEBA: claude -p con MCP playwright ──
+El formulario tiene:
+
+- **2 radio buttons**: "Una patente" o "Un documento" (seleccionado por defecto).
+- **Dropdown (combobox) "Tipo de documento"**: opciones CI, CUIT, DNI (default), EXT, LC, LE, PAS.
+- **Input numérico "Número de documento"** (spinbutton).
+- **Checkbox reCAPTCHA** ("No soy un robot") dentro de un iframe.
+- **Botón "Consultar"** para enviar el formulario.
+  exit=0
+
+── 6. cleanup ──
+
+# exit=0
