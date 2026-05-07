@@ -1,0 +1,81 @@
+# ejecutado: 2026-05-07T00:02:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   WORKDIR=/tmp/maria-imgtest
+#   rm -rf "$WORKDIR"
+#   mkdir -p "$WORKDIR"
+#   IMG="$WORKDIR/evento.png"
+#   
+#   echo "── 1. Instalar Pillow si falta ──"
+#   python3 -c "import PIL" 2>/dev/null || {
+#     echo "  pip install Pillow..."
+#     pip install --break-system-packages -q Pillow 2>&1 | tail -3
+#   }
+#   python3 -c "from PIL import Image; print('  PIL OK')"
+#   
+#   echo "── 2. Generar PNG ──"
+#   python3 - <<'PY'
+#   from PIL import Image, ImageDraw, ImageFont
+#   img = Image.new('RGB', (800, 300), 'white')
+#   d = ImageDraw.Draw(img)
+#   try:
+#       font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
+#   except Exception:
+#       font = ImageFont.load_default()
+#   d.text((40, 40),  "Conferencia AI 2026", fill='black', font=font)
+#   d.text((40, 100), "Viernes 15 de mayo, 18:00 hs", fill='black', font=font)
+#   d.text((40, 160), "Centro Cultural Recoleta", fill='black', font=font)
+#   d.text((40, 220), "Entrada libre", fill='black', font=font)
+#   img.save("/tmp/maria-imgtest/evento.png")
+#   print("  PNG creado OK")
+#   PY
+#   ls -la "$IMG"
+#   file "$IMG"
+#   echo
+#   
+#   echo "── 3. PRUEBA: claude -p --allowedTools Read con @path ──"
+#   PROMPT="leé la imagen @${IMG} (es un flyer de un evento) y respondé SOLO JSON con campos titulo, fecha, hora, lugar. Sin markdown, sin texto extra."
+#   echo "  prompt: $PROMPT"
+#   echo "  --- output ---"
+#   echo "$PROMPT" | timeout 120 claude -p --allowedTools "Read" 2>&1 | head -20
+#   echo "  --- fin ---"
+#   echo
+#   
+#   echo "── 4. cleanup ──"
+#   rm -rf "$WORKDIR"
+
+# ───── output ─────
+── 1. Instalar Pillow si falta ──
+  pip install Pillow...
+ops/inbox/probe-claude-image-v3.sh: line 12: pip: command not found
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+ModuleNotFoundError: No module named 'PIL'
+── 2. Generar PNG ──
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'PIL'
+ls: cannot access '/tmp/maria-imgtest/evento.png': No such file or directory
+ops/inbox/probe-claude-image-v3.sh: line 33: file: command not found
+
+── 3. PRUEBA: claude -p --allowedTools Read con @path ──
+  prompt: leé la imagen @/tmp/maria-imgtest/evento.png (es un flyer de un evento) y respondé SOLO JSON con campos titulo, fecha, hora, lugar. Sin markdown, sin texto extra.
+  --- output ---
+El archivo no existe. El probe script falló porque `pip` no está disponible en el sistema, así que Pillow nunca se instaló y el PNG nunca se generó. Además, el script corrió `rm -rf /tmp/maria-imgtest` al final, así que el directorio fue eliminado.
+
+Del log (`ops/outbox/probe-claude-image-v3.out`):
+
+```
+ModuleNotFoundError: No module named 'PIL'
+ls: cannot access '/tmp/maria-imgtest/evento.png': No such file or directory
+```
+
+Para que la prueba funcione, hay que resolver la instalación de Pillow primero. ¿Querés que busque cómo instalar Pillow en este sistema (Python 3 sin pip disponible directamente)?
+  --- fin ---
+
+── 4. cleanup ──
+
+# exit=0
