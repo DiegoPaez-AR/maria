@@ -117,7 +117,7 @@ function crearClienteWA({ onReady } = {}) {
 // Cuando el timer expira, llamamos al LLM UNA sola vez con el cuerpo
 // combinado y los adjuntos acumulados.
 
-const _DEBOUNCE_MS = Number(process.env.WA_DEBOUNCE_MS || 5000);
+const _DEBOUNCE_MS = Number(process.env.WA_DEBOUNCE_MS || 10000);
 const _colas = new Map(); // from → { items, timer }
 
 async function handleMessage(client, msg) {
