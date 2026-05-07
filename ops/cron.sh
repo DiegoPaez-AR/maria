@@ -97,6 +97,10 @@ if [ -f "$DB" ]; then
     > ops/snapshots/programados.txt 2>&1
 fi
 
+# Housekeeping: borrar adjuntos temporales de Maria que quedaron huérfanos
+# (>60 min). Si el handler crasheó antes del finally, el archivo queda en /tmp.
+find /tmp -maxdepth 1 -name 'maria-attach-*' -mmin +60 -delete 2>/dev/null
+
 echo "$STAMP" > ops/snapshots/.timestamp
 
 # ───── 4. Commit + push (fase 1: publicar outputs y snapshots) ─────

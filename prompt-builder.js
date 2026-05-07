@@ -172,7 +172,7 @@ function _remitenteEsUsuarioAtendido({ canal, entrada, usuario }) {
 }
 
 function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
-  const { de, nombre, asunto, cuerpo, esAudio, messageId, para, cc, otrosDestinatarios } = entrada;
+  const { de, nombre, asunto, cuerpo, esAudio, messageId, para, cc, otrosDestinatarios, attachmentPath, attachmentPaths } = entrada;
   const lineas = [`Canal: ${canal}`];
   if (nombre) lineas.push(`De: ${nombre}${de ? ` (${de})` : ''}`);
   else if (de) lineas.push(`De: ${de}`);
@@ -226,6 +226,22 @@ function seccionMensajeEntrante({ canal, entrada, usuario = null }) {
   lineas.push(``);
   lineas.push(`Mensaje:`);
   lineas.push(cuerpo || '(vacío)');
+
+  // Adjuntos legibles (imágenes / PDFs descargados a /tmp). Los exponemos
+  // con @path para que Claude Code los lea con su tool Read (visión
+  // multimodal nativa). attachmentPath = WA (uno solo); attachmentPaths =
+  // Gmail (array, mails pueden tener varios).
+  const paths = [
+    ...(attachmentPath ? [attachmentPath] : []),
+    ...(Array.isArray(attachmentPaths) ? attachmentPaths : []),
+  ];
+  if (paths.length) {
+    lineas.push('');
+    lineas.push('[ARCHIVOS ADJUNTOS]');
+    lineas.push(`El usuario adjuntó ${paths.length === 1 ? 'el siguiente archivo' : 'los siguientes archivos'} junto a este mensaje. Leelos con tu tool Read y usá su contenido para responder. Soporta imágenes (JPG/PNG/WEBP/GIF) y PDFs.`);
+    for (const ap of paths) lineas.push(`@${ap}`);
+  }
+
   return lineas.join('\n');
 }
 

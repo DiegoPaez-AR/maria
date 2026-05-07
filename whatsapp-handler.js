@@ -15,6 +15,8 @@
 //   7) ejecutar acciones con ctx = { usuario, waClient, canalOrigen }
 
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const fs = require('fs');
+const path = require('path');
 const qrcode = require('qrcode-terminal');
 
 const mem = require('./memory');
@@ -155,12 +157,15 @@ async function handleMessage(client, msg) {
     }
   }
 
-  // Si no hay texto pero el mensaje tiene media (PDF, imagen, video, doc),
-  // armamos un cuerpo sintético "(adjuntó X)" para que el LLM se entere y
-  // pueda emitir reenviar_wa si el usuario lo pide. NO descargamos los bytes
-  // — el forward nativo de WA usa getMessageById(...).forward() y no necesita
-  // la copia local. Stickers / mensajes vacíos siguen ignorados.
+  // Si no hay texto pero el mensaje tiene media, armamos cuerpo sintético
+  // "(adjuntó X)" para que el LLM se entere. Adicionalmente, si el mime es
+  // imagen o PDF, descargamos los bytes a /tmp y dejamos el path para que
+  // el prompt-builder lo agregue como @path al prompt (Claude Code lo lee
+  // como visión multimodal). Para otros mimes (video, audio sin transcribir,
+  // doc no-PDF) NO descargamos — el LLM solo se entera de su existencia y
+  // puede reenviarlo con reenviar_wa si el user lo pide.
   let mediaMeta = null;
+  let attachmentPath = null;
   if (!cuerpo) {
     if (msg.hasMedia && msg.type !== 'sticker') {
       const filename = msg._data?.filename || null;
@@ -168,6 +173,36 @@ async function handleMessage(client, msg) {
       const sizeKb   = msg._data?.size ? Math.round(msg._data.size / 1024) : null;
       mediaMeta = { filename, mime, sizeKb };
       cuerpo = `(adjuntó ${filename || mime}${sizeKb ? `, ${sizeKb} KB` : ''})`;
+
+      // Visión multimodal: imágenes y PDFs los bajamos a /tmp para que
+      // Claude Code los lea con su tool Read vía @path.
+      const esImagenOPdf = /^image\//i.test(mime) || /^application\/pdf$/i.test(mime);
+      const MAX_BYTES = 20 * 1024 * 1024; // 20 MB cap
+      if (esImagenOPdf && msg._data?.size && msg._data.size <= MAX_BYTES) {
+        try {
+          const media = await msg.downloadMedia();
+          if (media?.data) {
+            // Extensión: priorizamos filename, después mime, después fallback.
+            let ext = '';
+            if (filename && /\.[a-z0-9]+$/i.test(filename)) {
+              ext = filename.match(/\.[a-z0-9]+$/i)[0];
+            } else if (/^image\/jpe?g$/i.test(mime)) ext = '.jpg';
+            else if (/^image\/png$/i.test(mime))    ext = '.png';
+            else if (/^image\/webp$/i.test(mime))   ext = '.webp';
+            else if (/^image\/gif$/i.test(mime))    ext = '.gif';
+            else if (/^application\/pdf$/i.test(mime)) ext = '.pdf';
+            else ext = '.bin';
+            const safeId = (messageId || `wa-${Date.now()}`).replace(/[^A-Za-z0-9_.-]/g, '_');
+            const tmpPath = path.join('/tmp', `maria-attach-${safeId}${ext}`);
+            fs.writeFileSync(tmpPath, Buffer.from(media.data, 'base64'));
+            attachmentPath = tmpPath;
+            console.log(`[WA] media → ${tmpPath} (${sizeKb} KB)`);
+          }
+        } catch (err) {
+          console.warn(`[WA] no pude descargar media de ${messageId}: ${err.message}`);
+          // Igual seguimos — el LLM al menos sabe que llegó algo.
+        }
+      }
     } else {
       return; // sticker, vacío, raros — siguen ignorados
     }
@@ -222,22 +257,32 @@ async function handleMessage(client, msg) {
     metadata: {
       messageId, esAudio, pushname,
       ...(mediaMeta ? { esMedia: true, ...mediaMeta } : {}),
+      ...(attachmentPath ? { attachmentPath } : {}),
     },
   });
 
-  await _procesarComoUsuario({
-    client,
-    usuario,
-    entrada: {
-      de: msg.from,
-      nombre,
-      cuerpo,
-      esAudio,
-      messageId,
-      ...(mediaMeta ? { esMedia: true, mediaMeta } : {}),
-    },
-    msgOriginal: msg,
-  });
+  try {
+    await _procesarComoUsuario({
+      client,
+      usuario,
+      entrada: {
+        de: msg.from,
+        nombre,
+        cuerpo,
+        esAudio,
+        messageId,
+        ...(mediaMeta ? { esMedia: true, mediaMeta } : {}),
+        ...(attachmentPath ? { attachmentPath } : {}),
+      },
+      msgOriginal: msg,
+    });
+  } finally {
+    // Cleanup del adjunto temporal después de procesar (éxito o falla).
+    // Si crasheó antes, queda en /tmp y lo limpia el cron de housekeeping.
+    if (attachmentPath) {
+      try { fs.unlinkSync(attachmentPath); } catch {}
+    }
+  }
 }
 
 /**

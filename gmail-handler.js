@@ -15,6 +15,8 @@
 //
 // Tracking: set global `gmail:procesados` (inbox único, no por usuario).
 
+const fs = require('fs');
+const path = require('path');
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
@@ -107,20 +109,51 @@ async function procesarUnEmail(id, { waClient } = {}) {
       return e && e !== meEmail && e !== usrEmail;
     });
 
-  await _procesarComoUsuario({
-    usuario,
-    entrada: {
-      de: email.de,
-      email: email.de,
-      asunto: email.asunto,
-      cuerpo: emailCuerpo,
-      messageId: id,
-      para: email.para || '',
-      cc: email.cc || '',
-      otrosDestinatarios,
-    },
-    waClient,
-  });
+  // Visión multimodal: si el mail tiene adjuntos imagen/PDF, los bajamos
+  // a /tmp para que Claude Code los lea con su tool Read vía @path.
+  const attachmentPaths = [];
+  const MAX_BYTES = 20 * 1024 * 1024; // 20 MB cap por adjunto
+  for (const att of (email.adjuntos || [])) {
+    const esImagenOPdf = /^image\//i.test(att.mimeType) || /^application\/pdf$/i.test(att.mimeType);
+    if (!esImagenOPdf) continue;
+    if (att.size && att.size > MAX_BYTES) {
+      console.warn(`[GMAIL] adjunto ${att.filename} > 20MB, lo salteo`);
+      continue;
+    }
+    try {
+      const buf = await g.descargarAdjunto(id, att.attachmentId);
+      // Filename seguro
+      const safeName = att.filename.replace(/[^A-Za-z0-9._-]/g, '_');
+      const tmpPath = path.join('/tmp', `maria-attach-${id}-${safeName}`);
+      fs.writeFileSync(tmpPath, buf);
+      attachmentPaths.push(tmpPath);
+      console.log(`[GMAIL] adjunto → ${tmpPath} (${Math.round(buf.length / 1024)} KB)`);
+    } catch (err) {
+      console.warn(`[GMAIL] no pude descargar adjunto ${att.filename}: ${err.message}`);
+    }
+  }
+
+  try {
+    await _procesarComoUsuario({
+      usuario,
+      entrada: {
+        de: email.de,
+        email: email.de,
+        asunto: email.asunto,
+        cuerpo: emailCuerpo,
+        messageId: id,
+        para: email.para || '',
+        cc: email.cc || '',
+        otrosDestinatarios,
+        ...(attachmentPaths.length ? { attachmentPaths } : {}),
+      },
+      waClient,
+    });
+  } finally {
+    for (const p of attachmentPaths) {
+      try { fs.unlinkSync(p); } catch {}
+    }
+  }
 }
 
 /**

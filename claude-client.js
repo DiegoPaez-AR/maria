@@ -10,7 +10,7 @@ const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 // Herramientas de Claude permitidas. Por default dejamos las web para que
 // Maria pueda buscar info (teléfonos de restaurantes, direcciones, horarios).
 // Si querés sumar más o restar, seteá CLAUDE_ALLOWED_TOOLS="WebSearch,WebFetch".
-const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch')
+const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch,Read')
   .split(',').map(s => s.trim()).filter(Boolean);
 
 /**

@@ -346,6 +346,7 @@ async function leerEmail(messageId) {
   const m = await _gmail(auth).users.messages.get({ userId: 'me', id: messageId, format: 'full' });
   const headers = Object.fromEntries((m.data.payload?.headers || []).map(h => [h.name, h.value]));
   const cuerpo = _extraerTextoPlano(m.data.payload);
+  const adjuntos = _extraerAdjuntosMeta(m.data.payload);
   return {
     id: messageId,
     threadId: m.data.threadId,
@@ -357,7 +358,44 @@ async function leerEmail(messageId) {
     fecha: headers.Date || '',
     snippet: m.data.snippet || '',
     cuerpo,
+    adjuntos,
   };
+}
+
+// Recorre el payload buscando partes que sean attachments (tienen attachmentId
+// y filename). NO descarga los bytes — solo metadata. Para los bytes usar
+// descargarAdjunto(messageId, attachmentId).
+function _extraerAdjuntosMeta(payload, acc = []) {
+  if (!payload) return acc;
+  const body = payload.body || {};
+  const filename = payload.filename || '';
+  if (body.attachmentId && filename) {
+    acc.push({
+      attachmentId: body.attachmentId,
+      filename,
+      mimeType: payload.mimeType || 'application/octet-stream',
+      size: body.size || 0,
+    });
+  }
+  if (Array.isArray(payload.parts)) {
+    for (const p of payload.parts) _extraerAdjuntosMeta(p, acc);
+  }
+  return acc;
+}
+
+// Descarga los bytes de un adjunto del email. Devuelve Buffer.
+async function descargarAdjunto(messageId, attachmentId) {
+  const auth = await autenticar();
+  const r = await _gmail(auth).users.messages.attachments.get({
+    userId: 'me',
+    messageId,
+    id: attachmentId,
+  });
+  const data = r.data?.data;
+  if (!data) throw new Error(`descargarAdjunto: respuesta vacía (msg=${messageId} att=${attachmentId})`);
+  // Gmail API devuelve base64url. Convertimos a Buffer.
+  const b64 = data.replace(/-/g, '+').replace(/_/g, '/');
+  return Buffer.from(b64, 'base64');
 }
 
 function _extraerTextoPlano(payload) {
@@ -573,6 +611,7 @@ module.exports = {
   enviarEmail,
   responderEmail,
   buscarMensajesCon,
+  descargarAdjunto,
   // constantes
   SCOPES,
   TIMEZONE,
