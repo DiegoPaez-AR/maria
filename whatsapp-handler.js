@@ -106,12 +106,24 @@ function crearClienteWA({ onReady } = {}) {
   return client;
 }
 
-// ─── Procesamiento de un mensaje ─────────────────────────────────────────
+// ─── Procesamiento de un mensaje (pre-proceso + debouncing) ─────────────
+//
+// Cuando un user manda dos mensajes seguidos (ej: la imagen y después "es
+// este"), WA Web los entrega como dos eventos en el mismo segundo. Si los
+// procesamos por separado, María responde dos veces — una sin contexto y
+// otra con. Para evitarlo, encolamos los mensajes por chat (`from`) y
+// esperamos `WA_DEBOUNCE_MS` (default 5s) antes de despacharlos. Cualquier
+// mensaje del mismo chat que llegue dentro de ese rato se suma al grupo.
+// Cuando el timer expira, llamamos al LLM UNA sola vez con el cuerpo
+// combinado y los adjuntos acumulados.
+
+const _DEBOUNCE_MS = Number(process.env.WA_DEBOUNCE_MS || 5000);
+const _colas = new Map(); // from → { items, timer }
 
 async function handleMessage(client, msg) {
   if (msg.fromMe) return;
 
-  // Resolver pushname, contact y messageId temprano (los usa todo el flujo).
+  // Resolver pushname, contact, messageId temprano.
   let pushname = null;
   let contact = null;
   try {
@@ -120,26 +132,37 @@ async function handleMessage(client, msg) {
   } catch {}
   const messageId = msg.id?._serialized || msg.id?.id || null;
 
-  // Caso especial: vCard → libreta del usuario que la manda.
-  // Si el que la manda es desconocido, salteamos (no es un mensaje de texto,
-  // que la pida un usuario real).
+  // Caso especial: vCard → libreta del usuario que la manda. Va directo,
+  // sin debouncing — es metadata, no parte del flujo conversacional.
   if (msg.type === 'vcard') {
     const usuario = usuarios.resolverPorWa(msg.from);
-    if (!usuario) return; // vcards de desconocidos las ignoramos
+    if (!usuario) return;
     return await _manejarVCard(client, msg, usuario);
   }
 
-  // Extraer cuerpo (texto o audio transcripto).
+  // Pre-procesar: extraer texto / transcribir audio / descargar media.
+  // Esto se hace ANTES del debouncing para que cuando el timer expire ya
+  // tengamos todo listo (los attachments en /tmp, los audios transcriptos).
+  const item = await _preProcesarMensaje(client, msg, { pushname, contact, messageId });
+  if (!item) return; // sticker / vacío / fallo de transcripción
+
+  _encolar(client, msg.from, item);
+}
+
+async function _preProcesarMensaje(client, msg, { pushname, contact, messageId }) {
   let cuerpo = (msg.body || '').trim();
   let esAudio = false;
+  let mediaMeta = null;
+  let attachmentPath = null;
 
+  // Audio → transcribir con whisper.
   if (msg.type === 'ptt' || msg.type === 'audio') {
     try {
       const media = await msg.downloadMedia();
       if (!media) {
         console.warn('[WA] audio sin media');
         await client.sendMessage(msg.from, '(no pude descargar el audio, mandame texto)');
-        return;
+        return null;
       }
       console.log('[WA] transcribiendo audio…');
       cuerpo = await transcribirAudio(media);
@@ -153,135 +176,162 @@ async function handleMessage(client, msg) {
         metadata: { from: msg.from, messageId },
       });
       await client.sendMessage(msg.from, '(no pude transcribir tu audio — mandamelo en texto)');
-      return;
+      return null;
     }
   }
 
-  // Si no hay texto pero el mensaje tiene media, armamos cuerpo sintético
-  // "(adjuntó X)" para que el LLM se entere. Adicionalmente, si el mime es
-  // imagen o PDF, descargamos los bytes a /tmp y dejamos el path para que
-  // el prompt-builder lo agregue como @path al prompt (Claude Code lo lee
-  // como visión multimodal). Para otros mimes (video, audio sin transcribir,
-  // doc no-PDF) NO descargamos — el LLM solo se entera de su existencia y
-  // puede reenviarlo con reenviar_wa si el user lo pide.
-  let mediaMeta = null;
-  let attachmentPath = null;
-  if (!cuerpo) {
-    if (msg.hasMedia && msg.type !== 'sticker') {
-      const filename = msg._data?.filename || null;
-      const mime     = msg._data?.mimetype || msg.type || 'archivo';
-      const sizeKb   = msg._data?.size ? Math.round(msg._data.size / 1024) : null;
-      mediaMeta = { filename, mime, sizeKb };
+  // Media (imagen / video / documento / etc). Lo procesamos AUNQUE haya
+  // texto (caption + media en un solo evento es válido), excepto stickers
+  // y audios (que ya pasaron arriba).
+  if (msg.hasMedia && msg.type !== 'sticker' && msg.type !== 'ptt' && msg.type !== 'audio') {
+    const filename = msg._data?.filename || null;
+    const mime     = msg._data?.mimetype || msg.type || 'archivo';
+    const sizeKb   = msg._data?.size ? Math.round(msg._data.size / 1024) : null;
+    mediaMeta = { filename, mime, sizeKb };
+    if (!cuerpo) {
       cuerpo = `(adjuntó ${filename || mime}${sizeKb ? `, ${sizeKb} KB` : ''})`;
+    }
 
-      // Visión multimodal: imágenes y PDFs los bajamos a /tmp para que
-      // Claude Code los lea con su tool Read vía @path.
-      const esImagenOPdf = /^image\//i.test(mime) || /^application\/pdf$/i.test(mime);
-      const MAX_BYTES = 20 * 1024 * 1024; // 20 MB cap
-      if (esImagenOPdf && msg._data?.size && msg._data.size <= MAX_BYTES) {
-        try {
-          const media = await msg.downloadMedia();
-          if (media?.data) {
-            // Extensión: priorizamos filename, después mime, después fallback.
-            let ext = '';
-            if (filename && /\.[a-z0-9]+$/i.test(filename)) {
-              ext = filename.match(/\.[a-z0-9]+$/i)[0];
-            } else if (/^image\/jpe?g$/i.test(mime)) ext = '.jpg';
-            else if (/^image\/png$/i.test(mime))    ext = '.png';
-            else if (/^image\/webp$/i.test(mime))   ext = '.webp';
-            else if (/^image\/gif$/i.test(mime))    ext = '.gif';
-            else if (/^application\/pdf$/i.test(mime)) ext = '.pdf';
-            else ext = '.bin';
-            const safeId = (messageId || `wa-${Date.now()}`).replace(/[^A-Za-z0-9_.-]/g, '_');
-            const tmpPath = path.join('/tmp', `maria-attach-${safeId}${ext}`);
-            fs.writeFileSync(tmpPath, Buffer.from(media.data, 'base64'));
-            attachmentPath = tmpPath;
-            console.log(`[WA] media → ${tmpPath} (${sizeKb} KB)`);
-          }
-        } catch (err) {
-          console.warn(`[WA] no pude descargar media de ${messageId}: ${err.message}`);
-          // Igual seguimos — el LLM al menos sabe que llegó algo.
+    // Visión multimodal: imágenes y PDFs los bajamos a /tmp para que
+    // Claude Code los lea con su tool Read vía @path.
+    const esImagenOPdf = /^image\//i.test(mime) || /^application\/pdf$/i.test(mime);
+    const MAX_BYTES = 20 * 1024 * 1024;
+    if (esImagenOPdf && msg._data?.size && msg._data.size <= MAX_BYTES) {
+      try {
+        const media = await msg.downloadMedia();
+        if (media?.data) {
+          let ext = '';
+          if (filename && /\.[a-z0-9]+$/i.test(filename)) {
+            ext = filename.match(/\.[a-z0-9]+$/i)[0];
+          } else if (/^image\/jpe?g$/i.test(mime)) ext = '.jpg';
+          else if (/^image\/png$/i.test(mime))    ext = '.png';
+          else if (/^image\/webp$/i.test(mime))   ext = '.webp';
+          else if (/^image\/gif$/i.test(mime))    ext = '.gif';
+          else if (/^application\/pdf$/i.test(mime)) ext = '.pdf';
+          else ext = '.bin';
+          const safeId = (messageId || `wa-${Date.now()}`).replace(/[^A-Za-z0-9_.-]/g, '_');
+          const tmpPath = path.join('/tmp', `maria-attach-${safeId}${ext}`);
+          fs.writeFileSync(tmpPath, Buffer.from(media.data, 'base64'));
+          attachmentPath = tmpPath;
+          console.log(`[WA] media → ${tmpPath} (${sizeKb} KB)`);
         }
+      } catch (err) {
+        console.warn(`[WA] no pude descargar media de ${messageId}: ${err.message}`);
       }
-    } else {
-      return; // sticker, vacío, raros — siguen ignorados
     }
   }
 
-  // ─── Resolver usuario ──────────────────────────────────────────────────
-  let usuario = usuarios.resolverPorWa(msg.from);
+  if (!cuerpo) return null; // nada que procesar
+
+  return { cuerpo, esAudio, mediaMeta, attachmentPath, messageId, pushname, contact, msg };
+}
+
+function _encolar(client, from, item) {
+  let q = _colas.get(from);
+  if (!q) {
+    q = { items: [], timer: null };
+    _colas.set(from, q);
+  }
+  q.items.push(item);
+  if (q.timer) clearTimeout(q.timer);
+  q.timer = setTimeout(() => {
+    const items = q.items;
+    _colas.delete(from);
+    _despacharGrupo(client, from, items).catch(err => {
+      console.error(`[WA debounce] error despachando grupo de ${from}:`, err);
+    });
+  }, _DEBOUNCE_MS);
+}
+
+async function _despacharGrupo(client, from, items) {
+  if (!items.length) return;
+  const principal = items[0];
+  const cuerpoCombinado  = items.map(i => i.cuerpo).filter(Boolean).join('\n');
+  const attachmentPaths  = items.flatMap(i => i.attachmentPath ? [i.attachmentPath] : []);
+  const algunMedia       = items.some(i => i.mediaMeta);
+  const algunAudio       = items.some(i => i.esAudio);
+  const messageId        = principal.messageId;
+  const pushname         = principal.pushname;
+  const contact          = principal.contact;
+  const msgOriginal      = principal.msg;
+
+  let usuario = usuarios.resolverPorWa(from);
 
   if (!usuario) {
-    // Desconocido → flujo separado. unknownFlow.handleWA se encarga del
-    // ida/vuelta y, si matchea a un usuario, nos llama de vuelta con
-    // reprocesarComoUsuario para que procesemos el mensaje original como si
-    // le hubiera llegado directo a ese usuario.
-    await unknownFlow.handleWA({
-      client,
-      msg,
-      contact,
-      cuerpo,
-      reprocesarComoUsuario: async (usuarioDestino, entrada) => {
-        await _procesarComoUsuario({
-          client,
-          usuario: usuarioDestino,
-          entrada,
-          msgOriginal: msg,
-        });
-      },
-    });
+    // Desconocido → unknown-flow. Pasamos el cuerpo combinado y, en el
+    // reprocesar (cuando matchee a un user), propagamos los attachments.
+    try {
+      await unknownFlow.handleWA({
+        client,
+        msg: msgOriginal,
+        contact,
+        cuerpo: cuerpoCombinado,
+        reprocesarComoUsuario: async (usuarioDestino, entrada) => {
+          await _procesarComoUsuario({
+            client,
+            usuario: usuarioDestino,
+            entrada: {
+              ...entrada,
+              ...(attachmentPaths.length ? { attachmentPaths } : {}),
+            },
+            msgOriginal,
+          });
+        },
+      });
+    } finally {
+      for (const p of attachmentPaths) { try { fs.unlinkSync(p); } catch {} }
+    }
     return;
   }
 
-  // Capturar el @lid del usuario la primera vez que escribe (WA Web moderno).
-  if (msg.from && msg.from.endsWith('@lid') && usuario.wa_lid !== msg.from) {
-    usuarios.setWaLid(usuario.id, msg.from);
-    usuario = usuarios.obtener(usuario.id); // reload
-    console.log(`[WA] capturado @lid de ${usuario.nombre}: ${msg.from}`);
+  // Captura del @lid del user la primera vez que escribe.
+  if (from && from.endsWith('@lid') && usuario.wa_lid !== from) {
+    usuarios.setWaLid(usuario.id, from);
+    usuario = usuarios.obtener(usuario.id);
+    console.log(`[WA] capturado @lid de ${usuario.nombre}: ${from}`);
     mem.log({
       usuarioId: usuario.id,
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `LID de ${usuario.nombre} actualizado: ${msg.from}`,
+      cuerpo: `LID de ${usuario.nombre} actualizado: ${from}`,
     });
   }
 
-  const nombre = usuario.nombre || pushname || msg.from;
-  console.log(`[WA ←] ${nombre} (${msg.from})${esAudio ? ' 🎤' : ''}: ${cuerpo.slice(0, 160)}`);
+  const nombre = usuario.nombre || pushname || from;
+  const tagAgrupado = items.length > 1 ? ` [${items.length} msgs agrupados]` : '';
+  console.log(`[WA ←] ${nombre} (${from})${algunAudio ? ' 🎤' : ''}${tagAgrupado}: ${cuerpoCombinado.slice(0, 160)}`);
 
-  // Log entrante + pipeline.
-  mem.log({
-    usuarioId: usuario.id,
-    canal: 'whatsapp', direccion: 'entrante',
-    de: msg.from, nombre, cuerpo,
-    tipo_original: msg.type,
-    metadata: {
-      messageId, esAudio, pushname,
-      ...(mediaMeta ? { esMedia: true, ...mediaMeta } : {}),
-      ...(attachmentPath ? { attachmentPath } : {}),
-    },
-  });
+  // Cada item se loguea individualmente para preservar historial granular.
+  for (const it of items) {
+    mem.log({
+      usuarioId: usuario.id,
+      canal: 'whatsapp', direccion: 'entrante',
+      de: from, nombre, cuerpo: it.cuerpo,
+      tipo_original: it.msg.type,
+      metadata: {
+        messageId: it.messageId, esAudio: it.esAudio, pushname,
+        ...(it.mediaMeta ? { esMedia: true, ...it.mediaMeta } : {}),
+        ...(it.attachmentPath ? { attachmentPath: it.attachmentPath } : {}),
+      },
+    });
+  }
 
   try {
     await _procesarComoUsuario({
       client,
       usuario,
       entrada: {
-        de: msg.from,
+        de: from,
         nombre,
-        cuerpo,
-        esAudio,
+        cuerpo: cuerpoCombinado,
+        esAudio: algunAudio,
         messageId,
-        ...(mediaMeta ? { esMedia: true, mediaMeta } : {}),
-        ...(attachmentPath ? { attachmentPath } : {}),
+        ...(algunMedia ? { esMedia: true } : {}),
+        ...(attachmentPaths.length ? { attachmentPaths } : {}),
       },
-      msgOriginal: msg,
+      msgOriginal,
     });
   } finally {
-    // Cleanup del adjunto temporal después de procesar (éxito o falla).
-    // Si crasheó antes, queda en /tmp y lo limpia el cron de housekeeping.
-    if (attachmentPath) {
-      try { fs.unlinkSync(attachmentPath); } catch {}
-    }
+    for (const p of attachmentPaths) { try { fs.unlinkSync(p); } catch {} }
   }
 }
 
