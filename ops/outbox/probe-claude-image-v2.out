@@ -1,0 +1,88 @@
+# ejecutado: 2026-05-07T00:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   WORKDIR=/tmp/maria-imgtest
+#   rm -rf "$WORKDIR"
+#   mkdir -p "$WORKDIR"
+#   IMG="$WORKDIR/evento.png"
+#   
+#   echo "── 1. Generar PNG con Python (Pillow) ──"
+#   python3 - <<'PY'
+#   from PIL import Image, ImageDraw, ImageFont
+#   img = Image.new('RGB', (800, 300), 'white')
+#   d = ImageDraw.Draw(img)
+#   try:
+#       font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32)
+#   except Exception:
+#       font = ImageFont.load_default()
+#   d.text((40, 40),  "Conferencia AI 2026", fill='black', font=font)
+#   d.text((40, 100), "Viernes 15 de mayo, 18:00 hs", fill='black', font=font)
+#   d.text((40, 160), "Centro Cultural Recoleta", fill='black', font=font)
+#   d.text((40, 220), "Entrada libre", fill='black', font=font)
+#   img.save("/tmp/maria-imgtest/evento.png")
+#   print("PNG creado OK")
+#   PY
+#   ls -la "$IMG"
+#   echo
+#   
+#   echo "── 2. claude --help completo: filtrar permission/allow ──"
+#   claude --help 2>&1 | grep -iE 'permission|allow|disallow|skip-permissions|deny|tool' | head -30
+#   echo
+#   
+#   echo "── 3. PRUEBA A: --allowedTools Read + @path ──"
+#   PROMPT_A="lee la imagen @${IMG} y respondé SOLO JSON {titulo,fecha,hora,lugar} sin claves ni markdown"
+#   echo "$PROMPT_A" | timeout 90 claude -p --allowedTools "Read" 2>&1 | head -30
+#   echo "  --- fin A ---"
+#   echo
+#   
+#   echo "── 4. PRUEBA B: --dangerously-skip-permissions + @path ──"
+#   echo "$PROMPT_A" | timeout 90 claude -p --dangerously-skip-permissions 2>&1 | head -30
+#   echo "  --- fin B ---"
+#   echo
+#   
+#   echo "── 5. PRUEBA C: sin @, mencionando el path como texto, con Read habilitada ──"
+#   PROMPT_C="leé la imagen ubicada en ${IMG} y respondé SOLO JSON con titulo, fecha, hora, lugar"
+#   echo "$PROMPT_C" | timeout 90 claude -p --allowedTools "Read" 2>&1 | head -30
+#   echo "  --- fin C ---"
+#   echo
+#   
+#   echo "── 6. cleanup ──"
+#   rm -rf "$WORKDIR"
+
+# ───── output ─────
+── 1. Generar PNG con Python (Pillow) ──
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ModuleNotFoundError: No module named 'PIL'
+ls: cannot access '/tmp/maria-imgtest/evento.png': No such file or directory
+
+── 2. claude --help completo: filtrar permission/allow ──
+  --add-dir <directories...>                        Additional directories to allow tool access to
+  --allow-dangerously-skip-permissions              Enable bypassing all permission checks as an option, without it being enabled by default. Recommended only for sandboxes with no internet access.
+  --allowedTools, --allowed-tools <tools...>        Comma or space-separated list of tool names to allow (e.g. "Bash(git *) Edit")
+  --brief                                           Enable SendUserMessage tool for agent-to-user communication
+  --dangerously-skip-permissions                    Bypass all permission checks. Recommended only for sandboxes with no internet access.
+  --disallowedTools, --disallowed-tools <tools...>  Comma or space-separated list of tool names to deny (e.g. "Bash(git *) Edit")
+  --permission-mode <mode>                          Permission mode to use for the session (choices: "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan")
+  --tools <tools...>                                Specify the list of available tools from the built-in set. Use "" to disable all tools, "default" to use all tools, or specify tool names (e.g. "Bash,Edit,Read").
+
+── 3. PRUEBA A: --allowedTools Read + @path ──
+{"titulo":null,"fecha":null,"hora":null,"lugar":null}
+
+El archivo `/tmp/maria-imgtest/evento.png` no existe. ¿Podés verificar la ruta o subir la imagen nuevamente?
+  --- fin A ---
+
+── 4. PRUEBA B: --dangerously-skip-permissions + @path ──
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+  --- fin B ---
+
+── 5. PRUEBA C: sin @, mencionando el path como texto, con Read habilitada ──
+El archivo `/tmp/maria-imgtest/evento.png` no existe. ¿Podés verificar la ruta o subir la imagen nuevamente?
+  --- fin C ---
+
+── 6. cleanup ──
+
+# exit=0
