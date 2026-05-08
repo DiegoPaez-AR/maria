@@ -129,6 +129,12 @@ async function enviarBrief(waClient, usuario) {
 // ─── Loop ────────────────────────────────────────────────────────────────
 
 async function tickUsuario(waClient, usuario) {
+  // Skip silencioso si el user no tiene calendar configurado todavía
+  // (típico de prospectos recién creados sin onboarding completo). El
+  // brief arma agenda desde calendar, sin calendar_id no hay nada que
+  // mandar y la llamada a g.listarEventosProximos tira error cada minuto.
+  if (!usuario.calendar_id) return;
+
   const tz        = usuario.tz || 'America/Argentina/Buenos_Aires';
   const briefHora   = usuario.brief_hora   || '04';
   const briefMinuto = usuario.brief_minuto || '00';
