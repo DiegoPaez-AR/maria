@@ -1,5 +1,27 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2892  2026-05-08 21:18:38  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+2891  2026-05-08 21:18:38  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+2890  2026-05-08 21:18:38  whatsapp  saliente   5491157694408@c.us   Hola Daniel, de parte de Diego: ¿te viene bien el martes 12/5 a las 12:00 o el jueves 14/5 a las 12:30? Ambas opciones en la oficina de Diego, Carlos Pellegrini 1521, piso 8, CABA. Confirmame cuál te 
+
+2889  2026-05-08 21:18:38  sistema   interno                         acción FALLÓ: quitar_pendiente — quitar_pendiente: no encontré el pendiente (47)                                                                                                                        
+
+2888  2026-05-08 21:18:38  whatsapp  saliente   34342575317160@lid   Claro, le mando a Daniel las dos opciones — martes 12/5 a las 12 o jueves 14/5 a las 12:30 — y que elija él.                                                                                            
+
+2887  2026-05-08 21:18:04  sistema   interno                         acción FALLÓ: quitar_pendiente — quitar_pendiente: no encontré el pendiente (47)                                                                                                                        
+
+2886  2026-05-08 21:18:04  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+2885  2026-05-08 21:18:04  whatsapp  saliente   5491157694408@c.us   Hola Daniel, te confirmo que la reunión con Diego queda para el *martes 12/5 a las 12:00* en la oficina de Diego — Carlos Pellegrini 1521, piso 8, CABA. Te llega la invitación actualizada. Saludos, Ma
+
+2884  2026-05-08 21:18:04  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+
+2883  2026-05-08 21:18:04  calendar  saliente                        modificado: Reunión Diego / Daniel Salvucci (2026-05-12T12:00:00-03:00 → 2026-05-12T12:30:00-03:00)                                                                                                     
+
+2882  2026-05-08 21:18:03  whatsapp  saliente   34342575317160@lid   Perfecto — te muevo la reunión con Daniel al martes 12/5 a las 12:00 en tu oficina y le aviso a él.                                                                                                     
+
 2881  2026-05-08 21:17:55  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 2880  2026-05-08 21:17:55  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
@@ -196,36 +218,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 2794  2026-05-08 15:46:00  whatsapp  saliente   222788661055558@lid  Hola! 😊 Te escribía para pedirles la carta de Farinelli — ¿me la pueden pasar?                                                                                                                          
 
 2793  2026-05-08 15:45:51  whatsapp  entrante   222788661055558@lid  https://uqrmecdn.s3.us-east-2.amazonaws.com/u/208495/586222-2894832e0777143e1a32b1871e9aa1476177680.pdf                                                                                                 
-
-2792  2026-05-08 15:45:39  whatsapp  entrante   222788661055558@lid  Hola!                                                                                                                                                                                                   
-
-2791  2026-05-08 15:37:27  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-2790  2026-05-08 15:37:27  whatsapp  saliente   5491156920073@c.us   Hola! Soy María, secretaria de Diego Paez. ¿Me pueden pasar la carta actual? Muchas gracias!                                                                                                            
-
-2789  2026-05-08 15:37:27  whatsapp  saliente   34342575317160@lid   Ahí está, Farinelli — lo tengo en la libreta. Les escribo ahora para pedirles la carta.                                                                                                                 
-
-2788  2026-05-08 15:37:05  whatsapp  entrante   34342575317160@lid   farinelli                                                                                                                                                                                               
-
-2787  2026-05-08 15:36:05  whatsapp  saliente   34342575317160@lid   No los encuentro online ni tengo su número en la libreta. ¿Me pasás el contacto o WhatsApp de Salimelli y les consulto?                                                                                 
-
-2786  2026-05-08 15:34:25  whatsapp  entrante   34342575317160@lid   Ah no, no la tengo. Pásame la porfa.                                                                                                                                                                    
-
-2785  2026-05-08 15:34:25  whatsapp  entrante   34342575317160@lid   María, podrás preguntar en Salimelli si la carta es la misma y me la pasás, gracias.                                                                                                                    
-                                                                      Si no la de esta semana que no andaste el otro día ya la tengo.                                                                                                                                        
-
-2784  2026-05-08 15:23:46  whatsapp  saliente   34342575317160@lid   *Brief — viernes 8 de mayo*                                                                                                                                                                             
-                                                                                                                                                                                                                                                                             
-                                                                     *Hoy*                                                                                                                                                                                                   
-                                                                     • 3:00 PM — Reunión con Máximo [meet]                                                                                                                                                                   
-                                                                                                                                                                                                                                                                             
-                                                                     *Semana*                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                             
-                                                                     *Lun 11/05*                                                                                                                                                                                             
-                                                                     • 10:45 — Seguimiento comercial [meet]                                                                                                                                                                  
-                                                                     • 12:00 — Seguimiento Diego / Nico [meet]                                                                                                                                                               
-                                                                     • 17:00 — Llamada con D                                                                                                                                                                                 
-
-2783  2026-05-08 15:23:15  whatsapp  entrante   34342575317160@lid   mandame mi brief diario que hoy no me mandaste                                                                                                                                                          
-
-2782  2026-05-08 15:08:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (4 usuarios)                                                                                                        
