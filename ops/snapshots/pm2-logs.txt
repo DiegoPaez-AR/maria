@@ -1,12 +1,3 @@
-0|maria    | 2026-05-08 12:04:17: ▸ arrancando poll de Gmail (cada 300s)
-0|maria    | 2026-05-08 12:04:17: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria    | 2026-05-08 12:04:17: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria    | 2026-05-08 12:04:17: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria    | 2026-05-08 12:04:17: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria    | 2026-05-08 12:04:17: ▸ arrancando meeting-prep (cada 5min)
-0|maria    | 2026-05-08 12:04:17: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria    | 2026-05-08 12:08:02: 
-0|maria    | 2026-05-08 12:08:02: ▸ SIGINT recibido, cerrando…
 0|maria    | 2026-05-08 12:08:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 0|maria    | 2026-05-08 12:08:04: ▸ Maria iniciando…
 0|maria    | 2026-05-08 12:08:04:   Owner:      Diego (id=1)
@@ -197,4 +188,13 @@
 0|maria    | 2026-05-08 18:18:38: [WA acciones/Diego] 2/3 ejecutadas
 0|maria    | 2026-05-08 18:30:54: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=3 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=5, Fernando Boero=0} remitente=0@c.us contactos_ambiguos=0
 0|maria    | 2026-05-08 18:30:54: [unknown-flow/wa] match en contactos: 22965240475822@lid = "Daniel Salvucci" de Diego (id=1)
+0|maria    | 2026-05-08 18:31:14: [unknown-flow/whatsapp] LLM resolucion: desconocido · El ID 0@c.us es un número de sistema/desconocido; el mensaje es una imagen JPEG codificada en base64 sin texto ni contexto identificable, y no hay evidencia en ningún historial que permita asociarlo a un usuario activo, gestión pendiente o prospecto.
+0|maria    | 2026-05-08 18:31:15: [unknown-flow/wa] primer contacto de 0@c.us — preguntando (FSM)
+0|maria    | 2026-05-08 18:31:35: [WA change_state] OPENING
+0|maria    | 2026-05-08 18:31:35: [WA change_state] PAIRING
+0|maria    | 2026-05-08 18:31:35: [WA change_state] CONNECTED
+0|maria    | 2026-05-08 18:31:39: [WA →usr] Diego (34342575317160@lid): Daniel confirmó — quedamos el martes 12/5 a las 12:00 en tu oficina.
+0|maria    | 2026-05-08 18:31:39: [WA →3ro] Diego/Dani Salvucci: Perfecto Daniel, quedamos el martes 12/5 a las 12:00 en la oficina de Diego. Hasta entonces!
+0|maria    | 2026-05-08 18:31:39: [WA acciones/Diego] 1/1 ejecutadas
+0|maria    | 2026-05-08 18:31:39: [unknown-flow/wa] tercero_de_usuario: 22965240475822@lid (Dani Salvucci) → contexto de Diego (id=1)
 
