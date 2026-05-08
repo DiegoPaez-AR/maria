@@ -132,6 +132,15 @@ async function handleMessage(client, msg) {
   } catch {}
   const messageId = msg.id?._serialized || msg.id?.id || null;
 
+  // Marcar el chat como leído inmediatamente (best-effort). Antes Maria
+  // dejaba todos los mensajes con doble check gris hasta responder, lo
+  // que con el debouncing de 10s era visible para el remitente como
+  // 'no leído' por más tiempo.
+  try {
+    const chat = await msg.getChat();
+    if (chat && typeof chat.sendSeen === 'function') await chat.sendSeen();
+  } catch {}
+
   // Caso especial: vCard → libreta del usuario que la manda. Va directo,
   // sin debouncing — es metadata, no parte del flujo conversacional.
   if (msg.type === 'vcard') {

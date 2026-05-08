@@ -62,6 +62,46 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [] } = {}) {
  * - JSON envuelto en ```json ... ``` o ``` ... ```
  * - Texto suelto antes/después del bloque JSON
  */
+// Heurística: dentro de strings JSON, escapa comillas dobles internas que
+// no estén ya escapadas. Camina char por char tracking si estamos dentro
+// de un string. Cuando ve una `"` interna, mira el siguiente char no-ws:
+// si es delimitador (`,`, `:`, `}`, `]`), es cierre legítimo. Si no, es
+// comilla interna mal escapada y la transforma en `\"`.
+//
+// Cubre el caso típico de Claude alucinando JSON donde un valor string
+// tiene comillas internas sin escapar (ej. `"texto con "interna" y más"`).
+function _repararJSONComillasInternas(s) {
+  let out = '';
+  let inString = false;
+  let prev = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c === '"' && prev !== '\\') {
+      if (!inString) {
+        inString = true;
+        out += c;
+      } else {
+        // Lookahead: ignorar whitespace, ver siguiente char significativo.
+        let j = i + 1;
+        while (j < s.length && /\s/.test(s[j])) j++;
+        const next = s[j] || '';
+        if (',:}]'.includes(next)) {
+          // Cierre legítimo del string.
+          inString = false;
+          out += c;
+        } else {
+          // Comilla interna sin escape → la escapamos.
+          out += '\\"';
+        }
+      }
+    } else {
+      out += c;
+    }
+    prev = c;
+  }
+  return out;
+}
+
 function extraerJSON(texto) {
   if (!texto) throw new Error('extraerJSON: texto vacío');
   texto = texto.trim();
@@ -78,9 +118,23 @@ function extraerJSON(texto) {
   // 3) Buscar el primer { ... } balanceado
   const start = texto.indexOf('{');
   const end   = texto.lastIndexOf('}');
+  let candidato = null;
   if (start !== -1 && end !== -1 && end > start) {
-    const candidato = texto.slice(start, end + 1);
+    candidato = texto.slice(start, end + 1);
     try { return JSON.parse(candidato); } catch {}
+  }
+
+  // 4) Reparación de comillas internas mal escapadas. Aplicamos sobre los
+  // mejores candidatos (fence content si lo hubo, sino el balanceado).
+  const intentos = [];
+  if (fence) intentos.push(fence[1].trim());
+  if (candidato) intentos.push(candidato);
+  intentos.push(texto);
+  for (const c of intentos) {
+    try {
+      const reparado = _repararJSONComillasInternas(c);
+      return JSON.parse(reparado);
+    } catch {}
   }
 
   throw new Error(`No se pudo extraer JSON de la respuesta de Claude:\n${texto.slice(0, 500)}`);
