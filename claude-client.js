@@ -33,6 +33,14 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [] } = {}) {
     if (fs.existsSync(mcpCfg)) {
       args.push('--mcp-config', mcpCfg);
     }
+    // Settings file de Claude Code — para que distintas instancias usen
+    // distintas cuentas (Pro/Max). Si no se setea, hereda la auth del VPS.
+    // Para usar billing por API key, basta con setear ANTHROPIC_API_KEY en
+    // el env de la instancia (pm2 lo inyecta y el spawn lo hereda).
+    const settingsFile = process.env.CLAUDE_SETTINGS_FILE;
+    if (settingsFile && fs.existsSync(settingsFile)) {
+      args.push('--settings', settingsFile);
+    }
     args.push(...extraArgs);
     const p = spawn(CLAUDE_BIN, args, { stdio: ['pipe', 'pipe', 'pipe'] });
     let stdout = '', stderr = '';

@@ -198,6 +198,31 @@ function desactivar(usuarioId) {
   return u;
 }
 
+// ─── Cap de usuarios por instancia ───────────────────────────────────────
+//
+// Una instancia puede limitar la cantidad de usuarios activos que atiende.
+// El owner cuenta como un slot. Si el cap es 10, podés tener owner + 9.
+// Sin cap = ilimitado (default).
+
+const MAX_USUARIOS = process.env.ASISTENTE_MAX_USUARIOS
+  ? Number(process.env.ASISTENTE_MAX_USUARIOS)
+  : null;
+
+const qCount = db.prepare(`SELECT COUNT(*) AS n FROM usuarios WHERE activo = 1`);
+
+function cantidadActivos() {
+  return qCount.get().n;
+}
+
+function maxUsuarios() {
+  return MAX_USUARIOS;
+}
+
+function puedeCrearMas() {
+  if (MAX_USUARIOS == null) return true;
+  return cantidadActivos() < MAX_USUARIOS;
+}
+
 // ─── Tiers de calendar ───────────────────────────────────────────────────
 //
 // Devuelve el tier (0/1/2) que tiene un usuario según su calendar_id +
@@ -244,4 +269,7 @@ module.exports = {
   desactivar,
   tier,
   setearCalendarAcceso,
+  cantidadActivos,
+  maxUsuarios,
+  puedeCrearMas,
 };

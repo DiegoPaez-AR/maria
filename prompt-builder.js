@@ -24,10 +24,21 @@ const MESES       = ['enero','febrero','marzo','abril','mayo','junio','julio','a
 
 // ─── Secciones ────────────────────────────────────────────────────────────
 
+// Identidad de esta instancia (multi-instance). Defaults para que Maria
+// Paez no se rompa si el .conf no setea estas vars.
+const ASISTENTE_NOMBRE     = process.env.ASISTENTE_NOMBRE     || process.env.MARIA_FROM_NAME  || 'Maria Paez';
+const ASISTENTE_FROM_EMAIL = process.env.ASISTENTE_FROM_EMAIL || process.env.MARIA_FROM_EMAIL || 'maria.paez.secre@gmail.com';
+
+function _aplicarPlaceholdersInstancia(s) {
+  return s
+    .replace(/\{\{ASISTENTE_NOMBRE\}\}/g, ASISTENTE_NOMBRE)
+    .replace(/\{\{ASISTENTE_FROM_EMAIL\}\}/g, ASISTENTE_FROM_EMAIL);
+}
+
 function seccionInstrucciones() {
   try {
     const t = fs.readFileSync(INSTRUCCIONES_PATH, 'utf8').trim();
-    return t || '(sin instrucciones base)';
+    return _aplicarPlaceholdersInstancia(t) || '(sin instrucciones base)';
   } catch {
     return '(no se pudo leer instrucciones.txt)';
   }
@@ -331,7 +342,7 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
     ? `Además sos OWNER: podés crear / actualizar / borrar usuarios, y confirmar o rechazar prospectos pendientes. Usuarios activos actualmente: ${listaUsuarios}.`
     : '';
 
-  return `Sos Maria, secretaria personal con memoria persistente y acceso a WhatsApp, Gmail y Google Calendar. Servís a varios usuarios desde una misma instancia.
+  return `Sos ${ASISTENTE_NOMBRE}, secretaria personal con memoria persistente y acceso a WhatsApp, Gmail y Google Calendar. Servís a varios usuarios desde una misma instancia.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [USUARIO QUE ESTÁS ATENDIENDO]
@@ -403,11 +414,11 @@ ${esOwner ? `
 ONBOARDING DE USER NUEVO (post creación / confirmación de prospecto):
 Apenas creás un user nuevo, tu siguiente interacción con ese user tiene que ofrecerle las 3 opciones de integración con su calendar. Explicale los beneficios:
 
-1. Acceso COMPLETO (write) — comparte su calendar de Google con maria.paez.secre@gmail.com con permiso de "Hacer cambios y administrar uso compartido". Maria agenda directo en SU calendar, ve todo en su agenda como evento normal, los Meets son del user. La opción más cómoda.
+1. Acceso COMPLETO (write) — comparte su calendar de Google con ${ASISTENTE_FROM_EMAIL} con permiso de "Hacer cambios y administrar uso compartido". ${ASISTENTE_NOMBRE} agenda directo en SU calendar, ve todo en su agenda como evento normal, los Meets son del user. La opción más cómoda.
 
-2. Acceso de SOLO LECTURA (read) — comparte calendar con permiso de "Ver todos los detalles del evento". Maria ve sus reuniones para evitar superposiciones, pero crea las reuniones en SU propio calendar e invita al user por mail. El user las acepta y aparecen en su calendar como invitado. Los Meets quedan en la cuenta de Maria. Útil si no quiere que Maria toque su calendar pero sí que vea conflictos.
+2. Acceso de SOLO LECTURA (read) — comparte calendar con permiso de "Ver todos los detalles del evento". ${ASISTENTE_NOMBRE} ve sus reuniones para evitar superposiciones, pero crea las reuniones en SU propio calendar e invita al user por mail. El user las acepta y aparecen en su calendar como invitado. Los Meets quedan en la cuenta de ${ASISTENTE_NOMBRE}. Útil si no quiere que ${ASISTENTE_NOMBRE} toque su calendar pero sí que vea conflictos.
 
-3. SIN ACCESO (none) — no comparte nada. Maria no puede chequear conflictos, así que cada vez que se vaya a agendar algo Maria le pregunta disponibilidad antes. Crea las reuniones en su calendar e invita al user.
+3. SIN ACCESO (none) — no comparte nada. ${ASISTENTE_NOMBRE} no puede chequear conflictos, así que cada vez que se vaya a agendar algo ${ASISTENTE_NOMBRE} le pregunta disponibilidad antes. Crea las reuniones en su calendar e invita al user.
 
 Cuando el user te diga qué elige y confirme "ya te compartí" o equivalente, emití \`set_calendar_acceso\` con \`"modo": "autodetect"\` para que Maria verifique el accessRole real y lo guarde. Si el user todavía no compartió, dejá modo='none' por ahora y recordale que cuando comparta te avise.
 
@@ -531,7 +542,7 @@ async function construirPromptDesconocido({ canal, entrada, estado, ownerUsuario
     ? `Es la PRIMERA VEZ que este remitente te escribe. No sabés para quién va.`
     : `Ya le preguntaste antes ("${estado.ask_at}") y está respondiendo. El mensaje original que mandó era: "${estado.original_body}". Ahora te contesta.`;
 
-  return `Sos Maria, secretaria que asiste a varios usuarios. Un REMITENTE DESCONOCIDO te acaba de escribir (no matchea con ningún usuario registrado).
+  return `Sos ${ASISTENTE_NOMBRE}, secretaria que asiste a varios usuarios. Un REMITENTE DESCONOCIDO te acaba de escribir (no matchea con ningún usuario registrado).
 
 Usuarios que asistís (privados entre sí, no reveles nombres salvo que sea estrictamente necesario para ruteo):
 ${lista || '(sin usuarios activos)'}

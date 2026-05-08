@@ -31,7 +31,13 @@ const CHROME_BIN = process.env.CHROME_BIN || '/usr/bin/google-chrome';
 
 function crearClienteWA({ onReady } = {}) {
   const client = new Client({
-    authStrategy: new LocalAuth(),
+    authStrategy: new LocalAuth({
+      // En multi-instance, cada Maria tiene su propio directorio de auth de WA.
+      // Default: cwd-relative '.wwebjs_auth/' (el que usa whatsapp-web.js si
+      // no recibe nada). Podés overridear con WA_AUTH_DIR para apuntar a un
+      // path absoluto (ej: state/<slug>/.wwebjs_auth).
+      dataPath: process.env.WA_AUTH_DIR || undefined,
+    }),
     // webVersionCache DESHABILITADO — causaba crashes cuando WA Web actualizaba su protocolo.
     puppeteer: {
       args: [

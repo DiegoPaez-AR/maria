@@ -37,6 +37,9 @@
 
 const mem = require('./memory');
 const usuarios = require('./usuarios');
+
+// Identidad de la instancia (multi-instance). Default = Maria Paez.
+const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || process.env.MARIA_FROM_NAME || 'Maria Paez';
 const ctxFetcher = require('./context-fetcher');
 const { invocarClaudeJSON } = require('./claude-client');
 
@@ -291,7 +294,7 @@ async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asu
     ? `[LIBRETA DE CONTACTOS — matches ambiguos (mismo número/email está cargado en varios usuarios)]\n${contactosAmbiguos.map(h => `  - usuario="${h.usuario.nombre}" (id=${h.usuario.id}) tiene a "${h.contacto.nombre}"${h.contacto.notas ? ` — notas: ${h.contacto.notas}` : ''}`).join('\n')}`
     : '';
 
-  const prompt = `Sos Maria, asistente multi-usuario. Te escribió alguien por ${canal} y NO matchea con ningún usuario activo. Tu tarea es clasificar quién es.
+  const prompt = `Sos ${ASISTENTE_NOMBRE}, asistente multi-usuario. Te escribió alguien por ${canal} y NO matchea con ningún usuario activo. Tu tarea es clasificar quién es.
 
 [USUARIOS ACTIVOS]
 ${listaUsuarios}

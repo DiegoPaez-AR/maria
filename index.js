@@ -48,7 +48,9 @@ let waClient = null;
 
 async function main() {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('▸ Maria iniciando…');
+  const _asistenteNombre = process.env.ASISTENTE_NOMBRE || process.env.MARIA_FROM_NAME || 'Maria Paez';
+  const _asistenteSlug = process.env.ASISTENTE_SLUG ? ` [${process.env.ASISTENTE_SLUG}]` : '';
+  console.log(`▸ ${_asistenteNombre}${_asistenteSlug} iniciando…`);
 
   // Usuarios (owner se bootstrapea automáticamente en memory.js)
   const owner = usuarios.obtenerOwner();

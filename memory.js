@@ -34,8 +34,8 @@ db.pragma('foreign_keys = ON');
 
 // Env de fallback para el bootstrap inicial (solo si `usuarios` está vacía).
 const OWNER_NOMBRE   = process.env.OWNER_NOMBRE   || 'Diego';
-const OWNER_WA_CUS   = process.env.DIEGO_WA       || '541132317896@c.us';
-const OWNER_EMAIL    = process.env.DIEGO_EMAIL    || 'diego@paez.is';
+const OWNER_WA_CUS   = process.env.OWNER_WA       || process.env.DIEGO_WA    || '541132317896@c.us';
+const OWNER_EMAIL    = process.env.OWNER_EMAIL    || process.env.DIEGO_EMAIL || 'diego@paez.is';
 const OWNER_CAL_ID   = process.env.OWNER_CALENDAR_ID || OWNER_EMAIL;
 const OWNER_TZ       = process.env.MARIA_TZ       || 'America/Argentina/Buenos_Aires';
 

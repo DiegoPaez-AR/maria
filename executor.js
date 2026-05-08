@@ -442,6 +442,10 @@ function _crearUsuario(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('crear_usuario: solo el owner puede crear usuarios');
   }
+  if (!usuarios.puedeCrearMas()) {
+    const max = usuarios.maxUsuarios();
+    throw new Error(`crear_usuario: esta instancia llegó al máximo de ${max} usuarios activos. Para sumar otro hay que desactivar uno antes (borrar_usuario) o subir el cap (env ASISTENTE_MAX_USUARIOS).`);
+  }
   _requerir(a, ['nombre']);
   const u = usuarios.crear({
     nombre: a.nombre,
@@ -528,6 +532,10 @@ const unknownFlow = require('./unknown-flow');
 function _confirmarProspectoPendiente(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('confirmar_prospecto_pendiente: solo el owner');
+  }
+  if (!usuarios.puedeCrearMas()) {
+    const max = usuarios.maxUsuarios();
+    throw new Error(`confirmar_prospecto_pendiente: esta instancia llegó al máximo de ${max} usuarios activos. Rechazá el prospecto o desactivá uno antes.`);
   }
   _requerir(a, ['canal', 'remitente_id']);
   const pend = unknownFlow.leerProspectoPendiente(a.canal, a.remitente_id);
