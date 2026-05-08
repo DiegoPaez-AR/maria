@@ -39,19 +39,21 @@ function _componerTexto(e, usuario) {
 async function _tickUsuario(usuario) {
   const destino = _destinoWA(usuario);
   if (!destino) return 0;
-  if (!usuario.calendar_id) return 0;
-
+  // listarEventosDelUsuario decide internamente qué calendar leer según
+  // el tier del user (calendar propio si tiene visibilidad; calendar de
+  // Maria filtrado por attendee si es tier 0). Si no hay nada que listar
+  // (tier 0 sin email), devuelve [] y el loop termina sin programar.
   let eventos;
   try {
-    eventos = await g.listarEventosProximos({
+    eventos = await g.listarEventosDelUsuario(usuario, {
       dias: Math.max(1, Math.ceil(VENTANA_HORAS / 24)),
       max: 30,
-      calendarId: usuario.calendar_id,
     });
   } catch (err) {
     console.warn(`[meeting-prep/${usuario.nombre}] listar cal falló:`, err.message);
     return 0;
   }
+  if (!eventos.length) return 0;
 
   const ahora = Date.now();
   const limite = ahora + VENTANA_HORAS * 3600 * 1000;

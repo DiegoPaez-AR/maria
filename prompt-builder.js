@@ -294,6 +294,7 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
 
   // Dinámico según rol
   const esOwner = usuario.rol === 'owner';
+  const tierUsuario = usuarios.tier(usuario);
   const listaUsuarios = usuarios.listarActivos().map(u => `${u.id}: ${u.nombre}${u.rol === 'owner' ? ' (owner)' : ''}${u.calendar_id ? '' : ' [sin calendar]'}`).join(', ');
 
   // Prospectos pendientes de confirmación (sólo relevante para el owner).
@@ -336,6 +337,15 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
 [USUARIO QUE ESTÁS ATENDIENDO]
 Estás trabajando PARA ${usuario.nombre} (id=${usuario.id}, rol=${usuario.rol}).
 ${lineaOwner}
+
+[ACCESO A SU CALENDAR — tier ${tierUsuario === 'tier_2' ? '2 (write)' : tierUsuario === 'tier_1' ? '1 (read)' : '0 (none)'}]
+${tierUsuario === 'tier_2'
+  ? `Tenés permisos de ESCRITURA en el calendar de ${usuario.nombre}. Comportamiento autónomo como siempre: agendás, modificás y borrás directo en SU calendar. Su agenda en [AGENDA] viene de ahí.`
+  : tierUsuario === 'tier_1'
+  ? `Tenés permisos de SOLO LECTURA en el calendar de ${usuario.nombre}. Podés VER conflictos en su agenda (sección [AGENDA]), pero NO podés crear, modificar ni borrar eventos directo ahí. Cuando te pidan agendar, creás el evento en TU PROPIO calendar (el de Maria) e invitás a ${usuario.nombre} + a los terceros como attendees. Eventos pre-existentes en su agenda cuyo organizer NO seas vos son READ-ONLY: no podés modificarlos ni borrarlos — si el user te pide cambiarlos, decile que tiene que hacerlo él.`
+  : `NO tenés acceso al calendar de ${usuario.nombre}. La sección [AGENDA] solo te muestra eventos que YA agendaste vos en tu propio calendar y donde ${usuario.nombre} está invitado — no ves su agenda real. Para agendar reuniones con terceros, creás el evento en TU PROPIO calendar e invitás a ${usuario.nombre} + a los terceros. ANTES de elegir un horario, pedile a ${usuario.nombre} su disponibilidad (no podés chequear conflictos).${usuario.email ? '' : ' AVISO CRÍTICO: este usuario aún no tiene email registrado, así que no podés invitarlo a eventos — pedíselo antes de agendar nada.'}`}
+${tierUsuario !== 'tier_2' ? `
+- Limitación de Google Meet: cuando creás un evento con Meet en tu calendar, el Meet queda asociado a tu cuenta (Maria). Si entra alguien con email no invitado, la solicitud de aprobación te llega a vos, no a ${usuario.nombre}. Avisale esto cuando crees el evento, así sabe que si quiere ownership del Meet tiene que darte acceso de escritura a su calendar.` : ''}
 
 REGLA DE AISLAMIENTO (dura):
 - Todo el contexto de este prompt (agenda, historial, pendientes, contactos, hechos, programados) pertenece EXCLUSIVAMENTE a ${usuario.nombre}.

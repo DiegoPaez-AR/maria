@@ -43,7 +43,7 @@ function horaMinEnTz(tz, date = new Date()) {
 
 async function _agendaHoy(usuario) {
   const hoy = horaMinEnTz(usuario.tz || 'America/Argentina/Buenos_Aires');
-  const prox = await g.listarEventosProximos({ dias: 1, max: 20, calendarId: usuario.calendar_id });
+  const prox = await g.listarEventosDelUsuario(usuario, { dias: 1, max: 20 });
   const items = prox.filter(e => {
     if (e.allDay) return e.start && e.start.startsWith(hoy.yyyymmdd);
     const d = horaMinEnTz(usuario.tz, new Date(e.start));
@@ -129,12 +129,6 @@ async function enviarBrief(waClient, usuario) {
 // ─── Loop ────────────────────────────────────────────────────────────────
 
 async function tickUsuario(waClient, usuario) {
-  // Skip silencioso si el user no tiene calendar configurado todavía
-  // (típico de prospectos recién creados sin onboarding completo). El
-  // brief arma agenda desde calendar, sin calendar_id no hay nada que
-  // mandar y la llamada a g.listarEventosProximos tira error cada minuto.
-  if (!usuario.calendar_id) return;
-
   const tz        = usuario.tz || 'America/Argentina/Buenos_Aires';
   const briefHora   = usuario.brief_hora   || '04';
   const briefMinuto = usuario.brief_minuto || '00';
