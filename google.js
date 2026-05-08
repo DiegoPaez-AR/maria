@@ -267,6 +267,47 @@ async function idCalendarioCumples() {
  * Lista cumpleaños en el rango [dias] desde hoy. Devuelve eventos normalizados.
  * Si no hay calendario de cumples accesible, devuelve [].
  */
+// Devuelve el calendarId primary de la cuenta autenticada (Maria). Cacheable
+// porque no cambia. Usado por tier 0 / 1 cuando hay que crear eventos en el
+// calendar de Maria e invitar al user como attendee.
+let _mariaCalendarIdCache = null;
+async function getMariaCalendarId() {
+  if (_mariaCalendarIdCache) return _mariaCalendarIdCache;
+  const auth = await autenticar();
+  const r = await _cal(auth).calendarList.list();
+  const primary = (r.data.items || []).find(c => c.primary);
+  if (!primary) throw new Error('getMariaCalendarId: no encontré calendar primary');
+  _mariaCalendarIdCache = primary.id;
+  return primary.id;
+}
+
+// Devuelve eventos próximos del usuario, eligiendo el calendar adecuado
+// según su tier:
+//   - tier_2 / tier_1: del calendar del usuario (tiene visibilidad).
+//   - tier_0: del calendar de Maria, filtrando solo aquellos donde el
+//     usuario aparece como attendee. Sin email del user, devuelve [].
+//
+// Es un wrapper sobre listarEventosProximos. El caller no necesita saber
+// qué calendarId usar.
+async function listarEventosDelUsuario(usuario, { dias = 7, max = 30 } = {}) {
+  if (!usuario) return [];
+  const tieneVisibilidad = usuario.calendar_id &&
+    (usuario.calendar_acceso === 'write' || usuario.calendar_acceso === 'read');
+  if (tieneVisibilidad) {
+    return await listarEventosProximos({ dias, max, calendarId: usuario.calendar_id });
+  }
+  if (!usuario.email) return [];
+  const calendarId = await getMariaCalendarId();
+  const eventos = await listarEventosProximos({ dias, max: 100, calendarId });
+  const userEmail = usuario.email.toLowerCase();
+  // listarEventosProximos normaliza attendees como array de strings (emails).
+  const filtrados = eventos.filter(e =>
+    Array.isArray(e.attendees) &&
+    e.attendees.some(em => String(em || '').toLowerCase() === userEmail)
+  );
+  return filtrados.slice(0, max);
+}
+
 async function listarCumples({ dias = 1 } = {}) {
   const calId = await idCalendarioCumples();
   if (!calId) return [];
@@ -597,6 +638,8 @@ module.exports = {
   // Calendar
   listarCalendarios,
   listarEventosProximos,
+  listarEventosDelUsuario,
+  getMariaCalendarId,
   listarCumples,
   idCalendarioCumples,
   crearEvento,

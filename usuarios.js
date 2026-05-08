@@ -198,6 +198,37 @@ function desactivar(usuarioId) {
   return u;
 }
 
+// ─── Tiers de calendar ───────────────────────────────────────────────────
+//
+// Devuelve el tier (0/1/2) que tiene un usuario según su calendar_id +
+// calendar_acceso. Usado por brief, meeting-prep, y crear/modificar/borrar
+// evento para decidir contra qué calendar trabajar.
+//
+//   tier_0 (none)  → Maria crea en su propio calendar e invita al user.
+//   tier_1 (read)  → puede chequear conflictos en calendar del user, pero
+//                    crea/modifica/borra solo eventos propios. Eventos del
+//                    user con organizer ≠ Maria son read-only.
+//   tier_2 (write) → autonomía total contra el calendar del user.
+function tier(usuario) {
+  if (!usuario) return 'tier_0';
+  const acc = usuario.calendar_acceso;
+  if (acc === 'write' && usuario.calendar_id) return 'tier_2';
+  if (acc === 'read'  && usuario.calendar_id) return 'tier_1';
+  return 'tier_0';
+}
+
+// Setea el campo calendar_acceso. No valida acceso real — eso lo hace el
+// caller con una llamada de prueba al calendar correspondiente.
+const updateCalendarAcceso = db.prepare(`
+  UPDATE usuarios SET calendar_acceso = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
+`);
+function setearCalendarAcceso(usuarioId, modo) {
+  if (!['none', 'read', 'write'].includes(modo)) {
+    throw new Error(`setearCalendarAcceso: modo inválido "${modo}" — usar none|read|write`);
+  }
+  updateCalendarAcceso.run(modo, usuarioId);
+}
+
 module.exports = {
   listarActivos,
   listarTodos,
@@ -211,4 +242,6 @@ module.exports = {
   crear,
   actualizar,
   desactivar,
+  tier,
+  setearCalendarAcceso,
 };

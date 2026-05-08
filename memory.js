@@ -181,6 +181,23 @@ for (const t of ['eventos', 'pendientes', 'programados']) {
   _migrarAgregarUsuarioId(t);
 }
 
+// Migración: usuarios.calendar_acceso (none|read|write).
+// Modela los 3 tiers de integración con calendar:
+//   - 'none'  → tier 0: Maria no tiene acceso al calendar del user. Crea
+//     eventos en su propio calendar e invita al user.
+//   - 'read'  → tier 1: Maria puede leer el calendar del user (chequear
+//     conflictos) pero no escribir. Crea eventos en su calendar e invita.
+//   - 'write' → tier 2: Maria escribe directo en el calendar del user.
+// Backfill: users existentes con calendar_id pasan a 'write' (asumimos que
+// si lo configuraron históricamente, era con permisos full).
+function _migrarUsuariosCalendarAcceso() {
+  if (_tieneColumna('usuarios', 'calendar_acceso')) return;
+  db.exec(`ALTER TABLE usuarios ADD COLUMN calendar_acceso TEXT NOT NULL DEFAULT 'none' CHECK(calendar_acceso IN ('none','read','write'))`);
+  db.prepare(`UPDATE usuarios SET calendar_acceso = 'write' WHERE calendar_id IS NOT NULL AND calendar_id != ''`).run();
+  console.log('[memory] migración: usuarios.calendar_acceso agregado (backfill write para users con calendar_id)');
+}
+_migrarUsuariosCalendarAcceso();
+
 // Índices que dependen de usuario_id (los creamos acá porque en el exec inicial
 // la columna podía no existir todavía en DBs viejos).
 db.exec(`
