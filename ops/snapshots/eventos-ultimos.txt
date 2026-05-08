@@ -1,5 +1,14 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2903  2026-05-08 23:15:46  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+2902  2026-05-08 23:15:46  whatsapp  saliente   232637088149596@lid  ¡Claro! Te armo la reunión con Hernán. ¿Qué días y horarios te quedan bien esta semana o la próxima? Así le escribo y le propongo algo concreto.                                                        
+
+2901  2026-05-08 23:15:29  whatsapp  entrante   232637088149596@lid  Hola María                                                                                                                                                                                              
+                                                                     Me gustaría que me armes una reunión con Hernán Arcidiacono                                                                                                                                             
+                                                                     harcifiacono@iplan.com.ar                                                                                                                                                                               
+                                                                     Para hablar de los permisos que necesito para mi nueva secretaria                                                                                                                                       
+
 2900  2026-05-08 22:33:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (4 usuarios)                                                                                                        
 
 2899  2026-05-08 22:33:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -208,12 +217,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 2805  2026-05-08 15:55:33  whatsapp  saliente   34342575317160@lid   Sí, confirmaron el pedido (lo llaman "tarta") y preguntan si la querés con papas o ensalada. ¿Qué les digo?                                                                                             
 
 2804  2026-05-08 15:55:20  whatsapp  entrante   34342575317160@lid   te escribieron de farinelli?                                                                                                                                                                            
-
-2803  2026-05-08 15:50:28  sistema   interno                         Claude falló en WA (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                                                          
-                                                                     ```json                                                                                                                                                                                                 
-                                                                     {                                                                                                                                                                                                       
-                                                                       "respuesta_a_usuario": "Farinelli confirmó el pedido (lo llamaron "tarta") y preguntan si va con papas o ensa                                                                                         
-
-2802  2026-05-08 15:50:08  whatsapp  entrante   222788661055558@lid  dale, marcho la tarta, con papas o ensalada?                                                                                                                                                            
-
-2801  2026-05-08 15:48:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
