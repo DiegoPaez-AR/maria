@@ -78,6 +78,29 @@ function _gmail(auth) { return google.gmail({ version: 'v1', auth }); }
 /**
  * Lista calendarios visibles (útil para debug / onboarding).
  */
+// Chequea el acceso real que Maria tiene a un calendar dado, leyendo el
+// calendarList. Devuelve:
+//   - 'none'  → el calendar no está en la lista (el user no lo compartió, o
+//               el id está mal). Maria no tiene visibilidad.
+//   - 'read'  → accessRole es 'reader' o 'freeBusyReader'.
+//   - 'write' → accessRole es 'writer' o 'owner'.
+// Usado por set_calendar_acceso para autodetectar el tier después de que
+// el user comparte su calendar.
+async function chequearAccesoCalendar(calendarId) {
+  if (!calendarId) return 'none';
+  const auth = await autenticar();
+  try {
+    const r = await _cal(auth).calendarList.get({ calendarId });
+    const role = r.data.accessRole;
+    if (role === 'writer' || role === 'owner') return 'write';
+    if (role === 'reader' || role === 'freeBusyReader') return 'read';
+    return 'none';
+  } catch (err) {
+    if (err.code === 404) return 'none';
+    throw err;
+  }
+}
+
 async function listarCalendarios() {
   const auth = await autenticar();
   const r = await _cal(auth).calendarList.list();
@@ -652,6 +675,7 @@ module.exports = {
   autenticar,
   // Calendar
   listarCalendarios,
+  chequearAccesoCalendar,
   listarEventosProximos,
   listarEventosDelUsuario,
   getMariaCalendarId,

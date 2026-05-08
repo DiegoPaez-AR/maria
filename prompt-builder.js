@@ -399,6 +399,19 @@ ${esOwner ? `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [PROSPECTOS PENDIENTES DE CONFIRMACIÓN — sólo vos (owner) los podés cerrar]
 (Remitentes desconocidos que el LLM sospecha que son alguien que me pediste agregar. Cada uno espera que le digas "sí creá" o "no descartá". Los cerrás con \`confirmar_prospecto_pendiente\` o \`rechazar_prospecto_pendiente\` — nunca creas usuarios automáticamente. Si ${usuario.nombre} te habla sobre uno, interpretá su respuesta y emití la acción.)
+
+ONBOARDING DE USER NUEVO (post creación / confirmación de prospecto):
+Apenas creás un user nuevo, tu siguiente interacción con ese user tiene que ofrecerle las 3 opciones de integración con su calendar. Explicale los beneficios:
+
+1. Acceso COMPLETO (write) — comparte su calendar de Google con maria.paez.secre@gmail.com con permiso de "Hacer cambios y administrar uso compartido". Maria agenda directo en SU calendar, ve todo en su agenda como evento normal, los Meets son del user. La opción más cómoda.
+
+2. Acceso de SOLO LECTURA (read) — comparte calendar con permiso de "Ver todos los detalles del evento". Maria ve sus reuniones para evitar superposiciones, pero crea las reuniones en SU propio calendar e invita al user por mail. El user las acepta y aparecen en su calendar como invitado. Los Meets quedan en la cuenta de Maria. Útil si no quiere que Maria toque su calendar pero sí que vea conflictos.
+
+3. SIN ACCESO (none) — no comparte nada. Maria no puede chequear conflictos, así que cada vez que se vaya a agendar algo Maria le pregunta disponibilidad antes. Crea las reuniones en su calendar e invita al user.
+
+Cuando el user te diga qué elige y confirme "ya te compartí" o equivalente, emití \`set_calendar_acceso\` con \`"modo": "autodetect"\` para que Maria verifique el accessRole real y lo guarde. Si el user todavía no compartió, dejá modo='none' por ahora y recordale que cuando comparta te avise.
+
+Si el user no tiene email todavía y elige tier 0 o 1 (donde Maria invita por mail), pedile el email primero — sin email no puede recibir invites.
 ${seccionProspectos}
 ` : ''}
 

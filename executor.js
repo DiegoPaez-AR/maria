@@ -65,6 +65,7 @@ async function ejecutarUna(accion, ctx) {
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
     case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
+    case 'set_calendar_acceso': return await _setCalendarAcceso(accion, ctx);
     case 'buscar_contacto_global': return _buscarContactoGlobal(accion, ctx);
     case 'confirmar_prospecto_pendiente':
       return _confirmarProspectoPendiente(accion, ctx);
@@ -579,6 +580,45 @@ function _rechazarProspectoPendiente(a, ctx) {
 function _requerir(obj, campos) {
   const faltan = campos.filter(k => obj[k] == null || obj[k] === '');
   if (faltan.length) throw new Error(`Faltan campos requeridos: ${faltan.join(', ')}`);
+}
+
+// Setea calendar_acceso para un usuario (none|read|write|autodetect).
+// Si modo='autodetect', usa g.chequearAccesoCalendar para mirar el accessRole
+// real que Maria tiene sobre el calendar del usuario en su calendarList.
+// Sólo el owner puede ejecutarla.
+async function _setCalendarAcceso(a, ctx) {
+  if (!usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('set_calendar_acceso: solo el owner puede setear este campo');
+  }
+  _requerir(a, ['usuarioId']);
+  const u = usuarios.obtener(a.usuarioId);
+  if (!u) throw new Error(`set_calendar_acceso: usuario ${a.usuarioId} no existe`);
+
+  let modoFinal = a.modo;
+  let detectado = null;
+
+  if (modoFinal === 'autodetect' || (!modoFinal && a.autodetect)) {
+    if (!u.calendar_id) {
+      modoFinal = 'none';
+    } else {
+      detectado = await g.chequearAccesoCalendar(u.calendar_id);
+      modoFinal = detectado;
+    }
+  }
+
+  if (!['none', 'read', 'write'].includes(modoFinal)) {
+    throw new Error(`set_calendar_acceso: modo inválido "${modoFinal}". Usar none|read|write|autodetect.`);
+  }
+
+  usuarios.setearCalendarAcceso(u.id, modoFinal);
+  mem.log({
+    usuarioId: u.id,
+    canal: 'sistema', direccion: 'interno',
+    cuerpo: `calendar_acceso seteado a "${modoFinal}"${detectado ? ' (autodetectado)' : ''}`,
+    metadata: { calendarAccesoNuevo: modoFinal, autodetect: !!a.autodetect, detectado },
+  });
+  console.log(`[executor] set_calendar_acceso/${u.nombre}: ${modoFinal}${detectado ? ' (autodetect)' : ''}`);
+  return { usuarioId: u.id, calendar_acceso: modoFinal, autodetect: !!a.autodetect, detectado };
 }
 
 module.exports = { ejecutarAcciones };
