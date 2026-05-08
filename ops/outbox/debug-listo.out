@@ -1,0 +1,85 @@
+# ejecutado: 2026-05-08T15:50:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB=/root/secretaria/db/maria.sqlite
+#   echo "── eventos WA hoy con FARINELLI / Diego / 'listo' ──"
+#   sqlite3 -header -column "$DB" "
+#   SELECT id, timestamp, direccion, COALESCE(de,'') AS de, substr(COALESCE(cuerpo,''),1,100) AS cuerpo
+#   FROM eventos
+#   WHERE canal='whatsapp'
+#     AND timestamp >= datetime('now','-12 hours')
+#     AND (de LIKE '%2227886%' OR cuerpo LIKE '%arinelli%' OR cuerpo = 'listo' OR cuerpo LIKE 'listo %' OR cuerpo LIKE '% listo' OR cuerpo LIKE '% listo %')
+#   ORDER BY id DESC
+#   LIMIT 40;
+#   "
+#   echo
+#   echo "── log pm2 desde 12:50 hasta 13:30 ──"
+#   pm2 logs maria --lines 3000 --nostream 2>&1 | grep -E '2026-05-08 (12:5|13:[012])' | head -80
+
+# ───── output ─────
+── eventos WA hoy con FARINELLI / Diego / 'listo' ──
+id    timestamp            direccion  de                   cuerpo                                                                                              
+----  -------------------  ---------  -------------------  ----------------------------------------------------------------------------------------------------
+2811  2026-05-08 16:01:00  saliente   34342575317160@lid   Diego, Farinelli avisó que la tabla está lista. Ya podés pasar a buscarla.                          
+
+2810  2026-05-08 16:00:47  entrante   222788661055558@lid  listo                                                                                               
+
+2806  2026-05-08 15:56:01  entrante   222788661055558@lid  oka                                                                                                 
+
+2804  2026-05-08 15:55:20  entrante   34342575317160@lid   te escribieron de farinelli?                                                                        
+
+2802  2026-05-08 15:50:08  entrante   222788661055558@lid  dale, marcho la tarta, con papas o ensalada?                                                        
+
+2799  2026-05-08 15:48:23  saliente   34342575317160@lid   Dale, les escribo a Farinelli para pedirla. Te aviso cuando confirmen.                              
+
+2796  2026-05-08 15:46:29  saliente   222788661055558@lid  ¡Gracias!                                                                                           
+
+2795  2026-05-08 15:46:28  saliente   34342575317160@lid   Diego, Farinelli mandó la carta:                                                                    
+                                                           https://uqrmecdn.s3.us-east-2.amazonaws.com/u/208495/586222-2894832                                 
+
+2794  2026-05-08 15:46:00  saliente   222788661055558@lid  Hola! 😊 Te escribía para pedirles la carta de Farinelli — ¿me la pueden pasar?                      
+
+2793  2026-05-08 15:45:51  entrante   222788661055558@lid  https://uqrmecdn.s3.us-east-2.amazonaws.com/u/208495/586222-2894832e0777143e1a32b1871e9aa1476177680.
+
+2792  2026-05-08 15:45:39  entrante   222788661055558@lid  Hola!                                                                                               
+
+2789  2026-05-08 15:37:27  saliente   34342575317160@lid   Ahí está, Farinelli — lo tengo en la libreta. Les escribo ahora para pedirles la carta.             
+
+2788  2026-05-08 15:37:05  entrante   34342575317160@lid   farinelli                                                                                           
+
+── log pm2 desde 12:50 hasta 13:30 ──
+0|maria    | 2026-05-08 12:50:28: [WA/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+0|maria    | 2026-05-08 12:50:28: ```json
+0|maria    | 2026-05-08 12:50:28: {
+0|maria    | 2026-05-08 12:50:28:   "respuesta_a_usuario": "Farinelli confirmó el pedido (lo llamaron "tarta") y preguntan si va con papas o ensalada. ¿Qué les digo?",
+0|maria    | 2026-05-08 12:50:28:   "respuesta_a_remitente": "Lo consulto con Diego y te confirmo enseguida!",
+0|maria    | 2026-05-08 12:50:28:   "acciones": [
+0|maria    | 2026-05-08 12:50:28:     {
+0|maria    | 2026-05-08 12:50:28:       "tipo": "agregar_pendiente",
+0|maria    | 2026-05-08 12:50:28:       "desc": "Responderle a Farinelli: ¿la tabla de jamón y queso va con papas o ensalada?",
+0|maria    | 2026-05-08 12:50:28:       "meta": {
+0|maria    | 2026-05-08 12:50:28:         "tipo": "consulta",
+0|maria    | 2026-05-08 12:50:28:         "remitente": "F A R I N E L L I",
+0|maria    | 2026-05-08 12:50:28:         "canal_origen": "whatsapp",
+0|maria    | 2026-05-08 12:50:28:       
+0|maria    | 2026-05-08 12:50:08: [unknown-flow/wa] match en contactos: 222788661055558@lid = "F A R I N E L L I" de Diego (id=1)
+0|maria    | 2026-05-08 12:50:28: [unknown-flow/wa] tercero_de_usuario: 222788661055558@lid (F A R I N E L L I) → contexto de Diego (id=1)
+0|maria    | 2026-05-08 12:55:20: [WA ←] Diego (34342575317160@lid): te escribieron de farinelli?
+0|maria    | 2026-05-08 12:55:33: [WA →usr] Diego (34342575317160@lid): Sí, confirmaron el pedido (lo llaman "tarta") y preguntan si la querés con papas o ensalada. ¿Qué les digo?
+0|maria    | 2026-05-08 12:56:01: [unknown-flow/wa] match en contactos: 222788661055558@lid = "F A R I N E L L I" de Diego (id=1)
+0|maria    | 2026-05-08 12:56:25: [unknown-flow/wa] tercero_de_usuario: 222788661055558@lid (F A R I N E L L I) → contexto de Diego (id=1)
+0|maria    | 2026-05-08 12:56:35: [WA ←] Diego (34342575317160@lid): les respondi ya yo, pense que te habia pasado algo por que demoraste mucho
+0|maria    | 2026-05-08 12:56:47: [WA →usr] Diego (34342575317160@lid): Uf, perdón por la demora — hubo un problema técnico justo en ese momento. Gracias por resolverlo vos. La próxima respondo más rápido.
+0|maria    | 2026-05-08 12:57:51: [WA ←] Diego (34342575317160@lid): tranqui, no pasa nada
+0|maria    | 2026-05-08 12:59:28: [WA change_state] OPENING
+0|maria    | 2026-05-08 12:59:29: [WA change_state] PAIRING
+0|maria    | 2026-05-08 12:59:29: [WA change_state] CONNECTED
+0|maria    | 2026-05-08 13:00:47: [unknown-flow/wa] match en contactos: 222788661055558@lid = "F A R I N E L L I" de Diego (id=1)
+0|maria    | 2026-05-08 13:01:00: [WA →usr] Diego (34342575317160@lid): Diego, Farinelli avisó que la tabla está lista. Ya podés pasar a buscarla.
+0|maria    | 2026-05-08 13:01:00: [unknown-flow/wa] tercero_de_usuario: 222788661055558@lid (F A R I N E L L I) → contexto de Diego (id=1)
+0|maria    | 2026-05-08 13:01:26: [WA ←] Diego (34342575317160@lid): voy, gracias
+0|maria    | 2026-05-08 13:03:09: [meeting-prep/Diego] + id=119 Reunión con Máximo @ 2026-05-08T17:45:00.000Z
+
+# exit=0
