@@ -90,35 +90,95 @@ async function _validarSinConflicto({ start, end, excluirEventoId, forzar, calen
 
 async function _crearEvento(a, ctx) {
   _requerir(a, ['summary', 'start', 'end']);
-  const calendarId = ctx.usuario.calendar_id;
-  if (!calendarId) throw new Error('crear_evento: el usuario no tiene calendar_id configurado');
-  await _validarSinConflicto({ start: a.start, end: a.end, forzar: a.forzar, calendarId });
+  const u = ctx.usuario;
+  const tier = usuarios.tier(u);
+
+  // Decidir contra qué calendar crear:
+  //   tier_2 → calendar del user (autonomía total).
+  //   tier_1 → calendar de Maria + chequea conflictos en calendar del user.
+  //   tier_0 → calendar de Maria, sin chequeo (no tenemos visibilidad).
+  // En tier 0/1 sumamos al user como attendee para que reciba el invite.
+  const enCalDelUsuario = tier === 'tier_2';
+  const calendarId = enCalDelUsuario
+    ? u.calendar_id
+    : await g.getMariaCalendarId();
+
+  // Si no es en su propio calendar y el user no tiene email, no podemos invitarlo.
+  if (!enCalDelUsuario && !u.email) {
+    throw new Error(`crear_evento: ${u.nombre} no tiene calendar de escritura ni email registrado — no puedo agendarle nada. Pedile el email primero.`);
+  }
+
+  // Conflicto: chequeamos contra el calendar del user si tenemos lectura.
+  if (tier === 'tier_2' || tier === 'tier_1') {
+    await _validarSinConflicto({ start: a.start, end: a.end, forzar: a.forzar, calendarId: u.calendar_id });
+  }
+
+  // Attendees: en tier 0/1 sumamos al user automáticamente (para que reciba
+  // el invite). En tier 2 NO hace falta porque el evento ya está en su calendar.
+  const attendeesFinal = (a.attendees || []).slice();
+  if (!enCalDelUsuario && u.email) {
+    const yaInvitado = attendeesFinal.some(em => String(em).toLowerCase() === u.email.toLowerCase());
+    if (!yaInvitado) attendeesFinal.push(u.email);
+  }
+
   const ev = await g.crearEvento({
     summary: a.summary,
     descripcion: a.descripcion || '',
     ubicacion: a.ubicacion || '',
     start: a.start,
     end: a.end,
-    attendees: a.attendees || [],
+    attendees: attendeesFinal,
     meet: a.meet,
     calendarId,
   });
+
   mem.log({
-    usuarioId: ctx.usuario.id,
+    usuarioId: u.id,
     canal: 'calendar', direccion: 'saliente',
-    cuerpo: `creado: ${ev.summary} (${ev.start} → ${ev.end})${ev.meetLink ? ' · Meet: ' + ev.meetLink : ''}`,
-    metadata: { eventoId: ev.id, link: ev.link, meetLink: ev.meetLink },
+    cuerpo: `creado: ${ev.summary} (${ev.start} → ${ev.end})${ev.meetLink ? ' · Meet: ' + ev.meetLink : ''}${enCalDelUsuario ? '' : ' [en calendar de Maria]'}`,
+    metadata: { eventoId: ev.id, link: ev.link, meetLink: ev.meetLink, calendarId, tier },
   });
-  return { id: ev.id, summary: ev.summary, link: ev.link, meetLink: ev.meetLink };
+  return { id: ev.id, summary: ev.summary, link: ev.link, meetLink: ev.meetLink, calendarId, tier };
 }
 
 async function _modificarEvento(a, ctx) {
   _requerir(a, ['id']);
-  const calendarId = ctx.usuario.calendar_id;
-  if (!calendarId) throw new Error('modificar_evento: el usuario no tiene calendar_id configurado');
-  if (a.start && a.end) {
-    await _validarSinConflicto({ start: a.start, end: a.end, excluirEventoId: a.id, forzar: a.forzar, calendarId });
+  const u = ctx.usuario;
+  const tier = usuarios.tier(u);
+
+  // Resolver contra qué calendar trabajar. En tier 0/1 los eventos creados
+  // por Maria viven en su calendar; en tier 2 están en el del user.
+  // a.calendarId opcional permite override desde el LLM si supiera el path.
+  const calendarId = a.calendarId
+    || (tier === 'tier_2' ? u.calendar_id : await g.getMariaCalendarId());
+
+  // Tier 1: si el evento NO fue creado por Maria, NO podemos modificarlo
+  // (sin write access). Bloqueamos con un error claro.
+  if (tier === 'tier_1') {
+    try {
+      const ev = await g.obtenerEvento ? await g.obtenerEvento({ id: a.id, calendarId }) : null;
+      const organizer = (ev?.organizerEmail || '').toLowerCase();
+      const meEmail = (g.MARIA_EMAIL || '').toLowerCase();
+      if (organizer && organizer !== meEmail) {
+        throw new Error(`modificar_evento: este evento (${a.id}) está en el calendar de ${u.nombre} pero lo creó otra persona (${organizer}); no tengo permiso de escritura para cambiarlo. ${u.nombre} tiene que modificarlo desde su lado.`);
+      }
+    } catch (err) {
+      // Si obtenerEvento no existe o falla con un error distinto al de
+      // ownership, propagamos. Si es nuestro error de ownership, también.
+      if (err.message?.startsWith('modificar_evento:')) throw err;
+      // Si fue solo "obtenerEvento no implementado", seguimos al modificar
+      // (la API de Google ya nos va a rebotar si no podemos escribir).
+    }
   }
+
+  if (a.start && a.end) {
+    // Conflicto: si tenemos lectura del calendar del user (tier 1/2),
+    // chequeamos ahí. En tier 0 no podemos.
+    if (tier === 'tier_2' || tier === 'tier_1') {
+      await _validarSinConflicto({ start: a.start, end: a.end, excluirEventoId: a.id, forzar: a.forzar, calendarId: u.calendar_id });
+    }
+  }
+
   const ev = await g.modificarEvento({
     id: a.id,
     summary: a.summary,
@@ -129,24 +189,41 @@ async function _modificarEvento(a, ctx) {
     calendarId,
   });
   mem.log({
-    usuarioId: ctx.usuario.id,
+    usuarioId: u.id,
     canal: 'calendar', direccion: 'saliente',
     cuerpo: `modificado: ${ev.summary} (${ev.start} → ${ev.end})`,
-    metadata: { eventoId: ev.id },
+    metadata: { eventoId: ev.id, calendarId, tier },
   });
   return { id: ev.id, summary: ev.summary };
 }
 
 async function _borrarEvento(a, ctx) {
   _requerir(a, ['id']);
-  const calendarId = ctx.usuario.calendar_id;
-  if (!calendarId) throw new Error('borrar_evento: el usuario no tiene calendar_id configurado');
+  const u = ctx.usuario;
+  const tier = usuarios.tier(u);
+  const calendarId = a.calendarId
+    || (tier === 'tier_2' ? u.calendar_id : await g.getMariaCalendarId());
+
+  // Tier 1: bloquear borrado si el organizer no es Maria.
+  if (tier === 'tier_1') {
+    try {
+      const ev = await g.obtenerEvento ? await g.obtenerEvento({ id: a.id, calendarId }) : null;
+      const organizer = (ev?.organizerEmail || '').toLowerCase();
+      const meEmail = (g.MARIA_EMAIL || '').toLowerCase();
+      if (organizer && organizer !== meEmail) {
+        throw new Error(`borrar_evento: este evento (${a.id}) lo creó ${organizer} (no yo); no tengo permiso de escritura para borrarlo. ${u.nombre} tiene que borrarlo desde su lado.`);
+      }
+    } catch (err) {
+      if (err.message?.startsWith('borrar_evento:')) throw err;
+    }
+  }
+
   await g.borrarEvento({ id: a.id, calendarId });
   mem.log({
-    usuarioId: ctx.usuario.id,
+    usuarioId: u.id,
     canal: 'calendar', direccion: 'saliente',
-    cuerpo: `borrado: evento ${a.id}`,
-    metadata: { eventoId: a.id },
+    cuerpo: `borrado: evento ${a.id}${tier === 'tier_2' ? '' : ' [del calendar de Maria]'}`,
+    metadata: { eventoId: a.id, calendarId, tier },
   });
   return { id: a.id, borrado: true };
 }

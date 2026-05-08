@@ -125,6 +125,7 @@ function _normalizarEvento(e) {
     link: e.htmlLink,
     meetLink,
     attendees: (e.attendees || []).map(a => a.email).filter(Boolean),
+    organizerEmail: (e.organizer?.email || '').toLowerCase(),
   };
 }
 
@@ -211,6 +212,20 @@ async function buscarConflictos({ start, end, calendarId, excluirEventoId = null
 /**
  * Modifica campos de un evento existente. Patch: solo cambia lo que pasás.
  */
+// Devuelve un evento puntual (normalizado igual que listarEventosProximos).
+// Usado por el executor para chequear ownership en tier 1.
+async function obtenerEvento({ id, calendarId }) {
+  if (!id || !calendarId) throw new Error('obtenerEvento: id y calendarId requeridos');
+  const auth = await autenticar();
+  try {
+    const r = await _cal(auth).events.get({ calendarId, eventId: id });
+    return _normalizarEvento(r.data);
+  } catch (err) {
+    if (err.code === 404) return null;
+    throw err;
+  }
+}
+
 async function modificarEvento({ id, summary, descripcion, ubicacion, start, end, calendarId }) {
   if (!calendarId) throw new Error('modificarEvento: calendarId requerido');
   const auth = await autenticar();
@@ -643,6 +658,7 @@ module.exports = {
   listarCumples,
   idCalendarioCumples,
   crearEvento,
+  obtenerEvento,
   modificarEvento,
   borrarEvento,
   buscarConflictos,

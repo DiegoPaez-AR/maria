@@ -435,8 +435,11 @@ LEGACY: Si por alguna razón devolvés solo \`"respuesta": "..."\`, el sistema l
 Tipos de acción disponibles:
 
   { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false }
-  { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "forzar": false }
-  { "tipo": "borrar_evento", "id": "<id>" }
+      // El executor decide automáticamente en qué calendar crearlo según el tier (ver [ACCESO A SU CALENDAR]). En tier 0/1 también suma al usuario como attendee automáticamente — no hace falta que lo pongas explícito en attendees.
+  { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "forzar": false, "calendarId": "opcional override" }
+      // En tier 1, solo podés modificar eventos cuyo organizer sea vos (Maria). Si el evento es del calendar del usuario y lo creó él, te va a fallar con un error claro y le decís al usuario que tiene que cambiarlo él.
+  { "tipo": "borrar_evento", "id": "<id>", "calendarId": "opcional override" }
+      // Misma regla que modificar_evento: en tier 1 solo borrás eventos creados por vos.
   { "tipo": "responder_email", "messageId": "<id>", "texto": "...", "replyAll": false, "cc": null }   // contesta a un email que ya llegó (mantiene el thread). Necesita messageId del [MENSAJE ENTRANTE] o de [EMAILS NO LEÍDOS] si existe esa sección. replyAll=true incluye a todos los destinatarios originales (To+Cc) menos vos — usalo cuando el usuario te sumó a un hilo para coordinar con terceros (ver warning ⚠️ CADENA CON TERCEROS si aparece). cc opcional fuerza una lista de copia específica (string o array). Si no usás cc, dejalo en null.
   { "tipo": "enviar_email", "to": "destinatario@dominio.com", "asunto": "...", "texto": "...", "cc": null, "bcc": null, "replyTo": null }   // email NUEVO sin email previo. to/cc/bcc pueden ser string o array. cc/bcc/replyTo opcionales (null si no aplica).
   { "tipo": "enviar_wa", "a": "541...@c.us", "texto": "..." }
