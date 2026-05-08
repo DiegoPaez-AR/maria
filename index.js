@@ -14,6 +14,7 @@
 //   OWNER_CALENDAR_ID → calendar id del owner (default = su email)
 //   MARIA_TZ          → tz del owner para bootstrap
 //   GMAIL_POLL_MS     → intervalo de poll de Gmail (default 300000)
+//   CALENDAR_WATCH_MS → intervalo de re-chequeo de calendar_acceso (default 28800000 = 8h)
 //   CHROME_BIN        → binary de Chrome (default /usr/bin/google-chrome)
 //   MARIA_DB          → path de sqlite (default ./db/maria.sqlite)
 
@@ -28,18 +29,21 @@ const { iniciarRecordatorios } = require('./recordatorios');
 const { iniciarProgramados } = require('./programados');
 const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
+const { iniciarCalendarWatch } = require('./calendar-watch');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
 const PROGRAMADOS_MS  = Number(process.env.PROGRAMADOS_MS  || 60_000);
 const BRIEF_MS        = Number(process.env.BRIEF_MS        || 60_000);
 const MEETING_PREP_MS = Number(process.env.MEETING_PREP_MS || 5 * 60_000);
+const CALENDAR_WATCH_MS = Number(process.env.CALENDAR_WATCH_MS || 8 * 60 * 60_000);
 
 let gmailInterval = null;
 let recordatoriosInterval = null;
 let programadosInterval = null;
 let briefInterval = null;
 let meetingPrepInterval = null;
+let calendarWatchInterval = null;
 let waClient = null;
 
 async function main() {
@@ -100,6 +104,11 @@ async function main() {
         intervaloMs: MEETING_PREP_MS,
       });
 
+      console.log(`▸ arrancando calendar-watch (cada ${CALENDAR_WATCH_MS/3600_000}h)`);
+      calendarWatchInterval = iniciarCalendarWatch({
+        intervaloMs: CALENDAR_WATCH_MS,
+      });
+
       mem.log({
         usuarioId: owner?.id || null,
         canal: 'sistema', direccion: 'interno',
@@ -124,6 +133,7 @@ function shutdown(sig) {
   if (programadosInterval) clearInterval(programadosInterval);
   if (briefInterval) clearInterval(briefInterval);
   if (meetingPrepInterval) clearInterval(meetingPrepInterval);
+  if (calendarWatchInterval) clearInterval(calendarWatchInterval);
   const done = () => process.exit(0);
   if (waClient) {
     waClient.destroy().then(done).catch(done);
