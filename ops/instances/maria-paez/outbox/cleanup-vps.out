@@ -1,0 +1,182 @@
+# ejecutado: 2026-05-08T22:40:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "════════════════════════════════════════════════════════════════"
+#   echo "    LIMPIEZA DE /root/secretaria — single→multi-instance"
+#   echo "════════════════════════════════════════════════════════════════"
+#   echo
+#   
+#   cd /root/secretaria
+#   
+#   echo "── 1. Lock huérfano del cron viejo ──"
+#   ls -la /tmp/maria-cron.lock 2>/dev/null && rm -v /tmp/maria-cron.lock || echo "  (no estaba)"
+#   echo
+#   
+#   echo "── 2. Crontab — verificar que solo tenga el cron-master ──"
+#   crontab -l 2>&1 | grep -E 'cron|secretaria' || echo "  (no hay)"
+#   echo
+#   
+#   echo "── 3. Archivos sueltos en /root/secretaria/ (top level) ──"
+#   ls -la /root/secretaria/ | grep -v '^d' | awk '{print $NF, "("$5" bytes)"}' | grep -v '^\.$\|^\.\.$' | head -40
+#   echo
+#   
+#   echo "── 4. Carpetas en /root/secretaria/ ──"
+#   ls -la /root/secretaria/ | grep '^d' | awk '{print $NF}' | grep -v '^\.$\|^\.\.$'
+#   echo
+#   
+#   echo "── 5. .db y .sqlite huérfanos en root (NO en db/) ──"
+#   echo "  (memoria dice que son huérfanos vacíos, los borramos)"
+#   for f in /root/secretaria/maria.db /root/secretaria/maria.sqlite /root/secretaria/maria.sqllite; do
+#     if [ -f "$f" ]; then
+#       SIZE=$(stat -c%s "$f")
+#       echo "  $f → $SIZE bytes → borro"
+#       rm -v "$f"
+#     fi
+#   done
+#   echo
+#   
+#   echo "── 6. Backups (.bak*) sueltos en root ──"
+#   shopt -s nullglob
+#   backups=(/root/secretaria/*.bak* /root/secretaria/token.json.bak.* /root/secretaria/db.bak* )
+#   if [ ${#backups[@]} -gt 0 ]; then
+#     echo "  encontrados: ${#backups[@]} archivos backup"
+#     for b in "${backups[@]}"; do
+#       [ -e "$b" ] || continue
+#       SIZE=$(stat -c%s "$b" 2>/dev/null || echo "?")
+#       AGE=$(stat -c%y "$b" 2>/dev/null | cut -d. -f1)
+#       echo "  $b ($SIZE bytes, $AGE)"
+#     done
+#     echo "  (solo listo — no borro automático, hacelo a mano si querés)"
+#   else
+#     echo "  (no hay backups sueltos)"
+#   fi
+#   echo
+#   
+#   echo "── 7. contactos.json (legacy, ya migrado a DB según .gitignore) ──"
+#   if [ -f /root/secretaria/contactos.json ]; then
+#     echo "  $(stat -c%y /root/secretaria/contactos.json | cut -d. -f1) — borro"
+#     rm -v /root/secretaria/contactos.json
+#   else
+#     echo "  (no estaba)"
+#   fi
+#   echo
+#   
+#   echo "── 8. Archivos /tmp temporales viejos ──"
+#   TEMP_OLD=$(find /tmp -maxdepth 1 -name 'maria-*' -mtime +1 2>/dev/null | wc -l)
+#   echo "  encontrados: $TEMP_OLD archivos /tmp/maria-* >24h"
+#   find /tmp -maxdepth 1 -name 'maria-*' -mtime +1 -delete 2>/dev/null
+#   echo "  borrados (silenciosamente)"
+#   echo
+#   
+#   echo "── 9. node_modules: tamaño actual ──"
+#   du -sh /root/secretaria/node_modules 2>/dev/null | head -1
+#   echo
+#   
+#   echo "── 10. Verificación final: pm2 + cron ──"
+#   pm2 list 2>&1 | head -8
+#   echo
+#   crontab -l | grep -v '^#' | grep -v '^$'
+
+# ───── output ─────
+════════════════════════════════════════════════════════════════
+    LIMPIEZA DE /root/secretaria — single→multi-instance
+════════════════════════════════════════════════════════════════
+
+── 1. Lock huérfano del cron viejo ──
+-rw-r--r-- 1 root root 0 May  8 22:24 /tmp/maria-cron.lock
+removed '/tmp/maria-cron.lock'
+
+── 2. Crontab — verificar que solo tenga el cron-master ──
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+
+── 3. Archivos sueltos en /root/secretaria/ (top level) ──
+676 ( bytes)
+auth-gmail.js (1179 bytes)
+calendar-watch.js (2881 bytes)
+claude-client.js (5819 bytes)
+contactos.json (3 bytes)
+context-fetcher.js (6590 bytes)
+credentials.json (408 bytes)
+ecosystem.config.js (2578 bytes)
+executor.js (25851 bytes)
+executor.js.bak (9622 bytes)
+.gitignore (695 bytes)
+gmail-handler.js (11686 bytes)
+google.js (25593 bytes)
+google.js.bak (12760 bytes)
+google.js.bak.1777331900 (17495 bytes)
+index.js (7165 bytes)
+instrucciones.txt (2296 bytes)
+maria.log (78504 bytes)
+mcp-config.json (137 bytes)
+meeting-prep.js (4250 bytes)
+memory.js (38947 bytes)
+morning-brief.js (6985 bytes)
+package.json (383 bytes)
+package-lock.json (113154 bytes)
+programados.js (4286 bytes)
+prompt-builder.js (41360 bytes)
+prompt-builder.js.bak (21738 bytes)
+recordatorios.js (5917 bytes)
+test-calendar.js (1766 bytes)
+token.json (574 bytes)
+token.json.bak.1777590754 (574 bytes)
+token.json.bak.20260508-115436 (574 bytes)
+transcribir.js (3516 bytes)
+unknown-flow.js (40661 bytes)
+usuarios.js (11313 bytes)
+whatsapp-debug.log (9379 bytes)
+whatsapp-handler.js (20535 bytes)
+
+── 4. Carpetas en /root/secretaria/ ──
+config
+db
+docs
+.git
+_legacy
+node_modules
+ops
+.playwright-mcp
+.wwebjs_auth
+.wwebjs_cache
+
+── 5. .db y .sqlite huérfanos en root (NO en db/) ──
+  (memoria dice que son huérfanos vacíos, los borramos)
+
+── 6. Backups (.bak*) sueltos en root ──
+  encontrados: 8 archivos backup
+  /root/secretaria/executor.js.bak (9622 bytes, 2026-04-20 18:04:41)
+  /root/secretaria/google.js.bak (12760 bytes, 2026-04-20 18:04:41)
+  /root/secretaria/google.js.bak.1777331900 (17495 bytes, 2026-04-23 14:19:02)
+  /root/secretaria/prompt-builder.js.bak (21738 bytes, 2026-04-20 18:04:41)
+  /root/secretaria/token.json.bak.1777590754 (574 bytes, 2026-04-30 20:12:34)
+  /root/secretaria/token.json.bak.20260508-115436 (574 bytes, 2026-05-08 11:54:36)
+  /root/secretaria/token.json.bak.1777590754 (574 bytes, 2026-04-30 20:12:34)
+  /root/secretaria/token.json.bak.20260508-115436 (574 bytes, 2026-05-08 11:54:36)
+  (solo listo — no borro automático, hacelo a mano si querés)
+
+── 7. contactos.json (legacy, ya migrado a DB según .gitignore) ──
+  2026-04-16 13:56:07 — borro
+removed '/root/secretaria/contactos.json'
+
+── 8. Archivos /tmp temporales viejos ──
+  encontrados: 1 archivos /tmp/maria-* >24h
+  borrados (silenciosamente)
+
+── 9. node_modules: tamaño actual ──
+323M	/root/secretaria/node_modules
+
+── 10. Verificación final: pm2 + cron ──
+┌────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria-paez    │ default     │ 1.0.0   │ fork    │ 3309865  │ 16m    │ 0    │ online    │ 0%       │ 166.8mb  │ root     │ disabled │
+└────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+
+# exit=0
