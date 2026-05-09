@@ -461,6 +461,13 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
     });
     const ok = resultados.filter(r => r.ok).length;
     console.log(`[WA acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
+    if (ok < resultados.length) {
+      const fallas = resultados
+        .filter(r => !r.ok)
+        .map(r => `${r.accion?.tipo || '?'}: ${r.error}`)
+        .join(' | ');
+      console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ${fallas}`);
+    }
   }
 }
 

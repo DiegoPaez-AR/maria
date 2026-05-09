@@ -257,6 +257,13 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     });
     const ok = resultados.filter(r => r.ok).length;
     console.log(`[GMAIL acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
+    if (ok < resultados.length) {
+      const fallas = resultados
+        .filter(r => !r.ok)
+        .map(r => `${r.accion?.tipo || '?'}: ${r.error}`)
+        .join(' | ');
+      console.warn(`[GMAIL acciones/${usuario.nombre}] FALLARON: ${fallas}`);
+    }
   } else {
     console.log(`[GMAIL/${usuario.nombre}] ${entrada.messageId} — sin acciones ni respuesta, queda no-leído`);
   }
