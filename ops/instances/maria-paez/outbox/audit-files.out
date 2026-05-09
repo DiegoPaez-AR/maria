@@ -1,0 +1,130 @@
+# ejecutado: 2026-05-09T20:10:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "═══ AUDIT FINAL — /root/secretaria/ ═══"
+#   echo
+#   
+#   echo "── 1. Raíz: archivos sueltos ──"
+#   ls -la /root/secretaria/ | grep '^-' | awk '{print "  ", $NF, "("$5" bytes,", $6, $7")"}'
+#   echo
+#   
+#   echo "── 2. Raíz: carpetas ──"
+#   ls /root/secretaria/ | grep -v '^\.$\|^\.\.$' | xargs -I{} sh -c 'if [ -d "/root/secretaria/{}" ]; then echo "  {}"; fi'
+#   echo
+#   
+#   echo "── 3. state/maria-paez/ — solo lo que esa instancia necesita ──"
+#   ls -la /root/secretaria/state/maria-paez/ | grep -v '^total\|^d.*\.$'
+#   echo
+#   
+#   echo "── 4. ops/instances/maria-paez/inbox|outbox/.gitkeep + archivos ──"
+#   ls /root/secretaria/ops/instances/maria-paez/inbox/ /root/secretaria/ops/instances/maria-paez/outbox/ 2>&1
+#   echo
+#   
+#   echo "── 5. ¿context-fetcher.js, test-calendar.js, auth-gmail.js se usan? (grep imports) ──"
+#   cd /root/secretaria
+#   for f in context-fetcher test-calendar auth-gmail; do
+#     count=$(grep -lr "require.*${f}" --include='*.js' . 2>/dev/null | grep -v node_modules | grep -v "${f}\.js" | wc -l)
+#     uses=$(grep -lr "require.*${f}" --include='*.js' . 2>/dev/null | grep -v node_modules | grep -v "${f}\.js" | tr '\n' ' ')
+#     echo "  ${f}.js → require'd por: ${count} archivos. ${uses}"
+#   done
+#   echo
+#   
+#   echo "── 6. Tamaño total y top archivos en /root/secretaria/ ──"
+#   du -sh /root/secretaria 2>/dev/null
+#   du -sh /root/secretaria/* 2>/dev/null | sort -h | tail -10
+#   echo
+#   
+#   echo "── 7. Logs/backups sueltos ──"
+#   find /root/secretaria -maxdepth 2 \( -name '*.log' -o -name '*.bak*' \) -type f 2>/dev/null | grep -v node_modules | head -10 || echo "  (ninguno)"
+
+# ───── output ─────
+═══ AUDIT FINAL — /root/secretaria/ ═══
+
+── 1. Raíz: archivos sueltos ──
+   auth-gmail.js (1179 bytes, Apr 16)
+   calendar-watch.js (2881 bytes, May 8)
+   claude-client.js (5819 bytes, May 8)
+   context-fetcher.js (6590 bytes, May 3)
+   ecosystem.config.js (2578 bytes, May 8)
+   executor.js (25851 bytes, May 8)
+   .gitignore (695 bytes, May 8)
+   gmail-handler.js (11686 bytes, May 8)
+   google.js (25593 bytes, May 8)
+   index.js (7165 bytes, May 8)
+   instrucciones.txt (2296 bytes, May 8)
+   mcp-config.json (137 bytes, May 7)
+   meeting-prep.js (4250 bytes, May 8)
+   memory.js (38947 bytes, May 8)
+   morning-brief.js (6985 bytes, May 8)
+   package.json (383 bytes, May 3)
+   package-lock.json (113154 bytes, May 3)
+   programados.js (4286 bytes, Apr 23)
+   prompt-builder.js (41360 bytes, May 8)
+   recordatorios.js (5917 bytes, Apr 23)
+   test-calendar.js (1766 bytes, Apr 18)
+   transcribir.js (3516 bytes, Apr 18)
+   unknown-flow.js (40661 bytes, May 8)
+   usuarios.js (11313 bytes, May 8)
+   whatsapp-handler.js (20535 bytes, May 8)
+
+── 2. Raíz: carpetas ──
+  config
+  db
+  docs
+  _legacy
+  node_modules
+  ops
+  state
+
+── 3. state/maria-paez/ — solo lo que esa instancia necesita ──
+-rw-r--r-- 1 root root  408 Apr 15 20:41 credentials.json
+drwxr-xr-x 2 root root 4096 May  9 19:52 db
+-rw-r--r-- 1 root root  574 May  8 11:55 token.json
+-rw-r--r-- 1 root root  574 May  8 11:54 token.json.bak.20260508-115436
+drwxr-xr-x 3 root root 4096 Apr 18 12:14 .wwebjs_auth
+drwxr-xr-x 2 root root 4096 May  8 22:11 .wwebjs_cache
+
+── 4. ops/instances/maria-paez/inbox|outbox/.gitkeep + archivos ──
+/root/secretaria/ops/instances/maria-paez/inbox/:
+audit-files.sh
+
+/root/secretaria/ops/instances/maria-paez/outbox/:
+audit-files.out
+cleanup-vps-2.out
+cleanup-vps-3.out
+cleanup-vps.out
+debug-cron.out
+migrate-state.out
+
+── 5. ¿context-fetcher.js, test-calendar.js, auth-gmail.js se usan? (grep imports) ──
+  context-fetcher.js → require'd por: 1 archivos. ./unknown-flow.js 
+  test-calendar.js → require'd por: 0 archivos. 
+  auth-gmail.js → require'd por: 0 archivos. 
+
+── 6. Tamaño total y top archivos en /root/secretaria/ ──
+606M	/root/secretaria
+28K	/root/secretaria/executor.js
+28K	/root/secretaria/google.js
+28K	/root/secretaria/_legacy
+40K	/root/secretaria/memory.js
+40K	/root/secretaria/unknown-flow.js
+44K	/root/secretaria/prompt-builder.js
+112K	/root/secretaria/package-lock.json
+2.3M	/root/secretaria/ops
+241M	/root/secretaria/state
+323M	/root/secretaria/node_modules
+
+── 7. Logs/backups sueltos ──
+/root/secretaria/ops/.cron.log
+/root/secretaria/.playwright-mcp/console-2026-05-07T04-24-12-867Z.log
+/root/secretaria/.playwright-mcp/console-2026-05-08T15-35-15-500Z.log
+/root/secretaria/.playwright-mcp/console-2026-05-07T03-44-12-708Z.log
+/root/secretaria/.playwright-mcp/console-2026-05-08T15-35-40-914Z.log
+/root/secretaria/.playwright-mcp/console-2026-05-08T15-35-49-963Z.log
+/root/secretaria/.playwright-mcp/console-2026-05-07T03-42-16-256Z.log
+
+# exit=0
