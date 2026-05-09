@@ -1,0 +1,94 @@
+# ejecutado: 2026-05-08T22:35:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "── crontab activo ──"
+#   crontab -l 2>&1
+#   echo
+#   echo "── /tmp/maria-cron-master.lock está locked? ──"
+#   ls -la /tmp/maria-cron*.lock 2>&1
+#   echo
+#   echo "── /root/secretaria/ops/.cron.log últimas 60 líneas ──"
+#   tail -60 /root/secretaria/ops/.cron.log 2>&1
+#   echo
+#   echo "── proceso cron-master corriendo? ──"
+#   ps auxf | grep -E 'cron-master|cron.sh|maria' | grep -v grep | head -10
+
+# ───── output ─────
+── crontab activo ──
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+
+── /tmp/maria-cron-master.lock está locked? ──
+-rw-r--r-- 1 root root 0 May  8 22:24 /tmp/maria-cron.lock
+-rw-r--r-- 1 root root 0 May  8 22:35 /tmp/maria-cron-master.lock
+
+── /root/secretaria/ops/.cron.log últimas 60 líneas ──
+│ id │ name     │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria    │ default     │ 1.0.0   │ fork    │ 3309010  │ 0s     │ 22   │ online    │ 0%       │ 11.0mb   │ root     │ disabled │
+└────┴──────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:21:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:22:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:23:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:24:01-03:00 ═══
+[exec] ops/inbox/switch-multi-instance.sh → ops/outbox/switch-multi-instance.out
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:25:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:26:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:27:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:28:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-08T22:29:01-03:00 ═══
+fatal: pathspec 'ops/outbox' did not match any files
+fatal: pathspec 'ops/inbox' did not match any files
+tick done
+═══ 2026-05-08T22:30:01-03:00 ═══
+fatal: pathspec 'ops/outbox' did not match any files
+fatal: pathspec 'ops/inbox' did not match any files
+tick done
+═══ 2026-05-08T22:31:01-03:00 ═══
+fatal: pathspec 'ops/outbox' did not match any files
+fatal: pathspec 'ops/inbox' did not match any files
+tick done
+═══ 2026-05-08T22:32:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/debug-cron.sh → ops/instances/maria-paez/outbox/debug-cron.out
+fatal: pathspec 'ops/outbox' did not match any files
+fatal: pathspec 'ops/inbox' did not match any files
+tick done
+═══ 2026-05-08T22:33:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/debug-cron.sh → ops/instances/maria-paez/outbox/debug-cron.out
+fatal: pathspec 'ops/outbox' did not match any files
+fatal: pathspec 'ops/inbox' did not match any files
+tick done
+═══ 2026-05-08T22:34:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/debug-cron.sh → ops/instances/maria-paez/outbox/debug-cron.out
+fatal: pathspec 'ops/outbox' did not match any files
+fatal: pathspec 'ops/inbox' did not match any files
+tick done
+═══ 2026-05-08T22:35:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/debug-cron.sh → ops/instances/maria-paez/outbox/debug-cron.out
+
+── proceso cron-master corriendo? ──
+root     3310984  0.0  0.0   2800  1852 ?        Ss   22:35   0:00      \_ /bin/sh -c cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+root     3310986  0.0  0.0   7444  3756 ?        S    22:35   0:00          \_ bash ops/cron-master.sh
+root     3311017  0.0  0.0   7340  3736 ?        S    22:35   0:00              \_ bash ops/instances/maria-paez/inbox/debug-cron.sh
+
+# exit=0
