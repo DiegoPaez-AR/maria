@@ -145,7 +145,7 @@ done
 find /tmp -maxdepth 1 -name 'maria-attach-*' -mmin +60 -delete 2>/dev/null
 
 # ───── 4. Commit + push ─────
-git add -A ops/instances ops/outbox ops/snapshots
+git add -A ops/
 PUSHED_OK=0
 if ! git diff --cached --quiet; then
   git commit -q -m "ops: snapshot $STAMP" || true
@@ -176,7 +176,7 @@ for inst in "${INSTANCES[@]}"; do
     rm -f "$INBOX"/*.sh
   fi
 done
-git add -A ops/instances ops/inbox
+git add -A ops/
 if ! git diff --cached --quiet; then
   git commit -q -m "ops: consumed inbox $STAMP" || true
   git push -q origin main 2>/dev/null || {
