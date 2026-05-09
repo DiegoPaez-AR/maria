@@ -1,0 +1,92 @@
+# ejecutado: 2026-05-08T22:43:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   cd /root/secretaria
+#   
+#   echo "── 1. Carpeta _legacy/ — código viejo pre-multi-user ──"
+#   if [ -d _legacy ]; then
+#     echo "  contenido:"
+#     ls -la _legacy/ | grep -v '^d' | awk '{print "    "$NF, "("$5" bytes,", $6, $7")"}'
+#     echo "  → borrando carpeta entera"
+#     rm -rf _legacy/
+#     echo "  done"
+#   fi
+#   echo
+#   
+#   echo "── 2. .playwright-mcp/ — logs viejos (>7 días) ──"
+#   if [ -d .playwright-mcp ]; then
+#     COUNT=$(find .playwright-mcp -type f -mtime +7 2>/dev/null | wc -l)
+#     echo "  archivos >7d encontrados: $COUNT"
+#     find .playwright-mcp -type f -mtime +7 -delete 2>/dev/null
+#     echo "  borrados"
+#     echo "  estado actual:"
+#     du -sh .playwright-mcp 2>/dev/null
+#   fi
+#   echo
+#   
+#   echo "── 3. Estado final completo de /root/secretaria/ ──"
+#   ls -la /root/secretaria/ | grep -v '^total\|^\.$\|^\.\.$'
+
+# ───── output ─────
+── 1. Carpeta _legacy/ — código viejo pre-multi-user ──
+  contenido:
+    48 ( bytes,  )
+    instrucciones.txt.bak (1715 bytes, Apr 18)
+    maria.js (10632 bytes, Apr 16)
+    whatsapp.js (11331 bytes, Apr 18)
+    whatsapp.js.bak (10556 bytes, Apr 18)
+  → borrando carpeta entera
+  done
+
+── 2. .playwright-mcp/ — logs viejos (>7 días) ──
+  archivos >7d encontrados: 0
+  borrados
+  estado actual:
+168K	.playwright-mcp
+
+── 3. Estado final completo de /root/secretaria/ ──
+drwxr-xr-x  11 root root   4096 May  8 22:43 .
+drwx------  14 root root   4096 May  8 22:42 ..
+-rw-r--r--   1 root root   1179 Apr 16 00:19 auth-gmail.js
+-rw-r--r--   1 root root   2881 May  8 15:01 calendar-watch.js
+-rw-r--r--   1 root root   5819 May  8 20:39 claude-client.js
+drwxr-xr-x   3 root root   4096 May  8 22:20 config
+-rw-r--r--   1 root root   6590 May  3 10:01 context-fetcher.js
+-rw-r--r--   1 root root    408 Apr 15 20:41 credentials.json
+drwxr-xr-x   2 root root   4096 Apr 23 11:57 db
+drwxr-xr-x   2 root root   4096 May  8 22:20 docs
+-rw-r--r--   1 root root   2578 May  8 22:20 ecosystem.config.js
+-rw-r--r--   1 root root  25851 May  8 20:39 executor.js
+drwxr-xr-x   8 root root   4096 May  8 22:43 .git
+-rw-r--r--   1 root root    695 May  8 22:20 .gitignore
+-rw-r--r--   1 root root  11686 May  8 22:11 gmail-handler.js
+-rw-r--r--   1 root root  25593 May  8 13:43 google.js
+-rw-r--r--   1 root root   7165 May  8 20:39 index.js
+-rw-r--r--   1 root root   2296 May  8 20:39 instrucciones.txt
+-rw-r--r--   1 root root    137 May  7 01:20 mcp-config.json
+-rw-r--r--   1 root root   4250 May  8 13:43 meeting-prep.js
+-rw-r--r--   1 root root  38947 May  8 20:39 memory.js
+-rw-r--r--   1 root root   6985 May  8 13:43 morning-brief.js
+drwxr-xr-x 227 root root  12288 May  3 10:01 node_modules
+drwxr-xr-x   3 root root   4096 May  8 22:34 ops
+-rw-r--r--   1 root root    383 May  3 10:01 package.json
+-rw-r--r--   1 root root 113154 May  3 10:01 package-lock.json
+drwxr-xr-x   2 root root   4096 May  8 12:35 .playwright-mcp
+-rw-r--r--   1 root root   4286 Apr 23 11:11 programados.js
+-rw-r--r--   1 root root  41360 May  8 20:39 prompt-builder.js
+-rw-r--r--   1 root root   5917 Apr 23 11:11 recordatorios.js
+-rw-r--r--   1 root root   1766 Apr 18 12:45 test-calendar.js
+-rw-r--r--   1 root root    574 May  8 11:55 token.json
+-rw-r--r--   1 root root    574 May  8 11:54 token.json.bak.20260508-115436
+-rw-r--r--   1 root root   3516 Apr 18 12:52 transcribir.js
+-rw-r--r--   1 root root  40661 May  8 20:39 unknown-flow.js
+-rw-r--r--   1 root root  11313 May  8 20:39 usuarios.js
+-rw-r--r--   1 root root  20535 May  8 22:11 whatsapp-handler.js
+drwxr-xr-x   3 root root   4096 Apr 18 12:14 .wwebjs_auth
+drwxr-xr-x   2 root root   4096 May  8 22:11 .wwebjs_cache
+
+# exit=0
