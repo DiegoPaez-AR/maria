@@ -1,0 +1,55 @@
+# ejecutado: 2026-05-10T11:20:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "── 1. SMOKE TEST: correr daily-report.js DRY_RUN=1 ──"
+#   DRY_RUN=1 node daily-report.js 2>&1 | head -120
+#   echo
+#   echo "── 2. Si el smoke test fue OK, instalar cron diario 06:00 ART ──"
+#   echo "(no instalo ahora — espero confirmación de Diego)"
+
+# ───── output ─────
+── 1. SMOKE TEST: correr daily-report.js DRY_RUN=1 ──
+Stats para maria-paez...
+
+────── PREVIEW ──────
+📊 Reporte diario VPS Maria — 10/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+
+Proceso pm2:
+  status: online · pid: 3506826 · uptime: 0m · restarts (total): 3 · memoria: 73.3 MB · cpu: 0%
+
+Volumen últimas 24h:
+  WhatsApp:  5 entrantes / 7 salientes (incluye 1 audios)
+  Gmail:     0 entrantes / 0 salientes
+  Calendar:  0 creados · 0 modificados · 0 borrados
+
+Errores y anomalías:
+  ✓ sin errores destacados
+
+Pendientes:
+  Hernan Fulco                   0 abiertos (+0 nuevos, -0 cerrados hoy)
+  Natali Funez                   0 abiertos (+0 nuevos, -0 cerrados hoy)
+  Fernando Boero                 0 abiertos (+0 nuevos, -0 cerrados hoy)
+  Santiago Bignone               0 abiertos (+0 nuevos, -0 cerrados hoy)
+  Diego [owner]                  11 abiertos (+0 nuevos, -0 cerrados hoy)
+
+—
+Reporte automático generado por daily-report.js
+────── END ──────
+
+DRY_RUN=1 — no mando email
+
+── 2. Si el smoke test fue OK, instalar cron diario 06:00 ART ──
+(no instalo ahora — espero confirmación de Diego)
+
+# exit=0
