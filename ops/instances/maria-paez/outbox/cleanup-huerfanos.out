@@ -1,0 +1,223 @@
+# ejecutado: 2026-05-10T19:45:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   ROOT=/root/secretaria
+#   TRASH=/root/secretaria.trash-$(date +%Y%m%d-%H%M%S)
+#   mkdir -p "$TRASH"
+#   echo "TRASH dir (NO borro de verdad, solo muevo acá; podés revisar y rm -rf si todo está OK):"
+#   echo "  $TRASH"
+#   echo
+#   
+#   cd "$ROOT" || exit 1
+#   
+#   echo "=== ESTRUCTURA TOP-LEVEL ANTES ==="
+#   ls -la "$ROOT" | grep -vE '^total|^d.* (ops|state|node_modules|config|docs|\.git)$'
+#   echo
+#   echo "(no listo: ops/, state/, node_modules/, config/, docs/, .git/ — esos NO se tocan)"
+#   echo
+#   
+#   # ─── Candidatos a huérfano ─────────────────────────────────────────────────
+#   # 1) /root/secretaria/db/  — DB pre-multi-instance. La real está en
+#   #    state/maria-paez/db/. Verifico que esté vacía o con datos triviales
+#   #    antes de moverla.
+#   if [ -d "$ROOT/db" ]; then
+#     echo "[1] $ROOT/db/ (pre-multi-instance):"
+#     ls -la "$ROOT/db" | tail -n +2
+#     for f in "$ROOT/db"/*.sqlite "$ROOT/db"/*.db; do
+#       [ -f "$f" ] || continue
+#       SZ=$(stat -c%s "$f")
+#       ROWS=$(python3 -c "
+#   import sqlite3
+#   try:
+#     d = sqlite3.connect('$f')
+#     ts = [r[0] for r in d.execute(\\\"SELECT name FROM sqlite_master WHERE type='table'\\\").fetchall()]
+#     total = sum(d.execute(f'SELECT COUNT(*) FROM \\\"{t}\\\"').fetchone()[0] for t in ts)
+#     print(f'tablas={len(ts)} rows_total={total}')
+#   except Exception as e:
+#     print(f'NO ABRE: {e}')
+#   " 2>&1)
+#       echo "    $f  ($SZ bytes) → $ROWS"
+#     done
+#     echo "    → moviendo a trash"
+#     mv "$ROOT/db" "$TRASH/db"
+#   fi
+#   echo
+#   
+#   # 2) Archivos sueltos en la raíz de /root/secretaria/ que NO son del código
+#   #    actual ni están referenciados en config/instances/*.conf.
+#   echo "[2] archivos sueltos en $ROOT (raíz, no recursivo):"
+#   # Whitelist de archivos que SÍ pertenecen al repo / son tracked.
+#   TRACKED=$(cd "$ROOT" && git ls-files 2>/dev/null | awk -F/ '!/\//{print $1}' | sort -u)
+#   WHITELIST_DIRS="ops state node_modules config docs .git"
+#   WHITELIST_FILES=".gitignore"
+#   # Patrones de archivos que el RUNTIME crea legítimamente en la raíz (logs de
+#   # pm2 NO van acá, van a /root/.pm2/logs/; tampoco contactos.json — eso fue
+#   # legacy y ya se importó).
+#   RUNTIME_OK=""
+#   
+#   for f in $(ls -A "$ROOT"); do
+#     full="$ROOT/$f"
+#     # Skip dirs whitelisteadas
+#     if [ -d "$full" ]; then
+#       skip=0
+#       for d in $WHITELIST_DIRS; do
+#         [ "$f" = "$d" ] && skip=1 && break
+#       done
+#       [ $skip -eq 1 ] && continue
+#     fi
+#     # Skip si es file tracked por git
+#     if echo "$TRACKED" | grep -qx "$f"; then continue; fi
+#     # Skip si es file whitelisteado
+#     for w in $WHITELIST_FILES; do [ "$f" = "$w" ] && skip=1; done
+#     [ "$skip" = 1 ] && continue
+#     # Reportar
+#     TIPO=$([ -d "$full" ] && echo DIR || echo FILE)
+#     SZ=$(du -sh "$full" 2>/dev/null | cut -f1)
+#     echo "    HUÉRFANO ($TIPO, $SZ): $full"
+#     # Para .sqlite/.db sueltos, validar que estén vacíos antes de mover.
+#     case "$f" in
+#       *.sqlite|*.db|*.sqlite-wal|*.sqlite-shm)
+#         if [ -f "$full" ]; then
+#           ROWS=$(python3 -c "
+#   import sqlite3, sys
+#   try:
+#     d = sqlite3.connect('$full')
+#     ts = [r[0] for r in d.execute(\\\"SELECT name FROM sqlite_master WHERE type='table'\\\").fetchall()]
+#     total = sum(d.execute(f'SELECT COUNT(*) FROM \\\"{t}\\\"').fetchone()[0] for t in ts)
+#     print(f'tablas={len(ts)} rows_total={total}')
+#   except Exception as e:
+#     print(f'NO_ABRE')
+#   " 2>&1)
+#           echo "        $ROWS"
+#         fi
+#         ;;
+#     esac
+#     mv "$full" "$TRASH/" 2>/dev/null
+#   done
+#   echo
+#   
+#   # 3) state/maria-paez/ — chequear que NO haya .wwebjs_auth duplicado fuera
+#   #    del path canónico.
+#   echo "[3] estructura state/ (referencia, no se toca):"
+#   ls -la "$ROOT/state/maria-paez/" 2>&1 | head -20
+#   echo
+#   
+#   echo "=== ESTRUCTURA DESPUÉS ==="
+#   ls -la "$ROOT" | grep -vE '^total|^d.* (ops|state|node_modules|config|docs|\.git)$'
+#   echo
+#   echo "=== TRASH ==="
+#   ls -la "$TRASH"
+#   du -sh "$TRASH"
+#   echo
+#   echo "Si después de revisar querés borrar definitivo, en el VPS corré:  rm -rf $TRASH"
+
+# ───── output ─────
+TRASH dir (NO borro de verdad, solo muevo acá; podés revisar y rm -rf si todo está OK):
+  /root/secretaria.trash-20260510-194502
+
+=== ESTRUCTURA TOP-LEVEL ANTES ===
+drwxr-xr-x  12 root root   4096 May 10 17:50 .
+drwx------  15 root root   4096 May 10 19:45 ..
+-rw-r--r--   1 root root   1179 Apr 16 00:19 auth-gmail.js
+-rw-r--r--   1 root root   2881 May  8 15:01 calendar-watch.js
+-rw-r--r--   1 root root   5819 May  8 20:39 claude-client.js
+-rw-r--r--   1 root root   6590 May  3 10:01 context-fetcher.js
+-rw-r--r--   1 root root  21706 May 10 11:24 daily-report.js
+drwxr-xr-x   2 root root   4096 May 10 19:41 db
+-rw-r--r--   1 root root   2578 May  8 22:20 ecosystem.config.js
+-rw-r--r--   1 root root  27840 May 10 17:50 executor.js
+-rw-r--r--   1 root root    695 May  8 22:20 .gitignore
+-rw-r--r--   1 root root  11686 May  8 22:11 gmail-handler.js
+-rw-r--r--   1 root root  26272 May 10 11:24 google.js
+-rw-r--r--   1 root root   7165 May  8 20:39 index.js
+-rw-r--r--   1 root root   2296 May  8 20:39 instrucciones.txt
+-rw-r--r--   1 root root    137 May  7 01:20 mcp-config.json
+-rw-r--r--   1 root root   4250 May  8 13:43 meeting-prep.js
+-rw-r--r--   1 root root  48690 May 10 17:50 memory.js
+-rw-r--r--   1 root root   7838 May 10 17:50 morning-brief.js
+-rw-r--r--   1 root root    380 May 10 17:14 package.json
+-rw-r--r--   1 root root 113154 May  3 10:01 package-lock.json
+drwxr-xr-x   2 root root   4096 May 10 00:16 .playwright-mcp
+-rw-r--r--   1 root root   4286 Apr 23 11:11 programados.js
+-rw-r--r--   1 root root  44610 May 10 17:50 prompt-builder.js
+-rw-r--r--   1 root root   5917 Apr 23 11:11 recordatorios.js
+-rw-r--r--   1 root root   3516 Apr 18 12:52 transcribir.js
+-rw-r--r--   1 root root  40661 May  8 20:39 unknown-flow.js
+-rw-r--r--   1 root root  11313 May  8 20:39 usuarios.js
+-rw-r--r--   1 root root  28243 May 10 17:50 whatsapp-handler.js
+drwxr-xr-x   3 root root   4096 May 10 06:07 .wwebjs_auth
+drwxr-xr-x   2 root root   4096 May 10 17:14 .wwebjs_cache
+
+(no listo: ops/, state/, node_modules/, config/, docs/, .git/ — esos NO se tocan)
+
+[1] /root/secretaria/db/ (pre-multi-instance):
+drwxr-xr-x  2 root root   4096 May 10 19:41 .
+drwxr-xr-x 12 root root   4096 May 10 17:50 ..
+-rw-r--r--  1 root root 159744 May 10 19:41 maria.sqlite
+    /root/secretaria/db/maria.sqlite  (159744 bytes) →   File "<string>", line 5
+    ts = [r[0] for r in d.execute(\"SELECT name FROM sqlite_master WHERE type='table'\").fetchall()]
+                                   ^
+SyntaxError: unexpected character after line continuation character
+    → moviendo a trash
+
+[2] archivos sueltos en /root/secretaria (raíz, no recursivo):
+    HUÉRFANO (DIR, 4.0K): /root/secretaria/.playwright-mcp
+    HUÉRFANO (DIR, 124M): /root/secretaria/.wwebjs_auth
+    HUÉRFANO (DIR, 2.1M): /root/secretaria/.wwebjs_cache
+
+[3] estructura state/ (referencia, no se toca):
+total 32
+drwxr-xr-x 5 root root 4096 May  9 19:52 .
+drwxr-xr-x 3 root root 4096 May  9 19:52 ..
+-rw-r--r-- 1 root root  408 Apr 15 20:41 credentials.json
+drwxr-xr-x 2 root root 4096 May 10 11:12 db
+-rw-r--r-- 1 root root  574 May  8 11:55 token.json
+-rw-r--r-- 1 root root  574 May  8 11:54 token.json.bak.20260508-115436
+drwxr-xr-x 3 root root 4096 Apr 18 12:14 .wwebjs_auth
+drwxr-xr-x 2 root root 4096 May  8 22:11 .wwebjs_cache
+
+=== ESTRUCTURA DESPUÉS ===
+drwxr-xr-x   8 root root   4096 May 10 19:45 .
+drwx------  15 root root   4096 May 10 19:45 ..
+-rw-r--r--   1 root root   1179 Apr 16 00:19 auth-gmail.js
+-rw-r--r--   1 root root   2881 May  8 15:01 calendar-watch.js
+-rw-r--r--   1 root root   5819 May  8 20:39 claude-client.js
+-rw-r--r--   1 root root   6590 May  3 10:01 context-fetcher.js
+-rw-r--r--   1 root root  21706 May 10 11:24 daily-report.js
+-rw-r--r--   1 root root   2578 May  8 22:20 ecosystem.config.js
+-rw-r--r--   1 root root  27840 May 10 17:50 executor.js
+-rw-r--r--   1 root root    695 May  8 22:20 .gitignore
+-rw-r--r--   1 root root  11686 May  8 22:11 gmail-handler.js
+-rw-r--r--   1 root root  26272 May 10 11:24 google.js
+-rw-r--r--   1 root root   7165 May  8 20:39 index.js
+-rw-r--r--   1 root root   2296 May  8 20:39 instrucciones.txt
+-rw-r--r--   1 root root    137 May  7 01:20 mcp-config.json
+-rw-r--r--   1 root root   4250 May  8 13:43 meeting-prep.js
+-rw-r--r--   1 root root  48690 May 10 17:50 memory.js
+-rw-r--r--   1 root root   7838 May 10 17:50 morning-brief.js
+-rw-r--r--   1 root root    380 May 10 17:14 package.json
+-rw-r--r--   1 root root 113154 May  3 10:01 package-lock.json
+-rw-r--r--   1 root root   4286 Apr 23 11:11 programados.js
+-rw-r--r--   1 root root  44610 May 10 17:50 prompt-builder.js
+-rw-r--r--   1 root root   5917 Apr 23 11:11 recordatorios.js
+-rw-r--r--   1 root root   3516 Apr 18 12:52 transcribir.js
+-rw-r--r--   1 root root  40661 May  8 20:39 unknown-flow.js
+-rw-r--r--   1 root root  11313 May  8 20:39 usuarios.js
+-rw-r--r--   1 root root  28243 May 10 17:50 whatsapp-handler.js
+
+=== TRASH ===
+total 24
+drwxr-xr-x  6 root root 4096 May 10 19:45 .
+drwx------ 15 root root 4096 May 10 19:45 ..
+drwxr-xr-x  2 root root 4096 May 10 19:41 db
+drwxr-xr-x  2 root root 4096 May 10 00:16 .playwright-mcp
+drwxr-xr-x  3 root root 4096 May 10 06:07 .wwebjs_auth
+drwxr-xr-x  2 root root 4096 May 10 17:14 .wwebjs_cache
+127M	/root/secretaria.trash-20260510-194502
+
+Si después de revisar querés borrar definitivo, en el VPS corré:  rm -rf /root/secretaria.trash-20260510-194502
+
+# exit=0
