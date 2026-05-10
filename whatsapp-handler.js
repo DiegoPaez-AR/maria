@@ -29,7 +29,32 @@ const { ejecutarAcciones } = require('./executor');
 
 const CHROME_BIN = process.env.CHROME_BIN || '/usr/bin/google-chrome';
 
+// Si el proceso anterior murió sucio (OOM, SIGKILL, kernel panic), Chrome
+// deja un SingletonLock en su userDataDir y el próximo arranque puede
+// quedarse colgado al adquirirlo. Lo borramos antes de instanciar el Client.
+function _limpiarSingletonLockViejo() {
+  const dataPath = process.env.WA_AUTH_DIR;
+  if (!dataPath) return; // default cwd-relative — dejamos que wweb maneje
+  const candidatos = [
+    path.join(dataPath, 'session', 'SingletonLock'),
+    path.join(dataPath, 'session', 'SingletonCookie'),
+    path.join(dataPath, 'session', 'SingletonSocket'),
+  ];
+  for (const f of candidatos) {
+    try {
+      fs.unlinkSync(f);
+      console.log(`[WA boot] borré lock viejo: ${f}`);
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        console.warn(`[WA boot] no pude borrar ${f}: ${err.message}`);
+      }
+    }
+  }
+}
+
 function crearClienteWA({ onReady } = {}) {
+  _limpiarSingletonLockViejo();
+
   const client = new Client({
     authStrategy: new LocalAuth({
       // En multi-instance, cada Maria tiene su propio directorio de auth de WA.
@@ -56,13 +81,13 @@ function crearClienteWA({ onReady } = {}) {
   // así un loop de crash no spamea. Idempotente entre restarts: usamos
   // estado_usuario.wa_alert_last_ts para no duplicar.
   const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
-  const _alertaWA = async (motivo) => {
+  const _alertaWA = async (motivo, opts = {}) => {
     try {
       const owner = usuarios.obtenerOwner();
       if (!owner?.email) return; // sin email del owner no hay a quién avisar
       const ahora = Date.now();
       const lastTs = mem.getEstadoUsuario(owner.id, 'wa_alert_last_ts') || 0;
-      if (ahora - lastTs < 60 * 60 * 1000) return; // cooldown 1h
+      if (!opts.forzar && ahora - lastTs < 60 * 60 * 1000) return; // cooldown 1h salvo forzado
       const g = require('./google');
       await g.enviarEmail({
         to: owner.email,
@@ -76,17 +101,67 @@ function crearClienteWA({ onReady } = {}) {
     }
   };
 
-  // Watchdog de boot: si después de 3 min no hubo 'ready', alertar.
+  // ─── Watchdog de boot (dos niveles) ─────────────────────────────────
+  // 1) Mail al owner a los 3 min sin 'ready' (puede ser sesión válida que
+  //    está tardando en cargar — informamos, no matamos).
+  // 2) Si a los 10 min sigue sin 'ready', salimos: pm2 reintenta. Esto
+  //    cubre el caso "Chromium colgado" / "boot trabado" donde el restart
+  //    puede destrabar. NO resuelve "sesión expirada" — para eso está la
+  //    detección de QR loop más abajo.
+  const BOOT_ALERT_MS   = Number(process.env.WA_BOOT_ALERT_MS   || 3  * 60 * 1000);
+  const BOOT_SUICIDE_MS = Number(process.env.WA_BOOT_SUICIDE_MS || 10 * 60 * 1000);
   let _readyTimeout = setTimeout(() => {
     _alertaWA('no logró autenticarse en 3 min desde el boot');
-  }, 3 * 60 * 1000);
+  }, BOOT_ALERT_MS);
+  let _suicideTimeout = setTimeout(() => {
+    console.error(`[WA boot] sin ready en ${BOOT_SUICIDE_MS/60000}min — saliendo para que pm2 reinicie`);
+    mem.log({
+      canal: 'sistema', direccion: 'interno',
+      cuerpo: `WA boot timeout ${BOOT_SUICIDE_MS/60000}min sin ready — exit para pm2 restart`,
+    });
+    setTimeout(() => process.exit(1), 500);
+  }, BOOT_SUICIDE_MS);
+
+  // ─── Detección de "sesión muerta" vs "boot lento" ───────────────────
+  // whatsapp-web.js dispara 'qr' cada ~20s mientras no hay sesión válida.
+  // Si vemos ≥3 QRs en 2 min al inicio → la sesión cacheada está muerta y
+  // restartear no la va a resolver, hace falta que un humano escanee.
+  // Mandamos alerta forzada (bypass cooldown) que diga eso explícitamente.
+  const QR_LOOP_WINDOW_MS = Number(process.env.WA_QR_LOOP_WINDOW_MS || 2 * 60 * 1000);
+  const QR_LOOP_THRESHOLD = Number(process.env.WA_QR_LOOP_THRESHOLD || 3);
+  const _qrTimestamps = [];
+  let _qrLoopAlertado = false;
 
   client.on('qr', (qr) => {
     console.log('[WA qr] escaneá este QR:');
     qrcode.generate(qr, { small: true });
+    const ahora = Date.now();
+    _qrTimestamps.push(ahora);
+    while (_qrTimestamps.length && ahora - _qrTimestamps[0] > QR_LOOP_WINDOW_MS) {
+      _qrTimestamps.shift();
+    }
+    if (_qrTimestamps.length >= QR_LOOP_THRESHOLD && !_qrLoopAlertado) {
+      _qrLoopAlertado = true;
+      console.error(`[WA] sesión expirada — ${_qrTimestamps.length} QRs en ${QR_LOOP_WINDOW_MS/1000}s`);
+      mem.log({
+        canal: 'sistema', direccion: 'interno',
+        cuerpo: `WA sesión expirada — ${_qrTimestamps.length} QRs en ${QR_LOOP_WINDOW_MS/1000}s, requiere scan manual`,
+      });
+      _alertaWA(
+        `sesión EXPIRADA — ${_qrTimestamps.length} QRs en ${Math.round(QR_LOOP_WINDOW_MS/1000)}s. ` +
+        `Restartear NO sirve, hace falta scan manual del QR. Corré: ` +
+        `pm2 logs ${process.env.ASISTENTE_SLUG || 'maria-paez'} --lines 60 ` +
+        `y escaneá desde WhatsApp → Dispositivos vinculados.`,
+        { forzar: true }
+      );
+    }
   });
   client.on('loading_screen', (pct, msg) => console.log(`[WA loading] ${pct}% - ${msg}`));
-  client.on('authenticated',  ()   => console.log('[WA authenticated]'));
+  client.on('authenticated',  ()   => {
+    console.log('[WA authenticated]');
+    _qrTimestamps.length = 0;
+    _qrLoopAlertado = false;
+  });
   client.on('auth_failure',   (m)  => {
     console.error('[WA auth_failure]', m);
     _alertaWA(`auth_failure: ${m}`);
@@ -105,6 +180,7 @@ function crearClienteWA({ onReady } = {}) {
   client.on('ready', () => {
     console.log('✅ [WA ready] Maria conectada');
     clearTimeout(_readyTimeout);
+    clearTimeout(_suicideTimeout);
     if (typeof onReady === 'function') onReady(client);
   });
 

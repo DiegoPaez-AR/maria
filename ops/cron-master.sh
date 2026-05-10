@@ -36,7 +36,7 @@ echo "═══ $STAMP ═══"
 git fetch -q origin main || { echo "fetch failed"; exit 1; }
 
 CODE_CHANGED=0
-if ! git diff --quiet HEAD origin/main -- . ':!ops' ':!config'; then
+if ! git diff --quiet HEAD origin/main -- . ':!ops' ':!config' ':!docs' ':!*.md' ':!.gitignore' ':!LICENSE' ':!.github'; then
   CODE_CHANGED=1
   echo "código cambió → restart pendiente"
 fi
