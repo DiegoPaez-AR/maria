@@ -20,8 +20,7 @@ const PATRONES_INJECTION = [
   // Exfiltración de secretos
   { re: /(mostrame|dame|env[íi]ame|mand[áa]me|pas[áa]me)\s+(el\s+)?(token|password|api\s*key|credenciales|credentials|secret|clave\s+secreta|env\s+var)/i, motivo: 'pedir credenciales' },
   // Ejecución de shell
-  { re: /\bejecut[áa]\s+(bash|comando|shell|en\s+(la\s+)?terminal)/i, motivo: 'pedir ejecutar shell' },
-  { re: /\bcorr[ée]\s+(uptime|htop|free|df|ls|cat|ps|netstat|ss\b)/i, motivo: 'comando shell sistema' },
+  { re: /\b(ejecut[áa]|corr[ée]|tir[áa]|hac[ée])\s+(un\s+)?(bash|comando|shell|terminal|uptime|htop|free|df|ls|cat|ps|netstat|ss\b|whoami|id|env|env\s+vars?|printenv)/i, motivo: 'comando shell sistema' },
   // Pretender ser system
   { re: /<\s*(system|sistema|admin)\s*>/i, motivo: 'tag system' },
   { re: /^\s*(system|sistema|admin)\s*:/im, motivo: 'prefijo system:' },
