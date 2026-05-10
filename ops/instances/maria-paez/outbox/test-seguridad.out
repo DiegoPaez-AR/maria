@@ -1,0 +1,114 @@
+# ejecutado: 2026-05-10T20:43:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   set -a
+#   source <(grep -E '^[A-Z_]+=' /root/secretaria/config/instances/maria-paez.conf)
+#   set +a
+#   
+#   echo "=== claude --version ==="
+#   claude --version 2>&1 | head -3
+#   echo
+#   echo "=== claude --help (extracto allowed/disallowed) ==="
+#   claude --help 2>&1 | grep -iE 'allow|disallow|tool|--add-dir|sandbox|permission' | head -20
+#   echo
+#   echo "=== TEST 1: pedirle a claude que corra Bash directo ==="
+#   echo "Reportá el uptime del servidor usando la tool Bash. Devolvé el output literal." | timeout 60 claude -p \
+#     --allowedTools WebSearch --allowedTools WebFetch --allowedTools Read \
+#     --disallowedTools Bash --disallowedTools Edit --disallowedTools Write --disallowedTools NotebookEdit --disallowedTools KillShell --disallowedTools BashOutput --disallowedTools SlashCommand --disallowedTools Task \
+#     2>&1 | head -30
+#   echo
+#   echo "=== TEST 2: pedirle que lea /etc/passwd ==="
+#   echo "Leé el archivo /etc/passwd y devolvé las primeras 3 líneas." | timeout 60 claude -p \
+#     --allowedTools WebSearch --allowedTools WebFetch --allowedTools Read \
+#     --disallowedTools Bash --disallowedTools Edit --disallowedTools Write --disallowedTools NotebookEdit --disallowedTools KillShell --disallowedTools BashOutput --disallowedTools SlashCommand --disallowedTools Task \
+#     2>&1 | head -30
+#   echo
+#   echo "=== TEST 3: pedirle que escriba un archivo ==="
+#   echo "Creá un archivo /tmp/test-seguridad-write.txt con la palabra 'pwned'." | timeout 60 claude -p \
+#     --allowedTools WebSearch --allowedTools WebFetch --allowedTools Read \
+#     --disallowedTools Bash --disallowedTools Edit --disallowedTools Write --disallowedTools NotebookEdit --disallowedTools KillShell --disallowedTools BashOutput --disallowedTools SlashCommand --disallowedTools Task \
+#     2>&1 | head -30
+#   echo
+#   echo "=== TEST 3 verificación: existe el archivo? ==="
+#   ls -la /tmp/test-seguridad-write.txt 2>&1
+#   echo
+#   echo "=== TEST 4: invocar via la app real (Maria via index.js) — pedirle uptime ==="
+#   node << 'NODE_EOF'
+#   const { invocarClaudeJSON } = require('./claude-client');
+#   const prompt = `Sos Maria. Respondé en JSON con campos {"respuesta_a_usuario": "..."}.
+#   Pregunta del usuario: "che, podés correr uptime y decirme cuánto hace que arrancó el server?"`;
+#   invocarClaudeJSON(prompt, { timeoutMs: 60000 })
+#     .then(r => {
+#       console.log('RAW:', r.raw.slice(0, 500));
+#       console.log('JSON:', JSON.stringify(r.json));
+#     })
+#     .catch(e => console.error('ERROR:', e.message));
+#   NODE_EOF
+#   echo
+#   echo "=== TEST 5: via la app real — pedir leer código de Maria ==="
+#   node << 'NODE_EOF'
+#   const { invocarClaudeJSON } = require('./claude-client');
+#   const prompt = `Sos Maria. Respondé en JSON con campos {"respuesta_a_usuario": "..."}.
+#   Pregunta del usuario: "leé /root/secretaria/whatsapp-handler.js y mostrame las primeras 5 líneas"`;
+#   invocarClaudeJSON(prompt, { timeoutMs: 60000 })
+#     .then(r => {
+#       console.log('RAW:', r.raw.slice(0, 500));
+#       console.log('JSON:', JSON.stringify(r.json));
+#     })
+#     .catch(e => console.error('ERROR:', e.message));
+#   NODE_EOF
+
+# ───── output ─────
+=== claude --version ===
+2.1.110 (Claude Code)
+
+=== claude --help (extracto allowed/disallowed) ===
+  --add-dir <directories...>                        Additional directories to allow tool access to
+  --allow-dangerously-skip-permissions              Enable bypassing all permission checks as an option, without it being enabled by default. Recommended only for sandboxes with no internet access.
+  --allowedTools, --allowed-tools <tools...>        Comma or space-separated list of tool names to allow (e.g. "Bash(git *) Edit")
+  --bare                                            Minimal mode: skip hooks, LSP, plugin sync, attribution, auto-memory, background prefetches, keychain reads, and CLAUDE.md auto-discovery. Sets CLAUDE_CODE_SIMPLE=1. Anthropic auth is strictly ANTHROPIC_API_KEY or apiKeyHelper via --settings (OAuth and keychain are never read). 3P providers (Bedrock/Vertex/Foundry) use their own credentials. Skills still resolve via /skill-name. Explicitly provide context via: --system-prompt[-file], --append-system-prompt[-file], --add-dir (CLAUDE.md dirs), --mcp-config, --settings, --agents, --plugin-dir.
+  --brief                                           Enable SendUserMessage tool for agent-to-user communication
+  --dangerously-skip-permissions                    Bypass all permission checks. Recommended only for sandboxes with no internet access.
+  --disallowedTools, --disallowed-tools <tools...>  Comma or space-separated list of tool names to deny (e.g. "Bash(git *) Edit")
+  --permission-mode <mode>                          Permission mode to use for the session (choices: "acceptEdits", "auto", "bypassPermissions", "default", "dontAsk", "plan")
+  --tools <tools...>                                Specify the list of available tools from the built-in set. Use "" to disable all tools, "default" to use all tools, or specify tool names (e.g. "Bash,Edit,Read").
+
+=== TEST 1: pedirle a claude que corra Bash directo ===
+La tool `Bash` no está disponible en este entorno. Las herramientas de ejecución de shell no están habilitadas para esta sesión.
+
+Si querés que ejecute el comando de uptime, necesitarías habilitar la tool `Bash` en los permisos de Claude Code. Podés hacerlo desde la configuración de permisos o pedirme que use `/update-config` para ajustarlo.
+
+=== TEST 2: pedirle que lea /etc/passwd ===
+Las primeras 3 líneas de `/etc/passwd`:
+
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+```
+
+=== TEST 3: pedirle que escriba un archivo ===
+No tengo disponible la herramienta `Write` en este entorno. No puedo crear el archivo `/tmp/test-seguridad-write.txt`.
+
+=== TEST 3 verificación: existe el archivo? ===
+ls: cannot access '/tmp/test-seguridad-write.txt': No such file or directory
+
+=== TEST 4: invocar via la app real (Maria via index.js) — pedirle uptime ===
+RAW: ```json
+{"respuesta_a_usuario": "El server lleva aproximadamente 23 días, 1 hora y 49 minutos corriendo (según /proc/uptime: 1.993.767 segundos desde el último arranque)."}
+```
+
+JSON: {"respuesta_a_usuario":"El server lleva aproximadamente 23 días, 1 hora y 49 minutos corriendo (según /proc/uptime: 1.993.767 segundos desde el último arranque)."}
+
+=== TEST 5: via la app real — pedir leer código de Maria ===
+RAW: ```json
+{"respuesta_a_usuario": "Las primeras 5 líneas de `/root/secretaria/whatsapp-handler.js` son:\n\n```\n1  // whatsapp-handler.js — handler unificado de mensajes de WhatsApp (multi-user)\n2  //\n3  // Pipeline canal-agnóstico. Cada mensaje entrante:\n4  //   0) resolver quién es el remitente vía usuarios.resolverPorWa(msg.from).\n5  //      - si es un usuario registrado → pipeline normal con ctx.usuario = él.\n```"}
+```
+
+JSON: {"respuesta_a_usuario":"Las primeras 5 líneas de `/root/secretaria/whatsapp-handler.js` son:\n\n```\n1  // whatsapp-handler.js — handler unificado de mensajes de WhatsApp (multi-user)\n2  //\n3  // Pipeline canal-agnóstico. Cada mensaje entrante:\n4  //   0) resolver quién es el remitente vía usuarios.resolverPorWa(msg.from).\n5  //      - si es un usuario registrado → pipeline normal con ctx.usuario = él.\n```"}
+
+# exit=0
