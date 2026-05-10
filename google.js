@@ -565,7 +565,7 @@ async function buscarMensajesCon(email, { dias = 14, max = 50 } = {}) {
  *
  * Devuelve { id, threadId } del mensaje enviado.
  */
-async function enviarEmail({ to, asunto, texto, cc, bcc, replyTo }) {
+async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
   if (!to)                                      throw new Error('enviarEmail: falta "to"');
   if (asunto === undefined || asunto === null)  throw new Error('enviarEmail: falta "asunto"');
   if (texto  === undefined || texto  === null)  throw new Error('enviarEmail: falta "texto"');
@@ -576,22 +576,49 @@ async function enviarEmail({ to, asunto, texto, cc, bcc, replyTo }) {
   const ccs  = cc  ? (Array.isArray(cc)  ? cc.join(', ')  : cc)  : null;
   const bccs = bcc ? (Array.isArray(bcc) ? bcc.join(', ') : bcc) : null;
 
-  const rawLines = [
+  const headers = [
     `From: ${_encodeHeader(FROM_NAME)} <${FROM_EMAIL}>`,
     `To: ${tos}`,
   ];
-  if (ccs)     rawLines.push(`Cc: ${ccs}`);
-  if (bccs)    rawLines.push(`Bcc: ${bccs}`);
-  if (replyTo) rawLines.push(`Reply-To: ${replyTo}`);
-  rawLines.push(
+  if (ccs)     headers.push(`Cc: ${ccs}`);
+  if (bccs)    headers.push(`Bcc: ${bccs}`);
+  if (replyTo) headers.push(`Reply-To: ${replyTo}`);
+  headers.push(
     `Subject: ${_encodeHeader(asunto)}`,
     `MIME-Version: 1.0`,
-    `Content-Type: text/plain; charset=UTF-8`,
-    `Content-Transfer-Encoding: 8bit`,
-    ``,
-    texto,
   );
-  const raw = Buffer.from(rawLines.join('\r\n')).toString('base64')
+
+  let body;
+  if (html) {
+    // multipart/alternative: texto plano (fallback) + html.
+    const boundary = '----maria_boundary_' + Math.random().toString(36).slice(2);
+    headers.push(`Content-Type: multipart/alternative; boundary="${boundary}"`);
+    body = [
+      '',
+      `--${boundary}`,
+      'Content-Type: text/plain; charset=UTF-8',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      texto,
+      '',
+      `--${boundary}`,
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      html,
+      '',
+      `--${boundary}--`,
+      '',
+    ].join('\r\n');
+  } else {
+    headers.push(
+      `Content-Type: text/plain; charset=UTF-8`,
+      `Content-Transfer-Encoding: 8bit`,
+    );
+    body = '\r\n' + texto;
+  }
+
+  const raw = Buffer.from(headers.join('\r\n') + body).toString('base64')
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
   const r = await _gmail(auth).users.messages.send({
