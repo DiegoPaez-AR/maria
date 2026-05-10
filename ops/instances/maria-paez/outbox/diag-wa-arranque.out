@@ -1,0 +1,254 @@
+# ejecutado: 2026-05-10T17:07:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "=== uptime VPS ==="
+#   uptime
+#   last reboot 2>/dev/null | head -3
+#   echo
+#   echo "=== pm2 info maria-paez ==="
+#   pm2 info maria-paez 2>/dev/null | grep -E 'name|status|restart|uptime|created|script|cwd|exec mode|node|version|exit code|error log|out log' | head -25
+#   echo
+#   echo "=== WA_AUTH_DIR estructura ==="
+#   WA=/root/secretaria/state/maria-paez/.wwebjs_auth
+#   if [ -d "$WA" ]; then
+#     echo "exists: $WA"
+#     du -sh "$WA"
+#     find "$WA" -maxdepth 3 -printf '%TY-%Tm-%Td %TH:%TM  %s  %p\n' 2>/dev/null | head -40
+#     echo "--- LOCK files? ---"
+#     find "$WA" -name '*lock*' -o -name '*Lock*' 2>/dev/null | head -10
+#     echo "--- size del session principal ---"
+#     ls -la "$WA"/session 2>/dev/null | head -20
+#     ls -la "$WA"/session/Default 2>/dev/null | head -20
+#   else
+#     echo "NO EXISTE $WA"
+#   fi
+#   echo
+#   echo "=== logs pm2 maria-paez últimas 1500 líneas, busco eventos clave ==="
+#   pm2 logs maria-paez --lines 1500 --nostream --raw 2>&1 | grep -nE 'iniciando|whisper|qr|loading|authenticated|ready|disconnected|auth_failure|SIGINT|frame muerto|Error|Cannot|TypeError|exit|crash' | tail -120
+#   echo
+#   echo "=== restart reasons (jlist) ==="
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   ps=json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name')!='maria-paez': continue
+#       e=p.get('pm2_env',{})
+#       print('status', e.get('status'))
+#       print('restart_time', e.get('restart_time'))
+#       print('unstable_restarts', e.get('unstable_restarts'))
+#       print('exit_code', e.get('exit_code'))
+#       print('created_at', e.get('created_at'))
+#       print('pm_uptime', e.get('pm_uptime'))
+#       print('axm_actions', list((e.get('axm_actions') or {}).keys())[:5])
+#   "
+#   echo
+#   echo "=== version de whatsapp-web.js instalada ==="
+#   cat /root/secretaria/node_modules/whatsapp-web.js/package.json 2>/dev/null | python3 -c "import json,sys; p=json.load(sys.stdin); print(p.get('name'),p.get('version'))"
+#   echo
+#   echo "=== chrome version ==="
+#   google-chrome --version 2>&1 | head -1
+
+# ───── output ─────
+=== uptime VPS ===
+ 17:07:01 up 22 days, 22:12,  0 user,  load average: 0.00, 0.01, 0.00
+reboot   system boot  6.8.0-110-generi Fri Apr 17 18:54   still running
+reboot   system boot  6.8.0-110-generi Wed Apr 15 19:47 - 18:54 (1+23:07)
+reboot   system boot  6.8.0-90-generic Wed Apr 15 19:37 - 19:47  (00:09)
+
+=== pm2 info maria-paez ===
+ Describing process with id 0 - name maria-paez 
+│ status            │ online                               │
+│ name              │ maria-paez                           │
+│ namespace         │ default                              │
+│ version           │ 1.0.0                                │
+│ restarts          │ 4                                    │
+│ uptime            │ 5h                                   │
+│ script path       │ /root/secretaria/index.js            │
+│ script args       │ N/A                                  │
+│ error log path    │ /root/.pm2/logs/maria-paez-error.log │
+│ out log path      │ /root/.pm2/logs/maria-paez-out.log   │
+│ interpreter       │ node                                 │
+│ script id         │ 0                                    │
+│ exec cwd          │ /root/secretaria                     │
+│ exec mode         │ fork_mode                            │
+│ node.js version   │ 18.19.1                              │
+│ node env          │ production                           │
+│ unstable restarts │ 0                                    │
+│ created at        │ 2026-05-10T14:24:02.740Z             │
+ Trigger via: pm2 trigger maria-paez <action_name>
+
+=== WA_AUTH_DIR estructura ===
+exists: /root/secretaria/state/maria-paez/.wwebjs_auth
+259M	/root/secretaria/state/maria-paez/.wwebjs_auth
+2026-04-18 12:14  4096  /root/secretaria/state/maria-paez/.wwebjs_auth
+2026-05-10 16:25  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session
+2026-05-10 11:24  25  /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+2026-05-10 11:24  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/WidevineCdm
+2026-05-10 11:24  76  /root/secretaria/state/maria-paez/.wwebjs_auth/session/WidevineCdm/latest-component-updated-widevine-cdm
+2026-05-10 11:12  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/PKIMetadata
+2026-05-10 00:17  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/PKIMetadata/1664
+2026-05-08 09:21  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/MEIPreload
+2026-05-08 09:21  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/MEIPreload/1.1.0.3
+2026-05-08 12:09  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/CaptchaProviders
+2026-05-08 12:09  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/CaptchaProviders/8.5419.4434
+2026-05-10 11:24  20  /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+2026-05-10 17:04  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default
+2026-05-10 16:46  20480  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Cookies
+2026-05-08 04:19  77824  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Account Web Data
+2026-05-08 04:19  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/SharedStorage
+2026-05-08 04:19  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Extension Scripts
+2026-05-10 11:24  84  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/trusted_vault.pb
+2026-05-08 04:19  36864  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Trust Tokens
+2026-05-10 15:54  8720  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/History-journal
+2026-05-10 11:24  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/AutofillAiModelCache
+2026-05-08 04:20  53248  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Network Action Predictor
+2026-05-10 11:28  51  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/passkey_enclave_state
+2026-05-10 11:24  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/chrome_cart_db
+2026-05-08 04:19  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Login Data For Account-journal
+2026-05-08 04:20  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Web Data-journal
+2026-05-08 04:19  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Trust Tokens-journal
+2026-05-10 11:24  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/AutofillStrikeDatabase
+2026-05-10 16:46  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Cookies-journal
+2026-05-08 04:19  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Local Storage
+2026-05-08 04:19  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/SharedStorage-wal
+2026-05-08 04:19  40960  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Login Data
+2026-05-10 16:47  3866  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Network Persistent State
+2026-05-08 04:19  20480  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/ServerCertificate
+2026-05-10 11:24  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Site Characteristics Database
+2026-05-08 04:19  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Shared Dictionary
+2026-05-10 11:24  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/BudgetDatabase
+2026-05-08 04:19  4096  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Segmentation Platform
+2026-05-08 04:20  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/heavy_ad_intervention_opt_out.db-journal
+2026-05-08 04:20  0  /root/secretaria/state/maria-paez/.wwebjs_auth/session/Default/Shortcuts-journal
+--- LOCK files? ---
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+--- size del session principal ---
+total 4308
+drwxr-xr-x 31 root root    4096 May 10 16:25 .
+drwxr-xr-x  3 root root    4096 Apr 18 12:14 ..
+drwx------  3 root root    4096 May  8 12:09 ActorSafetyLists
+drwx------  3 root root    4096 May  8 12:09 AmountExtractionHeuristicRegexes
+-rw-------  1 root root 4194304 May  8 04:21 BrowserMetrics-spare.pma
+drwx------  3 root root    4096 May  8 12:09 CaptchaProviders
+drwx------  3 root root    4096 May 10 11:20 CertificateRevocation
+drwx------  2 root root    4096 May 10 11:13 component_crx_cache
+drwx------  3 root root    4096 May  8 09:21 Crowd Deny
+drwx------ 35 root root    4096 May 10 17:04 Default
+-rw-r--r--  1 root root      60 May 10 11:24 DevToolsActivePort
+drwx------  2 root root    4096 May  8 04:20 extensions_crx_cache
+drwx------  3 root root    4096 May  8 09:21 FileTypePolicies
+-rw-------  1 root root   69632 May 10 11:24 first_party_sets.db
+-rw-------  1 root root       0 May 10 11:24 first_party_sets.db-journal
+drwx------  3 root root    4096 May  8 12:09 FirstPartySetsPreloaded
+drwx------  2 root root    4096 May  8 04:19 GraphiteDawnCache
+drwx------  2 root root    4096 May  8 04:19 GrShaderCache
+drwx------  3 root root    4096 May  8 09:21 hyphen-data
+total 5068
+drwx------ 35 root root    4096 May 10 17:04 .
+drwxr-xr-x 31 root root    4096 May 10 16:25 ..
+-rw-------  1 root root   77824 May  8 04:19 Account Web Data
+-rw-------  1 root root       0 May  8 04:19 Account Web Data-journal
+-rw-------  1 root root   53248 May  8 04:19 Affiliation Database
+-rw-------  1 root root       0 May  8 04:19 Affiliation Database-journal
+drwx------  2 root root    4096 May 10 11:24 AutofillAiModelCache
+drwx------  2 root root    4096 May 10 11:24 AutofillStrikeDatabase
+drwx------  3 root root    4096 May 10 11:24 blob_storage
+-rw-------  1 root root       4 May 10 11:24 BookmarkMergedSurfaceOrdering
+drwx------  2 root root    4096 May 10 11:24 BudgetDatabase
+drwx------  4 root root    4096 May  8 04:19 Cache
+drwx------  2 root root    4096 May 10 11:24 chrome_cart_db
+drwx------  2 root root    4096 May 10 11:24 ClientCertificates
+drwx------  4 root root    4096 May  8 04:19 Code Cache
+drwx------  2 root root    4096 May 10 11:24 commerce_subscription_db
+-rw-------  1 root root   20480 May 10 16:46 Cookies
+-rw-------  1 root root       0 May 10 16:46 Cookies-journal
+drwx------  2 root root    4096 May  8 04:19 DawnGraphiteCache
+
+=== logs pm2 maria-paez últimas 1500 líneas, busco eventos clave ===
+30:2026-05-10 10:46:37: [WA qr] escaneá este QR:
+62:2026-05-10 10:46:57: [WA qr] escaneá este QR:
+94:2026-05-10 10:48:08: [WA qr] escaneá este QR:
+126:2026-05-10 10:49:08: [WA qr] escaneá este QR:
+158:2026-05-10 10:49:28: [WA qr] escaneá este QR:
+190:2026-05-10 10:49:48: [WA qr] escaneá este QR:
+222:2026-05-10 10:50:08: [WA qr] escaneá este QR:
+254:2026-05-10 10:50:28: [WA qr] escaneá este QR:
+286:2026-05-10 10:51:38: [WA qr] escaneá este QR:
+318:2026-05-10 10:52:38: [WA qr] escaneá este QR:
+350:2026-05-10 10:52:58: [WA qr] escaneá este QR:
+382:2026-05-10 10:53:18: [WA qr] escaneá este QR:
+414:2026-05-10 10:53:38: [WA qr] escaneá este QR:
+446:2026-05-10 10:53:58: [WA qr] escaneá este QR:
+478:2026-05-10 10:55:09: [WA qr] escaneá este QR:
+510:2026-05-10 10:56:09: [WA qr] escaneá este QR:
+542:2026-05-10 10:56:29: [WA qr] escaneá este QR:
+574:2026-05-10 10:56:49: [WA qr] escaneá este QR:
+606:2026-05-10 10:57:09: [WA qr] escaneá este QR:
+638:2026-05-10 10:57:29: [WA qr] escaneá este QR:
+670:2026-05-10 10:58:40: [WA qr] escaneá este QR:
+702:2026-05-10 10:59:40: [WA qr] escaneá este QR:
+734:2026-05-10 11:00:00: [WA qr] escaneá este QR:
+766:2026-05-10 11:00:20: [WA qr] escaneá este QR:
+798:2026-05-10 11:00:40: [WA qr] escaneá este QR:
+830:2026-05-10 11:01:00: [WA qr] escaneá este QR:
+862:2026-05-10 11:02:10: [WA qr] escaneá este QR:
+894:2026-05-10 11:03:10: [WA qr] escaneá este QR:
+926:2026-05-10 11:03:30: [WA qr] escaneá este QR:
+958:2026-05-10 11:03:50: [WA qr] escaneá este QR:
+991:2026-05-10 11:04:02: ▸ SIGINT recibido, cerrando…
+993:2026-05-10 11:04:04: ▸ Maria Paez [maria-paez] iniciando…
+998:2026-05-10 11:04:04: ✓ whisper OK
+999:2026-05-10 11:04:08: [WA qr] escaneá este QR:
+1031:2026-05-10 11:05:08: [WA qr] escaneá este QR:
+1063:2026-05-10 11:05:28: [WA qr] escaneá este QR:
+1095:2026-05-10 11:05:48: [WA qr] escaneá este QR:
+1127:2026-05-10 11:06:08: [WA qr] escaneá este QR:
+1159:2026-05-10 11:06:28: [WA qr] escaneá este QR:
+1191:2026-05-10 11:07:38: [WA qr] escaneá este QR:
+1223:2026-05-10 11:08:38: [WA qr] escaneá este QR:
+1255:2026-05-10 11:08:58: [WA qr] escaneá este QR:
+1287:2026-05-10 11:09:18: [WA qr] escaneá este QR:
+1319:2026-05-10 11:09:38: [WA qr] escaneá este QR:
+1351:2026-05-10 11:09:58: [WA qr] escaneá este QR:
+1383:2026-05-10 11:11:09: [WA qr] escaneá este QR:
+1416:2026-05-10 11:12:02: ▸ SIGINT recibido, cerrando…
+1418:2026-05-10 11:12:04: ▸ Maria Paez [maria-paez] iniciando…
+1423:2026-05-10 11:12:04: ✓ whisper OK
+1424:2026-05-10 11:12:08: [WA loading] 0% - WhatsApp
+1425:2026-05-10 11:12:08: [WA authenticated]
+1426:2026-05-10 11:12:09: ✅ [WA ready] Maria conectada
+1436:2026-05-10 11:12:09: [WA loading] 99% - WhatsApp
+1438:2026-05-10 11:20:02: ▸ SIGINT recibido, cerrando…
+1440:2026-05-10 11:20:05: ▸ Maria Paez [maria-paez] iniciando…
+1445:2026-05-10 11:20:05: ✓ whisper OK
+1446:2026-05-10 11:20:09: [WA loading] 100% - WhatsApp
+1447:2026-05-10 11:20:09: [WA authenticated]
+1448:2026-05-10 11:20:09: ✅ [WA ready] Maria conectada
+1459:2026-05-10 11:24:02: ▸ SIGINT recibido, cerrando…
+1461:2026-05-10 11:24:05: ▸ Maria Paez [maria-paez] iniciando…
+1466:2026-05-10 11:24:05: ✓ whisper OK
+1467:2026-05-10 11:24:09: [WA loading] 100% - WhatsApp
+1468:2026-05-10 11:24:09: [WA authenticated]
+1469:2026-05-10 11:24:10: ✅ [WA ready] Maria conectada
+
+=== restart reasons (jlist) ===
+Traceback (most recent call last):
+  File "<string>", line 13, in <module>
+AttributeError: 'list' object has no attribute 'keys'
+status online
+restart_time 4
+unstable_restarts 0
+exit_code 130
+created_at 1778423042740
+pm_uptime 1778423042906
+
+=== version de whatsapp-web.js instalada ===
+whatsapp-web.js 1.34.7
+
+=== chrome version ===
+Google Chrome 147.0.7727.101 
+
+# exit=0
