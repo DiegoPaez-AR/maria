@@ -1,0 +1,40 @@
+# ejecutado: 2026-05-10T11:25:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "── Mandando reporte HTML real a OWNER_EMAIL ──"
+#   node daily-report.js 2>&1 | tail -30
+
+# ───── output ─────
+── Mandando reporte HTML real a OWNER_EMAIL ──
+Stats para maria-paez...
+
+────── PREVIEW (texto) ──────
+📊 Reporte diario VPS Maria — 10/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 3507355 · uptime 0m · restarts 4 · 189.9 MB · 0.1% CPU
+WhatsApp: 5↓ / 7↑ (1 audios)
+Gmail:    0↓ / 0↑
+Calendar: 0 creados · 0 modificados · 0 borrados
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Diego [owner]: 11 abiertos (+0 -0)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 7282 bytes
+
+✓ enviado a diego@paez.is
+
+# exit=0
