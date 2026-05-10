@@ -1,0 +1,74 @@
+# ejecutado: 2026-05-10T11:12:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "── env actual del proceso (antes) ──"
+#   pm2 jlist | python3 -c "
+#   import json, sys
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p['name']!='maria-paez': continue
+#       e = p['pm2_env']
+#       for k in ['ASISTENTE_NOMBRE','ASISTENTE_SLUG','MARIA_DB','GOOGLE_CRED_PATH','GOOGLE_TOKEN_PATH','WA_AUTH_DIR','OWNER_EMAIL','OWNER_NOMBRE','OWNER_WA']:
+#           print(f'  {k} = {e.get(k, \"<NOT SET>\")}')
+#   "
+#   echo
+#   
+#   echo "── pm2 reload ecosystem.config.js (re-lee el .conf) ──"
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -10
+#   echo
+#   
+#   echo "── env actual (después) ──"
+#   pm2 jlist | python3 -c "
+#   import json, sys
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p['name']!='maria-paez': continue
+#       e = p['pm2_env']
+#       for k in ['ASISTENTE_NOMBRE','ASISTENTE_SLUG','MARIA_DB','GOOGLE_CRED_PATH','GOOGLE_TOKEN_PATH','WA_AUTH_DIR','OWNER_EMAIL','OWNER_NOMBRE','OWNER_WA']:
+#           print(f'  {k} = {e.get(k, \"<NOT SET>\")}')
+#   "
+#   echo
+#   
+#   echo "── pm2 list final ──"
+#   pm2 list 2>&1 | head -7
+
+# ───── output ─────
+── env actual del proceso (antes) ──
+  ASISTENTE_NOMBRE = Maria Paez
+  ASISTENTE_SLUG = maria-paez
+  MARIA_DB = /root/secretaria/db/maria.sqlite
+  GOOGLE_CRED_PATH = /root/secretaria/credentials.json
+  GOOGLE_TOKEN_PATH = /root/secretaria/token.json
+  WA_AUTH_DIR = <NOT SET>
+  OWNER_EMAIL = diego@paez.is
+  OWNER_NOMBRE = Diego
+  OWNER_WA = 541132317896@c.us
+
+── pm2 reload ecosystem.config.js (re-lee el .conf) ──
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+
+── env actual (después) ──
+  ASISTENTE_NOMBRE = Maria Paez
+  ASISTENTE_SLUG = maria-paez
+  MARIA_DB = /root/secretaria/state/maria-paez/db/maria.sqlite
+  GOOGLE_CRED_PATH = /root/secretaria/state/maria-paez/credentials.json
+  GOOGLE_TOKEN_PATH = /root/secretaria/state/maria-paez/token.json
+  WA_AUTH_DIR = /root/secretaria/state/maria-paez/.wwebjs_auth
+  OWNER_EMAIL = diego@paez.is
+  OWNER_NOMBRE = Diego
+  OWNER_WA = 541132317896@c.us
+
+── pm2 list final ──
+┌────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria-paez    │ default     │ 1.0.0   │ fork    │ 3505973  │ 0s     │ 2    │ online    │ 0%       │ 94.1mb   │ root     │ disabled │
+└────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+# exit=0
