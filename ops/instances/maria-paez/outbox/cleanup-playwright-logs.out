@@ -1,0 +1,57 @@
+# ejecutado: 2026-05-10T00:16:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   echo "── .playwright-mcp/ logs antes ──"
+#   ls -la .playwright-mcp/ 2>&1 | head -10
+#   echo
+#   echo "── borrando logs ──"
+#   rm -fv .playwright-mcp/*.log .playwright-mcp/*.yml 2>/dev/null
+#   echo
+#   echo "── después ──"
+#   du -sh .playwright-mcp 2>&1
+#   ls -la .playwright-mcp/ 2>&1 | head -5
+
+# ───── output ─────
+── .playwright-mcp/ logs antes ──
+total 172
+drwxr-xr-x  2 root root  4096 May  8 12:35 .
+drwxr-xr-x 11 root root  4096 May 10 00:16 ..
+-rw-r--r--  1 root root  1204 May  7 00:42 console-2026-05-07T03-42-16-256Z.log
+-rw-r--r--  1 root root  1562 May  7 00:44 console-2026-05-07T03-44-12-708Z.log
+-rw-r--r--  1 root root  1336 May  7 01:24 console-2026-05-07T04-24-12-867Z.log
+-rw-r--r--  1 root root   787 May  8 12:35 console-2026-05-08T15-35-15-500Z.log
+-rw-r--r--  1 root root  1104 May  8 12:35 console-2026-05-08T15-35-40-914Z.log
+-rw-r--r--  1 root root   856 May  8 12:35 console-2026-05-08T15-35-49-963Z.log
+-rw-r--r--  1 root root 12564 May  7 00:42 page-2026-05-07T03-42-22-275Z.yml
+
+── borrando logs ──
+removed '.playwright-mcp/console-2026-05-07T03-42-16-256Z.log'
+removed '.playwright-mcp/console-2026-05-07T03-44-12-708Z.log'
+removed '.playwright-mcp/console-2026-05-07T04-24-12-867Z.log'
+removed '.playwright-mcp/console-2026-05-08T15-35-15-500Z.log'
+removed '.playwright-mcp/console-2026-05-08T15-35-40-914Z.log'
+removed '.playwright-mcp/console-2026-05-08T15-35-49-963Z.log'
+removed '.playwright-mcp/page-2026-05-07T03-42-22-275Z.yml'
+removed '.playwright-mcp/page-2026-05-07T03-44-18-408Z.yml'
+removed '.playwright-mcp/page-2026-05-07T03-44-33-448Z.yml'
+removed '.playwright-mcp/page-2026-05-07T03-44-53-632Z.yml'
+removed '.playwright-mcp/page-2026-05-07T03-44-58-180Z.yml'
+removed '.playwright-mcp/page-2026-05-07T04-24-17-830Z.yml'
+removed '.playwright-mcp/page-2026-05-07T04-24-32-708Z.yml'
+removed '.playwright-mcp/page-2026-05-07T04-24-51-078Z.yml'
+removed '.playwright-mcp/page-2026-05-08T15-35-16-088Z.yml'
+removed '.playwright-mcp/page-2026-05-08T15-35-24-942Z.yml'
+removed '.playwright-mcp/page-2026-05-08T15-35-41-908Z.yml'
+removed '.playwright-mcp/page-2026-05-08T15-35-50-864Z.yml'
+
+── después ──
+4.0K	.playwright-mcp
+total 8
+drwxr-xr-x  2 root root 4096 May 10 00:16 .
+drwxr-xr-x 11 root root 4096 May 10 00:16 ..
+
+# exit=0
