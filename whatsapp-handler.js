@@ -51,13 +51,46 @@ function crearClienteWA({ onReady } = {}) {
   });
 
   // ─── Eventos de ciclo de vida ──────────────────────────────────────────
+  // Alerta por email al owner cuando WA está caído (disconnected / mucho
+  // tiempo sin autenticar). Rate-limit por proceso: max 1 alerta por hora,
+  // así un loop de crash no spamea. Idempotente entre restarts: usamos
+  // estado_usuario.wa_alert_last_ts para no duplicar.
+  const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
+  const _alertaWA = async (motivo) => {
+    try {
+      const owner = usuarios.obtenerOwner();
+      if (!owner?.email) return; // sin email del owner no hay a quién avisar
+      const ahora = Date.now();
+      const lastTs = mem.getEstadoUsuario(owner.id, 'wa_alert_last_ts') || 0;
+      if (ahora - lastTs < 60 * 60 * 1000) return; // cooldown 1h
+      const g = require('./google');
+      await g.enviarEmail({
+        to: owner.email,
+        asunto: `⚠️ ${ASISTENTE_NOMBRE}: WhatsApp desconectado`,
+        texto: `Hola ${owner.nombre},\n\n${ASISTENTE_NOMBRE} perdió la sesión de WhatsApp Web (${motivo}). Para volver a conectar:\n\n1) ssh root@<vps> y correr: pm2 logs ${process.env.ASISTENTE_SLUG || 'maria-paez'} --lines 60\n2) Cuando aparezca un QR, escaneá desde tu celular en WhatsApp → Dispositivos vinculados → Vincular dispositivo.\n\nMientras tanto no recibís ni respondés mensajes por WhatsApp.\n\n--\n${ASISTENTE_NOMBRE}`,
+      });
+      mem.setEstadoUsuario(owner.id, 'wa_alert_last_ts', ahora);
+      console.log(`[WA alert] email enviado a ${owner.email} (motivo: ${motivo})`);
+    } catch (err) {
+      console.warn(`[WA alert] no pude mandar mail al owner: ${err.message}`);
+    }
+  };
+
+  // Watchdog de boot: si después de 3 min no hubo 'ready', alertar.
+  let _readyTimeout = setTimeout(() => {
+    _alertaWA('no logró autenticarse en 3 min desde el boot');
+  }, 3 * 60 * 1000);
+
   client.on('qr', (qr) => {
     console.log('[WA qr] escaneá este QR:');
     qrcode.generate(qr, { small: true });
   });
   client.on('loading_screen', (pct, msg) => console.log(`[WA loading] ${pct}% - ${msg}`));
   client.on('authenticated',  ()   => console.log('[WA authenticated]'));
-  client.on('auth_failure',   (m)  => console.error('[WA auth_failure]', m));
+  client.on('auth_failure',   (m)  => {
+    console.error('[WA auth_failure]', m);
+    _alertaWA(`auth_failure: ${m}`);
+  });
   client.on('change_state',   (s)  => console.log('[WA change_state]', s));
   client.on('disconnected',   (r)  => {
     console.error('[WA disconnected]', r);
@@ -65,11 +98,13 @@ function crearClienteWA({ onReady } = {}) {
       canal: 'sistema', direccion: 'interno',
       cuerpo: `WA disconnected: ${r} — saliendo para que pm2 reinicie`,
     });
+    _alertaWA(`disconnected: ${r}`);
     // Dejamos que pm2 levante el proceso — auto-recuperación.
     setTimeout(() => process.exit(1), 500);
   });
   client.on('ready', () => {
     console.log('✅ [WA ready] Maria conectada');
+    clearTimeout(_readyTimeout);
     if (typeof onReady === 'function') onReady(client);
   });
 
