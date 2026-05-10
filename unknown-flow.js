@@ -376,7 +376,7 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
   const resumenUsuarios = historialesUsuarios.map(h => `${h.usuario.nombre}=${h.total || 0}`).join(', ') || '(sin usuarios)';
   console.log(`[unknown-flow/${canal}] LLM pre-pass inputs: hist_wa=${histWA.total || 0}${histWA.error ? `(err:${histWA.error})` : ''} hist_mail=${histMail.total || 0}${histMail.error ? `(err:${histMail.error})` : ''} hist_usuarios={${resumenUsuarios}} remitente=${from || senderEmail || '?'} contactos_ambiguos=${contactosAmbiguos?.length || 0}`);
   try {
-    const { json, raw } = await invocarClaudeJSON(prompt, { timeoutMs: 90_000 });
+    const { json, raw } = await invocarClaudeJSON(prompt, { timeoutMs: 90_000, audit: { usuarioId: null, canal: 'unknown-flow' } });
     if (!json || !json.resolucion) {
       console.warn(`[unknown-flow/${canal}] LLM devolvió respuesta sin resolucion`);
       return null;

@@ -27,8 +27,13 @@ const DISALLOWED_TOOLS = (process.env.CLAUDE_DISALLOWED_TOOLS ?? 'Bash,Edit,Writ
 
 /**
  * Invoca `claude -p` con el prompt por stdin. Devuelve stdout (string).
+ *
+ * opts.audit = { usuarioId, canal } habilita auditoría: se loggea via
+ * memory.logClaudeCall un evento sistema con tiempo, sizes y error si hubo.
+ * Si no se pasa, no loguea (back-compat).
  */
-function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [] } = {}) {
+function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = null } = {}) {
+  const _t0 = Date.now();
   return new Promise((resolve, reject) => {
     const args = ['-p'];
     // --allowedTools/--disallowedTools en formato repeated (un flag por tool).
@@ -65,10 +70,33 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [] } = {}) {
 
     p.stdout.on('data', d => stdout += d.toString());
     p.stderr.on('data', d => stderr += d.toString());
-    p.on('error', err => { clearTimeout(to); reject(err); });
+
+    function _audit(error_msg) {
+      if (!audit) return;
+      try {
+        const mem = require('./memory'); // lazy para evitar circular
+        mem.logClaudeCall({
+          usuarioId: audit.usuarioId || null,
+          canal: audit.canal || null,
+          ms: Date.now() - _t0,
+          prompt_chars: prompt.length,
+          raw_chars: stdout.length,
+          error_msg: error_msg || null,
+        });
+      } catch (e) {
+        console.warn('[claude-client] audit falló:', e.message);
+      }
+    }
+
+    p.on('error', err => { clearTimeout(to); _audit(err.message); reject(err); });
     p.on('close', code => {
       clearTimeout(to);
-      if (code !== 0) return reject(new Error(`claude exit ${code}: ${stderr.trim()}`));
+      if (code !== 0) {
+        const msg = `claude exit ${code}: ${stderr.trim().slice(0,200)}`;
+        _audit(msg);
+        return reject(new Error(msg));
+      }
+      _audit(null);
       resolve(stdout);
     });
 

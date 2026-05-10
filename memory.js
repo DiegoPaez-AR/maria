@@ -437,6 +437,27 @@ function log(evt) {
   return info.lastInsertRowid;
 }
 
+// Audit log de cada invocación a Claude. Va como evento sistema con
+// metadata.tipo='claude_call' para poder filtrar después con
+// `WHERE metadata_json LIKE '%claude_call%'` o un view dedicado.
+function logClaudeCall({ usuarioId = null, canal = null, ms = null, prompt_chars = null, raw_chars = null, error_msg = null } = {}) {
+  return log({
+    usuarioId, canal: 'sistema', direccion: 'interno',
+    cuerpo: `claude_call ${canal || '?'}: ${ms}ms prompt=${prompt_chars}c raw=${raw_chars}c${error_msg ? ' ERROR=' + error_msg.slice(0,80) : ''}`,
+    metadata: { tipo: 'claude_call', canal, ms, prompt_chars, raw_chars, error_msg },
+  });
+}
+
+// Log de evento de seguridad (detección de injection, intento de exfiltración, etc.).
+// Siempre visible para el owner (canal=sistema).
+function logSecurityEvent({ usuarioId = null, canal = null, motivo, body, extra = {} } = {}) {
+  return log({
+    usuarioId, canal: 'sistema', direccion: 'interno',
+    cuerpo: `[SEGURIDAD] ${motivo}: ${(body || '').slice(0, 200)}`,
+    metadata: { tipo: 'security', motivo, canal_origen: canal, body_full: body, ...extra },
+  });
+}
+
 const qRecientesUsuario = db.prepare(`
   SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
@@ -1044,6 +1065,8 @@ module.exports = {
   OWNER_ID,           // id del owner bootstrapeado (usado en fallbacks)
   // eventos
   log,
+  logClaudeCall,
+  logSecurityEvent,
   recientes,
   porCanal,
   porContacto,

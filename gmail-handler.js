@@ -162,6 +162,21 @@ async function procesarUnEmail(id, { waClient } = {}) {
  * desde unknown-flow.
  */
 async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderEmail = true }) {
+  // Pre-filtro de injection sobre asunto + cuerpo del mail (entrante).
+  const _payload = `${entrada.asunto || ''}\n${entrada.cuerpo || ''}`;
+  const _motivo = seguridad.detectarInjection(_payload);
+  if (_motivo) {
+    console.warn(`[GMAIL injection] ${entrada.de} → ${_motivo}`);
+    mem.logSecurityEvent({
+      usuarioId: usuario.id,
+      canal: 'gmail',
+      motivo: `injection_attempt: ${_motivo}`,
+      body: _payload.slice(0, 500),
+      extra: { from: entrada.de, asunto: entrada.asunto },
+    });
+    // Igual que en WA: NO bloqueamos — el LLM lo rechaza vía Capa 2.
+  }
+
   const prompt = await construirPrompt({
     usuario,
     canal: 'gmail',
@@ -173,7 +188,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   let acciones = [];
   let razonamiento = null;
   try {
-    const { json } = await invocarClaudeJSON(prompt);
+    const { json } = await invocarClaudeJSON(prompt, { audit: { usuarioId: usuario.id, canal: 'gmail' } });
     respUsr      = (json.respuesta_a_usuario   || '').toString();
     respRem      = (json.respuesta_a_remitente || '').toString();
     // Compat: si solo viene `respuesta` legacy, en Gmail se trata como

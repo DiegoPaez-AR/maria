@@ -22,6 +22,7 @@ const qrcode = require('qrcode-terminal');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const unknownFlow = require('./unknown-flow');
+const seguridad = require('./seguridad');
 const { transcribirAudio } = require('./transcribir');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSON } = require('./claude-client');
@@ -272,6 +273,39 @@ async function handleMessage(client, msg) {
   const item = await _preProcesarMensaje(client, msg, { pushname, contact, messageId });
   if (!item) return; // sticker / vacío / fallo de transcripción
 
+  // ─── Rate limit por usuario / global ─────────────────────────────────
+  const _usrTmp = usuarios.resolverPorWa(msg.from);
+  const rl = seguridad.verificarRateLimit({ usuarioId: _usrTmp?.id || null });
+  if (!rl.ok) {
+    console.warn(`[WA rate-limit] ${msg.from} bloqueado: ${rl.motivo}`);
+    mem.logSecurityEvent({
+      usuarioId: _usrTmp?.id || null,
+      canal: 'whatsapp',
+      motivo: `rate_limit ${rl.motivo}`,
+      body: (item.cuerpo || '').slice(0, 200),
+      extra: { retry_in_ms: rl.retry_in_ms, from: msg.from },
+    });
+    try {
+      await client.sendMessage(msg.from, `⏳ vas muy rápido — esperá ${Math.ceil(rl.retry_in_ms / 1000)}s y volvé a probar`);
+    } catch {}
+    return;
+  }
+
+  // ─── Detección de prompt injection ───────────────────────────────────
+  const motivoInj = seguridad.detectarInjection(item.cuerpo);
+  if (motivoInj) {
+    console.warn(`[WA injection] ${msg.from} → ${motivoInj}: ${(item.cuerpo || '').slice(0, 120)}`);
+    mem.logSecurityEvent({
+      usuarioId: _usrTmp?.id || null,
+      canal: 'whatsapp',
+      motivo: `injection_attempt: ${motivoInj}`,
+      body: item.cuerpo,
+      extra: { from: msg.from, pushname },
+    });
+    // NO bloqueamos — el LLM va a rechazarlo via Capa 2. La detección sirve
+    // para dejar rastro auditable y disparar alertas eventuales.
+  }
+
   _encolar(client, msg.from, item);
 }
 
@@ -478,7 +512,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
   let acciones = [];
   let razonamiento = null;
   try {
-    const { json } = await invocarClaudeJSON(prompt);
+    const { json } = await invocarClaudeJSON(prompt, { audit: { usuarioId: usuario.id, canal: 'whatsapp' } });
     respUsr      = (json.respuesta_a_usuario   || '').toString();
     respRem      = (json.respuesta_a_remitente || '').toString();
     // Compat: si solo viene `respuesta` legacy, en WA se trata como
