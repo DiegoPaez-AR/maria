@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                 cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ----------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3052  2026-05-10 21:06:45  sistema   interno                                                    acción ejecutada: responder_email                                                                                                                                                                       
+
+3051  2026-05-10 21:06:45  gmail     saliente                                                   Hola Diego,                                                                                                                                                                                             
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Recibí el mail, pero el adjunto tampoco lo estoy procesando desde acá — igual que con WhatsApp, el sistema lee el cuerpo del mail pero no los archivos adjuntos todavía.                                
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Como alternativa,                                                                                                                                                                                       
+
 3050  2026-05-10 21:05:15  whatsapp  saliente   34342575317160@lid                              Perfecto, en cuanto llegue lo proceso.                                                                                                                                                                  
 
 3049  2026-05-10 21:05:10  gmail     entrante   Diego Paez <diego@paez.is>                      Va                                                                                                                                                                                                      
@@ -266,7 +274,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 2954  2026-05-09 00:36:07  whatsapp  entrante   34342575317160@lid                              Otro feature para agregar la maría, agregámoslo como tarea también es agenda de cumpleaños.                                                                                                             
 
 2953  2026-05-09 00:25:28  sistema   interno                                                    acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-2952  2026-05-09 00:25:28  whatsapp  saliente   34342575317160@lid                              Anotada — tenés pendiente agregarle una agenda pública a María.                                                                                                                                         
-
-2951  2026-05-09 00:25:14  whatsapp  entrante   34342575317160@lid                              Abrega una nueva tarea para María, o sea, para mí, pero que le tengo que agregar a María una agenda pública.                                                                                            
