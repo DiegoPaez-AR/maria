@@ -1,0 +1,154 @@
+# ejecutado: 2026-05-10T17:50:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "=== pm2 status maria-paez ==="
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   ps=json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name')!='maria-paez': continue
+#       e=p.get('pm2_env',{})
+#       print('status', e.get('status'), 'restarts', e.get('restart_time'), 'uptime_ms', e.get('pm_uptime'))"
+#   echo
+#   echo "=== logs últimas 60 ==="
+#   pm2 logs maria-paez --lines 80 --nostream --raw 2>&1 | tail -60
+#   echo
+#   echo "=== sqlite: estructura de contactos ==="
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   python3 << 'PY'
+#   import sqlite3
+#   db = sqlite3.connect('/root/secretaria/state/maria-paez/db/maria.sqlite')
+#   print('TABLE INFO:')
+#   for r in db.execute("PRAGMA table_info(contactos)").fetchall(): print(' ', r)
+#   print('INDEXES:')
+#   for r in db.execute("PRAGMA index_list(contactos)").fetchall(): print(' ', r)
+#   print('COUNT por visibilidad:')
+#   for r in db.execute("SELECT visibilidad, COUNT(*) FROM contactos GROUP BY visibilidad").fetchall(): print(' ', r)
+#   print('TOTAL:', db.execute("SELECT COUNT(*) FROM contactos").fetchone()[0])
+#   print('SAMPLE 5:')
+#   for r in db.execute("SELECT id, usuario_id, nombre, visibilidad, cumple FROM contactos ORDER BY id LIMIT 5").fetchall(): print(' ', r)
+#   print('CON CUMPLE:')
+#   for r in db.execute("SELECT id, nombre, cumple, visibilidad FROM contactos WHERE cumple IS NOT NULL").fetchall(): print(' ', r)
+#   PY
+#   echo
+#   echo "=== smoke test funciones nuevas via node ==="
+#   cd /root/secretaria
+#   node -e "
+#   const m = require('./memory');
+#   console.log('contactosPublicos:', typeof m.contactosPublicos, '=', m.contactosPublicos().length);
+#   console.log('contactosPrivados:', typeof m.contactosPrivados, '=', m.contactosPrivados(1).length);
+#   console.log('cumpleañerosDelDia:', typeof m.cumpleañerosDelDia);
+#   console.log('cambiarVisibilidadContacto:', typeof m.cambiarVisibilidadContacto);
+#   console.log('setCumpleContacto:', typeof m.setCumpleContacto);
+#   console.log('upsertContacto firma OK?:', m.upsertContacto.toString().includes('visibilidad'));
+#   " 2>&1 | tail -20
+
+# ───── output ─────
+=== pm2 status maria-paez ===
+status online restarts 6 uptime_ms 1778446202332
+
+=== logs últimas 60 ===
+2026-05-10 11:24:10: ▸ arrancando meeting-prep (cada 5min)
+2026-05-10 11:24:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+2026-05-10 11:24:10: ▸ arrancando calendar-watch (cada 8h)
+2026-05-10 11:24:10: [calendar-watch] activo, cada 8.0h
+2026-05-10 15:49:48: [WA ←] Diego (34342575317160@lid): Dale.
+2026-05-10 15:49:48: Victorino de la Plaza 74, san martin..
+2026-05-10 15:50:06: [WA ←] Diego (34342575317160@lid) [2 msgs agrupados]: agendame una reunion el lunes a las 10 aca
+2026-05-10 15:50:06: con Pablo San Martin
+2026-05-10 15:50:16: [WA ←] Diego (34342575317160@lid): perdon, Pablo Santa Cruz
+2026-05-10 15:50:26: [WA →usr] Diego (34342575317160@lid): ¿Para qué es esa dirección? ¿La agrego a algún evento o la guardo para algún contacto?
+2026-05-10 15:50:53: [WA →usr] Diego (34342575317160@lid): Perfecto, Pablo Santa Cruz. Antes de agendarlo, dos cosas:
+2026-05-10 15:50:53: 
+2026-05-10 15:50:53: 1️⃣ *Duración* — ya tenés *Seguimiento comercial* a las 10:45, así que si la reunión dura más de 45 
+2026-05-10 15:51:00: [WA →usr] Diego (34342575317160@lid): ¿Cuánto tiempo le das? Pregunto porque a las 10:45 tenés Seguimiento comercial — si la reunión es de una hora se pisan.
+2026-05-10 15:51:00: 
+2026-05-10 15:51:00: También necesito el mail de Pablo San M
+2026-05-10 16:19:11: [WA ←] Diego (34342575317160@lid) [2 msgs agrupados]: dale 2 horas
+2026-05-10 16:19:11: y anotalo solo en mi libreta
+2026-05-10 16:19:22: [WA ←] Diego (34342575317160@lid): *agenda
+2026-05-10 16:19:52: [WA →usr] Diego (34342575317160@lid): Listo. Te lo agendo el lunes de 10:00 a 12:00 en Victorino de la Plaza 74, San Martín — se va a pisar con el Seguimiento comercial de las 10:45, pero lo creo ig
+2026-05-10 16:19:53: [WA acciones/Diego] 2/2 ejecutadas
+2026-05-10 16:20:03: [WA →usr] Diego (34342575317160@lid): Va — reunión con Pablo Santa Cruz el lunes a las 10 en Victorino de la Plaza 74, San Martín, hasta las 12. Queda pisando el Seguimiento comercial de las 10:45, 
+2026-05-10 16:20:04: [WA acciones/Diego] 2/2 ejecutadas
+2026-05-10 16:24:10: [recordatorios/Diego/tarea] ping → 34342575317160@lid (11)
+2026-05-10 16:33:05: [WA ←] Diego (34342575317160@lid): La 7 cerrala
+2026-05-10 16:33:21: [WA →usr] Diego (34342575317160@lid): Listo, cerré «Pagar a Ani».
+2026-05-10 16:33:21: [WA acciones/Diego] 1/1 ejecutadas
+2026-05-10 16:44:11: [GMAIL poll] 1 email(s) nuevo(s)
+2026-05-10 16:44:11: [GMAIL ←] Hernan Arcidiacono <harcidiacono@iplan.com.ar> | "Declined: Reunión con Hernán Arcidiacono — Permisos nueva secretaria @ Mon May 11, 2026 10am - 11am (GMT-3) (maria.paez.secre@gmail.com)"
+2026-05-10 16:44:11: [unknown-flow/gmail] match en contactos: harcidiacono@iplan.com.ar = "Hernán Arcidiacono" de Natali Funez (id=3)
+2026-05-10 16:44:30: [GMAIL acciones/Natali Funez] 1/1 ejecutadas
+2026-05-10 17:09:41: [WA ←] Natali Funez (232637088149596@lid): No está bien gracias
+2026-05-10 17:14:02: 
+2026-05-10 17:14:02: ▸ SIGINT recibido, cerrando…
+2026-05-10 17:14:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-10 17:14:05: ▸ Maria Paez [maria-paez] iniciando…
+2026-05-10 17:14:05:   Owner:      Diego (id=1)
+2026-05-10 17:14:05:   Usuarios:   5 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone
+2026-05-10 17:14:05:   Gmail poll: cada 300s
+2026-05-10 17:14:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-10 17:14:05: ✓ whisper OK
+2026-05-10 17:14:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+2026-05-10 17:14:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+2026-05-10 17:14:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+2026-05-10 17:14:09: [WA loading] 100% - WhatsApp
+2026-05-10 17:14:09: [WA authenticated]
+2026-05-10 17:14:09: ✅ [WA ready] Maria conectada
+2026-05-10 17:14:09: ▸ arrancando poll de Gmail (cada 300s)
+2026-05-10 17:14:09: ▸ arrancando loop de recordatorios (cada 30min)
+2026-05-10 17:14:09: ▸ arrancando dispatcher de programados (cada 60s)
+2026-05-10 17:14:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+2026-05-10 17:14:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+2026-05-10 17:14:09: ▸ arrancando meeting-prep (cada 5min)
+2026-05-10 17:14:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+2026-05-10 17:14:09: ▸ arrancando calendar-watch (cada 8h)
+2026-05-10 17:14:09: [calendar-watch] activo, cada 8.0h
+2026-05-10 17:50:02: 
+2026-05-10 17:50:02: ▸ SIGINT recibido, cerrando…
+2026-05-10 17:50:02: [memory] migración: contactos v3 (visibilidad + cumple, índices parciales)
+
+
+=== sqlite: estructura de contactos ===
+TABLE INFO:
+  (0, 'id', 'INTEGER', 0, None, 1)
+  (1, 'usuario_id', 'INTEGER', 1, None, 0)
+  (2, 'nombre', 'TEXT', 1, None, 0)
+  (3, 'whatsapp', 'TEXT', 0, None, 0)
+  (4, 'email', 'TEXT', 0, None, 0)
+  (5, 'notas', 'TEXT', 0, None, 0)
+  (6, 'visibilidad', 'TEXT', 1, "'privada'", 0)
+  (7, 'cumple', 'TEXT', 0, None, 0)
+  (8, 'creado', 'DATETIME', 0, 'CURRENT_TIMESTAMP', 0)
+  (9, 'actualizado', 'DATETIME', 0, 'CURRENT_TIMESTAMP', 0)
+INDEXES:
+  (0, 'uniq_contactos_pub', 1, 'c', 1)
+  (1, 'uniq_contactos_priv', 1, 'c', 1)
+  (2, 'idx_contactos_visibilidad', 0, 'c', 0)
+  (3, 'idx_contactos_usuario', 0, 'c', 0)
+  (4, 'idx_contactos_email', 0, 'c', 0)
+  (5, 'idx_contactos_whatsapp', 0, 'c', 0)
+COUNT por visibilidad:
+  ('privada', 59)
+TOTAL: 59
+SAMPLE 5:
+  (16, 1, 'Manuel Paez', 'privada', None)
+  (17, 1, 'Paloma Paez', 'privada', None)
+  (18, 1, 'Santiago Paez', 'privada', None)
+  (22, 1, 'Caseros Restaurante', 'privada', None)
+  (23, 1, 'La Parolaccia Palermo', 'privada', None)
+CON CUMPLE:
+
+=== smoke test funciones nuevas via node ===
+[memory] migración: contactos v3 (visibilidad + cumple, índices parciales)
+contactosPublicos: function = 0
+contactosPrivados: function = 0
+cumpleañerosDelDia: function
+cambiarVisibilidadContacto: function
+setCumpleContacto: function
+upsertContacto firma OK?: true
+
+# exit=0
