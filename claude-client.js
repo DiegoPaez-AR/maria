@@ -7,10 +7,22 @@ const { spawn } = require('child_process');
 
 const CLAUDE_BIN = process.env.CLAUDE_BIN || 'claude';
 
-// Herramientas de Claude permitidas. Por default dejamos las web para que
-// Maria pueda buscar info (teléfonos de restaurantes, direcciones, horarios).
-// Si querés sumar más o restar, seteá CLAUDE_ALLOWED_TOOLS="WebSearch,WebFetch".
-const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch,Read,mcp__playwright')
+// Herramientas de Claude permitidas. Por default solo dejamos lo que Maria
+// efectivamente necesita: web (info externa) + Read (visión multimodal de
+// adjuntos en /tmp/maria-attach-*).
+//
+// IMPORTANTE: NO incluimos Bash/Edit/Write/NotebookEdit en allowed por
+// default — son los que permitirían exfiltrar datos del VPS o modificar
+// el propio código. Si te hace falta sumar (ej. mcp__playwright para sitios
+// JS-only), hacelo explícito con CLAUDE_ALLOWED_TOOLS.
+const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch,Read')
+  .split(',').map(s => s.trim()).filter(Boolean);
+
+// Disallowlist explícita como cinturón de seguridad (defense in depth).
+// Aunque ALLOWED_TOOLS ya no las incluya, las negamos por nombre por si
+// Claude Code interpreta allowedTools de forma laxa o si una versión futura
+// suma tools nuevas con permisos amplios.
+const DISALLOWED_TOOLS = (process.env.CLAUDE_DISALLOWED_TOOLS ?? 'Bash,Edit,Write,NotebookEdit,KillShell,BashOutput,SlashCommand,Task')
   .split(',').map(s => s.trim()).filter(Boolean);
 
 /**
@@ -19,11 +31,12 @@ const ALLOWED_TOOLS = (process.env.CLAUDE_ALLOWED_TOOLS ?? 'WebSearch,WebFetch,R
 function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [] } = {}) {
   return new Promise((resolve, reject) => {
     const args = ['-p'];
-    if (ALLOWED_TOOLS.length) {
-      // Claude Code acepta `--allowedTools "A B"` o `--allowedTools A --allowedTools B`.
-      // Usamos la forma plural separada por espacios para robustez.
-      args.push('--allowedTools', ALLOWED_TOOLS.join(' '));
-    }
+    // --allowedTools/--disallowedTools en formato repeated (un flag por tool).
+    // Es la forma más segura: la sintaxis "A B" en una sola string puede ser
+    // interpretada como un único nombre de tool y dejar TODAS las demás
+    // implícitamente disponibles.
+    for (const t of ALLOWED_TOOLS) args.push('--allowedTools', t);
+    for (const t of DISALLOWED_TOOLS) args.push('--disallowedTools', t);
     // MCP config: si existe el archivo (default ./mcp-config.json), lo cargamos.
     // Da acceso a Playwright MCP para navegación web interactiva (formularios,
     // sitios JS-only, paneles privados). El server se levanta lazy — solo
