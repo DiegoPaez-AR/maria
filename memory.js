@@ -206,8 +206,15 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_pendientes_usuario  ON pendientes(usuario_id, estado, creado);
 `);
 
-// `contactos` necesita recreate: el UNIQUE sobre `nombre` pasa a ser por usuario.
+// `contactos` evoluciona en dos pasos:
+//   v1: schema legacy global (sin usuario_id) o con UNIQUE table-constraint.
+//   v2: por usuario, UNIQUE(usuario_id, nombre).
+//   v3: + visibilidad ('privada'|'publica') + cumple. UNIQUE pasa a índices
+//       parciales: privados (usuario_id, nombre); públicos (nombre).
+//       Permite que dos usuarios tengan "Juan" privado distinto y a la vez
+//       exista un único "Juan" público compartido.
 function _migrarContactos() {
+  // v3 desde cero (tabla nueva).
   if (!_tablaExiste('contactos')) {
     db.exec(`
       CREATE TABLE contactos (
@@ -217,20 +224,26 @@ function _migrarContactos() {
         whatsapp    TEXT,
         email       TEXT,
         notas       TEXT,
+        visibilidad TEXT NOT NULL DEFAULT 'privada' CHECK (visibilidad IN ('privada','publica')),
+        cumple      TEXT,
         creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
-        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(usuario_id, nombre)
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
       );
-      CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp ON contactos(whatsapp);
-      CREATE INDEX IF NOT EXISTS idx_contactos_email    ON contactos(email);
-      CREATE INDEX IF NOT EXISTS idx_contactos_usuario  ON contactos(usuario_id, nombre);
+      CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp    ON contactos(whatsapp);
+      CREATE INDEX IF NOT EXISTS idx_contactos_email       ON contactos(email);
+      CREATE INDEX IF NOT EXISTS idx_contactos_usuario     ON contactos(usuario_id, nombre);
+      CREATE INDEX IF NOT EXISTS idx_contactos_visibilidad ON contactos(visibilidad, nombre);
+      CREATE UNIQUE INDEX IF NOT EXISTS uniq_contactos_priv ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada';
+      CREATE UNIQUE INDEX IF NOT EXISTS uniq_contactos_pub  ON contactos(nombre)             WHERE visibilidad = 'publica';
     `);
     return;
   }
-  // Ya tiene usuario_id y uniqueness compuesto? Si no, recreate.
   const cols = db.prepare(`PRAGMA table_info(contactos)`).all();
-  const tieneUsuario = cols.some(c => c.name === 'usuario_id');
-  // Detectar uniqueness compuesto inspeccionando los índices.
+  const tieneUsuario     = cols.some(c => c.name === 'usuario_id');
+  const tieneVisibilidad = cols.some(c => c.name === 'visibilidad');
+  const tieneCumple      = cols.some(c => c.name === 'cumple');
+
+  // Detectar uniqueness compuesto inspeccionando los índices (v2 ya lo tiene).
   const idx = db.prepare(`PRAGMA index_list(contactos)`).all();
   let tieneUniqueCompuesto = false;
   for (const i of idx) {
@@ -241,8 +254,20 @@ function _migrarContactos() {
       break;
     }
   }
-  if (tieneUsuario && tieneUniqueCompuesto) return;
 
+  // Caso A: ya está en v3 (visibilidad + cumple + sin UNIQUE table-constraint).
+  // Detectamos el UNIQUE table-constraint mirando si los índices únicos son
+  // parciales (v3) o no (v2). Más simple: si tiene visibilidad y cumple,
+  // asumimos v3 (la migración es idempotente y crearía los índices que falten).
+  if (tieneUsuario && tieneVisibilidad && tieneCumple) {
+    // Asegurar índices nuevos por si la tabla ya existía pero alguno faltaba.
+    db.exec(`CREATE INDEX        IF NOT EXISTS idx_contactos_visibilidad ON contactos(visibilidad, nombre);`);
+    db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS uniq_contactos_priv       ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada';`);
+    db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS uniq_contactos_pub        ON contactos(nombre)             WHERE visibilidad = 'publica';`);
+    return;
+  }
+
+  // Caso B: hay que recrear (v1 → v3 o v2 → v3).
   db.exec('BEGIN');
   try {
     db.exec(`
@@ -253,26 +278,33 @@ function _migrarContactos() {
         whatsapp    TEXT,
         email       TEXT,
         notas       TEXT,
+        visibilidad TEXT NOT NULL DEFAULT 'privada' CHECK (visibilidad IN ('privada','publica')),
+        cumple      TEXT,
         creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
-        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP,
-        UNIQUE(usuario_id, nombre)
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
-    // Copiar datos: si existe columna usuario_id la usamos; si no, todo al owner.
+    // Copiar datos: si existe usuario_id la usamos; si no, todo al owner.
+    // visibilidad arranca en 'privada' por default (decisión de Diego: lo
+    // existente es todo privado). cumple se copia si la columna ya existía.
+    const selectCumple = tieneCumple ? 'cumple' : 'NULL AS cumple';
     if (tieneUsuario) {
-      db.exec(`INSERT INTO contactos_new (id, usuario_id, nombre, whatsapp, email, notas, creado, actualizado)
-               SELECT id, COALESCE(usuario_id, ${OWNER_ID}), nombre, whatsapp, email, notas, creado, actualizado FROM contactos`);
+      db.exec(`INSERT INTO contactos_new (id, usuario_id, nombre, whatsapp, email, notas, cumple, creado, actualizado)
+               SELECT id, COALESCE(usuario_id, ${OWNER_ID}), nombre, whatsapp, email, notas, ${selectCumple}, creado, actualizado FROM contactos`);
     } else {
-      db.exec(`INSERT INTO contactos_new (id, usuario_id, nombre, whatsapp, email, notas, creado, actualizado)
-               SELECT id, ${OWNER_ID}, nombre, whatsapp, email, notas, creado, actualizado FROM contactos`);
+      db.exec(`INSERT INTO contactos_new (id, usuario_id, nombre, whatsapp, email, notas, cumple, creado, actualizado)
+               SELECT id, ${OWNER_ID}, nombre, whatsapp, email, notas, ${selectCumple}, creado, actualizado FROM contactos`);
     }
     db.exec('DROP TABLE contactos');
     db.exec('ALTER TABLE contactos_new RENAME TO contactos');
-    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp ON contactos(whatsapp)`);
-    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_email    ON contactos(email)`);
-    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_usuario  ON contactos(usuario_id, nombre)`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_whatsapp    ON contactos(whatsapp)`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_email       ON contactos(email)`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_usuario     ON contactos(usuario_id, nombre)`);
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_visibilidad ON contactos(visibilidad, nombre)`);
+    db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS uniq_contactos_priv ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada'`);
+    db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS uniq_contactos_pub  ON contactos(nombre)             WHERE visibilidad = 'publica'`);
     db.exec('COMMIT');
-    console.log('[memory] migración: contactos recreado con (usuario_id, nombre) UNIQUE');
+    console.log('[memory] migración: contactos v3 (visibilidad + cumple, índices parciales)');
   } catch (err) {
     db.exec('ROLLBACK');
     throw err;
@@ -669,47 +701,181 @@ try {
 
 // ─── Contactos ────────────────────────────────────────────────────────────
 
-const insertContacto = db.prepare(`
-  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas)
-  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas)
-  ON CONFLICT(usuario_id, nombre) DO UPDATE SET
+// upsert distinto por visibilidad: el ON CONFLICT debe matchear el índice
+// parcial correcto, así que tenemos dos statements paralelos.
+const insertContactoPriv = db.prepare(`
+  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple)
+  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'privada', @cumple)
+  ON CONFLICT(usuario_id, nombre) WHERE visibilidad = 'privada' DO UPDATE SET
     whatsapp = COALESCE(excluded.whatsapp, contactos.whatsapp),
     email    = COALESCE(excluded.email,    contactos.email),
     notas    = COALESCE(excluded.notas,    contactos.notas),
+    cumple   = COALESCE(excluded.cumple,   contactos.cumple),
     actualizado = CURRENT_TIMESTAMP
 `);
-const qContactoPorNombre   = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND nombre = ? COLLATE NOCASE`);
-const qContactoPorWhatsapp = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND whatsapp = ?`);
-const qContactoPorEmail    = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND email = ? COLLATE NOCASE`);
-const qContactosTodos      = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? ORDER BY nombre COLLATE NOCASE`);
+const insertContactoPub = db.prepare(`
+  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple)
+  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'publica', @cumple)
+  ON CONFLICT(nombre) WHERE visibilidad = 'publica' DO UPDATE SET
+    whatsapp = COALESCE(excluded.whatsapp, contactos.whatsapp),
+    email    = COALESCE(excluded.email,    contactos.email),
+    notas    = COALESCE(excluded.notas,    contactos.notas),
+    cumple   = COALESCE(excluded.cumple,   contactos.cumple),
+    actualizado = CURRENT_TIMESTAMP
+`);
 
-function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null }) {
+const qContactoPorNombrePriv   = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND nombre = ? COLLATE NOCASE AND visibilidad = 'privada'`);
+const qContactoPorNombrePub    = db.prepare(`SELECT * FROM contactos WHERE                 nombre = ? COLLATE NOCASE AND visibilidad = 'publica'`);
+const qContactoPorWhatsappPriv = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND whatsapp = ?       AND visibilidad = 'privada'`);
+const qContactoPorWhatsappPub  = db.prepare(`SELECT * FROM contactos WHERE                 whatsapp = ?       AND visibilidad = 'publica'`);
+const qContactoPorEmailPriv    = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND email = ? COLLATE NOCASE AND visibilidad = 'privada'`);
+const qContactoPorEmailPub     = db.prepare(`SELECT * FROM contactos WHERE                 email = ? COLLATE NOCASE AND visibilidad = 'publica'`);
+const qContactosPriv           = db.prepare(`SELECT * FROM contactos WHERE usuario_id = ? AND visibilidad = 'privada' ORDER BY nombre COLLATE NOCASE`);
+const qContactosPub            = db.prepare(`SELECT * FROM contactos WHERE                 visibilidad = 'publica' ORDER BY nombre COLLATE NOCASE`);
+const qContactoPorIdYUsuario   = db.prepare(`SELECT * FROM contactos WHERE id = ? AND (visibilidad = 'publica' OR usuario_id = ?)`);
+const qContactoPorId           = db.prepare(`SELECT * FROM contactos WHERE id = ?`);
+const updVisibilidad           = db.prepare(`UPDATE contactos SET visibilidad = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
+const updCumple                = db.prepare(`UPDATE contactos SET cumple = ?,      actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
+
+function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null, visibilidad = 'privada', cumple = null }) {
   if (!usuarioId) throw new Error('upsertContacto: usuarioId requerido');
   if (!nombre) throw new Error('upsertContacto: nombre requerido');
-  // Sanitizer: el @lid es un identificador rotativo de WA, no es estable —
-  // descartamos para que la columna `whatsapp` solo guarde @c.us o número
-  // limpio. Sin sanitizer, los auto-agregados quedan inservibles cuando WA
-  // rota el lid. Si solo viene @lid, dejamos null y se va a poblar la próxima
-  // vez que esa persona escriba (el handler resuelve el @c.us via getContact).
+  if (visibilidad !== 'privada' && visibilidad !== 'publica') {
+    throw new Error(`upsertContacto: visibilidad inválida "${visibilidad}" (esperado: privada|publica)`);
+  }
+  // Sanitizer: el @lid es un identificador rotativo de WA, no es estable.
   if (whatsapp && typeof whatsapp === 'string' && whatsapp.endsWith('@lid')) {
     console.warn(`[upsertContacto] descarto whatsapp=@lid para "${nombre}" (no es estable)`);
     whatsapp = null;
   }
-  insertContacto.run({ usuario_id: usuarioId, nombre, whatsapp, email, notas });
-  return qContactoPorNombre.get(usuarioId, nombre);
+  const params = { usuario_id: usuarioId, nombre, whatsapp, email, notas, cumple };
+  if (visibilidad === 'privada') {
+    insertContactoPriv.run(params);
+    return qContactoPorNombrePriv.get(usuarioId, nombre);
+  } else {
+    insertContactoPub.run(params);
+    return qContactoPorNombrePub.get(nombre);
+  }
 }
 
-function buscarContacto({ usuarioId, nombre, whatsapp, email } = {}) {
+// Búsqueda canónica para un usuario: privada primero, después pública.
+// Si pasás { incluirPublica: false } solo busca en privada del usuario.
+function buscarContacto({ usuarioId, nombre, whatsapp, email, incluirPublica = true } = {}) {
   if (!usuarioId) throw new Error('buscarContacto: usuarioId requerido');
-  if (nombre)   return qContactoPorNombre.get(usuarioId, nombre)   || null;
-  if (whatsapp) return qContactoPorWhatsapp.get(usuarioId, whatsapp) || null;
-  if (email)    return qContactoPorEmail.get(usuarioId, email)    || null;
-  return null;
+  let priv = null, pub = null;
+  if (nombre) {
+    priv = qContactoPorNombrePriv.get(usuarioId, nombre);
+    if (incluirPublica) pub = qContactoPorNombrePub.get(nombre);
+  } else if (whatsapp) {
+    priv = qContactoPorWhatsappPriv.get(usuarioId, whatsapp);
+    if (incluirPublica) pub = qContactoPorWhatsappPub.get(whatsapp);
+  } else if (email) {
+    priv = qContactoPorEmailPriv.get(usuarioId, email);
+    if (incluirPublica) pub = qContactoPorEmailPub.get(email);
+  }
+  return priv || pub || null; // privada gana
 }
 
+// Lista TODO lo visible para un usuario: sus privados + públicos de cualquiera.
 function todosLosContactos(usuarioId) {
   if (!usuarioId) throw new Error('todosLosContactos: usuarioId requerido');
-  return qContactosTodos.all(usuarioId);
+  const priv = qContactosPriv.all(usuarioId);
+  const pub  = qContactosPub.all();
+  return [...priv, ...pub];
+}
+
+// Splits separados (útil para el prompt-builder y para listarlos al usuario).
+function contactosPrivados(usuarioId) {
+  if (!usuarioId) throw new Error('contactosPrivados: usuarioId requerido');
+  return qContactosPriv.all(usuarioId);
+}
+function contactosPublicos() {
+  return qContactosPub.all();
+}
+
+// Cambiar visibilidad de un contacto. Acepta el id del contacto o un criterio
+// de búsqueda dentro de lo visible para el usuario. Cualquier usuario activo
+// puede flippear (decisión de diseño confirmada). Si el contacto era privado
+// de otro usuario, NO lo flippeamos a su privado nuestro — solo flippeamos
+// privados propios o públicos.
+function cambiarVisibilidadContacto({ usuarioId, contactoId, nombre, whatsapp, email, visibilidad }) {
+  if (!usuarioId) throw new Error('cambiarVisibilidad: usuarioId requerido');
+  if (visibilidad !== 'privada' && visibilidad !== 'publica') {
+    throw new Error(`cambiarVisibilidad: visibilidad inválida "${visibilidad}"`);
+  }
+  let c = null;
+  if (contactoId) {
+    c = qContactoPorIdYUsuario.get(contactoId, usuarioId);
+  } else {
+    c = buscarContacto({ usuarioId, nombre, whatsapp, email });
+  }
+  if (!c) return null;
+  // Solo permitir flippear si es privado nuestro o público de cualquiera.
+  if (c.visibilidad === 'privada' && c.usuario_id !== usuarioId) {
+    throw new Error(`cambiarVisibilidad: el contacto "${c.nombre}" es privado de otro usuario; no podés modificarlo`);
+  }
+  if (c.visibilidad === visibilidad) return c; // no-op
+  // Si flippeamos a público, hay que verificar que no exista ya un público
+  // con ese nombre (el índice único parcial lo va a impedir igual, pero
+  // damos un error más claro).
+  if (visibilidad === 'publica') {
+    const yaExiste = qContactoPorNombrePub.get(c.nombre);
+    if (yaExiste && yaExiste.id !== c.id) {
+      throw new Error(`cambiarVisibilidad: ya existe un contacto público con nombre "${c.nombre}" (id=${yaExiste.id})`);
+    }
+  }
+  updVisibilidad.run(visibilidad, c.id);
+  return qContactoPorId.get(c.id);
+}
+
+// Setea el cumpleaños de un contacto. Si no existe, lo crea privado del usuario
+// solo con (nombre, cumple). Acepta cumple en YYYY-MM-DD o --MM-DD.
+function setCumpleContacto({ usuarioId, contactoId, nombre, whatsapp, email, cumple }) {
+  if (!usuarioId) throw new Error('setCumple: usuarioId requerido');
+  if (!cumple) throw new Error('setCumple: cumple requerido');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(cumple) && !/^--\d{2}-?\d{2}$/.test(cumple)) {
+    throw new Error(`setCumple: formato inválido "${cumple}" (esperado YYYY-MM-DD o --MM-DD)`);
+  }
+  // Normalizar --MMDD → --MM-DD (vCard 4.0 admite ambos).
+  if (/^--\d{4}$/.test(cumple)) cumple = `--${cumple.slice(2,4)}-${cumple.slice(4,6)}`;
+  let c = null;
+  if (contactoId) {
+    c = qContactoPorIdYUsuario.get(contactoId, usuarioId);
+  } else {
+    c = buscarContacto({ usuarioId, nombre, whatsapp, email });
+  }
+  if (!c) {
+    // Crear contacto privado mínimo con el cumple.
+    if (!nombre) throw new Error('setCumple: contacto no existe y no pasaste nombre para crearlo');
+    return upsertContacto({ usuarioId, nombre, whatsapp, email, cumple, visibilidad: 'privada' });
+  }
+  if (c.visibilidad === 'privada' && c.usuario_id !== usuarioId) {
+    throw new Error(`setCumple: el contacto "${c.nombre}" es privado de otro usuario; no podés modificarlo`);
+  }
+  updCumple.run(cumple, c.id);
+  return qContactoPorId.get(c.id);
+}
+
+// Cumpleañeros visibles para un usuario en una fecha (mes, dia 1-12 / 1-31).
+// Matchea cumple YYYY-MM-DD por mes/día y --MM-DD por mes/día.
+const qCumplesPriv = db.prepare(`
+  SELECT * FROM contactos
+  WHERE usuario_id = ? AND cumple IS NOT NULL AND visibilidad = 'privada'
+    AND (substr(cumple, -5) = ? OR substr(cumple, -5) = ?)
+`);
+const qCumplesPub = db.prepare(`
+  SELECT * FROM contactos
+  WHERE cumple IS NOT NULL AND visibilidad = 'publica'
+    AND (substr(cumple, -5) = ? OR substr(cumple, -5) = ?)
+`);
+function cumpleañerosDelDia({ usuarioId, mes, dia }) {
+  if (!usuarioId) throw new Error('cumpleañerosDelDia: usuarioId requerido');
+  const mm = String(mes).padStart(2, '0');
+  const dd = String(dia).padStart(2, '0');
+  const key = `${mm}-${dd}`; // matchea "2025-03-15".slice(-5) y "--03-15".slice(-5)
+  const priv = qCumplesPriv.all(usuarioId, key, key);
+  const pub  = qCumplesPub.all(key, key);
+  return [...priv, ...pub];
 }
 
 // Lookup cross-usuario: dado un whatsapp / email / nombre, devuelve TODOS los
@@ -902,6 +1068,11 @@ module.exports = {
   buscarContacto,
   buscarContactoCrossUsuario,
   todosLosContactos,
+  contactosPrivados,
+  contactosPublicos,
+  cambiarVisibilidadContacto,
+  setCumpleContacto,
+  cumpleañerosDelDia,
   importarDesdeContactosJson,
   // programados
   programarMensaje,

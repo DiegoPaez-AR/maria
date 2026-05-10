@@ -58,18 +58,44 @@ async function _agendaHoy(usuario) {
 }
 
 async function _cumplesHoy(usuario) {
-  // listarCumples usa su propio calendarId (contactos compartidos). Si no
-  // está configurado, devolvemos null silenciosamente.
+  const hoy = horaMinEnTz(usuario.tz);
+  const items = [];
+
+  // 1) Cumples desde Google Calendar (si el calendario está configurado).
   try {
-    const hoy = horaMinEnTz(usuario.tz);
     const lista = await g.listarCumples({ dias: 2 });
-    const items = lista.filter(e => (e.start || '').startsWith(hoy.yyyymmdd));
-    if (!items.length) return null;
-    return items.map(e => `🎂 ${e.summary}`).join('\n');
+    for (const e of lista) {
+      if ((e.start || '').startsWith(hoy.yyyymmdd)) items.push(`🎂 ${e.summary}`);
+    }
   } catch (err) {
-    console.warn(`[morning-brief/${usuario.nombre}] cumples falló:`, err.message);
-    return null;
+    console.warn(`[morning-brief/${usuario.nombre}] cumples Google falló:`, err.message);
   }
+
+  // 2) Cumples desde la libreta de Maria (privados del usuario + públicos).
+  //    Esto es independiente del calendar de Google: aunque Google no esté
+  //    configurado, los cumples que cargó alguien por vCard o comando van.
+  try {
+    const cs = mem.cumpleañerosDelDia({ usuarioId: usuario.id, mes: hoy.mes, dia: hoy.dia });
+    for (const c of cs) {
+      const visTag = c.visibilidad === 'publica' ? ' (compartido)' : '';
+      items.push(`🎂 ${c.nombre}${visTag}`);
+    }
+  } catch (err) {
+    console.warn(`[morning-brief/${usuario.nombre}] cumples libreta falló:`, err.message);
+  }
+
+  if (!items.length) return null;
+  // Deduplicar por nombre case-insensitive (puede pasar que Google y libreta
+  // tengan el mismo Juan).
+  const vistos = new Set();
+  const dedup = [];
+  for (const it of items) {
+    const k = it.toLowerCase();
+    if (vistos.has(k)) continue;
+    vistos.add(k);
+    dedup.push(it);
+  }
+  return dedup.join('\n');
 }
 
 function _pendientesLista(usuario) {

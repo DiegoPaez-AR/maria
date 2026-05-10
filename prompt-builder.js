@@ -109,16 +109,63 @@ function seccionPendientes(usuario, { tipo = null } = {}) {
   }).join('\n');
 }
 
+function _formatearContacto(c) {
+  const campos = [c.nombre];
+  if (c.whatsapp) campos.push(`WA: ${c.whatsapp}`);
+  if (c.email)    campos.push(`email: ${c.email}`);
+  if (c.cumple)   campos.push(`cumple: ${c.cumple}`);
+  if (c.notas)    campos.push(`(${c.notas})`);
+  return '- ' + campos.join(' | ');
+}
+
 function seccionLibreta(usuario) {
-  const todos = mem.todosLosContactos(usuario.id);
-  if (!todos.length) return '(libreta vacía)';
-  return todos.map(c => {
-    const campos = [c.nombre];
-    if (c.whatsapp) campos.push(`WA: ${c.whatsapp}`);
-    if (c.email)    campos.push(`email: ${c.email}`);
-    if (c.notas)    campos.push(`(${c.notas})`);
-    return '- ' + campos.join(' | ');
-  }).join('\n');
+  const priv = mem.contactosPrivados(usuario.id);
+  const pub  = mem.contactosPublicos();
+  const partes = [];
+  partes.push('PRIVADOS (solo vos los ves):');
+  partes.push(priv.length ? priv.map(_formatearContacto).join('\n') : '(vacía)');
+  partes.push('');
+  partes.push('PÚBLICOS (compartidos entre todos los usuarios):');
+  partes.push(pub.length ? pub.map(_formatearContacto).join('\n') : '(vacía)');
+  return partes.join('\n');
+}
+
+// Cumpleaños visibles (privados del usuario + públicos) hoy + próximos 7 días.
+function seccionCumples(usuario) {
+  const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
+  const ahora = new Date();
+  const fechas = [];
+  for (let i = 0; i < 8; i++) {
+    const d = new Date(ahora.getTime() + i * 86400000);
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).formatToParts(d).reduce((a, p) => { a[p.type] = p.value; return a; }, {});
+    fechas.push({
+      label: i === 0 ? 'hoy' : (i === 1 ? 'mañana' : `+${i}d (${parts.day}/${parts.month})`),
+      mes: Number(parts.month), dia: Number(parts.day),
+    });
+  }
+  const lineas = [];
+  for (const f of fechas) {
+    const cs = mem.cumpleañerosDelDia({ usuarioId: usuario.id, mes: f.mes, dia: f.dia });
+    if (!cs.length) continue;
+    for (const c of cs) {
+      const v = c.visibilidad === 'publica' ? ' [pública]' : '';
+      lineas.push(`- ${f.label}: ${c.nombre}${v}`);
+    }
+  }
+  return lineas.length ? lineas.join('\n') : '(no hay cumpleaños en los próximos 7 días)';
+}
+
+// Si el usuario acaba de mandar un vCard hace poco (últimos 10 min), exponemos
+// el contexto para que el LLM sepa qué es "lo" si dice "sí, hacelo público".
+function seccionUltimoVCard(usuario) {
+  const v = mem.getEstadoUsuario(usuario.id, 'ultimo_vcard');
+  if (!v) return null;
+  const edad = Date.now() - (v.ts || 0);
+  if (edad > 10 * 60 * 1000) return null;
+  const min = Math.round(edad / 60000);
+  return `Hace ${min} min ${usuario.nombre} mandó un vCard de "${v.nombre}" (whatsapp ${v.whatsapp || '-'}, cumple ${v.cumple || '-'}). Lo guardé como PRIVADO. Si dice "pública", "sí", "compartilo", etc., emití cambiar_visibilidad_contacto con contactoId=${v.contactoId} y visibilidad=publica.`;
 }
 
 function seccionHechos(usuario) {
@@ -293,6 +340,8 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
   const hechos        = seccionHechos(usuario);
   const programados   = seccionProgramados(usuario, { max: 10 });
   const libreta       = seccionLibreta(usuario);
+  const cumples       = seccionCumples(usuario);
+  const ultimoVCard   = seccionUltimoVCard(usuario);
   const contacto      = seccionContacto(usuario, {
     de: entrada.de,
     nombre: entrada.nombre,
@@ -402,6 +451,12 @@ ${programados}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [LIBRETA DE CONTACTOS DE ${usuario.nombre.toUpperCase()}]
 ${libreta}
+
+[CUMPLEAÑOS PRÓXIMOS]
+${cumples}${ultimoVCard ? `
+
+[CONTEXTO ÚLTIMO VCARD]
+${ultimoVCard}` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [CONTACTO QUE TE ESCRIBE AHORA]
@@ -517,7 +572,10 @@ Mensajes programados:
 - No uses programar_mensaje para el brief matutino ni avisos de reuniones — los maneja el sistema.
 
 Contactos:
-- Si te llega info nueva de un contacto (nombre+tel/email), emití upsert_contacto. Se guarda en la libreta de ${usuario.nombre}.
+- La libreta tiene dos lados: PRIVADA (solo de ${usuario.nombre}) y PÚBLICA (compartida con todos los usuarios). Cuando busques a alguien, primero mirá la privada, después la pública.
+- Si te llega info nueva (nombre+tel/email), emití upsert_contacto. Por default va a la PRIVADA. Si querés que arranque público (raro, solo si el usuario lo pide explícito), pasá visibilidad: "publica".
+- Cambiar visibilidad: cambiar_visibilidad_contacto con (contactoId | nombre | whatsapp | email) y visibilidad: "publica" o "privada". Cualquier usuario puede flippear privados propios y públicos. NO podés tocar privados de otros usuarios.
+- Cumpleaños: si el usuario te dice un cumple ("el cumple de Mariana es el 15 de marzo", "cumplo el 30/7"), emití set_cumple_contacto con cumple en formato YYYY-MM-DD (con año) o --MM-DD (sin año). Si el contacto no existe, lo creo privado mínimo solo con nombre y cumple. Los vCards con BDAY ya guardan el cumple solos.
 
 Devolvé SOLO el JSON, nada más.`;
 }

@@ -58,6 +58,8 @@ async function ejecutarUna(accion, ctx) {
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
     case 'upsert_contacto':    return _upsertContacto(accion, ctx);
+    case 'cambiar_visibilidad_contacto': return _cambiarVisibilidadContacto(accion, ctx);
+    case 'set_cumple_contacto':          return _setCumpleContacto(accion, ctx);
     case 'programar_mensaje':  return _programarMensaje(accion, ctx);
     case 'cancelar_programado':return _cancelarProgramado(accion, ctx);
     case 'recordar_hecho':     return _recordarHecho(accion, ctx);
@@ -426,14 +428,57 @@ function _olvidarHecho(a, ctx) {
 
 function _upsertContacto(a, ctx) {
   _requerir(a, ['nombre']);
+  const visibilidad = a.visibilidad === 'publica' ? 'publica' : 'privada';
   const c = mem.upsertContacto({
     usuarioId: ctx.usuario.id,
     nombre: a.nombre,
     whatsapp: a.whatsapp || null,
     email: a.email || null,
     notas: a.notas || null,
+    visibilidad,
+    cumple: a.cumple || null,
   });
-  return { id: c.id, nombre: c.nombre };
+  return { id: c.id, nombre: c.nombre, visibilidad: c.visibilidad, cumple: c.cumple };
+}
+
+// Cualquier usuario puede flippear visibilidad de un contacto al que tenga
+// acceso (privado propio o público). Si toca un privado de otro usuario
+// memory.js tira error.
+function _cambiarVisibilidadContacto(a, ctx) {
+  if (!a.contactoId && !a.nombre && !a.whatsapp && !a.email) {
+    throw new Error('cambiar_visibilidad_contacto: pasá contactoId o nombre/whatsapp/email');
+  }
+  if (a.visibilidad !== 'privada' && a.visibilidad !== 'publica') {
+    throw new Error(`cambiar_visibilidad_contacto: visibilidad inválida "${a.visibilidad}"`);
+  }
+  const c = mem.cambiarVisibilidadContacto({
+    usuarioId: ctx.usuario.id,
+    contactoId: a.contactoId || null,
+    nombre: a.nombre || null,
+    whatsapp: a.whatsapp || null,
+    email: a.email || null,
+    visibilidad: a.visibilidad,
+  });
+  if (!c) throw new Error('cambiar_visibilidad_contacto: no encontré el contacto');
+  return { id: c.id, nombre: c.nombre, visibilidad: c.visibilidad };
+}
+
+// Setea el cumple de un contacto. Si no existe, lo crea privado mínimo.
+function _setCumpleContacto(a, ctx) {
+  _requerir(a, ['cumple']);
+  if (!a.contactoId && !a.nombre && !a.whatsapp && !a.email) {
+    throw new Error('set_cumple_contacto: pasá contactoId o nombre/whatsapp/email');
+  }
+  const c = mem.setCumpleContacto({
+    usuarioId: ctx.usuario.id,
+    contactoId: a.contactoId || null,
+    nombre: a.nombre || null,
+    whatsapp: a.whatsapp || null,
+    email: a.email || null,
+    cumple: a.cumple,
+  });
+  if (!c) throw new Error('set_cumple_contacto: no encontré ni pude crear el contacto');
+  return { id: c.id, nombre: c.nombre, cumple: c.cumple, visibilidad: c.visibilidad };
 }
 
 // ─── Acciones del owner ──────────────────────────────────────────────────

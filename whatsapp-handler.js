@@ -583,26 +583,81 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
 }
 
 // ─── vCard ─────────────────────────────────────────────────────────────
+//
+// Política de visibilidad: TODO vCard nuevo se guarda PRIVADO por default.
+// Maria responde diciendo qué guardó y deja la puerta abierta para que el
+// usuario diga "ponelo público" — el LLM lo levanta vía la acción
+// cambiar_visibilidad_contacto. Para que el LLM tenga contexto de "qué pasarlo
+// a público" cuando el usuario dice "sí" o "público", guardamos el id del
+// último vcard agregado en estado_usuario.ultimo_vcard.
+
+// Parsea BDAY de un body vCard. Soporta:
+//   BDAY:19850315          → 1985-03-15
+//   BDAY:1985-03-15        → 1985-03-15
+//   BDAY:1985-03-15T00:00Z → 1985-03-15
+//   BDAY:--0315            → --03-15  (vCard 4.0 sin año)
+//   BDAY:--03-15           → --03-15
+// Devuelve string o null.
+function _parsearBDAY(body) {
+  const m = body.match(/^BDAY[^:]*:(.+)$/m);
+  if (!m) return null;
+  const raw = m[1].trim();
+  // Sin año: --MMDD o --MM-DD
+  let mm = raw.match(/^--(\d{2})-?(\d{2})$/);
+  if (mm) return `--${mm[1]}-${mm[2]}`;
+  // Con año: YYYYMMDD o YYYY-MM-DD (con o sin time suffix)
+  mm = raw.match(/^(\d{4})-?(\d{2})-?(\d{2})/);
+  if (mm) return `${mm[1]}-${mm[2]}-${mm[3]}`;
+  return null;
+}
 
 async function _manejarVCard(client, msg, usuario) {
   const nombreMatch = msg.body.match(/FN:(.+)/);
   const telMatch    = msg.body.match(/TEL[^:]*:(.+)/);
   if (!nombreMatch || !telMatch) return;
 
-  const nombre  = nombreMatch[1].trim();
-  const numero  = telMatch[1].trim().replace(/\D/g, '');
+  const nombre = nombreMatch[1].trim();
+  const numero = telMatch[1].trim().replace(/\D/g, '');
   if (!nombre || !numero) return;
   const waId = numero.endsWith('@c.us') ? numero : `${numero}@c.us`;
+  const cumple = _parsearBDAY(msg.body);
 
-  mem.upsertContacto({ usuarioId: usuario.id, nombre, whatsapp: waId });
+  // Default: privado del usuario que mandó el vCard.
+  let contacto;
+  try {
+    contacto = mem.upsertContacto({
+      usuarioId: usuario.id,
+      nombre, whatsapp: waId, cumple,
+      visibilidad: 'privada',
+    });
+  } catch (err) {
+    console.error(`[WA vcard/${usuario.nombre}] error guardando ${nombre}:`, err.message);
+    await client.sendMessage(msg.from, `❌ no pude guardar el contacto de ${nombre}: ${err.message}`);
+    return;
+  }
+
   mem.log({
     usuarioId: usuario.id,
     canal: 'sistema', direccion: 'interno',
-    cuerpo: `contacto vcard: ${nombre} → ${waId}`,
-    metadata: { origen: msg.from },
+    cuerpo: `contacto vcard (privado): ${nombre} → ${waId}${cumple ? ` (cumple ${cumple})` : ''}`,
+    metadata: { origen: msg.from, contactoId: contacto?.id, cumple },
   });
-  console.log(`📒 [WA vcard/${usuario.nombre}] ${nombre} → ${waId}`);
-  await client.sendMessage(msg.from, `📒 Guardé el contacto de ${nombre}.`);
+  console.log(`📒 [WA vcard/${usuario.nombre}] ${nombre} → ${waId}${cumple ? ` cumple=${cumple}` : ''} (privado)`);
+
+  // Persistir contexto para que el LLM sepa qué contacto es "lo" si el
+  // usuario responde "sí, hacelo público" en el próximo mensaje. TTL 10min.
+  mem.setEstadoUsuario(usuario.id, 'ultimo_vcard', {
+    contactoId: contacto?.id,
+    nombre,
+    whatsapp: waId,
+    cumple,
+    ts: Date.now(),
+  });
+
+  let aviso = `📒 Te lo guardé en tu libreta privada: *${nombre}*`;
+  if (cumple) aviso += ` (cumple ${cumple})`;
+  aviso += `.\n¿Lo paso a la libreta pública?`;
+  await client.sendMessage(msg.from, aviso);
 }
 
 module.exports = { crearClienteWA, handleMessage };
