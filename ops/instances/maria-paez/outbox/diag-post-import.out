@@ -1,0 +1,45 @@
+# ejecutado: 2026-05-10T19:39:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   python3 << 'PY'
+#   import sqlite3
+#   db = sqlite3.connect('/root/secretaria/state/maria-paez/db/maria.sqlite')
+#   print("COUNT por usuario_id (privados):")
+#   for r in db.execute("SELECT usuario_id, COUNT(*) FROM contactos WHERE visibilidad='privada' GROUP BY usuario_id").fetchall(): print(' ', r)
+#   print("\nCOUNT públicos:", db.execute("SELECT COUNT(*) FROM contactos WHERE visibilidad='publica'").fetchone()[0])
+#   print("\nTOTAL:", db.execute("SELECT COUNT(*) FROM contactos").fetchone()[0])
+#   print("\nPaez de Diego (id=1):")
+#   for r in db.execute("SELECT id, nombre, whatsapp, email, cumple FROM contactos WHERE usuario_id=1 AND nombre LIKE '%Paez%' ORDER BY nombre").fetchall(): print(' ', r)
+#   print("\nDiego (id=1) primeros 10 cumples del año:")
+#   for r in db.execute("SELECT nombre, cumple FROM contactos WHERE usuario_id=1 AND cumple IS NOT NULL ORDER BY substr(cumple,-5) LIMIT 10").fetchall(): print(' ', r)
+#   print("\n¿Hay duplicados de nombre por usuario en privada? (debería ser 0)")
+#   for r in db.execute("SELECT usuario_id, nombre, COUNT(*) FROM contactos WHERE visibilidad='privada' GROUP BY usuario_id, nombre HAVING COUNT(*)>1").fetchall(): print(' ', r)
+#   PY
+
+# ───── output ─────
+COUNT por usuario_id (privados):
+  (1, 55)
+  (2, 5)
+  (3, 3)
+
+COUNT públicos: 0
+
+TOTAL: 63
+
+Paez de Diego (id=1):
+  (32, 'Diego Paez', '541132317896@c.us', 'diego@paez.is', None)
+  (120, 'Juan Ignacio Paez Maña', '5491163850580@c.us', 'ignacio@paez.net', None)
+  (16, 'Manuel Paez', '5491168295181@c.us', 'manuel@paez.is', None)
+  (74, 'MarIA Paez', '5491179043441@c.us', None, None)
+  (17, 'Paloma Paez', '5491132339295@c.us', 'paloma.paez@gmail.com', None)
+  (106, 'Rodrigo Paez', None, None, None)
+  (108, 'Rodrigo Paez Canosa', '5491157276026@c.us', None, None)
+  (18, 'Santiago Paez', '5491164393520@c.us', 'santiago@paez.is', None)
+
+Diego (id=1) primeros 10 cumples del año:
+
+¿Hay duplicados de nombre por usuario en privada? (debería ser 0)
+
+# exit=0
