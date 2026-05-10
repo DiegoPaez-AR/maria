@@ -62,7 +62,12 @@ fi
 if [ "$CODE_CHANGED" = 1 ]; then
   for inst in "${INSTANCES[@]}"; do
     slug="${inst%%:*}"
-    pm2 restart "$slug" --update-env 2>/dev/null || echo "pm2 restart $slug falló (puede no existir todavía)"
+    # Usamos `reload ecosystem.config.js --only` (no `restart --update-env`)
+    # porque éste último recarga el env del shell del cron, que NO tiene
+    # cargado el .conf de la instancia → falla a fallbacks legacy.
+    pm2 reload ecosystem.config.js --only "$slug" --update-env 2>/dev/null \
+      || pm2 startOrRestart ecosystem.config.js --only "$slug" 2>/dev/null \
+      || echo "pm2 reload $slug falló (puede no existir todavía)"
   done
 fi
 
