@@ -1,5 +1,29 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3193  2026-05-11 12:17:55  whatsapp  entrante   34342575317160@lid   que bueno que se aclaro todo, seguilo directo con el.                                                                                                                                                   
+
+3192  2026-05-11 12:17:52  whatsapp  saliente   52235459367058@lid   ¡Dale, mandame! ¿Qué me faltó?                                                                                                                                                                          
+
+3191  2026-05-11 12:17:52  sistema   interno                         claude_call whatsapp: 18288ms prompt=48585c raw=297c                                                                                                                                                    
+
+3190  2026-05-11 12:17:48  whatsapp  saliente   52235459367058@lid   Sí, ya tengo anotado que Diego no va a estar! Lo que me falta es saber quiénes SÍ van a participar en la reunión — nombres o emails. Y también la duración, ¿una hora está bien?                        
+
+3189  2026-05-11 12:17:48  whatsapp  saliente   34342575317160@lid   Fer respondió de nuevo que Diego no va a estar — creo que malinterpretó la pregunta sobre los invitados. Le aclaro y le pregunto de nuevo quiénes sí van.                                               
+
+3188  2026-05-11 12:17:48  sistema   interno                         claude_call whatsapp: 28431ms prompt=48599c raw=592c                                                                                                                                                    
+
+3187  2026-05-11 12:17:34  whatsapp  entrante   52235459367058@lid   Ah ok me falto pasarte esto                                                                                                                                                                             
+
+3186  2026-05-11 12:17:19  whatsapp  entrante   52235459367058@lid   No participa de esta reunión                                                                                                                                                                            
+
+3185  2026-05-11 12:17:11  whatsapp  saliente   52235459367058@lid   Perfecto, anotado! ¿Y quiénes sí van a estar en la reunión? ¿Y cuánto tiempo le ponemos — una hora?                                                                                                     
+
+3184  2026-05-11 12:17:11  whatsapp  saliente   34342575317160@lid   Fer confirmó que no vas a estar en la reunión de HR & SALES. Es solo de él. Le sigo preguntando por los invitados y duración para armarle la recurrente.                                                
+
+3183  2026-05-11 12:17:11  sistema   interno                         claude_call whatsapp: 16646ms prompt=48961c raw=491c                                                                                                                                                    
+
+3182  2026-05-11 12:17:10  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+
 3181  2026-05-11 12:16:54  whatsapp  entrante   52235459367058@lid   No no, Diego no esta                                                                                                                                                                                    
 
 3180  2026-05-11 12:16:31  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                                                         
@@ -213,49 +237,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3095  2026-05-11 00:01:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
 
 3094  2026-05-10 23:57:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (5 usuarios)                                                                                                        
-
-3093  2026-05-10 23:57:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-3092  2026-05-10 23:55:10  sistema   interno                         claude_call test-capa5: 6576ms prompt=40c raw=5c                                                                                                                                                        
-
-3091  2026-05-10 23:55:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (5 usuarios)                                                                                                        
-
-3090  2026-05-10 23:55:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-3089  2026-05-10 23:43:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (5 usuarios)                                                                                                        
-
-3088  2026-05-10 23:43:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-3087  2026-05-10 22:42:28  whatsapp  saliente   34342575317160@lid   Acá va la lista completa:                                                                                                                                                                               
-                                                                                                                                                                                                                                                                             
-                                                                     *A*                                                                                                                                                                                                     
-                                                                     • Adrián Duek                                                                                                                                                                                           
-                                                                     • Agustina Acevedo                                                                                                                                                                                      
-                                                                     • Alfonso Amat                                                                                                                                                                                          
-                                                                     • Ana Carina                                                                                                                                                                                            
-                                                                     • Ana Gianini                                                                                                                                                                                           
-                                                                     • Ana Vainman                                                                                                                                                                                           
-                                                                     • Andrea Kozameh                                                                                                                                                                                        
-                                                                     • Andres Neumann                                                                                                                                                                                        
-                                                                     • Antonio Peña                                                                                                                                                                                          
-                                                                     • Ariana Fleitas                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                             
-                                                                     *B*                                                                                                                                                                                                     
-                                                                     • Barbara                                                                                                                                                                                               
-
-3086  2026-05-10 22:41:34  whatsapp  entrante   34342575317160@lid   listamelos denuevo, todos los que tengas, mios                                                                                                                                                          
-
-3085  2026-05-10 22:40:19  sistema   interno                         acción FALLÓ: borrar_contacto — Tipo de acción desconocido: borrar_contacto                                                                                                                             
-
-3084  2026-05-10 22:40:19  whatsapp  saliente   34342575317160@lid   Listo, borro a Carlos Canosa.                                                                                                                                                                           
-
-3083  2026-05-10 22:39:57  whatsapp  entrante   34342575317160@lid   borra el de carlos canosa                                                                                                                                                                               
-
-3082  2026-05-10 22:38:58  whatsapp  saliente   34342575317160@lid   Acá va tu libreta completa:                                                                                                                                                                             
-                                                                                                                                                                                                                                                                             
-                                                                     *A*                                                                                                                                                                                                     
-                                                                     Agustina Acevedo — WA: 56715194151079@lid | agustinaacevedo@hotmail.es                                                                                                                                  
-                                                                     Ana Carina — WA: 180444528156752@lid                                                                                                                                                                    
-                                                                                                                                                                                                                                                                             
-                                                                     *C*                                                                                                                                                                                                     
-                                                                     Carina Pubill — WA: 5492616564399@c.us | carinapubill2                                                                                                                                                  
