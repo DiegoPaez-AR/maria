@@ -1,0 +1,109 @@
+# ejecutado: 2026-05-10T21:15:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "=== instalando bubblewrap ==="
+#   apt-get install -y bubblewrap 2>&1 | tail -10
+#   echo
+#   echo "=== bwrap version ==="
+#   bwrap --version 2>&1
+#   echo
+#   echo "=== test 1: bwrap básico ==="
+#   bwrap --ro-bind /usr /usr --ro-bind /lib /lib --ro-bind /lib64 /lib64 --proc /proc --dev /dev --tmpfs /tmp -- bash -c "echo OK; ls /tmp 2>&1; ls /root 2>&1; cat /etc/passwd 2>&1 | head -2" 2>&1
+#   echo
+#   echo "=== test 2: invocar claude bajo bwrap (config mínima esperada para Maria) ==="
+#   echo 'Decime "hola" y nada más, en una palabra.' | bwrap \
+#     --unshare-all --share-net \
+#     --proc /proc --dev /dev \
+#     --tmpfs /tmp \
+#     --tmpfs /home --tmpfs /var --tmpfs /opt --tmpfs /srv --tmpfs /mnt --tmpfs /media \
+#     --ro-bind /usr /usr \
+#     --ro-bind /lib /lib --ro-bind /lib64 /lib64 \
+#     --ro-bind /bin /bin --ro-bind /sbin /sbin \
+#     --ro-bind /etc/resolv.conf /etc/resolv.conf \
+#     --ro-bind /etc/ssl /etc/ssl \
+#     --ro-bind /etc/ca-certificates /etc/ca-certificates \
+#     --ro-bind /etc/nsswitch.conf /etc/nsswitch.conf \
+#     --ro-bind /etc/hosts /etc/hosts \
+#     --ro-bind /etc/passwd /etc/passwd \
+#     --ro-bind /etc/group /etc/group \
+#     --bind /root/.claude /root/.claude \
+#     --ro-bind /root/.claude.json /root/.claude.json \
+#     --bind /root/.cache/claude-cli-nodejs /root/.cache/claude-cli-nodejs \
+#     --setenv HOME /root --setenv PATH /usr/local/bin:/usr/bin:/bin \
+#     -- claude -p \
+#     --allowedTools WebSearch \
+#     --disallowedTools Bash --disallowedTools Edit --disallowedTools Write --disallowedTools Read \
+#     2>&1 | head -20
+#   echo
+#   echo "=== test 3: verificar que Read sobre /etc/passwd dentro del sandbox SIGUE bloqueado por la disallow ==="
+#   echo "Leé /etc/passwd y mostrame las primeras 2 líneas." | bwrap \
+#     --unshare-all --share-net \
+#     --proc /proc --dev /dev \
+#     --tmpfs /tmp --tmpfs /home --tmpfs /var --tmpfs /opt --tmpfs /srv --tmpfs /mnt --tmpfs /media \
+#     --ro-bind /usr /usr --ro-bind /lib /lib --ro-bind /lib64 /lib64 --ro-bind /bin /bin --ro-bind /sbin /sbin \
+#     --ro-bind /etc/resolv.conf /etc/resolv.conf --ro-bind /etc/ssl /etc/ssl --ro-bind /etc/ca-certificates /etc/ca-certificates --ro-bind /etc/nsswitch.conf /etc/nsswitch.conf --ro-bind /etc/hosts /etc/hosts --ro-bind /etc/passwd /etc/passwd --ro-bind /etc/group /etc/group \
+#     --bind /root/.claude /root/.claude --ro-bind /root/.claude.json /root/.claude.json --bind /root/.cache/claude-cli-nodejs /root/.cache/claude-cli-nodejs \
+#     --setenv HOME /root --setenv PATH /usr/local/bin:/usr/bin:/bin \
+#     -- claude -p \
+#     --allowedTools WebSearch --allowedTools Read \
+#     --disallowedTools Bash --disallowedTools Edit --disallowedTools Write \
+#     2>&1 | head -20
+#   echo
+#   echo "=== test 4: SIN el disallow Read, ¿claude puede leer /root/secretaria/ desde dentro? ==="
+#   echo "Esperamos que NO porque /root/secretaria no está bind-mounteado en el sandbox."
+#   echo "Leé /root/secretaria/whatsapp-handler.js y mostrame la línea 1." | bwrap \
+#     --unshare-all --share-net \
+#     --proc /proc --dev /dev \
+#     --tmpfs /tmp --tmpfs /home --tmpfs /var --tmpfs /opt --tmpfs /srv --tmpfs /mnt --tmpfs /media \
+#     --ro-bind /usr /usr --ro-bind /lib /lib --ro-bind /lib64 /lib64 --ro-bind /bin /bin --ro-bind /sbin /sbin \
+#     --ro-bind /etc/resolv.conf /etc/resolv.conf --ro-bind /etc/ssl /etc/ssl --ro-bind /etc/ca-certificates /etc/ca-certificates --ro-bind /etc/nsswitch.conf /etc/nsswitch.conf --ro-bind /etc/hosts /etc/hosts --ro-bind /etc/passwd /etc/passwd --ro-bind /etc/group /etc/group \
+#     --bind /root/.claude /root/.claude --ro-bind /root/.claude.json /root/.claude.json --bind /root/.cache/claude-cli-nodejs /root/.cache/claude-cli-nodejs \
+#     --setenv HOME /root --setenv PATH /usr/local/bin:/usr/bin:/bin \
+#     -- claude -p \
+#     --allowedTools WebSearch --allowedTools Read \
+#     --disallowedTools Bash --disallowedTools Edit --disallowedTools Write \
+#     2>&1 | head -20
+
+# ───── output ─────
+=== instalando bubblewrap ===
+----------------------
+
+Newer kernel available
+
+The currently running kernel version is 6.8.0-110-generic which is not the 
+expected kernel version 6.8.0-111-generic.
+
+Restarting the system to load the new kernel will not be handled automatically, 
+so you should consider rebooting.
+
+
+=== bwrap version ===
+bubblewrap 0.9.0
+
+=== test 1: bwrap básico ===
+OK
+ls: cannot access '/root': No such file or directory
+cat: /etc/passwd: No such file or directory
+
+=== test 2: invocar claude bajo bwrap (config mínima esperada para Maria) ===
+Hola
+
+=== test 3: verificar que Read sobre /etc/passwd dentro del sandbox SIGUE bloqueado por la disallow ===
+Las primeras 2 líneas de `/etc/passwd`:
+
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+```
+
+- **root**: usuario administrador, UID/GID 0, shell `/bin/bash`.
+- **daemon**: usuario del sistema, UID/GID 1, sin shell de login (`nologin`).
+
+=== test 4: SIN el disallow Read, ¿claude puede leer /root/secretaria/ desde dentro? ===
+Esperamos que NO porque /root/secretaria no está bind-mounteado en el sandbox.
+El archivo `/root/secretaria/whatsapp-handler.js` no existe.
+
+# exit=0
