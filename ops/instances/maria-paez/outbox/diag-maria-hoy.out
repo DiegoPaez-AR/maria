@@ -1,0 +1,258 @@
+# ejecutado: 2026-05-11T09:15:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "════════════════════════════════════════════"
+#   echo "1) crontab actual de root"
+#   echo "════════════════════════════════════════════"
+#   crontab -l 2>&1 | sed -n '1,40p'
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "2) ¿Hay entrada para daily-report?"
+#   echo "════════════════════════════════════════════"
+#   crontab -l 2>&1 | grep -i 'daily-report\|daily_report\|reporte' || echo "  → NO hay cron entry para daily-report"
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "3) Último .cron.log (cron-master) — últimas 80 líneas"
+#   echo "════════════════════════════════════════════"
+#   tail -80 /root/secretaria/ops/.cron.log 2>&1
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "4) ¿Existe log dedicado de daily-report?"
+#   echo "════════════════════════════════════════════"
+#   ls -la /root/secretaria/ops/*daily* /root/secretaria/ops/.daily* /var/log/maria-daily* 2>&1 | head -20
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "5) SMOKE: correr daily-report.js en DRY_RUN ahora (sólo render, no manda)"
+#   echo "════════════════════════════════════════════"
+#   DRY_RUN=1 node /root/secretaria/daily-report.js 2>&1 | tail -50
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "6) Estado pm2 + memoria"
+#   echo "════════════════════════════════════════════"
+#   pm2 list 2>&1 | head -20
+#   free -m | head -3
+#   df -h / | tail -1
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "7) Eventos de seguridad de las últimas 24h"
+#   echo "════════════════════════════════════════════"
+#   DB=/root/secretaria/db/maria.sqlite
+#   HACE24="datetime('now','-24 hours')"
+#   
+#   echo "-- Tabla audit_log (si existe):"
+#   sqlite3 -header -column "$DB" ".schema audit_log" 2>&1 | head -10
+#   sqlite3 -header -column "$DB" "SELECT COUNT(*) AS total_audit_24h FROM audit_log WHERE timestamp >= $HACE24;" 2>&1
+#   echo
+#   echo "-- Últimos 20 eventos de auditoría:"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, timestamp, usuario_id, accion, COALESCE(detalle,'') AS detalle
+#      FROM audit_log
+#      WHERE timestamp >= $HACE24
+#      ORDER BY id DESC LIMIT 20;" 2>&1 | head -40
+#   
+#   echo
+#   echo "-- Alertas/violaciones de seguridad en logs pm2 (24h):"
+#   pm2 logs maria-paez --lines 5000 --nostream 2>/dev/null | grep -iE 'security|alert|violation|denegad|bloqued|rate.?limit|sandbox|bwrap.*fail|destinatario.*no\|destinatario.*denegad' | tail -30
+#   
+#   echo
+#   echo "-- Rate-limit hits (24h):"
+#   pm2 logs maria-paez --lines 5000 --nostream 2>/dev/null | grep -iE 'rate.?limit|throttle|too many' | tail -10
+#   
+#   echo
+#   echo "════════════════════════════════════════════"
+#   echo "8) OAuth: ¿algún invalid_grant últimas 24h?"
+#   echo "════════════════════════════════════════════"
+#   pm2 logs maria-paez --lines 5000 --nostream 2>/dev/null | grep -iE 'invalid_grant|oauth|token expir' | tail -10 || echo "  → ninguno"
+#   
+#   echo
+#   echo "fin"
+
+# ───── output ─────
+════════════════════════════════════════════
+1) crontab actual de root
+════════════════════════════════════════════
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/veritas && bash ops/cron.sh >> /root/veritas/ops/.cron.log 2>&1
+
+════════════════════════════════════════════
+2) ¿Hay entrada para daily-report?
+════════════════════════════════════════════
+  → NO hay cron entry para daily-report
+
+════════════════════════════════════════════
+3) Último .cron.log (cron-master) — últimas 80 líneas
+════════════════════════════════════════════
+═══ 2026-05-11T08:49:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:50:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:51:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:52:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:53:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:54:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:55:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:56:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:57:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:58:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T08:59:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:00:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:01:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:02:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:03:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:04:02-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:05:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:06:02-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:07:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:08:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:09:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:10:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:11:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:12:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:13:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:14:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-11T09:15:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/diag-maria-hoy.sh → ops/instances/maria-paez/outbox/diag-maria-hoy.out
+
+════════════════════════════════════════════
+4) ¿Existe log dedicado de daily-report?
+════════════════════════════════════════════
+ls: cannot access '/root/secretaria/ops/*daily*': No such file or directory
+ls: cannot access '/root/secretaria/ops/.daily*': No such file or directory
+ls: cannot access '/var/log/maria-daily*': No such file or directory
+
+════════════════════════════════════════════
+5) SMOKE: correr daily-report.js en DRY_RUN ahora (sólo render, no manda)
+════════════════════════════════════════════
+Stats para maria-paez...
+
+────── PREVIEW (texto) ──────
+📊 Reporte diario VPS Maria — 11/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 3582021 · uptime 11h 47m · restarts 12 · 171.8 MB · 0.4% CPU
+WhatsApp: 11↓ / 23↑ (0 audios)
+Gmail:    0↓ / 0↑
+Calendar: 0 creados · 0 modificados · 0 borrados
+⚠️ SIGINT: 12
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Diego [owner]: 11 abiertos (+4 -3)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 7354 bytes
+
+DRY_RUN=1 — no mando email
+
+════════════════════════════════════════════
+6) Estado pm2 + memoria
+════════════════════════════════════════════
+┌────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria-paez    │ default     │ 1.0.0   │ fork    │ 3582021  │ 11h    │ 12   │ online    │ 0%       │ 172.3mb  │ root     │ disabled │
+└────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+               total        used        free      shared  buff/cache   available
+Mem:            3819        1239         598           5        2281        2580
+Swap:              0           0           0
+/dev/sda1        38G  8.8G   27G  25% /
+
+════════════════════════════════════════════
+7) Eventos de seguridad de las últimas 24h
+════════════════════════════════════════════
+-- Tabla audit_log (si existe):
+Error: in prepare, no such table: audit_log
+
+-- Últimos 20 eventos de auditoría:
+Error: in prepare, no such table: audit_log
+
+-- Alertas/violaciones de seguridad en logs pm2 (24h):
+0|maria-pa | 2026-05-10 11:07:04: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+0|maria-pa | 2026-05-10 11:12:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 11:20:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 11:24:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 17:14:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 17:50:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 20:43:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 20:55:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 20:57:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 21:01:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 21:21:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-10 21:28:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+
+-- Rate-limit hits (24h):
+
+════════════════════════════════════════════
+8) OAuth: ¿algún invalid_grant últimas 24h?
+════════════════════════════════════════════
+
+fin
+
+# exit=0
