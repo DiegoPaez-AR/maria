@@ -236,6 +236,14 @@ async function _borrarEvento(a, ctx) {
 
 async function _responderEmail(a, ctx) {
   _requerir(a, ['messageId', 'texto']);
+  // Capa 3 — validar que el messageId corresponde a un email que efectivamente
+  // recibimos. Previene que un LLM jailbroken o un caller malicioso invente un
+  // messageId y mande a un thread arbitrario.
+  if (process.env.SEC_RESPONDER_EMAIL_STRICT !== 'false') {
+    if (!mem.existeEmailEntrante(a.messageId)) {
+      throw new Error(`responder_email: messageId "${a.messageId}" no corresponde a ningún email recibido. Si querés mandar un email NUEVO, usá enviar_email.`);
+    }
+  }
   const r = await g.responderEmail(a.messageId, a.texto, {
     replyAll: !!a.replyAll,
     cc: a.cc, // si viene undefined no overridea; si viene null lo limpia

@@ -458,6 +458,25 @@ function logSecurityEvent({ usuarioId = null, canal = null, motivo, body, extra 
   });
 }
 
+// ¿Existe un email entrante con este messageId en nuestro log?
+// Usado para validar responder_email — previene que el LLM (jailbroken) invente
+// un messageId y mande a un thread arbitrario. Solo retorna true si hubo un
+// log con canal='gmail' direccion='entrante' que tenga ese messageId en su
+// metadata. Sin filtro temporal: Diego puede responder un mail viejo.
+const qExisteEmailEntrante = db.prepare(`
+  SELECT 1 FROM eventos
+  WHERE canal = 'gmail' AND direccion = 'entrante'
+    AND metadata_json LIKE ?
+  LIMIT 1
+`);
+function existeEmailEntrante(messageId) {
+  if (!messageId) return false;
+  // Defensa contra LIKE-injection (muy improbable, pero por las dudas).
+  if (/[%_\\]/.test(messageId)) return false;
+  const pat = `%"messageId":"${messageId}"%`;
+  return !!qExisteEmailEntrante.get(pat);
+}
+
 const qRecientesUsuario = db.prepare(`
   SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
@@ -1067,6 +1086,7 @@ module.exports = {
   log,
   logClaudeCall,
   logSecurityEvent,
+  existeEmailEntrante,
   recientes,
   porCanal,
   porContacto,
