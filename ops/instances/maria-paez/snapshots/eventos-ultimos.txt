@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")             cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  --------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3145  2026-05-11 11:14:40  sistema   interno                                acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+3144  2026-05-11 11:14:40  whatsapp  saliente   52235459367058@lid          Perfecto Fer! No me dijiste el día — ¿para cuándo la pensás? Te confirmo enseguida con Diego.                                                                                                           
+
+3143  2026-05-11 11:14:39  whatsapp  saliente   34342575317160@lid          Te escribió Fer Boero — quiere agendar una reunión de HR & SALES (actualización y status de clientes) a las 10:30. No especificó el día. ¿Qué fecha te viene bien y qué horarios le querés proponer?    
+
+3142  2026-05-11 11:14:39  sistema   interno                                claude_call whatsapp: 38644ms prompt=48341c raw=989c                                                                                                                                                    
+
 3141  2026-05-11 11:14:00  whatsapp  entrante   52235459367058@lid          Agendar 10.30 reunión HR & SALES, actualización y status clientes                                                                                                                                       
 
 3140  2026-05-11 11:13:13  whatsapp  saliente   52235459367058@lid          Hola Fer, buen día! ¿En qué te puedo ayudar?                                                                                                                                                            
@@ -274,14 +282,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")             cuer
 3047  2026-05-10 21:04:38  whatsapp  saliente   34342575317160@lid          Perfecto, lo espero. Apenas llegue lo proceso.                                                                                                                                                          
 
 3046  2026-05-10 21:04:27  whatsapp  entrante   34342575317160@lid          Ahí te lo mando por Mail                                                                                                                                                                                
-
-3045  2026-05-10 21:03:26  whatsapp  saliente   34342575317160@lid          No pude leer el CSV — el sistema solo descarga automáticamente imágenes y PDFs desde WhatsApp, los archivos de texto o Excel no los procesa todavía.                                                    
-                                                                                                                                                                                                                                                                                    
-                                                                            Tenés dos opciones:                                                                                                                                                                                     
-                                                                            1️⃣ Mandame el archivo por mai                                                                                                                                                                          
-
-3044  2026-05-10 21:02:00  whatsapp  saliente   34342575317160@lid          Recibí el CSV pero los documentos de texto no los puedo leer directamente desde WhatsApp — solo bajo imágenes y PDFs. Si querés que importe esos contactos, mandámelo por mail a maria.paez.secre@gmail.
-
-3043  2026-05-10 21:01:50  whatsapp  entrante   34342575317160@lid          me podras subir estos contactos a la agenda, fijate que tienen los cumpleaños, y seguramente haya duplicados, tene cuidado de actualizar y no generar 2 contactos para la misma persona                 
-
-3042  2026-05-10 21:00:53  whatsapp  entrante   34342575317160@lid          contacts - contacts.csv.csv                                                                                                                                                                             
