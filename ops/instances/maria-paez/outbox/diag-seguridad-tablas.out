@@ -1,0 +1,79 @@
+# ejecutado: 2026-05-11T09:16:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   DB=/root/secretaria/db/maria.sqlite
+#   
+#   echo "═══ TABLAS DE LA DB ═══"
+#   sqlite3 "$DB" ".tables"
+#   
+#   echo
+#   echo "═══ ESQUEMAS RELEVANTES A SEGURIDAD ═══"
+#   for t in audit auditoria audit_log alerts alertas security_events rate_limit rate_limits violaciones acciones_log; do
+#     echo "-- $t --"
+#     sqlite3 "$DB" ".schema $t" 2>&1 | head -10
+#   done
+#   
+#   echo
+#   echo "═══ Archivos de log/audit en /root/secretaria ═══"
+#   find /root/secretaria -maxdepth 3 -type f \( -name '*audit*' -o -name '*security*' -o -name '*alert*' -o -name '*rate*limit*' \) 2>/dev/null | grep -v node_modules | head -30
+#   
+#   echo
+#   echo "═══ Código relacionado a seguridad (grep) ═══"
+#   grep -rEn --include='*.js' -l 'audit|rateLimit|rate_limit|bwrap|sandbox|validar.*destinatario' /root/secretaria 2>/dev/null | grep -v node_modules | head -20
+#   
+#   echo
+#   echo "═══ Estructura de eventos (canal=sistema con info de seguridad) ═══"
+#   sqlite3 -header -column "$DB" "SELECT canal, direccion, COUNT(*) AS n FROM eventos WHERE timestamp >= datetime('now','-24 hours') GROUP BY canal, direccion ORDER BY n DESC;"
+#   
+#   echo
+#   echo "═══ Eventos sistema últimas 24h con 'security/alert/bloqued/denegad/sandbox/rate' ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, substr(cuerpo,1,150) FROM eventos WHERE timestamp >= datetime('now','-24 hours') AND (cuerpo LIKE '%security%' OR cuerpo LIKE '%denegad%' OR cuerpo LIKE '%bloqued%' OR cuerpo LIKE '%rate%limit%' OR cuerpo LIKE '%sandbox%' OR cuerpo LIKE '%bwrap%' OR cuerpo LIKE '%violaci%') ORDER BY id DESC LIMIT 20;"
+#   
+#   echo
+#   echo "═══ ¿Hay logs de bwrap/sandbox? ═══"
+#   ls -la /var/log/maria-* /root/secretaria/ops/.*sandbox* /root/secretaria/logs/ 2>&1 | head -20
+#   journalctl -u maria* --since '1 day ago' --no-pager 2>&1 | tail -5
+#   
+#   echo "fin"
+
+# ───── output ─────
+═══ TABLAS DE LA DB ═══
+
+═══ ESQUEMAS RELEVANTES A SEGURIDAD ═══
+-- audit --
+-- auditoria --
+-- audit_log --
+-- alerts --
+-- alertas --
+-- security_events --
+-- rate_limit --
+-- rate_limits --
+-- violaciones --
+-- acciones_log --
+
+═══ Archivos de log/audit en /root/secretaria ═══
+
+═══ Código relacionado a seguridad (grep) ═══
+/root/secretaria/claude-client.js
+/root/secretaria/gmail-handler.js
+/root/secretaria/whatsapp-handler.js
+/root/secretaria/unknown-flow.js
+
+═══ Estructura de eventos (canal=sistema con info de seguridad) ═══
+Error: in prepare, no such table: eventos
+
+═══ Eventos sistema últimas 24h con 'security/alert/bloqued/denegad/sandbox/rate' ═══
+Error: in prepare, no such table: eventos
+
+═══ ¿Hay logs de bwrap/sandbox? ═══
+ls: cannot access '/var/log/maria-*': No such file or directory
+ls: cannot access '/root/secretaria/ops/.*sandbox*': No such file or directory
+ls: cannot access '/root/secretaria/logs/': No such file or directory
+Failed to add filter for units: No data available
+fin
+
+# exit=0

@@ -1,5 +1,18 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3176  2026-05-11 12:15:25  whatsapp  saliente   34342575317160@lid   Usuarios activos:                                                                                                                                                                                       
+                                                                     1. Diego (vos — owner)                                                                                                                                                                                  
+                                                                     2. Hernan Fulco                                                                                                                                                                                         
+                                                                     3. Natali Funez _(sin calendar)_                                                                                                                                                                        
+                                                                     4. Fernando Boero _(sin calendar)_                                                                                                                                                                      
+                                                                     5. Santiago Bignone _(sin calendar)_                                                                                                                                                                    
+
+3175  2026-05-11 12:15:25  sistema   interno                         claude_call whatsapp: 13697ms prompt=48263c raw=390c                                                                                                                                                    
+
+3174  2026-05-11 12:15:10  whatsapp  entrante   34342575317160@lid   pasame la lista d eusuarios activos ya que estas                                                                                                                                                        
+
+3173  2026-05-11 12:15:10  whatsapp  entrante   34342575317160@lid   dale                                                                                                                                                                                                    
+
 3172  2026-05-11 12:14:28  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
 
 3171  2026-05-11 12:14:28  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -252,13 +265,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3078  2026-05-10 21:49:05  whatsapp  entrante   34342575317160@lid   Dale después te mando                                                                                                                                                                                   
 
 3077  2026-05-10 21:48:19  whatsapp  saliente   34342575317160@lid   El sistema se colgó de nuevo procesando la lista larga — hubo dos timeouts seguidos (de 180 segundos cada uno). Los que están guardados son los 4 del primer bloque: Carlos Canosa, José Milei, Juan Ign
-
-3076  2026-05-10 21:48:02  whatsapp  saliente   34342575317160@lid   El sistema tuvo dos timeouts seguidos procesando ese mensaje — el bloque era demasiado largo. El mensaje se cortó igual que antes (en Isabel Imperiale).                                                
-                                                                                                                                                                                                                                                                             
-                                                                     De la primera tanda ya tenés cargados: *Carlos                                                                                                                                                          
-
-3075  2026-05-10 21:47:55  whatsapp  entrante   34342575317160@lid   Cuantos viste?                                                                                                                                                                                          
-
-3074  2026-05-10 21:47:43  whatsapp  entrante   34342575317160@lid   Y?                                                                                                                                                                                                      
-
-3073  2026-05-10 21:30:38  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
