@@ -42,7 +42,7 @@ function _avisarSandboxOff() {
 // Tmpfs (sin contenido): /home, /var, /opt, /srv, /mnt, /media
 // Attachments: si attachmentsDir está, lo bind-mounteamos read-only en su path.
 //   Esto cubre el caso de visión multimodal (imágenes/PDFs en /tmp/maria-attach-*).
-function _argsBwrap({ attachmentsDir = null } = {}) {
+function _argsBwrap({ attachmentsDir = null, extraBinds = [] } = {}) {
   const args = [
     '--unshare-all', '--share-net',  // aislamos namespaces, mantenemos red (claude llama a la API)
     '--proc', '/proc',
@@ -82,6 +82,15 @@ function _argsBwrap({ attachmentsDir = null } = {}) {
       args.push('--ro-bind', attachmentsDir, attachmentsDir);
     } catch (e) {
       console.warn(`[claude-client] attachmentsDir no accesible: ${attachmentsDir} (${e.message})`);
+    }
+  }
+  // Binds extra (mcp-config, settings file, etc.).
+  for (const b of extraBinds) {
+    try {
+      fs.accessSync(b.src, fs.constants.R_OK);
+      args.push(b.ro ? '--ro-bind' : '--bind', b.src, b.dst || b.src);
+    } catch (e) {
+      console.warn(`[claude-client] extra bind no accesible: ${b.src} (${e.message})`);
     }
   }
   return args;
@@ -140,13 +149,15 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = nul
     for (const t of ALLOWED_TOOLS) args.push('--allowedTools', t);
     for (const t of DISALLOWED_TOOLS) args.push('--disallowedTools', t);
     // MCP config: si existe el archivo (default ./mcp-config.json), lo cargamos.
-    // Da acceso a Playwright MCP para navegación web interactiva (formularios,
-    // sitios JS-only, paneles privados). El server se levanta lazy — solo
-    // arranca si el LLM efectivamente invoca alguna tool del namespace.
-    const fs = require('fs');
-    const mcpCfg = process.env.CLAUDE_MCP_CONFIG || './mcp-config.json';
-    if (fs.existsSync(mcpCfg)) {
-      args.push('--mcp-config', mcpCfg);
+    // Resolvemos a path absoluto para que sea accesible adentro del sandbox.
+    // El path se va a bind-mountear más abajo si bwrap está activo.
+    const path = require('path');
+    let mcpCfgAbs = null;
+    const mcpCfgRaw = process.env.CLAUDE_MCP_CONFIG || './mcp-config.json';
+    const mcpCfgResolved = path.resolve(mcpCfgRaw);
+    if (fs.existsSync(mcpCfgResolved)) {
+      mcpCfgAbs = mcpCfgResolved;
+      args.push('--mcp-config', mcpCfgAbs);
     }
     // Settings file de Claude Code — para que distintas instancias usen
     // distintas cuentas (Pro/Max). Si no se setea, hereda la auth del VPS.
@@ -162,7 +173,16 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = nul
     let cmd, finalArgs;
     if (BWRAP_BIN) {
       const attachDir = _detectarAttachmentsDir(prompt);
-      const bwrapArgs = _argsBwrap({ attachmentsDir: attachDir });
+      const extraBinds = [];
+      // Bind-mountear el mcp-config para que claude pueda leerlo adentro.
+      if (mcpCfgAbs) extraBinds.push({ src: mcpCfgAbs, dst: mcpCfgAbs, ro: true });
+      // Settings file también si existe
+      if (settingsFile && fs.existsSync(settingsFile)) {
+        extraBinds.push({ src: path.resolve(settingsFile), dst: path.resolve(settingsFile), ro: true });
+      }
+      const bwrapArgs = _argsBwrap({ attachmentsDir: attachDir, extraBinds });
+      // chdir a /root (que existe en el sandbox) para evitar cwd inexistente
+      bwrapArgs.push('--chdir', '/root');
       finalArgs = [...bwrapArgs, '--', CLAUDE_BIN, ...args];
       cmd = BWRAP_BIN;
     } else {
