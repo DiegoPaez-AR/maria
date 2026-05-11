@@ -1,0 +1,87 @@
+# ejecutado: 2026-05-10T21:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "=== revertir ACLs en /root y subpaths ==="
+#   for path in /root /root/.claude /root/.claude.json /root/.cache /root/.cache/claude-cli-nodejs /root/secretaria /root/secretaria/state /root/secretaria/ops; do
+#     if [ -e "$path" ]; then
+#       # -R recursivo solo si es dir; -x para quitar la entrada de maria-svc
+#       if [ -d "$path" ]; then
+#         setfacl -R -x u:maria-svc "$path" 2>/dev/null
+#         setfacl -R -x d:u:maria-svc "$path" 2>/dev/null
+#       else
+#         setfacl -x u:maria-svc "$path" 2>/dev/null
+#       fi
+#       echo "  ACLs limpiadas en: $path"
+#     fi
+#   done
+#   
+#   # Backups dir tiene su propio entry
+#   if [ -d /root/.claude/backups ]; then
+#     setfacl -R -x u:maria-svc /root/.claude/backups 2>/dev/null
+#   fi
+#   
+#   echo
+#   echo "=== verificar que no queda ninguna ACL de maria-svc ==="
+#   for path in /root /root/.claude.json /root/secretaria /root/secretaria/state; do
+#     echo "  $path:"
+#     getfacl "$path" 2>/dev/null | grep -E 'maria-svc' || echo "    (limpio)"
+#   done
+#   echo
+#   
+#   echo "=== borrar usuario maria-svc ==="
+#   if id maria-svc >/dev/null 2>&1; then
+#     userdel -r maria-svc 2>&1 | head -5
+#     echo "  maria-svc borrado"
+#   else
+#     echo "  maria-svc no existe — nada que borrar"
+#   fi
+#   echo
+#   
+#   echo "=== verificación final ==="
+#   id maria-svc 2>&1 | head -1
+#   ls /home/ 2>&1 | head -5
+#   echo
+#   echo "=== pm2 sigue OK? ==="
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   ps=json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name')=='maria-paez':
+#           e=p.get('pm2_env',{})
+#           print('  status', e.get('status'), 'restarts', e.get('restart_time'))"
+
+# ───── output ─────
+=== revertir ACLs en /root y subpaths ===
+  ACLs limpiadas en: /root
+  ACLs limpiadas en: /root/.claude
+  ACLs limpiadas en: /root/.claude.json
+  ACLs limpiadas en: /root/.cache
+  ACLs limpiadas en: /root/.cache/claude-cli-nodejs
+  ACLs limpiadas en: /root/secretaria
+  ACLs limpiadas en: /root/secretaria/state
+  ACLs limpiadas en: /root/secretaria/ops
+
+=== verificar que no queda ninguna ACL de maria-svc ===
+  /root:
+    (limpio)
+  /root/.claude.json:
+    (limpio)
+  /root/secretaria:
+    (limpio)
+  /root/secretaria/state:
+    (limpio)
+
+=== borrar usuario maria-svc ===
+userdel: maria-svc mail spool (/var/mail/maria-svc) not found
+  maria-svc borrado
+
+=== verificación final ===
+id: ‘maria-svc’: no such user
+
+=== pm2 sigue OK? ===
+  status online restarts 12
+
+# exit=0
