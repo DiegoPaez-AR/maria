@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                 cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ----------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3123  2026-05-11 00:38:45  whatsapp  entrante   34342575317160@lid                              pasame el brief del dia de manana                                                                                                                                                                       
+
+3122  2026-05-11 00:38:10  whatsapp  saliente   34342575317160@lid                              Todo bien por acá! La semana que viene te viene cargada — arranca el lunes con la reunión con Pablo Santa Cruz y después seguimientos todo el día. ¿Necesitás algo?                                     
+
+3121  2026-05-11 00:38:10  sistema   interno                                                    claude_call whatsapp: 9746ms prompt=47464c raw=378c                                                                                                                                                     
+
 3120  2026-05-11 00:38:00  whatsapp  entrante   34342575317160@lid                              maria, todo bien por ahi?                                                                                                                                                                               
 
 3119  2026-05-11 00:28:09  sistema   interno                                                    Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (5 usuarios)                                                                                                        
@@ -265,9 +271,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 3025  2026-05-10 19:20:03  whatsapp  saliente   34342575317160@lid                              Va — reunión con Pablo Santa Cruz el lunes a las 10 en Victorino de la Plaza 74, San Martín, hasta las 12. Queda pisando el Seguimiento comercial de las 10:45, pero te la agendo así como pediste.     
 
 3024  2026-05-10 19:19:53  sistema   interno                                                    acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-3023  2026-05-10 19:19:53  sistema   interno                                                    acción ejecutada: crear_evento                                                                                                                                                                          
-
-3022  2026-05-10 19:19:53  calendar  saliente                                                   creado: Reunión Diego / Pablo Santa Cruz (2026-05-11T10:00:00-03:00 → 2026-05-11T12:00:00-03:00)                                                                                                        
-
-3021  2026-05-10 19:19:52  whatsapp  saliente   34342575317160@lid                              Listo. Te lo agendo el lunes de 10:00 a 12:00 en Victorino de la Plaza 74, San Martín — se va a pisar con el Seguimiento comercial de las 10:45, pero lo creo igual. Y anoto a Pablo Santa Cruz en la li
