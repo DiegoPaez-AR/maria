@@ -1,0 +1,69 @@
+# ejecutado: 2026-05-11T09:32:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "── 1. Resolver path de node ──"
+#   NODE_BIN="/root/.nvm/versions/node/$(ls /root/.nvm/versions/node | tail -1)/bin/node"
+#   echo "node = $NODE_BIN"
+#   $NODE_BIN -v
+#   
+#   echo
+#   echo "── 2. crontab ANTES ──"
+#   crontab -l 2>&1
+#   
+#   echo
+#   echo "── 3. Agregar entrada daily-report 06:00 ART (si no existe) ──"
+#   CRON_LINE="0 6 * * * cd /root/secretaria && $NODE_BIN daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1"
+#   if crontab -l 2>/dev/null | grep -qF "daily-report.js"; then
+#     echo "ya existe entrada de daily-report — no toco"
+#   else
+#     (crontab -l 2>/dev/null; echo "$CRON_LINE") | crontab -
+#     echo "agregado: $CRON_LINE"
+#   fi
+#   
+#   echo
+#   echo "── 4. crontab DESPUÉS ──"
+#   crontab -l 2>&1
+#   
+#   echo
+#   echo "── 5. Mandar el reporte de HOY (única vez) ──"
+#   $NODE_BIN daily-report.js 2>&1 | tail -40
+#   
+#   echo
+#   echo "── 6. Confirmar log ──"
+#   ls -la /root/secretaria/ops/.daily-report.log 2>&1
+#   tail -5 /root/secretaria/ops/.daily-report.log 2>&1
+#   
+#   echo "fin"
+
+# ───── output ─────
+── 1. Resolver path de node ──
+ls: cannot access '/root/.nvm/versions/node': No such file or directory
+node = /root/.nvm/versions/node//bin/node
+ops/instances/maria-paez/inbox/install-daily-report-cron.sh: line 8: /root/.nvm/versions/node//bin/node: No such file or directory
+
+── 2. crontab ANTES ──
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/veritas && bash ops/cron.sh >> /root/veritas/ops/.cron.log 2>&1
+
+── 3. Agregar entrada daily-report 06:00 ART (si no existe) ──
+agregado: 0 6 * * * cd /root/secretaria && /root/.nvm/versions/node//bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+
+── 4. crontab DESPUÉS ──
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/veritas && bash ops/cron.sh >> /root/veritas/ops/.cron.log 2>&1
+0 6 * * * cd /root/secretaria && /root/.nvm/versions/node//bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+
+── 5. Mandar el reporte de HOY (única vez) ──
+ops/instances/maria-paez/inbox/install-daily-report-cron.sh: line 28: /root/.nvm/versions/node//bin/node: No such file or directory
+
+── 6. Confirmar log ──
+ls: cannot access '/root/secretaria/ops/.daily-report.log': No such file or directory
+tail: cannot open '/root/secretaria/ops/.daily-report.log' for reading: No such file or directory
+fin
+
+# exit=0
