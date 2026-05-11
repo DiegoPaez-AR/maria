@@ -174,7 +174,22 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
       body: _payload.slice(0, 500),
       extra: { from: entrada.de, asunto: entrada.asunto },
     });
-    // Igual que en WA: NO bloqueamos — el LLM lo rechaza vía Capa 2.
+    // Mail al owner por CADA intento (decisión de Diego, sin cooldown).
+    try {
+      const owner = require('./usuarios').obtenerOwner();
+      if (owner?.email) {
+        const g = require('./google');
+        const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
+        await g.enviarEmail({
+          to: owner.email,
+          asunto: `🚨 ${ASISTENTE_NOMBRE}: prompt injection detectado en email (${_motivo})`,
+          texto: `Detecté un intento de prompt injection en un email entrante.\n\nCanal: gmail\nMotivo: ${_motivo}\nDe: ${entrada.de}\nAsunto: ${entrada.asunto || '(sin asunto)'}\nUsuario destino: ${usuario.nombre} (id=${usuario.id})\n\nCuerpo:\n---\n${(entrada.cuerpo || '').slice(0, 2000)}\n---\n\nMaria lo va a rechazar (Capa 2 del prompt).\n\n--\n${ASISTENTE_NOMBRE}`,
+        });
+      }
+    } catch (err) {
+      console.warn(`[GMAIL injection mail] no pude mandar al owner: ${err.message}`);
+    }
+    // NO bloqueamos — el LLM lo rechaza vía Capa 2.
   }
 
   const prompt = await construirPrompt({

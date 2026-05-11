@@ -12,6 +12,7 @@
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const seguridad = require('./seguridad');
 
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
@@ -260,6 +261,12 @@ async function _responderEmail(a, ctx) {
 //  - devuelve { id, threadId } del mensaje nuevo
 async function _enviarEmail(a, ctx) {
   _requerir(a, ['to', 'asunto', 'texto']);
+  // Validar destinatarios contra libreta visible / usuarios activos.
+  const tos = Array.isArray(a.to) ? a.to : [a.to];
+  for (const t of tos) {
+    const v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'email', destino: t });
+    if (!v.ok) throw new Error(`enviar_email: ${v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
+  }
   const r = await g.enviarEmail({
     to: a.to,
     asunto: a.asunto,
@@ -295,6 +302,8 @@ async function _enviarEmail(a, ctx) {
 async function _reenviarWA(a, ctx) {
   _requerir(a, ['messageId', 'a']);
   if (!ctx.waClient) throw new Error('reenviar_wa: waClient no disponible');
+  const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
+  if (!_v.ok) throw new Error(`reenviar_wa: ${_v.motivo}.`);
   const destino = _resolverDestinoWA(a.a);
   let original;
   try {
@@ -335,6 +344,10 @@ function _resolverDestinoWA(a) {
 async function _enviarWA(a, ctx) {
   _requerir(a, ['a', 'texto']);
   if (!ctx.waClient) throw new Error('enviar_wa: ctx.waClient no fue provisto al executor');
+
+  // Validar destinatario contra libreta visible / usuarios activos.
+  const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
+  if (!_v.ok) throw new Error(`enviar_wa: ${_v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
 
   let destino = _resolverDestinoWA(a.a);
   try {
@@ -393,6 +406,9 @@ function _programarMensaje(a, ctx) {
   if (!['whatsapp', 'gmail'].includes(a.canal)) {
     throw new Error(`programar_mensaje: canal inválido (${a.canal})`);
   }
+  const _canalSec = a.canal === 'gmail' ? 'email' : 'wa';
+  const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: _canalSec, destino: a.destino });
+  if (!_v.ok) throw new Error(`programar_mensaje: ${_v.motivo}.`);
   let destino = a.destino;
   if (a.canal === 'whatsapp') destino = _resolverDestinoWA(destino);
   const id = mem.programarMensaje({

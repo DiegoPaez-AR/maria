@@ -302,8 +302,10 @@ async function handleMessage(client, msg) {
       body: item.cuerpo,
       extra: { from: msg.from, pushname },
     });
-    // NO bloqueamos — el LLM va a rechazarlo via Capa 2. La detección sirve
-    // para dejar rastro auditable y disparar alertas eventuales.
+    // Mail al owner por CADA intento (decisión de Diego, sin cooldown).
+    // Si esto genera ruido se le puede agregar cooldown más adelante.
+    _mailOwnerInjection({ canal: 'whatsapp', motivo: motivoInj, body: item.cuerpo, from: msg.from, pushname, usuarioId: _usrTmp?.id || null });
+    // NO bloqueamos — el LLM va a rechazarlo via Capa 2.
   }
 
   _encolar(client, msg.from, item);
@@ -692,6 +694,27 @@ async function _manejarVCard(client, msg, usuario) {
   if (cumple) aviso += ` (cumple ${cumple})`;
   aviso += `.\n¿Lo paso a la libreta pública?`;
   await client.sendMessage(msg.from, aviso);
+}
+
+
+// Manda mail al owner por cada intento de injection detectado. Sin cooldown
+// (decisión: queremos enterarnos de cada intento; si molesta ajustamos).
+async function _mailOwnerInjection({ canal, motivo, body, from, pushname, usuarioId }) {
+  try {
+    const owner = usuarios.obtenerOwner();
+    if (!owner?.email) return;
+    const g = require('./google');
+    const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
+    const remitente = pushname ? `${pushname} (${from})` : from;
+    const usrLabel = usuarioId ? `usuario_id=${usuarioId}` : 'desconocido';
+    await g.enviarEmail({
+      to: owner.email,
+      asunto: `🚨 ${ASISTENTE_NOMBRE}: prompt injection detectado (${motivo})`,
+      texto: `Detecté un intento de prompt injection.\n\nCanal: ${canal}\nMotivo: ${motivo}\nRemitente: ${remitente}\n${usrLabel}\n\nMensaje literal:\n---\n${body || '(vacío)'}\n---\n\nMaria lo va a rechazar (Capa 2 del prompt). Este mail es para que sepas que pasó.\n\n--\n${ASISTENTE_NOMBRE}`,
+    });
+  } catch (err) {
+    console.warn(`[WA injection mail] no pude mandar al owner: ${err.message}`);
+  }
 }
 
 module.exports = { crearClienteWA, handleMessage };

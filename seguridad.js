@@ -66,4 +66,89 @@ function verificarRateLimit({ usuarioId }) {
   return { ok: true };
 }
 
-module.exports = { detectarInjection, verificarRateLimit };
+// Solo deja dígitos para comparar números (whatsapp con/sin formato).
+function _soloDigitos(x) { return String(x || '').replace(/\D+/g, ''); }
+
+// Devuelve true si dos números matchean (last-N digits, mínimo 8 — cubre
+// con/sin código país, con/sin 9 de Argentina).
+function _wasapMatch(a, b) {
+  const da = _soloDigitos(a);
+  const db = _soloDigitos(b);
+  if (!da || !db || da.length < 8 || db.length < 8) return false;
+  return da === db || da.endsWith(db) || db.endsWith(da);
+}
+
+/**
+ * Valida que `destino` sea un destinatario "conocido" para `usuario`:
+ *  - canal 'wa': es wa_cus/wa_lid del propio usuario, o de otro usuario activo,
+ *               o un contacto en libreta visible (privada del usuario o pública).
+ *  - canal 'email': es el email del usuario, o de otro usuario activo,
+ *                   o un contacto en libreta visible.
+ * Devuelve { ok: true, motivo } si pasa, { ok: false, motivo } si rechaza.
+ *
+ * Bypass: env SEC_DESTINATARIO_STRICT=false desactiva la validación (siempre ok).
+ */
+function validarDestinatario({ usuario, canal, destino }) {
+  if (process.env.SEC_DESTINATARIO_STRICT === 'false') {
+    return { ok: true, motivo: 'strict-mode off (env)' };
+  }
+  if (!destino) return { ok: false, motivo: 'destino vacío' };
+  if (!usuario) return { ok: false, motivo: 'usuario no provisto' };
+
+  // lazy require para evitar ciclos (memory.js → seguridad? no, pero por las dudas)
+  const mem = require('./memory');
+  const usuarios = require('./usuarios');
+
+  if (canal === 'wa' || canal === 'whatsapp') {
+    // self
+    if (_wasapMatch(destino, usuario.wa_cus) || destino === usuario.wa_lid) {
+      return { ok: true, motivo: 'self' };
+    }
+    // otros usuarios activos
+    const otros = usuarios.listarActivos();
+    for (const u of otros) {
+      if (u.id === usuario.id) continue;
+      if (_wasapMatch(destino, u.wa_cus) || destino === u.wa_lid) {
+        return { ok: true, motivo: `usuario activo (${u.nombre})` };
+      }
+    }
+    // contactos en libreta visible (privada del usuario actual + pública)
+    const todos = mem.todosLosContactos(usuario.id); // priv del user + públicos
+    for (const c of todos) {
+      if (!c.whatsapp) continue;
+      if (_wasapMatch(destino, c.whatsapp) || destino === c.whatsapp) {
+        return { ok: true, motivo: `libreta-${c.visibilidad} (${c.nombre})` };
+      }
+    }
+    return { ok: false, motivo: `WA "${destino}" no está en libreta ni es usuario activo` };
+  }
+
+  if (canal === 'email' || canal === 'gmail') {
+    const dest = String(destino).toLowerCase().trim();
+    // self
+    if ((usuario.email || '').toLowerCase() === dest) {
+      return { ok: true, motivo: 'self' };
+    }
+    // otros usuarios activos
+    const otros = usuarios.listarActivos();
+    for (const u of otros) {
+      if (u.id === usuario.id) continue;
+      if ((u.email || '').toLowerCase() === dest) {
+        return { ok: true, motivo: `usuario activo (${u.nombre})` };
+      }
+    }
+    // contactos en libreta visible
+    const todos = mem.todosLosContactos(usuario.id);
+    for (const c of todos) {
+      if (!c.email) continue;
+      if (c.email.toLowerCase() === dest) {
+        return { ok: true, motivo: `libreta-${c.visibilidad} (${c.nombre})` };
+      }
+    }
+    return { ok: false, motivo: `email "${destino}" no está en libreta ni es usuario activo` };
+  }
+
+  return { ok: false, motivo: `canal desconocido "${canal}"` };
+}
+
+module.exports = { detectarInjection, verificarRateLimit, validarDestinatario };
