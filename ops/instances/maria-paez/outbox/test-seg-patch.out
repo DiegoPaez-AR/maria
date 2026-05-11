@@ -1,0 +1,70 @@
+# ejecutado: 2026-05-11T09:38:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "── 1. Confirmar que daily-report.js tiene el bloque seguridad ──"
+#   grep -c "seguridad" /root/secretaria/daily-report.js
+#   echo
+#   
+#   echo "── 2. DRY_RUN: ver preview con bloque de seguridad ──"
+#   DRY_RUN=1 /usr/bin/node /root/secretaria/daily-report.js 2>&1 | tail -45
+#   
+#   echo
+#   echo "── 3. Mandar reporte ACTUALIZADO de hoy (con seguridad) ──"
+#   /usr/bin/node /root/secretaria/daily-report.js 2>&1 | tail -10
+#   
+#   echo "fin"
+
+# ───── output ─────
+── 1. Confirmar que daily-report.js tiene el bloque seguridad ──
+10
+
+── 2. DRY_RUN: ver preview con bloque de seguridad ──
+Stats para maria-paez...
+
+────── PREVIEW (texto) ──────
+📊 Reporte diario VPS Maria — 11/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 3701214 · uptime 0m · restarts 13 · 76.0 MB · 0% CPU
+WhatsApp: 21↓ / 35↑ (0 audios)
+Gmail:    0↓ / 0↑
+Calendar: 0 creados · 0 modificados · 0 borrados
+⚠️ SIGINT: 13
+🔐 Seguridad:
+   · Prompt violation/injection ×1 (últimos: 21:08)
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Diego [owner]: 10 abiertos (+4 -4)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 8169 bytes
+
+DRY_RUN=1 — no mando email
+
+── 3. Mandar reporte ACTUALIZADO de hoy (con seguridad) ──
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Diego [owner]: 10 abiertos (+4 -4)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 8172 bytes
+
+✓ enviado a diego@paez.is
+fin
+
+# exit=0
