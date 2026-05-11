@@ -74,6 +74,15 @@ function statsInstancia(env) {
                 cal_creados: 0, cal_modificados: 0, cal_borrados: 0 },
     errores: { wa_disconnect: [], claude_fail: 0, fallaron: 0,
                 invalid_grant: 0, sigint: 0 },
+    seguridad: {
+      security_audit: [],        // [security] o [audit] explícitos
+      destinatario_bloqueado: [],// validación de destinatarios
+      sandbox_fail: [],          // bwrap/sandbox failures
+      rate_limit: [],            // rate limit / throttle
+      tool_denegado: [],         // herramientas bloqueadas
+      prompt_violation: [],      // prompt injection / jailbreak
+      alerta_owner: [],          // alertas enviadas al owner
+    },
     pendientes_por_usuario: [],
     eventos_proximos: [],
     notas: [],
@@ -115,6 +124,16 @@ function statsInstancia(env) {
       if (/FALLARON/.test(line))             stats.errores.fallaron++;
       if (/invalid_grant/.test(line))        stats.errores.invalid_grant++;
       if (/SIGINT recibido/.test(line))      stats.errores.sigint++;
+
+      // ── Seguridad: detección por patrones en pm2 logs ──
+      const hhmm = tsMatch[1].slice(11, 16);
+      if (/\[security\]|\[audit\]/i.test(line))                                            stats.seguridad.security_audit.push(hhmm);
+      if (/destinatario.*(denegad|bloqueado|no.permitido|inv[aá]lido)/i.test(line))        stats.seguridad.destinatario_bloqueado.push(hhmm);
+      if (/(bwrap|sandbox).*(fail|violation|error)/i.test(line))                            stats.seguridad.sandbox_fail.push(hhmm);
+      if (/rate.?limit|throttle|too many/i.test(line))                                     stats.seguridad.rate_limit.push(hhmm);
+      if (/(tool|herramienta).*(denegad|bloqued|restring)/i.test(line))                     stats.seguridad.tool_denegado.push(hhmm);
+      if (/prompt.*(violation|injection)|jailbreak/i.test(line))                            stats.seguridad.prompt_violation.push(hhmm);
+      if (/\[WA alert\]|\[alerta\]|alert.*owner/i.test(line))                               stats.seguridad.alerta_owner.push(hhmm);
     }
   } catch (err) {
     stats.notas.push(`pm2 logs falló: ${err.message}`);
@@ -206,6 +225,26 @@ function renderTexto(allStats, fechaStr) {
     if (e.fallaron)             lines.push(`⚠️ Acciones parciales: ${e.fallaron}`);
     if (e.invalid_grant)        lines.push(`⚠️ Google invalid_grant: ${e.invalid_grant}`);
     if (e.sigint > 4)           lines.push(`⚠️ SIGINT: ${e.sigint}`);
+
+    // ── Seguridad (sólo se imprime si hay matches) ──
+    const seg = s.seguridad || {};
+    const segItems = [
+      ['Audit/security explícito',      seg.security_audit],
+      ['Destinatario bloqueado',        seg.destinatario_bloqueado],
+      ['Sandbox/bwrap fail',            seg.sandbox_fail],
+      ['Rate-limit',                    seg.rate_limit],
+      ['Tool denegada',                 seg.tool_denegado],
+      ['Prompt violation/injection',    seg.prompt_violation],
+      ['Alerta al owner',               seg.alerta_owner],
+    ].filter(([_, arr]) => arr && arr.length);
+    if (segItems.length) {
+      lines.push('🔐 Seguridad:');
+      for (const [label, arr] of segItems) {
+        const ult = arr.slice(-3).join(', ');
+        lines.push(`   · ${label} ×${arr.length}${arr.length ? ` (últimos: ${ult})` : ''}`);
+      }
+    }
+
     for (const p of s.pendientes_por_usuario) {
       const tag = p.rol === 'owner' ? ' [owner]' : '';
       lines.push(`  ${p.nombre}${tag}: ${p.abiertos} abiertos (+${p.nuevosHoy} -${p.cerradosHoy})`);
@@ -324,6 +363,27 @@ function renderHTML(allStats, fechaStr) {
     if (!erroresHtml.length) erroresHtml.push(`<div style="padding:8px 10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:3px;font-size:13px;color:#065f46;">✓ sin errores destacados</div>`);
     html.push(erroresHtml.join(''));
     html.push(`</td></tr>`);
+
+    // ── Seguridad (sólo si hay matches en pm2 logs) ──
+    const seg = s.seguridad || {};
+    const segItems = [
+      ['Audit/security explícito',   seg.security_audit,         '#6366f1'],
+      ['Destinatario bloqueado',     seg.destinatario_bloqueado, '#dc2626'],
+      ['Sandbox/bwrap fail',         seg.sandbox_fail,           '#dc2626'],
+      ['Rate-limit',                 seg.rate_limit,             '#f59e0b'],
+      ['Tool denegada',              seg.tool_denegado,          '#f59e0b'],
+      ['Prompt violation/injection', seg.prompt_violation,       '#dc2626'],
+      ['Alerta al owner',            seg.alerta_owner,           '#6366f1'],
+    ].filter(([_, arr]) => arr && arr.length);
+    if (segItems.length) {
+      html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">🔐 Seguridad — eventos en logs</div>`);
+      for (const [label, arr, color] of segItems) {
+        const ult = arr.slice(-3).map(t => `<code style="background:#f1f5f9;padding:1px 4px;border-radius:2px;font-size:11px;">${_esc(t)}</code>`).join(' ');
+        html.push(`<div style="padding:6px 10px;background:#fafbfc;border-left:3px solid ${color};border-radius:3px;margin-bottom:6px;font-size:13px;">🔐 ${_esc(label)} <strong>×${arr.length}</strong> ${ult}${arr.length > 3 ? ' …' : ''}</div>`);
+      }
+      html.push(`</td></tr>`);
+    }
 
     // Pendientes
     if (s.pendientes_por_usuario.length) {
