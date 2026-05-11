@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3164  2026-05-11 12:10:28  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+3163  2026-05-11 12:10:28  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+3162  2026-05-11 12:10:28  whatsapp  saliente   5491166903856@c.us   Fer, ¿cuánto tiempo le ponemos a la reunión de HR & SALES? ¿Una hora? Así la armo recurrente todos los lunes a las 10:30.                                                                               
+
+3161  2026-05-11 12:10:27  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+3160  2026-05-11 12:10:27  whatsapp  saliente   34342575317160@lid   Perfecto, lo coordino directo con Fer entonces.                                                                                                                                                         
+
+3159  2026-05-11 12:10:27  sistema   interno                         claude_call whatsapp: 23790ms prompt=48116c raw=941c                                                                                                                                                    
+
+3158  2026-05-11 12:10:03  whatsapp  entrante   34342575317160@lid   no creo que sea algo mio                                                                                                                                                                                
+
 3157  2026-05-11 12:08:50  whatsapp  saliente   34342575317160@lid   Buena pregunta — no me quedó claro del mensaje de Fer. Puede ser que te quiera a vos adentro, o puede ser que simplemente me esté pidiendo como usuario que le arme la recurrente en su propio calendar.
 
 3156  2026-05-11 12:08:50  sistema   interno                         claude_call whatsapp: 24397ms prompt=47910c raw=597c                                                                                                                                                    
@@ -251,20 +265,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3066  2026-05-10 21:18:56  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 3065  2026-05-10 21:18:56  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-3064  2026-05-10 21:18:56  whatsapp  saliente   34342575317160@lid   Sí, así puedo leerlo. Pero el mensaje se cortó igual — me llegaron completos *Carlos Canosa*, *Jose Milei*, *Juan Ignacio Paez Maña* y *Laura Noboa*, y se cortó justo al inicio de Isabel Imperiale. Ya
-
-3063  2026-05-10 21:18:46  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
-
-3062  2026-05-10 21:17:23  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
-
-3061  2026-05-10 21:17:16  whatsapp  entrante   34342575317160@lid   Pudiste así?                                                                                                                                                                                            
-
-3060  2026-05-10 21:15:45  whatsapp  entrante   34342575317160@lid   Todos los teléfonos que no tienen código de país y tienen 8 dígitos, ponerle adelante +54 que es el de acá                                                                                              
-
-3059  2026-05-10 21:14:22  whatsapp  entrante   34342575317160@lid   First Name      Last Name       Birthday        EMAIL   PHONE                                                                                                                                           
-                                                                     Carlos  Canosa  1944-03-15      carlosalbertocanosa@yahoo.com   1148618188                                                                                                                              
-                                                                     Jose    Milei   1945-12-18      drjosemilei@cardiopsis.com.ar   1145083836 ::: 1145083880                                                                                                               
-                                                                     Juan Ignacio    P                                                                                                                                                                                       
-
-3058  2026-05-10 21:11:27  whatsapp  saliente   34342575317160@lid   28 GB disponibles de 38 GB en total. Usados: 8.7 GB (25%). Todo tranquilo.                                                                                                                              
