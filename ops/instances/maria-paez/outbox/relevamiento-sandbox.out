@@ -1,0 +1,120 @@
+# ejecutado: 2026-05-10T21:13:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "=== a) sandbox tools ==="
+#   for cmd in bwrap bubblewrap firejail unshare; do
+#     if command -v "$cmd" >/dev/null 2>&1; then
+#       echo "  $cmd: $(command -v $cmd) — $($cmd --version 2>&1 | head -1)"
+#     else
+#       echo "  $cmd: NO INSTALADO"
+#     fi
+#   done
+#   apt list --installed 2>/dev/null | grep -iE 'bubblewrap|firejail' | head -5
+#   echo
+#   
+#   echo "=== b) Claude Code: paths de auth/config ==="
+#   which claude
+#   claude --version 2>&1 | head -1
+#   echo "Variables CLAUDE_*:"
+#   env | grep -iE '^CLAUDE_|^ANTHROPIC_' | sed 's/=.*=/=<REDACTED>=/' || echo "  (ninguna)"
+#   echo "Files típicos:"
+#   for d in /root/.claude /root/.config/claude /root/.cache/claude /root/.anthropic /root/.config/anthropic; do
+#     if [ -e "$d" ]; then
+#       echo "  EXISTE: $d"
+#       ls -la "$d" 2>&1 | head -10
+#     fi
+#   done
+#   echo "Búsqueda más amplia (paths con 'claude' bajo /root, primeros 15, sin secretos):"
+#   find /root -maxdepth 4 -iname '*claude*' -printf '  %TY-%Tm-%Td %p (%s bytes, mode=%m)\n' 2>/dev/null | head -15
+#   echo
+#   
+#   echo "=== c) Cómo se invoca claude desde Maria ==="
+#   echo "CLAUDE_BIN env: ${CLAUDE_BIN:-(no set, default 'claude')}"
+#   echo "Wrapper script?:"
+#   file $(command -v claude) 2>&1 | head -3
+#   head -5 $(command -v claude) 2>/dev/null
+#   echo
+#   
+#   echo "=== d) Chrome path ==="
+#   ls -la /usr/bin/google-chrome 2>&1 | head -3
+#   google-chrome --version 2>&1 | head -1
+#   echo
+#   
+#   echo "=== e) pm2 estado actual ==="
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   ps=json.load(sys.stdin)
+#   for p in ps:
+#       e=p.get('pm2_env',{})
+#       print(f\"  {p.get('name')}: status={e.get('status')} restarts={e.get('restart_time')} exec_mode={e.get('exec_mode')} uid={e.get('uid','?')}\")"
+#   echo
+#   echo "=== f) test rápido: claude bajo bwrap (si está disponible) ==="
+#   if command -v bwrap >/dev/null 2>&1; then
+#     echo "Probando bwrap básico:"
+#     bwrap --ro-bind /usr /usr --ro-bind /etc /etc --ro-bind /lib /lib --ro-bind /lib64 /lib64 --proc /proc --dev /dev --tmpfs /tmp --tmpfs /root --tmpfs /home -- bash -c "echo OK_BWRAP_SHELL; ls /root | head -3; ls /tmp | head -3" 2>&1 | head -10
+#   else
+#     echo "  bwrap no instalado, skip"
+#   fi
+
+# ───── output ─────
+=== a) sandbox tools ===
+  bwrap: NO INSTALADO
+  bubblewrap: NO INSTALADO
+  firejail: NO INSTALADO
+  unshare: /usr/bin/unshare — unshare from util-linux 2.39.3
+
+=== b) Claude Code: paths de auth/config ===
+/usr/local/bin/claude
+2.1.110 (Claude Code)
+Variables CLAUDE_*:
+Files típicos:
+  EXISTE: /root/.claude
+total 48
+drwxr-xr-x 10 root root 4096 May 10 18:01 .
+drwx------ 15 root root 4096 May 10 21:12 ..
+drwxr-xr-x  2 root root 4096 May 10 18:03 backups
+drwxr-xr-x  2 root root 4096 Apr 15 20:00 cache
+-rw-------  1 root root  135 Apr 15 20:03 history.jsonl
+drwxr-xr-x  2 root root 4096 Apr 15 21:52 plans
+drwxr-xr-x  3 root root 4096 Apr 15 20:02 plugins
+-rw-------  1 root root  273 May 10 21:07 policy-limits.json
+drwx------  4 root root 4096 Apr 15 21:12 projects
+Búsqueda más amplia (paths con 'claude' bajo /root, primeros 15, sin secretos):
+  2026-05-10 /root/.claude.json (23061 bytes, mode=600)
+  2026-05-07 /root/.cache/claude-cli-nodejs (4096 bytes, mode=755)
+  2026-05-10 /root/secretaria/claude-client.js (7514 bytes, mode=644)
+  2026-05-03 /root/secretaria/node_modules/socks/.claude (4096 bytes, mode=755)
+  2026-05-10 /root/.claude (4096 bytes, mode=755)
+  2026-05-08 /root/.claude/backups/.claude.json.backup.1778283009499 (22961 bytes, mode=600)
+  2026-05-08 /root/.claude/backups/.claude.json.backup.1778283327138 (23006 bytes, mode=600)
+  2026-05-09 /root/.claude/backups/.claude.json.backup.1778360535245 (23061 bytes, mode=600)
+  2026-05-10 /root/.claude/backups/.claude.json.backup.1778446998723 (23061 bytes, mode=600)
+  2026-05-08 /root/.claude/backups/.claude.json.backup.1778282131742 (23005 bytes, mode=600)
+  2026-05-09 /root/.claude/plugins/marketplaces/claude-plugins-official (4096 bytes, mode=755)
+  2026-04-15 /root/.local/share/applications/claude-code-url-handler.desktop (208 bytes, mode=644)
+
+=== c) Cómo se invoca claude desde Maria ===
+CLAUDE_BIN env: (no set, default 'claude')
+Wrapper script?:
+ops/instances/maria-paez/inbox/relevamiento-sandbox.sh: line 34: file: command not found
+#!/usr/bin/env node
+// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.
+
+// Version: 2.1.110
+
+
+=== d) Chrome path ===
+lrwxrwxrwx 1 root root 31 Apr 14 18:31 /usr/bin/google-chrome -> /etc/alternatives/google-chrome
+Google Chrome 147.0.7727.101 
+
+=== e) pm2 estado actual ===
+  maria-paez: status=online restarts=10 exec_mode=fork_mode uid=?
+
+=== f) test rápido: claude bajo bwrap (si está disponible) ===
+  bwrap no instalado, skip
+
+# exit=0
