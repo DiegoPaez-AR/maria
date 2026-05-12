@@ -170,9 +170,21 @@ function statsInstancia(env) {
     }
 
     // ── Correlación SIGINT → boot (≤60s) = deploy; sin boot = crash ──
+    // Refinamiento: si el SIGINT es muy reciente (últimos 5 min) y pm2 está online,
+    // asumimos que el boot está en curso (deploy) — evita falso positivo cuando
+    // el reporte corre mientras un reload de cron-master termina.
+    const nowMs = Date.now();
+    const pm2Online = stats.pm2 && stats.pm2.status === 'online';
     for (const s of sigints) {
       const matched = boots.some(b => b.ts >= s.ts && b.ts - s.ts <= 60 * 1000);
-      if (matched) stats.errores.deploys++; else stats.errores.crashes++;
+      if (matched) {
+        stats.errores.deploys++;
+      } else if (pm2Online && (nowMs - s.ts) <= 5 * 60 * 1000) {
+        // SIGINT muy reciente sin boot loggeado todavía, pm2 online → reload en curso
+        stats.errores.deploys++;
+      } else {
+        stats.errores.crashes++;
+      }
     }
   } catch (err) {
     stats.notas.push(`pm2 logs falló: ${err.message}`);
