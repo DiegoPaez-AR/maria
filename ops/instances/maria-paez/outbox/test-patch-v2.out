@@ -1,0 +1,71 @@
+# ejecutado: 2026-05-12T17:24:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "── Verificar que el patch nuevo está en el repo ──"
+#   grep -c "deploys" /root/secretaria/daily-report.js
+#   grep -c "is_owner" /root/secretaria/daily-report.js
+#   echo
+#   
+#   echo "── DRY_RUN: preview del reporte con patch v2 ──"
+#   DRY_RUN=1 /usr/bin/node /root/secretaria/daily-report.js 2>&1 | tail -60
+#   
+#   echo
+#   echo "── Mandar reporte ACTUALIZADO (con deploys/crashes + contexto seguridad) ──"
+#   /usr/bin/node /root/secretaria/daily-report.js 2>&1 | tail -10
+#   
+#   echo "fin"
+
+# ───── output ─────
+── Verificar que el patch nuevo está en el repo ──
+5
+5
+
+── DRY_RUN: preview del reporte con patch v2 ──
+Stats para maria-paez...
+
+────── PREVIEW (texto) ──────
+📊 Reporte diario VPS Maria — 12/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 3992308 · uptime 0m · 73.8 MB · 0% CPU
+Proceso: 0 deploys · 1 crashes (restarts lifetime: 15)
+WhatsApp: 14↓ / 29↑ (3 audios)
+Gmail:    0↓ / 0↑
+Calendar: 0 creados · 1 modificados · 0 borrados
+🔴 Crashes (SIGINT sin recovery): 1
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Diego [owner]: 9 abiertos (+1 -3)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 7864 bytes
+
+DRY_RUN=1 — no mando email
+
+── Mandar reporte ACTUALIZADO (con deploys/crashes + contexto seguridad) ──
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Diego [owner]: 9 abiertos (+1 -3)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 7869 bytes
+
+✓ enviado a diego@paez.is
+fin
+
+# exit=0
