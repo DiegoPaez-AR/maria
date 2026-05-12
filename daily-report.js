@@ -73,8 +73,10 @@ function statsInstancia(env) {
     eventos: { wa_in: 0, wa_out: 0, audios: 0, gmail_in: 0, gmail_out: 0,
                 cal_creados: 0, cal_modificados: 0, cal_borrados: 0 },
     errores: { wa_disconnect: [], claude_fail: 0, fallaron: 0,
-                invalid_grant: 0, sigint: 0 },
+                invalid_grant: 0,
+                deploys: 0, crashes: 0, sigint_timestamps: [] },
     seguridad: {
+      // Cada item: { hhmm, jid, nombre, mensaje, is_owner } cuando aplica.
       security_audit: [],        // [security] o [audit] explícitos
       destinatario_bloqueado: [],// validación de destinatarios
       sandbox_fail: [],          // bwrap/sandbox failures
@@ -108,32 +110,69 @@ function statsInstancia(env) {
     stats.notas.push(`pm2 jlist falló: ${err.message}`);
   }
 
-  // ── Logs pm2 últimas 24h: errores, restarts, disconnects ──
+  // ── Logs pm2 últimas 24h: errores, restarts, disconnects, seguridad con contexto ──
+  // Estrategia: 1ª pasada captura todos los eventos relevantes con timestamp;
+  //             2ª pasada correlaciona SIGINT con boot siguiente (deploy vs crash)
+  //             y eventos de seguridad con el [WA ←] previo (snippet + remitente).
   try {
     const logs = execSync(`pm2 logs ${slug} --lines 10000 --nostream 2>&1 | tail -10000`,
       { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 });
     const hace24h = Date.now() - 24 * 3600 * 1000;
-    for (const line of logs.split('\n')) {
-      const tsMatch = line.match(/^\d+\|[\w-]+\s*\|\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
-      if (!tsMatch) continue;
-      const ts = new Date(tsMatch[1].replace(' ', 'T') + '-03:00').getTime();
-      if (ts < hace24h) continue;
 
-      if (/\[WA disconnected\]/.test(line)) stats.errores.wa_disconnect.push(tsMatch[1]);
+    // line objects: { ts (ms), tsStr ('YYYY-MM-DD HH:MM:SS'), text (resto), raw }
+    const events = [];
+    for (const line of logs.split('\n')) {
+      const m = line.match(/^\d+\|[\w-]+\s*\|\s*(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}):\s?(.*)$/);
+      if (!m) continue;
+      const ts = new Date(m[1].replace(' ', 'T') + '-03:00').getTime();
+      if (ts < hace24h) continue;
+      events.push({ ts, tsStr: m[1], text: m[2], raw: line });
+    }
+
+    const sigints = [];
+    const boots = [];
+
+    for (let i = 0; i < events.length; i++) {
+      const ev = events[i];
+      const line = ev.raw;
+      const tsStr = ev.tsStr;
+      const hhmm = tsStr.slice(11, 16);
+
+      if (/\[WA disconnected\]/.test(line)) stats.errores.wa_disconnect.push(tsStr);
       if (/Claude falló/.test(line))         stats.errores.claude_fail++;
       if (/FALLARON/.test(line))             stats.errores.fallaron++;
       if (/invalid_grant/.test(line))        stats.errores.invalid_grant++;
-      if (/SIGINT recibido/.test(line))      stats.errores.sigint++;
+      if (/SIGINT recibido/.test(line))      { sigints.push(ev); stats.errores.sigint_timestamps.push(tsStr); }
+      if (/Maria \S+ \[[\w-]+\] iniciando|arrancando loop de recordatorios/.test(line)) boots.push(ev);
 
-      // ── Seguridad: detección por patrones en pm2 logs ──
-      const hhmm = tsMatch[1].slice(11, 16);
-      if (/\[security\]|\[audit\]/i.test(line))                                            stats.seguridad.security_audit.push(hhmm);
-      if (/destinatario.*(denegad|bloqueado|no.permitido|inv[aá]lido)/i.test(line))        stats.seguridad.destinatario_bloqueado.push(hhmm);
-      if (/(bwrap|sandbox).*(fail|violation|error)/i.test(line))                            stats.seguridad.sandbox_fail.push(hhmm);
-      if (/rate.?limit|throttle|too many/i.test(line))                                     stats.seguridad.rate_limit.push(hhmm);
-      if (/(tool|herramienta).*(denegad|bloqued|restring)/i.test(line))                     stats.seguridad.tool_denegado.push(hhmm);
-      if (/prompt.*(violation|injection)|jailbreak/i.test(line))                            stats.seguridad.prompt_violation.push(hhmm);
-      if (/\[WA alert\]|\[alerta\]|alert.*owner/i.test(line))                               stats.seguridad.alerta_owner.push(hhmm);
+      // ── Buscar el último [WA ←] previo dentro de los últimos 8 eventos (~2 min) ──
+      const ctx = () => {
+        for (let j = i; j >= Math.max(0, i - 8); j--) {
+          const m = events[j].text.match(/\[WA ←\]\s+([^(]+?)\s*\(([^)]+)\):\s*(.*)$/);
+          if (m) return { nombre: m[1].trim(), jid: m[2].trim(), mensaje: m[3].slice(0, 120) };
+        }
+        return { nombre: '', jid: '', mensaje: '' };
+      };
+
+      const push = (arr, withCtx) => {
+        const item = { hhmm };
+        if (withCtx) Object.assign(item, ctx());
+        arr.push(item);
+      };
+
+      if (/\[security\]|\[audit\]/i.test(line))                                       push(stats.seguridad.security_audit, false);
+      if (/destinatario.*(denegad|bloqueado|no.permitido|inv[aá]lido)/i.test(line))   push(stats.seguridad.destinatario_bloqueado, true);
+      if (/(bwrap|sandbox).*(fail|violation|error)/i.test(line))                       push(stats.seguridad.sandbox_fail, false);
+      if (/rate.?limit|throttle|too many/i.test(line))                                push(stats.seguridad.rate_limit, true);
+      if (/(tool|herramienta).*(denegad|bloqued|restring)/i.test(line))                push(stats.seguridad.tool_denegado, true);
+      if (/prompt.*(violation|injection)|jailbreak/i.test(line))                       push(stats.seguridad.prompt_violation, true);
+      if (/\[WA alert\]|\[alerta\]|alert.*owner/i.test(line))                          push(stats.seguridad.alerta_owner, false);
+    }
+
+    // ── Correlación SIGINT → boot (≤60s) = deploy; sin boot = crash ──
+    for (const s of sigints) {
+      const matched = boots.some(b => b.ts >= s.ts && b.ts - s.ts <= 60 * 1000);
+      if (matched) stats.errores.deploys++; else stats.errores.crashes++;
     }
   } catch (err) {
     stats.notas.push(`pm2 logs falló: ${err.message}`);
@@ -189,6 +228,15 @@ function statsInstancia(env) {
         const cerradosHoy = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id=? AND cerrado >= ?`).get(u.id, desde).n;
         stats.pendientes_por_usuario.push({ nombre: u.nombre, rol: u.rol, abiertos, nuevosHoy, cerradosHoy });
       }
+
+      // ── Enriquecer eventos de seguridad con flag is_owner ──
+      // Heurística: matchear por nombre (cómo Maria lo identifica en logs `[WA ←] Nombre (jid):`).
+      const ownerNombres = new Set(usuarios.filter(u => u.rol === 'owner').map(u => u.nombre));
+      for (const key of Object.keys(stats.seguridad)) {
+        for (const item of stats.seguridad[key]) {
+          if (item && item.nombre && ownerNombres.has(item.nombre)) item.is_owner = true;
+        }
+      }
     } catch (err) {
       stats.notas.push(`DB falló: ${err.message}`);
     } finally {
@@ -213,18 +261,19 @@ function renderTexto(allStats, fechaStr) {
     lines.push('═══════════════════════════════════════════');
     lines.push(`INSTANCIA: ${s.slug} (${s.nombre})`);
     lines.push('═══════════════════════════════════════════');
+    const e = s.errores;
     if (s.pm2) {
-      lines.push(`pm2: ${s.pm2.status} · pid ${s.pm2.pid} · uptime ${fmtUptime(s.pm2.uptime_ms)} · restarts ${s.pm2.restart_time} · ${s.pm2.memory_mb} MB · ${s.pm2.cpu}% CPU`);
+      lines.push(`pm2: ${s.pm2.status} · pid ${s.pm2.pid} · uptime ${fmtUptime(s.pm2.uptime_ms)} · ${s.pm2.memory_mb} MB · ${s.pm2.cpu}% CPU`);
+      lines.push(`Proceso: ${e.deploys} deploys · ${e.crashes} crashes (restarts lifetime: ${s.pm2.restart_time})`);
     }
     lines.push(`WhatsApp: ${s.eventos.wa_in}↓ / ${s.eventos.wa_out}↑ (${s.eventos.audios} audios)`);
     lines.push(`Gmail:    ${s.eventos.gmail_in}↓ / ${s.eventos.gmail_out}↑`);
     lines.push(`Calendar: ${s.eventos.cal_creados} creados · ${s.eventos.cal_modificados} modificados · ${s.eventos.cal_borrados} borrados`);
-    const e = s.errores;
     if (e.wa_disconnect.length) lines.push(`⚠️ WA disconnect x${e.wa_disconnect.length}`);
     if (e.claude_fail)          lines.push(`⚠️ Claude falló: ${e.claude_fail}`);
     if (e.fallaron)             lines.push(`⚠️ Acciones parciales: ${e.fallaron}`);
     if (e.invalid_grant)        lines.push(`⚠️ Google invalid_grant: ${e.invalid_grant}`);
-    if (e.sigint > 4)           lines.push(`⚠️ SIGINT: ${e.sigint}`);
+    if (e.crashes > 0)          lines.push(`🔴 Crashes (SIGINT sin recovery): ${e.crashes}`);
 
     // ── Seguridad (sólo se imprime si hay matches) ──
     const seg = s.seguridad || {};
@@ -240,8 +289,12 @@ function renderTexto(allStats, fechaStr) {
     if (segItems.length) {
       lines.push('🔐 Seguridad:');
       for (const [label, arr] of segItems) {
-        const ult = arr.slice(-3).join(', ');
-        lines.push(`   · ${label} ×${arr.length}${arr.length ? ` (últimos: ${ult})` : ''}`);
+        lines.push(`   · ${label} ×${arr.length}`);
+        for (const it of arr.slice(-3)) {
+          const quien = it.nombre ? `${it.nombre}${it.is_owner ? ' (owner)' : ''}` : '';
+          const msg = it.mensaje ? `: "${it.mensaje.slice(0, 80)}${it.mensaje.length > 80 ? '…' : ''}"` : '';
+          lines.push(`       ${it.hhmm}${quien ? `  ${quien}` : ''}${msg}`);
+        }
       }
     }
 
@@ -277,8 +330,10 @@ function _evaluarSalud(s) {
   const e = s.errores;
   if (!s.pm2 || s.pm2.status !== 'online') return { color: '#dc2626', label: 'CAÍDO' };
   if (e.invalid_grant > 0)                   return { color: '#dc2626', label: 'OAuth roto' };
-  if (e.wa_disconnect.length > 0 || e.sigint > 4) return { color: '#f59e0b', label: 'Atención' };
+  if (e.crashes > 0)                         return { color: '#dc2626', label: 'CRASHES' };
+  if (e.wa_disconnect.length > 0)            return { color: '#f59e0b', label: 'Atención' };
   if (e.claude_fail > 0 || e.fallaron > 0)   return { color: '#f59e0b', label: 'Atención' };
+  // Deploys (incluso muchos) no afectan salud — son operación normal.
   return { color: '#10b981', label: 'OK' };
 }
 
@@ -327,7 +382,7 @@ function renderHTML(allStats, fechaStr) {
       <td align="right" style="padding:4px 0;">uptime <strong>${fmtUptime(s.pm2.uptime_ms)}</strong></td>
     </tr>
     <tr>
-      <td style="padding:4px 0;color:#64748b;">restarts: <strong style="color:${s.pm2.restart_time > 4 ? '#f59e0b' : '#1f2937'};">${s.pm2.restart_time}</strong></td>
+      <td style="padding:4px 0;color:#64748b;">deploys 24h: <strong style="color:#1f2937;">${e.deploys}</strong> · crashes 24h: <strong style="color:${e.crashes > 0 ? '#dc2626' : '#16a34a'};">${e.crashes}</strong> <span style="color:#94a3b8;font-size:11px;">(lifetime: ${s.pm2.restart_time})</span></td>
       <td align="right" style="padding:4px 0;color:#64748b;">${s.pm2.memory_mb} MB · ${s.pm2.cpu}% CPU</td>
     </tr>
   </table>
@@ -359,8 +414,8 @@ function renderHTML(allStats, fechaStr) {
     if (e.claude_fail) erroresHtml.push(`<div style="padding:6px 10px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:3px;margin-bottom:6px;font-size:13px;">⚠️ Claude falló: <strong>${e.claude_fail}</strong> ocurrencias</div>`);
     if (e.fallaron) erroresHtml.push(`<div style="padding:6px 10px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:3px;margin-bottom:6px;font-size:13px;">⚠️ Acciones parciales: <strong>${e.fallaron}</strong></div>`);
     if (e.invalid_grant) erroresHtml.push(`<div style="padding:6px 10px;background:#fee2e2;border-left:3px solid #dc2626;border-radius:3px;margin-bottom:6px;font-size:13px;color:#991b1b;">🔴 Google invalid_grant ×${e.invalid_grant} — <strong>reauth necesario</strong></div>`);
-    if (e.sigint > 4) erroresHtml.push(`<div style="padding:6px 10px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:3px;margin-bottom:6px;font-size:13px;">⚠️ SIGINT × ${e.sigint} (más de 4/día = posible loop)</div>`);
-    if (!erroresHtml.length) erroresHtml.push(`<div style="padding:8px 10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:3px;font-size:13px;color:#065f46;">✓ sin errores destacados</div>`);
+    if (e.crashes > 0) erroresHtml.push(`<div style="padding:6px 10px;background:#fee2e2;border-left:3px solid #dc2626;border-radius:3px;margin-bottom:6px;font-size:13px;color:#991b1b;">🔴 Crashes <strong>×${e.crashes}</strong> (SIGINT sin reinicio dentro de 60s)</div>`);
+    if (!erroresHtml.length) erroresHtml.push(`<div style="padding:8px 10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:3px;font-size:13px;color:#065f46;">✓ sin errores destacados${e.deploys > 0 ? ` · ${e.deploys} deploy${e.deploys === 1 ? '' : 's'} normal${e.deploys === 1 ? '' : 'es'} en 24h` : ''}</div>`);
     html.push(erroresHtml.join(''));
     html.push(`</td></tr>`);
 
@@ -379,8 +434,24 @@ function renderHTML(allStats, fechaStr) {
       html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
   <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">🔐 Seguridad — eventos en logs</div>`);
       for (const [label, arr, color] of segItems) {
-        const ult = arr.slice(-3).map(t => `<code style="background:#f1f5f9;padding:1px 4px;border-radius:2px;font-size:11px;">${_esc(t)}</code>`).join(' ');
-        html.push(`<div style="padding:6px 10px;background:#fafbfc;border-left:3px solid ${color};border-radius:3px;margin-bottom:6px;font-size:13px;">🔐 ${_esc(label)} <strong>×${arr.length}</strong> ${ult}${arr.length > 3 ? ' …' : ''}</div>`);
+        // Item summary line
+        html.push(`<div style="padding:8px 10px;background:#fafbfc;border-left:3px solid ${color};border-radius:3px;margin-bottom:6px;font-size:13px;">
+          <div style="margin-bottom:${arr.some(it => it.nombre || it.mensaje) ? '6px' : '0'};"><strong>🔐 ${_esc(label)} ×${arr.length}</strong></div>`);
+        // Detail rows con timestamp, quién, snippet
+        for (const it of arr.slice(-3)) {
+          const ownerBadge = it.is_owner
+            ? `<span style="display:inline-block;background:#ddd6fe;color:#5b21b6;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;letter-spacing:0.3px;margin-left:4px;">OWNER</span>`
+            : (it.nombre ? `<span style="display:inline-block;background:#fee2e2;color:#991b1b;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;letter-spacing:0.3px;margin-left:4px;">3RO</span>` : '');
+          const quien = it.nombre ? `<strong>${_esc(it.nombre)}</strong>${ownerBadge}` : '';
+          const msg = it.mensaje ? `<div style="margin-top:2px;color:#475569;font-style:italic;font-size:12px;">"${_esc(it.mensaje.slice(0, 120))}${it.mensaje.length > 120 ? '…' : ''}"</div>` : '';
+          if (quien || msg) {
+            html.push(`<div style="padding:4px 8px;background:#fff;border-radius:3px;margin-top:4px;font-size:12px;color:#1f2937;">
+              <code style="background:#f1f5f9;padding:1px 4px;border-radius:2px;font-size:11px;margin-right:6px;">${_esc(it.hhmm)}</code> ${quien}${msg}
+            </div>`);
+          }
+        }
+        if (arr.length > 3) html.push(`<div style="margin-top:4px;font-size:11px;color:#64748b;">…+${arr.length - 3} más</div>`);
+        html.push(`</div>`);
       }
       html.push(`</td></tr>`);
     }
