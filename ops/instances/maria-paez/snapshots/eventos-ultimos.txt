@@ -1,224 +1,226 @@
-id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                            
-----  -------------------  --------  ---------  -------------------  ----------------------------------------------------------------------------------------------------------------------------------
-3665  2026-05-12 21:12:54  whatsapp  entrante   159854454943774@lid  no me podés mandar el link del google calendar así lo acepto?                                                                     
+id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                  
+----  -------------------  --------  ---------  -------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3667  2026-05-12 21:13:46  whatsapp  saliente   159854454943774@lid  Google Calendar no tiene un link para aceptar de esa forma — la invitación llega por email directamente desde Calendar cuando alguien te agrega como invitado al evento.
+                                                                                                                                                                                                                                             
+                                                                     Con el email que te mandé ya t                                                                                                                                          
 
-3664  2026-05-12 21:11:18  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                 
+3666  2026-05-12 21:13:46  sistema   interno                         claude_call whatsapp: 52263ms prompt=47916c raw=911c                                                                                                                    
 
-3663  2026-05-12 21:11:18  sistema   interno                         acción ejecutada: modificar_evento                                                                                                
+3665  2026-05-12 21:12:54  whatsapp  entrante   159854454943774@lid  no me podés mandar el link del google calendar así lo acepto?                                                                                                           
 
-3662  2026-05-12 21:11:18  calendar  saliente                        modificado: Almuerzo con Gustavo, Santiago y Rodrigo — Iñaki (2026-05-14T13:00:00-03:00 → 2026-05-14T14:30:00-03:00)              
+3664  2026-05-12 21:11:18  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                       
 
-3661  2026-05-12 21:11:17  whatsapp  saliente   159854454943774@lid  Perfecto, te mando la invitación ahora a rpc@sondeos.com.ar.                                                                      
+3663  2026-05-12 21:11:18  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                      
 
-3660  2026-05-12 21:11:10  sistema   interno                         claude_call whatsapp: 44362ms prompt=47400c raw=715c                                                                              
+3662  2026-05-12 21:11:18  calendar  saliente                        modificado: Almuerzo con Gustavo, Santiago y Rodrigo — Iñaki (2026-05-14T13:00:00-03:00 → 2026-05-14T14:30:00-03:00)                                                    
 
-3659  2026-05-12 21:10:40  sistema   interno                         acción ejecutada: enviar_email                                                                                                    
+3661  2026-05-12 21:11:17  whatsapp  saliente   159854454943774@lid  Perfecto, te mando la invitación ahora a rpc@sondeos.com.ar.                                                                                                            
 
-3658  2026-05-12 21:10:40  gmail     saliente                        Hola Rodrigo,                                                                                                                     
-                                                                                                                                                                                                       
-                                                                     Te paso los detalles del almuerzo para que lo cargues en tu Google Calendar:                                                      
-                                                                                                                                                                                                       
-                                                                     Evento: Almuerzo en Iñaki                                                                                                         
-                                                                     Fecha: jueves 14 de mayo de 2026                                                                                                  
-                                                                     Horario: 13:00 – 14:30                                                                                                            
-                                                                     Lugar: Iñaki Restaurante                                                                                                          
+3660  2026-05-12 21:11:10  sistema   interno                         claude_call whatsapp: 44362ms prompt=47400c raw=715c                                                                                                                    
 
-3657  2026-05-12 21:10:40  whatsapp  saliente   159854454943774@lid  ¡Claro, te mando el mail ahora con los detalles!                                                                                  
+3659  2026-05-12 21:10:40  sistema   interno                         acción ejecutada: enviar_email                                                                                                                                          
 
-3656  2026-05-12 21:10:40  sistema   interno                         claude_call whatsapp: 32422ms prompt=47464c raw=1220c                                                                             
+3658  2026-05-12 21:10:40  gmail     saliente                        Hola Rodrigo,                                                                                                                                                           
+                                                                                                                                                                                                                                             
+                                                                     Te paso los detalles del almuerzo para que lo cargues en tu Google Calendar:                                                                                            
+                                                                                                                                                                                                                                             
+                                                                     Evento: Almuerzo en Iñaki                                                                                                                                               
+                                                                     Fecha: jueves 14 de mayo de 2026                                                                                                                                        
+                                                                     Horario: 13:00 – 14:30                                                                                                                                                  
+                                                                     Lugar: Iñaki Restaurante                                                                                                                                                
 
-3655  2026-05-12 21:10:25  whatsapp  entrante   159854454943774@lid  MI mail es rpc@sondeos.com.ar                                                                                                     
+3657  2026-05-12 21:10:40  whatsapp  saliente   159854454943774@lid  ¡Claro, te mando el mail ahora con los detalles!                                                                                                                        
 
-3654  2026-05-12 21:10:07  whatsapp  entrante   159854454943774@lid  me podés mandár la invitación por mail para que la cargue en mi google calendar                                                   
+3656  2026-05-12 21:10:40  sistema   interno                         claude_call whatsapp: 32422ms prompt=47464c raw=1220c                                                                                                                   
 
-3653  2026-05-12 21:09:48  whatsapp  saliente   159854454943774@lid  ¡Hola, Rodrigo! ¿En qué te puedo ayudar?                                                                                          
+3655  2026-05-12 21:10:25  whatsapp  entrante   159854454943774@lid  MI mail es rpc@sondeos.com.ar                                                                                                                                           
 
-3652  2026-05-12 21:09:48  sistema   interno                         claude_call whatsapp: 11979ms prompt=47363c raw=271c                                                                              
+3654  2026-05-12 21:10:07  whatsapp  entrante   159854454943774@lid  me podés mandár la invitación por mail para que la cargue en mi google calendar                                                                                         
 
-3651  2026-05-12 21:09:36  whatsapp  entrante   159854454943774@lid  Hola María                                                                                                                        
+3653  2026-05-12 21:09:48  whatsapp  saliente   159854454943774@lid  ¡Hola, Rodrigo! ¿En qué te puedo ayudar?                                                                                                                                
 
-3650  2026-05-12 20:26:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (6 usuarios)                                  
+3652  2026-05-12 21:09:48  sistema   interno                         claude_call whatsapp: 11979ms prompt=47363c raw=271c                                                                                                                    
 
-3649  2026-05-12 20:26:02  sistema   interno                         shutdown por SIGINT                                                                                                               
+3651  2026-05-12 21:09:36  whatsapp  entrante   159854454943774@lid  Hola María                                                                                                                                                              
 
-3648  2026-05-12 20:24:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (6 usuarios)                                  
+3650  2026-05-12 20:26:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (6 usuarios)                                                                        
 
-3647  2026-05-12 20:24:02  sistema   interno                         shutdown por SIGINT                                                                                                               
+3649  2026-05-12 20:26:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                     
 
-3646  2026-05-12 20:15:23  whatsapp  saliente   34342575317160@lid   Recordatorio — tenés 7 tareas abiertas 📝                                                                                          
-                                                                                                                                                                                                       
-                                                                     1. Pedir presupuesto DC Iplan — 532h                                                                                              
-                                                                     2. Pedir presupuesto DC Telecentro — 532h                                                                                         
-                                                                     3. Pedir presupuesto DC Claro — 532h                                                                                              
-                                                                     4. iProt Seguridad — 532h                                                                                                         
-                                                                     5. Espejo Subaru                                                                                                                  
+3648  2026-05-12 20:24:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (6 usuarios)                                                                        
 
-3645  2026-05-12 20:00:25  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)                                                                                
+3647  2026-05-12 20:24:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                     
 
-3644  2026-05-12 18:15:24  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Personal (03:30 p. m.)                                                                                              
+3646  2026-05-12 20:15:23  whatsapp  saliente   34342575317160@lid   Recordatorio — tenés 7 tareas abiertas 📝                                                                                                                                
+                                                                                                                                                                                                                                             
+                                                                     1. Pedir presupuesto DC Iplan — 532h                                                                                                                                    
+                                                                     2. Pedir presupuesto DC Telecentro — 532h                                                                                                                               
+                                                                     3. Pedir presupuesto DC Claro — 532h                                                                                                                                    
+                                                                     4. iProt Seguridad — 532h                                                                                                                                               
+                                                                     5. Espejo Subaru                                                                                                                                                        
 
-3643  2026-05-12 16:30:25  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)                                                                                
+3645  2026-05-12 20:00:25  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)                                                                                                                      
 
-3642  2026-05-12 15:45:24  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión en Tancat (01:00 p. m.) @Restaurante Tancat                                                                 
+3644  2026-05-12 18:15:24  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Personal (03:30 p. m.)                                                                                                                                    
 
-3641  2026-05-12 15:04:36  whatsapp  saliente   34342575317160@lid   Iñaki confirmó que ya actualizaron la reserva para cuatro el jueves.                                                              
+3643  2026-05-12 16:30:25  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)                                                                                                                      
 
-3640  2026-05-12 15:04:36  sistema   interno                         claude_call whatsapp: 13571ms prompt=47435c raw=274c                                                                              
+3642  2026-05-12 15:45:24  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión en Tancat (01:00 p. m.) @Restaurante Tancat                                                                                                       
 
-3639  2026-05-12 15:04:22  whatsapp  entrante   218867305574643@lid  Perfecto, gracias por avisar. Ya actualizo la reserva!                                                                            
+3641  2026-05-12 15:04:36  whatsapp  saliente   34342575317160@lid   Iñaki confirmó que ya actualizaron la reserva para cuatro el jueves.                                                                                                    
 
-3638  2026-05-12 14:45:31  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión Diego / Daniel Salvucci (12:00 p. m.) @Carlos Pellegrini 1521, piso 8, CABA                                 
-                                                                     Con: dsalvucci@cygnusvc.com, diego@paez.is                                                                                        
+3640  2026-05-12 15:04:36  sistema   interno                         claude_call whatsapp: 13571ms prompt=47435c raw=274c                                                                                                                    
 
-3637  2026-05-12 14:43:18  whatsapp  saliente   159854454943774@lid  ¡Seguro que sí! 😊                                                                                                                 
+3639  2026-05-12 15:04:22  whatsapp  entrante   218867305574643@lid  Perfecto, gracias por avisar. Ya actualizo la reserva!                                                                                                                  
 
-3636  2026-05-12 14:43:18  sistema   interno                         claude_call whatsapp: 11432ms prompt=47557c raw=227c                                                                              
+3638  2026-05-12 14:45:31  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión Diego / Daniel Salvucci (12:00 p. m.) @Carlos Pellegrini 1521, piso 8, CABA                                                                       
+                                                                     Con: dsalvucci@cygnusvc.com, diego@paez.is                                                                                                                              
 
-3635  2026-05-12 14:43:06  whatsapp  entrante   159854454943774@lid  Ahhh, ok. Bueno, nos vemos en otra ocasión.                                                                                       
+3637  2026-05-12 14:43:18  whatsapp  saliente   159854454943774@lid  ¡Seguro que sí! 😊                                                                                                                                                       
 
-3634  2026-05-12 14:41:56  whatsapp  saliente   159854454943774@lid  ¡Jaja, no! Yo soy la secretaria de Diego, solo coordino. El almuerzo es con él, Gustavo y Santiago. ¡Que lo disfruten!            
+3636  2026-05-12 14:43:18  sistema   interno                         claude_call whatsapp: 11432ms prompt=47557c raw=227c                                                                                                                    
 
-3633  2026-05-12 14:41:56  sistema   interno                         claude_call whatsapp: 13840ms prompt=47457c raw=338c                                                                              
+3635  2026-05-12 14:43:06  whatsapp  entrante   159854454943774@lid  Ahhh, ok. Bueno, nos vemos en otra ocasión.                                                                                                                             
 
-3632  2026-05-12 14:41:42  whatsapp  entrante   159854454943774@lid  Gracias por avisarme                                                                                                              
-                                                                     ¿Vos venís?                                                                                                                       
+3634  2026-05-12 14:41:56  whatsapp  saliente   159854454943774@lid  ¡Jaja, no! Yo soy la secretaria de Diego, solo coordino. El almuerzo es con él, Gustavo y Santiago. ¡Que lo disfruten!                                                  
 
-3631  2026-05-12 14:41:40  whatsapp  saliente   159854454943774@lid  ¡Hola, Rodrigo! ¿En qué te puedo ayudar?                                                                                          
+3633  2026-05-12 14:41:56  sistema   interno                         claude_call whatsapp: 13840ms prompt=47457c raw=338c                                                                                                                    
 
-3630  2026-05-12 14:41:40  sistema   interno                         claude_call whatsapp: 18330ms prompt=47690c raw=262c                                                                              
+3632  2026-05-12 14:41:42  whatsapp  entrante   159854454943774@lid  Gracias por avisarme                                                                                                                                                    
+                                                                     ¿Vos venís?                                                                                                                                                             
 
-3629  2026-05-12 14:41:22  whatsapp  entrante   159854454943774@lid  Hola María                                                                                                                        
+3631  2026-05-12 14:41:40  whatsapp  saliente   159854454943774@lid  ¡Hola, Rodrigo! ¿En qué te puedo ayudar?                                                                                                                                
 
-3628  2026-05-12 14:35:57  sistema   interno                         acción ejecutada: enviar_wa                                                                                                       
+3630  2026-05-12 14:41:40  sistema   interno                         claude_call whatsapp: 18330ms prompt=47690c raw=262c                                                                                                                    
 
-3627  2026-05-12 14:35:57  whatsapp  saliente   5491157276026@c.us   Hola Rodrigo, te aviso que Diego te sumó al almuerzo del *jueves 14 de mayo a la 1:00 p. m.* en *Iñaki Restaurante*. ¡Ahí los veo!
+3629  2026-05-12 14:41:22  whatsapp  entrante   159854454943774@lid  Hola María                                                                                                                                                              
 
-3626  2026-05-12 14:35:57  whatsapp  saliente   34342575317160@lid   Dale, le mando un WA a Dodi avisándole del almuerzo del jueves.                                                                   
+3628  2026-05-12 14:35:57  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                             
 
-3625  2026-05-12 14:35:57  sistema   interno                         claude_call whatsapp: 25723ms prompt=47165c raw=529c                                                                              
+3627  2026-05-12 14:35:57  whatsapp  saliente   5491157276026@c.us   Hola Rodrigo, te aviso que Diego te sumó al almuerzo del *jueves 14 de mayo a la 1:00 p. m.* en *Iñaki Restaurante*. ¡Ahí los veo!                                      
 
-3624  2026-05-12 14:35:31  whatsapp  entrante   34342575317160@lid   y mandarle un WhatsApp adedio a guisándole también que lo sonaste                                                                 
-                                                                      para que sepa de las cosas                                                                                                       
-                                                                      o sea que las va a tener en su agenda para que sepa del almorzo                                                                  
+3626  2026-05-12 14:35:57  whatsapp  saliente   34342575317160@lid   Dale, le mando un WA a Dodi avisándole del almuerzo del jueves.                                                                                                         
 
-3623  2026-05-12 14:33:05  sistema   interno                         acción ejecutada: enviar_wa                                                                                                       
+3625  2026-05-12 14:35:57  sistema   interno                         claude_call whatsapp: 25723ms prompt=47165c raw=529c                                                                                                                    
 
-3622  2026-05-12 14:33:05  whatsapp  saliente   5491134838324@c.us   Hola, les aviso que para el almuerzo del *jueves 14 de mayo a la 1:00 p. m.* van a ser *cuatro* personas. ¡Gracias!               
+3624  2026-05-12 14:35:31  whatsapp  entrante   34342575317160@lid   y mandarle un WhatsApp adedio a guisándole también que lo sonaste                                                                                                       
+                                                                      para que sepa de las cosas                                                                                                                                             
+                                                                      o sea que las va a tener en su agenda para que sepa del almorzo                                                                                                        
 
-3621  2026-05-12 14:33:05  sistema   interno                         acción ejecutada: modificar_evento                                                                                                
+3623  2026-05-12 14:33:05  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                             
 
-3620  2026-05-12 14:33:05  calendar  saliente                        modificado: Almuerzo con Gustavo, Santiago y Rodrigo — Iñaki (2026-05-14T13:00:00-03:00 → 2026-05-14T14:30:00-03:00)              
+3622  2026-05-12 14:33:05  whatsapp  saliente   5491134838324@c.us   Hola, les aviso que para el almuerzo del *jueves 14 de mayo a la 1:00 p. m.* van a ser *cuatro* personas. ¡Gracias!                                                     
 
-3619  2026-05-12 14:33:04  whatsapp  saliente   34342575317160@lid   Dale — sumo a Dodi al almuerzo del jueves y le mando la invitación de calendario. Y aviso a Iñaki que van a ser cuatro.           
+3621  2026-05-12 14:33:05  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                      
 
-3618  2026-05-12 14:33:03  sistema   interno                         claude_call whatsapp: 83797ms prompt=47485c raw=930c                                                                              
+3620  2026-05-12 14:33:05  calendar  saliente                        modificado: Almuerzo con Gustavo, Santiago y Rodrigo — Iñaki (2026-05-14T13:00:00-03:00 → 2026-05-14T14:30:00-03:00)                                                    
 
-3617  2026-05-12 14:31:39  whatsapp  entrante   34342575317160@lid   María, los sumas por favor doy al almuerzo de los jueves, mandáselo en la agenda, pedir el                                        
-                                                                      mail si no la doy mi hermano, pedir el mail si no lo tenés y avisa en iñaki que vamos a ser cuatro.                              
+3619  2026-05-12 14:33:04  whatsapp  saliente   34342575317160@lid   Dale — sumo a Dodi al almuerzo del jueves y le mando la invitación de calendario. Y aviso a Iñaki que van a ser cuatro.                                                 
 
-3616  2026-05-12 14:15:01  whatsapp  saliente   34342575317160@lid   ☀️ *Brief de mañana, miércoles 13 de mayo*                                                                                        
-                                                                                                                                                                                                       
-                                                                     📅 *Agenda*                                                                                                                        
-                                                                     • 10:00 a. m. – 01:00 p. m. — PlusZero x IBM: The Future of Financial Systems @IBM Argentina, Ing. Enrique Butty 275, PB, CABA    
-                                                                     • 11:00 a. m. – 01                                                                                                                
+3618  2026-05-12 14:33:03  sistema   interno                         claude_call whatsapp: 83797ms prompt=47485c raw=930c                                                                                                                    
 
-3615  2026-05-12 14:15:01  sistema   interno                         claude_call whatsapp: 21919ms prompt=47020c raw=773c                                                                              
+3617  2026-05-12 14:31:39  whatsapp  entrante   34342575317160@lid   María, los sumas por favor doy al almuerzo de los jueves, mandáselo en la agenda, pedir el                                                                              
+                                                                      mail si no la doy mi hermano, pedir el mail si no lo tenés y avisa en iñaki que vamos a ser cuatro.                                                                    
 
-3614  2026-05-12 14:14:39  whatsapp  entrante   34342575317160@lid   pasame el birief de mi dia de manana                                                                                              
+3616  2026-05-12 14:15:01  whatsapp  saliente   34342575317160@lid   ☀️ *Brief de mañana, miércoles 13 de mayo*                                                                                                                              
+                                                                                                                                                                                                                                             
+                                                                     📅 *Agenda*                                                                                                                                                              
+                                                                     • 10:00 a. m. – 01:00 p. m. — PlusZero x IBM: The Future of Financial Systems @IBM Argentina, Ing. Enrique Butty 275, PB, CABA                                          
+                                                                     • 11:00 a. m. – 01                                                                                                                                                      
 
-3613  2026-05-12 14:00:26  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)                                                                                
+3615  2026-05-12 14:15:01  sistema   interno                         claude_call whatsapp: 21919ms prompt=47020c raw=773c                                                                                                                    
 
-3612  2026-05-12 13:59:50  sistema   interno                         acción ejecutada: set_cumple_contacto                                                                                             
+3614  2026-05-12 14:14:39  whatsapp  entrante   34342575317160@lid   pasame el birief de mi dia de manana                                                                                                                                    
 
-3611  2026-05-12 13:59:50  whatsapp  saliente   34342575317160@lid   Anotado — Gabriela Echaniz cumple 50 mañana (13/05/1976). Ya queda en su ficha.                                                   
+3613  2026-05-12 14:00:26  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)                                                                                                                      
 
-3610  2026-05-12 13:59:49  sistema   interno                         claude_call whatsapp: 21664ms prompt=47113c raw=465c                                                                              
+3612  2026-05-12 13:59:50  sistema   interno                         acción ejecutada: set_cumple_contacto                                                                                                                                   
 
-3609  2026-05-12 13:59:27  whatsapp  entrante   34342575317160@lid   cumple 50                                                                                                                         
+3611  2026-05-12 13:59:50  whatsapp  saliente   34342575317160@lid   Anotado — Gabriela Echaniz cumple 50 mañana (13/05/1976). Ya queda en su ficha.                                                                                         
 
-3608  2026-05-12 13:59:27  whatsapp  entrante   34342575317160@lid   manana cumple años, guardalo en la libreta                                                                                        
+3610  2026-05-12 13:59:49  sistema   interno                         claude_call whatsapp: 21664ms prompt=47113c raw=465c                                                                                                                    
 
-3607  2026-05-12 13:59:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3609  2026-05-12 13:59:27  whatsapp  entrante   34342575317160@lid   cumple 50                                                                                                                                                               
 
-3606  2026-05-12 13:59:08  sistema   interno                         claude_call whatsapp: 13985ms prompt=47165c raw=239c                                                                              
+3608  2026-05-12 13:59:27  whatsapp  entrante   34342575317160@lid   manana cumple años, guardalo en la libreta                                                                                                                              
 
-3605  2026-05-12 13:58:54  whatsapp  entrante   34342575317160@lid   nono                                                                                                                              
+3607  2026-05-12 13:59:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3604  2026-05-12 13:58:25  sistema   interno                         contacto vcard (privado): Gabriela Echaniz → 5491165286555@c.us                                                                   
+3606  2026-05-12 13:59:08  sistema   interno                         claude_call whatsapp: 13985ms prompt=47165c raw=239c                                                                                                                    
 
-3603  2026-05-12 13:58:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3605  2026-05-12 13:58:54  whatsapp  entrante   34342575317160@lid   nono                                                                                                                                                                    
 
-3602  2026-05-12 13:57:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3604  2026-05-12 13:58:25  sistema   interno                         contacto vcard (privado): Gabriela Echaniz → 5491165286555@c.us                                                                                                         
 
-3601  2026-05-12 13:56:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3603  2026-05-12 13:58:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3600  2026-05-12 13:55:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3602  2026-05-12 13:57:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3599  2026-05-12 13:54:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3601  2026-05-12 13:56:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3598  2026-05-12 13:53:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3600  2026-05-12 13:55:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3597  2026-05-12 13:52:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3599  2026-05-12 13:54:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3596  2026-05-12 13:51:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3598  2026-05-12 13:53:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3595  2026-05-12 13:50:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3597  2026-05-12 13:52:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3594  2026-05-12 13:49:25  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3596  2026-05-12 13:51:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3593  2026-05-12 13:48:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3595  2026-05-12 13:50:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3592  2026-05-12 13:47:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3594  2026-05-12 13:49:25  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3591  2026-05-12 13:46:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3593  2026-05-12 13:48:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3590  2026-05-12 13:45:31  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Avila & Adrian (11:00 a. m.) @San martin 551 piso 3                                                                 
-                                                                     Con: hernan.fulco@sondeosglobal.com, avila.r@onexa.com.ar, hernan.depaula@sondeosglobal.com, adrian.rocca@gmail.com               
+3592  2026-05-12 13:47:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3589  2026-05-12 13:45:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3591  2026-05-12 13:46:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3588  2026-05-12 13:44:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3590  2026-05-12 13:45:31  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Avila & Adrian (11:00 a. m.) @San martin 551 piso 3                                                                                                       
+                                                                     Con: hernan.fulco@sondeosglobal.com, avila.r@onexa.com.ar, hernan.depaula@sondeosglobal.com, adrian.rocca@gmail.com                                                     
 
-3587  2026-05-12 13:43:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3589  2026-05-12 13:45:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3586  2026-05-12 13:42:25  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3588  2026-05-12 13:44:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3585  2026-05-12 13:41:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3587  2026-05-12 13:43:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3584  2026-05-12 13:40:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3586  2026-05-12 13:42:25  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3583  2026-05-12 13:39:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3585  2026-05-12 13:41:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3582  2026-05-12 13:38:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3584  2026-05-12 13:40:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3581  2026-05-12 13:37:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3583  2026-05-12 13:39:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3580  2026-05-12 13:36:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3582  2026-05-12 13:38:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3579  2026-05-12 13:35:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3581  2026-05-12 13:37:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3578  2026-05-12 13:34:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3580  2026-05-12 13:36:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3577  2026-05-12 13:33:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3579  2026-05-12 13:35:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3576  2026-05-12 13:32:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3578  2026-05-12 13:34:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3575  2026-05-12 13:31:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3577  2026-05-12 13:33:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3574  2026-05-12 13:30:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3576  2026-05-12 13:32:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3573  2026-05-12 13:29:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3575  2026-05-12 13:31:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3572  2026-05-12 13:28:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3574  2026-05-12 13:30:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3571  2026-05-12 13:27:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3573  2026-05-12 13:29:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3570  2026-05-12 13:26:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3572  2026-05-12 13:28:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3569  2026-05-12 13:25:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3571  2026-05-12 13:27:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3568  2026-05-12 13:24:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3570  2026-05-12 13:26:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3567  2026-05-12 13:23:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3569  2026-05-12 13:25:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
 
-3566  2026-05-12 13:22:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                            
+3568  2026-05-12 13:24:24  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                  
