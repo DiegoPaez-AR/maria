@@ -1,0 +1,681 @@
+# ejecutado: 2026-05-13T09:59:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   
+#   echo "═══ 1. Eventos que mencionan el ID 105171031949561 (cualquier campo) ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, nombre,
+#       substr(COALESCE(cuerpo,''),1,200) AS cuerpo,
+#       substr(COALESCE(metadata_json,''),1,400) AS meta
+#     FROM eventos
+#     WHERE de LIKE '%105171031949561%' OR cuerpo LIKE '%105171031949561%' OR metadata_json LIKE '%105171031949561%'
+#     ORDER BY id DESC LIMIT 15;"
+#   
+#   echo
+#   echo "═══ 2. Eventos que mencionan el número 5491144471264 ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, nombre,
+#       substr(COALESCE(cuerpo,''),1,200) AS cuerpo,
+#       substr(COALESCE(metadata_json,''),1,400) AS meta
+#     FROM eventos
+#     WHERE de LIKE '%5491144471264%' OR cuerpo LIKE '%5491144471264%' OR metadata_json LIKE '%5491144471264%'
+#     ORDER BY id DESC LIMIT 15;"
+#   
+#   echo
+#   echo "═══ 3. Eventos usuario_id=6 (Doris) ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, nombre,
+#       substr(COALESCE(cuerpo,''),1,200) AS cuerpo,
+#       substr(COALESCE(metadata_json,''),1,300) AS meta
+#     FROM eventos
+#     WHERE usuario_id=6
+#     ORDER BY id DESC LIMIT 20;"
+#   
+#   echo
+#   echo "═══ 4. Cualquier evento con 'Doris' en cuerpo o metadata o nombre ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, nombre,
+#       substr(COALESCE(cuerpo,''),1,200) AS cuerpo,
+#       substr(COALESCE(metadata_json,''),1,300) AS meta
+#     FROM eventos
+#     WHERE cuerpo LIKE '%Doris%' OR metadata_json LIKE '%Doris%' OR nombre LIKE '%Doris%'
+#     ORDER BY id DESC LIMIT 15;"
+#   
+#   echo
+#   echo "═══ 5. Esquema y datos de contactos relacionados con Doris/Capurro ═══"
+#   sqlite3 "$DB" "PRAGMA table_info(contactos);"
+#   echo "---rows---"
+#   sqlite3 -line "$DB" "SELECT * FROM contactos WHERE nombre LIKE '%Doris%' OR nombre LIKE '%Capurro%' LIMIT 5;"
+#   
+#   echo
+#   echo "═══ 6. Cualquier registro en hechos relacionado con Doris ═══"
+#   sqlite3 -line "$DB" "SELECT clave, valor, fuente FROM hechos WHERE valor LIKE '%Doris%' OR clave LIKE '%Doris%' OR clave LIKE '%doris%' LIMIT 5;"
+#   
+#   echo
+#   echo "═══ 7. Buscar 1051710319 o 5491144 en TODOS los campos de TODAS las tablas (no exhaustivo) ═══"
+#   for tabla in eventos contactos hechos pendientes estado_usuario estado programados usuarios; do
+#     echo "--- $tabla ---"
+#     sqlite3 "$DB" "SELECT * FROM $tabla WHERE CAST(rowid AS TEXT) IN (SELECT rowid FROM $tabla LIMIT 0)" >/dev/null 2>&1 || continue
+#     # Dump rows que matcheen 105171031949561 o 5491144471264 escaneando cada columna texto
+#     python3 - "$tabla" <<'PY'
+#   import sqlite3, sys
+#   tabla = sys.argv[1]
+#   conn = sqlite3.connect('/root/secretaria/state/maria-paez/db/maria.sqlite')
+#   c = conn.cursor()
+#   cols = [r[1] for r in c.execute(f"PRAGMA table_info({tabla})").fetchall()]
+#   where = " OR ".join([f"CAST({col} AS TEXT) LIKE '%105171031949561%' OR CAST({col} AS TEXT) LIKE '%5491144471264%'" for col in cols])
+#   try:
+#       rows = c.execute(f"SELECT * FROM {tabla} WHERE {where} LIMIT 5").fetchall()
+#       if rows:
+#           for r in rows:
+#               print(dict(zip(cols, [str(x)[:200] for x in r])))
+#       else:
+#           print("  (sin matches)")
+#   except Exception as e:
+#       print("  err:", e)
+#   PY
+#   done
+
+# ───── output ─────
+═══ 1. Eventos que mencionan el ID 105171031949561 (cualquier campo) ═══
+       id = 3883
+timestamp = 2026-05-13 12:34:45
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: enviar_wa
+     meta = {"accion":{"tipo":"enviar_wa","a":"105171031949561@lid","texto":"¡Hola Doris! Soy *María Páez*, la secretaria personal de Diego. Quería recordarte que estoy acá para ayudarte con lo que necesites:\n\n📅 Agendar y coordinar reuniones\n✉️ Redactar y gestionar emails\n📝 Hacer seguimiento de pendientes y tareas\n⏰ Recordatorios y alertas\n🤝 Coordinar con terceros en tu nombre\n\nPara poder ayudarte con
+
+       id = 3882
+timestamp = 2026-05-13 12:34:45
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   nombre = 
+   cuerpo = ¡Hola Doris! Soy *María Páez*, la secretaria personal de Diego. Quería recordarte que estoy acá para ayudarte con lo que necesites:
+
+📅 Agendar y coordinar reuniones
+✉️ Redactar y gestionar emails
+📝 Ha
+     meta = {"destinoOriginal":"105171031949561@lid","destinoFinal":"105171031949561@lid"}
+
+       id = 3180
+timestamp = 2026-05-11 12:16:31
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: crear_usuario
+     meta = {"accion":{"tipo":"crear_usuario","nombre":"Doris Capurro","wa_cus":"105171031949561@lid","email":"doris@capurro.com.ar"},"resultado":{"id":6,"nombre":"Doris Capurro","creado":true,"calendar_id":null},"canalOrigen":"whatsapp"}
+
+       id = 3082
+timestamp = 2026-05-10 22:38:58
+    canal = whatsapp
+direccion = saliente
+       de = 34342575317160@lid
+   nombre = Diego
+   cuerpo = Acá va tu libreta completa:
+
+*A*
+Agustina Acevedo — WA: 56715194151079@lid | agustinaacevedo@hotmail.es
+Ana Carina — WA: 180444528156752@lid
+
+*C*
+Carina Pubill — WA: 5492616564399@c.us | carinapubill2
+     meta = {"razonamiento":"Diego corrigió que quería ver sus contactos, no la agenda. Le listo toda la libreta privada ordenada alfabéticamente con datos relevantes.","inReplyTo":"false_34342575317160@lid_3EB01082807254E057AC2C","slot":"respuesta_a_usuario"}
+
+       id = 967
+timestamp = 2026-04-23 15:29:39
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: enviar_wa
+     meta = {"accion":{"tipo":"enviar_wa","a":"105171031949561@lid","texto":"Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. Para poder manejar tu agenda necesito que compartas tu Google Calendar conmigo en modo *Hacer cambios y administrar*. Mi mail es maria.paez.secre@gmail.com 
+
+       id = 966
+timestamp = 2026-04-23 15:29:39
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   nombre = 
+   cuerpo = Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. Para poder manejar tu
+     meta = {"destinoOriginal":"105171031949561@lid","destinoFinal":"105171031949561@lid"}
+
+       id = 965
+timestamp = 2026-04-23 15:29:36
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: enviar_wa
+     meta = {"accion":{"tipo":"enviar_wa","a":"105171031949561@lid","texto":"Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. Para poder manejar tu agenda necesito que compartas tu Google Calendar conmigo en modo *Hacer cambios y administrar*. Mi mail es maria.paez.secre@gmail.com 
+
+       id = 964
+timestamp = 2026-04-23 15:29:36
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   nombre = 
+   cuerpo = Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. Para poder manejar tu
+     meta = {"destinoOriginal":"105171031949561@lid","destinoFinal":"105171031949561@lid"}
+
+       id = 963
+timestamp = 2026-04-23 15:29:32
+    canal = whatsapp
+direccion = saliente
+       de = 34342575317160@lid
+   nombre = Diego
+   cuerpo = Le mando el WA a Doris ahora.
+     meta = {"razonamiento":"Diego confirma que ya tengo el contacto de Doris. En libreta está como Doris Capurro con WA 105171031949561@lid. Repito el mismo flujo que con Rubén y Hernán.","inReplyTo":"false_34342575317160@lid_3EB01C7CC671E905DA0756"}
+
+       id = 399
+timestamp = 2026-04-20 15:05:31
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   nombre = Doris Capurro
+   cuerpo = ¡Perfecto! Quedamos a las 17 entonces. Le aviso a todos ahora.
+     meta = {"razonamiento":"Doris confirmó 17:00. Se modifica el evento de mañana 11am a hoy 17hs, se notifica a todos los participantes con el nuevo horario, y se cierra el pendiente.","inReplyTo":"false_105171031949561@lid_3A38D8CE96E85944BDE6"}
+
+       id = 398
+timestamp = 2026-04-20 15:04:44
+    canal = whatsapp
+direccion = entrante
+       de = 105171031949561@lid
+   nombre = Doris Capurro
+   cuerpo = 17 ok
+     meta = {"messageId":"false_105171031949561@lid_3A38D8CE96E85944BDE6","esAudio":false,"pushname":"Doris Capurro"}
+
+       id = 397
+timestamp = 2026-04-20 15:02:49
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: enviar_wa
+     meta = {"accion":{"tipo":"enviar_wa","a":"105171031949561@lid","texto":"¡Hola Doris! Te escribo María, soy la secretaria de Diego Paez. Disculpá si no me presenté antes. Te cuento cómo está la situación con la reunión de hoy: Diego, vos y Agustina confirman para las 17:30, pero Carina solo puede a las 17 (tiene otro compromiso a las 18), y Romina todavía no confirmó. ¿Qué preferís hacer: ir a las 17 para
+
+       id = 396
+timestamp = 2026-04-20 15:02:49
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   nombre = 
+   cuerpo = ¡Hola Doris! Te escribo María, soy la secretaria de Diego Paez. Disculpá si no me presenté antes. Te cuento cómo está la situación con la reunión de hoy: Diego, vos y Agustina confirman para las 17:30
+     meta = {"destinoOriginal":"105171031949561@lid","destinoFinal":"105171031949561@lid"}
+
+       id = 391
+timestamp = 2026-04-20 14:58:12
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: enviar_wa
+     meta = {"accion":{"tipo":"enviar_wa","a":"105171031949561@lid","texto":"Hola Doris! Te cuento cómo está la situación con la reunión de hoy: vos y Agustina confirman para las 17:30, pero Carina solo puede a las 17 (tiene otro compromiso a las 18), y Romina todavía no confirmó. ¿Qué preferís hacer: ir a las 17 para que pueda estar Carina, o quedarse con las 17:30 como estaba? Gracias!"},"resultado":{"a":"1
+
+       id = 390
+timestamp = 2026-04-20 14:58:12
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   nombre = 
+   cuerpo = Hola Doris! Te cuento cómo está la situación con la reunión de hoy: vos y Agustina confirman para las 17:30, pero Carina solo puede a las 17 (tiene otro compromiso a las 18), y Romina todavía no confi
+     meta = {"destinoOriginal":"105171031949561@lid","destinoFinal":"105171031949561@lid"}
+
+═══ 2. Eventos que mencionan el número 5491144471264 ═══
+       id = 359
+timestamp = 2026-04-20 14:51:59
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: upsert_contacto
+     meta = {"accion":{"tipo":"upsert_contacto","nombre":"Doris Capurro","whatsapp":"5491144471264@c.us","email":"doris@capurro.com.ar"},"resultado":{"id":48,"nombre":"Doris Capurro"},"canalOrigen":"whatsapp"}
+
+       id = 356
+timestamp = 2026-04-20 14:51:49
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: upsert_contacto
+     meta = {"accion":{"tipo":"upsert_contacto","nombre":"Doris Capurro","whatsapp":"5491144471264@c.us","email":"doris@capurro.com.ar"},"resultado":{"id":48,"nombre":"Doris Capurro"},"canalOrigen":"whatsapp"}
+
+       id = 350
+timestamp = 2026-04-20 14:51:21
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = acción ejecutada: enviar_wa
+     meta = {"accion":{"tipo":"enviar_wa","a":"5491144471264@c.us","texto":"¡Hola Doris! Te escribo de parte de Diego Paez. Tienen agendada una reunión DIATRES para mañana martes 21/04 a las 11am. Diego quería saber si podrían pasarla para hoy a las 5:30pm. ¿Te vendría bien? Gracias!"},"resultado":{"a":"5491144471264@c.us","enviado":true},"canalOrigen":"whatsapp"}
+
+       id = 349
+timestamp = 2026-04-20 14:51:21
+    canal = whatsapp
+direccion = saliente
+       de = 5491144471264@c.us
+   nombre = 
+   cuerpo = ¡Hola Doris! Te escribo de parte de Diego Paez. Tienen agendada una reunión DIATRES para mañana martes 21/04 a las 11am. Diego quería saber si podrían pasarla para hoy a las 5:30pm. ¿Te vendría bien? 
+     meta = {"destinoOriginal":"5491144471264@c.us","destinoFinal":"5491144471264@c.us"}
+
+       id = 340
+timestamp = 2026-04-20 14:50:40
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = contacto vcard: Doris Capurro → 5491144471264@c.us
+     meta = {"origen":"34342575317160@lid"}
+
+═══ 3. Eventos usuario_id=6 (Doris) ═══
+       id = 3989
+timestamp = 2026-05-13 12:58:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3988
+timestamp = 2026-05-13 12:57:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3987
+timestamp = 2026-05-13 12:56:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3986
+timestamp = 2026-05-13 12:55:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3985
+timestamp = 2026-05-13 12:54:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3984
+timestamp = 2026-05-13 12:53:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3980
+timestamp = 2026-05-13 12:52:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3979
+timestamp = 2026-05-13 12:51:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3978
+timestamp = 2026-05-13 12:50:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3971
+timestamp = 2026-05-13 12:49:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3956
+timestamp = 2026-05-13 12:48:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3939
+timestamp = 2026-05-13 12:47:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3936
+timestamp = 2026-05-13 12:46:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3935
+timestamp = 2026-05-13 12:45:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3928
+timestamp = 2026-05-13 12:44:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3921
+timestamp = 2026-05-13 12:43:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3902
+timestamp = 2026-05-13 12:42:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3892
+timestamp = 2026-05-13 12:41:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3889
+timestamp = 2026-05-13 12:40:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3888
+timestamp = 2026-05-13 12:39:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+═══ 4. Cualquier evento con 'Doris' en cuerpo o metadata o nombre ═══
+       id = 3989
+timestamp = 2026-05-13 12:58:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3988
+timestamp = 2026-05-13 12:57:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3987
+timestamp = 2026-05-13 12:56:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3986
+timestamp = 2026-05-13 12:55:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3985
+timestamp = 2026-05-13 12:54:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3984
+timestamp = 2026-05-13 12:53:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3980
+timestamp = 2026-05-13 12:52:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3979
+timestamp = 2026-05-13 12:51:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3978
+timestamp = 2026-05-13 12:50:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3971
+timestamp = 2026-05-13 12:49:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3956
+timestamp = 2026-05-13 12:48:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3952
+timestamp = 2026-05-13 12:48:05
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = unknown-flow/whatsapp LLM: usuario_activo usuario_id=7 · Pushname 'Nico', María ya le envió el brief matutino y mensajes de bienvenida dirigidos a 'Nicolas Kosinski' a este mismo ID, y el historial pr
+     meta = {"tipo":"unknown_llm_trace","canal":"whatsapp","from":"227143674011812@lid","pushname":"Nico","hist_wa_total":9,"hist_mail_total":0,"hist_owner_total":60,"hist_usuarios_totales":{"Diego":60,"Hernan Fulco":60,"Natali Funez":51,"Fernando Boero":4,"Santiago Bignone":3,"Doris Capurro":0,"Nicolas Kosinsk
+
+       id = 3947
+timestamp = 2026-05-13 12:47:52
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = unknown-flow/whatsapp LLM: usuario_activo usuario_id=7 · El pushname es 'Nico', Maria ya le envió a este número el mensaje de bienvenida de Nicolas Kosinski (id=7) y su brief matutino el 2026-05-13, y
+     meta = {"tipo":"unknown_llm_trace","canal":"whatsapp","from":"227143674011812@lid","pushname":"Nico","hist_wa_total":8,"hist_mail_total":0,"hist_owner_total":60,"hist_usuarios_totales":{"Diego":60,"Hernan Fulco":60,"Natali Funez":51,"Fernando Boero":4,"Santiago Bignone":3,"Doris Capurro":0,"Nicolas Kosinsk
+
+       id = 3939
+timestamp = 2026-05-13 12:47:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+       id = 3936
+timestamp = 2026-05-13 12:46:09
+    canal = sistema
+direccion = interno
+       de = 
+   nombre = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+     meta = 
+
+═══ 5. Esquema y datos de contactos relacionados con Doris/Capurro ═══
+0|id|INTEGER|0||1
+1|usuario_id|INTEGER|1||0
+2|nombre|TEXT|1||0
+3|whatsapp|TEXT|0||0
+4|email|TEXT|0||0
+5|notas|TEXT|0||0
+6|visibilidad|TEXT|1|'privada'|0
+7|cumple|TEXT|0||0
+8|creado|DATETIME|0|CURRENT_TIMESTAMP|0
+9|actualizado|DATETIME|0|CURRENT_TIMESTAMP|0
+---rows---
+         id = 48
+ usuario_id = 1
+     nombre = Doris Capurro
+   whatsapp = 105171031949561@lid
+      email = doris@capurro.com.ar
+      notas = auto-agregado al recibir primer mensaje
+visibilidad = privada
+     cumple = --09-23
+     creado = 2026-04-20 14:50:40
+actualizado = 2026-05-10 22:41:01
+
+         id = 58
+ usuario_id = 1
+     nombre = Santiago Capurro
+   whatsapp = 5491166010010@c.us
+      email = santiago@capurro.com.ar
+      notas = 
+visibilidad = privada
+     cumple = 1979-05-06
+     creado = 2026-04-20 15:59:52
+actualizado = 2026-05-10 22:41:01
+
+         id = 60
+ usuario_id = 1
+     nombre = Santi Capurro
+   whatsapp = 134076010885285@lid
+      email = 
+      notas = auto-agregado al recibir primer mensaje
+visibilidad = privada
+     cumple = 
+     creado = 2026-04-20 17:39:04
+actualizado = 2026-04-20 17:39:04
+
+         id = 90
+ usuario_id = 1
+     nombre = Lucas Capurro
+   whatsapp = 13059858123@c.us
+      email = Lucas@capurro.com.ar
+      notas = tel adicional: +13059858123
+visibilidad = privada
+     cumple = 1981-07-15
+     creado = 2026-05-02 22:56:43
+actualizado = 2026-05-10 22:41:01
+
+         id = 174
+ usuario_id = 1
+     nombre = Pablo Capurro
+   whatsapp = 5491152570020@c.us
+      email = pablo@capurro.com.ar
+      notas = 
+visibilidad = privada
+     cumple = 1979-12-18
+     creado = 2026-05-10 22:41:01
+actualizado = 2026-05-10 22:41:01
+
+═══ 6. Cualquier registro en hechos relacionado con Doris ═══
+
+═══ 7. Buscar 1051710319 o 5491144 en TODOS los campos de TODAS las tablas (no exhaustivo) ═══
+--- eventos ---
+{'id': '340', 'timestamp': '2026-04-20 14:50:40', 'canal': 'sistema', 'direccion': 'interno', 'de': 'None', 'nombre': 'None', 'asunto': 'None', 'cuerpo': 'contacto vcard: Doris Capurro → 5491144471264@c.us', 'tipo_original': 'None', 'metadata_json': '{"origen":"34342575317160@lid"}', 'usuario_id': '1'}
+{'id': '349', 'timestamp': '2026-04-20 14:51:21', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491144471264@c.us', 'nombre': 'None', 'asunto': 'None', 'cuerpo': '¡Hola Doris! Te escribo de parte de Diego Paez. Tienen agendada una reunión DIATRES para mañana martes 21/04 a las 11am. Diego quería saber si podrían pasarla para hoy a las 5:30pm. ¿Te vendría bien? ', 'tipo_original': 'None', 'metadata_json': '{"destinoOriginal":"5491144471264@c.us","destinoFinal":"5491144471264@c.us"}', 'usuario_id': '1'}
+{'id': '350', 'timestamp': '2026-04-20 14:51:21', 'canal': 'sistema', 'direccion': 'interno', 'de': 'None', 'nombre': 'None', 'asunto': 'None', 'cuerpo': 'acción ejecutada: enviar_wa', 'tipo_original': 'None', 'metadata_json': '{"accion":{"tipo":"enviar_wa","a":"5491144471264@c.us","texto":"¡Hola Doris! Te escribo de parte de Diego Paez. Tienen agendada una reunión DIATRES para mañana martes 21/04 a las 11am. Diego quería sa', 'usuario_id': '1'}
+{'id': '356', 'timestamp': '2026-04-20 14:51:49', 'canal': 'sistema', 'direccion': 'interno', 'de': 'None', 'nombre': 'None', 'asunto': 'None', 'cuerpo': 'acción ejecutada: upsert_contacto', 'tipo_original': 'None', 'metadata_json': '{"accion":{"tipo":"upsert_contacto","nombre":"Doris Capurro","whatsapp":"5491144471264@c.us","email":"doris@capurro.com.ar"},"resultado":{"id":48,"nombre":"Doris Capurro"},"canalOrigen":"whatsapp"}', 'usuario_id': '1'}
+{'id': '359', 'timestamp': '2026-04-20 14:51:59', 'canal': 'sistema', 'direccion': 'interno', 'de': 'None', 'nombre': 'None', 'asunto': 'None', 'cuerpo': 'acción ejecutada: upsert_contacto', 'tipo_original': 'None', 'metadata_json': '{"accion":{"tipo":"upsert_contacto","nombre":"Doris Capurro","whatsapp":"5491144471264@c.us","email":"doris@capurro.com.ar"},"resultado":{"id":48,"nombre":"Doris Capurro"},"canalOrigen":"whatsapp"}', 'usuario_id': '1'}
+--- contactos ---
+{'id': '48', 'usuario_id': '1', 'nombre': 'Doris Capurro', 'whatsapp': '105171031949561@lid', 'email': 'doris@capurro.com.ar', 'notas': 'auto-agregado al recibir primer mensaje', 'visibilidad': 'privada', 'cumple': '--09-23', 'creado': '2026-04-20 14:50:40', 'actualizado': '2026-05-10 22:41:01'}
+--- hechos ---
+  (sin matches)
+--- pendientes ---
+  (sin matches)
+--- estado_usuario ---
+  (sin matches)
+--- estado ---
+  (sin matches)
+--- programados ---
+  (sin matches)
+--- usuarios ---
+{'id': '6', 'nombre': 'Doris Capurro', 'wa_lid': 'None', 'wa_cus': '105171031949561@c.us', 'email': 'doris@capurro.com.ar', 'calendar_id': 'None', 'rol': 'usuario', 'tz': 'America/Argentina/Buenos_Aires', 'brief_hora': '07', 'brief_minuto': '00', 'activo': '1', 'creado': '2026-05-11 12:16:31', 'actualizado': '2026-05-11 12:16:31', 'calendar_acceso': 'none'}
+
+# exit=0
