@@ -1,0 +1,140 @@
+# ejecutado: 2026-05-13T10:05:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   
+#   echo "═══ Doris en usuarios ═══"
+#   sqlite3 -line "$DB" "SELECT id, wa_lid, wa_cus, actualizado FROM usuarios WHERE id=6;"
+#   
+#   echo
+#   echo "═══ estado_usuario id=6 ═══"
+#   sqlite3 -line "$DB" "SELECT * FROM estado_usuario WHERE usuario_id=6;"
+#   
+#   echo
+#   echo "═══ Últimos 8 eventos usuario_id=6 ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, substr(de,1,40) AS de, substr(COALESCE(cuerpo,''),1,100) AS cuerpo
+#     FROM eventos WHERE usuario_id=6 ORDER BY id DESC LIMIT 8;"
+#   
+#   echo
+#   echo "═══ pm2 logs después de las 10:02 (post-reload) ═══"
+#   pm2 logs maria-paez --lines 200 --nostream --raw 2>&1 | awk '/2026-05-13 1[0-9]:/{p=1} p' | tail -40
+
+# ───── output ─────
+═══ Doris en usuarios ═══
+         id = 6
+     wa_lid = 105171031949561@lid
+     wa_cus = 5491144471264@c.us
+actualizado = 2026-05-13 13:02:01
+
+═══ estado_usuario id=6 ═══
+ usuario_id = 6
+      clave = morning_brief_ultimo_dia
+ valor_json = "2026-05-13"
+actualizado = 2026-05-13 13:03:09
+
+═══ Últimos 8 eventos usuario_id=6 ═══
+       id = 3995
+timestamp = 2026-05-13 13:03:09
+    canal = whatsapp
+direccion = saliente
+       de = 105171031949561@lid
+   cuerpo = ☀️ *Buen día, Doris Capurro.* miércoles 13 de mayo.
+
+*📅 Agenda del día*
+(sin eventos hoy)
+
+       id = 3992
+timestamp = 2026-05-13 13:01:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+       id = 3991
+timestamp = 2026-05-13 13:00:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+       id = 3990
+timestamp = 2026-05-13 12:59:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+       id = 3989
+timestamp = 2026-05-13 12:58:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+       id = 3988
+timestamp = 2026-05-13 12:57:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+       id = 3987
+timestamp = 2026-05-13 12:56:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+       id = 3986
+timestamp = 2026-05-13 12:55:09
+    canal = sistema
+direccion = interno
+       de = 
+   cuerpo = morning-brief falló (Doris Capurro): t
+
+═══ pm2 logs después de las 10:02 (post-reload) ═══
+2026-05-13 09:48:19: [WA ←] Diego (34342575317160@lid): +54 9 11 2640-6612
+2026-05-13 09:48:37: [WA ←] Diego (34342575317160@lid): y mandale whatsapp para presentarte etc
+2026-05-13 09:48:51: [WA →usr] Diego (34342575317160@lid): Listo, agrego el WA de Cristian y le mando el mensaje de bienvenida ahora.
+2026-05-13 09:48:51: [executor] usuario actualizado: id=9 nombre=Cristian Ruiz campos=wa_cus
+2026-05-13 09:48:58: [WA acciones/Diego] 3/3 ejecutadas
+2026-05-13 09:49:03: [WA →usr] Diego (34342575317160@lid): Listo, actualizo el perfil de Cristian con el número y le mando el WhatsApp ahora.
+2026-05-13 09:49:03: [executor] usuario actualizado: id=9 nombre=Cristian Ruiz campos=wa_cus
+2026-05-13 09:49:09: [morning-brief/Cristian Ruiz] ✓ enviado a 5491126406612@c.us
+2026-05-13 09:49:10: [WA acciones/Diego] 3/3 ejecutadas
+2026-05-13 09:49:13: [unknown-flow/wa] match en contactos: 234518753583317@lid = "Cristian Ruiz" de Diego (id=1)
+2026-05-13 09:49:50: [WA →usr] Diego (34342575317160@lid): Diego, el número que me diste para Cristian (11 2640-6612) parece estar vinculado al WhatsApp empresarial de Froneus — me llegó la respuesta automática del sist
+2026-05-13 09:49:50: [unknown-flow/wa] tercero_de_usuario: 234518753583317@lid (Froneus) → contexto de Diego (id=1)
+2026-05-13 09:52:53: [WA ←] Diego (34342575317160@lid): este lo usa como personal, desestima el mensaje automatico
+2026-05-13 09:53:08: [WA →usr] Diego (34342575317160@lid): Perfecto, lo tomo como su número personal entonces. Ya está guardado y el mensaje de bienvenida le llegó.
+2026-05-13 10:02:02: 
+2026-05-13 10:02:02: ▸ SIGINT recibido, cerrando…
+2026-05-13 10:02:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-13 10:02:04: ▸ Maria Paez [maria-paez] iniciando…
+2026-05-13 10:02:04:   Owner:      Diego (id=1)
+2026-05-13 10:02:04:   Usuarios:   9 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz
+2026-05-13 10:02:04:   Gmail poll: cada 300s
+2026-05-13 10:02:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-05-13 10:02:04: ✓ whisper OK
+2026-05-13 10:02:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+2026-05-13 10:02:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+2026-05-13 10:02:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+2026-05-13 10:02:08: [WA loading] 100% - WhatsApp
+2026-05-13 10:02:08: [WA authenticated]
+2026-05-13 10:02:08: ✅ [WA ready] Maria conectada
+2026-05-13 10:02:08: ▸ arrancando poll de Gmail (cada 300s)
+2026-05-13 10:02:08: ▸ arrancando loop de recordatorios (cada 30min)
+2026-05-13 10:02:08: ▸ arrancando dispatcher de programados (cada 60s)
+2026-05-13 10:02:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+2026-05-13 10:02:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+2026-05-13 10:02:08: ▸ arrancando meeting-prep (cada 5min)
+2026-05-13 10:02:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+2026-05-13 10:02:08: ▸ arrancando calendar-watch (cada 8h)
+2026-05-13 10:02:08: [calendar-watch] activo, cada 8.0h
+2026-05-13 10:03:09: [morning-brief/Doris Capurro] ✓ enviado a 105171031949561@lid
+
+
+# exit=0
