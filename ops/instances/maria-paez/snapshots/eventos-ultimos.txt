@@ -1,5 +1,20 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4028  2026-05-13 17:05:52  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+4027  2026-05-13 17:05:52  calendar  saliente                        creado: Reunión con Damián Maldini — Secretaria Virtual (2026-05-13T16:30:00-03:00 → 2026-05-13T17:30:00-03:00) · Meet: https://meet.google.com/mux-tpqd-fnh [en calendar de Maria]                     
+
+4026  2026-05-13 17:05:51  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4025  2026-05-13 17:05:51  whatsapp  saliente   232637088149596@lid  Listo, te la agendo para las 16:30 hs de hoy con Damián Maldini — le mando la invitación a su mail con Google Meet incluido. Una aclaración: si alguien que no está invitado intenta entrar al Meet, la 
+
+4024  2026-05-13 17:05:51  sistema   interno                         claude_call whatsapp: 26872ms prompt=25617c raw=1124c                                                                                                                                                   
+
+4023  2026-05-13 17:05:24  whatsapp  entrante   232637088149596@lid  Hola María, me podes armar una reunión con Damián Maldini                                                                                                                                               
+                                                                     Dmaldini@iplan.com.ar                                                                                                                                                                                   
+                                                                     Tema de la reu hablar sobre mi secretaria virtual                                                                                                                                                       
+                                                                     En el día de hoy 13/05 a las 16:30 hs                                                                                                                                                                   
+
 4022  2026-05-13 16:32:11  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (9 usuarios)                                                                                                                                                      
 
 4021  2026-05-13 16:02:11  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (9 usuarios)                                                                                                                                                      
@@ -224,18 +239,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3930  2026-05-13 12:44:17  whatsapp  saliente   34342575317160@lid   ¿A quién corresponde cruiz@froneus.com? Necesito el nombre y el WhatsApp para darlo de alta.                                                                                                            
 
 3929  2026-05-13 12:44:10  sistema   interno                         claude_call whatsapp: 15700ms prompt=48351c raw=294c                                                                                                                                                    
-
-3928  2026-05-13 12:44:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3927  2026-05-13 12:43:54  whatsapp  entrante   34342575317160@lid   cruiz@froneus.com                                                                                                                                                                                       
-
-3926  2026-05-13 12:43:25  whatsapp  saliente   34342575317160@lid   Sí, Walter Vera quedó dado de alta con el WA 5491138433288 y el email wvera@froneus.com. Ya le mandé el mensaje de bienvenida.                                                                          
-
-3925  2026-05-13 12:43:18  sistema   interno                         claude_call whatsapp: 14566ms prompt=48369c raw=388c                                                                                                                                                    
-
-3924  2026-05-13 12:43:09  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-3923  2026-05-13 12:43:09  whatsapp  saliente   5491138433288@c.us   ¡Hola Walter! Soy *María Páez*, la secretaria personal de Diego. A partir de ahora estoy disponible para ayudarte con lo que necesites:                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     📅 Agendar y coordinar reuniones                                                                                                                                                                         
-                                                                     ✉️ Redactar y gestionar emails                                                                                                                                                                          
