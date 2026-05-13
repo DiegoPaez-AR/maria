@@ -525,6 +525,19 @@ function _crearUsuario(a, ctx) {
     brief_hora: a.brief_hora || null,
     brief_minuto: a.brief_minuto || null,
   });
+  // Marcar el morning-brief de hoy como "ya enviado" para que no se
+  // dispare antes que el mensaje de bienvenida cuando el alta cae dentro
+  // de la ventana del brief (07-11h por default). El primer brief real va
+  // a salir mañana.
+  try {
+    const tz = u.tz || 'America/Argentina/Buenos_Aires';
+    const hoy = new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date()); // formato YYYY-MM-DD
+    mem.setEstadoUsuario(u.id, 'morning_brief_ultimo_dia', hoy);
+  } catch (err) {
+    console.warn(`[executor] no pude pre-marcar morning_brief para id=${u.id}: ${err.message}`);
+  }
   console.log(`[executor] usuario creado: id=${u.id} nombre=${u.nombre}${u.calendar_id ? '' : ' (sin calendar_id todavía)'}`);
   return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null };
 }
