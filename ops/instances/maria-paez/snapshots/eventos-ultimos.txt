@@ -1,5 +1,18 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4014  2026-05-13 15:48:49  whatsapp  saliente   227143674011812@lid  Acá va un borrador, lo podés ajustar a tu gusto:                                                                                                                                                        
+                                                                                                                                                                                                                                                                             
+                                                                     ---                                                                                                                                                                                                     
+                                                                     Hola [Nombre] 👋                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                             
+                                                                     Te escribo para presentarme — soy *Nicolás Kosinski*, Director Comercial de *Froneus*.                                                                                                                  
+                                                                                                                                                                                                                                                                             
+                                                                     Me encantaría coordinar una reunión para                                                                                                                                                                
+
+4013  2026-05-13 15:48:49  sistema   interno                         claude_call whatsapp: 16828ms prompt=23136c raw=648c                                                                                                                                                    
+
+4012  2026-05-13 15:48:32  whatsapp  entrante   227143674011812@lid  Te pido me armes un mensaje de WhatsApp para mandar a contactos para presentarme. Diciendo que soy Director Comercial de Froneus y que me gustaría arreglar una reunión                                 
+
 4011  2026-05-13 15:32:11  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (9 usuarios)                                                                                                                                                      
 
 4010  2026-05-13 15:17:41  sistema   interno                         claude_call whatsapp: 8143ms prompt=48546c raw=204c                                                                                                                                                     
@@ -222,9 +235,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3916  2026-05-13 12:43:02  sistema   interno                         claude_call whatsapp: 26634ms prompt=48602c raw=1814c                                                                                                                                                   
 
 3915  2026-05-13 12:42:40  whatsapp  saliente   34342575317160@lid   Para dar de alta a Walter Vera necesito su número de WhatsApp o email. ¿Me los pasás?                                                                                                                   
-
-3914  2026-05-13 12:42:40  sistema   interno                         claude_call whatsapp: 18125ms prompt=48419c raw=330c                                                                                                                                                    
-
-3913  2026-05-13 12:42:35  whatsapp  entrante   34342575317160@lid   wvera@froneus.com                                                                                                                                                                                       
-
-3912  2026-05-13 12:42:22  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
