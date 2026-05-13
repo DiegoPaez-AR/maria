@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                             cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4067  2026-05-13 18:13:44  sistema   interno                                                acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4066  2026-05-13 18:13:44  whatsapp  saliente   34342575317160@lid                          Guardado. Magda Pons, Reservas de Street XO — reservas@univerxo.es. ¿Querés que le mande algo?                                                                                                          
+
+4065  2026-05-13 18:13:37  sistema   interno                                                claude_call whatsapp: 12937ms prompt=47072c raw=479c                                                                                                                                                    
+
+4064  2026-05-13 18:13:23  whatsapp  entrante   34342575317160@lid                          Magda Pons                                                                                                                                                                                              
+                                                                                            Departamento de Reservas Street XO                                                                                                                                                                      
+                                                                                            reservas@univerxo.es                                                                                                                                                                                    
+
 4063  2026-05-13 17:47:08  sistema   interno                                                Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (9 usuarios)                                                                                                        
 
 4062  2026-05-13 17:47:02  sistema   interno                                                shutdown por SIGINT                                                                                                                                                                                     
@@ -232,14 +242,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 3969  2026-05-13 12:49:03  sistema   interno                                                acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 3968  2026-05-13 12:49:03  whatsapp  saliente   34342575317160@lid                          Listo, actualizo el perfil de Cristian con el número y le mando el WhatsApp ahora.                                                                                                                      
-
-3967  2026-05-13 12:49:03  sistema   interno                                                claude_call whatsapp: 25269ms prompt=48236c raw=1769c                                                                                                                                                   
-
-3966  2026-05-13 12:48:58  sistema   interno                                                acción ejecutada: enviar_wa                                                                                                                                                                             
-
-3965  2026-05-13 12:48:58  whatsapp  saliente   5491126406612@c.us                          ¡Hola Cristian! Soy *María Páez*, la secretaria personal de Diego. A partir de ahora estoy disponible para ayudarte con lo que necesites:                                                               
-                                                                                                                                                                                                                                                                                                    
-                                                                                            📅 Agendar y coordinar reuniones                                                                                                                                                                         
-                                                                                            ✉️ Redactar y gestionar email                                                                                                                                                                           
-
-3964  2026-05-13 12:48:51  sistema   interno                                                acción ejecutada: actualizar_usuario                                                                                                                                                                    
