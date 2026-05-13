@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4047  2026-05-13 17:08:48  whatsapp  saliente   232637088149596@lid  Ya le mandé el WhatsApp a Damián con el link del Meet para la reunión de las 16:30 hs.                                                                                                                  
+
+4046  2026-05-13 17:08:48  sistema   interno                         claude_call whatsapp: 8942ms prompt=25716c raw=347c                                                                                                                                                     
+
+4045  2026-05-13 17:08:39  whatsapp  entrante   232637088149596@lid  Se lo mandas?                                                                                                                                                                                           
+
+4044  2026-05-13 17:08:32  sistema   interno                         claude_call whatsapp: 8613ms prompt=25826c raw=293c                                                                                                                                                     
+
+4043  2026-05-13 17:08:23  whatsapp  entrante   232637088149596@lid  Si                                                                                                                                                                                                      
+
+4042  2026-05-13 17:08:04  whatsapp  saliente   232637088149596@lid  ¿No qué? ¿No querés que le mande el WhatsApp a Damián?                                                                                                                                                  
+
+4041  2026-05-13 17:08:04  sistema   interno                         claude_call whatsapp: 56596ms prompt=26217c raw=281c                                                                                                                                                    
+
 4040  2026-05-13 17:07:37  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
 
 4039  2026-05-13 17:07:37  whatsapp  saliente   5491154083537@c.us   Hola Damián! Te escribo de parte de Natali Funez. Quedamos en una reunión hoy a las 16:30 hs para charlar sobre su secretaria virtual. Te comparto el link de Google Meet: https://meet.google.com/mux-t
@@ -220,22 +234,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3949  2026-05-13 12:48:01  sistema   interno                         claude_call whatsapp: 8908ms prompt=22886c raw=345c                                                                                                                                                     
 
 3948  2026-05-13 12:47:52  whatsapp  entrante   227143674011812@lid  Hola buenas María como andas ?                                                                                                                                                                          
-
-3947  2026-05-13 12:47:52  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=7 · El pushname es 'Nico', Maria ya le envió a este número el mensaje de bienvenida de Nicolas Kosinski (id=7) y su brief matutino el 2026-05-13, y
-
-3946  2026-05-13 12:47:52  sistema   interno                         claude_call unknown-flow: 36258ms prompt=33374c raw=582c                                                                                                                                                
-
-3945  2026-05-13 12:47:41  whatsapp  entrante   34342575317160@lid   ahi te paso el numero                                                                                                                                                                                   
-
-3944  2026-05-13 12:47:11  sistema   interno                         acción ejecutada: enviar_email                                                                                                                                                                          
-
-3943  2026-05-13 12:47:11  gmail     saliente                        ¡Hola Cristian!                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                             
-                                                                     Soy María Páez, la secretaria personal de Diego. A partir de ahora estoy disponible para ayudarte con lo que necesites:                                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     📅 Agendar y coordinar reuniones                                                                                                                                                                         
-                                                                     ✉️ Redactar y gestionar emails                                                                                                                                                                          
-
-3942  2026-05-13 12:47:11  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-3941  2026-05-13 12:47:11  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                                                         
