@@ -1,210 +1,220 @@
-id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
-----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-3901  2026-05-13 12:42:02  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                 
+----  -------------------  --------  ---------  -------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3915  2026-05-13 12:42:40  whatsapp  saliente   34342575317160@lid   Para dar de alta a Walter Vera necesito su número de WhatsApp o email. ¿Me los pasás?                                                                                  
 
-3900  2026-05-13 12:42:02  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                                                         
+3914  2026-05-13 12:42:40  sistema   interno                         claude_call whatsapp: 18125ms prompt=48419c raw=330c                                                                                                                   
 
-3899  2026-05-13 12:42:02  whatsapp  saliente   34342575317160@lid   Listo, doy de alta a Nicolás Kosinski ahora y le mando el mensaje de bienvenida.                                                                                                                        
+3913  2026-05-13 12:42:35  whatsapp  entrante   34342575317160@lid   wvera@froneus.com                                                                                                                                                      
 
-3898  2026-05-13 12:42:02  sistema   interno                         claude_call whatsapp: 32525ms prompt=48508c raw=1836c                                                                                                                                                   
+3912  2026-05-13 12:42:22  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                            
 
-3897  2026-05-13 12:41:46  whatsapp  entrante   34342575317160@lid   ahi te pase los datos                                                                                                                                                                                   
+3911  2026-05-13 12:42:22  whatsapp  saliente   5491150080522@c.us   ¡Hola, Nicolás! Soy *María Páez*, la secretaria personal de Diego. Voy a estar ayudándote con lo que necesites:                                                        
+                                                                                                                                                                                                                                            
+                                                                     📅 Agendar y coordinar reuniones                                                                                                                                        
+                                                                     ✉️ Redactar y gestionar emails                                                                                                                                         
+                                                                     📝 Hacer seguimiento de p                                                                                                                                               
 
-3896  2026-05-13 12:41:46  whatsapp  entrante   34342575317160@lid   a Nicolas kosinski                                                                                                                                                                                      
+3910  2026-05-13 12:42:22  sistema   interno                         contacto vcard (privado): Walter Vera → 5491138433288@c.us                                                                                                             
 
-3895  2026-05-13 12:41:29  whatsapp  entrante   34342575317160@lid   nkosinski@froneus.com                                                                                                                                                                                   
+3909  2026-05-13 12:42:21  whatsapp  entrante   34342575317160@lid   a Walter Vera                                                                                                                                                          
 
-3894  2026-05-13 12:41:12  whatsapp  saliente   34342575317160@lid   ¡Claro! ¿A quiénes querés sumar?                                                                                                                                                                        
+3908  2026-05-13 12:42:15  sistema   interno                         acción FALLÓ: crear_usuario — ya existe un usuario con ese nombre: Nicolas Kosinski                                                                                    
 
-3893  2026-05-13 12:41:12  sistema   interno                         claude_call whatsapp: 9338ms prompt=48826c raw=261c                                                                                                                                                     
+3907  2026-05-13 12:42:15  whatsapp  saliente   34342575317160@lid   Listo, doy de alta a Nicolás Kosinski y le mando el mensaje de bienvenida ahora.                                                                                       
 
-3892  2026-05-13 12:41:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3906  2026-05-13 12:42:15  sistema   interno                         claude_call whatsapp: 28806ms prompt=48463c raw=1619c                                                                                                                  
 
-3891  2026-05-13 12:41:03  whatsapp  entrante   34342575317160@lid   y quiero sumar como usuarios a:                                                                                                                                                                         
+3905  2026-05-13 12:42:09  whatsapp  saliente   5491150080522@c.us   ☀️ *Buen día, Nicolas Kosinski.* miércoles 13 de mayo.                                                                                                                 
+                                                                                                                                                                                                                                            
+                                                                     *📅 Agenda del día*                                                                                                                                                     
+                                                                     (sin eventos hoy)                                                                                                                                                      
 
-3890  2026-05-13 12:41:01  sistema   interno                         contacto vcard (privado): Nicolas Kosinski → 5491150080522@c.us                                                                                                                                         
+3904  2026-05-13 12:42:09  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                            
 
-3889  2026-05-13 12:40:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3903  2026-05-13 12:42:09  whatsapp  saliente   5491150080522@c.us   ¡Hola Nico! Soy *María Páez*, la secretaria personal de Diego. A partir de ahora estoy disponible para ayudarte con lo que necesites:                                  
+                                                                                                                                                                                                                                            
+                                                                     📅 Agendar y coordinar reuniones                                                                                                                                        
+                                                                     ✉️ Redactar y gestionar emails                                                                                                                                         
+                                                                     📝                                                                                                                                                                      
 
-3888  2026-05-13 12:39:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3902  2026-05-13 12:42:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3887  2026-05-13 12:38:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3901  2026-05-13 12:42:02  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                      
 
-3886  2026-05-13 12:37:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3900  2026-05-13 12:42:02  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                        
 
-3885  2026-05-13 12:36:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3899  2026-05-13 12:42:02  whatsapp  saliente   34342575317160@lid   Listo, doy de alta a Nicolás Kosinski ahora y le mando el mensaje de bienvenida.                                                                                       
 
-3884  2026-05-13 12:35:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3898  2026-05-13 12:42:02  sistema   interno                         claude_call whatsapp: 32525ms prompt=48508c raw=1836c                                                                                                                  
 
-3883  2026-05-13 12:34:45  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+3897  2026-05-13 12:41:46  whatsapp  entrante   34342575317160@lid   ahi te pase los datos                                                                                                                                                  
 
-3882  2026-05-13 12:34:45  whatsapp  saliente   105171031949561@lid  ¡Hola Doris! Soy *María Páez*, la secretaria personal de Diego. Quería recordarte que estoy acá para ayudarte con lo que necesites:                                                                     
-                                                                                                                                                                                                                                                                             
-                                                                     📅 Agendar y coordinar reuniones                                                                                                                                                                         
-                                                                     ✉️ Redactar y gestionar emails                                                                                                                                                                          
-                                                                     📝 Ha                                                                                                                                                                                                    
+3896  2026-05-13 12:41:46  whatsapp  entrante   34342575317160@lid   a Nicolas kosinski                                                                                                                                                     
 
-3881  2026-05-13 12:34:37  whatsapp  saliente   34342575317160@lid   Le mando el mensaje a Doris ahora.                                                                                                                                                                      
+3895  2026-05-13 12:41:29  whatsapp  entrante   34342575317160@lid   nkosinski@froneus.com                                                                                                                                                  
 
-3880  2026-05-13 12:34:37  sistema   interno                         claude_call whatsapp: 29934ms prompt=48503c raw=1332c                                                                                                                                                   
+3894  2026-05-13 12:41:12  whatsapp  saliente   34342575317160@lid   ¡Claro! ¿A quiénes querés sumar?                                                                                                                                       
 
-3879  2026-05-13 12:34:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3893  2026-05-13 12:41:12  sistema   interno                         claude_call whatsapp: 9338ms prompt=48826c raw=261c                                                                                                                    
 
-3878  2026-05-13 12:34:07  whatsapp  entrante   34342575317160@lid   mandale a Doris capurro esto para recordarle que trabajas para ella                                                                                                                                     
+3892  2026-05-13 12:41:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3877  2026-05-13 12:34:02  sistema   interno                         claude_call whatsapp: 9044ms prompt=48416c raw=199c                                                                                                                                                     
+3891  2026-05-13 12:41:03  whatsapp  entrante   34342575317160@lid   y quiero sumar como usuarios a:                                                                                                                                        
 
-3876  2026-05-13 12:33:53  whatsapp  entrante   34342575317160@lid   esta paerfecto                                                                                                                                                                                          
+3890  2026-05-13 12:41:01  sistema   interno                         contacto vcard (privado): Nicolas Kosinski → 5491150080522@c.us                                                                                                        
 
-3875  2026-05-13 12:33:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3889  2026-05-13 12:40:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3874  2026-05-13 12:32:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3888  2026-05-13 12:39:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3873  2026-05-13 12:31:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3887  2026-05-13 12:38:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3872  2026-05-13 12:30:45  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+3886  2026-05-13 12:37:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3871  2026-05-13 12:30:45  whatsapp  saliente   34342575317160@lid   Perfecto, lo tengo en cuenta para el próximo usuario que dé de alta. Acá va un ejemplo de cómo me presentaría:                                                                                          
-                                                                                                                                                                                                                                                                             
-                                                                     ---                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                             
-                                                                     *¡Hola! Soy María Páez*, la secretaria personal de [nombre del usuario que te sumó]                                                                                                                     
+3885  2026-05-13 12:36:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3870  2026-05-13 12:30:38  sistema   interno                         claude_call whatsapp: 21256ms prompt=48217c raw=1883c                                                                                                                                                   
+3884  2026-05-13 12:35:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3869  2026-05-13 12:30:16  whatsapp  entrante   34342575317160@lid   mandame un ejemplo de presentacion                                                                                                                                                                      
+3883  2026-05-13 12:34:45  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                            
 
-3868  2026-05-13 12:30:16  whatsapp  entrante   34342575317160@lid   quiero que cuando das de alta un usuario nuevo te presentes, le expliques lo del calendario como ya haces, y ademas que le cuentes en que cosas podes ayudar al usuario                                 
+3882  2026-05-13 12:34:45  whatsapp  saliente   105171031949561@lid  ¡Hola Doris! Soy *María Páez*, la secretaria personal de Diego. Quería recordarte que estoy acá para ayudarte con lo que necesites:                                    
+                                                                                                                                                                                                                                            
+                                                                     📅 Agendar y coordinar reuniones                                                                                                                                        
+                                                                     ✉️ Redactar y gestionar emails                                                                                                                                         
+                                                                     📝 Ha                                                                                                                                                                   
 
-3867  2026-05-13 12:30:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3881  2026-05-13 12:34:37  whatsapp  saliente   34342575317160@lid   Le mando el mensaje a Doris ahora.                                                                                                                                     
 
-3866  2026-05-13 12:29:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3880  2026-05-13 12:34:37  sistema   interno                         claude_call whatsapp: 29934ms prompt=48503c raw=1332c                                                                                                                  
 
-3865  2026-05-13 12:28:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3879  2026-05-13 12:34:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3864  2026-05-13 12:27:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3878  2026-05-13 12:34:07  whatsapp  entrante   34342575317160@lid   mandale a Doris capurro esto para recordarle que trabajas para ella                                                                                                    
 
-3863  2026-05-13 12:26:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3877  2026-05-13 12:34:02  sistema   interno                         claude_call whatsapp: 9044ms prompt=48416c raw=199c                                                                                                                    
 
-3862  2026-05-13 12:25:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3876  2026-05-13 12:33:53  whatsapp  entrante   34342575317160@lid   esta paerfecto                                                                                                                                                         
 
-3861  2026-05-13 12:24:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3875  2026-05-13 12:33:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3860  2026-05-13 12:23:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3874  2026-05-13 12:32:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3859  2026-05-13 12:22:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3873  2026-05-13 12:31:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3858  2026-05-13 12:21:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3872  2026-05-13 12:30:45  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                       
 
-3857  2026-05-13 12:20:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3871  2026-05-13 12:30:45  whatsapp  saliente   34342575317160@lid   Perfecto, lo tengo en cuenta para el próximo usuario que dé de alta. Acá va un ejemplo de cómo me presentaría:                                                         
+                                                                                                                                                                                                                                            
+                                                                     ---                                                                                                                                                                    
+                                                                                                                                                                                                                                            
+                                                                     *¡Hola! Soy María Páez*, la secretaria personal de [nombre del usuario que te sumó]                                                                                    
 
-3856  2026-05-13 12:19:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3870  2026-05-13 12:30:38  sistema   interno                         claude_call whatsapp: 21256ms prompt=48217c raw=1883c                                                                                                                  
 
-3855  2026-05-13 12:18:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3869  2026-05-13 12:30:16  whatsapp  entrante   34342575317160@lid   mandame un ejemplo de presentacion                                                                                                                                     
 
-3854  2026-05-13 12:17:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3868  2026-05-13 12:30:16  whatsapp  entrante   34342575317160@lid   quiero que cuando das de alta un usuario nuevo te presentes, le expliques lo del calendario como ya haces, y ademas que le cuentes en que cosas podes ayudar al usuario
 
-3853  2026-05-13 12:16:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3867  2026-05-13 12:30:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3852  2026-05-13 12:15:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3866  2026-05-13 12:29:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3851  2026-05-13 12:14:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3865  2026-05-13 12:28:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3850  2026-05-13 12:13:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3864  2026-05-13 12:27:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3849  2026-05-13 12:12:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3863  2026-05-13 12:26:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3848  2026-05-13 12:11:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3862  2026-05-13 12:25:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3847  2026-05-13 12:10:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3861  2026-05-13 12:24:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3846  2026-05-13 12:09:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3860  2026-05-13 12:23:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3845  2026-05-13 12:08:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3859  2026-05-13 12:22:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3844  2026-05-13 12:07:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3858  2026-05-13 12:21:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3843  2026-05-13 12:06:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3857  2026-05-13 12:20:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3842  2026-05-13 12:05:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3856  2026-05-13 12:19:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3841  2026-05-13 12:04:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3855  2026-05-13 12:18:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3840  2026-05-13 12:03:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3854  2026-05-13 12:17:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3839  2026-05-13 12:02:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3853  2026-05-13 12:16:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3838  2026-05-13 12:01:12  sistema   interno                         meeting-prep: 3 alerta(s) agendada(s) (6 usuarios)                                                                                                                                                      
+3852  2026-05-13 12:15:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3837  2026-05-13 12:01:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3851  2026-05-13 12:14:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3836  2026-05-13 12:00:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3850  2026-05-13 12:13:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3835  2026-05-13 11:59:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3849  2026-05-13 12:12:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3834  2026-05-13 11:58:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3848  2026-05-13 12:11:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3833  2026-05-13 11:57:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3847  2026-05-13 12:10:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3832  2026-05-13 11:56:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3846  2026-05-13 12:09:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3831  2026-05-13 11:55:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3845  2026-05-13 12:08:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3830  2026-05-13 11:54:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3844  2026-05-13 12:07:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3829  2026-05-13 11:53:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3843  2026-05-13 12:06:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3828  2026-05-13 11:52:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3842  2026-05-13 12:05:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3827  2026-05-13 11:51:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3841  2026-05-13 12:04:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3826  2026-05-13 11:50:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3840  2026-05-13 12:03:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3825  2026-05-13 11:49:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3839  2026-05-13 12:02:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3824  2026-05-13 11:48:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3838  2026-05-13 12:01:12  sistema   interno                         meeting-prep: 3 alerta(s) agendada(s) (6 usuarios)                                                                                                                     
 
-3823  2026-05-13 11:47:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3837  2026-05-13 12:01:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3822  2026-05-13 11:46:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3836  2026-05-13 12:00:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3821  2026-05-13 11:45:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3835  2026-05-13 11:59:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3820  2026-05-13 11:44:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3834  2026-05-13 11:58:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3819  2026-05-13 11:43:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3833  2026-05-13 11:57:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3818  2026-05-13 11:42:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3832  2026-05-13 11:56:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3817  2026-05-13 11:41:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3831  2026-05-13 11:55:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3816  2026-05-13 11:40:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3830  2026-05-13 11:54:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3815  2026-05-13 11:39:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3829  2026-05-13 11:53:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3814  2026-05-13 11:38:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3828  2026-05-13 11:52:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3813  2026-05-13 11:37:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3827  2026-05-13 11:51:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3812  2026-05-13 11:36:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3826  2026-05-13 11:50:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3811  2026-05-13 11:35:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3825  2026-05-13 11:49:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3810  2026-05-13 11:34:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3824  2026-05-13 11:48:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3809  2026-05-13 11:33:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3823  2026-05-13 11:47:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3808  2026-05-13 11:32:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3822  2026-05-13 11:46:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3807  2026-05-13 11:31:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3821  2026-05-13 11:45:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3806  2026-05-13 11:30:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3820  2026-05-13 11:44:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3805  2026-05-13 11:29:42  whatsapp  saliente   232637088149596@lid  Hola Natali! Por ahora no tengo integración con LinkedIn, así que no puedo ingresar a tu cuenta ni hacer publicaciones ahí. Mis canales son WhatsApp, Gmail y Google Calendar. Si necesitás, te puedo ay
+3819  2026-05-13 11:43:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3804  2026-05-13 11:29:42  sistema   interno                         claude_call whatsapp: 13581ms prompt=25287c raw=549c                                                                                                                                                    
+3818  2026-05-13 11:42:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3803  2026-05-13 11:29:29  whatsapp  entrante   232637088149596@lid  Hola María                                                                                                                                                                                              
-                                                                     Vos podrías ingresar a mi LinkedIn y hacer publicaciones?                                                                                                                                               
+3817  2026-05-13 11:41:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
 
-3802  2026-05-13 11:29:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+3816  2026-05-13 11:40:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                 
