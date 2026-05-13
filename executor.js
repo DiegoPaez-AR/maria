@@ -518,6 +518,7 @@ function _crearUsuario(a, ctx) {
   _requerir(a, ['nombre']);
   const u = usuarios.crear({
     nombre: a.nombre,
+    wa_lid: a.wa_lid || null,
     wa_cus: a.wa_cus || null,
     email: a.email || null,
     calendar_id: a.calendar_id || null,
@@ -548,7 +549,7 @@ function _actualizarUsuario(a, ctx) {
   }
   _requerir(a, ['id']);
   const patch = {};
-  for (const k of ['nombre', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto']) {
+  for (const k of ['nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto']) {
     if (a[k] !== undefined) patch[k] = a[k];
   }
   if (!Object.keys(patch).length) throw new Error('actualizar_usuario: no hay campos para cambiar');

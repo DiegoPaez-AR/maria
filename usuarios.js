@@ -106,24 +106,60 @@ function setWaLid(usuarioId, waLid) {
  * calendar_id antes de crear eventos — si un prospecto sin calendar_id
  * pide algo que requiere calendario, falla ahí con mensaje claro.
  */
-function crear({ nombre, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null }) {
+// Normaliza un identificador WA crudo (string que puede venir del LLM o de
+// un humano) a `{ wa_lid, wa_cus }`. Reglas:
+//   - termina en "@lid" → es un Linked ID → wa_lid
+//   - termina en "@c.us" → es un número telefónico WA → wa_cus
+//   - sin sufijo → asumimos número telefónico → "<digitos>@c.us" (legacy)
+// Si el caller pasa explícitamente wa_lid y wa_cus por separado, los
+// respetamos. Si pasa un único valor `wa_cus` que en realidad es un LID,
+// lo derivamos. Esto evita el bug histórico donde crear_usuario con un
+// LID terminaba guardando "<digitos>@c.us" inválido.
+function _normalizarWaIds({ wa_lid, wa_cus }) {
+  let lid = wa_lid || null;
+  let cus = wa_cus || null;
+  if (cus && typeof cus === 'string') {
+    const trimmed = cus.trim();
+    if (trimmed.endsWith('@lid')) {
+      // Vino un LID en el slot de wa_cus → derivar (si no había wa_lid).
+      if (!lid) lid = trimmed;
+      cus = null;
+    } else if (trimmed.endsWith('@c.us')) {
+      cus = trimmed;
+    } else if (trimmed.length) {
+      cus = `${trimmed.replace(/\D/g,'')}@c.us`;
+      if (!cus.match(/^\d+@c\.us$/)) cus = null; // si quedó solo "@c.us" descartar
+    } else {
+      cus = null;
+    }
+  }
+  if (lid && typeof lid === 'string') {
+    const t = lid.trim();
+    lid = t.endsWith('@lid') ? t : (t.length ? `${t.replace(/\D/g,'')}@lid` : null);
+    if (lid && !lid.match(/^\d+@lid$/)) lid = null;
+  }
+  return { wa_lid: lid, wa_cus: cus };
+}
+
+function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null }) {
   if (!nombre) throw new Error('crear usuario: nombre requerido');
 
   // Normalizar
   const nombreN = nombre.trim();
-  const waN    = wa_cus ? (wa_cus.endsWith('@c.us') ? wa_cus : `${String(wa_cus).replace(/\D/g,'')}@c.us`) : null;
+  const { wa_lid: lidN, wa_cus: cusN } = _normalizarWaIds({ wa_lid, wa_cus });
   const emailN = email ? email.trim().toLowerCase() : null;
   const calN   = calendar_id ? String(calendar_id).trim().toLowerCase() : null;
 
   // Chequear duplicados antes de INSERT (mejor error)
-  if (qPorNombre.get(nombreN))      throw new Error(`ya existe un usuario con ese nombre: ${nombreN}`);
-  if (waN && qPorWaCus.get(waN))    throw new Error(`ya existe un usuario con ese WhatsApp: ${waN}`);
+  if (qPorNombre.get(nombreN))         throw new Error(`ya existe un usuario con ese nombre: ${nombreN}`);
+  if (lidN && qPorWaLid.get(lidN))     throw new Error(`ya existe un usuario con ese WhatsApp LID: ${lidN}`);
+  if (cusN && qPorWaCus.get(cusN))     throw new Error(`ya existe un usuario con ese WhatsApp: ${cusN}`);
   if (emailN && qPorEmail.get(emailN)) throw new Error(`ya existe un usuario con ese email: ${emailN}`);
 
   const info = insertUsuario.run({
     nombre: nombreN,
-    wa_lid: null,   // se captura cuando el usuario escribe por primera vez
-    wa_cus: waN,
+    wa_lid: lidN,
+    wa_cus: cusN,
     email: emailN,
     calendar_id: calN,
     rol: 'usuario',
@@ -144,7 +180,7 @@ function crear({ nombre, wa_cus = null, email = null, calendar_id = null, tz = n
 // helpers específicos).
 
 const CAMPOS_ACTUALIZABLES = new Set([
-  'nombre', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto',
+  'nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto',
 ]);
 
 function actualizar(id, patch = {}) {
@@ -160,14 +196,25 @@ function actualizar(id, patch = {}) {
   if (cambios.nombre !== undefined) cambios.nombre = String(cambios.nombre).trim();
   if (cambios.email  !== undefined && cambios.email != null) cambios.email = String(cambios.email).trim().toLowerCase();
   if (cambios.calendar_id !== undefined && cambios.calendar_id != null) cambios.calendar_id = String(cambios.calendar_id).trim().toLowerCase();
-  if (cambios.wa_cus !== undefined && cambios.wa_cus != null) {
-    cambios.wa_cus = cambios.wa_cus.endsWith('@c.us') ? cambios.wa_cus : `${String(cambios.wa_cus).replace(/\D/g,'')}@c.us`;
+  // Normalizar wa_lid / wa_cus juntos: si el caller pasa "X@lid" como
+  // wa_cus por error, _normalizarWaIds lo deriva al slot correcto.
+  if (cambios.wa_lid !== undefined || cambios.wa_cus !== undefined) {
+    const norm = _normalizarWaIds({
+      wa_lid: cambios.wa_lid !== undefined ? cambios.wa_lid : u.wa_lid,
+      wa_cus: cambios.wa_cus !== undefined ? cambios.wa_cus : u.wa_cus,
+    });
+    if (cambios.wa_lid !== undefined) cambios.wa_lid = norm.wa_lid;
+    if (cambios.wa_cus !== undefined) cambios.wa_cus = norm.wa_cus;
   }
 
   // Chequear conflictos de unicidad (en otro usuario distinto)
   if (cambios.nombre) {
     const otro = qPorNombre.get(cambios.nombre);
     if (otro && otro.id !== id) throw new Error(`ya existe otro usuario con ese nombre: ${cambios.nombre}`);
+  }
+  if (cambios.wa_lid) {
+    const otro = qPorWaLid.get(cambios.wa_lid);
+    if (otro && otro.id !== id) throw new Error(`ya existe otro usuario con ese WhatsApp LID: ${cambios.wa_lid}`);
   }
   if (cambios.wa_cus) {
     const otro = qPorWaCus.get(cambios.wa_cus);
