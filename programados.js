@@ -13,38 +13,20 @@
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const waSend = require('./wa-send');
 
-/**
- * Si `destino` coincide con el wa_cus de algún usuario que ya tiene wa_lid,
- * devolvemos el wa_lid. Si no, devolvemos destino tal cual.
- */
-function _resolverDestinoWA(destino) {
-  if (!destino) return destino;
-  const u = usuarios.resolverPorWa(destino);
-  if (u && u.wa_lid && destino !== u.wa_lid) return u.wa_lid;
-  return destino;
-}
-
+// El envío WA se delega a wa-send.enviarWADirecto, que centraliza la
+// resolución @c.us↔@lid y el catch+fallback. No logueamos saliente desde
+// el helper porque acá ya logueamos con metadata específica de
+// `programados` (programadoId, razon, etc.) después de marcar enviado.
 async function _enviarWA(waClient, prog) {
   if (!waClient) throw new Error('waClient no disponible');
-
-  const destino = _resolverDestinoWA(prog.destino);
-  try {
-    await waClient.sendMessage(destino, prog.texto);
-    return destino;
-  } catch (err) {
-    // Si falló por LID stale y el destino original es @c.us, reintentamos
-    // buscando el lid otra vez (pudo haberse actualizado mientras tanto).
-    const esLidError = /No LID for user|invalid wid|not.{0,10}registered/i.test(err.message || '');
-    if (esLidError && prog.destino && prog.destino.endsWith('@c.us')) {
-      const u = usuarios.resolverPorWa(prog.destino);
-      if (u && u.wa_lid && u.wa_lid !== destino) {
-        await waClient.sendMessage(u.wa_lid, prog.texto);
-        return u.wa_lid;
-      }
-    }
-    throw err;
-  }
+  const { destinoFinal } = await waSend.enviarWADirecto(waClient, prog.destino, prog.texto, {
+    tag: `programados/${prog.id}`,
+    logSaliente: false,
+    usuarioId: prog.usuario_id || null,
+  });
+  return destinoFinal;
 }
 
 async function _enviarGmail(prog) {

@@ -13,6 +13,7 @@
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const waSend = require('./wa-send');
 
 const BRIEF_VENTANA_H = Number(process.env.BRIEF_VENTANA_H || 4);
 const ESTADO_KEY      = 'morning_brief_ultimo_dia';
@@ -127,28 +128,18 @@ async function enviarBrief(waClient, usuario) {
     return false;
   }
 
-  const destino = usuario.wa_lid || usuario.wa_cus;
-  if (!destino) {
+  if (!usuario.wa_lid && !usuario.wa_cus) {
     console.warn(`[morning-brief/${usuario.nombre}] sin destino WA — salteo`);
     return false;
   }
 
   const texto = await componerBrief(usuario);
 
-  try {
-    await waClient.sendMessage(destino, texto);
-  } catch (err) {
-    if (waClient._watchdogFrameMuerto) waClient._watchdogFrameMuerto(err, `morning-brief/${usuario.nombre}`);
-    throw err;
-  }
-
-  mem.log({
-    usuarioId: usuario.id,
-    canal: 'whatsapp', direccion: 'saliente',
-    de: destino, cuerpo: texto,
+  const { destinoFinal } = await waSend.enviarWAUsuario(waClient, usuario, texto, {
+    tag: `morning-brief/${usuario.nombre}`,
     metadata: { tipo: 'morning_brief' },
   });
-  console.log(`[morning-brief/${usuario.nombre}] ✓ enviado a ${destino}`);
+  console.log(`[morning-brief/${usuario.nombre}] ✓ enviado a ${destinoFinal}`);
   return true;
 }
 

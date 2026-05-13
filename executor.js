@@ -13,6 +13,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
+const waSend = require('./wa-send');
 
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
@@ -333,20 +334,12 @@ async function _reenviarWA(a, ctx) {
 }
 
 /**
- * Resuelve un destino WA: si el `a` coincide con el wa_cus de algún usuario
- * activo y ese usuario tiene wa_lid capturado, preferimos el lid (WA Web
- * moderno rechaza @c.us para usuarios que no están en la libreta de Maria).
+ * Resuelve un destino WA crudo (un string que puede ser @c.us o @lid) a
+ * la mejor opción de entrega. Delega al helper común en wa-send.js para
+ * mantener una sola implementación.
  */
 function _resolverDestinoWA(a) {
-  if (!a) return a;
-  if (a.endsWith('@lid')) return a; // ya es lid
-  const digs = a.replace(/\D/g, '');
-  if (!digs) return a;
-  // Buscar cualquier usuario que tenga este número como wa_cus
-  const todos = usuarios.listarActivos();
-  const match = todos.find(u => u.wa_cus && u.wa_cus.replace(/\D/g,'') === digs);
-  if (match && match.wa_lid) return match.wa_lid;
-  return a; // dejamos el @c.us — WA lo acepta si el contacto es conocido
+  return waSend.resolverPorPersistencia(a);
 }
 
 async function _enviarWA(a, ctx) {
@@ -357,32 +350,18 @@ async function _enviarWA(a, ctx) {
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
   if (!_v.ok) throw new Error(`enviar_wa: ${_v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
 
-  let destino = _resolverDestinoWA(a.a);
+  let destinoFinal;
   try {
-    await ctx.waClient.sendMessage(destino, a.texto);
+    const r = await waSend.enviarWADirecto(ctx.waClient, a.a, a.texto, {
+      tag: 'enviar_wa',
+      usuarioId: ctx.usuario.id,
+      metadata: { destinoOriginal: a.a },
+    });
+    destinoFinal = r.destinoFinal;
   } catch (err) {
-    const esLidError = /No LID for user|invalid wid|not.{0,10}registered/i.test(err.message || '');
-    if (esLidError) {
-      // Último recurso: re-resolver por las dudas el usuario actualizó su lid
-      const alt = _resolverDestinoWA(a.a);
-      if (alt && alt !== destino) {
-        await ctx.waClient.sendMessage(alt, a.texto);
-        destino = alt;
-      } else {
-        throw new Error(`No pude mandar WA a ${a.a}: ${err.message}`);
-      }
-    } else {
-      throw err;
-    }
+    throw new Error(`No pude mandar WA a ${a.a}: ${err.message}`);
   }
-
-  mem.log({
-    usuarioId: ctx.usuario.id,
-    canal: 'whatsapp', direccion: 'saliente',
-    de: destino, cuerpo: a.texto,
-    metadata: { destinoOriginal: a.a, destinoFinal: destino },
-  });
-  return { a: destino, enviado: true };
+  return { a: destinoFinal, enviado: true };
 }
 
 // ─── Memoria (pendientes + contactos + programados + hechos) ─────────────

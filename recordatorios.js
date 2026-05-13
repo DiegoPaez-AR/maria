@@ -12,6 +12,7 @@
 
 const mem = require('./memory');
 const usuarios = require('./usuarios');
+const waSend = require('./wa-send');
 
 const CONSULTA_UMBRAL_H   = Number(process.env.RECORDATORIO_CONSULTA_UMBRAL_H   || 2);
 const CONSULTA_COOLDOWN_H = Number(process.env.RECORDATORIO_CONSULTA_COOLDOWN_H || 3);
@@ -93,8 +94,13 @@ async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
 
   const texto = _formatearTexto(tipo, candidatos);
 
+  let destinoFinal;
   try {
-    await waClient.sendMessage(destino, texto);
+    const r = await waSend.enviarWAUsuario(waClient, usuario, texto, {
+      tag: `recordatorios/${usuario.nombre}/${tipo}`,
+      metadata: { tipo: 'recordatorio', subtipo: tipo, cuantos: candidatos.length },
+    });
+    destinoFinal = r.destinoFinal;
   } catch (err) {
     console.error(`[recordatorios/${usuario.nombre}/${tipo}] falló sendMessage:`, err.message);
     mem.log({
@@ -103,9 +109,6 @@ async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
       cuerpo: `recordatorio ${tipo} falló: ${err.message}`,
       metadata: { destino, cuantos: candidatos.length, tipo },
     });
-    if (waClient._watchdogFrameMuerto) {
-      waClient._watchdogFrameMuerto(err, `recordatorios/${usuario.nombre}/${tipo}`);
-    }
     return { enviado: false, motivo: 'error', error: err.message };
   }
 
@@ -115,13 +118,7 @@ async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
   }
   mem.setEstadoUsuario(usuario.id, cfg.keyGlobal, ahora);
 
-  mem.log({
-    usuarioId: usuario.id,
-    canal: 'whatsapp', direccion: 'saliente',
-    de: destino, cuerpo: texto,
-    metadata: { tipo: 'recordatorio', subtipo: tipo, cuantos: candidatos.length },
-  });
-  console.log(`[recordatorios/${usuario.nombre}/${tipo}] ping → ${destino} (${candidatos.length})`);
+  console.log(`[recordatorios/${usuario.nombre}/${tipo}] ping → ${destinoFinal} (${candidatos.length})`);
 
   return { enviado: true, cuantos: candidatos.length };
 }
