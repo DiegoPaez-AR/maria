@@ -1,13 +1,3 @@
-0|maria-pa | 2026-05-12 11:35:31:  para que sepa de las cosas
-0|maria-pa | 2026-05-12 11:35:31:  o sea que las va a tener en su agenda para que sepa del almorzo
-0|maria-pa | 2026-05-12 11:35:57: [WA →usr] Diego (34342575317160@lid): Dale, le mando un WA a Dodi avisándole del almuerzo del jueves.
-0|maria-pa | 2026-05-12 11:35:57: [WA acciones/Diego] 1/1 ejecutadas
-0|maria-pa | 2026-05-12 11:41:22: [unknown-flow/wa] match en contactos: 159854454943774@lid = "Rodrigo Canosa" de Diego (id=1)
-0|maria-pa | 2026-05-12 11:41:40: [WA →3ro] Diego/Rodrigo Páez Canosa: ¡Hola, Rodrigo! ¿En qué te puedo ayudar?
-0|maria-pa | 2026-05-12 11:41:40: [unknown-flow/wa] tercero_de_usuario: 159854454943774@lid (Rodrigo Páez Canosa) → contexto de Diego (id=1)
-0|maria-pa | 2026-05-12 11:41:42: [unknown-flow/wa] match en contactos: 159854454943774@lid = "Rodrigo Canosa" de Diego (id=1)
-0|maria-pa | 2026-05-12 11:41:56: [WA →3ro] Diego/Rodrigo Páez Canosa: ¡Jaja, no! Yo soy la secretaria de Diego, solo coordino. El almuerzo es con él, Gustavo y Santiago. ¡Que lo disfruten!
-0|maria-pa | 2026-05-12 11:41:56: [unknown-flow/wa] tercero_de_usuario: 159854454943774@lid (Rodrigo Páez Canosa) → contexto de Diego (id=1)
 0|maria-pa | 2026-05-12 11:43:06: [unknown-flow/wa] match en contactos: 159854454943774@lid = "Rodrigo Canosa" de Diego (id=1)
 0|maria-pa | 2026-05-12 11:43:18: [WA →3ro] Diego/Rodrigo Páez Canosa: ¡Seguro que sí! 😊
 0|maria-pa | 2026-05-12 11:43:18: [unknown-flow/wa] tercero_de_usuario: 159854454943774@lid (Rodrigo Páez Canosa) → contexto de Diego (id=1)
@@ -197,4 +187,14 @@
 0|maria-pa | 2026-05-13 09:45:09: [programados] 1 mensaje(s) debidos, despachando…
 0|maria-pa | 2026-05-13 09:45:09: [programados] ✓ id=143 (whatsapp/34342575317160@lid) [meeting_prep:1:hjk5uu2b76bql9mcrn9g23dhu8]
 0|maria-pa | 2026-05-13 09:46:28: [WA ←] Diego (34342575317160@lid): a cristian Ruiz tambien dalo de alta como usuario
+0|maria-pa | 2026-05-13 09:47:11: [WA →usr] Diego (34342575317160@lid): Doy de alta a Cristian Ruiz con el email cruiz@froneus.com. Como no tengo su WhatsApp, le mando el mensaje de bienvenida por email. Cuando tengas su número, avi
+0|maria-pa | 2026-05-13 09:47:11: [executor] usuario creado: id=9 nombre=Cristian Ruiz (sin calendar_id todavía)
+0|maria-pa | 2026-05-13 09:47:11: [WA acciones/Diego] 3/3 ejecutadas
+0|maria-pa | 2026-05-13 09:47:16: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=8 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=51, Fernando Boero=4, Santiago Bignone=3, Doris Capurro=0, Nicolas Kosinski=1, Walter Vera=1, Cristian Ruiz=0} remitente=227143674011812@lid contactos_ambiguos=2
+0|maria-pa | 2026-05-13 09:47:36: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=9 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=51, Fernando Boero=4, Santiago Bignone=3, Doris Capurro=0, Nicolas Kosinski=1, Walter Vera=1, Cristian Ruiz=0} remitente=227143674011812@lid contactos_ambiguos=2
+0|maria-pa | 2026-05-13 09:47:41: [WA ←] Diego (34342575317160@lid): ahi te paso el numero
+0|maria-pa | 2026-05-13 09:47:52: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=7 · El pushname es 'Nico', Maria ya le envió a este número el mensaje de bienvenida de Nicolas Kosinski (id=7) y su brief matutino el 2026-05-13, y el mensaje previo del historial ('Ahí te respondí el Mail para agregar personas a la capacitación') es consistente con el contexto de Froneus y la capacitación de Multichannel; el ID @lid es probablemente una representación alternativa del mismo contacto cuyo @c.us ya figura como 5491150080522.
+0|maria-pa | 2026-05-13 09:47:52: [unknown-flow/wa] capturado @lid para Nicolas Kosinski: 227143674011812@lid
+0|maria-pa | 2026-05-13 09:48:01: [WA →3ro] Nicolas Kosinski/Nico: ¡Hola Nico! Todo bien, ¿y vos? ¿En qué te puedo ayudar?
+0|maria-pa | 2026-05-13 09:48:01: [unknown-flow/wa] LLM routeó 227143674011812@lid → Nicolas Kosinski (id=7) [@lid capturado]
 
