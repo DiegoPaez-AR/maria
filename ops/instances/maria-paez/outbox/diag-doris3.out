@@ -1,0 +1,116 @@
+# ejecutado: 2026-05-13T09:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   
+#   echo "═══ 1. Eventos que mencionan el ID 105171031949561 (en cualquier campo) ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, substr(COALESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,300) AS metadata
+#     FROM eventos
+#     WHERE de LIKE '%105171031949561%' OR cuerpo LIKE '%105171031949561%' OR metadata LIKE '%105171031949561%'
+#     ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 2. Eventos que mencionan el número 5491144471264 ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, substr(COALESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,300) AS metadata
+#     FROM eventos
+#     WHERE de LIKE '%5491144471264%' OR cuerpo LIKE '%5491144471264%' OR metadata LIKE '%5491144471264%'
+#     ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 3. Eventos usuarioId=6 (Doris) — todos los canales ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, substr(COALESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,200) AS metadata
+#     FROM eventos
+#     WHERE usuario_id=6
+#     ORDER BY id DESC LIMIT 15;"
+#   
+#   echo
+#   echo "═══ 4. Cualquier evento con 'Doris' en cuerpo (últimos 15) ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, canal, direccion, de, substr(COALESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,200) AS metadata
+#     FROM eventos
+#     WHERE cuerpo LIKE '%Doris%' OR metadata LIKE '%Doris%'
+#     ORDER BY id DESC LIMIT 15;"
+#   
+#   echo
+#   echo "═══ 5. Esquema de eventos ═══"
+#   sqlite3 "$DB" "PRAGMA table_info(eventos);"
+#   
+#   echo
+#   echo "═══ 6. Cualquier evento entrante (direccion='entrante') con LID que empiece similar ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, de FROM eventos WHERE direccion='entrante' AND de LIKE '%@lid' GROUP BY de ORDER BY MAX(id) DESC LIMIT 20;"
+#   
+#   echo
+#   echo "═══ 7. ¿Existe tabla contactos? ¿Hay registro de Doris ahí? ═══"
+#   sqlite3 "$DB" ".tables"
+#   echo "---"
+#   sqlite3 -line "$DB" "SELECT * FROM contactos WHERE nombre LIKE '%Doris%' OR datos LIKE '%capurro%' OR datos LIKE '%4447%' LIMIT 5;" 2>&1 || true
+
+# ───── output ─────
+═══ 1. Eventos que mencionan el ID 105171031949561 (en cualquier campo) ═══
+Error: in prepare, no such column: metadata
+  ESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,300) AS metad
+                                      error here ---^
+
+═══ 2. Eventos que mencionan el número 5491144471264 ═══
+Error: in prepare, no such column: metadata
+  ESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,300) AS metad
+                                      error here ---^
+
+═══ 3. Eventos usuarioId=6 (Doris) — todos los canales ═══
+Error: in prepare, no such column: metadata
+  ESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,200) AS metad
+                                      error here ---^
+
+═══ 4. Cualquier evento con 'Doris' en cuerpo (últimos 15) ═══
+Error: in prepare, no such column: metadata
+  ESCE(cuerpo,''),1,200) AS cuerpo, substr(COALESCE(metadata,''),1,200) AS metad
+                                      error here ---^
+
+═══ 5. Esquema de eventos ═══
+0|id|INTEGER|0||1
+1|timestamp|DATETIME|0|CURRENT_TIMESTAMP|0
+2|canal|TEXT|1||0
+3|direccion|TEXT|1||0
+4|de|TEXT|0||0
+5|nombre|TEXT|0||0
+6|asunto|TEXT|0||0
+7|cuerpo|TEXT|0||0
+8|tipo_original|TEXT|0||0
+9|metadata_json|TEXT|0||0
+10|usuario_id|INTEGER|0||0
+
+═══ 6. Cualquier evento entrante (direccion='entrante') con LID que empiece similar ═══
+id    timestamp            de                 
+----  -------------------  -------------------
+3981  2026-05-13 12:52:53  34342575317160@lid 
+3975  2026-05-13 12:49:13  234518753583317@lid
+3953  2026-05-13 12:48:05  227143674011812@lid
+3803  2026-05-13 11:29:29  232637088149596@lid
+3702  2026-05-12 23:17:41  64652830601462@lid 
+3668  2026-05-12 21:15:20  159854454943774@lid
+3639  2026-05-12 15:04:22  218867305574643@lid
+3220  2026-05-11 12:32:41  52235459367058@lid 
+2981  2026-05-09 21:02:35  188029809512481@lid
+2927  2026-05-08 23:36:48  260794826633220@lid
+2893  2026-05-08 21:30:54  22965240475822@lid 
+2810  2026-05-08 16:00:47  222788661055558@lid
+2749  2026-05-08 00:11:51  261443333128411@lid
+2066  2026-05-06 16:33:18  236524335562789@lid
+2065  2026-05-06 16:30:03  485465551092@lid   
+1859  2026-05-04 23:37:20  144036744671299@lid
+1791  2026-05-03 20:40:11  99827991994407@lid 
+1789  2026-05-03 20:39:53  53463870402755@lid 
+1628  2026-04-30 23:15:46  137456250806423@lid
+1578  2026-04-29 19:50:53  219146579128474@lid
+
+═══ 7. ¿Existe tabla contactos? ¿Hay registro de Doris ahí? ═══
+contactos       estado_usuario  hechos          programados   
+estado          eventos         pendientes      usuarios      
+---
+Error: in prepare, no such column: datos
+  T * FROM contactos WHERE nombre LIKE '%Doris%' OR datos LIKE '%capurro%' OR da
+                                      error here ---^
+
+# exit=0
