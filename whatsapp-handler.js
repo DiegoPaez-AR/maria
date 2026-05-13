@@ -236,7 +236,9 @@ function crearClienteWA({ onReady } = {}) {
 // combinado y los adjuntos acumulados.
 
 const _DEBOUNCE_MS = Number(process.env.WA_DEBOUNCE_MS || 10000);
-const _colas = new Map(); // from → { items, timer }
+const _colas         = new Map(); // from → { items, timer }
+const _enProceso     = new Map(); // from → true mientras se está despachando
+const _colaPendiente = new Map(); // from → items[] acumulados durante un despacho en curso
 
 async function handleMessage(client, msg) {
   if (msg.fromMe) return;
@@ -389,6 +391,19 @@ async function _preProcesarMensaje(client, msg, { pushname, contact, messageId }
 }
 
 function _encolar(client, from, item) {
+  // Si ya estamos despachando un grupo para este `from`, encolamos al
+  // "siguiente lote" para evitar que María responda dos veces cuando el
+  // user manda un mensaje nuevo mientras la primera respuesta todavía se
+  // está cocinando (LLM + envío). Cuando el dispatch en curso termina, el
+  // pendiente se re-encola (con su debounce de 10s) y se procesa como un
+  // grupo nuevo — incluyendo otros mensajes que caigan en esa ventana.
+  if (_enProceso.get(from)) {
+    const pend = _colaPendiente.get(from) || [];
+    pend.push(item);
+    _colaPendiente.set(from, pend);
+    return;
+  }
+
   let q = _colas.get(from);
   if (!q) {
     q = { items: [], timer: null };
@@ -396,13 +411,31 @@ function _encolar(client, from, item) {
   }
   q.items.push(item);
   if (q.timer) clearTimeout(q.timer);
-  q.timer = setTimeout(() => {
-    const items = q.items;
-    _colas.delete(from);
-    _despacharGrupo(client, from, items).catch(err => {
-      console.error(`[WA debounce] error despachando grupo de ${from}:`, err);
-    });
-  }, _DEBOUNCE_MS);
+  q.timer = setTimeout(() => _disparar(client, from), _DEBOUNCE_MS);
+}
+
+async function _disparar(client, from) {
+  const q = _colas.get(from);
+  if (!q) return;
+  const items = q.items;
+  _colas.delete(from);
+
+  _enProceso.set(from, true);
+  try {
+    await _despacharGrupo(client, from, items);
+  } catch (err) {
+    console.error(`[WA debounce] error despachando grupo de ${from}:`, err);
+  } finally {
+    _enProceso.delete(from);
+    // Si llegaron mensajes durante el despacho, encolarlos ahora. Esto
+    // dispara un nuevo timer de _DEBOUNCE_MS, dando ventana para que se
+    // agrupen otros mensajes que estén por caer.
+    const pend = _colaPendiente.get(from);
+    if (pend && pend.length) {
+      _colaPendiente.delete(from);
+      for (const item of pend) _encolar(client, from, item);
+    }
+  }
 }
 
 async function _despacharGrupo(client, from, items) {
