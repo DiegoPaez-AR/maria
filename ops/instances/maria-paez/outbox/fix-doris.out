@@ -1,0 +1,109 @@
+# ejecutado: 2026-05-13T10:02:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   
+#   echo "═══ Antes del UPDATE ═══"
+#   sqlite3 -line "$DB" "SELECT id, nombre, wa_lid, wa_cus FROM usuarios WHERE id=6;"
+#   
+#   echo
+#   echo "═══ Aplicando UPDATE ═══"
+#   sqlite3 "$DB" "BEGIN;
+#   UPDATE usuarios
+#      SET wa_lid='105171031949561@lid',
+#          wa_cus='5491144471264@c.us',
+#          actualizado=CURRENT_TIMESTAMP
+#    WHERE id=6;
+#   COMMIT;"
+#   echo "rows changed:"
+#   sqlite3 "$DB" "SELECT changes();"
+#   
+#   echo
+#   echo "═══ Después del UPDATE ═══"
+#   sqlite3 -line "$DB" "SELECT id, nombre, wa_lid, wa_cus, actualizado FROM usuarios WHERE id=6;"
+#   
+#   echo
+#   echo "═══ Restart pm2 para que recargue la fila (in-process cache de usuarios.listarActivos) ═══"
+#   # usuarios.js hace queries en vivo, pero por las dudas reload soft.
+#   # Algunos módulos pueden cachear; mejor reload.
+#   pm2 reload maria-paez --update-env 2>&1 | tail -5
+#   
+#   echo
+#   echo "═══ Esperando 30s para que arranque y que el morning-brief intente otro tick ═══"
+#   sleep 35
+#   
+#   echo
+#   echo "═══ pm2 logs últimos 40 (buscando si Doris ✓ enviado o sigue fallando) ═══"
+#   pm2 logs maria-paez --lines 60 --nostream --raw 2>&1 | tail -60 | grep -E "Doris|morning-brief|ready|error|FAIL" | tail -30
+#   
+#   echo
+#   echo "═══ ¿Quedó marcado el estado de morning-brief para Doris hoy? ═══"
+#   sqlite3 -line "$DB" "SELECT * FROM estado_usuario WHERE usuario_id=6;"
+#   
+#   echo
+#   echo "═══ Último evento saliente a 105171031949561 ═══"
+#   sqlite3 -line "$DB" "SELECT id, timestamp, direccion, de, substr(COALESCE(cuerpo,''),1,150) AS cuerpo
+#     FROM eventos
+#     WHERE de LIKE '%105171031949561%'
+#     ORDER BY id DESC LIMIT 3;"
+
+# ───── output ─────
+═══ Antes del UPDATE ═══
+    id = 6
+nombre = Doris Capurro
+wa_lid = 
+wa_cus = 105171031949561@c.us
+
+═══ Aplicando UPDATE ═══
+rows changed:
+0
+
+═══ Después del UPDATE ═══
+         id = 6
+     nombre = Doris Capurro
+     wa_lid = 105171031949561@lid
+     wa_cus = 5491144471264@c.us
+actualizado = 2026-05-13 13:02:01
+
+═══ Restart pm2 para que recargue la fila (in-process cache de usuarios.listarActivos) ═══
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+
+═══ Esperando 30s para que arranque y que el morning-brief intente otro tick ═══
+
+═══ pm2 logs últimos 40 (buscando si Doris ✓ enviado o sigue fallando) ═══
+2026-05-13 09:47:16: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=8 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=51, Fernando Boero=4, Santiago Bignone=3, Doris Capurro=0, Nicolas Kosinski=1, Walter Vera=1, Cristian Ruiz=0} remitente=227143674011812@lid contactos_ambiguos=2
+2026-05-13 09:47:36: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=9 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=51, Fernando Boero=4, Santiago Bignone=3, Doris Capurro=0, Nicolas Kosinski=1, Walter Vera=1, Cristian Ruiz=0} remitente=227143674011812@lid contactos_ambiguos=2
+2026-05-13 09:49:09: [morning-brief/Cristian Ruiz] ✓ enviado a 5491126406612@c.us
+2026-05-13 10:02:04:   Usuarios:   9 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz
+2026-05-13 10:02:08: ✅ [WA ready] Maria conectada
+2026-05-13 10:02:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+2026-05-13 10:02:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+
+═══ ¿Quedó marcado el estado de morning-brief para Doris hoy? ═══
+
+═══ Último evento saliente a 105171031949561 ═══
+       id = 3882
+timestamp = 2026-05-13 12:34:45
+direccion = saliente
+       de = 105171031949561@lid
+   cuerpo = ¡Hola Doris! Soy *María Páez*, la secretaria personal de Diego. Quería recordarte que estoy acá para ayudarte con lo que necesites:
+
+📅 Agendar y coord
+
+       id = 966
+timestamp = 2026-04-23 15:29:39
+direccion = saliente
+       de = 105171031949561@lid
+   cuerpo = Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités org
+
+       id = 964
+timestamp = 2026-04-23 15:29:36
+direccion = saliente
+       de = 105171031949561@lid
+   cuerpo = Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités org
+
+# exit=0
