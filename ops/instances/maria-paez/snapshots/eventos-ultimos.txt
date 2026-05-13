@@ -1,5 +1,40 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3966  2026-05-13 12:48:58  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+3965  2026-05-13 12:48:58  whatsapp  saliente   5491126406612@c.us   ¡Hola Cristian! Soy *María Páez*, la secretaria personal de Diego. A partir de ahora estoy disponible para ayudarte con lo que necesites:                                                               
+                                                                                                                                                                                                                                                                             
+                                                                     📅 Agendar y coordinar reuniones                                                                                                                                                                         
+                                                                     ✉️ Redactar y gestionar email                                                                                                                                                                           
+
+3964  2026-05-13 12:48:51  sistema   interno                         acción ejecutada: actualizar_usuario                                                                                                                                                                    
+
+3963  2026-05-13 12:48:51  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+3962  2026-05-13 12:48:51  whatsapp  saliente   34342575317160@lid   Listo, agrego el WA de Cristian y le mando el mensaje de bienvenida ahora.                                                                                                                              
+
+3961  2026-05-13 12:48:51  sistema   interno                         claude_call whatsapp: 30713ms prompt=48197c raw=1706c                                                                                                                                                   
+
+3960  2026-05-13 12:48:37  whatsapp  entrante   34342575317160@lid   y mandale whatsapp para presentarte etc                                                                                                                                                                 
+
+3959  2026-05-13 12:48:19  whatsapp  entrante   34342575317160@lid   +54 9 11 2640-6612                                                                                                                                                                                      
+
+3958  2026-05-13 12:48:13  whatsapp  saliente   227143674011812@lid  Claro, cuando quieras.                                                                                                                                                                                  
+
+3957  2026-05-13 12:48:13  sistema   interno                         claude_call whatsapp: 8346ms prompt=21898c raw=207c                                                                                                                                                     
+
+3956  2026-05-13 12:48:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
+
+3955  2026-05-13 12:48:05  whatsapp  saliente   34342575317160@lid   Dale, cuando llegue lo agrego al perfil de Cristian.                                                                                                                                                    
+
+3954  2026-05-13 12:48:05  sistema   interno                         claude_call whatsapp: 23303ms prompt=47890c raw=329c                                                                                                                                                    
+
+3953  2026-05-13 12:48:05  whatsapp  entrante   227143674011812@lid  Por favor dame un rato y te contesto así arreglamos                                                                                                                                                     
+
+3952  2026-05-13 12:48:05  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=7 · Pushname 'Nico', María ya le envió el brief matutino y mensajes de bienvenida dirigidos a 'Nicolas Kosinski' a este mismo ID, y el historial pr
+
+3951  2026-05-13 12:48:05  sistema   interno                         claude_call unknown-flow: 29173ms prompt=33480c raw=457c                                                                                                                                                
+
 3950  2026-05-13 12:48:01  whatsapp  saliente   227143674011812@lid  ¡Hola Nico! Todo bien, ¿y vos? ¿En qué te puedo ayudar?                                                                                                                                                 
 
 3949  2026-05-13 12:48:01  sistema   interno                         claude_call whatsapp: 8908ms prompt=22886c raw=345c                                                                                                                                                     
@@ -197,35 +232,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 3868  2026-05-13 12:30:16  whatsapp  entrante   34342575317160@lid   quiero que cuando das de alta un usuario nuevo te presentes, le expliques lo del calendario como ya haces, y ademas que le cuentes en que cosas podes ayudar al usuario                                 
 
 3867  2026-05-13 12:30:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3866  2026-05-13 12:29:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3865  2026-05-13 12:28:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3864  2026-05-13 12:27:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3863  2026-05-13 12:26:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3862  2026-05-13 12:25:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3861  2026-05-13 12:24:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3860  2026-05-13 12:23:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3859  2026-05-13 12:22:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3858  2026-05-13 12:21:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3857  2026-05-13 12:20:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3856  2026-05-13 12:19:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3855  2026-05-13 12:18:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3854  2026-05-13 12:17:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3853  2026-05-13 12:16:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3852  2026-05-13 12:15:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
-
-3851  2026-05-13 12:14:09  sistema   interno                         morning-brief falló (Doris Capurro): t                                                                                                                                                                  
