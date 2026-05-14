@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4115  2026-05-14 12:28:01  sistema   interno                                                   acción ejecutada: set_calendar_acceso                                                                                                                                                                   
+
+4114  2026-05-14 12:28:01  sistema   interno                                                   calendar_acceso seteado a "none"                                                                                                                                                                        
+
+4113  2026-05-14 12:28:01  whatsapp  saliente   485465551092@lid                               ¡Perfecto, Santi! Ya veo el screenshot. Dejo verificar el acceso y en un momento te confirmo.                                                                                                           
+
+4112  2026-05-14 12:28:01  sistema   interno                                                   claude_call whatsapp: 35632ms prompt=47651c raw=611c                                                                                                                                                    
+
+4111  2026-05-14 12:27:25  whatsapp  entrante   485465551092@lid                               (adjuntó image/jpeg, 27 KB)                                                                                                                                                                             
+
 4110  2026-05-14 12:25:10  whatsapp  saliente   485465551092@lid                               ¡Santi! Tuve un pequeño problema técnico al verificar el acceso. ¿Con qué email compartiste el calendar? Así lo confirmo bien.                                                                          
 
 4109  2026-05-14 12:25:10  sistema   interno                                                   claude_call whatsapp: 27863ms prompt=47684c raw=425c                                                                                                                                                    
@@ -263,20 +273,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 4017  2026-05-13 15:50:31  whatsapp  saliente   227143674011812@lid                            Claro, pero necesito que me cuentes un poco sobre Froneus — ¿qué hace la empresa? Así lo incluyo bien en el mensaje.                                                                                    
 
 4016  2026-05-13 15:50:31  sistema   interno                                                   claude_call whatsapp: 13959ms prompt=23584c raw=350c                                                                                                                                                    
-
-4015  2026-05-13 15:50:17  whatsapp  entrante   227143674011812@lid                            Necesito agregues una breve presentación de Froneus. Con lo que hacemos                                                                                                                                 
-
-4014  2026-05-13 15:48:49  whatsapp  saliente   227143674011812@lid                            Acá va un borrador, lo podés ajustar a tu gusto:                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                       
-                                                                                               ---                                                                                                                                                                                                     
-                                                                                               Hola [Nombre] 👋                                                                                                                                                                                         
-                                                                                                                                                                                                                                                                                                       
-                                                                                               Te escribo para presentarme — soy *Nicolás Kosinski*, Director Comercial de *Froneus*.                                                                                                                  
-                                                                                                                                                                                                                                                                                                       
-                                                                                               Me encantaría coordinar una reunión para                                                                                                                                                                
-
-4013  2026-05-13 15:48:49  sistema   interno                                                   claude_call whatsapp: 16828ms prompt=23136c raw=648c                                                                                                                                                    
-
-4012  2026-05-13 15:48:32  whatsapp  entrante   227143674011812@lid                            Te pido me armes un mensaje de WhatsApp para mandar a contactos para presentarme. Diciendo que soy Director Comercial de Froneus y que me gustaría arreglar una reunión                                 
-
-4011  2026-05-13 15:32:11  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (9 usuarios)                                                                                                                                                      
