@@ -252,6 +252,23 @@ async function handleMessage(client, msg) {
   } catch {}
   const messageId = msg.id?._serialized || msg.id?.id || null;
 
+  // Normalizar `from` al @c.us estable (número telefónico). El @lid rota
+  // entre sesiones; el @c.us es invariante mientras dure el número. Trabajar
+  // internamente con @c.us hace que historial, libreta, prompt y debounce
+  // vean UN solo hilo por contacto aunque WA rote el LID. El @lid original
+  // queda como `fromLid` para fallback de envío (whatsapp-web.js a veces
+  // solo entrega al @lid del entrante cuando el destino no está en la
+  // libreta del teléfono de Maria).
+  let from = msg.from;
+  let fromLid = null;
+  if (from && from.endsWith('@lid')) {
+    const cusReal = contact?.id?._serialized;
+    if (cusReal && cusReal.endsWith('@c.us')) {
+      fromLid = from;
+      from = cusReal;
+    }
+  }
+
   // Marcar el chat como leído inmediatamente (best-effort). Antes Maria
   // dejaba todos los mensajes con doble check gris hasta responder, lo
   // que con el debouncing de 10s era visible para el remitente como
@@ -264,7 +281,7 @@ async function handleMessage(client, msg) {
   // Caso especial: vCard → libreta del usuario que la manda. Va directo,
   // sin debouncing — es metadata, no parte del flujo conversacional.
   if (msg.type === 'vcard') {
-    const usuario = usuarios.resolverPorWa(msg.from);
+    const usuario = usuarios.resolverPorWa(from);
     if (!usuario) return;
     return await _manejarVCard(client, msg, usuario);
   }
@@ -272,23 +289,23 @@ async function handleMessage(client, msg) {
   // Pre-procesar: extraer texto / transcribir audio / descargar media.
   // Esto se hace ANTES del debouncing para que cuando el timer expire ya
   // tengamos todo listo (los attachments en /tmp, los audios transcriptos).
-  const item = await _preProcesarMensaje(client, msg, { pushname, contact, messageId });
+  const item = await _preProcesarMensaje(client, msg, { pushname, contact, messageId, from, fromLid });
   if (!item) return; // sticker / vacío / fallo de transcripción
 
   // ─── Rate limit por usuario / global ─────────────────────────────────
-  const _usrTmp = usuarios.resolverPorWa(msg.from);
+  const _usrTmp = usuarios.resolverPorWa(from);
   const rl = seguridad.verificarRateLimit({ usuarioId: _usrTmp?.id || null });
   if (!rl.ok) {
-    console.warn(`[WA rate-limit] ${msg.from} bloqueado: ${rl.motivo}`);
+    console.warn(`[WA rate-limit] ${from} bloqueado: ${rl.motivo}`);
     mem.logSecurityEvent({
       usuarioId: _usrTmp?.id || null,
       canal: 'whatsapp',
       motivo: `rate_limit ${rl.motivo}`,
       body: (item.cuerpo || '').slice(0, 200),
-      extra: { retry_in_ms: rl.retry_in_ms, from: msg.from },
+      extra: { retry_in_ms: rl.retry_in_ms, from, fromLid },
     });
     try {
-      await client.sendMessage(msg.from, `⏳ vas muy rápido — esperá ${Math.ceil(rl.retry_in_ms / 1000)}s y volvé a probar`);
+      await client.sendMessage(from, `⏳ vas muy rápido — esperá ${Math.ceil(rl.retry_in_ms / 1000)}s y volvé a probar`);
     } catch {}
     return;
   }
@@ -296,24 +313,24 @@ async function handleMessage(client, msg) {
   // ─── Detección de prompt injection ───────────────────────────────────
   const motivoInj = seguridad.detectarInjection(item.cuerpo);
   if (motivoInj) {
-    console.warn(`[WA injection] ${msg.from} → ${motivoInj}: ${(item.cuerpo || '').slice(0, 120)}`);
+    console.warn(`[WA injection] ${from} → ${motivoInj}: ${(item.cuerpo || '').slice(0, 120)}`);
     mem.logSecurityEvent({
       usuarioId: _usrTmp?.id || null,
       canal: 'whatsapp',
       motivo: `injection_attempt: ${motivoInj}`,
       body: item.cuerpo,
-      extra: { from: msg.from, pushname },
+      extra: { from, fromLid, pushname },
     });
     // Mail al owner por CADA intento (decisión de Diego, sin cooldown).
     // Si esto genera ruido se le puede agregar cooldown más adelante.
-    _mailOwnerInjection({ canal: 'whatsapp', motivo: motivoInj, body: item.cuerpo, from: msg.from, pushname, usuarioId: _usrTmp?.id || null });
+    _mailOwnerInjection({ canal: 'whatsapp', motivo: motivoInj, body: item.cuerpo, from, pushname, usuarioId: _usrTmp?.id || null });
     // NO bloqueamos — el LLM va a rechazarlo via Capa 2.
   }
 
-  _encolar(client, msg.from, item);
+  _encolar(client, from, item);
 }
 
-async function _preProcesarMensaje(client, msg, { pushname, contact, messageId }) {
+async function _preProcesarMensaje(client, msg, { pushname, contact, messageId, from, fromLid }) {
   let cuerpo = (msg.body || '').trim();
   let esAudio = false;
   let mediaMeta = null;
@@ -325,7 +342,7 @@ async function _preProcesarMensaje(client, msg, { pushname, contact, messageId }
       const media = await msg.downloadMedia();
       if (!media) {
         console.warn('[WA] audio sin media');
-        await client.sendMessage(msg.from, '(no pude descargar el audio, mandame texto)');
+        await client.sendMessage(from, '(no pude descargar el audio, mandame texto)');
         return null;
       }
       console.log('[WA] transcribiendo audio…');
@@ -337,9 +354,9 @@ async function _preProcesarMensaje(client, msg, { pushname, contact, messageId }
       mem.log({
         canal: 'sistema', direccion: 'interno',
         cuerpo: `transcripción WA falló: ${err.message}`,
-        metadata: { from: msg.from, messageId },
+        metadata: { from, fromLid, messageId },
       });
-      await client.sendMessage(msg.from, '(no pude transcribir tu audio — mandamelo en texto)');
+      await client.sendMessage(from, '(no pude transcribir tu audio — mandamelo en texto)');
       return null;
     }
   }
@@ -387,7 +404,7 @@ async function _preProcesarMensaje(client, msg, { pushname, contact, messageId }
 
   if (!cuerpo) return null; // nada que procesar
 
-  return { cuerpo, esAudio, mediaMeta, attachmentPath, messageId, pushname, contact, msg };
+  return { cuerpo, esAudio, mediaMeta, attachmentPath, messageId, pushname, contact, fromLid, msg };
 }
 
 function _encolar(client, from, item) {
@@ -504,6 +521,7 @@ async function _despacharGrupo(client, from, items) {
       tipo_original: it.msg.type,
       metadata: {
         messageId: it.messageId, esAudio: it.esAudio, pushname,
+        ...(it.fromLid ? { fromLid: it.fromLid } : {}),
         ...(it.mediaMeta ? { esMedia: true, ...it.mediaMeta } : {}),
         ...(it.attachmentPath ? { attachmentPath: it.attachmentPath } : {}),
       },
