@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4365  2026-05-15 20:47:20  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4364  2026-05-15 20:47:20  whatsapp  saliente   5491154024727@c.us                             Hola Rubén! Soy María Páez, tu secretaria personal. A partir de ahora podés contar conmigo para coordinar reuniones, gestionar emails, llevar tus pendientes, mandarte recordatorios y coordinar con ter
+
+4363  2026-05-15 20:47:13  sistema   interno                                                   acción ejecutada: crear_usuario                                                                                                                                                                         
+
+4362  2026-05-15 20:47:13  whatsapp  saliente   34342575317160@lid                             Listo, le doy de alta a Rubén y le escribo para presentarme y explicarle las opciones de calendar.                                                                                                      
+
+4361  2026-05-15 20:47:13  sistema   interno                                                   claude_call whatsapp: 35872ms prompt=50287c raw=1601c                                                                                                                                                   
+
 4360  2026-05-15 20:46:37  whatsapp  entrante   34342575317160@lid                             sumalo a Ruben Ward como usuario                                                                                                                                                                        
 
 4359  2026-05-15 20:46:37  sistema   interno                                                   unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname 'Diego Paez' coincide con el owner; el historial del remitente (34342575317160@lid) es idéntico al historial de Diego owner (mismas
@@ -242,14 +252,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 4267  2026-05-15 16:37:41  whatsapp  saliente   34342575317160@lid                             Farinelli confirma: el bagel de trucha con ensalada ya está marchado. Listo para cuando vayas a retirarlo.                                                                                              
 
 4266  2026-05-15 16:37:41  sistema   interno                                                   claude_call whatsapp: 19671ms prompt=46213c raw=351c                                                                                                                                                    
-
-4265  2026-05-15 16:37:31  sistema   interno                                                   acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4264  2026-05-15 16:37:31  whatsapp  saliente   206489209823301@lid                            ¡Perfecto, lo tengo anotado!                                                                                                                                                                            
-
-4263  2026-05-15 16:37:31  whatsapp  saliente   34342575317160@lid                             Gabriel mandó su email: gap2612@gmail.com. ¿Tenés un lugar en mente para el almuerzo del 22, o lo agendo sin ubicación?                                                                                 
-
-4262  2026-05-15 16:37:24  sistema   interno                                                   claude_call whatsapp: 42273ms prompt=46052c raw=572c                                                                                                                                                    
-
-4261  2026-05-15 16:37:22  whatsapp  entrante   222788661055558@lid                            dale genial                                                                                                                                                                                             
-                                                                                               ya esta marchado                                                                                                                                                                                        
