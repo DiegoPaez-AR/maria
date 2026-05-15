@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4218  2026-05-15 16:24:01  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4217  2026-05-15 16:24:01  whatsapp  saliente   222788661055558@lid  ¡Hola! Quisiera saber si me pueden compartir la carta, por favor. Muchas gracias.                                                                                                                       
+
+4216  2026-05-15 16:24:01  whatsapp  saliente   34342575317160@lid   ¡Listo! Le escribo ahora a Farinelli.                                                                                                                                                                   
+
+4215  2026-05-15 16:24:01  sistema   interno                         claude_call whatsapp: 22846ms prompt=45913c raw=421c                                                                                                                                                    
+
+4214  2026-05-15 16:23:38  whatsapp  entrante   34342575317160@lid   dale                                                                                                                                                                                                    
+
 4213  2026-05-15 16:22:51  whatsapp  saliente   34342575317160@lid   No encuentro la carta completa publicada en el sitio, solo describen los momentos del día (desayuno/almuerzo/brunch con pastry, café de especialidad y platos de estación). ¿Querés que le escriba al re
 
 4212  2026-05-15 16:22:51  sistema   interno                         claude_call whatsapp: 76967ms prompt=45965c raw=540c                                                                                                                                                    
@@ -243,15 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4120  2026-05-14 12:55:55  whatsapp  saliente   485465551092@lid     ¡Listo, Santi! Ya quedó todo configurado. Ahora puedo ver tu agenda y agendar reuniones directo en tu calendar. Los eventos te van a aparecer como propios y los Meet links van a ser tuyos. ¿Hay algo q
 
 4119  2026-05-14 12:55:55  sistema   interno                         claude_call whatsapp: 21758ms prompt=47399c raw=606c                                                                                                                                                    
-
-4118  2026-05-14 12:55:33  whatsapp  entrante   485465551092@lid     y ahora?                                                                                                                                                                                                
-
-4117  2026-05-14 12:45:16  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Sondeos enviados a su base pieza de mailing Voces del Ecosistema (Restart) (10:00 a. m.)                                                                                                  
-                                                                     Con: asaubidet@restart-ai.com, carmen.albornoz@sondeosglobal.com, desireejaimovich@gmail.com, gal                                                                                                       
-
-4116  2026-05-14 12:30:16  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Daily CMP (09:45 a. m.)                                                                                                                                                                   
-                                                                     Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello                                      
-
-4115  2026-05-14 12:28:01  sistema   interno                         acción ejecutada: set_calendar_acceso                                                                                                                                                                   
-
-4114  2026-05-14 12:28:01  sistema   interno                         calendar_acceso seteado a "none"                                                                                                                                                                        
