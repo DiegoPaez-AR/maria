@@ -655,12 +655,15 @@ function _requerir(obj, campos) {
 // Setea calendar_acceso para un usuario (none|read|write|autodetect).
 // Si modo='autodetect', usa g.chequearAccesoCalendar para mirar el accessRole
 // real que Maria tiene sobre el calendar del usuario en su calendarList.
-// Sólo el owner puede ejecutarla.
+// El owner puede setear el calendar_acceso de cualquier usuario; un non-owner
+// solo puede setear el SUYO PROPIO (caso típico: el user comparte su calendar
+// y le avisa a Maria — el LLM emite la acción con usuarioId=ctx.usuario.id
+// para autodetectar el accessRole real).
 async function _setCalendarAcceso(a, ctx) {
-  if (!usuarios.esOwner(ctx.usuario.id)) {
-    throw new Error('set_calendar_acceso: solo el owner puede setear este campo');
-  }
   _requerir(a, ['usuarioId']);
+  if (!usuarios.esOwner(ctx.usuario.id) && a.usuarioId !== ctx.usuario.id) {
+    throw new Error('set_calendar_acceso: solo el owner o el propio usuario pueden setear este campo');
+  }
   const u = usuarios.obtener(a.usuarioId);
   if (!u) throw new Error(`set_calendar_acceso: usuario ${a.usuarioId} no existe`);
 
