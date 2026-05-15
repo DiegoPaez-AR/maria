@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4206  2026-05-15 14:31:37  whatsapp  saliente   485465551092@lid                               ¡Perfecto! Solo me falta confirmar: ¿Amorso es el nombre del restaurante (o tiene otro nombre)?                                                                                                         
+
+4205  2026-05-15 14:31:37  sistema   interno                                                   claude_call whatsapp: 23626ms prompt=47966c raw=338c                                                                                                                                                    
+
+4204  2026-05-15 14:31:13  whatsapp  entrante   485465551092@lid                               Eugenio es con quien almuerzo                                                                                                                                                                           
+
 4203  2026-05-15 14:27:51  whatsapp  saliente   485465551092@lid                               Perfecto, miércoles 20 a las 13hs. Me faltaría entender dos cosas más: ¿Amorso es el nombre del restaurante? ¿Y Eucreño es el nombre de la persona con quien es el almuerzo?                            
 
 4202  2026-05-15 14:27:51  sistema   interno                                                   claude_call whatsapp: 39908ms prompt=47950c raw=436c                                                                                                                                                    
@@ -250,11 +256,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 4107  2026-05-14 12:22:10  gmail     entrante   Santiago Bignone <santiagocbignone@gmail.com>  Santiago Bignone shared a calendar\n\nSantiago Bignone                                                                                                                                                  
                                                                                                <santiagocbignone@gmail.com> has invited you to see all event details on                                                                                                                                
                                                                                                the calendar: "Santiago Bignone".\n\nAccept the invite to join thi                                                                                                                                      
-
-4106  2026-05-14 12:22:10  gmail     entrante   Santiago Bignone <santiagocbignone@gmail.com>  Calendar access updated\n\nSantiago Bignone <santiagocbignone@gmail.com>                                                                                                                                
-                                                                                               updated your access to the shared calendar: "Santiago Bignone". You can now                                                                                                                             
-                                                                                               make changes and manage sharing.\n\nYou can m                                                                                                                                                           
-
-4105  2026-05-14 12:18:38  sistema   interno                                                   acción FALLÓ: set_calendar_acceso — Faltan campos requeridos: usuarioId                                                                                                                                 
-
-4104  2026-05-14 12:18:38  whatsapp  saliente   485465551092@lid                               ¡Ya chequeo y te confirmo!                                                                                                                                                                              
