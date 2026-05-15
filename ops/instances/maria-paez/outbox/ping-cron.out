@@ -1,0 +1,35 @@
+# ejecutado: 2026-05-15T13:41:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "PING desde Claude $(date -Iseconds)"
+#   echo "Hora VPS: $(date -Iseconds)"
+#   echo "Token en uso por cron (sanitizado):"
+#   grep -oE 'ghp_[A-Za-z0-9]{4}' /root/.git-credentials-maria 2>/dev/null | head -1 | sed 's/$/...***/'
+#   echo "Último push del cron según .cron.log (últimas 15 líneas):"
+#   tail -15 /root/secretaria/ops/.cron.log 2>/dev/null
+
+# ───── output ─────
+PING desde Claude 2026-05-15T13:41:01-03:00
+Hora VPS: 2026-05-15T13:41:01-03:00
+Token en uso por cron (sanitizado):
+ghp_uGVA...***
+Último push del cron según .cron.log (últimas 15 líneas):
+tick done
+═══ 2026-05-15T13:37:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-15T13:38:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-15T13:39:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-15T13:40:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-15T13:41:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/ping-cron.sh → ops/instances/maria-paez/outbox/ping-cron.out
+
+# exit=0
