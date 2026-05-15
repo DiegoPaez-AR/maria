@@ -1,0 +1,138 @@
+# ejecutado: 2026-05-15T14:46:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diagnóstico de la auth de Google de Maria
+#   set +e
+#   
+#   echo "═══ 1) Archivos token.json y credentials.json ═══"
+#   ls -la /root/secretaria/state/maria-paez/token.json* /root/secretaria/state/maria-paez/credentials.json 2>/dev/null
+#   echo ""
+#   echo "Tamaño y campos del token (sin valores secretos):"
+#   python3 -c "
+#   import json
+#   try:
+#       t = json.load(open('/root/secretaria/state/maria-paez/token.json'))
+#       for k in t.keys():
+#           v = t[k]
+#           if k in ('access_token','refresh_token','id_token'):
+#               v = f'(presente, len={len(str(v))})'
+#           elif k == 'expiry_date':
+#               from datetime import datetime, timezone
+#               try:
+#                   d = datetime.fromtimestamp(v/1000, tz=timezone.utc)
+#                   v = f'{v} → {d.isoformat()}'
+#               except: pass
+#           print(f'  {k} = {v}')
+#   except Exception as e:
+#       print(f'error: {e}')
+#   "
+#   echo ""
+#   echo "Cliente OAuth (credentials.json — solo expone client_id/redirect, no secret):"
+#   python3 -c "
+#   import json
+#   try:
+#       c = json.load(open('/root/secretaria/state/maria-paez/credentials.json'))
+#       # Estructura típica de Google OAuth client: { installed: {...} } o { web: {...} }
+#       root = c.get('installed') or c.get('web') or c
+#       for k in ['client_id','project_id','redirect_uris','token_uri','auth_uri']:
+#           v = root.get(k)
+#           if v: print(f'  {k} = {v}')
+#   " 
+#   
+#   echo ""
+#   echo "═══ 2) ¿Token tiene refresh_token o solo access_token? ═══"
+#   python3 -c "
+#   import json
+#   t = json.load(open('/root/secretaria/state/maria-paez/token.json'))
+#   print('  refresh_token:', 'SI' if t.get('refresh_token') else 'NO (sin refresh, el access vence y no se renueva)')
+#   print('  scope:', t.get('scope'))
+#   "
+#   
+#   echo ""
+#   echo "═══ 3) ¿Hay tokens por usuario en algún lado? (calendars compartidos vs propios) ═══"
+#   find /root/secretaria/state -name '*token*' -o -name '*oauth*' 2>/dev/null | head -20
+#   echo ""
+#   echo "Estructura de state/maria-paez:"
+#   ls -la /root/secretaria/state/maria-paez/
+#   
+#   echo ""
+#   echo "═══ 4) Errores invalid_grant recientes en logs (últimos 200) ═══"
+#   pm2 logs maria-paez --lines 500 --nostream 2>&1 | grep -iE 'invalid_grant|invalid.grant|refresh.*token|reauth|google.*expired' | tail -20
+#   
+#   echo ""
+#   echo "═══ 5) Si auth-gmail.js o google.js tienen flujo de reconexión OAuth ═══"
+#   grep -nE 'function.*[Aa]uth|getNewToken|oauth.*url|generateAuthUrl|server\.|createServer|listen\(' /root/secretaria/auth-gmail.js 2>/dev/null
+#   echo ""
+#   echo "google.js — exports relevantes:"
+#   grep -nE 'module\.exports|function (auth|generar|refresh|getClient)' /root/secretaria/google.js | head -20
+
+# ───── output ─────
+═══ 1) Archivos token.json y credentials.json ═══
+-rw-r--r--+ 1 root root 408 Apr 15 20:41 /root/secretaria/state/maria-paez/credentials.json
+-rw-r--r--+ 1 root root 574 May  8 11:55 /root/secretaria/state/maria-paez/token.json
+-rw-r--r--+ 1 root root 574 May  8 11:54 /root/secretaria/state/maria-paez/token.json.bak.20260508-115436
+
+Tamaño y campos del token (sin valores secretos):
+  access_token = (presente, len=253)
+  refresh_token = (presente, len=103)
+  scope = https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar
+  token_type = Bearer
+  refresh_token_expires_in = 604799
+  expiry_date = 1778255749435 → 2026-05-08T15:55:49.435000+00:00
+
+Cliente OAuth (credentials.json — solo expone client_id/redirect, no secret):
+  File "<string>", line 10
+    
+    ^
+SyntaxError: expected 'except' or 'finally' block
+
+═══ 2) ¿Token tiene refresh_token o solo access_token? ═══
+  refresh_token: SI
+  scope: https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/calendar
+
+═══ 3) ¿Hay tokens por usuario en algún lado? (calendars compartidos vs propios) ═══
+/root/secretaria/state/maria-paez/token.json
+/root/secretaria/state/maria-paez/token.json.bak.20260508-115436
+
+Estructura de state/maria-paez:
+total 32
+drwxr-xr-x+ 5 root root 4096 May  9 19:52 .
+drwxr-xr-x+ 4 root root 4096 May 15 09:07 ..
+-rw-r--r--+ 1 root root  408 Apr 15 20:41 credentials.json
+drwxr-xr-x+ 2 root root 4096 May 15 08:56 db
+-rw-r--r--+ 1 root root  574 May  8 11:55 token.json
+-rw-r--r--+ 1 root root  574 May  8 11:54 token.json.bak.20260508-115436
+drwxr-xr-x+ 3 root root 4096 Apr 18 12:14 .wwebjs_auth
+drwxr-xr-x+ 2 root root 4096 May  8 22:11 .wwebjs_cache
+
+═══ 4) Errores invalid_grant recientes en logs (últimos 200) ═══
+0|maria-pa | 2026-05-15 14:40:11: [GMAIL] poll falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Diego] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Hernan Fulco] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:40:11: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [GMAIL] poll falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Diego] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Hernan Fulco] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-05-15 14:45:11: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+
+═══ 5) Si auth-gmail.js o google.js tienen flujo de reconexión OAuth ═══
+16:const authUrl = oAuth2Client.generateAuthUrl({
+
+google.js — exports relevantes:
+701:module.exports = {
+
+# exit=0
