@@ -1,0 +1,126 @@
+# ejecutado: 2026-05-15T13:48:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Investigar la conversación con Gabriel (+54 9 11 4040-2319) hoy ~13:34-13:41.
+#   # Buscar: mensajes entrantes/salientes + claude_calls + ¿hubo debounce?
+#   set +e
+#   
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   
+#   echo "═══ 1) Mensajes entrantes y salientes con Gabriel (1140402319) ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT id, timestamp, canal, direccion, substr(COALESCE(de,'')||COALESCE(nombre,''),1,40) AS contacto,
+#          substr(COALESCE(cuerpo,''),1,120) AS cuerpo
+#   FROM eventos
+#   WHERE (de LIKE '%1140402319%' OR cuerpo LIKE '%1140402319%' OR cuerpo LIKE '%4040-2319%' OR cuerpo LIKE '%Gabriel%' OR cuerpo LIKE '%gap2612%')
+#     AND timestamp >= '2026-05-15 13:00'
+#   ORDER BY id ASC
+#   LIMIT 80
+#   "
+#   
+#   echo ""
+#   echo "═══ 2) Eventos en la ventana 13:30-13:45 (todos los canales) ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT id, timestamp, canal, direccion, substr(COALESCE(de,'')||' '||COALESCE(nombre,''),1,30) AS quien,
+#          substr(COALESCE(cuerpo,''),1,90) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-15 13:30' AND timestamp <= '2026-05-15 13:45'
+#   ORDER BY id ASC
+#   LIMIT 100
+#   "
+#   
+#   echo ""
+#   echo "═══ 3) Buscar el wa_id real de Gabriel en eventos (LID o c.us) ═══"
+#   sqlite3 "$DB" "
+#   SELECT DISTINCT de FROM eventos
+#   WHERE timestamp >= '2026-05-15 13:30' AND timestamp <= '2026-05-15 13:45'
+#     AND canal='whatsapp'
+#   "
+#   
+#   echo ""
+#   echo "═══ 4) Logs pm2 alrededor de la conversación (filtro Gabriel/4040) ═══"
+#   pm2 logs maria-paez --lines 2000 --nostream 2>&1 | grep -E '4040-2319|1140402319|Gabriel|debounce|debouncing|WA_DEBOUNCE|gap2612|La Cabrera|cabrera' -i | tail -50
+#   
+#   echo ""
+#   echo "═══ 5) Eventos 'sistema interno' con razonamiento/claude_call cercanos ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT id, timestamp, substr(COALESCE(cuerpo,''),1,160) AS cuerpo
+#   FROM eventos
+#   WHERE canal='sistema' AND direccion='interno'
+#     AND timestamp >= '2026-05-15 13:30' AND timestamp <= '2026-05-15 13:45'
+#   ORDER BY id ASC
+#   LIMIT 50
+#   "
+#   
+#   echo ""
+#   echo "═══ 6) Contactos con Gabriel ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT id, nombre, whatsapp, email, usuario_id, visibilidad
+#   FROM contactos
+#   WHERE nombre LIKE '%Gabriel%' OR whatsapp LIKE '%1140402319%' OR email LIKE '%gap2612%'
+#   " 2>&1
+
+# ───── output ─────
+═══ 1) Mensajes entrantes y salientes con Gabriel (1140402319) ═══
+id    timestamp            canal     direccion  contacto                        cuerpo                                                                                                                  
+----  -------------------  --------  ---------  ------------------------------  ------------------------------------------------------------------------------------------------------------------------
+4226  2026-05-15 16:33:16  sistema   interno                                    contacto vcard (privado): Gabriel Pacheco → 5491140402319@c.us                                                          
+4231  2026-05-15 16:34:05  whatsapp  entrante   34342575317160@lidDiego         escribile a Gabriel para almorzar la sem prox jueves o viernes de 13 a 15                                               
+4233  2026-05-15 16:34:25  whatsapp  saliente   34342575317160@lidDiego         Le escribo ahora a Gabriel para coordinar el almuerzo.                                                                  
+4234  2026-05-15 16:34:25  whatsapp  saliente   5491140402319@c.us              Hola Gabriel! Te escribo de parte de Diego. ¿Tenés disponibilidad para almorzar la semana que viene? Propone el jueves 2
+4239  2026-05-15 16:35:16  whatsapp  saliente   34342575317160@lidDiego         Te escribió Gabriel Pacheco por WhatsApp saludando. ¿Querés que le responda algo en particular o lo manejo como coordina
+4240  2026-05-15 16:35:16  whatsapp  saliente   206489209823301@lidGabriel ARG  ¡Hola Gabriel! Muy bien, gracias. Te escribí antes de parte de Diego para coordinar un almuerzo la semana que viene. ¿Pu
+4250  2026-05-15 16:35:54  whatsapp  saliente   34342575317160@lidDiego         Gabriel confirmó el viernes 22 de mayo de 13 a 15hs. ¿Lo agendo? Y si ya tenés lugar elegido, avisame para sumarlo al ev
+4251  2026-05-15 16:35:54  whatsapp  saliente   206489209823301@lidGabriel ARG  ¡Perfecto, Gabriel! Le confirmo a Diego y te aviso enseguida.                                                           
+4255  2026-05-15 16:36:41  whatsapp  entrante   206489209823301@lidGabriel ARG  gap2612@gmail.com                                                                                                       
+4260  2026-05-15 16:37:19  whatsapp  entrante   34342575317160@lidDiego         a Gabriel preguntale donde quiere almorzar, pedile mail para agebdar en su calendar y reserva en el restaurante         
+4263  2026-05-15 16:37:31  whatsapp  saliente   34342575317160@lidDiego         Gabriel mandó su email: gap2612@gmail.com. ¿Tenés un lugar en mente para el almuerzo del 22, o lo agendo sin ubicación? 
+4270  2026-05-15 16:38:05  whatsapp  saliente   34342575317160@lidDiego         Ya tengo el mail de Gabriel (gap2612@gmail.com) — lo mandó recién. Le pregunto dónde quiere almorzar y cuando confirme h
+4272  2026-05-15 16:38:12  whatsapp  saliente   5491140402319@c.us              ¡Perfecto Gabriel! Quedamos el viernes 22 de mayo de 13 a 15hs. ¿Tenés algún restaurante en mente o te sugiero opciones?
+4277  2026-05-15 16:40:04  whatsapp  saliente   34342575317160@lidDiego         Gabriel propone La Cabrera para el almuerzo del viernes 22. ¿Te parece bien? Si confirmás, hago la reserva para dos pers
+4283  2026-05-15 16:41:49  whatsapp  saliente   34342575317160@lidDiego         Encontré el WA de La Cabrera Palermo: +54 9 11 6820-4013. Les escribo ahora para reservar mesa para 2 el viernes 22 a la
+
+═══ 2) Eventos en la ventana 13:30-13:45 (todos los canales) ═══
+
+═══ 3) Buscar el wa_id real de Gabriel en eventos (LID o c.us) ═══
+
+═══ 4) Logs pm2 alrededor de la conversación (filtro Gabriel/4040) ═══
+0|maria-pa | 2026-05-15 13:33:16: 📒 [WA vcard/Diego] Gabriel Pacheco → 5491140402319@c.us (privado)
+0|maria-pa | 2026-05-15 13:34:05: [WA ←] Diego (34342575317160@lid): escribile a Gabriel para almorzar la sem prox jueves o viernes de 13 a 15
+0|maria-pa | 2026-05-15 13:34:25: [WA →usr] Diego (34342575317160@lid): Le escribo ahora a Gabriel para coordinar el almuerzo.
+0|maria-pa | 2026-05-15 13:35:05: [unknown-flow/wa] match en contactos: 206489209823301@lid = "Gabriel Pacheco" de Diego (id=1)
+0|maria-pa | 2026-05-15 13:35:16: [WA →usr] Diego (34342575317160@lid): Te escribió Gabriel Pacheco por WhatsApp saludando. ¿Querés que le responda algo en particular o lo manejo como coordinación del almuerzo que estamos intentando
+0|maria-pa | 2026-05-15 13:35:16: [WA →3ro] Diego/Gabriel ARG: ¡Hola Gabriel! Muy bien, gracias. Te escribí antes de parte de Diego para coordinar un almuerzo la semana que viene. ¿Pudiste ver el mensaje?
+0|maria-pa | 2026-05-15 13:35:16: [unknown-flow/wa] tercero_de_usuario: 206489209823301@lid (Gabriel ARG) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-15 13:35:26: [unknown-flow/wa] match en contactos: 206489209823301@lid = "Gabriel Pacheco" de Diego (id=1)
+0|maria-pa | 2026-05-15 13:35:54: [WA →usr] Diego (34342575317160@lid): Gabriel confirmó el viernes 22 de mayo de 13 a 15hs. ¿Lo agendo? Y si ya tenés lugar elegido, avisame para sumarlo al evento.
+0|maria-pa | 2026-05-15 13:35:54: [WA →3ro] Diego/Gabriel ARG: ¡Perfecto, Gabriel! Le confirmo a Diego y te aviso enseguida.
+0|maria-pa | 2026-05-15 13:35:54: [unknown-flow/wa] tercero_de_usuario: 206489209823301@lid (Gabriel ARG) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-15 13:36:04: [unknown-flow/wa] match en contactos: 206489209823301@lid = "Gabriel Pacheco" de Diego (id=1)
+0|maria-pa | 2026-05-15 13:36:31: [unknown-flow/wa] tercero_de_usuario: 206489209823301@lid (Gabriel ARG) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-15 13:36:41: [unknown-flow/wa] match en contactos: 206489209823301@lid = "Gabriel Pacheco" de Diego (id=1)
+0|maria-pa | 2026-05-15 13:37:19: [WA ←] Diego (34342575317160@lid): a Gabriel preguntale donde quiere almorzar, pedile mail para agebdar en su calendar y reserva en el restaurante
+0|maria-pa | 2026-05-15 13:37:31: [WA →usr] Diego (34342575317160@lid): Gabriel mandó su email: gap2612@gmail.com. ¿Tenés un lugar en mente para el almuerzo del 22, o lo agendo sin ubicación?
+0|maria-pa | 2026-05-15 13:37:31: [WA →3ro] Diego/Gabriel ARG: ¡Perfecto, lo tengo anotado!
+0|maria-pa | 2026-05-15 13:37:31: [unknown-flow/wa] tercero_de_usuario: 206489209823301@lid (Gabriel ARG) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-15 13:38:05: [WA →usr] Diego (34342575317160@lid): Ya tengo el mail de Gabriel (gap2612@gmail.com) — lo mandó recién. Le pregunto dónde quiere almorzar y cuando confirme hago la reserva y agendo con invitación p
+0|maria-pa | 2026-05-15 13:39:38: [unknown-flow/wa] match en contactos: 206489209823301@lid = "Gabriel Pacheco" de Diego (id=1)
+0|maria-pa | 2026-05-15 13:40:04: [WA →usr] Diego (34342575317160@lid): Gabriel propone La Cabrera para el almuerzo del viernes 22. ¿Te parece bien? Si confirmás, hago la reserva para dos personas a las 13hs y agendo con invitación 
+0|maria-pa | 2026-05-15 13:40:04: [WA →3ro] Diego/Gabriel ARG: ¡Buena elección! Le consulto a Diego y te confirmo enseguida.
+0|maria-pa | 2026-05-15 13:40:04: [unknown-flow/wa] tercero_de_usuario: 206489209823301@lid (Gabriel ARG) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-15 13:41:04: [WA ←] Diego (34342575317160@lid): dale, fijate si conseguis online el whatsapp de la cabrera de palermo y reserva ahi
+0|maria-pa | 2026-05-15 13:41:49: [WA →usr] Diego (34342575317160@lid): Encontré el WA de La Cabrera Palermo: +54 9 11 6820-4013. Les escribo ahora para reservar mesa para 2 el viernes 22 a las 13hs, y agendo el almuerzo con Gabriel
+0|maria-pa | 2026-05-15 13:45:08: [WA →usr] Diego (34342575317160@lid): El número ya quedó guardado en la libreta (La Cabrera Palermo, 5491168204013). El WA de reserva sigue sin poder enviarse desde acá — para confirmar la mesa van 
+
+═══ 5) Eventos 'sistema interno' con razonamiento/claude_call cercanos ═══
+
+═══ 6) Contactos con Gabriel ═══
+id   nombre            whatsapp            email                    usuario_id  visibilidad
+---  ----------------  ------------------  -----------------------  ----------  -----------
+129  Gabriel Isola     5491143321212@c.us  Isola.gabriel@gmail.com  1           privada    
+131  Gabriel Pacheco   5491140402319@c.us  gap2612@gmail.com        1           privada    
+220  Gabriela Echaniz  5491165286555@c.us                           1           privada    
+
+# exit=0
