@@ -105,6 +105,7 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
 
   const intento1 = resolverPorPersistencia(destinoCrudo);
   let destinoFinal = intento1;
+  let resueltoVia = null;
   try {
     await client.sendMessage(intento1, texto);
   } catch (err) {
@@ -113,17 +114,44 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
       if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, tag);
       throw err;
     }
-    // Buscar alternativo: si hay usuario que matchee, probar el otro slot.
-    const u = usuarios.resolverPorWa(destinoCrudo);
-    const alt = u && u.wa_lid && u.wa_lid !== intento1 ? u.wa_lid
-              : u && u.wa_cus && u.wa_cus !== intento1 ? u.wa_cus
-              : null;
-    if (!alt) {
-      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, tag);
-      throw err;
+
+    // Si intento1 es @c.us y falló por LID, pedirle a WA Web que resuelva el
+    // wid del número via getNumberId(). Esto cubre el caso "iniciar
+    // conversación con número nuevo": WA aún no descubrió el @lid del
+    // destinatario, así que sendMessage al @c.us crudo rebota con "No LID
+    // for user". getNumberId() hace lookup en los servers de WA y devuelve
+    // el wid resuelto (puede ser @c.us con hash o @lid). Solo aplica si el
+    // destinoCrudo no matchea a ningún usuario activo (los usuarios ya
+    // tienen sus dos slots persistidos, ese fallback lo cubre abajo).
+    let widResuelto = null;
+    if (intento1.endsWith('@c.us')) {
+      try {
+        const numero = intento1.replace(/@c\.us$/, '');
+        const wid = await client.getNumberId(numero);
+        if (wid && wid._serialized && wid._serialized !== intento1) {
+          widResuelto = wid._serialized;
+        }
+      } catch { /* getNumberId puede tirar; seguimos al fallback de usuarios */ }
     }
-    await client.sendMessage(alt, texto);
-    destinoFinal = alt;
+
+    if (widResuelto) {
+      await client.sendMessage(widResuelto, texto);
+      destinoFinal = widResuelto;
+      resueltoVia = 'getNumberId';
+    } else {
+      // Buscar alternativo: si hay usuario que matchee, probar el otro slot.
+      const u = usuarios.resolverPorWa(destinoCrudo);
+      const alt = u && u.wa_lid && u.wa_lid !== intento1 ? u.wa_lid
+                : u && u.wa_cus && u.wa_cus !== intento1 ? u.wa_cus
+                : null;
+      if (!alt) {
+        if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, tag);
+        throw err;
+      }
+      await client.sendMessage(alt, texto);
+      destinoFinal = alt;
+      resueltoVia = 'usuario-alt';
+    }
   }
 
   if (logSaliente) {
@@ -131,7 +159,7 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
       usuarioId,
       canal: 'whatsapp', direccion: 'saliente',
       de: destinoFinal, cuerpo: texto,
-      metadata: { ...(metadata || {}), destinoOriginal: destinoCrudo, destinoFinal, tag },
+      metadata: { ...(metadata || {}), destinoOriginal: destinoCrudo, destinoFinal, tag, ...(resueltoVia ? { resueltoVia } : {}) },
     });
   }
   return { destinoFinal, enviado: true };
