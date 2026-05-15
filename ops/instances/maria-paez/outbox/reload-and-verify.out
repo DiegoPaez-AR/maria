@@ -1,0 +1,95 @@
+# ejecutado: 2026-05-15T15:20:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Reload pm2 con el token nuevo (post-publish) y verificar invalid_grant.
+#   set +e
+#   
+#   echo "═══ Estado del token nuevo ═══"
+#   ls -la /root/secretaria/state/maria-paez/token.json* 2>/dev/null
+#   
+#   echo ""
+#   echo "Campos clave del token (sin secretos):"
+#   python3 - <<'PYEOF'
+#   import json
+#   from datetime import datetime, timezone
+#   t = json.load(open('/root/secretaria/state/maria-paez/token.json'))
+#   for k in t.keys():
+#       v = t[k]
+#       if k in ('access_token','refresh_token','id_token'):
+#           v = f'(presente, len={len(str(v))})'
+#       elif k == 'expiry_date':
+#           try:
+#               d = datetime.fromtimestamp(v/1000, tz=timezone.utc)
+#               v = f'{v} → {d.isoformat()}'
+#           except: pass
+#       print(f'  {k} = {v}')
+#   if 'refresh_token_expires_in' in t:
+#       rt = t['refresh_token_expires_in']
+#       print(f'\n⚠️  refresh_token_expires_in PRESENTE: {rt}s ({rt/86400:.1f} dias)')
+#   else:
+#       print('\n✅ refresh_token_expires_in AUSENTE — el refresh token no caduca automaticamente')
+#   PYEOF
+#   
+#   echo ""
+#   echo "═══ pm2 reload ═══"
+#   cd /root/secretaria && pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -5
+#   
+#   echo ""
+#   echo "esperando 25s para que arranque y dispare primer poll…"
+#   sleep 25
+#   
+#   echo ""
+#   echo "═══ ¿Sigue habiendo invalid_grant después del reload? ═══"
+#   RELOAD_TS=$(date +%s)
+#   pm2 logs maria-paez --lines 100 --nostream 2>&1 | tail -60 | grep -E 'invalid_grant' | tail -5
+#   N=$(pm2 logs maria-paez --lines 200 --nostream 2>&1 | tail -60 | grep -c invalid_grant)
+#   echo ""
+#   echo "→ invalid_grant en los últimos 60 logs: $N"
+#   
+#   echo ""
+#   echo "═══ Indicadores de que Gmail/Calendar funcionan ═══"
+#   pm2 logs maria-paez --lines 200 --nostream 2>&1 | tail -80 | grep -iE 'GMAIL poll|GMAIL ←|meeting-prep.*\+|calendar-watch.*activo' | tail -15
+
+# ───── output ─────
+═══ Estado del token nuevo ═══
+-rw-r--r--+ 1 root root 561 May 15 15:19 /root/secretaria/state/maria-paez/token.json
+-rw-r--r--+ 1 root root 574 May  8 11:54 /root/secretaria/state/maria-paez/token.json.bak.20260508-115436
+-rw-r--r--  1 root root 574 May 15 15:06 /root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1806
+-rw-r--r--  1 root root 599 May 15 15:19 /root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1819
+
+Campos clave del token (sin secretos):
+  access_token = (presente, len=253)
+  refresh_token = (presente, len=103)
+  scope = https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/gmail.modify
+  token_type = Bearer
+  expiry_date = 1778872756679 → 2026-05-15T19:19:16.679000+00:00
+
+✅ refresh_token_expires_in AUSENTE — el refresh token no caduca automaticamente
+
+═══ pm2 reload ═══
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+
+esperando 25s para que arranque y dispare primer poll…
+
+═══ ¿Sigue habiendo invalid_grant después del reload? ═══
+
+→ invalid_grant en los últimos 60 logs: 0
+
+═══ Indicadores de que Gmail/Calendar funcionan ═══
+0|maria-pa | 2026-05-15 14:52:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-15 14:52:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-15 15:11:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-15 15:11:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-15 15:11:09: [meeting-prep/Hernan Fulco] + id=167 Preplanning CMP @ 2026-05-15T19:45:00.000Z
+0|maria-pa | 2026-05-15 15:11:10: [GMAIL poll] 2 email(s) nuevo(s)
+0|maria-pa | 2026-05-15 15:11:10: [GMAIL ←] Google <no-reply@accounts.google.com> | "2-Step Verification turned on"
+0|maria-pa | 2026-05-15 15:11:25: [GMAIL ←] Google <no-reply@accounts.google.com> | "Security alert"
+0|maria-pa | 2026-05-15 15:20:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-15 15:20:07: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-15 15:20:09: [GMAIL poll] 1 email(s) nuevo(s)
+0|maria-pa | 2026-05-15 15:20:09: [GMAIL ←] Google <no-reply@accounts.google.com> | "Security alert"
+
+# exit=0
