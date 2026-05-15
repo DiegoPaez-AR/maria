@@ -1,0 +1,149 @@
+# ejecutado: 2026-05-15T09:07:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Mover dirs legacy a state/_old/<timestamp>/.
+#   # Razón: post refactor multi-instance, el código vivo usa state/<slug>/.
+#   # Verificación previa: lsof confirmó que nadie los tiene abiertos.
+#   set +e
+#   cd /root/secretaria || exit 1
+#   
+#   STAMP=$(date +%Y%m%d-%H%M%S)
+#   OLD_DIR="state/_old/$STAMP"
+#   mkdir -p "$OLD_DIR"
+#   
+#   echo "═══ Plan ═══"
+#   echo "Destino: /root/secretaria/$OLD_DIR/"
+#   echo ""
+#   
+#   echo "═══ ANTES — tamaño raíz ═══"
+#   du -sh /root/secretaria/db /root/secretaria/.wwebjs_auth /root/secretaria/.wwebjs_cache 2>/dev/null
+#   echo ""
+#   echo "tamaño total /root/secretaria:"
+#   du -sh /root/secretaria 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ Doble-check: ¿alguien tiene esto abierto? ═══"
+#   fuser /root/secretaria/db/maria.sqlite /root/secretaria/db/maria.sqlite-wal 2>&1
+#   lsof +D /root/secretaria/.wwebjs_auth 2>&1 | head -5
+#   lsof +D /root/secretaria/.wwebjs_cache 2>&1 | head -5
+#   
+#   echo ""
+#   echo "═══ Moviendo ═══"
+#   for dir in db .wwebjs_auth .wwebjs_cache; do
+#     if [ -d "/root/secretaria/$dir" ]; then
+#       mv "/root/secretaria/$dir" "$OLD_DIR/" && echo "  ✓ $dir → $OLD_DIR/$dir" || echo "  ✗ $dir falló"
+#     fi
+#   done
+#   
+#   echo ""
+#   echo "═══ DESPUÉS — verificar estructura ═══"
+#   ls -la /root/secretaria/ | grep -vE '^total' | awk '{print $1, $NF}' | head -40
+#   echo ""
+#   echo "estado de state/_old/:"
+#   ls -la /root/secretaria/state/_old/ 2>/dev/null
+#   du -sh "/root/secretaria/$OLD_DIR"/* 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ ¿Maria sigue viva? ═══"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name') != 'maria-paez': continue
+#       e = p.get('pm2_env', {})
+#       print(f\"  status={e.get('status')} restarts={e.get('restart_time')} uptime_ms={e.get('pm_uptime')}\")
+#   "
+#   echo ""
+#   echo "  últimos 8 logs de pm2:"
+#   pm2 logs maria-paez --lines 8 --nostream 2>&1 | tail -8
+#   
+#   echo ""
+#   echo "═══ tamaño raíz POST limpieza ═══"
+#   du -sh /root/secretaria 2>/dev/null
+#   echo "raíz sin dirs movidos:"
+#   du -sh --exclude=node_modules --exclude=state /root/secretaria 2>/dev/null
+
+# ───── output ─────
+═══ Plan ═══
+Destino: /root/secretaria/state/_old/20260515-090701/
+
+═══ ANTES — tamaño raíz ═══
+976K	/root/secretaria/db
+120M	/root/secretaria/.wwebjs_auth
+3.7M	/root/secretaria/.wwebjs_cache
+
+tamaño total /root/secretaria:
+927M	/root/secretaria
+
+═══ Doble-check: ¿alguien tiene esto abierto? ═══
+
+═══ Moviendo ═══
+  ✓ db → state/_old/20260515-090701/db
+  ✓ .wwebjs_auth → state/_old/20260515-090701/.wwebjs_auth
+  ✓ .wwebjs_cache → state/_old/20260515-090701/.wwebjs_cache
+
+═══ DESPUÉS — verificar estructura ═══
+drwxr-xr-x+ .
+drwx------+ ..
+-rw-r--r--+ auth-gmail.js
+-rw-r--r--+ calendar-watch.js
+-rw-r--r--+ claude-client.js
+drwxr-xr-x+ config
+-rw-r--r--+ context-fetcher.js
+-rw-r--r--+ daily-report.js
+drwxr-xr-x+ docs
+-rw-r--r--+ ecosystem.config.js
+-rw-r--r--+ executor.js
+drwxr-xr-x+ .git
+-rw-r--r--+ .gitignore
+-rw-r--r--+ gmail-handler.js
+-rw-r--r--+ google.js
+-rw-r--r--+ index.js
+-rw-r--r--+ instrucciones.txt
+-rw-r--r--+ mcp-config.json
+-rw-r--r--+ meeting-prep.js
+-rw-r--r--+ memory.js
+-rw-r--r--+ morning-brief.js
+drwxr-xr-x+ node_modules
+drwxr-xr-x+ ops
+-rw-r--r--+ package.json
+-rw-r--r--+ package-lock.json
+-rw-r--r--+ programados.js
+-rw-r--r--+ prompt-builder.js
+-rw-r--r--+ recordatorios.js
+-rw-r--r--+ seguridad.js
+drwxr-xr-x+ state
+-rw-r--r--+ transcribir.js
+-rw-r--r--+ unknown-flow.js
+-rw-r--r--+ usuarios.js
+-rw-r--r--+ wa-send.js
+-rw-r--r--+ whatsapp-handler.js
+
+estado de state/_old/:
+total 12
+drwxr-xr-x+ 3 root root 4096 May 15 09:07 .
+drwxr-xr-x+ 4 root root 4096 May 15 09:07 ..
+drwxr-xr-x+ 5 root root 4096 May 15 09:07 20260515-090701
+976K	/root/secretaria/state/_old/20260515-090701/db
+
+═══ ¿Maria sigue viva? ═══
+  status=online restarts=0 uptime_ms=1778846162950
+
+  últimos 8 logs de pm2:
+0|maria-pa | 2026-05-15 08:58:21: [WA →usr] Diego (34342575317160@lid): ¡Buen día, Diego! ¿En qué te puedo ayudar hoy?
+0|maria-pa | 2026-05-15 09:00:09: [programados] 2 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-15 09:00:09: [programados] ✓ id=99 (whatsapp/137456250806423@lid) [usuario]
+0|maria-pa | 2026-05-15 09:00:16: [programados] ✓ id=164 (whatsapp/137456250806423@lid) [meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260515T121500Z]
+0|maria-pa | 2026-05-15 09:03:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-15 09:03:09: [programados] ✓ id=100 (whatsapp/137456250806423@lid) [usuario]
+0|maria-pa | 2026-05-15 09:05:21: [WA ←] Hernan Fulco (137456250806423@lid): Llevamos en los primeros 15 días 430.000 mensajes por la conexión de Movistar nacional. La internacional no la estamos utilizando.
+
+
+═══ tamaño raíz POST limpieza ═══
+927M	/root/secretaria
+raíz sin dirs movidos:
+71M	/root/secretaria
+
+# exit=0
