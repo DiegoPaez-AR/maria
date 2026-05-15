@@ -20,6 +20,7 @@ const path = require('path');
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const seguridad = require('./seguridad');
 const unknownFlow = require('./unknown-flow');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSON } = require('./claude-client');
