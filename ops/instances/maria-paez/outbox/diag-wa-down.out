@@ -1,3 +1,162 @@
+# ejecutado: 2026-05-15T08:51:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diagnóstico WA caído + credentials.json faltante. Solo lee.
+#   set +e
+#   
+#   echo "═══ Hora actual VPS ═══"
+#   date -Iseconds
+#   
+#   echo ""
+#   echo "═══ Buscar credentials.json ═══"
+#   find /root -name 'credentials.json' 2>/dev/null | head -20
+#   echo "---candidatos json---"
+#   find /root/secretaria -maxdepth 3 -name '*.json' 2>/dev/null | grep -iE 'cred|oauth|token' | head -20
+#   echo "---root de secretaria---"
+#   ls -la /root/secretaria/ | grep -iE 'cred|oauth|token|\.json'
+#   
+#   echo ""
+#   echo "═══ state/maria-paez/ ═══"
+#   ls -la /root/secretaria/state/maria-paez/ 2>/dev/null
+#   find /root/secretaria/state/maria-paez -maxdepth 3 -type d 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ Dir sesión WA ═══"
+#   find /root/secretaria -maxdepth 4 -type d \( -name '*wwebjs*' -o -name 'wa-session*' -o -name 'whatsapp-session*' -o -name '.wwebjs*' \) 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ Config maria-paez.conf (sin secretos) ═══"
+#   cat /root/secretaria/config/instances/maria-paez.conf 2>/dev/null | grep -vE '^#' | grep -vE 'KEY|SECRET|TOKEN|PASSWORD' | head -40
+#   
+#   echo ""
+#   echo "═══ pm2 jlist resumido ═══"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys
+#   try:
+#       ps = json.load(sys.stdin)
+#       for p in ps:
+#           if p.get('name') != 'maria-paez': continue
+#           e = p.get('pm2_env', {})
+#           print(f\"name={p['name']} pid={p.get('pid')} status={e.get('status')} restarts={e.get('restart_time')}\")
+#           print(f\"  cwd={e.get('pm_cwd')}\")
+#           print(f\"  script={e.get('pm_exec_path')}\")
+#           print(f\"  MARIA_DB={e.get('env',{}).get('MARIA_DB')}\")
+#           print(f\"  MARIA_STATE_DIR={e.get('env',{}).get('MARIA_STATE_DIR')}\")
+#   except Exception as ex:
+#       print(f'error: {ex}')
+#   "
+#   
+#   echo ""
+#   echo "═══ pm2 logs maria-paez --lines 200 (en vivo) ═══"
+#   pm2 logs maria-paez --lines 200 --nostream 2>&1 | tail -200
+#   
+#   echo ""
+#   echo "═══ Tail err log ═══"
+#   ls -la ~/.pm2/logs/ 2>/dev/null | grep -i maria-paez
+#   tail -80 ~/.pm2/logs/maria-paez-error.log 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ QR en logs ═══"
+#   pm2 logs maria-paez --lines 500 --nostream 2>&1 | grep -B1 -A2 -iE 'QR|qrcode' | tail -40
+
+# ───── output ─────
+═══ Hora actual VPS ═══
+2026-05-15T08:51:02-03:00
+
+═══ Buscar credentials.json ═══
+/root/secretaria/state/maria-paez/credentials.json
+---candidatos json---
+/root/secretaria/state/maria-paez/token.json
+/root/secretaria/state/maria-paez/credentials.json
+/root/secretaria/node_modules/js-tokens/package.json
+---root de secretaria---
+-rw-r--r--+   1 root root    137 May  7 01:20 mcp-config.json
+-rw-r--r--+   1 root root    380 May 10 17:14 package.json
+-rw-r--r--+   1 root root 113154 May  3 10:01 package-lock.json
+
+═══ state/maria-paez/ ═══
+total 32
+drwxr-xr-x+ 5 root root 4096 May  9 19:52 .
+drwxr-xr-x+ 3 root root 4096 May  9 19:52 ..
+-rw-r--r--+ 1 root root  408 Apr 15 20:41 credentials.json
+drwxr-xr-x+ 2 root root 4096 May 15 08:50 db
+-rw-r--r--+ 1 root root  574 May  8 11:55 token.json
+-rw-r--r--+ 1 root root  574 May  8 11:54 token.json.bak.20260508-115436
+drwxr-xr-x+ 3 root root 4096 Apr 18 12:14 .wwebjs_auth
+drwxr-xr-x+ 2 root root 4096 May  8 22:11 .wwebjs_cache
+/root/secretaria/state/maria-paez
+/root/secretaria/state/maria-paez/.wwebjs_cache
+/root/secretaria/state/maria-paez/.wwebjs_auth
+/root/secretaria/state/maria-paez/.wwebjs_auth/session
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/WidevineCdm
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/PKIMetadata
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/MEIPreload
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/CaptchaProviders
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/Default
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/WasmTtsEngine
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/component_crx_cache
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/hyphen-data
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/ActorSafetyLists
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/GraphiteDawnCache
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/OnDeviceHeadSuggestModel
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/segmentation_platform
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/TrustTokenKeyCommitments
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/FileTypePolicies
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/Crowd Deny
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/PrivacySandboxAttestationsPreloaded
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/Subresource Filter
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/FirstPartySetsPreloaded
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/extensions_crx_cache
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/Safe Browsing
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/OriginTrials
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/AmountExtractionHeuristicRegexes
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/SafetyTips
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/ZxcvbnData
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/SSLErrorAssistant
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/ShaderCache
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/GrShaderCache
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/NativeMessagingHosts
+/root/secretaria/state/maria-paez/.wwebjs_auth/session/CertificateRevocation
+/root/secretaria/state/maria-paez/db
+
+═══ Dir sesión WA ═══
+/root/secretaria/state/maria-paez/.wwebjs_cache
+/root/secretaria/state/maria-paez/.wwebjs_auth
+/root/secretaria/.wwebjs_cache
+/root/secretaria/.wwebjs_auth
+
+═══ Config maria-paez.conf (sin secretos) ═══
+
+ASISTENTE_NOMBRE="Maria Paez"
+ASISTENTE_SLUG=maria-paez
+ASISTENTE_FROM_EMAIL=maria.paez.secre@gmail.com
+ASISTENTE_TZ=America/Argentina/Buenos_Aires
+
+OWNER_NOMBRE=Diego
+OWNER_EMAIL=diego@paez.is
+OWNER_WA=541132317896@c.us
+OWNER_CALENDAR_ID=diego@paez.is
+
+
+MARIA_DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+GOOGLE_CRED_PATH=/root/secretaria/state/maria-paez/credentials.json
+WA_AUTH_DIR=/root/secretaria/state/maria-paez/.wwebjs_auth
+
+WA_DEBOUNCE_MS=10000
+GMAIL_POLL_MS=300000
+CALENDAR_WATCH_MS=28800000
+
+
+═══ pm2 jlist resumido ═══
+name=maria-paez pid=395879 status=online restarts=12
+  cwd=/root/secretaria
+  script=/root/secretaria/index.js
+  MARIA_DB=/root/secretaria/db/maria.sqlite
+  MARIA_STATE_DIR=None
+
+═══ pm2 logs maria-paez --lines 200 (en vivo) ═══
 0|maria-pa | 2026-05-15 08:48:03: [WA qr] escaneá este QR:
 0|maria-pa | 2026-05-15 08:48:03: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 0|maria-pa | 2026-05-15 08:48:03: █ ▄▄▄▄▄ █▄ ██▄▀ ▀█▀▄ ▀ █  ██▄▀  ▀▄█▀ █ ▀█▄▄ ▄▀ ▄ ██ ▄▄▄▄▄ █
@@ -198,3 +357,131 @@
 0|maria-pa | 2026-05-15 08:51:01: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 0|maria-pa | 2026-05-15 08:51:01: ✓ whisper OK
 
+
+═══ Tail err log ═══
+-rw-r--r-- 1 root root   44375 May 15 08:50 maria-paez-error.log
+-rw-r--r-- 1 root root 3988243 May 15 08:51 maria-paez-out.log
+2026-05-13 09:48:09: [morning-brief/Cristian Ruiz] sin destino WA — salteo
+2026-05-13 09:49:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:50:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:51:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:52:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:53:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:54:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:55:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:56:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:57:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:58:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 09:59:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 10:00:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 10:01:09: [morning-brief/Doris Capurro] enviar falló: t
+2026-05-13 14:17:09: [GMAIL] error procesando 19e22540f4b1d63a: ReferenceError: seguridad is not defined
+2026-05-13 14:17:09:     at _procesarComoUsuario (/root/secretaria/gmail-handler.js:167:19)
+2026-05-13 14:17:09:     at procesarUnEmail (/root/secretaria/gmail-handler.js:137:11)
+2026-05-13 14:17:09:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-05-13 14:17:09:     at async pollOnce (/root/secretaria/gmail-handler.js:321:7)
+2026-05-14 09:18:38: [executor] acción #0 (set_calendar_acceso) falló: Faltan campos requeridos: usuarioId
+2026-05-14 09:18:38: [WA acciones/Diego] FALLARON: set_calendar_acceso: Faltan campos requeridos: usuarioId
+2026-05-14 09:22:10: [GMAIL] error procesando 19e266bff7d3aeda: ReferenceError: seguridad is not defined
+2026-05-14 09:22:10:     at _procesarComoUsuario (/root/secretaria/gmail-handler.js:167:19)
+2026-05-14 09:22:10:     at procesarUnEmail (/root/secretaria/gmail-handler.js:137:11)
+2026-05-14 09:22:10:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-05-14 09:22:10:     at async pollOnce (/root/secretaria/gmail-handler.js:321:7)
+2026-05-14 09:22:10: [GMAIL] error procesando 19e266b65fe6723c: ReferenceError: seguridad is not defined
+2026-05-14 09:22:10:     at _procesarComoUsuario (/root/secretaria/gmail-handler.js:167:19)
+2026-05-14 09:22:10:     at procesarUnEmail (/root/secretaria/gmail-handler.js:137:11)
+2026-05-14 09:22:10:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-05-14 09:22:10:     at async pollOnce (/root/secretaria/gmail-handler.js:321:7)
+2026-05-14 09:27:25: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_485465551092_lid_4A11C9D100FC9C4D8518 (ENOENT: no such file or directory, access '/tmp/maria-attach-false_485465551092_lid_4A11C9D100FC9C4D8518')
+2026-05-15 06:51:56: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 06:51:56: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 06:53:33: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:00:33: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 07:01:59: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 07:01:59: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:03:35: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:10:35: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 07:12:01: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 07:12:01: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:13:37: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:20:37: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 07:22:10: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 07:22:10: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:23:40: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:30:40: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 07:32:05: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 07:32:05: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:33:42: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:40:42: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 07:42:08: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 07:42:08: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:43:45: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:50:45: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 07:52:10: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 07:52:10: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 07:53:47: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:00:47: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 08:02:12: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 08:02:12: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:03:49: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:10:49: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 08:12:22: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 08:12:22: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:13:52: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:20:52: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 08:22:17: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 08:22:17: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:23:54: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:30:54: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 08:32:20: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 08:32:20: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:33:56: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:40:56: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+2026-05-15 08:42:22: [WA] sesión expirada — 3 QRs en 120s
+2026-05-15 08:42:22: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:43:59: [WA alert] no pude mandar mail al owner: ENOENT: no such file or directory, open '/root/secretaria/credentials.json'
+2026-05-15 08:50:59: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+
+═══ QR en logs ═══
+--
+0|maria-pa | 2026-05-15 08:46:13: 
+0|maria-pa | 2026-05-15 08:46:33: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:46:33: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:46:33: █ ▄▄▄▄▄ █▀▄▀▄▄ ▄▄ ▀█ ▄▄▀▀▄█ ▀▄  ▀▀ ▄▄▄  ▀█ ▄ ▀█▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:46:33: 
+0|maria-pa | 2026-05-15 08:46:53: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:46:53: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:46:53: █ ▄▄▄▄▄ █▄▀▄▄▄▀▀▀▀▀█ ▀ ▄▄▄██▄▀  ▀▄▀█▀ ▄█ █▄ ▄▀ ▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:46:53: 
+0|maria-pa | 2026-05-15 08:48:03: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:48:03: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:48:03: █ ▄▄▄▄▄ █▄ ██▄▀ ▀█▀▄ ▀ █  ██▄▀  ▀▄█▀ █ ▀█▄▄ ▄▀ ▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:48:03: 
+0|maria-pa | 2026-05-15 08:49:03: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:49:03: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:49:03: █ ▄▄▄▄▄ █▄ ██▄▀ ▀▀ ▄ █▀█  ██▄▀  ▀▄ ▀▄█▀██ ▄ ██ ▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:49:03: 
+0|maria-pa | 2026-05-15 08:49:23: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:49:23: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:49:23: █ ▄▄▄▄▄ █▄ ██▄ ▀▀▀ █▄▀▀▄▀▄██▄▀  ▀▄▀▀▄▄▄▀█▄▄▄▄▀ ▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:49:23: 
+0|maria-pa | 2026-05-15 08:49:43: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:49:43: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:49:43: █ ▄▄▄▄▄ █▀█ █▄ ▄▄▄ ██ █ ▄ █ ▀▄  ▀▀  ██ ▄ ▄▄ █ █▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:49:43: 
+0|maria-pa | 2026-05-15 08:50:03: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:50:03: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:50:03: █ ▄▄▄▄▄ █▄ ██▄▀▀█▀ █ ▀ ▄  ██▄▀  ▀▄█▀ ▄▄█ ██ ▄▀ ▄ ██ ▄▄▄▄▄ █
+--
+0|maria-pa | 2026-05-15 08:50:03: 
+0|maria-pa | 2026-05-15 08:50:23: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-15 08:50:23: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-15 08:50:23: █ ▄▄▄▄▄ █▄ ██▄▀▀▀▀ █▀▀▀▄█ ██▄▀  ▀▄██▀█ ▀▀█ ▄██ ▄ ██ ▄▄▄▄▄ █
+
+# exit=0
