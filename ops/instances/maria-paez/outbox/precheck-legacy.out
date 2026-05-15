@@ -1,0 +1,128 @@
+# ejecutado: 2026-05-15T09:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Pre-check antes de mover db/, .wwebjs_auth/, .wwebjs_cache/.
+#   # Solo lee. Verifica que ningún código vivo apunte a esos paths.
+#   set +e
+#   cd /root/secretaria || exit 1
+#   
+#   echo "═══ ¿Qué proceso tiene abierta /root/secretaria/db/maria.sqlite ahora? ═══"
+#   fuser /root/secretaria/db/maria.sqlite /root/secretaria/db/maria.sqlite-wal 2>&1
+#   echo "---lsof---"
+#   lsof /root/secretaria/db/maria.sqlite /root/secretaria/db/maria.sqlite-wal 2>&1 | head -20
+#   
+#   echo ""
+#   echo "═══ ¿Algún proceso usa /root/secretaria/.wwebjs_auth (legacy)? ═══"
+#   lsof +D /root/secretaria/.wwebjs_auth 2>&1 | head -10
+#   
+#   echo ""
+#   echo "═══ Grep código por referencias hardcoded a '/root/secretaria/db' ═══"
+#   grep -rn "/root/secretaria/db" /root/secretaria/*.js /root/secretaria/ecosystem.config.js 2>/dev/null | grep -v node_modules | grep -v "//"
+#   
+#   echo ""
+#   echo "═══ Grep código por defaults de DB sin env var ═══"
+#   grep -nE "(db/maria\\.sqlite|MARIA_DB|maria\\.sqlite)" /root/secretaria/*.js 2>/dev/null | grep -v node_modules | head -30
+#   
+#   echo ""
+#   echo "═══ Grep código por '.wwebjs_auth' ═══"
+#   grep -nE "\\.wwebjs_auth" /root/secretaria/*.js 2>/dev/null | grep -v node_modules
+#   
+#   echo ""
+#   echo "═══ Grep código por WA_AUTH_DIR fallback ═══"
+#   grep -nE "WA_AUTH_DIR" /root/secretaria/*.js 2>/dev/null | grep -v node_modules
+#   
+#   echo ""
+#   echo "═══ Cron tab actual (¿algo más que cron-master.sh?) ═══"
+#   crontab -l 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ pm2 status final ═══"
+#   pm2 list 2>/dev/null | head -10
+#   
+#   echo ""
+#   echo "═══ Eventos recientes (post-restart) ═══"
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   sqlite3 "$DB" 'SELECT id, timestamp, canal, direccion, substr(COALESCE(cuerpo,""),1,80) FROM eventos WHERE timestamp >= "2026-05-15 08:50" ORDER BY id DESC LIMIT 20' 2>&1
+
+# ───── output ─────
+═══ ¿Qué proceso tiene abierta /root/secretaria/db/maria.sqlite ahora? ═══
+---lsof---
+
+═══ ¿Algún proceso usa /root/secretaria/.wwebjs_auth (legacy)? ═══
+
+═══ Grep código por referencias hardcoded a '/root/secretaria/db' ═══
+
+═══ Grep código por defaults de DB sin env var ═══
+/root/secretaria/daily-report.js:194:  const dbPath = env.MARIA_DB;
+/root/secretaria/daily-report.js:258:    stats.notas.push(`MARIA_DB no encontrado: ${dbPath}`);
+/root/secretaria/index.js:19://   MARIA_DB          → path de sqlite (default ./db/maria.sqlite)
+/root/secretaria/memory.js:27:const DB_PATH = process.env.MARIA_DB || path.join(DB_DIR, 'maria.sqlite');
+
+═══ Grep código por '.wwebjs_auth' ═══
+/root/secretaria/whatsapp-handler.js:62:      // Default: cwd-relative '.wwebjs_auth/' (el que usa whatsapp-web.js si
+/root/secretaria/whatsapp-handler.js:64:      // path absoluto (ej: state/<slug>/.wwebjs_auth).
+
+═══ Grep código por WA_AUTH_DIR fallback ═══
+/root/secretaria/whatsapp-handler.js:37:  const dataPath = process.env.WA_AUTH_DIR;
+/root/secretaria/whatsapp-handler.js:63:      // no recibe nada). Podés overridear con WA_AUTH_DIR para apuntar a un
+/root/secretaria/whatsapp-handler.js:65:      dataPath: process.env.WA_AUTH_DIR || undefined,
+
+═══ Cron tab actual (¿algo más que cron-master.sh?) ═══
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/veritas && bash ops/cron.sh >> /root/veritas/ops/.cron.log 2>&1
+0 6 * * * cd /root/secretaria && /usr/bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+
+═══ pm2 status final ═══
+┌────┬───────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name          │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ maria-paez    │ default     │ 1.0.0   │ fork    │ 396974   │ 8m     │ 0    │ online    │ 0%       │ 162.9mb  │ root     │ disabled │
+└────┴───────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+═══ Eventos recientes (post-restart) ═══
+4176|2026-05-15 12:03:09|whatsapp|saliente|Hola Hernán, ¿me podés decir cuánto tráfico nacional y cuánto tráfico internacio
+4175|2026-05-15 12:00:16|whatsapp|saliente|⏰ *En 15min*: MC Daily (09:15 a. m.)
+Con: cristian.incarnato@sondeos.com.ar, eli
+4174|2026-05-15 12:00:09|whatsapp|saliente|Hola Hernán, de parte de Diego: ¿me podés pasar cuánto tráfico nacional y cuánto
+4173|2026-05-15 11:58:21|whatsapp|saliente|¡Buen día, Diego! ¿En qué te puedo ayudar hoy?
+4172|2026-05-15 11:58:21|sistema|interno|claude_call whatsapp: 8481ms prompt=47692c raw=207c
+4171|2026-05-15 11:58:12|whatsapp|entrante|hola maria, buen dia
+4170|2026-05-15 11:57:12|whatsapp|saliente|☀️ *Buen día, Cristian Ruiz.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin event
+4169|2026-05-15 11:57:12|whatsapp|saliente|☀️ *Buen día, Walter Vera.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin eventos
+4168|2026-05-15 11:57:11|whatsapp|saliente|☀️ *Buen día, Nicolas Kosinski.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin ev
+4167|2026-05-15 11:57:11|whatsapp|saliente|☀️ *Buen día, Doris Capurro.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin event
+4166|2026-05-15 11:57:11|whatsapp|saliente|☀️ *Buen día, Santiago Bignone.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin ev
+4165|2026-05-15 11:57:10|whatsapp|saliente|☀️ *Buen día, Fernando Boero.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin even
+4164|2026-05-15 11:57:10|whatsapp|saliente|☀️ *Buen día, Natali Funez.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+(sin evento
+4163|2026-05-15 11:57:10|whatsapp|saliente|☀️ *Buen día, Hernan Fulco.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+• 09:00 a. 
+4162|2026-05-15 11:56:12|sistema|interno|meeting-prep: 3 alerta(s) agendada(s) (9 usuarios)
+4161|2026-05-15 11:56:09|sistema|interno|Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep acti
+4160|2026-05-15 09:50:29|sistema|interno|shutdown por SIGINT
+
+# exit=0
