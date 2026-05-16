@@ -1,0 +1,137 @@
+# ejecutado: 2026-05-16T20:02:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Listar emails históricos de "shared a calendar" para diseñar el auto-accept
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   cd /root/secretaria
+#   
+#   echo "═══ Emails de tipo 'shared a calendar' o 'calendar access updated' ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, timestamp, substr(de,1,60) AS de, substr(cuerpo,1,300) AS cuerpo_excerpt
+#   FROM eventos
+#   WHERE canal='gmail'
+#     AND (cuerpo LIKE '%shared a calendar%' OR cuerpo LIKE '%Calendar access updated%' OR cuerpo LIKE '%invited you to see all event details%' OR cuerpo LIKE '%has invited you to%')
+#   ORDER BY id DESC LIMIT 10
+#   "
+#   
+#   echo ""
+#   echo "═══ El email de Santiago del 14-may en detalle: traer cuerpo y metadata via Gmail API ═══"
+#   # Obtener el messageId de un evento que sabemos es de share
+#   MSG_ID=$(sqlite3 "$MARIA_DB" "
+#   SELECT json_extract(metadata_json, '\$.messageId')
+#   FROM eventos
+#   WHERE canal='gmail' AND cuerpo LIKE '%Santiago Bignone shared a calendar%'
+#   ORDER BY id ASC LIMIT 1
+#   ")
+#   echo "messageId del primer share: $MSG_ID"
+#   
+#   if [ -n "$MSG_ID" ] && [ "$MSG_ID" != "null" ]; then
+#     echo ""
+#     echo "═══ Cuerpo completo del email (via gmail.users.messages.get) ═══"
+#     timeout 30s node -e "
+#     (async () => {
+#       const g = require('./google');
+#       try {
+#         const e = await g.leerEmail('$MSG_ID');
+#         console.log('From:    ', e.de);
+#         console.log('To:      ', e.para);
+#         console.log('Subject: ', e.asunto);
+#         console.log('Body (primeros 2000c):');
+#         console.log((e.cuerpo || '').slice(0, 2000));
+#         console.log('');
+#         console.log('--- emails que aparecen en el body ---');
+#         const matches = (e.cuerpo || '').match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}/g) || [];
+#         const unique = [...new Set(matches)];
+#         unique.forEach(em => console.log('  ', em));
+#       } catch (err) {
+#         console.error('ERROR:', err.message);
+#       }
+#     })();
+#     "
+#   fi
+#   
+#   echo ""
+#   echo "═══ Estructura de calendarList de Maria — qué calendars ya tiene ═══"
+#   timeout 30s node -e "
+#   (async () => {
+#     const g = require('./google');
+#     try {
+#       const auth = await g.autenticar();
+#       const cal = require('googleapis').google.calendar({version:'v3', auth});
+#       const r = await cal.calendarList.list({maxResults: 50});
+#       for (const it of r.data.items || []) {
+#         console.log(\`  id=\${(it.id||'').padEnd(50)} role=\${it.accessRole}\`);
+#       }
+#     } catch (err) {
+#       console.error('ERROR:', err.message);
+#     }
+#   })();
+#   "
+
+# ───── output ─────
+═══ Emails de tipo 'shared a calendar' o 'calendar access updated' ═══
+id    timestamp            de                                             cuerpo_excerpt                                                               
+----  -------------------  ---------------------------------------------  -----------------------------------------------------------------------------
+4388  2026-05-16 11:01:10  Doris Capurro <doris@capurro.com.ar>           Doris Capurro shared a calendar\n\nDoris Capurro <doris@capurro.com.ar> has  
+                                                                          invited you to see all event details on the calendar: "Doris                 
+                                                                          Capurro".\n\nAccept the invite to join this shared calendar. You can still   
+                                                                          choose to hide or remove the calendar whenever you want.\n\nTo join shared   
+                                                                          c                                                                            
+
+4107  2026-05-14 12:22:10  Santiago Bignone <santiagocbignone@gmail.com>  Santiago Bignone shared a calendar\n\nSantiago Bignone                       
+                                                                          <santiagocbignone@gmail.com> has invited you to see all event details on     
+                                                                          the calendar: "Santiago Bignone".\n\nAccept the invite to join this shared   
+                                                                          calendar. You can still choose to hide or remove the calendar whenever you   
+                                                                          want.\n\nT                                                                   
+
+4106  2026-05-14 12:22:10  Santiago Bignone <santiagocbignone@gmail.com>  Calendar access updated\n\nSantiago Bignone <santiagocbignone@gmail.com>     
+                                                                          updated your access to the shared calendar: "Santiago Bignone". You can now  
+                                                                          make changes and manage sharing.\n\nYou can manage notifications or          
+                                                                          unsubscribe from this calendar in calendar settings:                         
+                                                                          https://calendar.g                                                           
+
+2683  2026-05-07 21:35:32  Natali Funez <natali.funez23@gmail.com>        Natali Funez shared a calendar\n\nNatali Funez <natali.funez23@gmail.com>    
+                                                                          has invited you to see all event details on the calendar: "Natali            
+                                                                          Funez".\n\nAccept the invite to join this shared calendar. You can still     
+                                                                          choose to hide or remove the calendar whenever you want.\n\nTo join shared   
+
+997   2026-04-23 18:08:32  Hernan Fulco <hernan.fulco@sondeosglobal.com>  Hernan Fulco shared a calendar\n\nHernan Fulco                               
+                                                                          <hernan.fulco@sondeosglobal.com> has invited you to make changes and manage  
+                                                                          sharing on the calendar: "Hernan Fulco".\n\nAccept the invite to join this   
+                                                                          shared calendar. You can still choose to hide or remove the calendar         
+                                                                          whenever you want.\n\                                                        
+
+═══ El email de Santiago del 14-may en detalle: traer cuerpo y metadata via Gmail API ═══
+messageId del primer share: 19e266b65fe6723c
+
+═══ Cuerpo completo del email (via gmail.users.messages.get) ═══
+From:     Santiago Bignone <santiagocbignone@gmail.com>
+To:       maria.paez.secre@gmail.com
+Subject:  Accept your invitation to join shared calendar: "Santiago Bignone"
+Body (primeros 2000c):
+Santiago Bignone shared a calendar\n\nSantiago Bignone  
+<santiagocbignone@gmail.com> has invited you to see all event details on  
+the calendar: "Santiago Bignone".\n\nAccept the invite to join this shared  
+calendar. You can still choose to hide or remove the calendar whenever you  
+want.\n\nTo join shared calendar click  
+https://calendar.google.com/calendar/r?cid=c2FudGlhZ29jYmlnbm9uZUBnbWFpbC5jb20&ctok=bWFyaWEucGFlei5zZWNyZUBnbWFpbC5jb20&es=3\n\nLearn  
+more about shared calendars by visiting  
+https://support.google.com/a/answer/1626902.
+
+
+--- emails que aparecen en el body ---
+   santiagocbignone@gmail.com
+
+═══ Estructura de calendarList de Maria — qué calendars ya tiene ═══
+  id=en.ar#holiday@group.v.calendar.google.com          role=reader
+  id=hernan.fulco@sondeosglobal.com                     role=owner
+  id=diego@paez.is                                      role=owner
+  id=maria.paez.secre@gmail.com                         role=owner
+  id=doris@capurro.com.ar                               role=reader
+  id=santiagocbignone@gmail.com                         role=owner
+  id=natali.funez23@gmail.com                           role=reader
+
+# exit=0
