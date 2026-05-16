@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4559  2026-05-16 22:35:29  whatsapp  entrante   34342575317160@lid   le mande las fotos yo desde tu telefono, y ya te pase las respuestas                                                                                                                                    
+
+4558  2026-05-16 22:35:29  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el mensaje es idéntico al que figura en el historial María↔Diego a las 22:34 ('le mande las fotos yo desde tu tele
+
+4557  2026-05-16 22:35:29  sistema   interno                         claude_call unknown-flow: 23512ms prompt=72774c raw=444c                                                                                                                                                
+
 4556  2026-05-16 22:34:50  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
 
 4555  2026-05-16 22:32:06  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                    
@@ -250,9 +256,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4461  2026-05-16 18:34:48  whatsapp  saliente   151162112225488@lid  Muchas gracias por la info! 🙌                                                                                                                                                                           
 
 4460  2026-05-16 18:34:48  whatsapp  saliente   34342575317160@lid   Cerré la consulta sobre Barra Chalaca Caseros. Tanto Belgrano como Bulnes me confirmaron que el local nuevo todavía no tiene teléfono. Se manejan igual que todos los Barra: sin reserva, por orden de l
-
-4459  2026-05-16 18:34:48  sistema   interno                         claude_call whatsapp: 25081ms prompt=52100c raw=506c                                                                                                                                                    
-
-4458  2026-05-16 18:34:22  whatsapp  entrante   151162112225488@lid  Hola!! Como recién estan abriendo por el momento no cuentan con teléfono, pero se manejan igual que todos los Barra por orden de llegada.                                                               
-
-4457  2026-05-16 17:23:09  sistema   interno                         claude_call whatsapp: 10381ms prompt=50546c raw=186c                                                                                                                                                    
