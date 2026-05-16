@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4564  2026-05-16 22:36:43  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4563  2026-05-16 22:36:43  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+4562  2026-05-16 22:36:43  whatsapp  saliente   34342575317160@lid   Perfecto, anotado. Quedo atenta por si Ariel manda la cotización.                                                                                                                                       
+
+4561  2026-05-16 22:36:43  sistema   interno                         claude_call whatsapp: 73160ms prompt=53666c raw=783c                                                                                                                                                    
+
+4560  2026-05-16 22:36:14  sistema   interno                         claude_call whatsapp: 264215ms prompt=53503c raw=1048c ERROR=claude exit null:                                                                                                                          
+
 4559  2026-05-16 22:35:29  whatsapp  entrante   34342575317160@lid   le mande las fotos yo desde tu telefono, y ya te pase las respuestas                                                                                                                                    
 
 4558  2026-05-16 22:35:29  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el mensaje es idéntico al que figura en el historial María↔Diego a las 22:34 ('le mande las fotos yo desde tu tele
@@ -246,13 +256,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                      5. Espejo Subaru                                                                                                                                                                                        
 
 4465  2026-05-16 18:52:50  sistema   interno                         claude_call whatsapp: 8541ms prompt=50554c raw=224c                                                                                                                                                     
-
-4464  2026-05-16 18:52:41  whatsapp  entrante   34342575317160@lid   Ok                                                                                                                                                                                                      
-
-4463  2026-05-16 18:52:41  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname 'Diego Paez' coincide con el owner; el historial WA María↔Remitente y el historial WA María↔Diego (owner) contienen mensajes idénti
-
-4462  2026-05-16 18:52:41  sistema   interno                         claude_call unknown-flow: 25337ms prompt=70456c raw=487c                                                                                                                                                
-
-4461  2026-05-16 18:34:48  whatsapp  saliente   151162112225488@lid  Muchas gracias por la info! 🙌                                                                                                                                                                           
-
-4460  2026-05-16 18:34:48  whatsapp  saliente   34342575317160@lid   Cerré la consulta sobre Barra Chalaca Caseros. Tanto Belgrano como Bulnes me confirmaron que el local nuevo todavía no tiene teléfono. Se manejan igual que todos los Barra: sin reserva, por orden de l
