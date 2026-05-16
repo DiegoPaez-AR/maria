@@ -1,5 +1,22 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4541  2026-05-16 22:28:25  whatsapp  saliente   167933254885560@lid  Perfecto Ariel! Las fotos ya las tengo, te las mando enseguida. Me faltan completar unos datos de la ficha y necesito confirmar con el cliente si la diferencia sería de contado — te confirmo a la brev
+
+4540  2026-05-16 22:28:25  whatsapp  saliente   34342575317160@lid   Diego, Ariel pregunta si la diferencia por la Taos sería de contado. Y todavía me faltan los datos de la ficha para mandársela: ¿AT o MT? ¿4x2 o 4x4? ¿Sos el primer dueño? ¿Lugar de radicación? ¿Cambi
+
+4539  2026-05-16 22:28:25  sistema   interno                         claude_call whatsapp: 57392ms prompt=54864c raw=999c                                                                                                                                                    
+
+4538  2026-05-16 22:28:11  whatsapp  entrante   34342575317160@lid   AT                                                                                                                                                                                                      
+                                                                     4x4                                                                                                                                                                                                     
+                                                                     primer dueño                                                                                                                                                                                            
+                                                                     CABA                                                                                                                                                                                                    
+                                                                     cubiertas cambiadas a los 70mil                                                                                                                                                                         
+                                                                     se ven en las fotos, paneles repintados por rayas de estacionamiento                                                                                                                                    
+
+4537  2026-05-16 22:28:11  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El historial WA María ↔ Remitente es íntegramente el hilo de Diego (owner): mismas conversaciones sobre usuarios, tareas, agenda. El pushname e
+
+4536  2026-05-16 22:28:11  sistema   interno                         claude_call unknown-flow: 31136ms prompt=71548c raw=484c                                                                                                                                                
+
 4535  2026-05-16 22:27:39  sistema   interno                         claude_call whatsapp: 189515ms prompt=54427c raw=1567c ERROR=claude exit null:                                                                                                                          
 
 4534  2026-05-16 22:27:29  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
@@ -243,15 +260,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4443  2026-05-16 17:14:14  whatsapp  saliente   5491132350755@c.us   Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!                                                                   
 
 4442  2026-05-16 17:14:13  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-4441  2026-05-16 17:14:13  whatsapp  saliente   5491123348031@c.us   Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!                                                                   
-
-4440  2026-05-16 17:14:12  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4439  2026-05-16 17:14:12  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4438  2026-05-16 17:14:12  sistema   interno                         claude_call whatsapp: 27409ms prompt=52128c raw=949c                                                                                                                                                    
-
-4437  2026-05-16 17:13:45  whatsapp  entrante   16287086444644@lid   Hola! Aun no lo tenemos                                                                                                                                                                                 
-
-4436  2026-05-16 17:04:58  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
