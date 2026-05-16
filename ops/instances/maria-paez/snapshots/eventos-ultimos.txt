@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4509  2026-05-16 22:20:22  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4508  2026-05-16 22:20:22  whatsapp  saliente   5491138756003@c.us   Hola! Te contacto de parte de un cliente de Buenos Aires. Está interesado en adquirir una *Subaru Crosstrek 2.0 Limited Hybrid*. ¿Podrían brindarme información sobre disponibilidad, precio de lista y 
+
+4507  2026-05-16 22:20:21  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4506  2026-05-16 22:20:21  whatsapp  saliente   34342575317160@lid   Dale, les escribo ahora.                                                                                                                                                                                
+
+4505  2026-05-16 22:20:21  sistema   interno                         claude_call whatsapp: 22231ms prompt=52932c raw=849c                                                                                                                                                    
+
 4504  2026-05-16 22:19:59  whatsapp  entrante   34342575317160@lid   y hace lo mismo escribiendo a Subaru 1138756003, deciles que me gustaria comprar un Subaru Crosstrek 2.0 Limited Hybrid                                                                                 
 
 4503  2026-05-16 22:19:59  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente es idéntico al bucket de Diego (owner): misma conversación sobre Espasa, Taos Highline
@@ -226,13 +236,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4411  2026-05-16 13:22:47  sistema   interno                         claude_call whatsapp: 19446ms prompt=27843c raw=336c                                                                                                                                                    
 
 4410  2026-05-16 13:22:28  whatsapp  entrante   5491144471264@c.us   podes extraer todas las fechas del curso, de este pdf para agendarmelas                                                                                                                                 
-
-4409  2026-05-16 13:01:11  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (11 usuarios)                                                                                                                                                     
-
-4408  2026-05-16 12:15:09  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Vila D´agri (09:30 a. m.) @Jujuy 5115, B1766DNO La Tablada, Provincia de Buenos Aires, Argentina                                                                                          
-
-4407  2026-05-16 11:26:19  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-4406  2026-05-16 11:26:19  calendar  saliente                        creado: Inicio de Academia online – Primer encuentro sobre China (2026-06-28T11:00:00-03:00 → 2026-06-28T12:00:00-03:00) [en calendar de Maria]                                                         
-
-4405  2026-05-16 11:26:18  whatsapp  saliente   105171031949561@lid  ¡Dale! Te agendo el inicio de la Academia online — Primer encuentro sobre China para el domingo 28 de junio a las 11 am. Lo puse por una hora; si sabés cuánto dura avisame y lo ajusto.                

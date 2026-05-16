@@ -1,12 +1,3 @@
-/root/.pm2/logs/maria-paez-error.log last 200 lines:
-0|maria-pa | 2026-05-16 10:22:28: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC (ENOENT: no such file or directory, access '/tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC')
-0|maria-pa | 2026-05-16 13:39:42: [WA/Diego] Claude falló: Timeout 180000ms invocando claude
-0|maria-pa | 2026-05-16 19:15:37: [claude-client] múltiples attachment dirs en prompt: /tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B, /tmp/maria-attach-false_34342575317160_lid_4A70FF3EDE33C74BAC46, /tmp/maria-attach-false_34342575317160_lid_4AF642615FD3C473495B, /tmp/maria-attach-false_34342575317160_lid_4A58D3D8449DEEAFB70B, /tmp/maria-attach-false_34342575317160_lid_4A5BB4CF8A61D77F1EF7, /tmp/maria-attach-false_34342575317160_lid_4ADAD535010B08E44F97, /tmp/maria-attach-false_34342575317160_lid_4A9EF37E143E5FD00129, /tmp/maria-attach-false_34342575317160_lid_4A3DFBE68DB3CC522311, /tmp/maria-attach-false_34342575317160_lid_4A0AB56BE33532840A20 — bind solo el primero
-0|maria-pa | 2026-05-16 19:15:37: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B (ENOENT: no such file or directory, access '/tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B')
-
-/root/.pm2/logs/maria-paez-out.log last 200 lines:
-0|maria-pa | 2026-05-15 16:22:59: [WA ←] Santiago Bignone (5491134274828@c.us): Porque me apareció como invitación?
-0|maria-pa | 2026-05-15 16:23:10: [WA →usr] Santiago Bignone (5491134274828@c.us) [via respuesta_a_remitente]: Porque el evento lo creo desde mi calendar (el de María), así que te llega como invitación. Es así por ahora — si querés que los eventos queden directamente en 
 0|maria-pa | 2026-05-15 16:24:10: [GMAIL poll] 1 email(s) nuevo(s)
 0|maria-pa | 2026-05-15 16:24:10: [GMAIL ←] Santiago Bignone <santiagocbignone@gmail.com> | "Accepted: Chequear fotos @ Mon May 18, 2026 11am - 12pm (GMT-3) (maria.paez.secre@gmail.com)"
 0|maria-pa | 2026-05-15 16:24:18: [GMAIL/Santiago Bignone] 19e2d17500c4849d — sin acciones ni respuesta, queda no-leído
@@ -197,4 +188,13 @@
 0|maria-pa | 2026-05-16 19:19:22: [unknown-flow/wa] tercero_de_usuario: 167933254885560@lid (Ariel Quiroga) → contexto de Diego (id=1)
 0|maria-pa | 2026-05-16 19:19:32: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
 0|maria-pa | 2026-05-16 19:19:59: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente es idéntico al bucket de Diego (owner): misma conversación sobre Espasa, Taos Highline, Subaru Legacy, fotos para tasación — el mensaje actual ('y hace lo mismo escribiendo a Subaru') es continuación directa de esa gestión. Escribe desde un ID con sufijo @lid (posiblemente otro dispositivo), pero la evidencia es inequívoca.
+0|maria-pa | 2026-05-16 19:20:19: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-16 19:20:21: [WA →usr] Diego (34342575317160@lid): Dale, les escribo ahora.
+0|maria-pa | 2026-05-16 19:20:22: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-16 19:20:22: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-16 19:20:26: [WA audio→texto] Hola, María, ¿cómo han dado una estardecer?
+0|maria-pa | 2026-05-16 19:20:26:  Sí, sí, pasame las fotos, ahí tiene una fecha para que me la completes con los datos del
+0|maria-pa | 2026-05-16 19:20:26:  vehículo.
+0|maria-pa | 2026-05-16 19:20:26:  Y ahora no ten
+0|maria-pa | 2026-05-16 19:20:36: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=5 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=167933254885560@lid contactos_ambiguos=0
 
