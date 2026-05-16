@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4580  2026-05-16 22:55:55  whatsapp  saliente   34342575317160@lid   Perfecto, ya lo sé entonces. Quedo atenta por si Ariel manda la cotización.                                                                                                                             
+
+4579  2026-05-16 22:55:54  sistema   interno                         claude_call whatsapp: 9078ms prompt=52411c raw=371c                                                                                                                                                     
+
+4578  2026-05-16 22:55:45  whatsapp  entrante   34342575317160@lid   no tengo el telefono de ariel, te escribio el directo a vos, pero ya se lo mande yo desde tu telefono, no te preocupes                                                                                  
+
+4577  2026-05-16 22:55:45  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial de 200 mensajes coincide exactamente con el owner (tareas, usuarios, gestión del Subaru/Ariel de Espa
+
+4576  2026-05-16 22:55:45  sistema   interno                         claude_call unknown-flow: 22176ms prompt=72353c raw=485c                                                                                                                                                
+
 4575  2026-05-16 22:52:05  whatsapp  saliente   34342575317160@lid   No pude mandarla todavía — Ariel no está cargado en libreta con su número de WA y el sistema me bloquea el envío. ¿Me pasás el número de Ariel para cargarlo y mandarle la ficha?                       
 
 4574  2026-05-16 22:52:04  sistema   interno                         claude_call whatsapp: 11073ms prompt=52571c raw=528c                                                                                                                                                    
@@ -243,15 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4482  2026-05-16 22:15:36  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname 'Diego Paez' coincide con el owner (id=1); el ID @lid es un dispositivo vinculado de WhatsApp multi-device del mismo número; y las 
 
 4481  2026-05-16 22:15:36  sistema   interno                         claude_call unknown-flow: 30155ms prompt=70727c raw=470c                                                                                                                                                
-
-4480  2026-05-16 22:15:19  whatsapp  entrante   3681223200890@lid    Hola, soy Mateo, asesor virtual de Espasa, concesionario oficial Volkswagen. Por favor por el momento solo puedo recibir mensajes de texto, no me envíes audios o imágenes.                             
-                                                                                                                                                                                                                                                                             
-                                                                     Te comento que todos nuest                                                                                                                                                                              
-
-4479  2026-05-16 22:14:56  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-4478  2026-05-16 22:14:56  whatsapp  saliente   5491123149614@c.us   Hola! Buenos días. Te consulto de parte de un cliente: ¿tienen disponible la Volkswagen Taos Highline Bi Tono? ¿Cuál sería el precio? Y quería saber también si toman en parte de pago un Subaru Legacy 
-
-4477  2026-05-16 22:14:56  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4476  2026-05-16 22:14:56  whatsapp  saliente   34342575317160@lid   Dale, les escribo ahora. Cuando me mandes las fotos se las paso para la tasación.                                                                                                                       
