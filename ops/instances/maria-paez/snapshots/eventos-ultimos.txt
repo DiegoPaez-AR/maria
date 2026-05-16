@@ -1,5 +1,20 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                       cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4499  2026-05-16 22:18:49  whatsapp  entrante   167933254885560@lid                   Buen día Maria   ,Soy Ariel Quiroga, Asesor comercial de Volkswagen Espasa, concesionario oficial.                                                                                                      
+                                                                                      te escribo porque nos realizaste una consulta, en que te puedo asesorar.                                                                                                                                
+
+4498  2026-05-16 22:18:49  sistema   interno                                          unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de Volkswagen Espasa que contacta a Maria en respuesta a la consulta que ella hizo a pedido de Diego (22:14 del 
+
+4497  2026-05-16 22:18:49  sistema   interno                                          claude_call unknown-flow: 23767ms prompt=45922c raw=473c                                                                                                                                                
+
+4496  2026-05-16 22:18:13  sistema   interno                                          claude_call whatsapp: 8301ms prompt=52516c raw=324c                                                                                                                                                     
+
+4495  2026-05-16 22:18:05  whatsapp  entrante   34342575317160@lid                    no, seguramente te van a pasar despues con un vendedor para que puedas mandarle las cosas                                                                                                               
+
+4494  2026-05-16 22:18:05  sistema   interno                                          unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' + el mensaje es respuesta directa a la gestión de Espasa/concesionaria que Diego inició minutos antes (fotos del Subaru, 
+
+4493  2026-05-16 22:18:05  sistema   interno                                          claude_call unknown-flow: 50368ms prompt=71597c raw=466c                                                                                                                                                
+
 4492  2026-05-16 22:17:18  sistema   interno                                          claude_call whatsapp: 20375ms prompt=54119c raw=352c                                                                                                                                                    
 
 4491  2026-05-16 22:16:57  whatsapp  entrante   3681223200890@lid                     Perfecto, María. Ya tengo toda la información registrada. En breve, un asesor de Espasa se va a contactar contigo para continuar con tu consulta. ¡Muchas gracias!                                      
@@ -237,17 +252,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                       maria.paez.secre@gmail                                                                                                                                                                                  
 
 4400  2026-05-16 11:11:01  sistema   interno                                          acción ejecutada: crear_evento                                                                                                                                                                          
-
-4399  2026-05-16 11:11:01  calendar  saliente                                         creado: Natación (2026-05-16T12:00:00-03:00 → 2026-05-16T13:00:00-03:00) [en calendar de Maria]                                                                                                         
-
-4398  2026-05-16 11:11:00  whatsapp  saliente   105171031949561@lid                   ¡Dale, te la agendo! Natación hoy a las 12, una hora. 🏊                                                                                                                                                 
-
-4397  2026-05-16 11:11:00  sistema   interno                                          claude_call whatsapp: 15911ms prompt=25684c raw=517c                                                                                                                                                    
-
-4396  2026-05-16 11:10:44  whatsapp  entrante   5491144471264@c.us                    quiero probar que me agendes natacion hoy a las 12                                                                                                                                                      
-
-4395  2026-05-16 11:09:53  whatsapp  saliente   105171031949561@lid                   ¡Sí, llegó perfecto! Recibí la invitación de tu calendario hace un ratito y ya la acepté. A partir de ahora te veo la agenda directamente.                                                              
-
-4394  2026-05-16 11:09:53  sistema   interno                                          claude_call whatsapp: 13578ms prompt=25304c raw=425c                                                                                                                                                    
-
-4393  2026-05-16 11:09:39  whatsapp  entrante   5491144471264@c.us                    Fijate si te conparti bien?                                                                                                                                                                             
