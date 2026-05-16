@@ -40,9 +40,12 @@ function _avisarSandboxOff() {
 //   read-write (Claude actualiza state): /root/.claude/, /root/.cache/claude-cli-nodejs/
 //   read-only: /root/.claude.json
 // Tmpfs (sin contenido): /home, /var, /opt, /srv, /mnt, /media
-// Attachments: si attachmentsDir está, lo bind-mounteamos read-only en su path.
-//   Esto cubre el caso de visión multimodal (imágenes/PDFs en /tmp/maria-attach-*).
-function _argsBwrap({ attachmentsDir = null, extraBinds = [] } = {}) {
+// Attachments: para cada archivo en `attachments[]`, lo bind-mounteamos
+// read-only en su path. Cubre visión multimodal (imágenes/PDFs en
+// /tmp/maria-attach-*). bwrap soporta --ro-bind tanto de archivos como de
+// directorios; usamos archivos individuales para soportar el caso de
+// múltiples adjuntos en un mismo mensaje.
+function _argsBwrap({ attachments = [], extraBinds = [] } = {}) {
   const args = [
     '--unshare-all', '--share-net',  // aislamos namespaces, mantenemos red (claude llama a la API)
     '--proc', '/proc',
@@ -75,13 +78,15 @@ function _argsBwrap({ attachmentsDir = null, extraBinds = [] } = {}) {
   for (const dir of ['/lib', '/lib64']) {
     try { fs.accessSync(dir, fs.constants.R_OK); args.push('--ro-bind', dir, dir); } catch {}
   }
-  // Attachment dir específico para esta invocación (visión multimodal).
-  if (attachmentsDir) {
+  // Attachments individuales (visión multimodal). Cada uno se monta read-only
+  // en su path exacto (incluyendo extensión) para que Claude Code los lea con
+  // su tool Read via @<path>.
+  for (const att of attachments) {
     try {
-      fs.accessSync(attachmentsDir, fs.constants.R_OK);
-      args.push('--ro-bind', attachmentsDir, attachmentsDir);
+      fs.accessSync(att, fs.constants.R_OK);
+      args.push('--ro-bind', att, att);
     } catch (e) {
-      console.warn(`[claude-client] attachmentsDir no accesible: ${attachmentsDir} (${e.message})`);
+      console.warn(`[claude-client] attachment no accesible: ${att} (${e.message})`);
     }
   }
   // Binds extra (mcp-config, settings file, etc.).
@@ -96,21 +101,19 @@ function _argsBwrap({ attachmentsDir = null, extraBinds = [] } = {}) {
   return args;
 }
 
-// Detecta paths de attachments en el prompt (formato típico: @/tmp/maria-attach-XYZ/foo.png).
-// Devuelve el dir padre común si todos los attachments comparten dir, sino null
-// (en cuyo caso usa estrategia fallback más permisiva).
-function _detectarAttachmentsDir(prompt) {
-  const re = /(\/tmp\/maria-attach-[A-Za-z0-9_-]+)/g;
-  const dirs = new Set();
+// Detecta paths de attachments en el prompt (formato: @/tmp/maria-attach-XYZ.ext
+// o @/tmp/maria-attach-XYZ/foo.ext). Devuelve un array (puede ser vacío) con
+// todos los paths únicos encontrados, para que cada uno se bind-mountee
+// individualmente en el sandbox.
+function _detectarAttachments(prompt) {
+  // Aceptamos cualquier char válido de path (incluyendo `.` y `/` después del
+  // primer segmento) hasta whitespace o fin de línea. Esto cubre tanto el caso
+  // viejo (dir/archivo) como el actual (archivo con extensión).
+  const re = /(\/tmp\/maria-attach-[A-Za-z0-9_.\/-]+)/g;
+  const paths = new Set();
   let m;
-  while ((m = re.exec(prompt)) !== null) dirs.add(m[1]);
-  if (dirs.size === 0) return null;
-  if (dirs.size === 1) return [...dirs][0];
-  // Múltiples attachment dirs: por seguridad bind solo el primero. Si esto
-  // empieza a romper visión multimodal con múltiples adjuntos en mensajes
-  // distintos, vemos de bind-mountear /tmp/ entero (compromiso).
-  console.warn(`[claude-client] múltiples attachment dirs en prompt: ${[...dirs].join(', ')} — bind solo el primero`);
-  return [...dirs][0];
+  while ((m = re.exec(prompt)) !== null) paths.add(m[1]);
+  return [...paths];
 }
 
 // Herramientas de Claude permitidas. Por default solo dejamos lo que Maria
@@ -172,7 +175,7 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = nul
     // ─── Sandbox via bwrap si está disponible ────────────────────────────
     let cmd, finalArgs;
     if (BWRAP_BIN) {
-      const attachDir = _detectarAttachmentsDir(prompt);
+      const attachments = _detectarAttachments(prompt);
       const extraBinds = [];
       // Bind-mountear el mcp-config para que claude pueda leerlo adentro.
       if (mcpCfgAbs) extraBinds.push({ src: mcpCfgAbs, dst: mcpCfgAbs, ro: true });
@@ -180,7 +183,7 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = nul
       if (settingsFile && fs.existsSync(settingsFile)) {
         extraBinds.push({ src: path.resolve(settingsFile), dst: path.resolve(settingsFile), ro: true });
       }
-      const bwrapArgs = _argsBwrap({ attachmentsDir: attachDir, extraBinds });
+      const bwrapArgs = _argsBwrap({ attachments, extraBinds });
       // chdir a /root (que existe en el sandbox) para evitar cwd inexistente
       bwrapArgs.push('--chdir', '/root');
       finalArgs = [...bwrapArgs, '--', CLAUDE_BIN, ...args];
