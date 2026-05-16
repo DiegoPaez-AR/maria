@@ -1,0 +1,186 @@
+# ejecutado: 2026-05-16T19:48:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Resumen del dia de Maria (15-may-2026)
+#   set +e
+#   set -a
+#   . /root/secretaria/config/instances/maria-paez.conf
+#   set +a
+#   
+#   HOY="2026-05-15"
+#   
+#   echo "═══ 1) Actividad WA por usuario (entrantes + salientes hoy) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT
+#     COALESCE(u.nombre, '(no-user)') AS usuario,
+#     SUM(CASE WHEN e.direccion='entrante' THEN 1 ELSE 0 END) AS recibidos,
+#     SUM(CASE WHEN e.direccion='saliente' THEN 1 ELSE 0 END) AS enviados
+#   FROM eventos e
+#   LEFT JOIN usuarios u ON u.id = e.usuario_id
+#   WHERE e.canal='whatsapp' AND e.timestamp >= '$HOY'
+#   GROUP BY u.nombre
+#   ORDER BY (recibidos+enviados) DESC
+#   "
+#   
+#   echo ""
+#   echo "═══ 2) Gmail hoy ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT direccion, COUNT(*) AS n
+#   FROM eventos
+#   WHERE canal='gmail' AND timestamp >= '$HOY'
+#   GROUP BY direccion
+#   "
+#   
+#   echo ""
+#   echo "═══ 3) Eventos de calendar creados hoy ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, timestamp, usuario_id, substr(cuerpo,1,140) AS cuerpo
+#   FROM eventos
+#   WHERE canal='calendar' AND direccion='saliente' AND timestamp >= '$HOY'
+#   ORDER BY id
+#   "
+#   
+#   echo ""
+#   echo "═══ 4) Acciones ejecutadas hoy (sistema interno) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT
+#     SUBSTR(cuerpo, INSTR(cuerpo,'acción ejecutada: ')+18) AS accion,
+#     COUNT(*) AS n
+#   FROM eventos
+#   WHERE canal='sistema' AND cuerpo LIKE '%acción ejecutada:%' AND timestamp >= '$HOY'
+#   GROUP BY accion
+#   ORDER BY n DESC
+#   "
+#   
+#   echo ""
+#   echo "═══ 5) Errores/falls hoy (excluyendo invalid_grant historicos pre-reauth) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT timestamp, substr(cuerpo,1,160) AS cuerpo
+#   FROM eventos
+#   WHERE canal='sistema' AND timestamp >= '$HOY'
+#     AND (cuerpo LIKE '%falló%' OR cuerpo LIKE '%error%' OR cuerpo LIKE '%FALLARON%')
+#     AND cuerpo NOT LIKE '%invalid_grant%'
+#   ORDER BY id DESC LIMIT 20
+#   "
+#   
+#   echo ""
+#   echo "═══ 6) Pendientes nuevos hoy ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, estado, creado, substr(desc,1,80) AS descripcion
+#   FROM pendientes
+#   WHERE creado >= '$HOY'
+#   ORDER BY id
+#   "
+#   
+#   echo ""
+#   echo "═══ 7) Hechos modificados o agregados hoy ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT clave, substr(valor,1,80) AS valor, actualizado
+#   FROM hechos
+#   WHERE actualizado >= '$HOY'
+#   ORDER BY actualizado DESC
+#   "
+#   
+#   echo ""
+#   echo "═══ 8) Resumen ejecutivo ═══"
+#   TOT_WA_IN=$(sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND timestamp>='$HOY'")
+#   TOT_WA_OUT=$(sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE canal='whatsapp' AND direccion='saliente' AND timestamp>='$HOY'")
+#   TOT_GMAIL=$(sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE canal='gmail' AND timestamp>='$HOY'")
+#   TOT_CAL=$(sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE canal='calendar' AND timestamp>='$HOY'")
+#   TOT_CLAUDE=$(sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE canal='sistema' AND cuerpo LIKE '%claude_call%' AND timestamp>='$HOY'")
+#   echo "  WA recibidos:     $TOT_WA_IN"
+#   echo "  WA enviados:      $TOT_WA_OUT"
+#   echo "  Gmail eventos:    $TOT_GMAIL"
+#   echo "  Calendar eventos: $TOT_CAL"
+#   echo "  Llamadas Claude:  $TOT_CLAUDE"
+#   echo ""
+#   echo "  pm2 status:"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys, time
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name') != 'maria-paez': continue
+#       e = p.get('pm2_env', {})
+#       up_ms = e.get('pm_uptime', 0)
+#       up_s = (time.time()*1000 - up_ms) / 1000
+#       h = int(up_s/3600); m = int((up_s%3600)/60)
+#       print(f\"    pid={p.get('pid')} status={e.get('status')} restarts={e.get('restart_time')} uptime={h}h{m}m\")
+#   "
+
+# ───── output ─────
+═══ 1) Actividad WA por usuario (entrantes + salientes hoy) ═══
+usuario              recibidos  enviados
+-------------------  ---------  --------
+Diego                62         80      
+Santiago Bignone     7          10      
+Doris Capurro        5          8       
+Hernan Fulco         2          8       
+Walter Vera          0          2       
+Nicolas Kosinski     0          2       
+Natali Funez         0          2       
+Fernando Boero       0          2       
+Cristian Ruiz        0          2       
+Sebastian Ameijeira  0          1       
+Rubén Ward           0          1       
+
+═══ 2) Gmail hoy ═══
+direccion  n
+---------  -
+entrante   6
+saliente   1
+
+═══ 3) Eventos de calendar creados hoy ═══
+id    timestamp            usuario_id  cuerpo                                                                                                                                      
+----  -------------------  ----------  --------------------------------------------------------------------------------------------------------------------------------------------
+4328  2026-05-15 19:18:23  5           creado: Chequear fotos (2026-05-18T11:00:00-03:00 → 2026-05-18T12:00:00-03:00) [en calendar de Maria]                                       
+4345  2026-05-15 20:12:12  5           creado: Retirar comida (2026-05-15T20:30:00-03:00 → 2026-05-15T21:30:00-03:00) [en calendar de Maria]                                       
+4399  2026-05-16 11:11:01  6           creado: Natación (2026-05-16T12:00:00-03:00 → 2026-05-16T13:00:00-03:00) [en calendar de Maria]                                             
+4406  2026-05-16 11:26:19  6           creado: Inicio de Academia online – Primer encuentro sobre China (2026-06-28T11:00:00-03:00 → 2026-06-28T12:00:00-03:00) [en calendar de Mar
+
+═══ 4) Acciones ejecutadas hoy (sistema interno) ═══
+accion             n 
+-----------------  --
+upsert_contacto    11
+enviar_wa          11
+quitar_pendiente   5 
+crear_evento       4 
+agregar_pendiente  3 
+crear_usuario      2 
+responder_email    1 
+reenviar_wa        1 
+
+═══ 5) Errores/falls hoy (excluyendo invalid_grant historicos pre-reauth) ═══
+timestamp            cuerpo                                                                         
+-------------------  -------------------------------------------------------------------------------
+2026-05-16 22:36:14  claude_call whatsapp: 264215ms prompt=53503c raw=1048c ERROR=claude exit null: 
+2026-05-16 22:34:50  Claude falló en WA (Diego): Timeout 180000ms invocando claude                  
+2026-05-16 22:27:39  claude_call whatsapp: 189515ms prompt=54427c raw=1567c ERROR=claude exit null: 
+2026-05-16 22:27:29  Claude falló en WA (Diego): Timeout 180000ms invocando claude                  
+2026-05-16 16:40:21  claude_call whatsapp: 218691ms prompt=50999c raw=794c ERROR=claude exit null:  
+2026-05-16 16:39:42  Claude falló en WA (Diego): Timeout 180000ms invocando claude                  
+
+═══ 6) Pendientes nuevos hoy ═══
+id  estado   creado               descripcion                                                                     
+--  -------  -------------------  --------------------------------------------------------------------------------
+59  cerrado  2026-05-15 16:38:12  Esperar respuesta de Gabriel Pacheco sobre dónde quiere almorzar el viernes 22/5
+60  cerrado  2026-05-15 16:40:04  Confirmar con Diego si La Cabrera está bien para el almuerzo del viernes 22/5 co
+61  cerrado  2026-05-16 22:31:05  Responderle a Ariel Quiroga (Espasa) si la diferencia por la Taos sería al conta
+
+═══ 7) Hechos modificados o agregados hoy ═══
+clave                                      valor                                                                             actualizado        
+-----------------------------------------  --------------------------------------------------------------------------------  -------------------
+no_reportar_conversaciones_otros_usuarios  Diego prefiere que las gestiones con terceros se resuelvan directamente, sin rep  2026-05-15 18:40:02
+
+═══ 8) Resumen ejecutivo ═══
+  WA recibidos:     76
+  WA enviados:      118
+  Gmail eventos:    7
+  Calendar eventos: 4
+  Llamadas Claude:  106
+
+  pm2 status:
+    pid=480177 status=online restarts=7 uptime=26h21m
+
+# exit=0

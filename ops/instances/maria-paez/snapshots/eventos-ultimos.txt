@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4570  2026-05-16 22:47:52  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                    
+
+4569  2026-05-16 22:47:52  whatsapp  saliente   34342575317160@lid   Ya le mando la ficha ahora.                                                                                                                                                                             
+
+4568  2026-05-16 22:47:52  sistema   interno                         claude_call whatsapp: 56026ms prompt=53222c raw=867c                                                                                                                                                    
+
 4567  2026-05-16 22:46:55  whatsapp  entrante   34342575317160@lid   mandale la ficha a Ariel                                                                                                                                                                                
                                                                      AT                                                                                                                                                                                                      
                                                                      4x4                                                                                                                                                                                                     
@@ -251,9 +257,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4471  2026-05-16 21:29:43  whatsapp  saliente   34342575317160@lid   No llegué a abrirte la consulta directamente — el sitio necesita el navegador y no me anduvo. Podés chequearlo vos en segundos:                                                                         
                                                                                                                                                                                                                                                                              
                                                                      🔗 https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infraccion                                                                                                                                 
-
-4470  2026-05-16 21:29:36  sistema   interno                         claude_call whatsapp: 74882ms prompt=50933c raw=694c                                                                                                                                                    
-
-4469  2026-05-16 21:28:20  whatsapp  entrante   34342575317160@lid   Podes mirar si mi auto tiene multas en caba? La patente es ad490wx                                                                                                                                      
-
-4468  2026-05-16 21:28:20  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente (34342575317160@lid) contiene exactamente las mismas conversaciones que el bucket de D
