@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4616  2026-05-16 23:42:57  whatsapp  entrante   34342575317160@lid   manda tambien un mensaje aca +54 9 11 2177-3859, diciendo tambien que quisiera comprar una Honda HRV EXL y consulta si me toman mi auto en parte de pago.                                               
+
+4615  2026-05-16 23:42:57  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' coincide con el owner; el mensaje es continuación directa de la gestión de compra de autos que Diego venía pidiendo (Espa
+
+4614  2026-05-16 23:42:57  sistema   interno                         claude_call unknown-flow: 27091ms prompt=71879c raw=427c                                                                                                                                                
+
 4613  2026-05-16 23:29:06  whatsapp  saliente   34342575317160@lid   Acá va el resumen del brochure:                                                                                                                                                                         
                                                                                                                                                                                                                                                                              
                                                                      *Innovation Experience Global AI*                                                                                                                                                                       
@@ -246,9 +252,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4518  2026-05-16 22:23:19  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de Volkswagen Espasa que contactó a María tras la gestión que Diego (id=1) le pidió: consultar precio 
 
 4517  2026-05-16 22:23:19  sistema   interno                         claude_call unknown-flow: 21183ms prompt=47808c raw=367c                                                                                                                                                
-
-4516  2026-05-16 22:22:47  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4515  2026-05-16 22:22:47  whatsapp  saliente   167933254885560@lid  Buenas tardes Ariel! Ahora le pido a mi cliente que me las reenvíe y te las paso enseguida. Si tenés la ficha para completar con los datos del vehículo, mandámela y te la devuelvo completa. ¿El lunes 
-
-4514  2026-05-16 22:22:47  whatsapp  saliente   34342575317160@lid   Diego, Ariel de Espasa puede recibir las fotos ahora. ¿Me las podés reenviar para mandárselas? También dice que el lunes puede mandar al equipo de peritaje para la tasación del Subaru.                
