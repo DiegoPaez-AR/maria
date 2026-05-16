@@ -1,5 +1,33 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4522  2026-05-16 22:23:47  whatsapp  saliente   167933254885560@lid  Ariel, genial, ya le pido los datos a mi cliente y te los paso enseguida junto con las fotos. ¡Gracias!                                                                                                 
+
+4521  2026-05-16 22:23:47  whatsapp  saliente   34342575317160@lid   Diego, Ariel de Espasa me mandó la ficha para tasar el Subaru. Ya tengo: Subaru Legacy 2.5 Limited, 2018, 115.000 km. Pero me faltan estos datos para completarla:                                      
+                                                                                                                                                                                                                                                                             
+                                                                     ¿AT o MT?                                                                                                                                                                                               
+                                                                     ¿4x2 o 4x4?                                                                                                                                                                                             
+                                                                     ¿Sos el primer                                                                                                                                                                                          
+
+4520  2026-05-16 22:23:47  sistema   interno                         claude_call whatsapp: 28179ms prompt=55338c raw=866c                                                                                                                                                    
+
+4519  2026-05-16 22:23:19  whatsapp  entrante   167933254885560@lid  Para tasar el usado necesito la siguiente información y fotos (o verlo en persona):                                                                                                                     
+                                                                                                                                                                                                                                                                             
+                                                                     MARCA                                                                                                                                                                                                   
+                                                                     MODELO                                                                                                                                                                                                  
+                                                                     VERSIÓN                                                                                                                                                                                                 
+                                                                     MOTOR                                                                                                                                                                                                   
+                                                                     AT O MT?                                                                                                                                                                                                
+                                                                     4X2 O 4X4?                                                                                                                                                                                              
+                                                                     AÑO                                                                                                                                                                                                     
+                                                                     KM                                                                                                                                                                                                      
+                                                                     PRIMER DUEÑO?                                                                                                                                                                                           
+                                                                     LUGAR DE RADICACIÓN?                                                                                                                                                                                    
+                                                                     CAMBIÓ CUBIERTAS? TIEMPO O                                                                                                                                                                              
+
+4518  2026-05-16 22:23:19  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de Volkswagen Espasa que contactó a María tras la gestión que Diego (id=1) le pidió: consultar precio 
+
+4517  2026-05-16 22:23:19  sistema   interno                         claude_call unknown-flow: 21183ms prompt=47808c raw=367c                                                                                                                                                
+
 4516  2026-05-16 22:22:47  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 4515  2026-05-16 22:22:47  whatsapp  saliente   167933254885560@lid  Buenas tardes Ariel! Ahora le pido a mi cliente que me las reenvíe y te las paso enseguida. Si tenés la ficha para completar con los datos del vehículo, mandámela y te la devuelvo completa. ¿El lunes 
@@ -225,16 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4424  2026-05-16 16:40:14  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El historial del remitente 34342575317160@lid es idéntico al historial de Diego (owner): mismos buenos días, mismas tareas, mismo calendario — 
 
 4423  2026-05-16 16:40:14  sistema   interno                         claude_call unknown-flow: 21503ms prompt=70057c raw=477c                                                                                                                                                
-
-4422  2026-05-16 16:39:42  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
-
-4421  2026-05-16 16:36:42  whatsapp  entrante   34342575317160@lid   Me podrás conseguir el WhatsApp de barra chamaca de la calle caseros                                                                                                                                    
-
-4420  2026-05-16 16:36:42  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' + historial del remitente idéntico al del owner (morning briefs a 'Diego', gestión de sus tareas, alta de usuarios, etc.)
-
-4419  2026-05-16 16:36:42  sistema   interno                         claude_call unknown-flow: 54279ms prompt=70331c raw=435c                                                                                                                                                
-
-4418  2026-05-16 15:45:09  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Padel Tour! (01:00 p. m.)                                                                                                                                                                 
-
-4417  2026-05-16 14:45:16  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: Natación (12:00 p. m.)                                                                                                                                                                    
-                                                                     Con: doris@capurro.com.ar                                                                                                                                                                               
