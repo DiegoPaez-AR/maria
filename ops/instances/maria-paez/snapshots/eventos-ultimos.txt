@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4530  2026-05-16 22:26:02  whatsapp  saliente   167933254885560@lid  No Ariel, es un cliente particular. Compra para uso personal.                                                                                                                                           
+
+4529  2026-05-16 22:26:02  sistema   interno                         claude_call whatsapp: 16190ms prompt=55045c raw=358c                                                                                                                                                    
+
 4528  2026-05-16 22:25:45  whatsapp  entrante   167933254885560@lid  Sos reventa?                                                                                                                                                                                            
 
 4527  2026-05-16 22:25:45  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es asesor comercial de Volkswagen Espasa que contactó a Maria en respuesta a la consulta que ella inició a pedido de Diego (u
@@ -251,7 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4432  2026-05-16 17:04:57  sistema   interno                         claude_call whatsapp: 49724ms prompt=50853c raw=704c                                                                                                                                                    
 
 4431  2026-05-16 17:04:07  whatsapp  entrante   34342575317160@lid   Es uno nuevo que acaba de abrir, manda un mensaje a alguno de esos que me pasaste y pedí que te pasen el número del de Av. Caseros.                                                                     
-
-4430  2026-05-16 17:04:07  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente (34342575317160@lid) es idéntico al historial del owner Diego (mismos mensajes, temas, 
-
-4429  2026-05-16 17:04:07  sistema   interno                         claude_call unknown-flow: 25520ms prompt=70439c raw=511c                                                                                                                                                
