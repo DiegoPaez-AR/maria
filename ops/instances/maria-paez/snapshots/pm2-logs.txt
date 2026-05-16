@@ -1,8 +1,3 @@
-0|maria-pa | 2026-05-16 14:22:58: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente (34342575317160@lid) es idéntico en contenido al historial registrado para Diego owner (541132317896@c.us) — mismas gestiones, mismas tareas, mismos pedidos — lo que indica que es el mismo usuario conectado desde un formato @lid (linked device) en lugar del @c.us habitual.
-0|maria-pa | 2026-05-16 14:23:09: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
-0|maria-pa | 2026-05-16 15:34:22: [unknown-flow/wa] match en contactos: 151162112225488@lid = "Barra Chalaca Bulnes" de Diego (id=1)
-0|maria-pa | 2026-05-16 15:34:48: [WA →usr] Diego (34342575317160@lid): Cerré la consulta sobre Barra Chalaca Caseros. Tanto Belgrano como Bulnes me confirmaron que el local nuevo todavía no tiene teléfono. Se manejan igual que todo
-0|maria-pa | 2026-05-16 15:34:48: [WA →3ro] Diego/Barra Chalaca Bulnes: Muchas gracias por la info! 🙌
 0|maria-pa | 2026-05-16 15:34:48: [unknown-flow/wa] tercero_de_usuario: 151162112225488@lid (Barra Chalaca Bulnes) → contexto de Diego (id=1)
 0|maria-pa | 2026-05-16 15:52:16: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
 0|maria-pa | 2026-05-16 15:52:41: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname 'Diego Paez' coincide con el owner; el historial WA María↔Remitente y el historial WA María↔Diego (owner) contienen mensajes idénticos (ej. 'sumalo a Ruben Ward como usuario', 'barra chalaca'), confirmando que es el mismo usuario escribiendo desde un ID @lid (dispositivo vinculado) distinto al @c.us registrado.
@@ -197,4 +192,9 @@
 0|maria-pa | 2026-05-16 20:27:29: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3EB005C3087DB062D1C24F.pdf (3479 KB)
 0|maria-pa | 2026-05-16 20:27:39: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
 0|maria-pa | 2026-05-16 20:27:58: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente es idéntico al historial de Diego (owner): mismas gestiones, mismos pedidos, mismo hilo del PDF que no pudo abrir — escribe desde un ID @lid (formato de dispositivo vinculado) distinto al @c.us registrado, pero es inequívocamente el mismo usuario.
+0|maria-pa | 2026-05-16 20:29:06: [WA →usr] Diego (34342575317160@lid): Acá va el resumen del brochure:
+0|maria-pa | 2026-05-16 20:29:06: 
+0|maria-pa | 2026-05-16 20:29:06: *Innovation Experience Global AI*
+0|maria-pa | 2026-05-16 20:29:06: Programa para empresarios y líderes que quieren implementar IA en sus negocios, aprendiendo d
+0|maria-pa | 2026-05-16 20:29:06: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
 
