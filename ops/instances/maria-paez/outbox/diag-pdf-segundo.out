@@ -1,0 +1,105 @@
+# ejecutado: 2026-05-16T20:21:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   cd /root/secretaria
+#   
+#   echo "═══ Logs pm2 después del reload de las 20:14 (con el fix nuevo) ═══"
+#   pm2 logs maria-paez --lines 500 --nostream 2>&1 | awk '/20:14:0[2-9]/,0' | tail -80
+#   
+#   echo ""
+#   echo "═══ Archivos /tmp/maria-attach-* actuales ═══"
+#   ls -la /tmp/maria-attach-* 2>&1 | tail -10
+#   
+#   echo ""
+#   echo "═══ Eventos PDF/attach/brochure desde 20:14 ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, timestamp, canal, direccion, substr(de,1,30) AS de, substr(COALESCE(cuerpo,''),1,160) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-16 23:14'
+#   ORDER BY id DESC LIMIT 30
+#   "
+#   
+#   echo ""
+#   echo "═══ Errores recientes en claude-client (post-fix) ═══"
+#   pm2 logs maria-paez --lines 500 --nostream 2>&1 | grep -E 'claude-client|attach|pdf' | tail -30
+
+# ───── output ─────
+═══ Logs pm2 después del reload de las 20:14 (con el fix nuevo) ═══
+0|maria-pa | 2026-05-16 20:14:02: 
+0|maria-pa | 2026-05-16 20:14:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-16 20:14:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-16 20:14:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-16 20:14:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-16 20:14:04:   Usuarios:   11 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward
+0|maria-pa | 2026-05-16 20:14:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-16 20:14:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-16 20:14:04: ✓ whisper OK
+0|maria-pa | 2026-05-16 20:14:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-16 20:14:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-16 20:14:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-16 20:14:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-16 20:14:08: [WA authenticated]
+0|maria-pa | 2026-05-16 20:14:08: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-16 20:14:08: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-16 20:14:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-16 20:14:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-16 20:14:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-16 20:14:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-16 20:14:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-16 20:14:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-16 20:14:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-16 20:14:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-16 20:18:41: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3EB073F68FAFBB2DD328ED.pdf (3479 KB)
+0|maria-pa | 2026-05-16 20:18:52: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-16 20:19:15: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El ID 34342575317160@lid corresponde a un dispositivo vinculado (@lid = linked device) de Diego Páez (owner, id=1): el pushname coincide exactamente y el historial del remitente es idéntico al bucket de Diego, con las mismas conversaciones sobre Espasa/Subaru, Barra Chalaca, tareas pendientes, etc.
+0|maria-pa | 2026-05-16 20:19:36: [WA →usr] Diego (34342575317160@lid): Diego, tuve un problema de mi lado para procesar el PDF — no pude abrirlo. ¿Me lo podés mandar de nuevo o en otro formato (Word, texto)?
+0|maria-pa | 2026-05-16 20:19:36: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+
+
+═══ Archivos /tmp/maria-attach-* actuales ═══
+ls: cannot access '/tmp/maria-attach-*': No such file or directory
+
+═══ Eventos PDF/attach/brochure desde 20:14 ═══
+id    timestamp            canal     direccion  de                  cuerpo                                                                                                                                                          
+----  -------------------  --------  ---------  ------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+4608  2026-05-16 23:19:36  whatsapp  saliente   34342575317160@lid  Diego, tuve un problema de mi lado para procesar el PDF — no pude abrirlo. ¿Me lo podés mandar de nuevo o en otro formato (Word, texto)?                        
+4607  2026-05-16 23:19:36  sistema   interno                        claude_call whatsapp: 20142ms prompt=51201c raw=356c                                                                                                            
+4606  2026-05-16 23:19:15  whatsapp  entrante   34342575317160@lid  me resumis este pdf?                                                                                                                                            
+4605  2026-05-16 23:19:15  sistema   interno                        unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El ID 34342575317160@lid corresponde a un dispositivo vinculado (@lid = linked device) de Diego Páez (o
+4604  2026-05-16 23:19:15  sistema   interno                        claude_call unknown-flow: 22708ms prompt=71916c raw=462c                                                                                                        
+4603  2026-05-16 23:14:08  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (11 usuarios)                                                               
+4602  2026-05-16 23:14:02  sistema   interno                        shutdown por SIGINT                                                                                                                                             
+
+═══ Errores recientes en claude-client (post-fix) ═══
+0|maria-pa | 2026-05-16 10:22:28: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC (ENOENT: no such file or directory, access '/tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC')
+0|maria-pa | 2026-05-16 19:15:37: [claude-client] múltiples attachment dirs en prompt: /tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B, /tmp/maria-attach-false_34342575317160_lid_4A70FF3EDE33C74BAC46, /tmp/maria-attach-false_34342575317160_lid_4AF642615FD3C473495B, /tmp/maria-attach-false_34342575317160_lid_4A58D3D8449DEEAFB70B, /tmp/maria-attach-false_34342575317160_lid_4A5BB4CF8A61D77F1EF7, /tmp/maria-attach-false_34342575317160_lid_4ADAD535010B08E44F97, /tmp/maria-attach-false_34342575317160_lid_4A9EF37E143E5FD00129, /tmp/maria-attach-false_34342575317160_lid_4A3DFBE68DB3CC522311, /tmp/maria-attach-false_34342575317160_lid_4A0AB56BE33532840A20 — bind solo el primero
+0|maria-pa | 2026-05-16 19:15:37: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B (ENOENT: no such file or directory, access '/tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B')
+0|maria-pa | 2026-05-16 19:24:29: [claude-client] múltiples attachment dirs en prompt: /tmp/maria-attach-false_34342575317160_lid_3A56F5A71E3ED9FA244D, /tmp/maria-attach-false_34342575317160_lid_3ACC04A63BA40324D8CD, /tmp/maria-attach-false_34342575317160_lid_3A09A91A8326C04DEF87, /tmp/maria-attach-false_34342575317160_lid_3A3A667DC163F4BD6004, /tmp/maria-attach-false_34342575317160_lid_3A2BA349E96FCB3FC8F9, /tmp/maria-attach-false_34342575317160_lid_3ACD14422CE8B21282FB, /tmp/maria-attach-false_34342575317160_lid_3AB803FD2609A22F2B20, /tmp/maria-attach-false_34342575317160_lid_3A50BA834B4297B61F41, /tmp/maria-attach-false_34342575317160_lid_3A8452ABA3A5981319B8 — bind solo el primero
+0|maria-pa | 2026-05-16 19:24:29: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_34342575317160_lid_3A56F5A71E3ED9FA244D (ENOENT: no such file or directory, access '/tmp/maria-attach-false_34342575317160_lid_3A56F5A71E3ED9FA244D')
+0|maria-pa | 2026-05-16 10:22:18: [WA] media → /tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC.pdf (3479 KB)
+0|maria-pa | 2026-05-16 10:22:28: [WA ←] Doris Capurro (5491144471264@c.us): podes extraer todas las fechas del curso, de este pdf para agendarmelas
+0|maria-pa | 2026-05-16 19:14:50: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A7DDCC032238DA3DF0B.jpg (246 KB)
+0|maria-pa | 2026-05-16 19:14:51: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A70FF3EDE33C74BAC46.jpg (257 KB)
+0|maria-pa | 2026-05-16 19:14:51: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4AF642615FD3C473495B.jpg (256 KB)
+0|maria-pa | 2026-05-16 19:14:51: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A58D3D8449DEEAFB70B.jpg (214 KB)
+0|maria-pa | 2026-05-16 19:14:52: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A5BB4CF8A61D77F1EF7.jpg (221 KB)
+0|maria-pa | 2026-05-16 19:14:52: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4ADAD535010B08E44F97.jpg (250 KB)
+0|maria-pa | 2026-05-16 19:14:53: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A9EF37E143E5FD00129.jpg (281 KB)
+0|maria-pa | 2026-05-16 19:14:53: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A3DFBE68DB3CC522311.jpg (281 KB)
+0|maria-pa | 2026-05-16 19:14:53: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A0AB56BE33532840A20.jpg (292 KB)
+0|maria-pa | 2026-05-16 19:23:54: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3A56F5A71E3ED9FA244D.jpg (246 KB)
+0|maria-pa | 2026-05-16 19:23:54: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3ACC04A63BA40324D8CD.jpg (257 KB)
+0|maria-pa | 2026-05-16 19:23:55: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3A09A91A8326C04DEF87.jpg (256 KB)
+0|maria-pa | 2026-05-16 19:23:55: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3A3A667DC163F4BD6004.jpg (214 KB)
+0|maria-pa | 2026-05-16 19:23:55: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3A2BA349E96FCB3FC8F9.jpg (221 KB)
+0|maria-pa | 2026-05-16 19:23:56: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3ACD14422CE8B21282FB.jpg (250 KB)
+0|maria-pa | 2026-05-16 19:23:56: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3AB803FD2609A22F2B20.jpg (281 KB)
+0|maria-pa | 2026-05-16 19:23:56: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3A50BA834B4297B61F41.jpg (281 KB)
+0|maria-pa | 2026-05-16 19:23:57: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3A8452ABA3A5981319B8.jpg (292 KB)
+0|maria-pa | 2026-05-16 20:18:41: [WA] media → /tmp/maria-attach-false_34342575317160_lid_3EB073F68FAFBB2DD328ED.pdf (3479 KB)
+
+# exit=0
