@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4573  2026-05-16 22:51:53  whatsapp  entrante   34342575317160@lid   se la mandaste?                                                                                                                                                                                         
+
+4572  2026-05-16 22:51:53  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente y el historial de Diego (owner) son idénticos en contenido y cronología (misma conversa
+
+4571  2026-05-16 22:51:53  sistema   interno                         claude_call unknown-flow: 29609ms prompt=72290c raw=526c                                                                                                                                                
+
 4570  2026-05-16 22:47:52  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                    
 
 4569  2026-05-16 22:47:52  whatsapp  saliente   34342575317160@lid   Ya le mando la ficha ahora.                                                                                                                                                                             
@@ -249,11 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4475  2026-05-16 22:14:55  sistema   interno                         claude_call whatsapp: 20661ms prompt=51423c raw=988c                                                                                                                                                    
 
 4474  2026-05-16 22:14:34  whatsapp  entrante   34342575317160@lid   maria, podras hablar a la concesionaria Espasa +5491123149614, y consultar por la Volkswagen Taos Highline Bi Tono, quisiera saber el precio y si me toman en parte de pago mi Subaru Legacy 2.5 Limited
-
-4473  2026-05-16 22:14:34  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez', historial de 200 msgs idéntico en contenido al bucket del owner (mismas tareas, mismos contactos, mismos eventos de cale
-
-4472  2026-05-16 22:14:34  sistema   interno                         claude_call unknown-flow: 28122ms prompt=71515c raw=442c                                                                                                                                                
-
-4471  2026-05-16 21:29:43  whatsapp  saliente   34342575317160@lid   No llegué a abrirte la consulta directamente — el sitio necesita el navegador y no me anduvo. Podés chequearlo vos en segundos:                                                                         
-                                                                                                                                                                                                                                                                             
-                                                                     🔗 https://buenosaires.gob.ar/licenciasdeconducir/consulta-de-infraccion                                                                                                                                 
