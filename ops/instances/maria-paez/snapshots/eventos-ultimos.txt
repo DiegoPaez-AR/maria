@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4436  2026-05-16 17:04:58  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4435  2026-05-16 17:04:58  whatsapp  saliente   5491166431877@c.us                             Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!                                                                   
+
+4434  2026-05-16 17:04:57  sistema   interno                                                   acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4433  2026-05-16 17:04:57  whatsapp  saliente   34342575317160@lid                             Dale, les escribo.                                                                                                                                                                                      
+
+4432  2026-05-16 17:04:57  sistema   interno                                                   claude_call whatsapp: 49724ms prompt=50853c raw=704c                                                                                                                                                    
+
+4431  2026-05-16 17:04:07  whatsapp  entrante   34342575317160@lid                             Es uno nuevo que acaba de abrir, manda un mensaje a alguno de esos que me pasaste y pedí que te pasen el número del de Av. Caseros.                                                                     
+
+4430  2026-05-16 17:04:07  sistema   interno                                                   unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente (34342575317160@lid) es idéntico al historial del owner Diego (mismos mensajes, temas, 
+
+4429  2026-05-16 17:04:07  sistema   interno                                                   claude_call unknown-flow: 25520ms prompt=70439c raw=511c                                                                                                                                                
+
 4428  2026-05-16 16:41:07  whatsapp  saliente   34342575317160@lid                             Busqué y no aparece ningún local de Barra Chalaca en calle Caseros — los que tienen en Argentina son tres:                                                                                              
                                                                                                                                                                                                                                                                                                        
                                                                                                📍 *Belgrano*: +54 11 6643-1877                                                                                                                                                                          
@@ -275,29 +291,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                                2. En el panel izquierdo, buscás tu calendar "Santiago Bignone"                                                                                                                                         
                                                                                                3. Hacés clic en los tres puntitos al lado del nombre                                                                                                                                                   
                                                                                                4. Elegís *Configur                                                                                                                                                                                     
-
-4336  2026-05-15 19:25:03  sistema   interno                                                   claude_call whatsapp: 16663ms prompt=24464c raw=889c                                                                                                                                                    
-
-4335  2026-05-15 19:24:47  whatsapp  entrante   5491134274828@c.us                             Dale. Cómo lo hago?                                                                                                                                                                                     
-
-4334  2026-05-15 19:24:18  sistema   interno                                                   claude_call gmail: 8129ms prompt=25444c raw=285c                                                                                                                                                        
-
-4333  2026-05-15 19:24:10  gmail     entrante   Santiago Bignone <santiagocbignone@gmail.com>  Santiago Bignone has accepted this invitation.                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                       
-                                                                                               Chequear fotos                                                                                                                                                                                          
-                                                                                               Monday May 18, 2026 ⋅ 11am – 12pm                                                                                                                                                                       
-                                                                                               Argentina Standard Time - Buenos Aires                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                       
-                                                                                               Organizer                                                                                                                                                                                               
-                                                                                               maria.paez.secre@gmail.com                                                                                                                                                                              
-                                                                                               maria.paez.sec                                                                                                                                                                                          
-
-4332  2026-05-15 19:23:10  whatsapp  saliente   5491134274828@c.us                             Porque el evento lo creo desde mi calendar (el de María), así que te llega como invitación. Es así por ahora — si querés que los eventos queden directamente en tu agenda sin invitación, podés darme ac
-
-4331  2026-05-15 19:23:10  sistema   interno                                                   claude_call whatsapp: 10751ms prompt=23479c raw=582c                                                                                                                                                    
-
-4330  2026-05-15 19:22:59  whatsapp  entrante   5491134274828@c.us                             Porque me apareció como invitación?                                                                                                                                                                     
-
-4329  2026-05-15 19:18:23  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
