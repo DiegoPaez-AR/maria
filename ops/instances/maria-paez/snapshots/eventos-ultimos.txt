@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4400  2026-05-16 11:11:01  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
+
+4399  2026-05-16 11:11:01  calendar  saliente                                                  creado: Natación (2026-05-16T12:00:00-03:00 → 2026-05-16T13:00:00-03:00) [en calendar de Maria]                                                                                                         
+
+4398  2026-05-16 11:11:00  whatsapp  saliente   105171031949561@lid                            ¡Dale, te la agendo! Natación hoy a las 12, una hora. 🏊                                                                                                                                                 
+
+4397  2026-05-16 11:11:00  sistema   interno                                                   claude_call whatsapp: 15911ms prompt=25684c raw=517c                                                                                                                                                    
+
+4396  2026-05-16 11:10:44  whatsapp  entrante   5491144471264@c.us                             quiero probar que me agendes natacion hoy a las 12                                                                                                                                                      
+
 4395  2026-05-16 11:09:53  whatsapp  saliente   105171031949561@lid                            ¡Sí, llegó perfecto! Recibí la invitación de tu calendario hace un ratito y ya la acepté. A partir de ahora te veo la agenda directamente.                                                              
 
 4394  2026-05-16 11:09:53  sistema   interno                                                   claude_call whatsapp: 13578ms prompt=25304c raw=425c                                                                                                                                                    
@@ -295,13 +305,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 4302  2026-05-15 18:11:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
 
 4301  2026-05-15 17:52:09  sistema   interno                                                   Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (10 usuarios)                                                                                                       
-
-4300  2026-05-15 17:52:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
-
-4299  2026-05-15 17:25:11  sistema   interno                                                   Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (10 usuarios)                                                                                                       
-
-4298  2026-05-15 17:25:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
-
-4297  2026-05-15 16:54:37  sistema   interno                                                   claude_call whatsapp: 10141ms prompt=46298c raw=265c                                                                                                                                                    
-
-4296  2026-05-15 16:54:27  whatsapp  entrante   222788661055558@lid                            Ya lo tenemos                                                                                                                                                                                           
