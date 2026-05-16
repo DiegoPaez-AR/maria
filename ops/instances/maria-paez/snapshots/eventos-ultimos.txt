@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4451  2026-05-16 17:18:01  whatsapp  entrante   34342575317160@lid                             Y te dijeron algo?                                                                                                                                                                                      
+
+4450  2026-05-16 17:18:01  sistema   interno                                                   unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial WA Maria↔Remitente es prácticamente idéntico al historial WA Maria↔Diego (owner), incluyendo la conv
+
+4449  2026-05-16 17:18:01  sistema   interno                                                   claude_call unknown-flow: 35096ms prompt=70829c raw=476c                                                                                                                                                
+
 4448  2026-05-16 17:14:53  sistema   interno                                                   claude_call whatsapp: 25641ms prompt=52411c raw=272c                                                                                                                                                    
 
 4447  2026-05-16 17:14:50  sistema   interno                                                   claude_call whatsapp: 22394ms prompt=52336c raw=329c                                                                                                                                                    
@@ -293,9 +299,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                                maria.paez                                                                                                                                                                                              
 
 4352  2026-05-15 20:14:18  whatsapp  saliente   5491134274828@c.us                             No, no es Google. El sistema lo administra Diego Páez, que es quien lo armó y lo mantiene. Si hay algo que no está funcionando bien del lado de la configuración (como el tema del acceso a tu calendar)
-
-4351  2026-05-15 20:14:17  sistema   interno                                                   claude_call whatsapp: 9855ms prompt=25864c raw=575c                                                                                                                                                     
-
-4350  2026-05-15 20:14:08  whatsapp  entrante   5491134274828@c.us                             Quién es el dueño del sistema? Google?                                                                                                                                                                  
-
-4349  2026-05-15 20:13:24  whatsapp  saliente   5491134274828@c.us                             El problema es que en el sistema todavía figure con acceso "none" a tu calendar, aunque vos ya me diste permisos desde Google. Es un desfase que tiene que corregir el admin del sistema — yo de mi lado
