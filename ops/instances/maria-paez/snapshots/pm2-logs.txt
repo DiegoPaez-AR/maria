@@ -1,4 +1,3 @@
-[TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
 /root/.pm2/logs/maria-paez-error.log last 200 lines:
 0|maria-pa | 2026-05-16 10:22:28: [claude-client] attachmentsDir no accesible: /tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC (ENOENT: no such file or directory, access '/tmp/maria-attach-false_105171031949561_lid_3EB0B19CC1B2628CCFD7CC')
 0|maria-pa | 2026-05-16 13:39:42: [WA/Diego] Claude falló: Timeout 180000ms invocando claude
@@ -194,4 +193,8 @@
 0|maria-pa | 2026-05-16 19:18:13: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
 0|maria-pa | 2026-05-16 19:18:25: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=3 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=167933254885560@lid contactos_ambiguos=0
 0|maria-pa | 2026-05-16 19:18:49: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de Volkswagen Espasa que contacta a Maria en respuesta a la consulta que ella hizo a pedido de Diego (22:14 del 16/05) sobre la Taos Highline Bi Tono y tasación del Subaru; el chatbot 'Mateo' confirmó que un asesor se comunicaría, y Diego lo anticipó diciendo 'seguramente te van a pasar con un vendedor'.
+0|maria-pa | 2026-05-16 19:19:22: [WA →3ro] Diego/Ariel Quiroga: Hola Ariel, gracias por comunicarte! Te cuento: consulto de parte de un cliente que está interesado en la *Volkswagen Taos Highline Bi Tono*. Necesitamos saber 
+0|maria-pa | 2026-05-16 19:19:22: [unknown-flow/wa] tercero_de_usuario: 167933254885560@lid (Ariel Quiroga) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-16 19:19:32: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-16 19:19:59: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente es idéntico al bucket de Diego (owner): misma conversación sobre Espasa, Taos Highline, Subaru Legacy, fotos para tasación — el mensaje actual ('y hace lo mismo escribiendo a Subaru') es continuación directa de esa gestión. Escribe desde un ID con sufijo @lid (posiblemente otro dispositivo), pero la evidencia es inequívoca.
 
