@@ -1,5 +1,16 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4601  2026-05-16 23:12:19  whatsapp  saliente   167933254885560@lid  Perfecto Ariel, el lunes seguimos. Quedo atenta a la cotización 👍                                                                                                                                       
+
+4600  2026-05-16 23:12:19  sistema   interno                         claude_call whatsapp: 8790ms prompt=53352c raw=430c                                                                                                                                                     
+
+4599  2026-05-16 23:12:09  whatsapp  entrante   167933254885560@lid  El lunes seguimos charlando                                                                                                                                                                             
+                                                                     Cuando tenga la cotización                                                                                                                                                                              
+
+4598  2026-05-16 23:12:09  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de Volkswagen Espasa que contactó a Maria en respuesta a la gestión que Diego (id=1) le pidió: consult
+
+4597  2026-05-16 23:12:09  sistema   interno                         claude_call unknown-flow: 20113ms prompt=49961c raw=490c                                                                                                                                                
+
 4596  2026-05-16 23:11:39  whatsapp  saliente   167933254885560@lid  ¡Igualmente, Ariel! Buen finde 😊                                                                                                                                                                        
 
 4595  2026-05-16 23:11:39  sistema   interno                         claude_call whatsapp: 8204ms prompt=53684c raw=227c                                                                                                                                                     
@@ -240,14 +251,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4503  2026-05-16 22:19:59  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente es idéntico al bucket de Diego (owner): misma conversación sobre Espasa, Taos Highline
 
 4502  2026-05-16 22:19:59  sistema   interno                         claude_call unknown-flow: 26621ms prompt=72042c raw=545c                                                                                                                                                
-
-4501  2026-05-16 22:19:22  whatsapp  saliente   167933254885560@lid  Hola Ariel, gracias por comunicarte! Te cuento: consulto de parte de un cliente que está interesado en la *Volkswagen Taos Highline Bi Tono*. Necesitamos saber el precio de lista actual y las condicio
-
-4500  2026-05-16 22:19:21  sistema   interno                         claude_call whatsapp: 32347ms prompt=54454c raw=786c                                                                                                                                                    
-
-4499  2026-05-16 22:18:49  whatsapp  entrante   167933254885560@lid  Buen día Maria   ,Soy Ariel Quiroga, Asesor comercial de Volkswagen Espasa, concesionario oficial.                                                                                                      
-                                                                     te escribo porque nos realizaste una consulta, en que te puedo asesorar.                                                                                                                                
-
-4498  2026-05-16 22:18:49  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de Volkswagen Espasa que contacta a Maria en respuesta a la consulta que ella hizo a pedido de Diego (22:14 del 
-
-4497  2026-05-16 22:18:49  sistema   interno                         claude_call unknown-flow: 23767ms prompt=45922c raw=473c                                                                                                                                                
