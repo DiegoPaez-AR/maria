@@ -1,5 +1,41 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4448  2026-05-16 17:14:53  sistema   interno                                                   claude_call whatsapp: 25641ms prompt=52411c raw=272c                                                                                                                                                    
+
+4447  2026-05-16 17:14:50  sistema   interno                                                   claude_call whatsapp: 22394ms prompt=52336c raw=329c                                                                                                                                                    
+
+4446  2026-05-16 17:14:27  whatsapp  entrante   109861455020134@lid                            Hola, te comunicaste con *Barra Chalaca Palermo*                                                                                                                                                        
+                                                                                               📍Arévalo 1392                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                       
+                                                                                               🍽️ Sin reserva previa.                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                       
+                                                                                               ✓Estamos todos los días de 12:30hs a 00hs.                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                       
+                                                                                               👉🏼Take Away: también podés pedirnos tu plato favorito y disfrutarlo                                                                                                                                     
+
+4445  2026-05-16 17:14:27  whatsapp  entrante   151162112225488@lid                            Hola, te comunicaste con *Barra Chalaca Bulnes*                                                                                                                                                         
+                                                                                               📍 Bulnes 2579                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                       
+                                                                                               🍽️ *Sin reserva previa* . Por orden de llegada en base a la disponibilidad.                                                                                                                             
+                                                                                                                                                                                                                                                                                                       
+                                                                                               ✓Estamos todos los días de 12:30hs a 00hs.                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                       
+                                                                                               👉🏼 *Take Away &                                                                                                                                                                                         
+
+4444  2026-05-16 17:14:14  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4443  2026-05-16 17:14:14  whatsapp  saliente   5491132350755@c.us                             Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!                                                                   
+
+4442  2026-05-16 17:14:13  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4441  2026-05-16 17:14:13  whatsapp  saliente   5491123348031@c.us                             Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!                                                                   
+
+4440  2026-05-16 17:14:12  sistema   interno                                                   acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4439  2026-05-16 17:14:12  sistema   interno                                                   acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4438  2026-05-16 17:14:12  sistema   interno                                                   claude_call whatsapp: 27409ms prompt=52128c raw=949c                                                                                                                                                    
+
 4437  2026-05-16 17:13:45  whatsapp  entrante   16287086444644@lid                             Hola! Aun no lo tenemos                                                                                                                                                                                 
 
 4436  2026-05-16 17:04:58  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
@@ -263,26 +299,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 4350  2026-05-15 20:14:08  whatsapp  entrante   5491134274828@c.us                             Quién es el dueño del sistema? Google?                                                                                                                                                                  
 
 4349  2026-05-15 20:13:24  whatsapp  saliente   5491134274828@c.us                             El problema es que en el sistema todavía figure con acceso "none" a tu calendar, aunque vos ya me diste permisos desde Google. Es un desfase que tiene que corregir el admin del sistema — yo de mi lado
-
-4348  2026-05-15 20:13:16  sistema   interno                                                   claude_call whatsapp: 20562ms prompt=25585c raw=881c                                                                                                                                                    
-
-4347  2026-05-15 20:12:56  whatsapp  entrante   5491134274828@c.us                             Sigue apareciendo como invitación                                                                                                                                                                       
-
-4346  2026-05-15 20:12:12  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
-
-4345  2026-05-15 20:12:12  calendar  saliente                                                  creado: Retirar comida (2026-05-15T20:30:00-03:00 → 2026-05-15T21:30:00-03:00) [en calendar de Maria]                                                                                                   
-
-4344  2026-05-15 20:12:11  whatsapp  saliente   5491134274828@c.us                             Listo, te agendo hoy a las 20:30 "Retirar comida". 🍱                                                                                                                                                    
-
-4343  2026-05-15 20:12:11  sistema   interno                                                   claude_call whatsapp: 21643ms prompt=25380c raw=522c                                                                                                                                                    
-
-4342  2026-05-15 20:11:49  whatsapp  entrante   5491134274828@c.us                             Hagamos una prueba. Crea un evento hoy a las 20.30. Retirar comida                                                                                                                                      
-
-4341  2026-05-15 20:10:31  whatsapp  saliente   5491134274828@c.us                             Ah, entonces el sistema todavía no lo refleja bien. Ya lo tengo en cuenta, a partir de ahora creo los eventos directo en tu calendar.                                                                   
-
-4340  2026-05-15 20:10:30  sistema   interno                                                   claude_call whatsapp: 9274ms prompt=24968c raw=446c                                                                                                                                                     
-
-4339  2026-05-15 20:10:21  whatsapp  entrante   5491134274828@c.us                             Ya estabas autorizada así                                                                                                                                                                               
-
-4338  2026-05-15 19:45:16  whatsapp  saliente   137456250806423@lid                            ⏰ *En 15min*: Preplanning CMP (05:00 p. m.)                                                                                                                                                             
-                                                                                               Con: alejandro.furgeri@sondeos.com.ar, bogdan.bedyukh@sondeos.com.ar, cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, gustavo.garcia@sondeo                                            
