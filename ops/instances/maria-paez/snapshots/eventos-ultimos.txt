@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4555  2026-05-16 22:32:06  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                    
+
+4554  2026-05-16 22:32:06  whatsapp  saliente   167933254885560@lid  Ariel, acá va la ficha completada! Las fotos te las paso en breve. Lo de financiamiento te confirmo a la brevedad.                                                                                      
+
+4553  2026-05-16 22:32:06  whatsapp  saliente   34342575317160@lid   Diego, Ariel pregunta si querés financiar algo de la diferencia por la Taos o si la pagás de contado. ¿Me decís para que le arme el presupuesto? Y para las fotos del Subaru — ¿me las podés reenviar pa
+
+4552  2026-05-16 22:32:06  sistema   interno                         claude_call whatsapp: 78960ms prompt=55630c raw=1174c                                                                                                                                                   
+
 4551  2026-05-16 22:31:49  whatsapp  entrante   34342575317160@lid   AT                                                                                                                                                                                                      
                                                                      4x4                                                                                                                                                                                                     
                                                                      primer dueño                                                                                                                                                                                            
@@ -248,11 +256,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4457  2026-05-16 17:23:09  sistema   interno                         claude_call whatsapp: 10381ms prompt=50546c raw=186c                                                                                                                                                    
 
 4456  2026-05-16 17:22:58  whatsapp  entrante   34342575317160@lid   Ok, gracias                                                                                                                                                                                             
-
-4455  2026-05-16 17:22:58  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente (34342575317160@lid) es idéntico en contenido al historial registrado para Diego owner 
-
-4454  2026-05-16 17:22:58  sistema   interno                         claude_call unknown-flow: 26359ms prompt=70474c raw=492c                                                                                                                                                
-
-4453  2026-05-16 17:18:13  whatsapp  saliente   34342575317160@lid   El local de Belgrano me dijo que todavía no tienen el número. Les escribí a los de Bulnes y Arévalo también, estoy esperando que respondan.                                                             
-
-4452  2026-05-16 17:18:13  sistema   interno                         claude_call whatsapp: 11937ms prompt=50515c raw=492c                                                                                                                                                    
