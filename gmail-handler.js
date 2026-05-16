@@ -42,6 +42,91 @@ function _marcarProcesado(id) {
 
 // ─── Procesamiento de un email ──────────────────────────────────────────
 
+// Detecta si el email entrante es una notificación de Google sobre un share
+// de calendar y, si lo es, intenta auto-aceptarlo y aplicar el accessRole al
+// usuario correspondiente. Devuelve true si lo procesó (el caller no debe
+// seguir con el pipeline normal); false si no aplica.
+async function _intentarAceptarShareCalendar(email, messageId) {
+  const asunto = email.asunto || '';
+  const cuerpo = email.cuerpo || email.snippet || '';
+  const esShareAccept = /shared a calendar|invited you to see all event details|invited you to make changes|Accept the invite to join this shared calendar/i.test(cuerpo)
+    || /Accept your invitation to join shared calendar|shared calendar/i.test(asunto);
+  const esAccessUpdate = /Calendar access updated|updated your access to the shared calendar/i.test(cuerpo)
+    || /Calendar access updated/i.test(asunto);
+  if (!esShareAccept && !esAccessUpdate) return false;
+
+  // Extraer calendar_id: el email del From: ES el id del calendar primario.
+  const fromMatch = String(email.de || '').match(/<([^>]+)>/);
+  const calendarId = (fromMatch ? fromMatch[1] : String(email.de || '')).trim().toLowerCase();
+  if (!calendarId || !calendarId.includes('@')) {
+    console.warn(`[GMAIL share] no pude extraer calendar_id de "${email.de}"`);
+    return false;
+  }
+
+  console.log(`[GMAIL share] detectado share para calendar_id=${calendarId} — intentando auto-accept`);
+
+  // 1) Aceptar el share contra la API de Google Calendar.
+  let res;
+  try {
+    res = await g.aceptarCalendarShare(calendarId);
+  } catch (err) {
+    console.error(`[GMAIL share] aceptarCalendarShare(${calendarId}) tiró: ${err.message}`);
+    return false;
+  }
+  if (!res.ok) {
+    console.warn(`[GMAIL share] no pude aceptar ${calendarId}: ${res.error}`);
+    // No marcamos procesado — quizá un retry futuro funcione.
+    return false;
+  }
+
+  // 2) Mapear accessRole a tier (mismo mapping que chequearAccesoCalendar).
+  const role = res.accessRole;
+  let tier = 'none';
+  if (role === 'writer' || role === 'owner') tier = 'write';
+  else if (role === 'reader' || role === 'freeBusyReader') tier = 'read';
+
+  // 3) Buscar usuario activo que matchee al calendar_id (por usuarios.calendar_id
+  //    explícito o, si está vacío, por usuarios.email).
+  let match = usuarios.listarActivos().find(u => (u.calendar_id || '').toLowerCase() === calendarId);
+  if (!match) {
+    match = usuarios.listarActivos().find(u => (u.email || '').toLowerCase() === calendarId);
+  }
+
+  // 4) Actualizar DB del usuario (calendar_id si vacío + calendar_acceso).
+  if (match) {
+    const patch = { calendar_id: match.calendar_id || calendarId };
+    try {
+      usuarios.actualizar(match.id, patch);
+      usuarios.setearCalendarAcceso(match.id, tier);
+      mem.log({
+        usuarioId: match.id,
+        canal: 'sistema', direccion: 'interno',
+        cuerpo: `auto-accept calendar share: ${calendarId} → ${tier} (role=${role}${res.yaEstaba ? ', ya estaba' : ''})`,
+        metadata: { calendarId, role, tier, fuente: 'gmail-auto-accept', yaEstaba: !!res.yaEstaba },
+      });
+      console.log(`[GMAIL share] ✓ ${match.nombre}: calendar_acceso → ${tier} (role=${role})`);
+    } catch (err) {
+      console.warn(`[GMAIL share] usuario ${match.id} actualizar/setear acceso falló: ${err.message}`);
+    }
+  } else {
+    // El share es de alguien que aún no es usuario — lo dejamos aceptado
+    // en el calendarList pero sin usuario asociado. Loggeamos para visibilidad.
+    mem.log({
+      canal: 'sistema', direccion: 'interno',
+      cuerpo: `auto-accept calendar share sin usuario asociado: ${calendarId} (role=${role})`,
+      metadata: { calendarId, role, fuente: 'gmail-auto-accept' },
+    });
+    console.log(`[GMAIL share] aceptado ${calendarId} (role=${role}) pero ningún usuario activo matchea`);
+  }
+
+  // 5) Marcar el email como leído así no queda en el inbox de Maria.
+  if (messageId) {
+    try { await g.marcarLeido(messageId); } catch { /* best-effort */ }
+  }
+
+  return true;
+}
+
 async function procesarUnEmail(id, { waClient } = {}) {
   let email;
   try {
@@ -57,6 +142,17 @@ async function procesarUnEmail(id, { waClient } = {}) {
 
   const emailCuerpo = (email.cuerpo || email.snippet || '').slice(0, 4000);
   console.log(`[GMAIL ←] ${email.de} | "${email.asunto}"`);
+
+  // ─── Pre-handler: auto-accept de calendar shares ───────────────────────
+  // Cuando un usuario (especialmente con cuenta Gmail consumer) comparte su
+  // calendar con Maria, Google manda un email "X shared a calendar" con un
+  // link "Add this calendar to your list". Hasta que ese link no se clickee,
+  // el calendar NO entra en el calendarList de Maria → chequearAccesoCalendar
+  // devuelve 'none'. Para evitar fricción manual, detectamos esos emails y
+  // hacemos calendarList.insert() programático contra la API.
+  if (await _intentarAceptarShareCalendar(email, id)) {
+    return; // share aceptado y procesado — no pasamos al pipeline normal
+  }
 
   // ─── Resolver usuario por From ────────────────────────────────────────
   const usuario = usuarios.resolverPorEmailFrom(email.de);

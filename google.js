@@ -110,6 +110,38 @@ async function listarCalendarios() {
 }
 
 /**
+ * Acepta programáticamente un share de calendar añadiéndolo al calendarList
+ * de Maria. Equivale a clickear el botón "Add this calendar to your list"
+ * del email "X shared a calendar". Necesario porque cuando un Gmail consumer
+ * comparte con otro Gmail consumer, el receptor tiene que aceptar el invite
+ * antes de que el calendar aparezca en su lista (a diferencia de Workspace,
+ * donde se auto-añade).
+ *
+ * Devuelve { ok, accessRole, error? }. Si el calendar ya estaba aceptado,
+ * la API tira 409 y devolvemos ok:true con accessRole obtenido por get.
+ */
+async function aceptarCalendarShare(calendarId) {
+  if (!calendarId) return { ok: false, error: 'calendarId vacío' };
+  const auth = await autenticar();
+  const cal = _cal(auth);
+  try {
+    const res = await cal.calendarList.insert({ requestBody: { id: calendarId } });
+    return { ok: true, accessRole: res.data.accessRole };
+  } catch (err) {
+    // 409 Conflict → ya estaba en la lista; obtener role via get().
+    if (err.code === 409) {
+      try {
+        const r = await cal.calendarList.get({ calendarId });
+        return { ok: true, accessRole: r.data.accessRole, yaEstaba: true };
+      } catch (err2) {
+        return { ok: false, error: `409 al insertar, fallo el get: ${err2.message}` };
+      }
+    }
+    return { ok: false, error: err.message };
+  }
+}
+
+/**
  * Lista eventos próximos. Por defecto del calendario del usuario atendido.
  */
 async function listarEventosProximos({ dias = 7, max = 20, calendarId } = {}) {
@@ -703,6 +735,7 @@ module.exports = {
   // Calendar
   listarCalendarios,
   chequearAccesoCalendar,
+  aceptarCalendarShare,
   listarEventosProximos,
   listarEventosDelUsuario,
   getMariaCalendarId,
