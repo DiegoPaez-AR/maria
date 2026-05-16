@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4535  2026-05-16 22:27:39  sistema   interno                         claude_call whatsapp: 189515ms prompt=54427c raw=1567c ERROR=claude exit null:                                                                                                                          
+
+4534  2026-05-16 22:27:29  sistema   interno                         Claude falló en WA (Diego): Timeout 180000ms invocando claude                                                                                                                                           
+
+4533  2026-05-16 22:27:27  whatsapp  entrante   167933254885560@lid  María Blali perfecto, yo cuando puedas pasarme las fotos y que me complita esa ficha y el lunes que paso como queda la diferencia por la causa de la ambitona y la diferencia sería de contado ¿no?     
+
+4532  2026-05-16 22:27:27  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es asesor de Volkswagen Espasa que contactó a Maria tras la consulta que Diego (id=1) le pidió hacer sobre la Taos Highline B
+
+4531  2026-05-16 22:27:27  sistema   interno                         claude_call unknown-flow: 20849ms prompt=48241c raw=356c                                                                                                                                                
+
 4530  2026-05-16 22:26:02  whatsapp  saliente   167933254885560@lid  No Ariel, es un cliente particular. Compra para uso personal.                                                                                                                                           
 
 4529  2026-05-16 22:26:02  sistema   interno                         claude_call whatsapp: 16190ms prompt=55045c raw=358c                                                                                                                                                    
@@ -245,13 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4437  2026-05-16 17:13:45  whatsapp  entrante   16287086444644@lid   Hola! Aun no lo tenemos                                                                                                                                                                                 
 
 4436  2026-05-16 17:04:58  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-4435  2026-05-16 17:04:58  whatsapp  saliente   5491166431877@c.us   Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!                                                                   
-
-4434  2026-05-16 17:04:57  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4433  2026-05-16 17:04:57  whatsapp  saliente   34342575317160@lid   Dale, les escribo.                                                                                                                                                                                      
-
-4432  2026-05-16 17:04:57  sistema   interno                         claude_call whatsapp: 49724ms prompt=50853c raw=704c                                                                                                                                                    
-
-4431  2026-05-16 17:04:07  whatsapp  entrante   34342575317160@lid   Es uno nuevo que acaba de abrir, manda un mensaje a alguno de esos que me pasaste y pedí que te pasen el número del de Av. Caseros.                                                                     
