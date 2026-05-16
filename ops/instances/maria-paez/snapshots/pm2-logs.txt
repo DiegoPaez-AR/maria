@@ -182,4 +182,10 @@
 0|maria-pa | 2026-05-16 19:15:36: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname 'Diego Paez' coincide con el owner (id=1); el ID @lid es un dispositivo vinculado de WhatsApp multi-device del mismo número; y las fotos/video son continuación directa del pedido que Diego hizo minutos antes en su historial ('ahora te mando unas fotos del auto para que les pasen para tasarlo').
 0|maria-pa | 2026-05-16 19:15:45: [WA →3ro] Diego/3681223200890@lid: Hola Mateo! Soy María Páez, secretaria personal de un cliente de Buenos Aires. ¿Cuándo podría hablar con un asesor para consultar el precio de la Taos Highline 
 0|maria-pa | 2026-05-16 19:15:45: [unknown-flow/wa] tercero_de_usuario: 3681223200890@lid (3681223200890@lid) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-16 19:16:07: [unknown-flow/wa] match en contactos: 3681223200890@lid = "Espasa Concesionaria" de Diego (id=1)
+0|maria-pa | 2026-05-16 19:16:21: [WA →usr] Diego (34342575317160@lid): Diego, mandé las fotos pero hay un problema: Espasa tiene un chatbot (se llama Mateo) que respondió diciendo que solo recibe mensajes de texto, no imágenes. Así
+0|maria-pa | 2026-05-16 19:16:21: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-16 19:16:32: [WA →3ro] Diego/3681223200890@lid: ¡Claro! Podés escribirme a maria.paez.secre@gmail.com. Quedo atenta al contacto del asesor. Gracias!
+0|maria-pa | 2026-05-16 19:16:32: [unknown-flow/wa] tercero_de_usuario: 3681223200890@lid (3681223200890@lid) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-16 19:16:57: [unknown-flow/wa] match en contactos: 3681223200890@lid = "Espasa Concesionaria" de Diego (id=1)
 

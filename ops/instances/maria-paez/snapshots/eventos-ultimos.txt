@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                       cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4491  2026-05-16 22:16:57  whatsapp  entrante   3681223200890@lid                     Perfecto, María. Ya tengo toda la información registrada. En breve, un asesor de Espasa se va a contactar contigo para continuar con tu consulta. ¡Muchas gracias!                                      
+
+4490  2026-05-16 22:16:32  whatsapp  saliente   3681223200890@lid                     ¡Claro! Podés escribirme a maria.paez.secre@gmail.com. Quedo atenta al contacto del asesor. Gracias!                                                                                                    
+
+4489  2026-05-16 22:16:25  sistema   interno                                          claude_call whatsapp: 17303ms prompt=53787c raw=436c                                                                                                                                                    
+
+4488  2026-05-16 22:16:21  whatsapp  saliente   34342575317160@lid                    Diego, mandé las fotos pero hay un problema: Espasa tiene un chatbot (se llama Mateo) que respondió diciendo que solo recibe mensajes de texto, no imágenes. Así que probablemente no les llegaron para 
+
+4487  2026-05-16 22:16:21  sistema   interno                                          claude_call whatsapp: 43949ms prompt=52828c raw=617c                                                                                                                                                    
+
+4486  2026-05-16 22:16:07  whatsapp  entrante   3681223200890@lid                     Gracias, María. Un asesor se comunicará contigo para brindarte toda la información sobre la Taos Highline y la tasación del vehículo de tu cliente. ¿Podrías indicarme tu correo electrónico para que te
+
 4485  2026-05-16 22:15:45  whatsapp  saliente   3681223200890@lid                     Hola Mateo! Soy María Páez, secretaria personal de un cliente de Buenos Aires. ¿Cuándo podría hablar con un asesor para consultar el precio de la Taos Highline Bi Tono y coordinar lo de la tasación de
 
 4484  2026-05-16 22:15:45  sistema   interno                                          claude_call whatsapp: 25331ms prompt=53176c raw=558c                                                                                                                                                    
@@ -239,25 +251,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 4393  2026-05-16 11:09:39  whatsapp  entrante   5491144471264@c.us                    Fijate si te conparti bien?                                                                                                                                                                             
 
 4392  2026-05-16 11:01:51  sistema   interno                                          acción ejecutada: responder_email                                                                                                                                                                       
-
-4391  2026-05-16 11:01:51  gmail     saliente                                         Hola Doris,                                                                                                                                                                                             
-                                                                                                                                                                                                                                                                                              
-                                                                                      Perfecto, ya recibí la invitación para compartir tu calendario. La voy a aceptar ahora mismo y de ahí en adelante ya te puedo ver la agenda directamente.                                               
-                                                                                                                                                                                                                                                                                              
-                                                                                      Maria Paez                                                                                                                                                                                              
-                                                                                      Email: maria.paez.sec                                                                                                                                                                                   
-
-4390  2026-05-16 11:01:50  sistema   interno                                          razonamiento Gmail 19e3071c5cdfe329 (Doris Capurro): Doris compartió su calendar con Maria — invitación de Google Calendar. Confirmo recepción y acepto; el executor debería procesar la aceptación vía 
-
-4389  2026-05-16 11:01:50  sistema   interno                                          claude_call gmail: 40468ms prompt=25036c raw=1520c                                                                                                                                                      
-
-4388  2026-05-16 11:01:10  gmail     entrante   Doris Capurro <doris@capurro.com.ar>  Doris Capurro shared a calendar\n\nDoris Capurro <doris@capurro.com.ar> has                                                                                                                             
-                                                                                      invited you to see all event details on the calendar: "Doris                                                                                                                                            
-                                                                                      Capurro".\n\nAccept the invite to join this shared calend                                                                                                                                               
-
-4387  2026-05-16 10:31:11  sistema   interno                                          meeting-prep: 1 alerta(s) agendada(s) (11 usuarios)                                                                                                                                                     
-
-4386  2026-05-16 10:00:12  whatsapp  saliente   5491154024727@c.us                    ☀️ *Buen día, Rubén Ward.* sábado 16 de mayo.                                                                                                                                                           
-                                                                                                                                                                                                                                                                                              
-                                                                                      *📅 Agenda del día*                                                                                                                                                                                      
-                                                                                      (sin eventos hoy)                                                                                                                                                                                       
