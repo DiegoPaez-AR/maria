@@ -1,0 +1,79 @@
+# ejecutado: 2026-05-17T09:19:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   
+#   # UTC ahora — 17-may. Restamos 3h para "00:00 ART"
+#   DESDE='2026-05-17 03:00:00'   # = 00:00 ART del 17-may
+#   DESDE_AYER_TARDE='2026-05-16 23:20:00'  # post último reload
+#   
+#   echo "═══ Volumen REAL desde 17-may 00:00 ART ═══"
+#   sqlite3 "$MARIA_DB" <<EOF
+#   SELECT 'WA recibidos:', COUNT(*) FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND timestamp >= '$DESDE';
+#   SELECT 'WA enviados:', COUNT(*) FROM eventos WHERE canal='whatsapp' AND direccion='saliente' AND timestamp >= '$DESDE';
+#   SELECT 'Gmail:', COUNT(*) FROM eventos WHERE canal='gmail' AND timestamp >= '$DESDE';
+#   SELECT 'Calendar:', COUNT(*) FROM eventos WHERE canal='calendar' AND timestamp >= '$DESDE';
+#   SELECT 'Claude calls:', COUNT(*) FROM eventos WHERE canal='sistema' AND cuerpo LIKE '%claude_call%' AND timestamp >= '$DESDE';
+#   EOF
+#   
+#   echo ""
+#   echo "═══ ¿Timeouts/errores Claude post último reload (16-may 23:14)? ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT timestamp, substr(cuerpo,1,180) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '$DESDE_AYER_TARDE'
+#     AND canal='sistema'
+#     AND (cuerpo LIKE '%Timeout%' OR cuerpo LIKE '%ERROR=%' OR cuerpo LIKE '%claude exit null%')
+#   ORDER BY id DESC LIMIT 15
+#   "
+#   
+#   echo ""
+#   echo "═══ Último intento de PDF (Diego 23:27 ART de ayer) — ¿se procesó OK? ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, timestamp, canal, direccion, substr(COALESCE(cuerpo,''),1,200) AS cuerpo
+#   FROM eventos
+#   WHERE id >= (SELECT id FROM eventos WHERE cuerpo LIKE 'proba ahora%' ORDER BY id DESC LIMIT 1)
+#   ORDER BY id ASC LIMIT 10
+#   "
+
+# ───── output ─────
+═══ Volumen REAL desde 17-may 00:00 ART ═══
+WA recibidos:|0
+WA enviados:|11
+Gmail:|0
+Calendar:|0
+Claude calls:|0
+
+═══ ¿Timeouts/errores Claude post último reload (16-may 23:14)? ═══
+
+═══ Último intento de PDF (Diego 23:27 ART de ayer) — ¿se procesó OK? ═══
+id    timestamp            canal     direccion  cuerpo                                                                                                                                                                                                  
+----  -------------------  --------  ---------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4611  2026-05-16 23:27:58  whatsapp  entrante   proba ahora                                                                                                                                                                                             
+                                                _Español - Brochure Global AI.pdf                                                                                                                                                                      
+
+4612  2026-05-16 23:28:59  sistema   interno    claude_call whatsapp: 60107ms prompt=51259c raw=1817c                                                                                                                                                   
+
+4613  2026-05-16 23:29:06  whatsapp  saliente   Acá va el resumen del brochure:                                                                                                                                                                         
+                                                                                                                                                                                                                                                        
+                                                *Innovation Experience Global AI*                                                                                                                                                                       
+                                                Programa para empresarios y líderes que quieren implementar IA en sus negocios, aprendiendo de empresas como Google, Huawei, NYSE, Li                                                                   
+
+4614  2026-05-16 23:42:57  sistema   interno    claude_call unknown-flow: 27091ms prompt=71879c raw=427c                                                                                                                                                
+
+4615  2026-05-16 23:42:57  sistema   interno    unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' coincide con el owner; el mensaje es continuación directa de la gestión de compra de autos que Diego venía pidiendo (Espa
+
+4616  2026-05-16 23:42:57  whatsapp  entrante   manda tambien un mensaje aca +54 9 11 2177-3859, diciendo tambien que quisiera comprar una Honda HRV EXL y consulta si me toman mi auto en parte de pago.                                               
+
+4617  2026-05-16 23:43:14  sistema   interno    claude_call whatsapp: 17157ms prompt=51742c raw=892c                                                                                                                                                    
+
+4618  2026-05-16 23:43:14  whatsapp  saliente   Ya les escribo a Honda ahora.                                                                                                                                                                           
+
+4619  2026-05-16 23:43:14  sistema   interno    acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+4620  2026-05-16 23:43:15  whatsapp  saliente   Buen día! Soy María Páez, secretaria de Diego Páez. Diego está interesado en adquirir una Honda HRV EXL y quería consultarles si aceptan vehículo en parte de pago. Cuenta con un Subaru Legacy 2.5 Limi
+
+# exit=0
