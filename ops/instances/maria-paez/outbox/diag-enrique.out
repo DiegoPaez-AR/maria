@@ -1,0 +1,105 @@
+# ejecutado: 2026-05-17T17:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diag caso Enrique: maria 17:13 dijo "doy de alta + mando bienvenida",
+#   # 17:23 admitió que falló envío WA. Identificar causa real.
+#   set +e
+#   source /root/secretaria/config/instances/maria-paez.conf 2>/dev/null
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "═══ DB: $DB ═══"
+#   ls -la "$DB" 2>/dev/null | head -1
+#   
+#   echo ""
+#   echo "═══ Usuario Enrique ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, email, wa_id, calendar_provider, datetime(creado_en) AS creado FROM usuarios WHERE LOWER(nombre) LIKE '%nrique%' OR LOWER(email) LIKE '%nrique%';"
+#   
+#   echo ""
+#   echo "═══ Contacto Enrique (libreta del owner) ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, usuario_id, nombre, email, wa_id, numero_wa, datetime(creado_en) AS creado FROM contactos WHERE LOWER(nombre) LIKE '%nrique%' OR LOWER(email) LIKE '%nrique%' OR email LIKE '%globalnet%';"
+#   
+#   echo ""
+#   echo "═══ Schema usuarios (por las dudas: campos disponibles) ═══"
+#   sqlite3 "$DB" ".schema usuarios" | head -20
+#   
+#   echo ""
+#   echo "═══ Eventos relacionados a Enrique últimas 8h ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp) AS ts, canal, direccion, substr(de,1,28) AS de, substr(para,1,28) AS para, substr(cuerpo,1,160) AS msg FROM eventos WHERE timestamp >= datetime('now','-8 hours') AND (cuerpo LIKE '%nrique%' OR cuerpo LIKE '%globalnetmobile%' OR cuerpo LIKE '%Sosa%' OR cuerpo LIKE '%sosa%') ORDER BY timestamp ASC LIMIT 80;"
+#   
+#   echo ""
+#   echo "═══ Eventos canal=sistema relacionados — crear_usuario / onboarding / send ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp) AS ts, substr(cuerpo,1,300) AS msg FROM eventos WHERE timestamp >= datetime('now','-8 hours') AND canal='sistema' AND (cuerpo LIKE '%crear_usuario%' OR cuerpo LIKE '%onboarding%' OR cuerpo LIKE '%bienvenida%' OR cuerpo LIKE '%getNumberId%' OR cuerpo LIKE '%wid%' OR cuerpo LIKE '%wa-send%') ORDER BY timestamp ASC LIMIT 40;"
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 2000 líneas filtradas Enrique/Sosa/globalnetmobile ═══"
+#   pm2 logs maria-paez --lines 2000 --nostream 2>&1 | grep -iE "enrique|globalnetmobile|sosa" | tail -100
+#   
+#   echo ""
+#   echo "═══ pm2 logs — errores envío WA (cualquier destino) últimas 2000 líneas ═══"
+#   pm2 logs maria-paez --lines 2000 --nostream 2>&1 | grep -iE "no se pudo enviar|sendMessage.*err|wid no|getNumberId.*null|enviar.*fall|wa.send.*err|wa.send.*fail" | tail -40
+#   
+#   echo ""
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ DB: /root/secretaria/state/maria-paez/db/maria.sqlite ═══
+-rw-r--r--+ 1 root root 2899968 May 17 16:55 /root/secretaria/state/maria-paez/db/maria.sqlite
+
+═══ Usuario Enrique ═══
+Error: in prepare, no such column: wa_id
+  SELECT id, nombre, email, wa_id, calendar_provider, datetime(creado_en) AS cre
+              error here ---^
+
+═══ Contacto Enrique (libreta del owner) ═══
+Error: in prepare, no such column: wa_id
+  SELECT id, usuario_id, nombre, email, wa_id, numero_wa, datetime(creado_en) AS
+                          error here ---^
+
+═══ Schema usuarios (por las dudas: campos disponibles) ═══
+CREATE TABLE usuarios (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre       TEXT NOT NULL UNIQUE,
+  wa_lid       TEXT UNIQUE,
+  wa_cus       TEXT UNIQUE,
+  email        TEXT UNIQUE,
+  calendar_id  TEXT,
+  rol          TEXT NOT NULL DEFAULT 'usuario' CHECK(rol IN ('owner','usuario')),
+  tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
+  brief_hora   TEXT DEFAULT '04',
+  brief_minuto TEXT DEFAULT '00',
+  activo       INTEGER NOT NULL DEFAULT 1,
+  creado       DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado  DATETIME DEFAULT CURRENT_TIMESTAMP
+, calendar_acceso TEXT NOT NULL DEFAULT 'none' CHECK(calendar_acceso IN ('none','read','write')), calendar_provider TEXT NOT NULL DEFAULT 'google' CHECK(calendar_provider IN ('google','microsoft','caldav')), calendar_auth_json TEXT);
+
+═══ Eventos relacionados a Enrique últimas 8h ═══
+Error: in prepare, no such column: para
+  , canal, direccion, substr(de,1,28) AS de, substr(para,1,28) AS para, substr(c
+                                      error here ---^
+
+═══ Eventos canal=sistema relacionados — crear_usuario / onboarding / send ═══
+ts                   msg                            
+-------------------  -------------------------------
+2026-05-17 20:13:05  acción ejecutada: crear_usuario
+
+═══ pm2 logs últimas 2000 líneas filtradas Enrique/Sosa/globalnetmobile ═══
+0|maria-pa | 2026-05-17 17:07:42: [WA →usr] Diego (34342575317160@lid): Ya tengo a Enrique Sosa en la libreta con ese email. ¿Querés que le mande algo, o me falta contexto?
+0|maria-pa | 2026-05-17 17:12:25: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial de 200 msgs con este remitente es el historial personal del owner (briefs diarios, agenda, tareas, gestiones de autos), y el mensaje actual de agregar a Enrique Sosa coincide exactamente con lo que Diego (owner) acaba de gestionar en su historial; el ID @lid es un identificador alternativo de WhatsApp para el mismo usuario registrado como 541132317896@c.us.
+0|maria-pa | 2026-05-17 17:13:05: [executor] usuario creado: id=12 nombre=Enrique Sosa (sin calendar_id todavía)
+0|maria-pa | 2026-05-17 17:22:31: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 17:22:57: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente (200 msgs) es idéntico al historial del owner Diego — incluyendo el pedido de sumar a Enrique Sosa como usuario (20:11-20:13) que es exactamente lo que pregunta ahora; el ID @lid indica que escribe desde un dispositivo vinculado (WhatsApp Web u otro), no desde su número principal.
+0|maria-pa | 2026-05-17 17:23:22: [WA →usr] Diego (34342575317160@lid): Intenté escribirle pero no me llegó — tuve un problema con su número de WhatsApp. Sí tengo su email (enrique.sosa@globalnetmobile.com). ¿Le mando la bienvenida 
+0|maria-pa | 2026-05-17 17:27:02: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 17:27:24:   Usuarios:   12 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa
+
+═══ pm2 logs — errores envío WA (cualquier destino) últimas 2000 líneas ═══
+0|maria-pa | 2026-05-16 19:31:05: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "Ariel Quiroga" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-16 19:32:06: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-16 19:47:52: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-17 17:13:05: [executor] acción #1 (enviar_wa) falló: No pude mandar WA a 54959899643028@c.us: No LID for user
+
+═══ DONE ═══
+
+# exit=0
