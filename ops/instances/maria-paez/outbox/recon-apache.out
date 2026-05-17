@@ -1,0 +1,102 @@
+# ejecutado: 2026-05-17T18:53:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Reconocer estado actual del web server en el VPS antes de tocar.
+#   # Objetivo: subir intensa.io sin romper el sitio existente.
+#   set +e
+#   
+#   echo "═══ Web server corriendo ═══"
+#   systemctl is-active apache2 nginx 2>&1
+#   ss -tlnp 2>/dev/null | grep -E ':80\b|:443\b' | head -10
+#   echo ""
+#   
+#   echo "═══ Versiones ═══"
+#   apache2 -v 2>&1 | head -2
+#   apachectl -V 2>&1 | grep -E "Server (root|MPM)" | head -5
+#   certbot --version 2>&1 | head -1
+#   echo ""
+#   
+#   echo "═══ Vhosts Apache habilitados ═══"
+#   ls -la /etc/apache2/sites-enabled/ 2>&1
+#   echo ""
+#   
+#   echo "═══ Cada vhost completo ═══"
+#   for f in /etc/apache2/sites-enabled/*.conf; do
+#     [ -f "$f" ] || continue
+#     echo "─── $f ───"
+#     cat "$f"
+#     echo ""
+#   done
+#   
+#   echo "═══ DocRoots y contenido (apache mostrar todos) ═══"
+#   apachectl -S 2>&1 | head -40
+#   echo ""
+#   
+#   echo "═══ DNS de intensa.io desde el VPS ═══"
+#   dig +short intensa.io
+#   dig +short www.intensa.io
+#   echo ""
+#   
+#   echo "═══ IP pública del VPS ═══"
+#   curl -s https://api.ipify.org 2>&1
+#   echo ""
+#   
+#   echo "═══ Certificados Let's Encrypt instalados ═══"
+#   ls /etc/letsencrypt/live/ 2>/dev/null
+#   certbot certificates 2>&1 | grep -E "Certificate Name|Domains|Expiry" | head -30
+#   
+#   echo ""
+#   echo "═══ Hosts file ═══"
+#   grep -v '^#' /etc/hosts | grep -v '^$' | head -10
+#   
+#   echo ""
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ Web server corriendo ═══
+inactive
+active
+LISTEN 0      511          0.0.0.0:443        0.0.0.0:*    users:(("nginx",pid=600308,fd=8),("nginx",pid=600307,fd=8),("nginx",pid=600305,fd=8))   
+LISTEN 0      511          0.0.0.0:80         0.0.0.0:*    users:(("nginx",pid=600308,fd=9),("nginx",pid=600307,fd=9),("nginx",pid=600305,fd=9))   
+LISTEN 0      511             [::]:443           [::]:*    users:(("nginx",pid=600308,fd=7),("nginx",pid=600307,fd=7),("nginx",pid=600305,fd=7))   
+LISTEN 0      511             [::]:80            [::]:*    users:(("nginx",pid=600308,fd=10),("nginx",pid=600307,fd=10),("nginx",pid=600305,fd=10))
+
+═══ Versiones ═══
+ops/instances/maria-paez/inbox/recon-apache.sh: line 12: apache2: command not found
+certbot 2.9.0
+
+═══ Vhosts Apache habilitados ═══
+ls: cannot access '/etc/apache2/sites-enabled/': No such file or directory
+
+═══ Cada vhost completo ═══
+═══ DocRoots y contenido (apache mostrar todos) ═══
+ops/instances/maria-paez/inbox/recon-apache.sh: line 30: apachectl: command not found
+
+═══ DNS de intensa.io desde el VPS ═══
+13.248.213.45
+76.223.67.189
+intensa.io.
+76.223.67.189
+13.248.213.45
+
+═══ IP pública del VPS ═══
+178.104.166.91
+═══ Certificados Let's Encrypt instalados ═══
+README
+www.veritas-trace.com
+  Certificate Name: www.veritas-trace.com
+    Domains: www.veritas-trace.com
+    Expiry Date: 2026-07-25 18:41:41+00:00 (VALID: 68 days)
+
+═══ Hosts file ═══
+127.0.1.1 ubuntu-4gb-nbg1-2 ubuntu-4gb-nbg1-2
+127.0.0.1 localhost
+::1 localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+═══ DONE ═══
+
+# exit=0
