@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4916  2026-05-17 22:35:54  whatsapp  saliente   34342575317160@lid   Acá estoy, Diego. ¿Qué necesitás?                                                                                                                                                                       
+
+4915  2026-05-17 22:35:54  sistema   interno                         claude_call whatsapp: 8559ms prompt=62752c raw=206c                                                                                                                                                     
+
+4914  2026-05-17 22:35:45  whatsapp  entrante   34342575317160@lid   maria, estas viva?                                                                                                                                                                                      
+
+4913  2026-05-17 22:35:45  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente es idéntico al historial WA Maria ↔ Diego (owner): mismas conversaciones sobre autos, E
+
+4912  2026-05-17 22:35:45  sistema   interno                         claude_call unknown-flow: 22073ms prompt=74538c raw=466c                                                                                                                                                
+
 4911  2026-05-17 22:21:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)                                                                                                       
 
 4910  2026-05-17 22:21:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -213,13 +223,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4818  2026-05-17 20:06:18  sistema   interno                         claude_call whatsapp: 11345ms prompt=36390c raw=232c                                                                                                                                                    
 
 4817  2026-05-17 20:06:07  whatsapp  entrante   66735369617497@lid   Cuantas r hay en STRAWBERRY?                                                                                                                                                                            
-
-4816  2026-05-17 19:58:19  whatsapp  saliente   66735369617497@lid   Jaja Alejandro, eso se lo dejo a los académicos también 😄 Si necesitás algo que pueda ayudarte, avisame.                                                                                                
-
-4815  2026-05-17 19:58:19  sistema   interno                         claude_call whatsapp: 12978ms prompt=36670c raw=364c                                                                                                                                                    
-
-4814  2026-05-17 19:58:06  whatsapp  entrante   66735369617497@lid   Y qué crees que eligirían los académicos? Por qué?                                                                                                                                                      
-
-4813  2026-05-17 19:57:02  whatsapp  saliente   66735369617497@lid   Jaja ni como historiadora me meto en eso 😄 Eso se lo dejo a los académicos.                                                                                                                             
-
-4812  2026-05-17 19:57:02  sistema   interno                         claude_call whatsapp: 13312ms prompt=36707c raw=323c                                                                                                                                                    
