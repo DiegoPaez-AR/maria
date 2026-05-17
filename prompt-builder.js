@@ -203,7 +203,17 @@ function seccionContacto(usuario, { de, nombre, email }) {
     c.email    ? `Email: ${c.email}` : null,
     c.notas    ? `Notas: ${c.notas}` : null,
   ].filter(Boolean);
-  return partes.join(' | ');
+  // Si hay una nota curada para este (usuario × contacto), la inyectamos.
+  // Da contexto de largo plazo (gestiones previas, patrones, preferencias).
+  try {
+    const nota = mem.getNotaContacto(usuario.id, c.id);
+    if (nota && nota.nota) {
+      partes.push('');
+      partes.push(`MEMORIA DE LARGO PLAZO (síntesis curada de interacciones previas con ${c.nombre}):`);
+      partes.push(nota.nota);
+    }
+  } catch { /* getNotaContacto no implementada en versiones previas */ }
+  return partes.join('\n');
 }
 
 /**

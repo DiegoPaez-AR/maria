@@ -90,6 +90,18 @@ CREATE TABLE IF NOT EXISTS estado_usuario (
   PRIMARY KEY (usuario_id, clave)
 );
 
+CREATE TABLE IF NOT EXISTS notas_contacto (
+  id                          INTEGER PRIMARY KEY AUTOINCREMENT,
+  usuario_id                  INTEGER NOT NULL REFERENCES usuarios(id),
+  contacto_id                 INTEGER NOT NULL REFERENCES contactos(id),
+  nota                        TEXT NOT NULL,
+  eventos_sintetizados_hasta  INTEGER NOT NULL DEFAULT 0,
+  creado                      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado                 DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (usuario_id, contacto_id)
+);
+CREATE INDEX IF NOT EXISTS idx_notas_contacto_user ON notas_contacto(usuario_id);
+
 CREATE TABLE IF NOT EXISTS follow_ups (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
   creado          DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -678,6 +690,73 @@ function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
   return !!qEntranteDespuesDe.get(usuarioId, esperandoCanal, esperandoDe, desdeStr);
 }
 
+// ─── Memoria curada: notas por (usuario × contacto) ───────────────────────
+//
+// Sintetiza interacciones de un usuario con un contacto en una nota acumulativa.
+// Se inyecta al prompt cuando el contacto está en el contexto activo.
+// El job de curación (memoria-curada.js) corre nightly.
+
+const qNotaContacto = db.prepare(`
+  SELECT * FROM notas_contacto WHERE usuario_id = ? AND contacto_id = ?
+`);
+const qNotasContactoDeUsuario = db.prepare(`
+  SELECT n.*, c.nombre AS contacto_nombre, c.whatsapp AS contacto_whatsapp, c.email AS contacto_email
+  FROM notas_contacto n JOIN contactos c ON c.id = n.contacto_id
+  WHERE n.usuario_id = ?
+  ORDER BY n.actualizado DESC
+`);
+const upsertNotaContactoStmt = db.prepare(`
+  INSERT INTO notas_contacto (usuario_id, contacto_id, nota, eventos_sintetizados_hasta)
+  VALUES (@usuarioId, @contactoId, @nota, @hasta)
+  ON CONFLICT(usuario_id, contacto_id) DO UPDATE SET
+    nota = excluded.nota,
+    eventos_sintetizados_hasta = excluded.eventos_sintetizados_hasta,
+    actualizado = CURRENT_TIMESTAMP
+`);
+
+function getNotaContacto(usuarioId, contactoId) {
+  return qNotaContacto.get(usuarioId, contactoId) || null;
+}
+function listarNotasContactoDeUsuario(usuarioId) {
+  return qNotasContactoDeUsuario.all(usuarioId);
+}
+function upsertNotaContacto({ usuarioId, contactoId, nota, hasta }) {
+  upsertNotaContactoStmt.run({ usuarioId, contactoId, nota, hasta });
+}
+
+// Eventos en el bucket del usuario asociables a un contacto desde un id
+// determinado en adelante. Asocia por: whatsapp (LIKE digits) o email (LIKE).
+// Devuelve filas hidratadas, ordenadas asc por id.
+function eventosConContactoDesde({ usuarioId, contacto, desdeEventId = 0, max = 200 }) {
+  const wa = contacto && contacto.whatsapp ? String(contacto.whatsapp).replace(/\D/g, '') : null;
+  const email = contacto && contacto.email ? String(contacto.email).toLowerCase() : null;
+  if (!wa && !email) return [];
+
+  // Armamos LIKE sobre `de` por dígitos (cubre @c.us y @lid si el LID
+  // contiene dígitos del número). Para email, LIKE case-insensitive.
+  const stmt = db.prepare(`
+    SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, metadata_json
+    FROM eventos
+    WHERE usuario_id = @usuarioId
+      AND id > @desde
+      AND (
+        (@wa IS NOT NULL AND REPLACE(REPLACE(REPLACE(de, '@c.us', ''), '@lid', ''), '+', '') LIKE '%' || @wa || '%')
+        OR (@email IS NOT NULL AND LOWER(de) LIKE '%' || @email || '%')
+        OR (@email IS NOT NULL AND LOWER(asunto) LIKE '%' || @email || '%')
+      )
+    ORDER BY id ASC
+    LIMIT @max
+  `);
+  const filas = stmt.all({
+    usuarioId,
+    desde: desdeEventId,
+    wa,
+    email,
+    max: Math.min(Math.max(1, max), 500),
+  });
+  return filas.map(hidratar);
+}
+
 function formatearParaPrompt(e) {
   const ts = e.timestamp;
   const flecha = e.direccion === 'entrante' ? '→' : (e.direccion === 'saliente' ? '←' : '·');
@@ -1251,6 +1330,11 @@ module.exports = {
   followUpsAbiertos,
   setFollowUpEstado,
   huboRespuesta,
+  // memoria curada
+  getNotaContacto,
+  listarNotasContactoDeUsuario,
+  upsertNotaContacto,
+  eventosConContactoDesde,
   // estado global
   setEstado,
   getEstado,
