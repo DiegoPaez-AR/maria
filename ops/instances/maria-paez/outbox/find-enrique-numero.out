@@ -1,0 +1,81 @@
+# ejecutado: 2026-05-17T17:47:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   source /root/secretaria/config/instances/maria-paez.conf 2>/dev/null
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "═══ Schema eventos ═══"
+#   sqlite3 "$DB" ".schema eventos" | head -10
+#   
+#   echo ""
+#   echo "═══ Schema contactos ═══"
+#   sqlite3 "$DB" ".schema contactos" | head -20
+#   
+#   echo ""
+#   echo "═══ Mensajes entrantes del owner (Diego) ULTIMAS 4h con mencion de Enrique o nro ═══"
+#   sqlite3 -header "$DB" "SELECT datetime(timestamp), substr(cuerpo,1,400) FROM eventos WHERE timestamp >= datetime('now','-4 hours') AND direccion='entrante' AND (cuerpo LIKE '%nrique%' OR cuerpo LIKE '%sosa%' OR cuerpo LIKE '%Sosa%' OR cuerpo LIKE '%globalnet%' OR cuerpo LIKE '%959899%' OR cuerpo LIKE '%59899%' OR cuerpo LIKE '%4302%') ORDER BY timestamp ASC LIMIT 30;"
+#   
+#   echo ""
+#   echo "═══ Fila completa de Enrique en usuarios ═══"
+#   sqlite3 "$DB" "SELECT * FROM usuarios WHERE id=12;"
+#   
+#   echo ""
+#   echo "═══ Fila completa Enrique en contactos ═══"
+#   sqlite3 "$DB" "SELECT * FROM contactos WHERE LOWER(nombre) LIKE '%nrique%';"
+#   
+#   echo ""
+#   echo "═══ Acción crear_usuario completa (cuerpo full) ═══"
+#   sqlite3 "$DB" "SELECT datetime(timestamp), cuerpo FROM eventos WHERE timestamp >= datetime('now','-4 hours') AND canal='sistema' AND cuerpo LIKE '%crear_usuario%' LIMIT 5;"
+
+# ───── output ─────
+═══ Schema eventos ═══
+CREATE TABLE eventos (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
+  direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
+  de             TEXT,
+  nombre         TEXT,
+  asunto         TEXT,
+  cuerpo         TEXT,
+  tipo_original  TEXT,
+
+═══ Schema contactos ═══
+CREATE TABLE IF NOT EXISTS "contactos" (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        visibilidad TEXT NOT NULL DEFAULT 'privada' CHECK (visibilidad IN ('privada','publica')),
+        cumple      TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+CREATE INDEX idx_contactos_whatsapp    ON contactos(whatsapp);
+CREATE INDEX idx_contactos_email       ON contactos(email);
+CREATE INDEX idx_contactos_usuario     ON contactos(usuario_id, nombre);
+CREATE INDEX idx_contactos_visibilidad ON contactos(visibilidad, nombre);
+CREATE UNIQUE INDEX uniq_contactos_priv ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada';
+CREATE UNIQUE INDEX uniq_contactos_pub  ON contactos(nombre)             WHERE visibilidad = 'publica';
+
+═══ Mensajes entrantes del owner (Diego) ULTIMAS 4h con mencion de Enrique o nro ═══
+datetime(timestamp)|substr(cuerpo,1,400)
+2026-05-17 20:07:24|enrique.sosa@globalnetmobile.com
+2026-05-17 20:12:25|sumalo como usuario a Enrique
+2026-05-17 20:22:57|le escribiste a Enrique? te dijo algo?
+
+═══ Fila completa de Enrique en usuarios ═══
+12|Enrique Sosa||54959899643028@c.us|enrique.sosa@globalnetmobile.com||usuario|America/Argentina/Buenos_Aires|07|00|1|2026-05-17 20:13:05|2026-05-17 20:13:05|none|google|
+
+═══ Fila completa Enrique en contactos ═══
+209|1|Enrique Sosa|54959899643028@c.us|enrique.sosa@globalnetmobile.com||privada|--07-28|2026-05-10 22:41:01|2026-05-10 22:41:01
+
+═══ Acción crear_usuario completa (cuerpo full) ═══
+2026-05-17 20:13:05|acción ejecutada: crear_usuario
+
+# exit=0
