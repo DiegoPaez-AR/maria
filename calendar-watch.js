@@ -21,12 +21,14 @@
 const usuarios = require('./usuarios');
 const g = require('./google');
 const mem = require('./memory');
+const providers = require('./providers');
 
 async function tickUsuario(usuario) {
   if (!usuario.calendar_id) return null;
   let detectado;
   try {
-    detectado = await g.chequearAccesoCalendar(usuario.calendar_id);
+    const provider = await providers.forUser(usuario);
+    detectado = await provider.chequearAccesoCalendar(usuario.calendar_id);
   } catch (err) {
     console.warn(`[calendar-watch/${usuario.nombre}] chequeo falló: ${err.message}`);
     return null;

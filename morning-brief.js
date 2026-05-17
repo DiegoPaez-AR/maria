@@ -14,6 +14,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
+const providers = require('./providers');
 
 const BRIEF_VENTANA_H = Number(process.env.BRIEF_VENTANA_H || 4);
 const ESTADO_KEY      = 'morning_brief_ultimo_dia';
@@ -44,7 +45,8 @@ function horaMinEnTz(tz, date = new Date()) {
 
 async function _agendaHoy(usuario) {
   const hoy = horaMinEnTz(usuario.tz || 'America/Argentina/Buenos_Aires');
-  const prox = await g.listarEventosDelUsuario(usuario, { dias: 1, max: 20 });
+  const provider = await providers.forUser(usuario);
+  const prox = await provider.listarEventosDelUsuario(usuario, { dias: 1, max: 20 });
   const items = prox.filter(e => {
     if (e.allDay) return e.start && e.start.startsWith(hoy.yyyymmdd);
     const d = horaMinEnTz(usuario.tz, new Date(e.start));
@@ -62,9 +64,11 @@ async function _cumplesHoy(usuario) {
   const hoy = horaMinEnTz(usuario.tz);
   const items = [];
 
-  // 1) Cumples desde Google Calendar (si el calendario está configurado).
+  // 1) Cumples desde el calendar de Maria (calendario de cumpleaños).
+  //    No depende del provider del usuario — siempre es el calendar de Maria.
   try {
-    const lista = await g.listarCumples({ dias: 2 });
+    const mariaProvider = await providers.forMaria();
+    const lista = await mariaProvider.listarCumples({ dias: 2 });
     for (const e of lista) {
       if ((e.start || '').startsWith(hoy.yyyymmdd)) items.push(`🎂 ${e.summary}`);
     }

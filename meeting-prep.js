@@ -11,6 +11,7 @@
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const providers = require('./providers');
 
 const MINUTOS_ANTES = Number(process.env.MEETING_PREP_MIN_ANTES || 15);
 const VENTANA_HORAS = Number(process.env.MEETING_PREP_VENTANA_H || 2);
@@ -45,7 +46,8 @@ async function _tickUsuario(usuario) {
   // (tier 0 sin email), devuelve [] y el loop termina sin programar.
   let eventos;
   try {
-    eventos = await g.listarEventosDelUsuario(usuario, {
+    const provider = await providers.forUser(usuario);
+    eventos = await provider.listarEventosDelUsuario(usuario, {
       dias: Math.max(1, Math.ceil(VENTANA_HORAS / 24)),
       max: 30,
     });

@@ -25,6 +25,7 @@ const unknownFlow = require('./unknown-flow');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSON } = require('./claude-client');
 const { ejecutarAcciones } = require('./executor');
+const providers = require('./providers');
 
 const KEY_PROCESADOS = 'gmail:procesados';
 const MAX_PROCESADOS = 1000; // limitamos el set para que no crezca infinito
@@ -65,10 +66,14 @@ async function _intentarAceptarShareCalendar(email, messageId) {
 
   console.log(`[GMAIL share] detectado share para calendar_id=${calendarId} — intentando auto-accept`);
 
-  // 1) Aceptar el share contra la API de Google Calendar.
+  // 1) Aceptar el share contra la API de Google Calendar de Maria.
+  //    Esto siempre va contra Maria (su calendar) — no depende del provider
+  //    del usuario que está compartiendo, porque el share llega al Gmail de
+  //    Maria y se acepta desde su calendar.
   let res;
   try {
-    res = await g.aceptarCalendarShare(calendarId);
+    const mariaProvider = await providers.forMaria();
+    res = await mariaProvider.aceptarCalendarShare(calendarId);
   } catch (err) {
     console.error(`[GMAIL share] aceptarCalendarShare(${calendarId}) tiró: ${err.message}`);
     return false;

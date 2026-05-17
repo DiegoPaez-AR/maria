@@ -14,6 +14,7 @@ const g   = require('./google');
 const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
 const waSend = require('./wa-send');
+const providers = require('./providers');
 
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
@@ -82,9 +83,9 @@ async function ejecutarUna(accion, ctx) {
 
 // ─── Calendar ─────────────────────────────────────────────────────────────
 
-async function _validarSinConflicto({ start, end, excluirEventoId, forzar, calendarId }) {
+async function _validarSinConflicto(provider, { start, end, excluirEventoId, forzar, calendarId }) {
   if (forzar) return;
-  const conflictos = await g.buscarConflictos({ start, end, excluirEventoId, calendarId });
+  const conflictos = await provider.buscarConflictos({ start, end, excluirEventoId, calendarId });
   if (!conflictos.length) return;
   const detalle = conflictos.map(c => {
     const hh = c.allDay ? '(todo el día)' : `${c.start} → ${c.end}`;
@@ -97,6 +98,7 @@ async function _crearEvento(a, ctx) {
   _requerir(a, ['summary', 'start', 'end']);
   const u = ctx.usuario;
   const tier = usuarios.tier(u);
+  const provider = await providers.forUser(u);
 
   // Decidir contra qué calendar crear:
   //   tier_2 → calendar del user (autonomía total).
@@ -106,7 +108,7 @@ async function _crearEvento(a, ctx) {
   const enCalDelUsuario = tier === 'tier_2';
   const calendarId = enCalDelUsuario
     ? u.calendar_id
-    : await g.getMariaCalendarId();
+    : await provider.getMariaCalendarId();
 
   // Si no es en su propio calendar y el user no tiene email, no podemos invitarlo.
   if (!enCalDelUsuario && !u.email) {
@@ -115,7 +117,7 @@ async function _crearEvento(a, ctx) {
 
   // Conflicto: chequeamos contra el calendar del user si tenemos lectura.
   if (tier === 'tier_2' || tier === 'tier_1') {
-    await _validarSinConflicto({ start: a.start, end: a.end, forzar: a.forzar, calendarId: u.calendar_id });
+    await _validarSinConflicto(provider, { start: a.start, end: a.end, forzar: a.forzar, calendarId: u.calendar_id });
   }
 
   // Attendees: en tier 0/1 sumamos al user automáticamente (para que reciba
@@ -126,7 +128,7 @@ async function _crearEvento(a, ctx) {
     if (!yaInvitado) attendeesFinal.push(u.email);
   }
 
-  const ev = await g.crearEvento({
+  const ev = await provider.crearEvento({
     summary: a.summary,
     descripcion: a.descripcion || '',
     ubicacion: a.ubicacion || '',
@@ -150,18 +152,19 @@ async function _modificarEvento(a, ctx) {
   _requerir(a, ['id']);
   const u = ctx.usuario;
   const tier = usuarios.tier(u);
+  const provider = await providers.forUser(u);
 
   // Resolver contra qué calendar trabajar. En tier 0/1 los eventos creados
   // por Maria viven en su calendar; en tier 2 están en el del user.
   // a.calendarId opcional permite override desde el LLM si supiera el path.
   const calendarId = a.calendarId
-    || (tier === 'tier_2' ? u.calendar_id : await g.getMariaCalendarId());
+    || (tier === 'tier_2' ? u.calendar_id : await provider.getMariaCalendarId());
 
   // Tier 1: si el evento NO fue creado por Maria, NO podemos modificarlo
   // (sin write access). Bloqueamos con un error claro.
   if (tier === 'tier_1') {
     try {
-      const ev = await g.obtenerEvento ? await g.obtenerEvento({ id: a.id, calendarId }) : null;
+      const ev = await provider.obtenerEvento({ id: a.id, calendarId });
       const organizer = (ev?.organizerEmail || '').toLowerCase();
       const meEmail = (g.MARIA_EMAIL || '').toLowerCase();
       if (organizer && organizer !== meEmail) {
@@ -180,11 +183,11 @@ async function _modificarEvento(a, ctx) {
     // Conflicto: si tenemos lectura del calendar del user (tier 1/2),
     // chequeamos ahí. En tier 0 no podemos.
     if (tier === 'tier_2' || tier === 'tier_1') {
-      await _validarSinConflicto({ start: a.start, end: a.end, excluirEventoId: a.id, forzar: a.forzar, calendarId: u.calendar_id });
+      await _validarSinConflicto(provider, { start: a.start, end: a.end, excluirEventoId: a.id, forzar: a.forzar, calendarId: u.calendar_id });
     }
   }
 
-  const ev = await g.modificarEvento({
+  const ev = await provider.modificarEvento({
     id: a.id,
     summary: a.summary,
     descripcion: a.descripcion,
@@ -206,13 +209,14 @@ async function _borrarEvento(a, ctx) {
   _requerir(a, ['id']);
   const u = ctx.usuario;
   const tier = usuarios.tier(u);
+  const provider = await providers.forUser(u);
   const calendarId = a.calendarId
-    || (tier === 'tier_2' ? u.calendar_id : await g.getMariaCalendarId());
+    || (tier === 'tier_2' ? u.calendar_id : await provider.getMariaCalendarId());
 
   // Tier 1: bloquear borrado si el organizer no es Maria.
   if (tier === 'tier_1') {
     try {
-      const ev = await g.obtenerEvento ? await g.obtenerEvento({ id: a.id, calendarId }) : null;
+      const ev = await provider.obtenerEvento({ id: a.id, calendarId });
       const organizer = (ev?.organizerEmail || '').toLowerCase();
       const meEmail = (g.MARIA_EMAIL || '').toLowerCase();
       if (organizer && organizer !== meEmail) {
@@ -223,7 +227,7 @@ async function _borrarEvento(a, ctx) {
     }
   }
 
-  await g.borrarEvento({ id: a.id, calendarId });
+  await provider.borrarEvento({ id: a.id, calendarId });
   mem.log({
     usuarioId: u.id,
     canal: 'calendar', direccion: 'saliente',
@@ -674,7 +678,8 @@ async function _setCalendarAcceso(a, ctx) {
     if (!u.calendar_id) {
       modoFinal = 'none';
     } else {
-      detectado = await g.chequearAccesoCalendar(u.calendar_id);
+      const provider = await providers.forUser(u);
+      detectado = await provider.chequearAccesoCalendar(u.calendar_id);
       modoFinal = detectado;
     }
   }

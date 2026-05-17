@@ -57,7 +57,9 @@ function seccionFechaHora(tz) {
 async function seccionAgenda(usuario, { dias = 7 } = {}) {
   let eventos;
   try {
-    eventos = await g.listarEventosProximos({ dias, max: 30, calendarId: usuario.calendar_id });
+    const providers = require('./providers');
+    const provider = await providers.forUser(usuario);
+    eventos = await provider.listarEventosProximos({ dias, max: 30, calendarId: usuario.calendar_id });
   } catch (err) {
     return `(error leyendo calendario: ${err.message})`;
   }
