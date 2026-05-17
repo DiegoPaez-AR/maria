@@ -1,0 +1,57 @@
+# ejecutado: 2026-05-17T20:24:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no")'
+#   
+#   echo ""
+#   echo "═══ ¿código vivo tiene fix? ═══"
+#   grep -c "mediaInfo" /root/secretaria/whatsapp-handler.js /root/secretaria/unknown-flow.js
+#   grep -c "mediaMessageId" /root/secretaria/memory.js
+#   
+#   echo ""
+#   echo "═══ Smoke: sintaxis ═══"
+#   cd /root/secretaria && node -e "require('./whatsapp-handler'); require('./unknown-flow'); require('./memory'); console.log('OK 3 archivos cargan');"
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 20 (errores post-reload?) ═══"
+#   pm2 logs maria-paez --lines 25 --nostream 2>&1 | tail -20
+
+# ───── output ─────
+═══ pm2 ═══
+pid: 979890 restart: 43
+
+═══ ¿código vivo tiene fix? ═══
+/root/secretaria/whatsapp-handler.js:3
+/root/secretaria/unknown-flow.js:9
+3
+
+═══ Smoke: sintaxis ═══
+OK 3 archivos cargan
+
+═══ pm2 logs últimas 20 (errores post-reload?) ═══
+0|maria-pa | 2026-05-17 20:23:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 20:23:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 20:23:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 20:23:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 20:23:09: [WA authenticated]
+0|maria-pa | 2026-05-17 20:23:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 20:23:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 20:23:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 20:23:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 20:23:09: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 20:23:09: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 20:23:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+
+
+# exit=0
