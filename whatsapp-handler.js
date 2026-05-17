@@ -278,6 +278,22 @@ async function handleMessage(client, msg) {
     if (chat && typeof chat.sendSeen === 'function') await chat.sendSeen();
   } catch {}
 
+  // [TEMP DIAG multi-vcard] — quitar después de capturar shape
+  try {
+    if (msg.type === 'multi_vcard' || msg.type === 'vcard' || (Array.isArray(msg.vCards) && msg.vCards.length)) {
+      console.log('[DIAG vcard]', JSON.stringify({
+        type: msg.type,
+        from,
+        vCards_len: Array.isArray(msg.vCards) ? msg.vCards.length : null,
+        body_len: msg.body ? msg.body.length : 0,
+        body_first200: (msg.body || '').slice(0, 200),
+        keys: Object.keys(msg).slice(0, 40),
+      }));
+    }
+  } catch (err) {
+    console.warn('[DIAG vcard] error logging:', err.message);
+  }
+
   // Caso especial: vCard → libreta del usuario que la manda. Va directo,
   // sin debouncing — es metadata, no parte del flujo conversacional.
   if (msg.type === 'vcard') {
