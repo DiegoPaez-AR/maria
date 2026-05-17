@@ -74,6 +74,7 @@ async function ejecutarUna(accion, ctx) {
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
     case 'set_calendar_acceso': return await _setCalendarAcceso(accion, ctx);
     case 'buscar_contacto_global': return _buscarContactoGlobal(accion, ctx);
+    case 'buscar_slots_comunes':   return await _buscarSlotsComunes(accion, ctx);
     case 'confirmar_prospecto_pendiente':
       return _confirmarProspectoPendiente(accion, ctx);
     case 'rechazar_prospecto_pendiente':
@@ -94,6 +95,106 @@ async function _validarSinConflicto(provider, { start, end, excluirEventoId, for
     return `"${c.summary}" ${hh}`;
   }).join(' | ');
   throw new Error(`conflicto con evento(s) ya agendado(s): ${detalle}. Si el usuario confirma pisar, reemití con "forzar": true.`);
+}
+
+// Cruza calendars de varios usuarios activos y devuelve slots libres comunes.
+// Solo aplica a usuarios actuales de Maria (los users que comparten calendar).
+// Para sumar terceros, el LLM tiene que invitarlos por email/WA aparte.
+async function _buscarSlotsComunes(a, ctx) {
+  _requerir(a, ['usuarios']);
+  const nombres = Array.isArray(a.usuarios) ? a.usuarios : [];
+  if (nombres.length < 1) {
+    throw new Error('buscar_slots_comunes: lista `usuarios` vacía');
+  }
+  const duracionMin = Math.max(15, Math.min(8 * 60, Number(a.duracion_min) || 60));
+  const ventanaDias = Math.max(1, Math.min(30, Number(a.ventana_dias) || 7));
+  const horaIni = Math.max(0, Math.min(23, Number(a.hora_desde) || 9));
+  const horaFin = Math.max(horaIni + 1, Math.min(24, Number(a.hora_hasta) || 19));
+  const slotMin = 30; // granularidad
+
+  // Resolver lista de usuarios. Cada nombre tiene que matchear con usuarios.resolverPorNombre.
+  const usuariosResueltos = [];
+  const noEncontrados = [];
+  const sinCalendar = [];
+  for (const nombre of nombres) {
+    const u = usuarios.resolverPorNombre(nombre);
+    if (!u) { noEncontrados.push(nombre); continue; }
+    const tier = usuarios.tier(u);
+    if (tier === 'tier_0' && !u.email) {
+      // Sin acceso al calendar y sin email para invitar = no podemos cruzar
+      sinCalendar.push(`${u.nombre} (sin acceso a calendar)`);
+      continue;
+    }
+    usuariosResueltos.push(u);
+  }
+  if (!usuariosResueltos.length) {
+    throw new Error(`buscar_slots_comunes: no resolví ningún usuario válido. No encontrados: [${noEncontrados.join(', ')}]; sin calendar: [${sinCalendar.join(', ')}]`);
+  }
+
+  // Bajar eventos de cada usuario en la ventana
+  const tz = ctx.usuario?.tz || 'America/Argentina/Buenos_Aires';
+  const ahora = new Date();
+  const fin = new Date(ahora.getTime() + ventanaDias * 24 * 3600 * 1000);
+  const busyPorUsuario = [];
+  for (const u of usuariosResueltos) {
+    try {
+      const provider = await providers.forUser(u);
+      const eventos = await provider.listarEventosDelUsuario(u, { dias: ventanaDias, max: 200 });
+      const busy = (eventos || [])
+        .filter(e => !e.allDay && e.start && e.end)
+        .map(e => ({ start: new Date(e.start).getTime(), end: new Date(e.end).getTime() }));
+      busyPorUsuario.push({ usuario: u.nombre, busy });
+    } catch (err) {
+      busyPorUsuario.push({ usuario: u.nombre, busy: [], error: err.message });
+    }
+  }
+
+  // Generar candidatos de slots dentro de la ventana laboral.
+  // Iteramos en granularidad de slotMin minutos y chequeamos overlap con todos los busy.
+  const slotMs = slotMin * 60 * 1000;
+  const durMs = duracionMin * 60 * 1000;
+  const slotsLibres = [];
+
+  // Helper: ¿este slot [s, s+durMs) está libre para TODOS los usuarios?
+  const estaLibre = (s) => {
+    const e = s + durMs;
+    for (const { busy } of busyPorUsuario) {
+      for (const b of busy) {
+        // overlap si b.start < e AND b.end > s
+        if (b.start < e && b.end > s) return false;
+      }
+    }
+    return true;
+  };
+
+  // Iterar día por día, hora por hora en la ventana laboral local
+  for (let d = 0; d < ventanaDias; d++) {
+    const dia = new Date(ahora.getTime() + d * 24 * 3600 * 1000);
+    // Construir hora local de inicio (horaIni:00) en tz del owner
+    // Usamos toLocaleString + Date parsing en local. Simple: setHours en local.
+    const inicio = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate(), horaIni, 0, 0, 0);
+    const cierre = new Date(dia.getFullYear(), dia.getMonth(), dia.getDate(), horaFin, 0, 0, 0);
+    for (let t = inicio.getTime(); t + durMs <= cierre.getTime(); t += slotMs) {
+      if (t < ahora.getTime() + 60 * 60 * 1000) continue; // saltear pasado + próxima hora
+      if (estaLibre(t)) {
+        slotsLibres.push({ start: new Date(t).toISOString(), end: new Date(t + durMs).toISOString() });
+        if (slotsLibres.length >= 15) break;
+      }
+    }
+    if (slotsLibres.length >= 15) break;
+  }
+
+  return {
+    usuarios: usuariosResueltos.map(u => u.nombre),
+    duracion_min: duracionMin,
+    ventana_dias: ventanaDias,
+    hora_desde: horaIni,
+    hora_hasta: horaFin,
+    no_encontrados: noEncontrados,
+    sin_calendar: sinCalendar,
+    slots: slotsLibres,
+    total_eventos_chequeados: busyPorUsuario.reduce((s, x) => s + x.busy.length, 0),
+  };
 }
 
 async function _crearEvento(a, ctx) {
