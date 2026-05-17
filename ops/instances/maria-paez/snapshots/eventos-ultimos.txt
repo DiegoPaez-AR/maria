@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4667  2026-05-17 19:15:41  sistema   interno                         claude_call memoria-curada: 26769ms prompt=3694c raw=2044c                                                                                                                                              
+
+4666  2026-05-17 19:15:25  whatsapp  saliente   227143674011812@lid  Claro, pasame los contactos y yo armo el mensaje para el grupo.                                                                                                                                         
+
+4665  2026-05-17 19:15:25  sistema   interno                         claude_call whatsapp: 11687ms prompt=33121c raw=304c                                                                                                                                                    
+
+4664  2026-05-17 19:15:15  sistema   interno                         claude_call memoria-curada: 28462ms prompt=3683c raw=1700c                                                                                                                                              
+
+4663  2026-05-17 19:15:13  whatsapp  entrante   5491150080522@c.us   No tengo link del grupo. Te paso los contactos?                                                                                                                                                         
+
 4662  2026-05-17 19:14:46  sistema   interno                         claude_call memoria-curada: 20594ms prompt=2208c raw=1597c                                                                                                                                              
 
 4661  2026-05-17 19:14:25  sistema   interno                         claude_call memoria-curada: 24201ms prompt=2465c raw=2011c                                                                                                                                              
@@ -239,20 +249,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4569  2026-05-16 22:47:52  whatsapp  saliente   34342575317160@lid   Ya le mando la ficha ahora.                                                                                                                                                                             
 
 4568  2026-05-16 22:47:52  sistema   interno                         claude_call whatsapp: 56026ms prompt=53222c raw=867c                                                                                                                                                    
-
-4567  2026-05-16 22:46:55  whatsapp  entrante   34342575317160@lid   mandale la ficha a Ariel                                                                                                                                                                                
-                                                                     AT                                                                                                                                                                                                      
-                                                                     4x4                                                                                                                                                                                                     
-                                                                     primer dueño                                                                                                                                                                                            
-                                                                     CABA                                                                                                                                                                                                    
-                                                                     cubiertas cambiadas a los 70mil                                                                                                                                                                         
-                                                                     se ven en las fotos, paneles repintados por rayas de estacionamiento                                                                                                                                    
-                                                                     la diferencia seria de contado                                                                                                                                                                          
-
-4566  2026-05-16 22:46:55  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' + el mensaje es textualmente idéntico a los enviados por el owner a las 22:25 y 22:30 en su historial (ficha del Subaru p
-
-4565  2026-05-16 22:46:55  sistema   interno                         claude_call unknown-flow: 27149ms prompt=72737c raw=398c                                                                                                                                                
-
-4564  2026-05-16 22:36:43  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4563  2026-05-16 22:36:43  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
