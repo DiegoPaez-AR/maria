@@ -52,6 +52,20 @@ function esOwner(usuarioId) {
  * Un `from` puede ser `<num>@c.us` (legacy) o `<lid>@lid` (moderno). Probamos
  * primero wa_lid, después wa_cus.
  */
+// Genera variantes alternativas para resolver el "9 móvil argentino":
+// WhatsApp a veces entrega `54 9 11 XXXXXX@c.us` (con 9) y a veces
+// `54 11 XXXXXX@c.us` (sin 9), y el wa_cus guardado puede estar en
+// cualquiera de los dos formatos. Solo se aplica a números que empiezan
+// con `54` (Argentina); el resto pasa de largo.
+function _variantesArMobile(waCus) {
+  const m = waCus.match(/^54(9)?(\d+)@c\.us$/);
+  if (!m) return [];
+  if (m[1] === '9') {
+    return [`54${m[2]}@c.us`];   // tiene 9 → probar sin
+  }
+  return [`549${m[2]}@c.us`];     // no tiene 9 → probar con
+}
+
 function resolverPorWa(from) {
   if (!from) return null;
   if (from.endsWith('@lid')) {
@@ -59,8 +73,13 @@ function resolverPorWa(from) {
     if (u) return u;
   }
   if (from.endsWith('@c.us')) {
-    const u = qPorWaCus.get(from);
+    let u = qPorWaCus.get(from);
     if (u) return u;
+    // Fallback AR: probar la variante con/sin el 9 móvil.
+    for (const v of _variantesArMobile(from)) {
+      u = qPorWaCus.get(v);
+      if (u) return u;
+    }
   }
   // Intento cruzado por las dudas
   return qPorWaLid.get(from) || qPorWaCus.get(from) || null;
