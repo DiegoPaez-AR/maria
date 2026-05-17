@@ -767,9 +767,13 @@ function formatearParaPrompt(e) {
   if (e.canal === 'sistema')  return `[${ts}] · SIS ${cuerpo}`;
   // WhatsApp: si es un mensaje con media, exponer el wa_msg_id explícito al
   // final para que el LLM pueda emitir reenviar_wa con el id correcto.
+  // Preferimos mediaMessageId si está presente (caso unknown-flow: el evento
+  // se loggea con messageId del routeo, y por separado se persiste el id del
+  // mensaje con media en mediaMessageId).
   let suffix = '';
-  if (e.metadata?.esMedia && e.metadata?.messageId) {
-    suffix = ` [wa_msg_id=${e.metadata.messageId}]`;
+  if (e.metadata?.esMedia) {
+    const waMsgId = e.metadata.mediaMessageId || e.metadata.messageId;
+    if (waMsgId) suffix = ` [wa_msg_id=${waMsgId}]`;
   }
   return `[${ts}] ${flecha} WA ${quien}: ${cuerpo}${suffix}`;
 }

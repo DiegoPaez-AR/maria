@@ -416,7 +416,7 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
 /**
  * Handler para WhatsApp. Devuelve true si fue procesado acá.
  */
-async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsuario }) {
+async function handleWA({ client, msg, contact = null, cuerpo, mediaInfo = null, reprocesarComoUsuario }) {
   const from = msg.from;
   const pushname = msg._data?.notifyName || null;
   const messageId = msg.id?._serialized || null;
@@ -435,7 +435,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsu
         usuarioId: owner.id,
         canal: 'whatsapp', direccion: 'entrante',
         de: from, nombre: pushname, cuerpo,
-        metadata: { tipo: 'unknown_pending_followup', messageId, pendDesde: pendPrev.ts },
+        metadata: { tipo: 'unknown_pending_followup', messageId, pendDesde: pendPrev.ts, ...(mediaInfo || {}) },
       });
     }
     console.log(`[unknown-flow/wa] prospecto pendiente ya existente para ${from} — esperando owner`);
@@ -459,6 +459,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsu
     return await _routearComoTerceroDeUsuario({
       client, match: usuario, from, pushname, cuerpo, messageId,
       razon: `matcheo por libreta: "${contacto.nombre}" está registrado en los contactos de ${usuario.nombre}`,
+      mediaInfo,
       via: 'libreta',
       reprocesarComoUsuario,
     });
@@ -476,6 +477,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsu
       return await _routearAUsuarioActivo({
         client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
         via: 'llm',
+        mediaInfo,
         reprocesarComoUsuario,
       });
     }
@@ -488,6 +490,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsu
       return await _routearComoTerceroDeUsuario({
         client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
         via: 'llm',
+        mediaInfo,
         reprocesarComoUsuario,
       });
     }
@@ -504,7 +507,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, reprocesarComoUsu
   return await _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId });
 }
 
-async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', reprocesarComoUsuario }) {
+async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', mediaInfo = null, reprocesarComoUsuario }) {
   // Capturar @lid si corresponde.
   let capturadoLid = false;
   if (from && from.endsWith('@lid') && !match.wa_lid) {
@@ -518,7 +521,7 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
       usuarioId: owner.id,
       canal: 'whatsapp', direccion: 'entrante',
       de: from, nombre: pushname, cuerpo,
-      metadata: { tipo: 'unknown_llm_rute', messageId, a_usuario: match.id, razon, via },
+      metadata: { tipo: 'unknown_llm_rute', messageId, a_usuario: match.id, razon, via, ...(mediaInfo || {}) },
     });
   }
   // No ack-eamos al remitente ni avisamos al owner — la respuesta del LLM del
@@ -546,7 +549,7 @@ async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, m
  * del usuario (puede ser responder directo, puede ser preguntarle al usuario
  * antes, etc.).
  */
-async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', reprocesarComoUsuario }) {
+async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', mediaInfo = null, reprocesarComoUsuario }) {
   const quien = pushname || from;
   // Loggear el mensaje entrante en el bucket del USUARIO (no del owner) para
   // que aparezca en su historial cross-canal cuando armemos su próximo prompt.
@@ -554,7 +557,7 @@ async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cue
     usuarioId: match.id,
     canal: 'whatsapp', direccion: 'entrante',
     de: from, nombre: pushname, cuerpo,
-    metadata: { tipo: 'unknown_llm_tercero', messageId, razon, via },
+    metadata: { tipo: 'unknown_llm_tercero', messageId, razon, via, ...(mediaInfo || {}) },
   });
   // No avisamos al owner ni ack-eamos al tercero — el LLM del usuario decide
   // qué responder en el reprocesarComoUsuario de abajo.

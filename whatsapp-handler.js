@@ -278,15 +278,12 @@ async function handleMessage(client, msg) {
     if (chat && typeof chat.sendSeen === 'function') await chat.sendSeen();
   } catch {}
 
-  // vCard(s) → libreta del usuario. Soporta tanto vcard singular (vcard
-  // literal viene en msg.body) como multi_vcard (msg.body vacío, vcards en
-  // msg.vCards). Va directo, sin debouncing — es metadata, no parte del
-  // flujo conversacional.
-  const vcardBodies = _extraerVCards(msg);
-  if (vcardBodies.length > 0) {
+  // Caso especial: vCard → libreta del usuario que la manda. Va directo,
+  // sin debouncing — es metadata, no parte del flujo conversacional.
+  if (msg.type === 'vcard') {
     const usuario = usuarios.resolverPorWa(from);
     if (!usuario) return;
-    return await _manejarVCards(client, msg, usuario, vcardBodies);
+    return await _manejarVCard(client, msg, usuario);
   }
 
   // Pre-procesar: extraer texto / transcribir audio / descargar media.
@@ -475,12 +472,25 @@ async function _despacharGrupo(client, from, items) {
   if (!usuario) {
     // Desconocido → unknown-flow. Pasamos el cuerpo combinado y, en el
     // reprocesar (cuando matchee a un user), propagamos los attachments.
+    // mediaInfo: si el batch tiene algún item con media, exponer su
+    // messageId para que cuando unknown-flow re-loggee el evento al
+    // destinatario, el historial cross-canal incluya `[wa_msg_id=...]` y
+    // el LLM pueda emitir reenviar_wa. Sin esto, los mensajes con media
+    // que llegan via unknown-flow (típico: dispositivo vinculado @lid)
+    // pierden la info de media en el log y no se pueden reenviar.
+    const itemConMedia = items.find(it => it.mediaMeta);
+    const mediaInfo = itemConMedia ? {
+      esMedia: true,
+      mediaMessageId: itemConMedia.messageId,
+      ...itemConMedia.mediaMeta,
+    } : null;
     try {
       await unknownFlow.handleWA({
         client,
         msg: msgOriginal,
         contact,
         cuerpo: cuerpoCombinado,
+        mediaInfo,
         reprocesarComoUsuario: async (usuarioDestino, entrada) => {
           await _procesarComoUsuario({
             client,
@@ -701,95 +711,53 @@ function _parsearBDAY(body) {
   return null;
 }
 
-// Extrae bodies vCard de un msg, manejando los dos shapes posibles:
-//   - msg.type === 'vcard'        → un solo vcard en msg.body
-//   - msg.type === 'multi_vcard'  → varios en msg.vCards (msg.body vacío)
-//   - cualquier msg con vCards no vacío → idem (defensa para variaciones futuras)
-function _extraerVCards(msg) {
-  if (msg.type === 'vcard' && msg.body) return [msg.body];
-  if (msg.type === 'multi_vcard' && Array.isArray(msg.vCards) && msg.vCards.length) return msg.vCards;
-  if (Array.isArray(msg.vCards) && msg.vCards.length > 0) return msg.vCards;
-  return [];
-}
+async function _manejarVCard(client, msg, usuario) {
+  const nombreMatch = msg.body.match(/FN:(.+)/);
+  const telMatch    = msg.body.match(/TEL[^:]*:(.+)/);
+  if (!nombreMatch || !telMatch) return;
 
-// Procesa N vCards (1 o más) en un solo mensaje. Guarda cada uno como
-// contacto privado y responde con UN solo mensaje resumen. Persiste
-// 'ultimos_vcards' (lista) + 'ultimo_vcard' (último, para backwards-compat).
-async function _manejarVCards(client, msg, usuario, bodies) {
-  const guardados = [];
-  const errores = [];
+  const nombre = nombreMatch[1].trim();
+  const numero = telMatch[1].trim().replace(/\D/g, '');
+  if (!nombre || !numero) return;
+  const waId = numero.endsWith('@c.us') ? numero : `${numero}@c.us`;
+  const cumple = _parsearBDAY(msg.body);
 
-  for (const body of bodies) {
-    const nombreMatch = body.match(/FN:(.+)/);
-    const telMatch    = body.match(/TEL[^:]*:(.+)/);
-    if (!nombreMatch || !telMatch) continue;
-
-    const nombre = nombreMatch[1].trim();
-    const numero = telMatch[1].trim().replace(/\D/g, '');
-    if (!nombre || !numero) continue;
-    const waId = numero.endsWith('@c.us') ? numero : `${numero}@c.us`;
-    const cumple = _parsearBDAY(body);
-
-    try {
-      const contacto = mem.upsertContacto({
-        usuarioId: usuario.id,
-        nombre, whatsapp: waId, cumple,
-        visibilidad: 'privada',
-      });
-      guardados.push({ contactoId: contacto?.id, nombre, whatsapp: waId, cumple });
-      mem.log({
-        usuarioId: usuario.id,
-        canal: 'sistema', direccion: 'interno',
-        cuerpo: `contacto vcard (privado): ${nombre} → ${waId}${cumple ? ` (cumple ${cumple})` : ''}`,
-        metadata: { origen: msg.from, contactoId: contacto?.id, cumple },
-      });
-      console.log(`📒 [WA vcard/${usuario.nombre}] ${nombre} → ${waId}${cumple ? ` cumple=${cumple}` : ''} (privado)`);
-    } catch (err) {
-      errores.push({ nombre, error: err.message });
-      console.error(`[WA vcard/${usuario.nombre}] error guardando ${nombre}:`, err.message);
-    }
-  }
-
-  // Persistir contexto para que el LLM resuelva "ponelos públicos"
-  // o "sí, hacelo público" en el próximo mensaje. TTL 10min via .ts.
-  if (guardados.length > 0) {
-    mem.setEstadoUsuario(usuario.id, 'ultimos_vcards', {
-      lista: guardados, ts: Date.now(),
+  // Default: privado del usuario que mandó el vCard.
+  let contacto;
+  try {
+    contacto = mem.upsertContacto({
+      usuarioId: usuario.id,
+      nombre, whatsapp: waId, cumple,
+      visibilidad: 'privada',
     });
-    // Backwards-compat: 'ultimo_vcard' con el último, para code paths
-    // que aún lean la clave singular.
-    const ultimo = guardados[guardados.length - 1];
-    mem.setEstadoUsuario(usuario.id, 'ultimo_vcard', {
-      contactoId: ultimo.contactoId,
-      nombre: ultimo.nombre,
-      whatsapp: ultimo.whatsapp,
-      cumple: ultimo.cumple,
-      ts: Date.now(),
-    });
+  } catch (err) {
+    console.error(`[WA vcard/${usuario.nombre}] error guardando ${nombre}:`, err.message);
+    await client.sendMessage(msg.from, `❌ no pude guardar el contacto de ${nombre}: ${err.message}`);
+    return;
   }
 
-  // Aviso al usuario — adaptado al número de contactos.
-  let aviso;
-  if (guardados.length === 0 && errores.length > 0) {
-    aviso = `❌ no pude guardar ${errores.length === 1 ? 'el contacto' : 'los contactos'}: ` +
-      errores.map(e => `${e.nombre} (${e.error})`).join(', ');
-  } else if (guardados.length === 1 && errores.length === 0) {
-    // Caso clásico: 1 vcard, frase original.
-    const g = guardados[0];
-    aviso = `📒 Te lo guardé en tu libreta privada: *${g.nombre}*`;
-    if (g.cumple) aviso += ` (cumple ${g.cumple})`;
-    aviso += `.\n¿Lo paso a la libreta pública?`;
-  } else {
-    // Múltiples (con o sin errores).
-    const lista = guardados.map(g => `*${g.nombre}*${g.cumple ? ` (cumple ${g.cumple})` : ''}`).join(', ');
-    aviso = `📒 Te guardé ${guardados.length} contactos en tu libreta privada: ${lista}`;
-    if (errores.length > 0) {
-      aviso += `\n\n❌ No pude guardar: ` + errores.map(e => `${e.nombre} (${e.error})`).join(', ');
-    }
-    aviso += `.\n¿Los paso a la libreta pública?`;
-  }
+  mem.log({
+    usuarioId: usuario.id,
+    canal: 'sistema', direccion: 'interno',
+    cuerpo: `contacto vcard (privado): ${nombre} → ${waId}${cumple ? ` (cumple ${cumple})` : ''}`,
+    metadata: { origen: msg.from, contactoId: contacto?.id, cumple },
+  });
+  console.log(`📒 [WA vcard/${usuario.nombre}] ${nombre} → ${waId}${cumple ? ` cumple=${cumple}` : ''} (privado)`);
 
-  if (aviso) await client.sendMessage(msg.from, aviso);
+  // Persistir contexto para que el LLM sepa qué contacto es "lo" si el
+  // usuario responde "sí, hacelo público" en el próximo mensaje. TTL 10min.
+  mem.setEstadoUsuario(usuario.id, 'ultimo_vcard', {
+    contactoId: contacto?.id,
+    nombre,
+    whatsapp: waId,
+    cumple,
+    ts: Date.now(),
+  });
+
+  let aviso = `📒 Te lo guardé en tu libreta privada: *${nombre}*`;
+  if (cumple) aviso += ` (cumple ${cumple})`;
+  aviso += `.\n¿Lo paso a la libreta pública?`;
+  await client.sendMessage(msg.from, aviso);
 }
 
 
