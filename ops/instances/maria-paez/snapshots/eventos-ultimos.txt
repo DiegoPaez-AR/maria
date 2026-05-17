@@ -1,5 +1,27 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4722  2026-05-17 19:26:02  whatsapp  saliente   227143674011812@lid  ¡Dale! Pasame los contactos y les escribo a todos.                                                                                                                                                      
+
+4721  2026-05-17 19:26:01  sistema   interno                         claude_call whatsapp: 15822ms prompt=33539c raw=271c                                                                                                                                                    
+
+4720  2026-05-17 19:25:46  whatsapp  entrante   5491150080522@c.us   A estos contactos también                                                                                                                                                                               
+
+4719  2026-05-17 19:25:24  whatsapp  saliente   227143674011812@lid  Perfecto, si se suman más contactos del grupo pasámelos cuando quieras y los agrego.                                                                                                                    
+
+4718  2026-05-17 19:25:24  sistema   interno                         claude_call whatsapp: 8880ms prompt=33504c raw=410c                                                                                                                                                     
+
+4717  2026-05-17 19:25:15  whatsapp  entrante   5491150080522@c.us   Después sumó más                                                                                                                                                                                        
+
+4716  2026-05-17 19:25:05  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+4715  2026-05-17 19:25:05  whatsapp  saliente   5491128616224@c.us   Hola Santiago! Te escribo de parte de Nicolás para coordinar la cena del jueves a las 20hs con el grupo de Cantina. ¿Podés confirmar si están?                                                          
+
+4714  2026-05-17 19:25:05  whatsapp  saliente   227143674011812@lid  Perfecto, le escribo a Santiago para coordinar la cena del jueves a las 20hs.                                                                                                                           
+
+4713  2026-05-17 19:25:05  sistema   interno                         claude_call whatsapp: 18805ms prompt=33420c raw=515c                                                                                                                                                    
+
+4712  2026-05-17 19:25:04  sistema   interno                         claude_call memoria-curada: 29800ms prompt=2838c raw=2384c                                                                                                                                              
+
 4711  2026-05-17 19:24:46  whatsapp  entrante   5491150080522@c.us   Ya está ok con esos                                                                                                                                                                                     
 
 4710  2026-05-17 19:24:34  sistema   interno                         claude_call memoria-curada: 26902ms prompt=1997c raw=2279c                                                                                                                                              
@@ -217,37 +239,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                                                                                                                                                                                                                              
                                                                      *📅 Agenda del día*                                                                                                                                                                                      
                                                                      (sin eventos hoy)                                                                                                                                                                                       
-
-4622  2026-05-17 07:00:09  whatsapp  saliente   34342575317160@lid   ☀️ *Buen día, Diego.* domingo 17 de mayo.                                                                                                                                                               
-                                                                                                                                                                                                                                                                             
-                                                                     *📅 Agenda del día*                                                                                                                                                                                      
-                                                                     (sin eventos hoy)                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                             
-                                                                     *📝 Pendientes*                                                                                                                                                                                          
-                                                                     1. Pedir presupuesto DC Iplan                                                                                                                                                                           
-                                                                     2. Pedir presupuesto DC Telecentro                                                                                                                                                                      
-                                                                     3. Pedir presupuesto DC Claro                                                                                                                                                                           
-                                                                     4. iProt                                                                                                                                                                                                
-
-4621  2026-05-16 23:43:15  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-4620  2026-05-16 23:43:15  whatsapp  saliente   5491121773859@c.us   Buen día! Soy María Páez, secretaria de Diego Páez. Diego está interesado en adquirir una Honda HRV EXL y quería consultarles si aceptan vehículo en parte de pago. Cuenta con un Subaru Legacy 2.5 Limi
-
-4619  2026-05-16 23:43:14  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-4618  2026-05-16 23:43:14  whatsapp  saliente   34342575317160@lid   Ya les escribo a Honda ahora.                                                                                                                                                                           
-
-4617  2026-05-16 23:43:14  sistema   interno                         claude_call whatsapp: 17157ms prompt=51742c raw=892c                                                                                                                                                    
-
-4616  2026-05-16 23:42:57  whatsapp  entrante   34342575317160@lid   manda tambien un mensaje aca +54 9 11 2177-3859, diciendo tambien que quisiera comprar una Honda HRV EXL y consulta si me toman mi auto en parte de pago.                                               
-
-4615  2026-05-16 23:42:57  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' coincide con el owner; el mensaje es continuación directa de la gestión de compra de autos que Diego venía pidiendo (Espa
-
-4614  2026-05-16 23:42:57  sistema   interno                         claude_call unknown-flow: 27091ms prompt=71879c raw=427c                                                                                                                                                
-
-4613  2026-05-16 23:29:06  whatsapp  saliente   34342575317160@lid   Acá va el resumen del brochure:                                                                                                                                                                         
-                                                                                                                                                                                                                                                                             
-                                                                     *Innovation Experience Global AI*                                                                                                                                                                       
-                                                                     Programa para empresarios y líderes que quieren implementar IA en sus negocios, aprendiendo de empresas como Google, Huawei, NYSE, Li                                                                   
-
-4612  2026-05-16 23:28:59  sistema   interno                         claude_call whatsapp: 60107ms prompt=51259c raw=1817c                                                                                                                                                   
