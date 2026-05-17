@@ -1,0 +1,177 @@
+# ejecutado: 2026-05-17T16:25:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diagnóstico completo de la libreta de contactos para encontrar
+#   # duplicados, nombres raros, registros sin datos útiles.
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   
+#   echo "═══ 1) Contactos con nombres sospechosos (espacios extraños, muy cortos, etc.) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, usuario_id, nombre,
+#          COALESCE(whatsapp,'') AS wa,
+#          COALESCE(email,'') AS email,
+#          COALESCE(notas,'') AS notas,
+#          visibilidad
+#   FROM contactos
+#   WHERE
+#     nombre LIKE '% %  %'  -- múltiples espacios
+#     OR nombre GLOB '*[A-Z] [A-Z]*'  -- letras separadas por espacios
+#     OR length(nombre) <= 3
+#     OR nombre LIKE '%?%'  -- signos raros
+#   ORDER BY nombre
+#   "
+#   
+#   echo ""
+#   echo "═══ 2) Posibles duplicados por nombre similar (mismas primeras 6 letras) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT lower(substr(replace(nombre,' ',''),1,6)) AS clave, GROUP_CONCAT(id) AS ids, GROUP_CONCAT(nombre, ' | ') AS nombres
+#   FROM contactos
+#   WHERE usuario_id = 1
+#   GROUP BY clave
+#   HAVING COUNT(*) > 1
+#   ORDER BY clave
+#   "
+#   
+#   echo ""
+#   echo "═══ 3) Posibles duplicados por whatsapp ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT whatsapp, GROUP_CONCAT(id) AS ids, GROUP_CONCAT(nombre, ' | ') AS nombres
+#   FROM contactos
+#   WHERE whatsapp IS NOT NULL AND whatsapp != ''
+#   GROUP BY whatsapp
+#   HAVING COUNT(*) > 1
+#   "
+#   
+#   echo ""
+#   echo "═══ 4) Posibles duplicados por email ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT email, GROUP_CONCAT(id) AS ids, GROUP_CONCAT(nombre, ' | ') AS nombres
+#   FROM contactos
+#   WHERE email IS NOT NULL AND email != ''
+#   GROUP BY email
+#   HAVING COUNT(*) > 1
+#   "
+#   
+#   echo ""
+#   echo "═══ 5) Contactos sin whatsapp NI email (huérfanos) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, usuario_id, nombre, substr(COALESCE(notas,''),1,80) AS notas
+#   FROM contactos
+#   WHERE (whatsapp IS NULL OR whatsapp='') AND (email IS NULL OR email='')
+#   ORDER BY id
+#   "
+#   
+#   echo ""
+#   echo "═══ 6) Casos específicos mencionados: 'FC' y 'F A R I N E L L I' ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, usuario_id, nombre, whatsapp, email, substr(COALESCE(notas,''),1,80) AS notas, creado
+#   FROM contactos
+#   WHERE nombre IN ('FC', 'F A R I N E L L I', 'Farinelli', 'Farinelli Arroyo')
+#      OR nombre LIKE '%Farinelli%'
+#      OR nombre LIKE '%FC%'
+#   ORDER BY id
+#   "
+#   
+#   echo ""
+#   echo "═══ 7) Notas curadas asociadas a cada contacto sospechoso ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT n.id AS nota_id, n.contacto_id, c.nombre AS contacto, substr(n.nota,1,140) AS nota_excerpt
+#   FROM notas_contacto n JOIN contactos c ON c.id = n.contacto_id
+#   WHERE c.nombre IN ('FC', 'F A R I N E L L I', 'Farinelli Arroyo')
+#      OR c.nombre LIKE '%Farinelli%'
+#   ORDER BY n.id
+#   "
+#   
+#   echo ""
+#   echo "═══ 8) Tamaño total de libreta (Diego) ═══"
+#   sqlite3 "$MARIA_DB" "SELECT COUNT(*) AS total FROM contactos WHERE usuario_id = 1"
+
+# ───── output ─────
+═══ 1) Contactos con nombres sospechosos (espacios extraños, muy cortos, etc.) ═══
+id  usuario_id  nombre             wa                   email  notas                                    visibilidad
+--  ----------  -----------------  -------------------  -----  ---------------------------------------  -----------
+42  1           F A R I N E L L I  222788661055558@lid         auto-agregado al recibir primer mensaje  privada    
+64  1           FC                 59854798495914@lid          auto-agregado al recibir primer mensaje  privada    
+74  1           MarIA Paez         5491179043441@c.us                                                   privada    
+
+═══ 2) Posibles duplicados por nombre similar (mismas primeras 6 letras) ═══
+clave   ids               nombres                                                                                         
+------  ----------------  ------------------------------------------------------------------------------------------------
+barrac  242,240,241       Barra Chalaca Arevalo | Barra Chalaca Belgrano | Barra Chalaca Bulnes                           
+carlos  118,207,153,206   Carlos Canosa | Carlos Krigun | Carlos Maidana | Carlos Rivera                                  
+cristi  184,227           Cristian Huichaqueo | Cristian Ruiz                                                             
+daniel  109,216,173       Daniel Salvucci | Daniela Alvarino | Daniela Ciavone                                            
+diegop  32,180            Diego Paez | Diego Perez                                                                        
+farine  42,26             F A R I N E L L I | Farinelli Arroyo                                                            
+fernan  141,102           Fernanda Lascaray | Fernando Boero                                                              
+franco  89,190,189        Franco Contatece | Franco Israel | Franco Ruggerio                                              
+gabrie  129,131,220       Gabriel Isola | Gabriel Pacheco | Gabriela Echaniz                                              
+gastón  217,148           Gastón Girotti | Gastón Ruggerio                                                                
+gustav  99,85,159         Gustavo Dzugala | Gustavo Raul Aragon | Gustavo Sorotski                                        
+hernan  75,186            Hernan Fulco | Hernan Mantovani                                                                 
+javier  168,137           Javier Corraro | Javier Guevara                                                                 
+marian  103,138           Mariano Clarath | Mariano Herrera                                                               
+matias  165,72            Matias Israel | Matias Pacheco                                                                  
+nardac  38,41             Narda Comedor | nardacomedor                                                                    
+nicola  191,167,223       Nicolas Erlich | Nicolas Jordan | Nicolas Kosinski                                              
+pabloc  174,142           Pablo Capurro | Pablo Casal                                                                     
+rodrig  107,106,108       Rodrigo Canosa | Rodrigo Paez | Rodrigo Paez Canosa                                             
+santia  98,58,135,18,214  Santiago Bignone | Santiago Capurro | Santiago Lopez Alfaro | Santiago Paez | Santiago Rodriguez
+veroni  144,133           Veronica Ciccarelli | Veronica Lascaray                                                         
+
+═══ 3) Posibles duplicados por whatsapp ═══
+whatsapp            ids      nombres                             
+------------------  -------  ------------------------------------
+541132317896@c.us   32,33    Diego Paez | Diego                  
+5491137646922@c.us  24,222   Poch Burgers | Poch                 
+5491138433288@c.us  87,225   Walter Vera | Walter Vera           
+5491150080522@c.us  86,223   Nicolás Kosinski | Nicolas Kosinski 
+5491150105262@c.us  96,105   Natali Funez | Natali Funez         
+5491157276026@c.us  107,108  Rodrigo Canosa | Rodrigo Paez Canosa
+5491159050287@c.us  79,201   Mariela Nigro | Mariela Nigro       
+59854798495914@lid  64,65    FC | Marcos                         
+
+═══ 4) Posibles duplicados por email ═══
+email                  ids      nombres                             
+---------------------  -------  ------------------------------------
+diego@paez.is          32,33    Diego Paez | Diego                  
+nkosinski@froneus.com  86,223   Nicolás Kosinski | Nicolas Kosinski 
+rpc@sondeos.com.ar     107,108  Rodrigo Canosa | Rodrigo Paez Canosa
+wvera@froneus.com      87,225   Walter Vera | Walter Vera           
+
+═══ 5) Contactos sin whatsapp NI email (huérfanos) ═══
+id   usuario_id  nombre                    notas                                                                           
+---  ----------  ------------------------  --------------------------------------------------------------------------------
+61   1           Delta Airlines Argentina  Teléfono gratuito: 0800-666-0133 | Línea directa: +54 11 3991-9030 | Oficina Bue
+89   1           Franco Contatece          Contacto de Claro, está siguiendo el presupuesto de datacenter (pendiente #3 de 
+106  1           Rodrigo Paez              Hermano de Diego. Apodo: Dodi.                                                  
+117  1           Pablo Santa Cruz                                                                                          
+183  1           Martín Souza                                                                                              
+189  1           Franco Ruggerio                                                                                           
+190  1           Franco Israel                                                                                             
+191  1           Nicolas Erlich                                                                                            
+193  1           Venecia Cezar                                                                                             
+194  1           Fausto Ansalone                                                                                           
+245  1           Ariel Quiroga             Asesor comercial de Volkswagen Espasa. Gestión: Taos Highline Bi Tono y tasación
+
+═══ 6) Casos específicos mencionados: 'FC' y 'F A R I N E L L I' ═══
+id  usuario_id  nombre             whatsapp             email  notas                                    creado             
+--  ----------  -----------------  -------------------  -----  ---------------------------------------  -------------------
+26  1           Farinelli Arroyo   5491156920073@c.us                                                   2026-04-19 03:19:03
+42  1           F A R I N E L L I  222788661055558@lid         auto-agregado al recibir primer mensaje  2026-04-19 15:38:40
+64  1           FC                 59854798495914@lid          auto-agregado al recibir primer mensaje  2026-04-20 21:32:19
+
+═══ 7) Notas curadas asociadas a cada contacto sospechoso ═══
+nota_id  contacto_id  contacto           nota_excerpt                                                                                                                                
+-------  -----------  -----------------  --------------------------------------------------------------------------------------------------------------------------------------------
+7        42           F A R I N E L L I  Farinelli es un restaurante o lugar de comida con el que tengo relación frecuente, principalmente para hacer pedidos para llevar. El contact
+8        26           Farinelli Arroyo   Farinelli Arroyo es un local gastronómico —parece un restorán o deli— con el que me manejo seguido, casi siempre para pedidos para llevar. T
+9        64           FC                 Marcos es alguien que se contactó por primera vez el 20 de abril por WhatsApp queriendo organizar una reunión conmigo para el día siguiente.
+
+═══ 8) Tamaño total de libreta (Diego) ═══
+151
+
+# exit=0
