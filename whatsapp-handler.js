@@ -278,14 +278,33 @@ async function handleMessage(client, msg) {
     if (chat && typeof chat.sendSeen === 'function') await chat.sendSeen();
   } catch {}
 
-  // vCard(s) → libreta del usuario. Soporta tanto vcard singular (vcard
-  // literal viene en msg.body) como multi_vcard (msg.body vacío, vcards en
-  // msg.vCards). Va directo, sin debouncing — es metadata, no parte del
-  // flujo conversacional.
+  // vCard(s) → libreta del usuario. Soporta tanto vcard singular como multi_vcard.
+  // [TEMP DIAG2] log shape del msg.vCards real cuando llega un multi_vcard.
+  try {
+    if (msg.type === 'multi_vcard' || msg.type === 'vcard' || (Array.isArray(msg.vCards) && msg.vCards.length)) {
+      const sample = (msg.vCards && msg.vCards[0]);
+      console.log('[DIAG2 vcard]', JSON.stringify({
+        type: msg.type,
+        from,
+        vCards_len: Array.isArray(msg.vCards) ? msg.vCards.length : 'NO-ARRAY',
+        vCards_first_type: typeof sample,
+        vCards_first_isString: typeof sample === 'string',
+        vCards_first_keys: (sample && typeof sample === 'object') ? Object.keys(sample).slice(0, 20) : null,
+        vCards_first_preview: typeof sample === 'string' ? sample.slice(0, 250) : (sample ? JSON.stringify(sample).slice(0, 350) : null),
+        body_len: msg.body ? msg.body.length : 0,
+      }));
+    }
+  } catch (err) {
+    console.warn('[DIAG2 vcard] error logging:', err.message);
+  }
   const vcardBodies = _extraerVCards(msg);
   if (vcardBodies.length > 0) {
+    console.log('[DIAG2 vcard] bodies extraídos:', vcardBodies.length, 'tipos:', vcardBodies.map(b => typeof b).join(','));
     const usuario = usuarios.resolverPorWa(from);
-    if (!usuario) return;
+    if (!usuario) {
+      console.log('[DIAG2 vcard] usuario no resuelto from=' + from + ' → return sin guardar');
+      return;
+    }
     return await _manejarVCards(client, msg, usuario, vcardBodies);
   }
 
