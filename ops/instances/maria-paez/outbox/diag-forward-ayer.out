@@ -1,0 +1,211 @@
+# ejecutado: 2026-05-17T20:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Eventos sistema con reenviar_wa/forward en últimos 3 días ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), direccion, substr(cuerpo,1,250) AS msg FROM eventos WHERE timestamp >= datetime('now','-3 days') AND (cuerpo LIKE '%reenviar_wa%' OR cuerpo LIKE '%forward%') ORDER BY timestamp ASC LIMIT 30;"
+#   
+#   echo ""
+#   echo "═══ Mensajes con menciones de presupuesto/cotización/auto en últimos 3 días — owner ═══"
+#   sqlite3 -header "$DB" "SELECT datetime(timestamp), direccion, canal, substr(de,1,25) AS de, substr(cuerpo,1,200) AS msg FROM eventos WHERE timestamp >= datetime('now','-3 days') AND (cuerpo LIKE '%presupuesto%' OR cuerpo LIKE '%cotizaci%' OR cuerpo LIKE '%pasame%' OR cuerpo LIKE '%pasale%' OR cuerpo LIKE '%mandale el%' OR cuerpo LIKE '%reenvi%' OR cuerpo LIKE '%forward%') ORDER BY timestamp ASC LIMIT 60;"
+#   
+#   echo ""
+#   echo "═══ pm2 logs ayer/hoy — reenviar_wa específicamente ═══"
+#   pm2 logs maria-paez --lines 5000 --nostream 2>&1 | grep -iE "reenviar_wa|reenviarWA|forward|getMessageById" | tail -50
+#   
+#   echo ""
+#   echo "═══ pm2 logs — fallos en acciones (puede incluir reenviar_wa) ═══"
+#   pm2 logs maria-paez --lines 5000 --nostream 2>&1 | grep -iE "acción.*falló.*reenviar|acción #.*reenviar|FALLARON.*reenviar" | tail -30
+
+# ───── output ─────
+═══ Eventos sistema con reenviar_wa/forward en últimos 3 días ═══
+datetime(timestamp)  direccion  msg                                                                               
+-------------------  ---------  ----------------------------------------------------------------------------------
+2026-05-15 16:25:58  interno    acción ejecutada: reenviar_wa                                                     
+
+2026-05-15 16:25:58  saliente   (forward de false_222788661055558@lid_3EB065A5759F523026C6A9 → 34342575317160@lid)
+
+2026-05-15 19:24:10  entrante   Santiago Bignone has accepted this invitation.                                    
+                                                                                                                  
+                                Chequear fotos                                                                    
+                                Monday May 18, 2026 ⋅ 11am – 12pm                                                 
+                                Argentina Standard Time - Buenos Aires                                            
+                                                                                                                  
+                                                                                                                  
+                                                                                                                  
+                                Organizer                                                                         
+                                maria.paez.secre@gmail.com                                                        
+                                maria.paez.secre@gmail.com                                                        
+                                                                                                                  
+                                Guests                                                                            
+                                Santiago Bignone                                                                  
+                                View all                                                                          
+
+2026-05-15 20:19:10  entrante   Santiago Bignone has declined this invitation.                                    
+                                                                                                                  
+                                Retirar comida                                                                    
+                                Friday May 15, 2026 ⋅ 8:30pm – 9:30pm                                             
+                                Argentina Standard Time - Buenos Aires                                            
+                                                                                                                  
+                                                                                                                  
+                                                                                                                  
+                                Organizer                                                                         
+                                maria.paez.secre@gmail.com                                                        
+                                maria.paez.secre@gmail.com                                                        
+                                                                                                                  
+                                Guests                                                                            
+                                Santiago Bignone                                                                  
+                                View                                                                              
+
+2026-05-16 11:16:10  entrante   Doris Capurro has accepted this invitation.                                       
+                                                                                                                  
+                                Natación                                                                          
+                                Saturday May 16, 2026 ⋅ 12pm – 1pm                                                
+                                Argentina Standard Time - Buenos Aires                                            
+                                                                                                                  
+                                                                                                                  
+                                                                                                                  
+                                Organizer                                                                         
+                                maria.paez.secre@gmail.com                                                        
+                                maria.paez.secre@gmail.com                                                        
+                                                                                                                  
+                                Guests                                                                            
+                                Doris Capurro                                                                     
+                                View all guest info                                                               
+
+═══ Mensajes con menciones de presupuesto/cotización/auto en últimos 3 días — owner ═══
+datetime(timestamp)|direccion|canal|de|msg
+2026-05-15 07:00:10|saliente|whatsapp|34342575317160@lid|☀️ *Buen día, Diego.* viernes 15 de mayo.
+
+*📅 Agenda del día*
+• 10:30 a. m. — Avance Semanal con DP
+• 02:00 p. m. — PROYECTO ARENERA
+
+*📝 Pendientes*
+1. Pedir presupuesto DC Iplan
+2. Pedir presupuesto 
+2026-05-15 16:25:58|interno|sistema||acción ejecutada: reenviar_wa
+2026-05-15 16:25:58|saliente|whatsapp||(forward de false_222788661055558@lid_3EB065A5759F523026C6A9 → 34342575317160@lid)
+2026-05-15 19:16:44|entrante|whatsapp|34342575317160@lid|pasame listado de pendientes
+2026-05-15 19:16:44|interno|sistema||unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez', historial idéntico al bucket del owner (Farinelli, Sebastian Ameijeira, La Cabrera, etc.) y el mensaje actual 'pasame li
+2026-05-15 19:16:56|saliente|whatsapp|34342575317160@lid|Acá van tus pendientes:
+
+1️⃣ Pedir presupuesto DC Iplan
+2️⃣ Pedir presupuesto DC Telecentro
+3️⃣ Pedir presupuesto DC Claro
+4️⃣ iProt Seguridad
+5️⃣ Espejo Subaru
+6️⃣ Doris IT Roch
+7️⃣ DDJJ 2025
+8️⃣ Man
+2026-05-15 19:24:10|entrante|gmail|Santiago Bignone <santiag|Santiago Bignone has accepted this invitation.
+
+Chequear fotos
+Monday May 18, 2026 ⋅ 11am – 12pm
+Argentina Standard Time - Buenos Aires
+
+
+
+Organizer
+maria.paez.secre@gmail.com
+maria.paez.sec
+2026-05-15 20:19:10|entrante|gmail|Santiago Bignone <santiag|Santiago Bignone has declined this invitation.
+
+Retirar comida
+Friday May 15, 2026 ⋅ 8:30pm – 9:30pm
+Argentina Standard Time - Buenos Aires
+
+
+
+Organizer
+maria.paez.secre@gmail.com
+maria.paez
+2026-05-15 20:56:08|saliente|whatsapp|34342575317160@lid|Recordatorio — tenés 7 tareas abiertas 📝
+
+1. Pedir presupuesto DC Iplan — 605h
+2. Pedir presupuesto DC Telecentro — 605h
+3. Pedir presupuesto DC Claro — 605h
+4. iProt Seguridad — 605h
+5. Espejo Subaru
+2026-05-16 07:00:09|saliente|whatsapp|34342575317160@lid|☀️ *Buen día, Diego.* sábado 16 de mayo.
+
+*📅 Agenda del día*
+(sin eventos hoy)
+
+*📝 Pendientes*
+1. Pedir presupuesto DC Iplan
+2. Pedir presupuesto DC Telecentro
+3. Pedir presupuesto DC Claro
+4. iProt S
+2026-05-16 11:16:10|entrante|gmail|Doris Capurro <doris@capu|Doris Capurro has accepted this invitation.
+
+Natación
+Saturday May 16, 2026 ⋅ 12pm – 1pm
+Argentina Standard Time - Buenos Aires
+
+
+
+Organizer
+maria.paez.secre@gmail.com
+maria.paez.secre@gmail
+2026-05-16 13:22:47|saliente|whatsapp|105171031949561@lid|Doris, parece que el PDF no me llegó bien — no pude abrirlo. ¿Podés reenviarlo? Así lo proceso y te agendo todas las fechas.
+2026-05-16 21:26:08|saliente|whatsapp|34342575317160@lid|Recordatorio — tenés 7 tareas abiertas 📝
+
+1. Pedir presupuesto DC Iplan — 630h
+2. Pedir presupuesto DC Telecentro — 630h
+3. Pedir presupuesto DC Claro — 630h
+4. iProt Seguridad — 630h
+5. Espejo Subaru
+2026-05-16 22:21:14|entrante|whatsapp|167933254885560@lid|Hola, María, ¿cómo han dado una estardecer?
+ Sí, sí, pasame las fotos, ahí tiene una fecha para que me la completes con los datos del
+ vehículo.
+ Y ahora no tengo nadie, pero el lunes se le paso los c
+2026-05-16 22:22:47|saliente|whatsapp|34342575317160@lid|Diego, Ariel de Espasa puede recibir las fotos ahora. ¿Me las podés reenviar para mandárselas? También dice que el lunes puede mandar al equipo de peritaje para la tasación del Subaru.
+2026-05-16 22:30:47|entrante|whatsapp|167933254885560@lid|María, si queremos mandarme la hora, fio un teoproblema, cualquier consulta que me
+ quieras hacer, más allá de la hora de la hora, lo incluso un domingo, me mandaste la
+ foto, no pasa nada, los chicos
+2026-05-16 22:31:05|saliente|whatsapp|34342575317160@lid|Le mandé la ficha completa a Ariel. Para las fotos no las pude reenviar desde mi lado — si podés mandárselas vos directo al chat de él, o reenviámelas acá y las paso yo.
+
+Ariel también preguntó si la 
+2026-05-16 22:32:06|saliente|whatsapp|34342575317160@lid|Diego, Ariel pregunta si querés financiar algo de la diferencia por la Taos o si la pagás de contado. ¿Me decís para que le arme el presupuesto? Y para las fotos del Subaru — ¿me las podés reenviar pa
+2026-05-16 22:36:43|saliente|whatsapp|34342575317160@lid|Perfecto, anotado. Quedo atenta por si Ariel manda la cotización.
+2026-05-16 22:55:55|saliente|whatsapp|34342575317160@lid|Perfecto, ya lo sé entonces. Quedo atenta por si Ariel manda la cotización.
+2026-05-16 23:12:09|entrante|whatsapp|167933254885560@lid|El lunes seguimos charlando
+Cuando tenga la cotización
+2026-05-16 23:12:09|interno|sistema||unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de Volkswagen Espasa que contactó a Maria en respuesta a la gestión que Diego (id=1) le pidió: consult
+2026-05-16 23:12:19|saliente|whatsapp|167933254885560@lid|Perfecto Ariel, el lunes seguimos. Quedo atenta a la cotización 👍
+2026-05-17 07:00:09|saliente|whatsapp|34342575317160@lid|☀️ *Buen día, Diego.* domingo 17 de mayo.
+
+*📅 Agenda del día*
+(sin eventos hoy)
+
+*📝 Pendientes*
+1. Pedir presupuesto DC Iplan
+2. Pedir presupuesto DC Telecentro
+3. Pedir presupuesto DC Claro
+4. iProt 
+2026-05-17 19:15:25|saliente|whatsapp|227143674011812@lid|Claro, pasame los contactos y yo armo el mensaje para el grupo.
+2026-05-17 19:19:39|entrante|whatsapp|34342575317160@lid|y como estan los pedidos de cotizaciones de los autos? (Honda, Subaru, VW y Volvo)
+2026-05-17 19:19:39|interno|sistema||unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el mensaje sobre cotizaciones de autos (Honda, Subaru, VW, Volvo) coincide exactamente con gestiones del historial
+2026-05-17 19:22:01|interno|sistema||unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez' y el historial del remitente (34342575317160@lid) son idénticos al bucket del owner Diego (id=1): mismas conversaciones s
+2026-05-17 19:26:02|saliente|whatsapp|227143674011812@lid|¡Dale! Pasame los contactos y les escribo a todos.
+2026-05-17 21:26:10|saliente|whatsapp|34342575317160@lid|Recordatorio — tenés 7 tareas abiertas 📝
+
+1. Pedir presupuesto DC Iplan — 654h
+2. Pedir presupuesto DC Telecentro — 654h
+3. Pedir presupuesto DC Claro — 654h
+4. iProt Seguridad — 654h
+5. Espejo Subaru
+2026-05-17 21:42:50|interno|sistema||unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente (34342575317160@lid) es idéntico al bucket de Diego owner — mismas conversaciones sobr
+2026-05-17 22:41:46|interno|sistema||unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez', el historial WA Maria↔Remitente es idéntico al historial Maria↔Diego (owner): mismas instrucciones de alta de usuarios, 
+
+═══ pm2 logs ayer/hoy — reenviar_wa específicamente ═══
+0|maria-pa | 2026-05-17 19:15:18: [DIAG vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":2,"body_len":0,"body_first200":"","keys":["_data","mediaKey","id","ack","hasMedia","body","type","timestamp","from","to","author","deviceType","isForwarded","forwardingScore","isStatus","isStarred","broadcast","fromMe","hasQuotedMsg","hasReaction","duration","location","vCards","inviteV4","mentionedIds","groupMentions","orderId","token","isGif","isEphemeral","links"]}
+
+═══ pm2 logs — fallos en acciones (puede incluir reenviar_wa) ═══
+
+# exit=0
