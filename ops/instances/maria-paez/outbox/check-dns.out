@@ -1,0 +1,46 @@
+# ejecutado: 2026-05-17T19:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "═══ DNS desde el VPS ═══"
+#   echo "intensa.io:"
+#   dig +short intensa.io @1.1.1.1
+#   dig +short intensa.io @8.8.8.8
+#   echo ""
+#   echo "www.intensa.io:"
+#   dig +short www.intensa.io @1.1.1.1
+#   dig +short www.intensa.io @8.8.8.8
+#   echo ""
+#   echo "═══ ¿Apunta al VPS (178.104.166.91)? ═══"
+#   IP_VPS="178.104.166.91"
+#   for host in intensa.io www.intensa.io; do
+#     IP=$(dig +short $host @1.1.1.1 | head -1)
+#     if [ "$IP" = "$IP_VPS" ]; then
+#       echo "  $host → $IP ✓"
+#     else
+#       echo "  $host → ${IP:-(sin respuesta)} ✗ (esperando $IP_VPS)"
+#     fi
+#   done
+
+# ───── output ─────
+═══ DNS desde el VPS ═══
+intensa.io:
+76.223.67.189
+13.248.213.45
+76.223.67.189
+13.248.213.45
+
+www.intensa.io:
+intensa.io.
+76.223.67.189
+13.248.213.45
+intensa.io.
+13.248.213.45
+76.223.67.189
+
+═══ ¿Apunta al VPS (178.104.166.91)? ═══
+  intensa.io → 76.223.67.189 ✗ (esperando 178.104.166.91)
+  www.intensa.io → intensa.io. ✗ (esperando 178.104.166.91)
+
+# exit=0
