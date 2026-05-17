@@ -23,7 +23,7 @@ const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
 const unknownFlow = require('./unknown-flow');
 const { construirPrompt } = require('./prompt-builder');
-const { invocarClaudeJSON } = require('./claude-client');
+const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
 const { ejecutarAcciones } = require('./executor');
 const providers = require('./providers');
 
@@ -305,7 +305,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   let acciones = [];
   let razonamiento = null;
   try {
-    const { json } = await invocarClaudeJSON(prompt, { audit: { usuarioId: usuario.id, canal: 'gmail' } });
+    const { json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: { usuarioId: usuario.id, canal: 'gmail' } });
     respUsr      = (json.respuesta_a_usuario   || '').toString();
     respRem      = (json.respuesta_a_remitente || '').toString();
     // Compat: si solo viene `respuesta` legacy, en Gmail se trata como

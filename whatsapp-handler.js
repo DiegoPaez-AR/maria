@@ -25,7 +25,7 @@ const unknownFlow = require('./unknown-flow');
 const seguridad = require('./seguridad');
 const { transcribirAudio } = require('./transcribir');
 const { construirPrompt } = require('./prompt-builder');
-const { invocarClaudeJSON } = require('./claude-client');
+const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
 const { ejecutarAcciones } = require('./executor');
 
 const CHROME_BIN = process.env.CHROME_BIN || '/usr/bin/google-chrome';
@@ -565,7 +565,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
   let acciones = [];
   let razonamiento = null;
   try {
-    const { json } = await invocarClaudeJSON(prompt, { audit: { usuarioId: usuario.id, canal: 'whatsapp' } });
+    const { json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: { usuarioId: usuario.id, canal: 'whatsapp' } });
     respUsr      = (json.respuesta_a_usuario   || '').toString();
     respRem      = (json.respuesta_a_remitente || '').toString();
     // Compat: si solo viene `respuesta` legacy, en WA se trata como

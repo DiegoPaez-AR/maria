@@ -545,6 +545,48 @@ function contextoCrossCanal(usuarioId, { desdeHoras: horas = 24, max = 50 } = {}
   return evs.map(formatearParaPrompt).join('\n');
 }
 
+// Búsqueda en el historial de eventos del usuario. Matchea por substring
+// (case-insensitive) en `cuerpo`, `nombre`, `de` y `asunto`. Filtros opcionales
+// por canal y ventana temporal. Resultados ordenados del más nuevo al más viejo.
+//
+// Args:
+//   usuarioId: requerido — siempre filtra al bucket del usuario que pregunta
+//   query:     requerido — substring a buscar (sin wildcards, se hace LIKE %x%)
+//   canal:     opcional — 'whatsapp' | 'gmail' | 'calendar' | null (todos)
+//   dias:      ventana hacia atrás, default 30, cap 365
+//   max:       resultados, default 20, cap 100
+//
+// Devuelve array de filas hidratadas (con .metadata si tenían metadata_json).
+const qBuscarEnHistorial = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, metadata_json
+  FROM eventos
+  WHERE usuario_id = @usuarioId
+    AND timestamp >= datetime('now', '-' || @dias || ' days')
+    AND (@canal IS NULL OR canal = @canal)
+    AND (
+      cuerpo LIKE @q ESCAPE '\\'
+      OR nombre LIKE @q ESCAPE '\\'
+      OR de LIKE @q ESCAPE '\\'
+      OR asunto LIKE @q ESCAPE '\\'
+    )
+  ORDER BY id DESC
+  LIMIT @max
+`);
+
+function buscarEnHistorial({ usuarioId, query, canal = null, dias = 30, max = 20 } = {}) {
+  if (!usuarioId || !query) return [];
+  // Escapar wildcards LIKE para que se busque substring literal
+  const safe = String(query).replace(/[\\%_]/g, '\\$&');
+  const filas = qBuscarEnHistorial.all({
+    usuarioId,
+    q: `%${safe}%`,
+    canal: canal || null,
+    dias: Math.min(Math.max(1, dias), 365),
+    max: Math.min(Math.max(1, max), 100),
+  });
+  return filas.map(hidratar);
+}
+
 function formatearParaPrompt(e) {
   const ts = e.timestamp;
   const flecha = e.direccion === 'entrante' ? '→' : (e.direccion === 'saliente' ? '←' : '·');
@@ -1110,6 +1152,8 @@ module.exports = {
   porContacto,
   desdeHoras,
   contextoCrossCanal,
+  buscarEnHistorial,
+  formatearParaPrompt,
   // estado global
   setEstado,
   getEstado,

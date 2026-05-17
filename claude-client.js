@@ -331,8 +331,85 @@ async function invocarClaudeJSON(prompt, opts = {}) {
   return { raw: out, json: extraerJSON(out) };
 }
 
+/**
+ * Wrapper multi-turn: invoca Claude y, si la respuesta JSON trae un campo
+ * `consultas` con items, las ejecuta y vuelve a llamar a Claude con los
+ * resultados como contexto adicional. Devuelve el JSON del segundo call.
+ *
+ * Schema de consultas soportadas:
+ *   { tipo: 'buscar_en_historial', query, canal?, dias?, max? }
+ *
+ * El consumidor (handlers de WA/Gmail) llama a esta función en vez de
+ * invocarClaudeJSON directo y recibe el JSON final, agnóstico de si hubo
+ * uno o dos calls internos.
+ *
+ * `consultaCtx` lleva el contexto necesario para ejecutar las consultas:
+ *   { usuario }  — usuario al que pertenece la conversación (filtro de seguridad).
+ */
+async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
+  const mem = require('./memory');
+
+  // Primer turno
+  const r1 = await invocarClaudeJSON(prompt, opts);
+  const consultas = Array.isArray(r1.json?.consultas) ? r1.json.consultas : [];
+  if (!consultas.length) {
+    return r1;
+  }
+
+  if (!consultaCtx || !consultaCtx.usuario || !consultaCtx.usuario.id) {
+    console.warn('[claude-client] consultas emitidas pero no hay consultaCtx.usuario — no se ejecutan');
+    return r1;
+  }
+
+  // Ejecutar consultas
+  const usuarioId = consultaCtx.usuario.id;
+  const seccionesResultado = [];
+  for (const c of consultas) {
+    try {
+      if (c.tipo === 'buscar_en_historial') {
+        const filas = mem.buscarEnHistorial({
+          usuarioId,
+          query: c.query,
+          canal: c.canal || null,
+          dias: c.dias || 30,
+          max: c.max || 20,
+        });
+        const header = `[CONSULTA: buscar_en_historial query="${c.query}" canal=${c.canal || '*'} dias=${c.dias || 30} → ${filas.length} resultados]`;
+        if (!filas.length) {
+          seccionesResultado.push(`${header}\n(sin resultados)`);
+        } else {
+          const lineas = filas.map(f => mem.formatearParaPrompt ? mem.formatearParaPrompt(f) : `[${f.timestamp}] ${f.direccion} ${f.canal} ${(f.nombre || f.de || '?')}: ${(f.cuerpo || '').replace(/\s+/g, ' ').slice(0, 240)}`);
+          seccionesResultado.push(`${header}\n${lineas.join('\n')}`);
+        }
+        console.log(`[claude-client] consulta buscar_en_historial("${c.query}") → ${filas.length} resultados`);
+      } else {
+        seccionesResultado.push(`[CONSULTA: tipo desconocido "${c.tipo}" — ignorada]`);
+        console.warn(`[claude-client] tipo de consulta desconocido: ${c.tipo}`);
+      }
+    } catch (err) {
+      seccionesResultado.push(`[CONSULTA: ${c.tipo} falló — ${err.message}]`);
+      console.warn(`[claude-client] consulta ${c.tipo} falló: ${err.message}`);
+    }
+  }
+
+  // Segundo turno: original + resultados
+  const prompt2 = prompt
+    + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + '[RESULTADOS DE TUS CONSULTAS]\n'
+    + 'Las consultas que pediste en el turno anterior devolvieron:\n\n'
+    + seccionesResultado.join('\n\n')
+    + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+    + 'Con esta información, ahora generá la respuesta final al usuario. '
+    + 'NO incluyas `consultas` en este turno (ya fueron ejecutadas). '
+    + 'Razoná con los resultados y emití respuesta_a_usuario / respuesta_a_remitente / acciones según corresponda.';
+
+  const r2 = await invocarClaudeJSON(prompt2, opts);
+  return { raw: r2.raw, json: r2.json, primerTurno: r1.json, consultas };
+}
+
 module.exports = {
   invocarClaude,
   invocarClaudeJSON,
+  invocarClaudeJSONConConsultas,
   extraerJSON,
 };

@@ -512,11 +512,21 @@ Analizá el mensaje en el contexto de todo lo de arriba y respondé.
 IMPORTANTE: Tu respuesta TIENE que ser un único objeto JSON válido, sin texto antes ni después, sin markdown, sin \`\`\`. Schema:
 
 {
+  "consultas": [ /* OPCIONAL — array de 0+ consultas a la DB ANTES de responder. Ver "Consultas disponibles" abajo. Si emitís consultas, dejá respuesta_a_usuario y respuesta_a_remitente vacíos en ESTE turno; el sistema ejecuta las consultas y te llama de nuevo con los resultados como contexto extra para que armes la respuesta final. */ ],
   "respuesta_a_usuario": "string - texto para ${usuario.nombre} (el USUARIO ATENDIDO). Se le manda por su canal habitual. Tono conversacional, como secretaria cercana. Dejá '' si no tenés nada que decirle a ${usuario.nombre} en este turno.",
   "respuesta_a_remitente": "string - texto para QUIEN ESCRIBIÓ este mensaje. Se le manda por el mismo canal por el que escribió. Dejá '' si no tenés nada que decirle. ${esTercero ? `EN ESTE TURNO el remitente es ${remitenteNombre} (un tercero, NO ${usuario.nombre}).` : `EN ESTE TURNO el remitente y el usuario atendido son la misma persona (${usuario.nombre}); con poner el texto en cualquiera de los dos slots alcanza — usá UNO solo, no repitas.`}",
   "acciones": [ /* array de 0+ acciones a ejecutar después de mandar las respuestas */ ],
   "razonamiento": "string opcional - 1 línea, para debug"
 }
+
+Consultas disponibles (campo \`consultas\` del schema):
+  { "tipo": "buscar_en_historial", "query": "texto a buscar", "canal": "whatsapp"|"gmail"|"calendar"|null, "dias": 30, "max": 20 }
+      // Busca en el historial completo de ${usuario.nombre} cualquier mensaje/evento que matchee la query (case-insensitive, substring en cuerpo+nombre+de+asunto). Útil cuando el usuario pregunta cosas como "¿cuándo le escribí a X?", "¿qué quedamos sobre Y?", "buscame el mensaje donde Z me pasó las fechas". Si ya tenés la respuesta en [HISTORIAL CROSS-CANAL] (últimas 48h) NO hace falta — usá consultas SOLO cuando el dato puede estar más viejo que esa ventana. dias default 30, max default 20 (cap 100). canal opcional para filtrar.
+
+Cómo usar consultas:
+- Si el mensaje del usuario sugiere que necesitás info histórica que NO ves en [HISTORIAL CROSS-CANAL], emití consultas en este turno y dejá las respuestas vacías. El sistema ejecuta las consultas y te vuelve a llamar con los resultados.
+- En el segundo turno (donde ya tenés los resultados en [RESULTADOS DE TUS CONSULTAS]), generás la respuesta final. NO emitas consultas en ese segundo turno (ya fueron ejecutadas).
+- Ejemplo: user dice "buscame el mensaje donde Hernán me pasó las cifras de Movistar" → emitís { consultas: [{tipo:"buscar_en_historial", query:"Movistar", canal:"whatsapp", dias:60}], respuesta_a_usuario:"", respuesta_a_remitente:"", acciones:[] }. En el segundo turno, con los resultados, armás respuesta_a_usuario con la cita relevante.
 
 Reglas duras sobre los slots de respuesta:
 - \`respuesta_a_usuario\` SIEMPRE termina en el chat/inbox de ${usuario.nombre}. NUNCA pongas acá un texto que arranque con "Hola <nombre del tercero>" o que esté redactado para un tercero — confunde al usuario y se ve horrible.
