@@ -1,0 +1,99 @@
+# ejecutado: 2026-05-17T19:31:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 logs RAW últimas 80 lineas (sin filtro) ═══"
+#   pm2 logs maria-paez --lines 80 --nostream 2>&1 | tail -75
+#   
+#   echo ""
+#   echo "═══ Mensajes entrantes a Maria últimas 15 min (cualquier canal) ═══"
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), canal, direccion, tipo_original, substr(de,1,30) AS de, LENGTH(cuerpo) AS body_len, substr(cuerpo,1,80) AS body FROM eventos WHERE timestamp >= datetime('now','-15 minutes') ORDER BY timestamp ASC;"
+
+# ───── output ─────
+═══ pm2 logs RAW últimas 80 lineas (sin filtro) ═══
+0|maria-pa | 2026-05-17 18:29:03: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 18:29:27: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial de 200 mensajes con este remitente es idéntico al historial del owner Diego (id=1); el ID @lid es el formato interno de WhatsApp (Linked ID) que puede diferir del wa_cus @c.us pero corresponde al mismo usuario.
+0|maria-pa | 2026-05-17 18:29:42: [WA →usr] Diego (34342575317160@lid): Listo, te la agrego.
+0|maria-pa | 2026-05-17 18:29:42: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-17 18:29:42: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-17 18:42:30: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 18:42:50: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente (34342575317160@lid) es idéntico al bucket de Diego owner — mismas conversaciones sobre Enrique Sosa, cotizaciones de autos, agenda del lunes, etc. El sufijo @lid indica un dispositivo vinculado (linked device) de WhatsApp, no una cuenta distinta.
+0|maria-pa | 2026-05-17 18:43:08: [WA →usr] Diego (34342575317160@lid): No, sigue sin andar el WA de Enrique. Tuve problemas con su número las dos veces que intenté. ¿Le mando la bienvenida por email? Tengo enrique.sosa@globalnetmob
+0|maria-pa | 2026-05-17 18:43:08: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-17 18:43:52: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 18:44:13: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · Pushname 'Diego Paez' coincide con el owner; el historial del remitente es idéntico al bucket del owner (mismas conversaciones sobre Enrique, autos, etc.); el ID 34342575317160@lid corresponde al formato de dispositivo vinculado (WhatsApp LID) del mismo usuario registrado como 541132317896@c.us.
+0|maria-pa | 2026-05-17 18:44:22: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-17 19:06:19: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 19:06:41: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · Pushname 'Diego Paez', mensaje continuación directa del hilo sobre Enrique Sosa; el ID @lid indica dispositivo vinculado (linked device) de WhatsApp del owner Diego.
+0|maria-pa | 2026-05-17 19:07:20: [WA →usr] Diego (34342575317160@lid): Voy a intentar de nuevo ahora con el número que tengo.
+0|maria-pa | 2026-05-17 19:07:28: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-17 19:07:28: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-17 19:11:02: 
+0|maria-pa | 2026-05-17 19:11:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-17 19:11:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 19:11:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-17 19:11:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-17 19:11:04:   Usuarios:   12 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa
+0|maria-pa | 2026-05-17 19:11:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 19:11:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 19:11:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 19:11:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 19:11:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 19:11:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 19:11:07: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 19:11:08: [WA authenticated]
+0|maria-pa | 2026-05-17 19:11:08: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 19:11:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 19:11:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 19:11:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 19:11:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 19:11:08: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 19:11:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-17 19:15:18: [DIAG vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":2,"body_len":0,"body_first200":"","keys":["_data","mediaKey","id","ack","hasMedia","body","type","timestamp","from","to","author","deviceType","isForwarded","forwardingScore","isStatus","isStarred","broadcast","fromMe","hasQuotedMsg","hasReaction","duration","location","vCards","inviteV4","mentionedIds","groupMentions","orderId","token","isGif","isEphemeral","links"]}
+0|maria-pa | 2026-05-17 19:21:02: 
+0|maria-pa | 2026-05-17 19:21:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-17 19:21:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 19:21:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-17 19:21:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-17 19:21:04:   Usuarios:   12 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa
+0|maria-pa | 2026-05-17 19:21:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 19:21:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 19:21:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 19:21:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 19:21:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 19:21:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 19:21:07: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 19:21:08: [WA authenticated]
+0|maria-pa | 2026-05-17 19:21:08: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 19:21:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 19:21:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 19:21:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 19:21:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 19:21:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+
+
+═══ Mensajes entrantes a Maria últimas 15 min (cualquier canal) ═══
+datetime(timestamp)  canal    direccion  tipo_original  de  body_len  body                                                                            
+-------------------  -------  ---------  -------------  --  --------  --------------------------------------------------------------------------------
+2026-05-17 22:21:02  sistema  interno                       19        shutdown por SIGINT                                                             
+2026-05-17 22:21:08  sistema  interno                       97        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep acti
+
+# exit=0
