@@ -198,6 +198,24 @@ function _migrarUsuariosCalendarAcceso() {
 }
 _migrarUsuariosCalendarAcceso();
 
+// Multi-provider calendar (design doc: docs/multi-provider-calendar.md):
+//   - calendar_provider: 'google' (default, todos los users existentes) |
+//                        'microsoft' (Fase 2) | 'caldav' (Fase 3)
+//   - calendar_auth_json: blob cifrado con vault.js para credenciales del user
+//                         en providers que requieren delegated access (microsoft,
+//                         caldav). Google NO lo usa (usa OAuth global de Maria).
+function _migrarUsuariosCalendarProvider() {
+  if (!_tieneColumna('usuarios', 'calendar_provider')) {
+    db.exec(`ALTER TABLE usuarios ADD COLUMN calendar_provider TEXT NOT NULL DEFAULT 'google' CHECK(calendar_provider IN ('google','microsoft','caldav'))`);
+    console.log("[memory] migración: usuarios.calendar_provider agregado (default 'google')");
+  }
+  if (!_tieneColumna('usuarios', 'calendar_auth_json')) {
+    db.exec(`ALTER TABLE usuarios ADD COLUMN calendar_auth_json TEXT`);
+    console.log('[memory] migración: usuarios.calendar_auth_json agregado (NULL para Google)');
+  }
+}
+_migrarUsuariosCalendarProvider();
+
 // Índices que dependen de usuario_id (los creamos acá porque en el exec inicial
 // la columna podía no existir todavía en DBs viejos).
 db.exec(`
