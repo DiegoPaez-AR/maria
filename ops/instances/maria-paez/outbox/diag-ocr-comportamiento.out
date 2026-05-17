@@ -1,0 +1,98 @@
+# ejecutado: 2026-05-17T16:04:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diag: qué hace hoy Maria con imágenes/PDFs entrantes. Buscar casos recientes
+#   # donde el LLM tuvo un attachment y ver si extrajo datos estructurados (acción
+#   # tipo upsert_contacto/agregar_pendiente) o solo respondió en texto.
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   
+#   echo "═══ Mensajes entrantes con attachment (últimos 30 días) ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, timestamp, canal, substr(de,1,30) AS de, substr(cuerpo,1,80) AS cuerpo,
+#          substr(metadata_json,1,80) AS meta
+#   FROM eventos
+#   WHERE direccion = 'entrante'
+#     AND timestamp >= datetime('now', '-30 days')
+#     AND (metadata_json LIKE '%attachment%' OR metadata_json LIKE '%esMedia%' OR cuerpo LIKE '%adjuntó%')
+#   ORDER BY id DESC LIMIT 10
+#   "
+#   
+#   echo ""
+#   echo "═══ Acciones que el LLM emitió justo después de cada attachment ═══"
+#   sqlite3 -column "$MARIA_DB" "
+#   SELECT id, timestamp, substr(cuerpo,1,180) AS cuerpo
+#   FROM eventos
+#   WHERE canal = 'sistema' AND direccion = 'interno'
+#     AND cuerpo LIKE '%acción ejecutada%'
+#     AND timestamp >= datetime('now', '-30 days')
+#   ORDER BY id DESC LIMIT 30
+#   "
+#   
+#   echo ""
+#   echo "═══ Razonamiento del LLM cuando procesó esos PDFs/imágenes (busco en metadata) ═══"
+#   sqlite3 "$MARIA_DB" "
+#   SELECT id, timestamp, substr(metadata_json,1,400) AS razonamiento
+#   FROM eventos
+#   WHERE canal='sistema' AND cuerpo LIKE '%claude_call%' AND metadata_json LIKE '%razonamiento%'
+#     AND timestamp >= datetime('now', '-3 days')
+#   ORDER BY id DESC LIMIT 10
+#   " 2>&1 | head -30
+
+# ───── output ─────
+═══ Mensajes entrantes con attachment (últimos 30 días) ═══
+id    timestamp            canal     de                  cuerpo                                                                   meta                                                                            
+----  -------------------  --------  ------------------  -----------------------------------------------------------------------  --------------------------------------------------------------------------------
+4525  2026-05-16 22:24:29  whatsapp  34342575317160@lid  (adjuntó image/jpeg, 246 KB)                                             {"tipo":"unknown_llm_rute","messageId":"false_34342575317160@lid_3A56F5A71E3ED9F
+                                                         (adjuntó image/jpeg, 257 KB)                                                                                                                             
+                                                         (adjuntó image/jpeg, 2                                                                                                                                   
+
+4483  2026-05-16 22:15:36  whatsapp  34342575317160@lid  (adjuntó image/jpeg, 246 KB)                                             {"tipo":"unknown_llm_rute","messageId":"false_34342575317160@lid_4A7DDCC032238DA
+                                                         (adjuntó image/jpeg, 257 KB)                                                                                                                             
+                                                         (adjuntó image/jpeg, 2                                                                                                                                   
+
+4410  2026-05-16 13:22:28  whatsapp  5491144471264@c.us  podes extraer todas las fechas del curso, de este pdf para agendarmelas  {"messageId":"false_105171031949561@lid_3EB0B19CC1B2628CCFD7CC","esAudio":false,
+
+4111  2026-05-14 12:27:25  whatsapp  485465551092@lid    (adjuntó image/jpeg, 27 KB)                                              {"tipo":"unknown_llm_tercero","messageId":"false_485465551092@lid_4A11C9D100FC9C
+
+3042  2026-05-10 21:00:53  whatsapp  34342575317160@lid  contacts - contacts.csv.csv                                              {"messageId":"false_34342575317160@lid_3EB0EC44341EB1CC107811","esAudio":false,"
+
+2123  2026-05-07 03:18:43  whatsapp  34342575317160@lid  (adjuntó image/jpeg, 283 KB)                                             {"messageId":"false_34342575317160@lid_3EB02BEDE2AF4A49BB703B","esAudio":false,"
+
+═══ Acciones que el LLM emitió justo después de cada attachment ═══
+4621  2026-05-16 23:43:15  acción ejecutada: enviar_wa        
+4619  2026-05-16 23:43:14  acción ejecutada: upsert_contacto  
+4588  2026-05-16 22:59:27  acción ejecutada: enviar_wa        
+4586  2026-05-16 22:59:26  acción ejecutada: upsert_contacto  
+4564  2026-05-16 22:36:43  acción ejecutada: upsert_contacto  
+4563  2026-05-16 22:36:43  acción ejecutada: quitar_pendiente 
+4548  2026-05-16 22:31:05  acción ejecutada: agregar_pendiente
+4516  2026-05-16 22:22:47  acción ejecutada: upsert_contacto  
+4509  2026-05-16 22:20:22  acción ejecutada: enviar_wa        
+4507  2026-05-16 22:20:21  acción ejecutada: upsert_contacto  
+4479  2026-05-16 22:14:56  acción ejecutada: enviar_wa        
+4477  2026-05-16 22:14:56  acción ejecutada: upsert_contacto  
+4444  2026-05-16 17:14:14  acción ejecutada: enviar_wa        
+4442  2026-05-16 17:14:13  acción ejecutada: enviar_wa        
+4440  2026-05-16 17:14:12  acción ejecutada: upsert_contacto  
+4439  2026-05-16 17:14:12  acción ejecutada: upsert_contacto  
+4436  2026-05-16 17:04:58  acción ejecutada: enviar_wa        
+4434  2026-05-16 17:04:57  acción ejecutada: upsert_contacto  
+4407  2026-05-16 11:26:19  acción ejecutada: crear_evento     
+4400  2026-05-16 11:11:01  acción ejecutada: crear_evento     
+4392  2026-05-16 11:01:51  acción ejecutada: responder_email  
+4372  2026-05-15 20:51:09  acción ejecutada: quitar_pendiente 
+4371  2026-05-15 20:51:09  acción ejecutada: quitar_pendiente 
+4365  2026-05-15 20:47:20  acción ejecutada: enviar_wa        
+4363  2026-05-15 20:47:13  acción ejecutada: crear_usuario    
+4346  2026-05-15 20:12:12  acción ejecutada: crear_evento     
+4329  2026-05-15 19:18:23  acción ejecutada: crear_evento     
+4287  2026-05-15 16:41:49  acción ejecutada: quitar_pendiente 
+4284  2026-05-15 16:41:49  acción ejecutada: upsert_contacto  
+4280  2026-05-15 16:40:04  acción ejecutada: agregar_pendiente
+
+═══ Razonamiento del LLM cuando procesó esos PDFs/imágenes (busco en metadata) ═══
+
+# exit=0
