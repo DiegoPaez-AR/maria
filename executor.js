@@ -15,6 +15,7 @@ const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
 const waSend = require('./wa-send');
 const providers = require('./providers');
+const waValidate = require('./wa-validate');
 
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
@@ -577,13 +578,20 @@ function _olvidarHecho(a, ctx) {
   return { clave: a.clave, olvidado: true };
 }
 
-function _upsertContacto(a, ctx) {
+async function _upsertContacto(a, ctx) {
   _requerir(a, ['nombre']);
+  // Si viene whatsapp, validar con getNumberId antes de guardar — evita
+  // guardar wids armados con prefijo país errado (caso Enrique 2026-05-10).
+  // El validador devuelve el wid resuelto por WA Web (puede ser @c.us o @lid).
+  let waNorm = null;
+  if (a.whatsapp) {
+    waNorm = await waValidate.normalizarWaCus(a.whatsapp, ctx.waClient);
+  }
   const visibilidad = a.visibilidad === 'publica' ? 'publica' : 'privada';
   const c = mem.upsertContacto({
     usuarioId: ctx.usuario.id,
     nombre: a.nombre,
-    whatsapp: a.whatsapp || null,
+    whatsapp: waNorm,
     email: a.email || null,
     notas: a.notas || null,
     visibilidad,
@@ -634,7 +642,7 @@ function _setCumpleContacto(a, ctx) {
 
 // ─── Acciones del owner ──────────────────────────────────────────────────
 
-function _crearUsuario(a, ctx) {
+async function _crearUsuario(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('crear_usuario: solo el owner puede crear usuarios');
   }
@@ -643,10 +651,16 @@ function _crearUsuario(a, ctx) {
     throw new Error(`crear_usuario: esta instancia llegó al máximo de ${max} usuarios activos. Para sumar otro hay que desactivar uno antes (borrar_usuario) o subir el cap (env ASISTENTE_MAX_USUARIOS).`);
   }
   _requerir(a, ['nombre']);
+  // Validar wa_cus contra WA Web antes de persistir. wa_lid se asume ya
+  // capturado del runtime (msg.from), no se re-valida.
+  let waCusNorm = null;
+  if (a.wa_cus) {
+    waCusNorm = await waValidate.normalizarWaCus(a.wa_cus, ctx.waClient);
+  }
   const u = usuarios.crear({
     nombre: a.nombre,
     wa_lid: a.wa_lid || null,
-    wa_cus: a.wa_cus || null,
+    wa_cus: waCusNorm,
     email: a.email || null,
     calendar_id: a.calendar_id || null,
     tz: a.tz || null,
@@ -670,7 +684,7 @@ function _crearUsuario(a, ctx) {
   return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null };
 }
 
-function _actualizarUsuario(a, ctx) {
+async function _actualizarUsuario(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('actualizar_usuario: solo el owner puede actualizar usuarios');
   }
@@ -680,6 +694,10 @@ function _actualizarUsuario(a, ctx) {
     if (a[k] !== undefined) patch[k] = a[k];
   }
   if (!Object.keys(patch).length) throw new Error('actualizar_usuario: no hay campos para cambiar');
+  // Si el patch incluye wa_cus, validar contra WA Web antes de persistir.
+  if (patch.wa_cus) {
+    patch.wa_cus = await waValidate.normalizarWaCus(patch.wa_cus, ctx.waClient);
+  }
   const u = usuarios.actualizar(a.id, patch);
   console.log(`[executor] usuario actualizado: id=${u.id} nombre=${u.nombre} campos=${Object.keys(patch).join(',')}`);
   return { id: u.id, nombre: u.nombre, actualizado: true, campos: Object.keys(patch) };
