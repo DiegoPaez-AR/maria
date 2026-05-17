@@ -1,0 +1,228 @@
+# ejecutado: 2026-05-17T09:17:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   cd /root/secretaria
+#   
+#   HOY_ART=$(TZ=America/Argentina/Buenos_Aires date +%Y-%m-%d)
+#   HOY_UTC_DESDE=$(TZ=UTC date -d "$HOY_ART 00:00:00 America/Argentina/Buenos_Aires" +%Y-%m-%d' '%H:%M:%S)
+#   echo "Hoy ART: $HOY_ART  | desde UTC: $HOY_UTC_DESDE"
+#   
+#   echo ""
+#   echo "═══ pm2 ═══"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys, time
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name') != 'maria-paez': continue
+#       e = p.get('pm2_env', {})
+#       up_ms = e.get('pm_uptime', 0)
+#       up_s = (time.time()*1000 - up_ms) / 1000
+#       h = int(up_s/3600); m = int((up_s%3600)/60)
+#       mem_mb = (p.get('monit',{}).get('memory') or 0) / 1024 / 1024
+#       print(f\"  pid={p.get('pid')} status={e.get('status')} restarts={e.get('restart_time')} uptime={h}h{m}m mem={mem_mb:.0f}MB\")
+#   "
+#   
+#   echo ""
+#   echo "═══ Errores/fallos sistema HOY (ART) — excluyendo timeouts y los ya resueltos ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT timestamp, substr(cuerpo,1,200) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '$HOY_UTC_DESDE'
+#     AND canal='sistema'
+#     AND (cuerpo LIKE '%falló%' OR cuerpo LIKE '%error%' OR cuerpo LIKE '%FALLARON%' OR cuerpo LIKE '%crash%' OR cuerpo LIKE '%ENOENT%')
+#     AND cuerpo NOT LIKE '%invalid_grant%'
+#   ORDER BY id DESC LIMIT 25
+#   "
+#   
+#   echo ""
+#   echo "═══ Volumen hoy (ART) ═══"
+#   sqlite3 "$MARIA_DB" <<EOF
+#   SELECT 'WA recibidos:', COUNT(*) FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND timestamp >= '$HOY_UTC_DESDE';
+#   SELECT 'WA enviados:', COUNT(*) FROM eventos WHERE canal='whatsapp' AND direccion='saliente' AND timestamp >= '$HOY_UTC_DESDE';
+#   SELECT 'Gmail eventos:', COUNT(*) FROM eventos WHERE canal='gmail' AND timestamp >= '$HOY_UTC_DESDE';
+#   SELECT 'Calendar eventos:', COUNT(*) FROM eventos WHERE canal='calendar' AND timestamp >= '$HOY_UTC_DESDE';
+#   SELECT 'Llamadas Claude:', COUNT(*) FROM eventos WHERE canal='sistema' AND cuerpo LIKE '%claude_call%' AND timestamp >= '$HOY_UTC_DESDE';
+#   EOF
+#   
+#   echo ""
+#   echo "═══ Top 5 usuarios por actividad hoy ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT COALESCE(u.nombre,'(n/a)') AS usuario,
+#          SUM(CASE WHEN e.direccion='entrante' THEN 1 ELSE 0 END) AS recibidos,
+#          SUM(CASE WHEN e.direccion='saliente' THEN 1 ELSE 0 END) AS enviados
+#   FROM eventos e LEFT JOIN usuarios u ON u.id=e.usuario_id
+#   WHERE e.canal='whatsapp' AND e.timestamp >= '$HOY_UTC_DESDE'
+#   GROUP BY u.nombre ORDER BY (recibidos+enviados) DESC LIMIT 5
+#   "
+#   
+#   echo ""
+#   echo "═══ Pendientes nuevos hoy ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT id, estado, substr(desc,1,80) AS descripcion
+#   FROM pendientes WHERE creado >= '$HOY_UTC_DESDE' ORDER BY id
+#   "
+#   
+#   echo ""
+#   echo "═══ ¿PDF/attachments fueron procesados OK hoy? ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT timestamp, substr(cuerpo,1,140) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '$HOY_UTC_DESDE'
+#     AND (cuerpo LIKE '%pdf%' OR cuerpo LIKE '%adjunt%' OR cuerpo LIKE '%attach%')
+#   ORDER BY id DESC LIMIT 10
+#   "
+
+# ───── output ─────
+date: invalid date ‘2026-05-17 00:00:00 America/Argentina/Buenos_Aires’
+Hoy ART: 2026-05-17  | desde UTC: 
+
+═══ pm2 ═══
+  pid=732799 status=online restarts=9 uptime=13h2m mem=185MB
+
+═══ Errores/fallos sistema HOY (ART) — excluyendo timeouts y los ya resueltos ═══
+timestamp            cuerpo                                                                         
+-------------------  -------------------------------------------------------------------------------
+2026-05-16 22:36:14  claude_call whatsapp: 264215ms prompt=53503c raw=1048c ERROR=claude exit null: 
+2026-05-16 22:34:50  Claude falló en WA (Diego): Timeout 180000ms invocando claude                  
+2026-05-16 22:27:39  claude_call whatsapp: 189515ms prompt=54427c raw=1567c ERROR=claude exit null: 
+2026-05-16 22:27:29  Claude falló en WA (Diego): Timeout 180000ms invocando claude                  
+2026-05-16 16:40:21  claude_call whatsapp: 218691ms prompt=50999c raw=794c ERROR=claude exit null:  
+2026-05-16 16:39:42  Claude falló en WA (Diego): Timeout 180000ms invocando claude                  
+2026-05-13 13:01:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 13:00:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:59:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:58:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:57:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:56:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:55:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:54:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:53:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:52:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:51:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:50:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:49:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:48:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:47:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:46:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:45:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:44:09  morning-brief falló (Doris Capurro): t                                         
+2026-05-13 12:43:09  morning-brief falló (Doris Capurro): t                                         
+
+═══ Volumen hoy (ART) ═══
+WA recibidos:|710
+WA enviados:|1104
+Gmail eventos:|72
+Calendar eventos:|50
+Llamadas Claude:|236
+
+═══ Top 5 usuarios por actividad hoy ═══
+usuario           recibidos  enviados
+----------------  ---------  --------
+Diego             634        852     
+Hernan Fulco      25         151     
+Natali Funez      32         40      
+Santiago Bignone  7          15      
+Nicolas Kosinski  6          12      
+
+═══ Pendientes nuevos hoy ═══
+id  estado   descripcion                                                                     
+--  -------  --------------------------------------------------------------------------------
+1   cerrado  Subir web de Gabi Isola en Lovable                                              
+2   abierto  Pedir presupuesto DC Iplan                                                      
+3   abierto  Pedir presupuesto DC Telecentro                                                 
+4   abierto  Pedir presupuesto DC Claro                                                      
+5   abierto  iProt Seguridad                                                                 
+6   abierto  Espejo Subaru                                                                   
+7   cerrado  Puebas mdb                                                                      
+8   cerrado  Mati telefonos                                                                  
+9   cerrado  Diego quiere mover la DIATRES - Reunión (mañana mar 21/04) para hoy a las 5:30 P
+10  cerrado  Contactar participantes de DIATRES - Reunión (mañana mar 21/04 11am) para consul
+11  cerrado  Esperar confirmación de Carina Pubill, Romina, Agustina Acevedo y Doris Capurro 
+12  cerrado  Esperar confirmación de Carina Pubill, Romina y Agustina Acevedo para mover DIAT
+13  cerrado  Reunión DIATRES hoy 20/04: Doris y Agustina confirmaron 17:30. Carina solo puede
+14  cerrado  Esperando que Doris decida si la reunión DIATRES de hoy es a las 17 o 17:30. Una
+15  cerrado  Agendar reunión Diego + Santiago Capurro cuando confirme horario (martes 21 a ju
+16  cerrado  Responderle a Romi Rios con el link de Meet para DIATRES                        
+17  cerrado  Mandarle el link de Meet de DIATRES a Romi Rios                                 
+18  cerrado  Confirmarle a Marcos si Diego acepta la reunión y en qué horario del martes 21/0
+19  cerrado  Coordinar reunión Diego + Rubén Ward + Matías Pacheco — tema: grupo tecno — 4 o 
+20  cerrado  Doris IT Roch                                                                   
+21  cerrado  Llamar a Tazma                                                                  
+22  cerrado  Brian IONQ                                                                      
+23  cerrado  Confirmarle a Pablo Petrillo el horario de la reunión CAPAs con Diego (mañana 24
+24  cerrado  Confirmar horario con Gustavo Aragón para reunión introductoria con Diego — sema
+25  cerrado  Confirmar con Gustavo Aragón reunión introductoria con Diego — lunes 4 de mayo a
+26  cerrado  Confirmar con Gustavo Aragón reunión con Diego — opciones propuestas: lunes 4/5 
+27  cerrado  Confirmarle a Nico si se agregan cruiz@froneus.com y nyarema@froneus.com a la Ca
+28  cerrado  Nicolás Kosinski pidió sumar a cruiz@froneus.com y nyarema@froneus.com a la Capa
+29  cerrado  Confirmarle a Nicolás Kosinski si se suman cruiz@froneus.com y nyarema@froneus.c
+30  cerrado  Confirmarle a Nicolás Kosinski si se suma Sebastian Meijeira (sameijeira@froneus
+31  cerrado  Fernando tasación y entrevistas                                                 
+32  cerrado  Fulco Guevara                                                                   
+33  cerrado  Pagar a Ani                                                                     
+34  cerrado  Confirmar nuevo horario para reunión con Lucas Capurro — espero respuesta de Die
+35  cerrado  Chino pidió reserva en Farinelli para Diego — esperar confirmación de Diego con 
+36  cerrado  Sofia ofreció pedir helado a Freddo para Diego — esperar confirmación de Diego s
+37  abierto  DDJJ 2025                                                                       
+38  cerrado  Confirmar horario con Diego Ramirez Schrempp (TQA) para llamada de coordinación 
+39  cerrado  Coordinar cena con Natali Funez para el miércoles 6/5 — Diego confirmará si es l
+40  cerrado  Enviar invitación de calendario a Guillermo (g@thequantumalliance.com) para la l
+41  cerrado  Coordinar almuerzo semana del 11/5 con Gustavo Dzugala (5491151457007@c.us) y Sa
+42  cerrado  Esperar respuesta de Gustavo Dzugala y Santiago Bignone para confirmar día de al
+43  cerrado  Diego debe decidir el día del almuerzo con Gustavo y Santiago: Gustavo prefiere 
+44  cerrado  Cuando Farinelli confirme que el bagel de trucha está listo, avisarle a Diego po
+45  cerrado  Revisar: ¿qué pasa cuando un usuario no tiene acceso a la agenda de otro usuario
+46  cerrado  Responderle a Daniel Salvucci sobre el día de la reunión — él dice que pensaba q
+47  cerrado  Confirmarle a Daniel Salvucci horario para la reunión con Diego. Daniel puede ma
+48  cerrado  Confirmarle a Daniel Salvucci el horario definitivo una vez que responda: martes
+49  cerrado  Confirmar o rechazar reserva en Fico para mañana sábado 9/5 a las 20:15 (6 perso
+50  cerrado  Agregar agenda pública a María Paez                                             
+51  cerrado  Agregar agenda de cumpleaños a María Paez                                       
+52  cerrado  Responderle a Fer Boero con día y horario confirmados para reunión HR & SALES (a
+53  cerrado  Confirmarle a Fer Boero si se agenda la reunión de HR & SALES recurrente todos l
+54  cerrado  Esperando que Fer Boero confirme la duración para armar la reunión de HR & SALES
+55  cerrado  Esperar respuesta de Fer Boero: invitados a la reunión de HR & SALES recurrente 
+56  cerrado  Mandar presentación a María Micheli                                             
+57  abierto  Turno de pasaporte                                                              
+58  cerrado  Confirmarle a Natali el horario de retiro del pedido en Poch                    
+59  cerrado  Esperar respuesta de Gabriel Pacheco sobre dónde quiere almorzar el viernes 22/5
+60  cerrado  Confirmar con Diego si La Cabrera está bien para el almuerzo del viernes 22/5 co
+61  cerrado  Responderle a Ariel Quiroga (Espasa) si la diferencia por la Taos sería al conta
+
+═══ ¿PDF/attachments fueron procesados OK hoy? ═══
+timestamp            cuerpo                                                                                                                                      
+-------------------  --------------------------------------------------------------------------------------------------------------------------------------------
+2026-05-16 23:27:58  proba ahora                                                                                                                                 
+                     _Español - Brochure Global AI.pdf                                                                                                          
+
+2026-05-16 23:27:58  unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente es idéntico al historial d
+
+2026-05-16 23:19:36  Diego, tuve un problema de mi lado para procesar el PDF — no pude abrirlo. ¿Me lo podés mandar de nuevo o en otro formato (Word, texto)?    
+
+2026-05-16 23:19:15  me resumis este pdf?                                                                                                                        
+
+2026-05-16 22:24:29  (adjuntó image/jpeg, 246 KB)                                                                                                                
+                     (adjuntó image/jpeg, 257 KB)                                                                                                                
+                     (adjuntó image/jpeg, 256 KB)                                                                                                                
+                     (adjuntó image/jpeg, 214 KB)                                                                                                                
+                     (adjuntó image/jpeg, 221                                                                                                                    
+
+2026-05-16 22:24:29  unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · Pushname 'Diego Paez', ID @lid (dispositivo vinculado de WhatsApp), y los adjuntos 
+
+2026-05-16 22:15:36  (adjuntó image/jpeg, 246 KB)                                                                                                                
+                     (adjuntó image/jpeg, 257 KB)                                                                                                                
+                     (adjuntó image/jpeg, 256 KB)                                                                                                                
+                     (adjuntó image/jpeg, 214 KB)                                                                                                                
+                     (adjuntó image/jpeg, 221                                                                                                                    
+
+2026-05-16 13:22:57  Serán 13 encuentros virtuales, divididos en 3 módulos más 2 sesiones de networking. En adjunto encontrarás el brochure con la descripción de
+
+2026-05-16 13:22:47  Doris, parece que el PDF no me llegó bien — no pude abrirlo. ¿Podés reenviarlo? Así lo proceso y te agendo todas las fechas.                
+
+2026-05-16 13:22:28  podes extraer todas las fechas del curso, de este pdf para agendarmelas                                                                     
+
+# exit=0
