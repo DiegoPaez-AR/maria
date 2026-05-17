@@ -1,0 +1,339 @@
+# ejecutado: 2026-05-17T18:54:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ nginx -v ═══"
+#   nginx -v 2>&1
+#   
+#   echo ""
+#   echo "═══ Server blocks habilitados ═══"
+#   ls -la /etc/nginx/sites-enabled/ /etc/nginx/conf.d/ 2>&1
+#   
+#   echo ""
+#   echo "═══ Server blocks (config completa) ═══"
+#   for f in /etc/nginx/sites-enabled/* /etc/nginx/conf.d/*.conf; do
+#     [ -f "$f" ] || continue
+#     echo "─── $f ───"
+#     cat "$f"
+#     echo ""
+#   done
+#   
+#   echo "═══ nginx -T (config completa expandida) ═══"
+#   nginx -T 2>&1 | head -200
+#   
+#   echo ""
+#   echo "═══ DocRoots existentes en /var/www/ ═══"
+#   ls -la /var/www/ 2>&1
+#   
+#   echo ""
+#   echo "═══ Verificación: cosas que escuchan en puertos web ═══"
+#   ss -tlnp 2>/dev/null | grep -E ':80\b|:443\b'
+#   
+#   echo ""
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ nginx -v ═══
+nginx version: nginx/1.24.0 (Ubuntu)
+
+═══ Server blocks habilitados ═══
+/etc/nginx/conf.d/:
+total 8
+drwxr-xr-x 2 root root 4096 Feb  9 11:03 .
+drwxr-xr-x 8 root root 4096 May 16 06:17 ..
+
+/etc/nginx/sites-enabled/:
+total 8
+drwxr-xr-x 2 root root 4096 Apr 26 15:52 .
+drwxr-xr-x 8 root root 4096 May 16 06:17 ..
+lrwxrwxrwx 1 root root   45 Apr 26 15:52 veritas-trace.conf -> /etc/nginx/sites-available/veritas-trace.conf
+
+═══ Server blocks (config completa) ═══
+─── /etc/nginx/sites-enabled/veritas-trace.conf ───
+# Landing en / (estática, /var/www/veritas-trace)
+# POC en /POC/ (proxy_pass al uvicorn 127.0.0.1:8000, FastAPI con --root-path /POC)
+server {
+    server_name veritas-trace.com www.veritas-trace.com;
+
+    root /var/www/veritas-trace;
+    index index.html;
+
+    access_log /var/log/nginx/veritas-trace.access.log;
+    error_log  /var/log/nginx/veritas-trace.error.log;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml application/json;
+    gzip_min_length 256;
+
+    # Redirect /POC → /POC/ (sin slash final)
+    location = /POC {
+        return 301 /POC/;
+    }
+
+    # POC: proxy al uvicorn — el trailing slash en proxy_pass strippa /POC del path
+    location /POC/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Prefix /POC;
+        proxy_redirect off;
+        proxy_buffering off;
+    }
+
+    # Assets versionados de la landing (cache largo, hash en filename)
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # SPA: cualquier ruta no encontrada → index.html de la landing
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.veritas-trace.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.veritas-trace.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = www.veritas-trace.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name veritas-trace.com www.veritas-trace.com;
+    return 404; # managed by Certbot
+
+
+}
+═══ nginx -T (config completa expandida) ═══
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+# configuration file /etc/nginx/nginx.conf:
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+error_log /var/log/nginx/error.log;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+	worker_connections 768;
+	# multi_accept on;
+}
+
+http {
+
+	##
+	# Basic Settings
+	##
+
+	sendfile on;
+	tcp_nopush on;
+	types_hash_max_size 2048;
+	# server_tokens off;
+
+	# server_names_hash_bucket_size 64;
+	# server_name_in_redirect off;
+
+	include /etc/nginx/mime.types;
+	default_type application/octet-stream;
+
+	##
+	# SSL Settings
+	##
+
+	ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3; # Dropping SSLv3, ref: POODLE
+	ssl_prefer_server_ciphers on;
+
+	##
+	# Logging Settings
+	##
+
+	access_log /var/log/nginx/access.log;
+
+	##
+	# Gzip Settings
+	##
+
+	gzip on;
+
+	# gzip_vary on;
+	# gzip_proxied any;
+	# gzip_comp_level 6;
+	# gzip_buffers 16 8k;
+	# gzip_http_version 1.1;
+	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+	##
+	# Virtual Host Configs
+	##
+
+	include /etc/nginx/conf.d/*.conf;
+	include /etc/nginx/sites-enabled/*;
+}
+
+
+#mail {
+#	# See sample authentication script at:
+#	# http://wiki.nginx.org/ImapAuthenticateWithApachePhpScript
+#
+#	# auth_http localhost/auth.php;
+#	# pop3_capabilities "TOP" "USER";
+#	# imap_capabilities "IMAP4rev1" "UIDPLUS";
+#
+#	server {
+#		listen     localhost:110;
+#		protocol   pop3;
+#		proxy      on;
+#	}
+#
+#	server {
+#		listen     localhost:143;
+#		protocol   imap;
+#		proxy      on;
+#	}
+#}
+
+# configuration file /etc/nginx/mime.types:
+
+types {
+    text/html                                        html htm shtml;
+    text/css                                         css;
+    text/xml                                         xml;
+    image/gif                                        gif;
+    image/jpeg                                       jpeg jpg;
+    application/javascript                           js;
+    application/atom+xml                             atom;
+    application/rss+xml                              rss;
+
+    text/mathml                                      mml;
+    text/plain                                       txt;
+    text/vnd.sun.j2me.app-descriptor                 jad;
+    text/vnd.wap.wml                                 wml;
+    text/x-component                                 htc;
+
+    image/avif                                       avif;
+    image/png                                        png;
+    image/svg+xml                                    svg svgz;
+    image/tiff                                       tif tiff;
+    image/vnd.wap.wbmp                               wbmp;
+    image/webp                                       webp;
+    image/x-icon                                     ico;
+    image/x-jng                                      jng;
+    image/x-ms-bmp                                   bmp;
+
+    font/woff                                        woff;
+    font/woff2                                       woff2;
+
+    application/java-archive                         jar war ear;
+    application/json                                 json;
+    application/mac-binhex40                         hqx;
+    application/msword                               doc;
+    application/pdf                                  pdf;
+    application/postscript                           ps eps ai;
+    application/rtf                                  rtf;
+    application/vnd.apple.mpegurl                    m3u8;
+    application/vnd.google-earth.kml+xml             kml;
+    application/vnd.google-earth.kmz                 kmz;
+    application/vnd.ms-excel                         xls;
+    application/vnd.ms-fontobject                    eot;
+    application/vnd.ms-powerpoint                    ppt;
+    application/vnd.oasis.opendocument.graphics      odg;
+    application/vnd.oasis.opendocument.presentation  odp;
+    application/vnd.oasis.opendocument.spreadsheet   ods;
+    application/vnd.oasis.opendocument.text          odt;
+    application/vnd.openxmlformats-officedocument.presentationml.presentation
+                                                     pptx;
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                                                     xlsx;
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                                                     docx;
+    application/vnd.wap.wmlc                         wmlc;
+    application/wasm                                 wasm;
+    application/x-7z-compressed                      7z;
+    application/x-cocoa                              cco;
+    application/x-java-archive-diff                  jardiff;
+    application/x-java-jnlp-file                     jnlp;
+    application/x-makeself                           run;
+    application/x-perl                               pl pm;
+    application/x-pilot                              prc pdb;
+    application/x-rar-compressed                     rar;
+    application/x-redhat-package-manager             rpm;
+    application/x-sea                                sea;
+    application/x-shockwave-flash                    swf;
+    application/x-stuffit                            sit;
+    application/x-tcl                                tcl tk;
+    application/x-x509-ca-cert                       der pem crt;
+    application/x-xpinstall                          xpi;
+    application/xhtml+xml                            xhtml;
+    application/xspf+xml                             xspf;
+    application/zip                                  zip;
+
+    application/octet-stream                         bin exe dll;
+    application/octet-stream                         deb;
+    application/octet-stream                         dmg;
+    application/octet-stream                         iso img;
+    application/octet-stream                         msi msp msm;
+
+    audio/midi                                       mid midi kar;
+    audio/mpeg                                       mp3;
+    audio/ogg                                        ogg;
+    audio/x-m4a                                      m4a;
+    audio/x-realaudio                                ra;
+
+    video/3gpp                                       3gpp 3gp;
+    video/mp2t                                       ts;
+    video/mp4                                        mp4;
+    video/mpeg                                       mpeg mpg;
+    video/ogg                                        ogv;
+    video/quicktime                                  mov;
+    video/webm                                       webm;
+    video/x-flv                                      flv;
+    video/x-m4v                                      m4v;
+    video/x-matroska                                 mkv;
+    video/x-mng                                      mng;
+    video/x-ms-asf                                   asx asf;
+    video/x-ms-wmv                                   wmv;
+    video/x-msvideo                                  avi;
+}
+
+# configuration file /etc/nginx/sites-enabled/veritas-trace.conf:
+# Landing en / (estática, /var/www/veritas-trace)
+# POC en /POC/ (proxy_pass al uvicorn 127.0.0.1:8000, FastAPI con --root-path /POC)
+server {
+    server_name veritas-trace.com www.veritas-trace.com;
+
+    root /var/www/veritas-trace;
+    index index.html;
+
+    access_log /var/log/nginx/veritas-trace.access.log;
+
+═══ DocRoots existentes en /var/www/ ═══
+total 16
+drwxr-xr-x  4 root     root     4096 Apr 26 15:46 .
+drwxr-xr-x 14 root     root     4096 Apr 26 15:46 ..
+drwxr-xr-x  2 root     root     4096 Apr 26 15:46 html
+drwxr-xr-x  2 www-data www-data 4096 May 10 16:52 veritas-trace
+
+═══ Verificación: cosas que escuchan en puertos web ═══
+LISTEN 0      511          0.0.0.0:443        0.0.0.0:*    users:(("nginx",pid=600308,fd=8),("nginx",pid=600307,fd=8),("nginx",pid=600305,fd=8))   
+LISTEN 0      511          0.0.0.0:80         0.0.0.0:*    users:(("nginx",pid=600308,fd=9),("nginx",pid=600307,fd=9),("nginx",pid=600305,fd=9))   
+LISTEN 0      511             [::]:443           [::]:*    users:(("nginx",pid=600308,fd=7),("nginx",pid=600307,fd=7),("nginx",pid=600305,fd=7))   
+LISTEN 0      511             [::]:80            [::]:*    users:(("nginx",pid=600308,fd=10),("nginx",pid=600307,fd=10),("nginx",pid=600305,fd=10))
+
+═══ DONE ═══
+
+# exit=0
