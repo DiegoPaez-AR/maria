@@ -1,0 +1,161 @@
+# ejecutado: 2026-05-17T16:21:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   cd /root/secretaria
+#   
+#   echo "═══ 1) Tablas nuevas existen en DB ═══"
+#   sqlite3 "$MARIA_DB" ".tables" | tr ' ' '\n' | grep -E 'follow_ups|notas_contacto' | head
+#   
+#   echo ""
+#   echo "═══ 2) Schema de follow_ups y notas_contacto ═══"
+#   sqlite3 "$MARIA_DB" "PRAGMA table_info(follow_ups)"
+#   echo ""
+#   sqlite3 "$MARIA_DB" "PRAGMA table_info(notas_contacto)"
+#   
+#   echo ""
+#   echo "═══ 3) Contenido inicial ═══"
+#   echo "follow_ups:"
+#   sqlite3 "$MARIA_DB" "SELECT COUNT(*) AS n FROM follow_ups"
+#   echo "notas_contacto:"
+#   sqlite3 -header -column "$MARIA_DB" "SELECT n.id, u.nombre AS user, c.nombre AS contacto, substr(n.nota,1,80) AS nota_excerpt, n.actualizado FROM notas_contacto n JOIN usuarios u ON u.id=n.usuario_id JOIN contactos c ON c.id=n.contacto_id ORDER BY n.id DESC LIMIT 10"
+#   
+#   echo ""
+#   echo "═══ 4) Test de mem.buscarEnHistorial ═══"
+#   timeout 20s node -e "
+#   const mem = require('./memory');
+#   const r = mem.buscarEnHistorial({ usuarioId: 1, query: 'Movistar', dias: 60, max: 5 });
+#   console.log('  resultados:', r.length);
+#   r.slice(0,3).forEach(e => console.log(\`  - [\${e.timestamp}] \${e.canal}/\${e.direccion} \${e.de||''}: \${(e.cuerpo||'').slice(0,80)}\`));
+#   "
+#   
+#   echo ""
+#   echo "═══ 5) Test de providers.forUser y forMaria ═══"
+#   timeout 20s node -e "
+#   (async () => {
+#     const providers = require('./providers');
+#     const usuarios = require('./usuarios');
+#     const diego = usuarios.obtener(1);
+#     const p = await providers.forUser(diego);
+#     console.log('  forUser(Diego).kind:', p.kind);
+#     const m = await providers.forMaria();
+#     console.log('  forMaria().kind:', m.kind);
+#     const cid = await m.getMariaCalendarId();
+#     console.log('  forMaria.getMariaCalendarId:', cid);
+#   })();
+#   "
+#   
+#   echo ""
+#   echo "═══ 6) Test de vault (si MARIA_VAULT_KEY seteada) ═══"
+#   if [ -n "$MARIA_VAULT_KEY" ]; then
+#     node -e "console.log('  vault.autoTest:', JSON.stringify(require('./vault').autoTest()))"
+#   else
+#     echo "  MARIA_VAULT_KEY no seteada (esperado, vault.js no se usa todavía)"
+#   fi
+#   
+#   echo ""
+#   echo "═══ 7) healthcheck end-to-end ═══"
+#   bash ops/healthcheck.sh
+#   echo "  exit: $?"
+#   
+#   echo ""
+#   echo "═══ 8) Verificar loops registrados en pm2 ═══"
+#   pm2 logs maria-paez --lines 60 --nostream 2>&1 | tac | awk '/iniciando…/{p=1} p' | tac | grep -E 'arrancando|activo,' | tail -20
+#   
+#   echo ""
+#   echo "═══ 9) Recordar primera nota curada generada ═══"
+#   sqlite3 "$MARIA_DB" "SELECT 'Notas curadas hasta ahora: ' || COUNT(*) FROM notas_contacto"
+
+# ───── output ─────
+═══ 1) Tablas nuevas existen en DB ═══
+follow_ups
+notas_contacto
+
+═══ 2) Schema de follow_ups y notas_contacto ═══
+0|id|INTEGER|0||1
+1|creado|DATETIME|0|CURRENT_TIMESTAMP|0
+2|usuario_id|INTEGER|1||0
+3|descripcion|TEXT|1||0
+4|esperando_de|TEXT|1||0
+5|esperando_canal|TEXT|1||0
+6|vence_en|TEXT|1||0
+7|estado|TEXT|1|'abierto'|0
+8|disparado_en|DATETIME|0||0
+9|cerrado_en|DATETIME|0||0
+10|metadata_json|TEXT|0||0
+
+0|id|INTEGER|0||1
+1|usuario_id|INTEGER|1||0
+2|contacto_id|INTEGER|1||0
+3|nota|TEXT|1||0
+4|eventos_sintetizados_hasta|INTEGER|1|0|0
+5|creado|DATETIME|0|CURRENT_TIMESTAMP|0
+6|actualizado|DATETIME|0|CURRENT_TIMESTAMP|0
+
+═══ 3) Contenido inicial ═══
+follow_ups:
+0
+notas_contacto:
+id  user   contacto            nota_excerpt                                                                      actualizado        
+--  -----  ------------------  --------------------------------------------------------------------------------  -------------------
+15  Diego  Matias Pacheco      Matías Pacheco es un contacto profesional con quien tengo al menos una reunión c  2026-05-17 19:20:54
+14  Diego  María José Laiseca  María José Laiseca trabaja en iPlan y llegó a mi radar a través de Natali Funez,  2026-05-17 19:20:28
+13  Diego  Marcos              Marcos es alguien que me contacta directamente por WhatsApp para coordinar reuni  2026-05-17 19:20:05
+12  Diego  Hernan Fulco        Hernán Fulco es un contacto al que le extendí los servicios de María como secret  2026-05-17 19:19:43
+11  Diego  Gustavo Dzugala     Gustavo Dzugala es un contacto con quien mantengo una relación que al menos incl  2026-05-17 19:19:14
+10  Diego  Fernando Boero      Fernando Boero es un contacto de trabajo con quien tengo reuniones periódicas de  2026-05-17 19:18:45
+9   Diego  FC                  Marcos es alguien que se contactó por primera vez el 20 de abril por WhatsApp qu  2026-05-17 19:18:18
+8   Diego  Farinelli Arroyo    Farinelli Arroyo es un local gastronómico —parece un restorán o deli— con el que  2026-05-17 19:17:52
+7   Diego  F A R I N E L L I   Farinelli es un restaurante o lugar de comida con el que tengo relación frecuent  2026-05-17 19:16:39
+6   Diego  Doris Capurro       Doris Capurro es alguien con quien trabajo de manera cercana, probablemente en e  2026-05-17 19:16:09
+
+═══ 4) Test de mem.buscarEnHistorial ═══
+  resultados: 5
+  - [2026-05-15 13:00:10] whatsapp/saliente 137456250806423@lid: Hola Hernán, ¿podés pasarme el tráfico cursado al 15 en Movistar Argentina? Nece
+  - [2026-05-15 12:03:09] whatsapp/saliente 137456250806423@lid: Hola Hernán, ¿me podés decir cuánto tráfico nacional y cuánto tráfico internacio
+  - [2026-05-15 12:00:09] whatsapp/saliente 137456250806423@lid: Hola Hernán, de parte de Diego: ¿me podés pasar cuánto tráfico nacional y cuánto
+
+═══ 5) Test de providers.forUser y forMaria ═══
+  forUser(Diego).kind: google
+  forMaria().kind: google
+  forMaria.getMariaCalendarId: maria.paez.secre@gmail.com
+
+═══ 6) Test de vault (si MARIA_VAULT_KEY seteada) ═══
+  MARIA_VAULT_KEY no seteada (esperado, vault.js no se usa todavía)
+
+═══ 7) healthcheck end-to-end ═══
+{
+  "ts": "2026-05-17T19:21:08Z",
+  "instance": "maria-paez",
+  "overall_ok": true,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":933456,"restarts":34} }
+    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":64} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":2752} }
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":7} }
+    ,"vault": { "ok": "skipped", "detail": {"reason":"MARIA_VAULT_KEY no seteada (vault no usado todavía)"} }
+  }
+}
+  exit: 0
+
+═══ 8) Verificar loops registrados en pm2 ═══
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 16:13:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 16:13:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 16:13:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 16:13:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 16:13:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+
+═══ 9) Recordar primera nota curada generada ═══
+Notas curadas hasta ahora: 15
+
+# exit=0
