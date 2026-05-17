@@ -1,0 +1,71 @@
+# ejecutado: 2026-05-17T19:04:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ tipo_original distintos en últimos 30 días (canal=whatsapp) ═══"
+#   sqlite3 -header -column "$DB" "SELECT tipo_original, COUNT(*) AS n FROM eventos WHERE canal='whatsapp' AND timestamp >= datetime('now','-30 days') GROUP BY tipo_original ORDER BY n DESC;"
+#   
+#   echo ""
+#   echo "═══ Eventos con tipo_original vcard/multi_vcard en últimos 30 días ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), direccion, substr(de,1,28) AS de, tipo_original, substr(cuerpo,1,150) AS msg FROM eventos WHERE canal='whatsapp' AND tipo_original LIKE '%vcard%' AND timestamp >= datetime('now','-30 days') ORDER BY timestamp DESC LIMIT 30;"
+#   
+#   echo ""
+#   echo "═══ Eventos sistema con cuerpo 'contacto vcard' (lo que loggea el handler) ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), substr(cuerpo,1,200) AS msg FROM eventos WHERE canal='sistema' AND cuerpo LIKE '%contacto vcard%' AND timestamp >= datetime('now','-30 days') ORDER BY timestamp DESC LIMIT 20;"
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 5000 — menciones de vcard, multi_vcard, vCards ═══"
+#   pm2 logs maria-paez --lines 5000 --nostream 2>&1 | grep -iE "vcard|multi_vcard|vCards|FN:|TEL:" | tail -30
+
+# ───── output ─────
+═══ tipo_original distintos en últimos 30 días (canal=whatsapp) ═══
+tipo_original  n   
+-------------  ----
+               1385
+chat           467 
+ptt            75  
+image          4   
+document       2   
+forward        1   
+
+═══ Eventos con tipo_original vcard/multi_vcard en últimos 30 días ═══
+
+═══ Eventos sistema con cuerpo 'contacto vcard' (lo que loggea el handler) ═══
+datetime(timestamp)  msg                                                               
+-------------------  ------------------------------------------------------------------
+2026-05-17 19:48:56  contacto vcard (privado): Santiago Bonfiglio → 5491128616224@c.us 
+2026-05-17 19:47:01  contacto vcard (privado): Alejandro Saroka → 5491131801917@c.us   
+2026-05-17 19:33:58  contacto vcard (privado): Kichi → 5491151775195@c.us              
+2026-05-17 19:33:43  contacto vcard (privado): Nicolas Sujoy → 5491155722443@c.us      
+2026-05-17 19:32:47  contacto vcard (privado): Poyo → 5491144096187@c.us               
+2026-05-17 19:32:32  contacto vcard (privado): Cholga → 5491144788271@c.us             
+2026-05-17 19:26:53  contacto vcard (privado): Seba Pittaluga → 5491151462211@c.us     
+2026-05-17 19:23:04  contacto vcard (privado): Santiago Bonfiglio → 5491128616224@c.us 
+2026-05-15 16:33:16  contacto vcard (privado): Gabriel Pacheco → 5491140402319@c.us    
+2026-05-15 13:59:02  contacto vcard (privado): Sebastian Ameijeira → 5491163004389@c.us
+2026-05-13 17:06:47  contacto vcard (privado): Damian Maldini → 5491154083537@c.us     
+2026-05-13 17:06:19  contacto vcard (privado): Damian Maldini → 5491154083537@c.us     
+2026-05-13 12:42:22  contacto vcard (privado): Walter Vera → 5491138433288@c.us        
+2026-05-13 12:41:01  contacto vcard (privado): Nicolas Kosinski → 5491150080522@c.us   
+2026-05-12 23:10:50  contacto vcard (privado): Poch → 5491137646922@c.us               
+2026-05-12 13:58:25  contacto vcard (privado): Gabriela Echaniz → 5491165286555@c.us   
+2026-05-08 23:58:16  contacto vcard: Fico restaurante → 5491134897992@c.us             
+2026-05-08 23:28:50  contacto vcard: Hernan Arcidiacono → 5491150255106@c.us           
+2026-05-08 19:14:59  contacto vcard: Daniel Salvucci → 5491157694408@c.us              
+2026-05-08 00:17:27  contacto vcard: Rodrigo Canosa → 5491157276026@c.us               
+
+═══ pm2 logs últimas 5000 — menciones de vcard, multi_vcard, vCards ═══
+0|maria-pa | 2026-05-17 16:23:04: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+0|maria-pa | 2026-05-17 16:26:53: 📒 [WA vcard/Nicolas Kosinski] Seba Pittaluga → 5491151462211@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:32: 📒 [WA vcard/Nicolas Kosinski] Cholga → 5491144788271@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:47: 📒 [WA vcard/Nicolas Kosinski] Poyo → 5491144096187@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:43: 📒 [WA vcard/Nicolas Kosinski] Nicolas Sujoy → 5491155722443@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:58: 📒 [WA vcard/Nicolas Kosinski] Kichi → 5491151775195@c.us (privado)
+0|maria-pa | 2026-05-17 16:47:01: 📒 [WA vcard/Nicolas Kosinski] Alejandro Saroka → 5491131801917@c.us (privado)
+0|maria-pa | 2026-05-17 16:48:56: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+
+# exit=0
