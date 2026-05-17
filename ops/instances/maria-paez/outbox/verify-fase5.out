@@ -1,0 +1,54 @@
+# ejecutado: 2026-05-17T20:38:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   source /root/secretaria/config/instances/maria-paez.conf 2>/dev/null
+#   TOKEN_PATH="${GOOGLE_TOKEN_PATH:-/root/secretaria/state/maria-paez/token.json}"
+#   
+#   echo "═══ pm2 ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no")'
+#   
+#   echo ""
+#   echo "═══ Files del token ═══"
+#   ls -la "$TOKEN_PATH" "${TOKEN_PATH}.enc" "${TOKEN_PATH}".bak.* 2>&1 | head -10
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 80 — auto-migración / google ═══"
+#   pm2 logs maria-paez --lines 100 --nostream 2>&1 | grep -iE "auto-migración|refresh_token|google\]|vault" | tail -25
+#   
+#   echo ""
+#   echo "═══ Healthcheck ═══"
+#   bash /root/secretaria/ops/healthcheck.sh
+
+# ───── output ─────
+═══ pm2 ═══
+pid: 982768 restart: 44
+
+═══ Files del token ═══
+ls: cannot access '/root/secretaria/state/maria-paez/token.json': No such file or directory
+-rw-r--r--+ 1 root root 574 May  8 11:54 /root/secretaria/state/maria-paez/token.json.bak.20260508-115436
+-rw-r--r--  1 root root 574 May 15 15:06 /root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1806
+-rw-r--r--  1 root root 599 May 15 15:19 /root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1819
+-rw-r--r--+ 1 root root 561 May 15 15:19 /root/secretaria/state/maria-paez/token.json.bak.2026-05-17T2337
+-rw-------  1 root root 760 May 17 20:37 /root/secretaria/state/maria-paez/token.json.enc
+
+═══ pm2 logs últimas 80 — auto-migración / google ═══
+0|maria-pa | 2026-05-17 20:37:10: [google] auto-migración: token cifrado → /root/secretaria/state/maria-paez/token.json.enc; plano respaldado en /root/secretaria/state/maria-paez/token.json.bak.2026-05-17T2337
+
+═══ Healthcheck ═══
+{
+  "ts": "2026-05-17T23:38:04Z",
+  "instance": "maria-paez",
+  "overall_ok": true,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":982768,"restarts":44} }
+    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":59} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":2924} }
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":7} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+  }
+}
+
+# exit=0
