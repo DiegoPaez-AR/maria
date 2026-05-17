@@ -1,0 +1,43 @@
+# Template de configuración para una nueva instancia.
+#
+# Uso: cuando creés una instancia nueva, copiá este archivo a
+#   /root/secretaria/config/instances/<slug>.conf
+# (con el slug que querés usar como nombre del proceso pm2) y reemplazá los
+# valores. Los .conf reales NO se commitean al repo — viven solo en el VPS
+# para que los secretos (MARIA_VAULT_KEY, etc.) no terminen en git history.
+#
+# Formato KEY=VALUE (sin espacios alrededor del =, valores entre comillas si
+# tienen espacios). Comentarios con #.
+#
+# Cargado por ecosystem.config.js (al arrancar pm2) y por ops/cron-master.sh.
+
+# ─── Identidad ───────────────────────────────────────────────────────────
+ASISTENTE_NOMBRE="Nombre Apellido"
+ASISTENTE_SLUG=nombre-apellido
+ASISTENTE_FROM_EMAIL=cuenta@gmail.com
+ASISTENTE_TZ=America/Argentina/Buenos_Aires
+
+# ─── Owner ────────────────────────────────────────────────────────────────
+OWNER_NOMBRE=NombreOwner
+OWNER_EMAIL=owner@dominio
+OWNER_WA=549XXXXXXXXXX@c.us
+OWNER_CALENDAR_ID=owner@dominio
+
+# ─── Cap de usuarios (vacío = ilimitado) ─────────────────────────────────
+# ASISTENTE_MAX_USUARIOS=10
+
+# ─── Paths de estado ─────────────────────────────────────────────────────
+MARIA_DB=/root/secretaria/state/<slug>/db/maria.sqlite
+GOOGLE_TOKEN_PATH=/root/secretaria/state/<slug>/token.json
+GOOGLE_CRED_PATH=/root/secretaria/state/<slug>/credentials.json
+WA_AUTH_DIR=/root/secretaria/state/<slug>/.wwebjs_auth
+
+# ─── Tuning de loops ─────────────────────────────────────────────────────
+WA_DEBOUNCE_MS=10000
+GMAIL_POLL_MS=300000
+CALENDAR_WATCH_MS=28800000
+
+# ─── Vault (secret — cifra calendar_auth_json de usuarios non-Google) ────
+# Generar con: openssl rand -hex 32
+# IMPORTANTE: este valor NUNCA va al git. El .conf está en .gitignore.
+# MARIA_VAULT_KEY=<64 chars hex>

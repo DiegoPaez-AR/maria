@@ -57,3 +57,8 @@ contactos.json
 ops/.cron.log
 # Multi-instance: state per-instancia (DBs, sesiones WA, tokens). NUNCA en git.
 state/
+
+# Config per-instancia: los .conf reales viven solo en el VPS porque pueden
+# tener secretos (MARIA_VAULT_KEY, etc.). Solo el template queda en git.
+config/instances/*.conf
+!config/instances/_template.conf.example
