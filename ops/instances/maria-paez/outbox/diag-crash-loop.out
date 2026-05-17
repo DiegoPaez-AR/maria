@@ -1,0 +1,141 @@
+# ejecutado: 2026-05-17T16:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 logs últimos 50 (en vivo) ═══"
+#   pm2 logs maria-paez --lines 50 --nostream 2>&1 | tail -60
+#   
+#   echo ""
+#   echo "═══ pm2 jlist info detallada ═══"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name') != 'maria-paez': continue
+#       e = p.get('pm2_env', {})
+#       print('  status:', e.get('status'))
+#       print('  restarts:', e.get('restart_time'))
+#       print('  unstable_restarts:', e.get('unstable_restarts'))
+#       print('  prev_restart_delay:', e.get('prev_restart_delay'))
+#       print('  exit_code:', e.get('exit_code'))
+#   "
+#   
+#   echo ""
+#   echo "═══ Error log de pm2 ═══"
+#   tail -40 /root/.pm2/logs/maria-paez-error.log 2>&1
+
+# ───── output ─────
+═══ pm2 logs últimos 50 (en vivo) ═══
+0|maria-pa | 2026-05-17 16:07:16:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+0|maria-pa | 2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+0|maria-pa | 2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+0|maria-pa | 2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+
+/root/.pm2/logs/maria-paez-out.log last 50 lines:
+0|maria-pa | 2026-05-17 16:08:04:   Usuarios:   11 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward
+0|maria-pa | 2026-05-17 16:08:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 16:08:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 16:08:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 16:08:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 16:08:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 16:08:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 16:08:07: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 16:08:07: [WA authenticated]
+0|maria-pa | 2026-05-17 16:08:08: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 16:08:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 16:08:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 16:08:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 16:08:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 16:08:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 16:13:02: 
+0|maria-pa | 2026-05-17 16:13:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-17 16:13:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 16:13:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-17 16:13:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-17 16:13:04:   Usuarios:   11 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward
+0|maria-pa | 2026-05-17 16:13:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 16:13:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 16:13:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 16:13:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 16:13:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 16:13:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 16:13:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 16:13:08: [WA authenticated]
+0|maria-pa | 2026-05-17 16:13:08: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 16:13:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 16:13:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 16:13:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 16:13:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 16:13:08: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 16:13:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-17 16:14:01: [memoria-curada] Diego × Agustina Acevedo: nota actualizada (5 eventos nuevos, 2023 chars)
+
+
+═══ pm2 jlist info detallada ═══
+  status: online
+  restarts: 33
+  unstable_restarts: 0
+  prev_restart_delay: 0
+  exit_code: 130
+
+═══ Error log de pm2 ═══
+2026-05-17 16:07:15:                                                                                                                                                                                                                                                                                                                                                       ^^^^^
+2026-05-17 16:07:15: 
+2026-05-17 16:07:15: SyntaxError: Unexpected identifier
+2026-05-17 16:07:15:     at internalCompileFunction (node:internal/vm:73:18)
+2026-05-17 16:07:15:     at wrapSafe (node:internal/modules/cjs/loader:1274:20)
+2026-05-17 16:07:15:     at Module._compile (node:internal/modules/cjs/loader:1320:27)
+2026-05-17 16:07:15:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+2026-05-17 16:07:15:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+2026-05-17 16:07:15:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+2026-05-17 16:07:15:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+2026-05-17 16:07:15:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+2026-05-17 16:07:15:     at require (node:internal/modules/helpers:177:18)
+2026-05-17 16:07:15:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
+2026-05-17 16:07:15:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
+2026-05-17 16:07:15:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+2026-05-17 16:07:15:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+2026-05-17 16:07:15:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+2026-05-17 16:07:15:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+2026-05-17 16:07:15:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+2026-05-17 16:07:16: /root/secretaria/prompt-builder.js:558
+2026-05-17 16:07:16:       // Cruza los calendars de varios usuarios actuales (solo gente que comparte calendar con Maria — terceros NO, a esos los invitás aparte). Devuelve hasta 15 slots libres comunes en ventana laboral (9-19 default, ajustable). Usalo cuando el user pide "buscá un horario común con X e Y" o "cuándo podemos juntarnos". El resultado incluye `slots: [{start, end}]` que vos formatées en lenguaje natural. Si algún usuario está en `no_encontrados` o `sin_calendar`, decíselo al user y pedile la disponibilidad por otra vía.
+2026-05-17 16:07:16:                                                                                                                                                                                                                                                                                                                                                       ^^^^^
+2026-05-17 16:07:16: 
+2026-05-17 16:07:16: SyntaxError: Unexpected identifier
+2026-05-17 16:07:16:     at internalCompileFunction (node:internal/vm:73:18)
+2026-05-17 16:07:16:     at wrapSafe (node:internal/modules/cjs/loader:1274:20)
+2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1320:27)
+2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+2026-05-17 16:07:16:     at require (node:internal/modules/helpers:177:18)
+2026-05-17 16:07:16:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
+2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
+2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+
+# exit=0
