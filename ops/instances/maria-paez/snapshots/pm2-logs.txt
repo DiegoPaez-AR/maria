@@ -1,33 +1,3 @@
-0|maria-pa | 2026-05-17 16:19:12: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=26, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2} remitente=34342575317160@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-17 16:19:14: [memoria-curada] Diego × Gustavo Dzugala: nota actualizada (3 eventos nuevos, 2142 chars)
-0|maria-pa | 2026-05-17 16:19:39: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el mensaje sobre cotizaciones de autos (Honda, Subaru, VW, Volvo) coincide exactamente con gestiones del historial del owner, y el mensaje anterior 'me pasas la agenda de manana pf?' aparece simultáneamente en el historial WA María ↔ remitente y en el historial WA María ↔ Diego; la diferencia es el sufijo @lid (linked device) en lugar de @c.us, indicando que Diego escribe desde un dispositivo vinculado.
-0|maria-pa | 2026-05-17 16:19:43: [memoria-curada] Diego × Hernan Fulco: nota actualizada (4 eventos nuevos, 1956 chars)
-0|maria-pa | 2026-05-17 16:20:03: [claude-client] consulta buscar_en_historial("Subaru cotizacion Crosstrek") → 0 resultados
-0|maria-pa | 2026-05-17 16:20:03: [claude-client] consulta buscar_en_historial("Espasa VW Volkswagen Taos cotizacion") → 0 resultados
-0|maria-pa | 2026-05-17 16:20:03: [claude-client] consulta buscar_en_historial("Volvo EX-30 cotizacion") → 0 resultados
-0|maria-pa | 2026-05-17 16:20:03: [claude-client] consulta buscar_en_historial("Honda HRV cotizacion") → 0 resultados
-0|maria-pa | 2026-05-17 16:20:05: [memoria-curada] Diego × Marcos: nota actualizada (7 eventos nuevos, 1827 chars)
-0|maria-pa | 2026-05-17 16:20:28: [memoria-curada] Diego × María José Laiseca: nota actualizada (3 eventos nuevos, 1740 chars)
-0|maria-pa | 2026-05-17 16:20:33: [WA →usr] Diego (34342575317160@lid): Las búsquedas en el historial no me devolvieron registros de respuestas de ninguna de las cuatro. Lo que sí tengo:
-0|maria-pa | 2026-05-17 16:20:33: 
-0|maria-pa | 2026-05-17 16:20:33: *Honda HRV EXL* — les escribí anoche a las 1
-0|maria-pa | 2026-05-17 16:20:33: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
-0|maria-pa | 2026-05-17 16:20:54: [memoria-curada] Diego × Matias Pacheco: nota actualizada (4 eventos nuevos, 2056 chars)
-0|maria-pa | 2026-05-17 16:21:02: 
-0|maria-pa | 2026-05-17 16:21:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-17 16:21:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-17 16:21:05: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-05-17 16:21:05:   Owner:      Diego (id=1)
-0|maria-pa | 2026-05-17 16:21:05:   Usuarios:   11 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward
-0|maria-pa | 2026-05-17 16:21:05:   Gmail poll: cada 300s
-0|maria-pa | 2026-05-17 16:21:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-17 16:21:05: ✓ whisper OK
-0|maria-pa | 2026-05-17 16:21:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-05-17 16:21:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-05-17 16:21:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-05-17 16:21:09: [WA authenticated]
-0|maria-pa | 2026-05-17 16:21:10: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-05-17 16:21:11: ✅ [WA ready] Maria conectada
 0|maria-pa | 2026-05-17 16:21:11: ▸ arrancando poll de Gmail (cada 300s)
 0|maria-pa | 2026-05-17 16:21:11: ▸ arrancando loop de recordatorios (cada 30min)
 0|maria-pa | 2026-05-17 16:21:11: ▸ arrancando dispatcher de programados (cada 60s)
@@ -197,4 +167,34 @@
 0|maria-pa | 2026-05-17 17:22:57: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname es 'Diego Paez' y el historial del remitente (200 msgs) es idéntico al historial del owner Diego — incluyendo el pedido de sumar a Enrique Sosa como usuario (20:11-20:13) que es exactamente lo que pregunta ahora; el ID @lid indica que escribe desde un dispositivo vinculado (WhatsApp Web u otro), no desde su número principal.
 0|maria-pa | 2026-05-17 17:23:22: [WA →usr] Diego (34342575317160@lid): Intenté escribirle pero no me llegó — tuve un problema con su número de WhatsApp. Sí tengo su email (enrique.sosa@globalnetmobile.com). ¿Le mando la bienvenida 
 0|maria-pa | 2026-05-17 17:23:22: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
+0|maria-pa | 2026-05-17 17:27:02: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=8, Santiago Bignone=22, Doris Capurro=18, Nicolas Kosinski=60, Walter Vera=5, Cristian Ruiz=5, Sebastian Ameijeira=2, Rubén Ward=2, Enrique Sosa=0} remitente=34342575317160@lid contactos_ambiguos=0
+0|maria-pa | 2026-05-17 17:27:23: 
+0|maria-pa | 2026-05-17 17:27:23: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-17 17:27:24: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 17:27:24: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-17 17:27:24:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-17 17:27:24:   Usuarios:   12 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa
+0|maria-pa | 2026-05-17 17:27:24:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 17:27:24: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 17:27:24: ✓ whisper OK
+0|maria-pa | 2026-05-17 17:27:24: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 17:27:24: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 17:27:24: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 17:27:28: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 17:27:28: [WA authenticated]
+0|maria-pa | 2026-05-17 17:27:28: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 17:27:28: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 17:27:28: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 17:27:28: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 17:27:28: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 17:27:28: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 17:27:28: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-17 17:27:59: [unknown-flow/wa] match en contactos: 83356943413285@lid = "Poyo" de Nicolas Kosinski (id=7)
 
