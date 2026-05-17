@@ -1,5 +1,14 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4840  2026-05-17 20:13:05  sistema   interno                         acción FALLÓ: enviar_wa — No pude mandar WA a 54959899643028@c.us: No LID for user                                                                                                                      
+                                                                     s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)                                                                                                                                  
+
+4839  2026-05-17 20:13:05  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                                                         
+
+4838  2026-05-17 20:13:05  whatsapp  saliente   34342575317160@lid   Listo, lo doy de alta y le mando el mensaje de bienvenida ahora.                                                                                                                                        
+
+4837  2026-05-17 20:13:05  sistema   interno                         claude_call whatsapp: 39150ms prompt=61908c raw=2461c                                                                                                                                                   
+
 4836  2026-05-17 20:12:25  whatsapp  entrante   34342575317160@lid   sumalo como usuario a Enrique                                                                                                                                                                           
 
 4835  2026-05-17 20:12:25  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial de 200 msgs con este remitente es el historial personal del owner (briefs diarios, agenda, tareas, ge
@@ -204,11 +213,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4742  2026-05-17 19:32:47  whatsapp  entrante   5491150080522@c.us   Si                                                                                                                                                                                                      
 
 4741  2026-05-17 19:32:32  sistema   interno                         contacto vcard (privado): Cholga → 5491144788271@c.us                                                                                                                                                   
-
-4740  2026-05-17 19:32:06  whatsapp  saliente   114022909251651@lid  Jaja, gracias Seba! Quedás anotado para el jueves a las 20. 🙌                                                                                                                                           
-
-4739  2026-05-17 19:32:06  whatsapp  saliente   227143674011812@lid  Seba confirmó para la cena del jueves a las 20hs. (Con humor, pero confirmó 😄). Todavía no tuve respuesta de Santiago.                                                                                  
-
-4738  2026-05-17 19:32:06  sistema   interno                         claude_call whatsapp: 17702ms prompt=35448c raw=408c                                                                                                                                                    
-
-4737  2026-05-17 19:32:02  sistema   interno                         libreta: borrado contacto id=74 "MarIA Paez" (era Maria misma, no contacto válido)                                                                                                                      
