@@ -1,0 +1,78 @@
+# ejecutado: 2026-05-17T19:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "═══ DNS check (manejando CNAME) ═══"
+#   for h in intensa.io www.intensa.io; do
+#     # +short devuelve CNAMEs y A records; nos quedamos solo con IPs.
+#     IP=$(dig +short $h @1.1.1.1 | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+#     if [ "$IP" != "178.104.166.91" ]; then
+#       echo "✗ $h → $IP (esperaba 178.104.166.91) — abortando"
+#       exit 1
+#     fi
+#     echo "✓ $h → $IP"
+#   done
+#   
+#   echo ""
+#   echo "═══ certbot --nginx ═══"
+#   certbot --nginx \
+#     -d intensa.io -d www.intensa.io \
+#     --redirect --non-interactive --agree-tos \
+#     -m diego@paez.is --no-eff-email 2>&1
+#   
+#   echo ""
+#   echo "═══ Cert listo ═══"
+#   certbot certificates 2>&1 | grep -E "Certificate Name|Domains|Expiry" | head -20
+#   
+#   echo ""
+#   echo "═══ Smoke tests ═══"
+#   curl -s -o /dev/null -w "intensa.io          HTTP(:80) %{http_code} (esperado 301)\n" -H "Host: intensa.io" http://127.0.0.1/
+#   curl -sk -o /dev/null -w "intensa.io          HTTPS    %{http_code} (esperado 200)\n" -H "Host: intensa.io" https://127.0.0.1/
+#   curl -sk -o /dev/null -w "www.intensa.io      HTTPS    %{http_code} (esperado 200)\n" -H "Host: www.intensa.io" https://127.0.0.1/
+#   curl -sk -o /dev/null -w "veritas-trace.com   HTTPS    %{http_code} (esperado 200)\n" -H "Host: www.veritas-trace.com" https://127.0.0.1/
+
+# ───── output ─────
+═══ DNS check (manejando CNAME) ═══
+✓ intensa.io → 178.104.166.91
+✓ www.intensa.io → 178.104.166.91
+
+═══ certbot --nginx ═══
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for intensa.io and www.intensa.io
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/intensa.io/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/intensa.io/privkey.pem
+This certificate expires on 2026-08-15.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Successfully deployed certificate for intensa.io to /etc/nginx/sites-enabled/intensa.io.conf
+Successfully deployed certificate for www.intensa.io to /etc/nginx/sites-enabled/intensa.io.conf
+Congratulations! You have successfully enabled HTTPS on https://intensa.io and https://www.intensa.io
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+═══ Cert listo ═══
+  Certificate Name: intensa.io
+    Domains: intensa.io www.intensa.io
+    Expiry Date: 2026-08-15 21:15:40+00:00 (VALID: 89 days)
+  Certificate Name: www.veritas-trace.com
+    Domains: www.veritas-trace.com
+    Expiry Date: 2026-07-25 18:41:41+00:00 (VALID: 68 days)
+
+═══ Smoke tests ═══
+intensa.io          HTTP(:80) 301 (esperado 301)
+intensa.io          HTTPS    200 (esperado 200)
+www.intensa.io      HTTPS    200 (esperado 200)
+veritas-trace.com   HTTPS    200 (esperado 200)
+
+# exit=0
