@@ -1,0 +1,104 @@
+# ejecutado: 2026-05-17T18:46:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "═══ cron log últimas 80 ═══"
+#   tail -120 /root/secretaria/ops/.cron.log 2>&1 | tail -80
+#   echo ""
+#   echo "═══ verificar estado actual de Enrique ═══"
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, wa_cus FROM usuarios WHERE id=12; SELECT id, nombre, whatsapp FROM contactos WHERE id=209;"
+
+# ───── output ─────
+═══ cron log últimas 80 ═══
+═══ 2026-05-17T18:21:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:22:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:23:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:24:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:25:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:26:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:27:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:28:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:29:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:30:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:31:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:32:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:33:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:34:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:35:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:36:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:37:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:38:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:39:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:40:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:41:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:42:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:43:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:44:01-03:00 ═══
+To https://github.com/DiegoPaez-AR/maria.git
+ ! [remote rejected]     main -> main (cannot lock ref 'refs/heads/main': is at 10d4f551deae14eb6332803e3a4a4ab167eccf57 but expected f2d408adfe0e9eb836788f9eeeed3922b1f585db)
+error: failed to push some refs to 'https://github.com/DiegoPaez-AR/maria.git'
+push fase 1 OK (post-rebase)
+tick done
+═══ 2026-05-17T18:45:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-05-17T18:46:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/check-cron-fix-enrique.sh → ops/instances/maria-paez/outbox/check-cron-fix-enrique.out
+
+═══ verificar estado actual de Enrique ═══
+id  nombre        wa_cus             
+--  ------------  -------------------
+12  Enrique Sosa  54959899643028@c.us
+id   nombre        whatsapp           
+---  ------------  -------------------
+209  Enrique Sosa  54959899643028@c.us
+
+# exit=0
