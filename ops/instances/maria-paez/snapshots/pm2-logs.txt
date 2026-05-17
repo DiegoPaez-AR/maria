@@ -1,25 +1,3 @@
-0|maria-pa | 2026-05-16 19:14:52: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4ADAD535010B08E44F97.jpg (250 KB)
-0|maria-pa | 2026-05-16 19:14:53: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A9EF37E143E5FD00129.jpg (281 KB)
-0|maria-pa | 2026-05-16 19:14:53: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A3DFBE68DB3CC522311.jpg (281 KB)
-0|maria-pa | 2026-05-16 19:14:53: [WA] media → /tmp/maria-attach-false_34342575317160_lid_4A0AB56BE33532840A20.jpg (292 KB)
-0|maria-pa | 2026-05-16 19:14:56: [WA →usr] Diego (34342575317160@lid): Dale, les escribo ahora. Cuando me mandes las fotos se las paso para la tasación.
-0|maria-pa | 2026-05-16 19:14:56: [WA acciones/Diego] 2/2 ejecutadas
-0|maria-pa | 2026-05-16 19:14:56: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
-0|maria-pa | 2026-05-16 19:15:06: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-16 19:15:19: [unknown-flow/wa] match en contactos: 3681223200890@lid = "Espasa Concesionaria" de Diego (id=1)
-0|maria-pa | 2026-05-16 19:15:36: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · El pushname 'Diego Paez' coincide con el owner (id=1); el ID @lid es un dispositivo vinculado de WhatsApp multi-device del mismo número; y las fotos/video son continuación directa del pedido que Diego hizo minutos antes en su historial ('ahora te mando unas fotos del auto para que les pasen para tasarlo').
-0|maria-pa | 2026-05-16 19:15:45: [WA →3ro] Diego/3681223200890@lid: Hola Mateo! Soy María Páez, secretaria personal de un cliente de Buenos Aires. ¿Cuándo podría hablar con un asesor para consultar el precio de la Taos Highline 
-0|maria-pa | 2026-05-16 19:15:45: [unknown-flow/wa] tercero_de_usuario: 3681223200890@lid (3681223200890@lid) → contexto de Diego (id=1)
-0|maria-pa | 2026-05-16 19:16:07: [unknown-flow/wa] match en contactos: 3681223200890@lid = "Espasa Concesionaria" de Diego (id=1)
-0|maria-pa | 2026-05-16 19:16:21: [WA →usr] Diego (34342575317160@lid): Diego, mandé las fotos pero hay un problema: Espasa tiene un chatbot (se llama Mateo) que respondió diciendo que solo recibe mensajes de texto, no imágenes. Así
-0|maria-pa | 2026-05-16 19:16:21: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
-0|maria-pa | 2026-05-16 19:16:32: [WA →3ro] Diego/3681223200890@lid: ¡Claro! Podés escribirme a maria.paez.secre@gmail.com. Quedo atenta al contacto del asesor. Gracias!
-0|maria-pa | 2026-05-16 19:16:32: [unknown-flow/wa] tercero_de_usuario: 3681223200890@lid (3681223200890@lid) → contexto de Diego (id=1)
-0|maria-pa | 2026-05-16 19:16:57: [unknown-flow/wa] match en contactos: 3681223200890@lid = "Espasa Concesionaria" de Diego (id=1)
-0|maria-pa | 2026-05-16 19:17:14: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=200 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=34342575317160@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-16 19:17:18: [unknown-flow/wa] tercero_de_usuario: 3681223200890@lid (3681223200890@lid) → contexto de Diego (id=1)
-0|maria-pa | 2026-05-16 19:18:05: [unknown-flow/whatsapp] LLM resolucion: usuario_activo usuario_id=1 · Pushname 'Diego Paez' + el mensaje es respuesta directa a la gestión de Espasa/concesionaria que Diego inició minutos antes (fotos del Subaru, Taos Highline); el ID @lid en lugar de @c.us indica un dispositivo vinculado distinto del número registrado (541132317896@c.us), pero el contexto es inequívoco.
-0|maria-pa | 2026-05-16 19:18:13: [unknown-flow/wa] LLM routeó 34342575317160@lid → Diego (id=1)
 0|maria-pa | 2026-05-16 19:18:25: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=3 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=7, Santiago Bignone=21, Doris Capurro=17, Nicolas Kosinski=17, Walter Vera=4, Cristian Ruiz=4, Sebastian Ameijeira=1, Rubén Ward=1} remitente=167933254885560@lid contactos_ambiguos=0
 0|maria-pa | 2026-05-16 19:18:49: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de Volkswagen Espasa que contacta a Maria en respuesta a la consulta que ella hizo a pedido de Diego (22:14 del 16/05) sobre la Taos Highline Bi Tono y tasación del Subaru; el chatbot 'Mateo' confirmó que un asesor se comunicaría, y Diego lo anticipó diciendo 'seguramente te van a pasar con un vendedor'.
 0|maria-pa | 2026-05-16 19:19:22: [WA →3ro] Diego/Ariel Quiroga: Hola Ariel, gracias por comunicarte! Te cuento: consulto de parte de un cliente que está interesado en la *Volkswagen Taos Highline Bi Tono*. Necesitamos saber 
@@ -197,4 +175,26 @@
 0|maria-pa | 2026-05-17 07:00:12: [morning-brief/Rubén Ward] ✓ enviado a 5491154024727@c.us
 0|maria-pa | 2026-05-17 09:32:02: 
 0|maria-pa | 2026-05-17 09:32:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-17 09:32:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 09:32:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-17 09:32:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-17 09:32:04:   Usuarios:   11 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward
+0|maria-pa | 2026-05-17 09:32:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 09:32:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 09:32:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 09:32:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 09:32:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 09:32:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 09:32:08: [WA authenticated]
+0|maria-pa | 2026-05-17 09:32:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 09:32:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 09:32:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 09:32:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 09:32:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 09:32:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 09:32:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 09:32:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 09:32:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 09:32:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 09:32:09: [calendar-watch] activo, cada 8.0h
 
