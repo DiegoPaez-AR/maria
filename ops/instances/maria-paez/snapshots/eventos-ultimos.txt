@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4682  2026-05-17 19:19:43  sistema   interno                         claude_call memoria-curada: 29062ms prompt=2503c raw=1957c                                                                                                                                              
+
+4681  2026-05-17 19:19:39  whatsapp  entrante   34342575317160@lid   y como estan los pedidos de cotizaciones de los autos? (Honda, Subaru, VW y Volvo)                                                                                                                      
+
+4680  2026-05-17 19:19:39  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el mensaje sobre cotizaciones de autos (Honda, Subaru, VW, Volvo) coincide exactamente con gestiones del historial
+
+4679  2026-05-17 19:19:39  sistema   interno                         claude_call unknown-flow: 27090ms prompt=74275c raw=598c                                                                                                                                                
+
+4678  2026-05-17 19:19:14  sistema   interno                         claude_call memoria-curada: 29302ms prompt=1685c raw=2143c                                                                                                                                              
+
 4677  2026-05-17 19:19:02  whatsapp  saliente   34342575317160@lid   Mañana lunes 18/05 tenés dos reuniones:                                                                                                                                                                 
                                                                                                                                                                                                                                                                              
                                                                      1. *10:45 – 11:30* — Seguimiento comercial [Meet]                                                                                                                                                       
@@ -244,13 +254,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 4583  2026-05-16 22:58:58  whatsapp  entrante   34342575317160@lid   y manda lo del auto tambien a Volvo aca el telefono: +54 11 6530-5417                                                                                                                                   
                                                                      quisiera comprar una Volvo EX-30 Plus                                                                                                                                                                   
-
-4582  2026-05-16 22:58:58  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El historial del remitente es idéntico al bucket de Diego (owner, id=1): mismas tareas, misma gestión del auto Subaru con Espasa, mismo hilo de
-
-4581  2026-05-16 22:58:58  sistema   interno                         claude_call unknown-flow: 21984ms prompt=72298c raw=508c                                                                                                                                                
-
-4580  2026-05-16 22:55:55  whatsapp  saliente   34342575317160@lid   Perfecto, ya lo sé entonces. Quedo atenta por si Ariel manda la cotización.                                                                                                                             
-
-4579  2026-05-16 22:55:54  sistema   interno                         claude_call whatsapp: 9078ms prompt=52411c raw=371c                                                                                                                                                     
-
-4578  2026-05-16 22:55:45  whatsapp  entrante   34342575317160@lid   no tengo el telefono de ariel, te escribio el directo a vos, pero ya se lo mande yo desde tu telefono, no te preocupes                                                                                  
