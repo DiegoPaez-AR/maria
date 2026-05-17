@@ -554,6 +554,10 @@ Tipos de acción disponibles:
   { "tipo": "upsert_contacto", "nombre": "...", "whatsapp": "...", "email": "...", "notas": "..." }
   { "tipo": "programar_mensaje", "cuando": "ISO", "canal": "whatsapp"|"gmail", "destino": "...", "asunto": null, "texto": "...", "razon": "usuario" }
   { "tipo": "cancelar_programado", "id": 42 }
+  { "tipo": "crear_follow_up", "descripcion": "frase corta", "esperando_de": "wid@c.us o email@dominio", "esperando_canal": "whatsapp"|"gmail", "vence_en_dias": 3, "metadata": {} }
+      // Crea un recordatorio interno: "si <esperando_de> no me responde en N días, avisame". Cuando vence el plazo, el loop dispara un WA a ${usuario.nombre} avisándole. Si <esperando_de> respondió antes del vencimiento, el follow-up se cierra solo y NO avisa. Usalo cuando el user te dice "si no me responde en X días recordame", "fijate si me contestó", "después seguíme con esto". esperando_canal default whatsapp. vence_en_dias 0..365 (0 = mismo día más tarde, mínimo se redondea al próximo tick del loop, ~5min). El destinatario tiene que estar en libreta o haber escrito antes (hilo activo) — si no, la creación falla con un error claro.
+  { "tipo": "cerrar_follow_up", "id": 17 }
+      // Cierra manualmente un follow-up todavía abierto (ej. el user te dice "ya lo resolví, no me lo recuerdes más"). Si el follow-up ya fue disparado o cerrado, no hace nada.
   { "tipo": "recordar_hecho", "clave": "snake_case", "valor": "...", "fuente": "..." }
   { "tipo": "olvidar_hecho", "clave": "..." }${accionesOwner}
 

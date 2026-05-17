@@ -65,6 +65,8 @@ async function ejecutarUna(accion, ctx) {
     case 'set_cumple_contacto':          return _setCumpleContacto(accion, ctx);
     case 'programar_mensaje':  return _programarMensaje(accion, ctx);
     case 'cancelar_programado':return _cancelarProgramado(accion, ctx);
+    case 'crear_follow_up':    return _crearFollowUp(accion, ctx);
+    case 'cerrar_follow_up':   return _cerrarFollowUp(accion, ctx);
     case 'recordar_hecho':     return _recordarHecho(accion, ctx);
     case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
@@ -419,6 +421,47 @@ function _cancelarProgramado(a, ctx) {
   _requerir(a, ['id']);
   mem.cancelarProgramado(a.id);
   return { id: a.id, cancelado: true };
+}
+
+function _crearFollowUp(a, ctx) {
+  _requerir(a, ['descripcion', 'esperando_de', 'vence_en_dias']);
+  const dias = Number(a.vence_en_dias);
+  if (!Number.isFinite(dias) || dias < 0 || dias > 365) {
+    throw new Error(`crear_follow_up: vence_en_dias debe ser número 0..365 (recibí ${a.vence_en_dias})`);
+  }
+  const canal = a.esperando_canal || 'whatsapp';
+  if (!['whatsapp', 'gmail'].includes(canal)) {
+    throw new Error(`crear_follow_up: esperando_canal inválido "${canal}" (usar whatsapp|gmail)`);
+  }
+  // Validar destino con el mismo criterio que enviar_wa: tiene que estar
+  // en libreta o ser un hilo activo. Esto evita follow-ups a destinos
+  // arbitrarios que después no podríamos contactar.
+  const _v = seguridad.validarDestinatario({
+    usuario: ctx.usuario,
+    canal: canal === 'whatsapp' ? 'wa' : 'email',
+    destino: a.esperando_de,
+  });
+  if (!_v.ok) {
+    throw new Error(`crear_follow_up: ${_v.motivo}. Cargá el contacto primero o esperá a que ${a.esperando_de} te escriba.`);
+  }
+  // vence_en = now + dias (UTC)
+  const vence = new Date(Date.now() + dias * 24 * 3600 * 1000);
+  const venceISO = vence.toISOString().replace('T', ' ').slice(0, 19);
+  const id = mem.crearFollowUp({
+    usuarioId: ctx.usuario.id,
+    descripcion: a.descripcion,
+    esperandoDe: a.esperando_de,
+    esperandoCanal: canal,
+    venceEn: venceISO,
+    metadata: a.metadata || null,
+  });
+  return { id, vence_en: venceISO, esperando_de: a.esperando_de };
+}
+
+function _cerrarFollowUp(a, ctx) {
+  _requerir(a, ['id']);
+  mem.setFollowUpEstado(a.id, 'cerrado');
+  return { id: a.id, cerrado: true };
 }
 
 function _recordarHecho(a, ctx) {

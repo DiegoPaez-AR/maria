@@ -30,6 +30,7 @@ const { iniciarProgramados } = require('./programados');
 const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
 const { iniciarCalendarWatch } = require('./calendar-watch');
+const { iniciarFollowUps } = require('./follow-ups');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
@@ -37,6 +38,7 @@ const PROGRAMADOS_MS  = Number(process.env.PROGRAMADOS_MS  || 60_000);
 const BRIEF_MS        = Number(process.env.BRIEF_MS        || 60_000);
 const MEETING_PREP_MS = Number(process.env.MEETING_PREP_MS || 5 * 60_000);
 const CALENDAR_WATCH_MS = Number(process.env.CALENDAR_WATCH_MS || 8 * 60 * 60_000);
+const FOLLOW_UPS_MS   = Number(process.env.FOLLOW_UPS_MS   || 5 * 60_000);
 
 let gmailInterval = null;
 let recordatoriosInterval = null;
@@ -44,6 +46,7 @@ let programadosInterval = null;
 let briefInterval = null;
 let meetingPrepInterval = null;
 let calendarWatchInterval = null;
+let followUpsInterval = null;
 let waClient = null;
 
 async function main() {
@@ -109,6 +112,11 @@ async function main() {
       console.log(`▸ arrancando calendar-watch (cada ${CALENDAR_WATCH_MS/3600_000}h)`);
       calendarWatchInterval = iniciarCalendarWatch({
         intervaloMs: CALENDAR_WATCH_MS,
+      });
+
+      console.log(`▸ arrancando follow-ups (cada ${FOLLOW_UPS_MS/60_000}min)`);
+      followUpsInterval = iniciarFollowUps({
+        waClient: client, intervaloMs: FOLLOW_UPS_MS,
       });
 
       mem.log({

@@ -90,6 +90,22 @@ CREATE TABLE IF NOT EXISTS estado_usuario (
   PRIMARY KEY (usuario_id, clave)
 );
 
+CREATE TABLE IF NOT EXISTS follow_ups (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  creado          DATETIME DEFAULT CURRENT_TIMESTAMP,
+  usuario_id      INTEGER NOT NULL REFERENCES usuarios(id),
+  descripcion     TEXT NOT NULL,
+  esperando_de    TEXT NOT NULL,   -- wid o email del destinatario que tiene que responder
+  esperando_canal TEXT NOT NULL CHECK(esperando_canal IN ('whatsapp','gmail')),
+  vence_en        TEXT NOT NULL,   -- ISO timestamp UTC. Cuando llega, se dispara si no hubo respuesta.
+  estado          TEXT NOT NULL DEFAULT 'abierto' CHECK(estado IN ('abierto','disparado','cerrado','cancelado')),
+  disparado_en    DATETIME,
+  cerrado_en      DATETIME,
+  metadata_json   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_follow_ups_vence ON follow_ups(vence_en, estado);
+CREATE INDEX IF NOT EXISTS idx_follow_ups_usr   ON follow_ups(usuario_id, estado);
+
 CREATE TABLE IF NOT EXISTS programados (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
   creado        DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -585,6 +601,81 @@ function buscarEnHistorial({ usuarioId, query, canal = null, dias = 30, max = 20
     max: Math.min(Math.max(1, max), 100),
   });
   return filas.map(hidratar);
+}
+
+// ─── Follow-ups ──────────────────────────────────────────────────────────
+//
+// Persistencia de follow-ups que el usuario pidió. El loop follow-ups.js
+// se encarga del dispatch (chequear si vencieron y si el destino respondió).
+// Estados: abierto → (disparado | cerrado | cancelado).
+
+const insertFollowUp = db.prepare(`
+  INSERT INTO follow_ups (usuario_id, descripcion, esperando_de, esperando_canal, vence_en, metadata_json)
+  VALUES (@usuarioId, @descripcion, @esperando_de, @esperando_canal, @vence_en, @metadata_json)
+`);
+
+function crearFollowUp({ usuarioId, descripcion, esperandoDe, esperandoCanal = 'whatsapp', venceEn, metadata = null }) {
+  if (!usuarioId || !descripcion || !esperandoDe || !venceEn) {
+    throw new Error('crearFollowUp: usuarioId, descripcion, esperandoDe, venceEn requeridos');
+  }
+  if (!['whatsapp', 'gmail'].includes(esperandoCanal)) {
+    throw new Error(`crearFollowUp: esperandoCanal inválido "${esperandoCanal}"`);
+  }
+  const info = insertFollowUp.run({
+    usuarioId,
+    descripcion: String(descripcion),
+    esperando_de: String(esperandoDe),
+    esperando_canal: esperandoCanal,
+    vence_en: String(venceEn),
+    metadata_json: metadata ? JSON.stringify(metadata) : null,
+  });
+  return info.lastInsertRowid;
+}
+
+const qFollowUpsAbiertosVencidos = db.prepare(`
+  SELECT * FROM follow_ups
+  WHERE estado = 'abierto' AND vence_en <= datetime('now')
+  ORDER BY vence_en ASC
+`);
+const qFollowUpsAbiertosUsuario = db.prepare(`
+  SELECT * FROM follow_ups
+  WHERE usuario_id = ? AND estado = 'abierto'
+  ORDER BY vence_en ASC
+`);
+const updateFollowUpEstado = db.prepare(`
+  UPDATE follow_ups
+  SET estado = ?, disparado_en = CASE WHEN ?='disparado' THEN CURRENT_TIMESTAMP ELSE disparado_en END,
+      cerrado_en = CASE WHEN ? IN ('cerrado','cancelado') THEN CURRENT_TIMESTAMP ELSE cerrado_en END
+  WHERE id = ?
+`);
+
+function followUpsVencidos() {
+  return qFollowUpsAbiertosVencidos.all().map(hidratar);
+}
+function followUpsAbiertos(usuarioId) {
+  return qFollowUpsAbiertosUsuario.all(usuarioId).map(hidratar);
+}
+function setFollowUpEstado(id, estado) {
+  if (!['abierto', 'disparado', 'cerrado', 'cancelado'].includes(estado)) {
+    throw new Error(`setFollowUpEstado: estado inválido "${estado}"`);
+  }
+  updateFollowUpEstado.run(estado, estado, estado, id);
+}
+
+/**
+ * ¿Hubo mensaje entrante de `esperandoDe` en el bucket del usuario después
+ * de `desde` (timestamp ISO o Date)? Usado por el loop de follow-ups para
+ * decidir si cerrar o disparar.
+ */
+const qEntranteDespuesDe = db.prepare(`
+  SELECT 1 FROM eventos
+  WHERE usuario_id = ? AND canal = ? AND direccion = 'entrante'
+    AND de = ? AND timestamp >= ?
+  LIMIT 1
+`);
+function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
+  const desdeStr = desde instanceof Date ? desde.toISOString().replace('T',' ').slice(0,19) : String(desde);
+  return !!qEntranteDespuesDe.get(usuarioId, esperandoCanal, esperandoDe, desdeStr);
 }
 
 function formatearParaPrompt(e) {
@@ -1154,6 +1245,12 @@ module.exports = {
   contextoCrossCanal,
   buscarEnHistorial,
   formatearParaPrompt,
+  // follow-ups
+  crearFollowUp,
+  followUpsVencidos,
+  followUpsAbiertos,
+  setFollowUpEstado,
+  huboRespuesta,
   // estado global
   setEstado,
   getEstado,
