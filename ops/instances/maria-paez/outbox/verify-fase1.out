@@ -1,0 +1,108 @@
+# ejecutado: 2026-05-17T13:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Verifica Fase 1 multi-provider: archivos en su lugar, columnas DB nuevas,
+#   # Maria arrancó OK con el código refactoreado.
+#   set +e
+#   set -a; . /root/secretaria/config/instances/maria-paez.conf; set +a
+#   
+#   echo "═══ 1) Archivos nuevos en repo ═══"
+#   ls -la /root/secretaria/vault.js /root/secretaria/providers/index.js /root/secretaria/providers/google.js 2>&1
+#   
+#   echo ""
+#   echo "═══ 2) Columnas nuevas en usuarios ═══"
+#   sqlite3 -header -column "$MARIA_DB" "PRAGMA table_info(usuarios)" | grep -E 'calendar_provider|calendar_auth_json'
+#   
+#   echo ""
+#   echo "═══ 3) Distribución de calendar_provider entre users activos ═══"
+#   sqlite3 -header -column "$MARIA_DB" "
+#   SELECT calendar_provider, COUNT(*) AS n
+#   FROM usuarios WHERE activo=1
+#   GROUP BY calendar_provider
+#   "
+#   
+#   echo ""
+#   echo "═══ 4) Maria status + último arranque ═══"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json, sys, time
+#   ps = json.load(sys.stdin)
+#   for p in ps:
+#       if p.get('name') != 'maria-paez': continue
+#       e = p.get('pm2_env', {})
+#       up_ms = e.get('pm_uptime', 0)
+#       up_s = (time.time()*1000 - up_ms) / 1000
+#       print(f\"  pid={p.get('pid')} status={e.get('status')} restarts={e.get('restart_time')} uptime={int(up_s)}s\")
+#   "
+#   
+#   echo ""
+#   echo "═══ 5) Test funcional: llamar providers desde Node ═══"
+#   cd /root/secretaria
+#   timeout 30s node -e "
+#   (async () => {
+#     try {
+#       const providers = require('./providers');
+#       const usuarios = require('./usuarios');
+#       const diego = usuarios.obtener(1);
+#       console.log('  calendar_provider Diego:', diego.calendar_provider);
+#       console.log('  calendar_auth_json Diego:', diego.calendar_auth_json === null ? 'NULL (esperado para Google)' : 'tiene blob');
+#       const provider = await providers.forUser(diego);
+#       console.log('  provider.kind:', provider.kind);
+#       const eventos = await provider.listarEventosProximos({ dias: 1, max: 3, calendarId: diego.calendar_id });
+#       console.log(\`  listarEventosProximos OK: \${eventos.length} eventos\`);
+#       if (eventos[0]) console.log(\`  primero: \${eventos[0].summary} @ \${eventos[0].start}\`);
+#       // Test forMaria
+#       const mp = await providers.forMaria();
+#       console.log('  forMaria provider.kind:', mp.kind);
+#       const calMaria = await mp.getMariaCalendarId();
+#       console.log('  getMariaCalendarId:', calMaria);
+#     } catch (err) {
+#       console.error('  ERROR:', err.message);
+#       process.exit(1);
+#     }
+#   })();
+#   "
+#   
+#   echo ""
+#   echo "═══ 6) Errores recientes en logs post-reload ═══"
+#   pm2 logs maria-paez --lines 100 --nostream 2>&1 | tac | awk '/iniciando…/{p=1} p' | tac | \
+#     grep -iE 'error|falló|failed|fatal|throw|cannot' | head -10 || echo "(sin errores nuevos)"
+
+# ───── output ─────
+═══ 1) Archivos nuevos en repo ═══
+-rw-r--r--+ 1 root root 2855 May 17 13:00 /root/secretaria/providers/google.js
+-rw-r--r--+ 1 root root 2448 May 17 13:00 /root/secretaria/providers/index.js
+-rw-r--r--+ 1 root root 3075 May 17 13:00 /root/secretaria/vault.js
+
+═══ 2) Columnas nuevas en usuarios ═══
+14   calendar_provider   TEXT      1        'google'                          0 
+15   calendar_auth_json  TEXT      0                                          0 
+
+═══ 3) Distribución de calendar_provider entre users activos ═══
+calendar_provider  n 
+-----------------  --
+google             11
+
+═══ 4) Maria status + último arranque ═══
+  pid=899728 status=online restarts=13 uptime=120s
+
+═══ 5) Test funcional: llamar providers desde Node ═══
+  calendar_provider Diego: google
+  calendar_auth_json Diego: NULL (esperado para Google)
+  provider.kind: google
+  listarEventosProximos OK: 2 eventos
+  primero: Seguimiento comercial @ 2026-05-18T10:45:00-03:00
+  forMaria provider.kind: google
+  getMariaCalendarId: maria.paez.secre@gmail.com
+
+═══ 6) Errores recientes en logs post-reload ═══
+/root/.pm2/logs/maria-paez-error.log last 100 lines:
+0|maria-pa | 2026-05-16 13:39:42: [WA/Diego] Claude falló: Timeout 180000ms invocando claude
+0|maria-pa | 2026-05-16 19:27:29: [WA/Diego] Claude falló: Timeout 180000ms invocando claude
+0|maria-pa | 2026-05-16 19:31:05: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "Ariel Quiroga" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-16 19:32:06: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-16 19:34:50: [WA/Diego] Claude falló: Timeout 180000ms invocando claude
+0|maria-pa | 2026-05-16 19:47:52: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "167933254885560@lid" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+
+# exit=0
