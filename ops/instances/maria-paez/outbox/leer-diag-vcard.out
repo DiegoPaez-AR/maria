@@ -1,0 +1,32 @@
+# ejecutado: 2026-05-17T19:16:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 logs últimas 800 — buscar [DIAG vcard] ═══"
+#   pm2 logs maria-paez --lines 800 --nostream 2>&1 | grep -A 1 -E "DIAG vcard|jose|aboso|mariano|abramson" | tail -100
+#   
+#   echo ""
+#   echo "═══ Eventos canal=sistema 'contacto vcard' últimas 15 min ═══"
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), substr(cuerpo,1,200) AS msg FROM eventos WHERE canal='sistema' AND cuerpo LIKE '%contacto vcard%' AND timestamp >= datetime('now','-15 minutes') ORDER BY timestamp ASC;"
+#   
+#   echo ""
+#   echo "═══ Cualquier evento entrante en últimos 5 min ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), canal, direccion, tipo_original, substr(de,1,25) AS de, substr(cuerpo,1,250) AS msg FROM eventos WHERE timestamp >= datetime('now','-5 minutes') ORDER BY timestamp ASC LIMIT 30;"
+
+# ───── output ─────
+═══ pm2 logs últimas 800 — buscar [DIAG vcard] ═══
+0|maria-pa | 2026-05-17 19:15:18: [DIAG vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":2,"body_len":0,"body_first200":"","keys":["_data","mediaKey","id","ack","hasMedia","body","type","timestamp","from","to","author","deviceType","isForwarded","forwardingScore","isStatus","isStarred","broadcast","fromMe","hasQuotedMsg","hasReaction","duration","location","vCards","inviteV4","mentionedIds","groupMentions","orderId","token","isGif","isEphemeral","links"]}
+
+
+═══ Eventos canal=sistema 'contacto vcard' últimas 15 min ═══
+
+═══ Cualquier evento entrante en últimos 5 min ═══
+datetime(timestamp)  canal    direccion  tipo_original  de  msg                                                                                              
+-------------------  -------  ---------  -------------  --  -------------------------------------------------------------------------------------------------
+2026-05-17 22:11:02  sistema  interno                       shutdown por SIGINT                                                                              
+2026-05-17 22:11:08  sistema  interno                       Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)
+
+# exit=0
