@@ -1,0 +1,37 @@
+# ejecutado: 2026-05-17T18:56:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   exec bash /root/secretaria/ops/sites/intensa.io/deploy.sh
+
+# ───── output ─────
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/index.html' -> '/var/www/intensa.io/index.html'
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+
+═══ 2. Vhost nginx ═══
+'/root/secretaria/ops/sites/intensa.io/vhost.conf' -> '/etc/nginx/sites-available/intensa.io.conf'
+vhost actualizado
+'/etc/nginx/sites-enabled/intensa.io.conf' -> '/etc/nginx/sites-available/intensa.io.conf'
+symlink creado
+
+═══ 3. Validar config nginx ═══
+2026/05/17 18:56:01 [warn] 963081#963081: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:17
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic, no cae el otro sitio) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 404
+www.intensa.io    HTTP 404
+veritas-trace.com (no se rompió) HTTPS 200
+
+═══ DONE — listo para certbot cuando el DNS apunte ═══
+Cuando intensa.io resuelva a 178.104.166.91, corré:
+  certbot --nginx -d intensa.io -d www.intensa.io --redirect
+
+# exit=0
