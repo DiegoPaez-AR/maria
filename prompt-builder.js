@@ -159,27 +159,9 @@ function seccionCumples(usuario) {
   return lineas.length ? lineas.join('\n') : '(no hay cumpleaños en los próximos 7 días)';
 }
 
-// Si el usuario acaba de mandar vCard(s) hace poco (últimos 10 min), exponemos
-// el contexto para que el LLM sepa qué son "los" o "lo" si dice "sí, hacelos
-// públicos". Soporta 1 vcard (legacy ultimo_vcard) o N (ultimos_vcards).
+// Si el usuario acaba de mandar un vCard hace poco (últimos 10 min), exponemos
+// el contexto para que el LLM sepa qué es "lo" si dice "sí, hacelo público".
 function seccionUltimoVCard(usuario) {
-  const lista = mem.getEstadoUsuario(usuario.id, 'ultimos_vcards');
-  // Caso múltiple — prioritario porque cubre ambos shapes (1 también queda acá).
-  if (lista && Array.isArray(lista.lista) && lista.lista.length > 0) {
-    const edad = Date.now() - (lista.ts || 0);
-    if (edad > 10 * 60 * 1000) return null;
-    const min = Math.round(edad / 60000);
-    const n = lista.lista.length;
-    if (n === 1) {
-      const v = lista.lista[0];
-      return `Hace ${min} min ${usuario.nombre} mandó un vCard de "${v.nombre}" (whatsapp ${v.whatsapp || '-'}, cumple ${v.cumple || '-'}). Lo guardé como PRIVADO. Si dice "pública", "sí", "compartilo", etc., emití cambiar_visibilidad_contacto con contactoId=${v.contactoId} y visibilidad=publica.`;
-    }
-    const detalle = lista.lista.map(v => `"${v.nombre}" (contactoId=${v.contactoId}, whatsapp=${v.whatsapp || '-'}${v.cumple ? `, cumple=${v.cumple}` : ''})`).join('; ');
-    const accs = lista.lista.map(v => `cambiar_visibilidad_contacto con contactoId=${v.contactoId} y visibilidad=publica`).join(' + ');
-    return `Hace ${min} min ${usuario.nombre} mandó ${n} vCards: ${detalle}. Los guardé como PRIVADOS. Si dice "públicos", "sí", "compartilos", etc., emití ${n} acciones (una por contacto): ${accs}.`;
-  }
-  // Fallback legacy — solo se usa si por algún path queda ultimo_vcard sin
-  // ultimos_vcards (no debería pasar con el handler nuevo, pero por seguridad).
   const v = mem.getEstadoUsuario(usuario.id, 'ultimo_vcard');
   if (!v) return null;
   const edad = Date.now() - (v.ts || 0);
@@ -643,6 +625,11 @@ Reglas:
     · ❌ "listo, agendada" / "ya le respondí" / "ya le escribí"
 - RESPUESTA VACÍA ES OK: Si el mensaje es un ack sin acción ("dale", "ok", "gracias", "perfecto"), o tu respuesta solo repetiría algo ya dicho, dejá los dos slots de respuesta como "". El sistema no manda nada (silencio total).
 - NO MANDES REDUNDANCIA a terceros: Si ya les dijiste algo y la pelota está en su cancha, NO vuelvas a escribirles hasta tener info nueva (\`respuesta_a_remitente\`: "").
+- SCOPE CON TERCEROS — el motivo de existir de cada conversación con un tercero es gestionar/coordinar algo para ${usuario.nombre}: una cita, una reunión, una entrega, una cobranza, una invitación, una confirmación. ESE es el scope.
+    · Si el tercero te pide algo fuera de scope — explicar un log, dar consejo técnico, opinar sobre un tema, recomendar productos, ayudar con su computadora, chistes, conversación casual sin propósito, etc. — NO actúes como asistente general.
+    · Respondé cortés en \`respuesta_a_remitente\`: "Disculpá, soy la secretaria de ${usuario.nombre} solo para <retomá brevemente el motivo de la conversación>. No te puedo ayudar con eso." Si hay un hilo de gestión activo, retomalo al final: "¿confirmás <lo que estaba pendiente>?".
+    · Si no hay gestión activa con ese tercero y te escribe de la nada con un pedido off-topic, decile cortés que sos la secretaria de ${usuario.nombre} y que no podés ayudar con eso. Nada más.
+    · Estás autorizada SOLO a hablar de: lo que ${usuario.nombre} te pidió que gestiones, lo que el tercero te pidió que sea parte de esa gestión, y los datos de contacto/horarios involucrados. Cualquier otro tópico, sale del scope.
 - Si es de un tercero pidiendo algo que requiere a ${usuario.nombre} (reunión, decisión): NO resuelvas sin consultarle. Emití:
     1) En \`respuesta_a_usuario\`, contale a ${usuario.nombre} qué pasó y qué necesitás (no hace falta enviar_wa por separado — el slot ya se le manda a ${usuario.nombre} por su canal).
     2) agregar_pendiente con desc = lo que le debés contestar al tercero, y meta con remitente, canal_origen, messageId, de.
