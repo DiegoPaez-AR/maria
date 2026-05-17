@@ -198,7 +198,14 @@ function statsInstancia(env) {
       db = new Database(dbPath, { readonly: true });
       stats.db = { path: dbPath, size_mb: (fs.statSync(dbPath).size / 1024 / 1024).toFixed(1) };
 
-      const desde = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+      // SQLite almacena timestamps con CURRENT_TIMESTAMP en formato
+      // "YYYY-MM-DD HH:MM:SS" (espacio, sin T ni Z ni ms). Si comparamos contra
+      // un ISO string crudo (.toISOString() → "...T...Z"), la comparación
+      // lexicográfica falla: " " (32) < "T" (84) → eventos del mismo día con
+      // hora >= la del cutoff quedan FUERA. Por eso normalizamos a formato
+      // SQLite antes de comparar.
+      const desde = new Date(Date.now() - 24 * 3600 * 1000)
+        .toISOString().replace('T', ' ').slice(0, 19);
 
       const evs = db.prepare(`
         SELECT canal, direccion, tipo_original, COUNT(*) AS n
