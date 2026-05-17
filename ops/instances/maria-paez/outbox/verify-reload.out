@@ -1,0 +1,70 @@
+# ejecutado: 2026-05-17T17:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 status maria-paez ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print(json.dumps({"pid":r["pid"],"status":r["pm2_env"]["status"],"restart_time":r["pm2_env"]["restart_time"],"uptime_ms":r["pm2_env"]["pm_uptime"]} if r else {"err":"no encontre"}, indent=2))'
+#   echo ""
+#   echo "═══ Hash de wa-validate.js (¿lo pulleó?) ═══"
+#   md5sum /root/secretaria/wa-validate.js 2>&1
+#   ls -la /root/secretaria/wa-validate.js 2>&1
+#   echo ""
+#   echo "═══ Hash de executor.js (¿cambió?) ═══"
+#   md5sum /root/secretaria/executor.js 2>&1
+#   grep -c "waValidate" /root/secretaria/executor.js 2>&1
+#   echo ""
+#   echo "═══ pm2 logs ultimas 30 lineas — errores post-reload ═══"
+#   pm2 logs maria-paez --lines 30 --nostream 2>&1 | tail -30
+
+# ───── output ─────
+═══ pm2 status maria-paez ═══
+{
+  "pid": 952680,
+  "status": "online",
+  "restart_time": 37,
+  "uptime_ms": 1779051362833
+}
+
+═══ Hash de wa-validate.js (¿lo pulleó?) ═══
+aee658b7ef1e92f6c066f765677899aa  /root/secretaria/wa-validate.js
+-rw-r--r--+ 1 root root 3149 May 17 17:56 /root/secretaria/wa-validate.js
+
+═══ Hash de executor.js (¿cambió?) ═══
+402d0040ded744685536d9d367a64aa9  /root/secretaria/executor.js
+4
+
+═══ pm2 logs ultimas 30 lineas — errores post-reload ═══
+0|maria-pa | 2026-05-17 17:52:39: [unknown-flow/wa] tercero_de_usuario: 83356943413285@lid (Poyo) → contexto de Nicolas Kosinski (id=7)
+0|maria-pa | 2026-05-17 17:56:02: 
+0|maria-pa | 2026-05-17 17:56:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-17 17:56:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 17:56:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-17 17:56:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-17 17:56:04:   Usuarios:   12 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa
+0|maria-pa | 2026-05-17 17:56:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-17 17:56:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 17:56:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 17:56:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 17:56:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 17:56:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 17:56:08: [WA authenticated]
+0|maria-pa | 2026-05-17 17:56:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 17:56:10: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 17:56:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 17:56:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 17:56:10: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 17:56:10: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 17:56:10: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 17:56:10: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+
+
+# exit=0
