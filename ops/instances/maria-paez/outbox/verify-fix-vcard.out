@@ -1,0 +1,49 @@
+# ejecutado: 2026-05-17T19:22:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 status ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "status:", r["pm2_env"]["status"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no encontrado")'
+#   
+#   echo ""
+#   echo "═══ Código vivo tiene el fix? ═══"
+#   grep -c "_extraerVCards" /root/secretaria/whatsapp-handler.js
+#   grep -c "_manejarVCards" /root/secretaria/whatsapp-handler.js
+#   grep -c "ultimos_vcards" /root/secretaria/whatsapp-handler.js /root/secretaria/prompt-builder.js
+#   
+#   echo ""
+#   echo "═══ DIAG log removido? ═══"
+#   grep -c "DIAG vcard" /root/secretaria/whatsapp-handler.js
+#   
+#   echo ""
+#   echo "═══ Boot log ═══"
+#   pm2 logs maria-paez --lines 15 --nostream 2>&1 | tail -10
+
+# ───── output ─────
+═══ pm2 status ═══
+pid: 967644 status: online restart: 39
+
+═══ Código vivo tiene el fix? ═══
+2
+2
+/root/secretaria/whatsapp-handler.js:2
+/root/secretaria/prompt-builder.js:3
+
+═══ DIAG log removido? ═══
+0
+
+═══ Boot log ═══
+0|maria-pa | 2026-05-17 19:21:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 19:21:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 19:21:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 19:21:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 19:21:08: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 19:21:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+
+
+# exit=0
