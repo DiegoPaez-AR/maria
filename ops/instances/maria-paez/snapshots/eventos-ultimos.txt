@@ -1,5 +1,12 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4875  2026-05-17 21:00:13  sistema   interno                         acción FALLÓ: enviar_wa — No pude mandar WA a 54959899643028@c.us: No LID for user                                                                                                                      
+                                                                     s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)                                                                                                                                  
+
+4874  2026-05-17 21:00:13  whatsapp  saliente   34342575317160@lid   Voy a intentar de nuevo ahora.                                                                                                                                                                          
+
+4873  2026-05-17 21:00:13  sistema   interno                         claude_call whatsapp: 32553ms prompt=62019c raw=2339c                                                                                                                                                   
+
 4872  2026-05-17 20:59:40  whatsapp  entrante   34342575317160@lid   mandale denuevo a enrique a ver si anda bien ahora                                                                                                                                                      
 
 4871  2026-05-17 20:59:40  sistema   interno                         unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial con el remitente es idéntico al historial con Diego (owner, id=1) — mismos mensajes, mismos timestamp
@@ -217,9 +224,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4777  2026-05-17 19:48:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
 
 4776  2026-05-17 19:48:24  whatsapp  saliente   5491131801917@c.us   Hola Alejandro! Te escribo de parte de Nicolás para coordinar una cena el jueves a las 20hs con el grupo de Cantina. ¿Podés confirmar si estás?                                                         
-
-4775  2026-05-17 19:48:23  whatsapp  saliente   227143674011812@lid  Santiago confirmó, medio indignado 😄 Le escribo a Alejandro también para la cena del jueves.                                                                                                            
-
-4774  2026-05-17 19:48:23  sistema   interno                         claude_call whatsapp: 67082ms prompt=33836c raw=777c                                                                                                                                                    
-
-4773  2026-05-17 19:47:25  whatsapp  saliente   275707036958753@lid  Jaja, anotado Santiago! Te esperamos el jueves a las 20. 🙌                                                                                                                                              
