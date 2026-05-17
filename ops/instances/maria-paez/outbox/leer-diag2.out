@@ -1,0 +1,75 @@
+# ejecutado: 2026-05-17T19:46:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no")'
+#   
+#   echo ""
+#   echo "═══ ¿código vivo tiene DIAG2? ═══"
+#   grep -c "DIAG2 vcard" /root/secretaria/whatsapp-handler.js
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 800 — DIAG2 + vcard + 5491132317896 ═══"
+#   pm2 logs maria-paez --lines 800 --nostream 2>&1 | grep -iE "DIAG2|📒 \[WA vcard|acerbo|acero|acevedo|5491132317896.*vcard" | tail -50
+#   
+#   echo ""
+#   echo "═══ pm2 logs — cualquier error reciente ═══"
+#   pm2 logs maria-paez --lines 200 --nostream --err 2>&1 | tail -30
+
+# ───── output ─────
+═══ pm2 ═══
+pid: 972202 restart: 40
+
+═══ ¿código vivo tiene DIAG2? ═══
+4
+
+═══ pm2 logs últimas 800 — DIAG2 + vcard + 5491132317896 ═══
+0|maria-pa | 2026-05-17 16:14:01: [memoria-curada] Diego × Agustina Acevedo: nota actualizada (5 eventos nuevos, 2023 chars)
+0|maria-pa | 2026-05-17 16:23:04: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+0|maria-pa | 2026-05-17 16:26:53: 📒 [WA vcard/Nicolas Kosinski] Seba Pittaluga → 5491151462211@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:32: 📒 [WA vcard/Nicolas Kosinski] Cholga → 5491144788271@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:47: 📒 [WA vcard/Nicolas Kosinski] Poyo → 5491144096187@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:43: 📒 [WA vcard/Nicolas Kosinski] Nicolas Sujoy → 5491155722443@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:58: 📒 [WA vcard/Nicolas Kosinski] Kichi → 5491151775195@c.us (privado)
+0|maria-pa | 2026-05-17 16:47:01: 📒 [WA vcard/Nicolas Kosinski] Alejandro Saroka → 5491131801917@c.us (privado)
+0|maria-pa | 2026-05-17 16:48:56: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+0|maria-pa | 2026-05-17 19:15:18: [DIAG vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":2,"body_len":0,"body_first200":"","keys":["_data","mediaKey","id","ack","hasMedia","body","type","timestamp","from","to","author","deviceType","isForwarded","forwardingScore","isStatus","isStarred","broadcast","fromMe","hasQuotedMsg","hasReaction","duration","location","vCards","inviteV4","mentionedIds","groupMentions","orderId","token","isGif","isEphemeral","links"]}
+0|maria-pa | 2026-05-17 19:39:14: [claude-client] consulta buscar_en_historial("agustina acevedo contactos") → 0 resultados
+0|maria-pa | 2026-05-17 19:39:52: [WA →usr] Diego (34342575317160@lid): Agustina Acevedo sí la tengo — WA 56715194151079@lid y email aagustinaacevedo@hotmail.es. Pero tu mensaje quedó cortado y no me llegaron los otros dos nombres. 
+
+═══ pm2 logs — cualquier error reciente ═══
+0|maria-pa | 2026-05-17 16:07:16: /root/secretaria/prompt-builder.js:558
+0|maria-pa | 2026-05-17 16:07:16:       // Cruza los calendars de varios usuarios actuales (solo gente que comparte calendar con Maria — terceros NO, a esos los invitás aparte). Devuelve hasta 15 slots libres comunes en ventana laboral (9-19 default, ajustable). Usalo cuando el user pide "buscá un horario común con X e Y" o "cuándo podemos juntarnos". El resultado incluye `slots: [{start, end}]` que vos formatées en lenguaje natural. Si algún usuario está en `no_encontrados` o `sin_calendar`, decíselo al user y pedile la disponibilidad por otra vía.
+0|maria-pa | 2026-05-17 16:07:16:                                                                                                                                                                                                                                                                                                                                                       ^^^^^
+0|maria-pa | 2026-05-17 16:07:16: 
+0|maria-pa | 2026-05-17 16:07:16: SyntaxError: Unexpected identifier
+0|maria-pa | 2026-05-17 16:07:16:     at internalCompileFunction (node:internal/vm:73:18)
+0|maria-pa | 2026-05-17 16:07:16:     at wrapSafe (node:internal/modules/cjs/loader:1274:20)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1320:27)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+0|maria-pa | 2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+0|maria-pa | 2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+0|maria-pa | 2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+0|maria-pa | 2026-05-17 16:07:16:     at require (node:internal/modules/helpers:177:18)
+0|maria-pa | 2026-05-17 16:07:16:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+0|maria-pa | 2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
+0|maria-pa | 2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
+0|maria-pa | 2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
+0|maria-pa | 2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+0|maria-pa | 2026-05-17 17:13:05: [executor] acción #1 (enviar_wa) falló: No pude mandar WA a 54959899643028@c.us: No LID for user
+0|maria-pa | 2026-05-17 17:13:05: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+0|maria-pa | 2026-05-17 17:13:05: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 54959899643028@c.us: No LID for user
+0|maria-pa | 2026-05-17 17:13:05: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+0|maria-pa | 2026-05-17 18:00:13: [executor] acción #0 (enviar_wa) falló: No pude mandar WA a 54959899643028@c.us: No LID for user
+0|maria-pa | 2026-05-17 18:00:13: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+0|maria-pa | 2026-05-17 18:00:13: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 54959899643028@c.us: No LID for user
+0|maria-pa | 2026-05-17 18:00:13: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+
+
+# exit=0
