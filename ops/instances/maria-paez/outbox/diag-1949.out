@@ -1,0 +1,78 @@
+# ejecutado: 2026-05-17T19:53:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 logs últimas 600 desde 19:48 ═══"
+#   pm2 logs maria-paez --lines 600 --nostream 2>&1 | grep -E "19:4[89]|19:5[0-9]|DIAG2|vcard" | tail -50
+#   
+#   echo ""
+#   echo "═══ Eventos entrantes WA últimos 5 min ═══"
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), direccion, tipo_original, substr(de,1,30) AS de, LENGTH(cuerpo) AS body_len FROM eventos WHERE canal='whatsapp' AND timestamp >= datetime('now','-5 minutes') ORDER BY timestamp ASC LIMIT 20;"
+#   
+#   echo ""
+#   echo "═══ pm2 status + restart time ═══"
+#   pm2 jlist 2>/dev/null | python3 -c '
+#   import sys,json,datetime
+#   d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]
+#   r=d[0] if d else None
+#   if r:
+#       print("pid:", r["pid"], "status:", r["pm2_env"]["status"], "restarts:", r["pm2_env"]["restart_time"])
+#       print("arrancó:", datetime.datetime.fromtimestamp(r["pm2_env"]["pm_uptime"]/1000).isoformat())
+#   '
+#   
+#   echo ""
+#   echo "═══ últimas 30 lineas pm2 logs RAW ═══"
+#   pm2 logs maria-paez --lines 30 --nostream 2>&1 | tail -25
+
+# ───── output ─────
+═══ pm2 logs últimas 600 desde 19:48 ═══
+0|maria-pa | 2026-05-17 16:23:04: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+0|maria-pa | 2026-05-17 16:26:53: 📒 [WA vcard/Nicolas Kosinski] Seba Pittaluga → 5491151462211@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:32: 📒 [WA vcard/Nicolas Kosinski] Cholga → 5491144788271@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:47: 📒 [WA vcard/Nicolas Kosinski] Poyo → 5491144096187@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:43: 📒 [WA vcard/Nicolas Kosinski] Nicolas Sujoy → 5491155722443@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:58: 📒 [WA vcard/Nicolas Kosinski] Kichi → 5491151775195@c.us (privado)
+0|maria-pa | 2026-05-17 16:47:01: 📒 [WA vcard/Nicolas Kosinski] Alejandro Saroka → 5491131801917@c.us (privado)
+0|maria-pa | 2026-05-17 16:48:56: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+0|maria-pa | 2026-05-17 19:15:18: [DIAG vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":2,"body_len":0,"body_first200":"","keys":["_data","mediaKey","id","ack","hasMedia","body","type","timestamp","from","to","author","deviceType","isForwarded","forwardingScore","isStatus","isStarred","broadcast","fromMe","hasQuotedMsg","hasReaction","duration","location","vCards","inviteV4","mentionedIds","groupMentions","orderId","token","isGif","isEphemeral","links"]}
+0|maria-pa | 2026-05-17 19:49:34: [DIAG2 vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":3,"vCards_first_type":"string","vCards_first_isString":true,"vCards_first_keys":null,"vCards_first_preview":"BEGIN:VCARD\nVERSION:3.0\nN:Acerbo;Horacio;;;\nFN:Horacio Acerbo\nTEL;type=CELL;type=VOICE:+54 9 11 4673-4102\nEND:VCARD","body_len":0}
+0|maria-pa | 2026-05-17 19:49:34: [DIAG2 vcard] bodies extraídos: 3 tipos: string,string,string
+0|maria-pa | 2026-05-17 19:49:34: [DIAG2 vcard] usuario no resuelto from=5491132317896@c.us → return sin guardar
+
+═══ Eventos entrantes WA últimos 5 min ═══
+
+═══ pm2 status + restart time ═══
+pid: 972202 status: online restarts: 40
+arrancó: 2026-05-17T19:44:02.799000
+
+═══ últimas 30 lineas pm2 logs RAW ═══
+0|maria-pa | 2026-05-17 19:44:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-17 19:44:04: ✓ whisper OK
+0|maria-pa | 2026-05-17 19:44:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-17 19:44:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-17 19:44:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-17 19:44:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 19:44:08: [WA authenticated]
+0|maria-pa | 2026-05-17 19:44:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-17 19:44:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-17 19:44:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-17 19:44:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-17 19:44:09: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-17 19:44:09: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-17 19:44:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-17 19:49:34: [DIAG2 vcard] {"type":"multi_vcard","from":"5491132317896@c.us","vCards_len":3,"vCards_first_type":"string","vCards_first_isString":true,"vCards_first_keys":null,"vCards_first_preview":"BEGIN:VCARD\nVERSION:3.0\nN:Acerbo;Horacio;;;\nFN:Horacio Acerbo\nTEL;type=CELL;type=VOICE:+54 9 11 4673-4102\nEND:VCARD","body_len":0}
+0|maria-pa | 2026-05-17 19:49:34: [DIAG2 vcard] bodies extraídos: 3 tipos: string,string,string
+0|maria-pa | 2026-05-17 19:49:34: [DIAG2 vcard] usuario no resuelto from=5491132317896@c.us → return sin guardar
+
+
+# exit=0
