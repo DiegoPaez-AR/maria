@@ -14,16 +14,17 @@
 // en Fase 2/3 sin cambiar la interface pública de este módulo.
 
 const googleProvider = require('./google');
+const caldavProvider = require('./caldav');
 
 function _resolverProvider(usuario) {
   const kind = (usuario && usuario.calendar_provider) || 'google';
   switch (kind) {
     case 'google':
       return googleProvider;
+    case 'caldav':
+      return caldavProvider;
     case 'microsoft':
       throw new Error(`provider 'microsoft' no implementado todavía (Fase 2)`);
-    case 'caldav':
-      throw new Error(`provider 'caldav' no implementado todavía (Fase 3)`);
     default:
       throw new Error(`calendar_provider desconocido "${kind}" para usuario ${usuario && usuario.id}`);
   }
