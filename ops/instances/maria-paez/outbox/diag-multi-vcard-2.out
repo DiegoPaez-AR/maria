@@ -1,0 +1,43 @@
+# ejecutado: 2026-05-17T19:05:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Eventos cuyo cuerpo contiene varios BEGIN:VCARD (multi-vcard pasados de largo) ═══"
+#   sqlite3 -header "$DB" "
+#   SELECT datetime(timestamp), tipo_original, substr(de,1,30) AS de,
+#          (LENGTH(cuerpo) - LENGTH(REPLACE(cuerpo, 'BEGIN:VCARD', ''))) / LENGTH('BEGIN:VCARD') AS n_vcards,
+#          substr(cuerpo, 1, 200) AS cuerpo_inicio
+#   FROM eventos
+#   WHERE canal='whatsapp' AND timestamp >= datetime('now','-30 days')
+#     AND cuerpo LIKE '%BEGIN:VCARD%'
+#   ORDER BY timestamp DESC LIMIT 30;
+#   "
+#   
+#   echo ""
+#   echo "═══ Sample de cuerpo de un mensaje vCard reciente (para ver shape real) ═══"
+#   sqlite3 "$DB" "SELECT cuerpo FROM eventos WHERE canal='whatsapp' AND cuerpo LIKE '%BEGIN:VCARD%' AND timestamp >= datetime('now','-2 days') ORDER BY timestamp DESC LIMIT 1;" | head -50
+#   
+#   echo ""
+#   echo "═══ pm2 logs — handler de mensaje (qué dice el log de cada msg entrante) ═══"
+#   pm2 logs maria-paez --lines 3000 --nostream 2>&1 | grep -iE "vcard|tipo:" | tail -40
+
+# ───── output ─────
+═══ Eventos cuyo cuerpo contiene varios BEGIN:VCARD (multi-vcard pasados de largo) ═══
+
+═══ Sample de cuerpo de un mensaje vCard reciente (para ver shape real) ═══
+
+═══ pm2 logs — handler de mensaje (qué dice el log de cada msg entrante) ═══
+0|maria-pa | 2026-05-17 16:23:04: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+0|maria-pa | 2026-05-17 16:26:53: 📒 [WA vcard/Nicolas Kosinski] Seba Pittaluga → 5491151462211@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:32: 📒 [WA vcard/Nicolas Kosinski] Cholga → 5491144788271@c.us (privado)
+0|maria-pa | 2026-05-17 16:32:47: 📒 [WA vcard/Nicolas Kosinski] Poyo → 5491144096187@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:43: 📒 [WA vcard/Nicolas Kosinski] Nicolas Sujoy → 5491155722443@c.us (privado)
+0|maria-pa | 2026-05-17 16:33:58: 📒 [WA vcard/Nicolas Kosinski] Kichi → 5491151775195@c.us (privado)
+0|maria-pa | 2026-05-17 16:47:01: 📒 [WA vcard/Nicolas Kosinski] Alejandro Saroka → 5491131801917@c.us (privado)
+0|maria-pa | 2026-05-17 16:48:56: 📒 [WA vcard/Nicolas Kosinski] Santiago Bonfiglio → 5491128616224@c.us (privado)
+
+# exit=0
