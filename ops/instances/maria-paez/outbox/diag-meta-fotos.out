@@ -1,0 +1,74 @@
+# ejecutado: 2026-05-17T20:17:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Schema completo de eventos ═══"
+#   sqlite3 "$DB" ".schema eventos"
+#   
+#   echo ""
+#   echo "═══ Fila completa de un evento entrante con fotos del 22:15 ═══"
+#   sqlite3 "$DB" -cmd ".mode line" "SELECT * FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND timestamp >= '2026-05-16 22:15' AND timestamp <= '2026-05-16 22:16' AND cuerpo LIKE '%adjunt%' LIMIT 2;"
+#   
+#   echo ""
+#   echo "═══ Ver si hay columna meta/metadata/json ═══"
+#   sqlite3 "$DB" "PRAGMA table_info(eventos);"
+
+# ───── output ─────
+═══ Schema completo de eventos ═══
+CREATE TABLE eventos (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
+  direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
+  de             TEXT,
+  nombre         TEXT,
+  asunto         TEXT,
+  cuerpo         TEXT,
+  tipo_original  TEXT,
+  metadata_json  TEXT
+, usuario_id INTEGER REFERENCES usuarios(id));
+CREATE INDEX idx_eventos_ts       ON eventos(timestamp DESC);
+CREATE INDEX idx_eventos_canal_ts ON eventos(canal, timestamp DESC);
+CREATE INDEX idx_eventos_de       ON eventos(de);
+CREATE INDEX idx_eventos_usuario     ON eventos(usuario_id, timestamp DESC);
+
+═══ Fila completa de un evento entrante con fotos del 22:15 ═══
+           id = 4483
+    timestamp = 2026-05-16 22:15:36
+        canal = whatsapp
+    direccion = entrante
+           de = 34342575317160@lid
+       nombre = Diego Paez
+       asunto = 
+       cuerpo = (adjuntó image/jpeg, 246 KB)
+(adjuntó image/jpeg, 257 KB)
+(adjuntó image/jpeg, 256 KB)
+(adjuntó image/jpeg, 214 KB)
+(adjuntó image/jpeg, 221 KB)
+(adjuntó image/jpeg, 250 KB)
+(adjuntó image/jpeg, 281 KB)
+(adjuntó video/mp4, 10174 KB)
+(adjuntó image/jpeg, 281 KB)
+(adjuntó image/jpeg, 292 KB)
+tipo_original = 
+metadata_json = {"tipo":"unknown_llm_rute","messageId":"false_34342575317160@lid_4A7DDCC032238DA3DF0B","a_usuario":1,"razon":"El pushname 'Diego Paez' coincide con el owner (id=1); el ID @lid es un dispositivo vinculado de WhatsApp multi-device del mismo número; y las fotos/video son continuación directa del pedido que Diego hizo minutos antes en su historial ('ahora te mando unas fotos del auto para que les pasen para tasarlo').","via":"llm"}
+   usuario_id = 1
+
+═══ Ver si hay columna meta/metadata/json ═══
+0|id|INTEGER|0||1
+1|timestamp|DATETIME|0|CURRENT_TIMESTAMP|0
+2|canal|TEXT|1||0
+3|direccion|TEXT|1||0
+4|de|TEXT|0||0
+5|nombre|TEXT|0||0
+6|asunto|TEXT|0||0
+7|cuerpo|TEXT|0||0
+8|tipo_original|TEXT|0||0
+9|metadata_json|TEXT|0||0
+10|usuario_id|INTEGER|0||0
+
+# exit=0
