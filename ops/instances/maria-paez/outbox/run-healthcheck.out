@@ -1,0 +1,40 @@
+# ejecutado: 2026-05-17T15:41:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Probar healthcheck.sh recién pusheado
+#   set +e
+#   cd /root/secretaria
+#   
+#   echo "═══ Permisos del script ═══"
+#   ls -la ops/healthcheck.sh
+#   
+#   echo ""
+#   echo "═══ Ejecución (output completo) ═══"
+#   bash ops/healthcheck.sh
+#   EXIT_CODE=$?
+#   echo ""
+#   echo "═══ Exit code: $EXIT_CODE ═══"
+
+# ───── output ─────
+═══ Permisos del script ═══
+-rwxr-xr-x+ 1 root root 6335 May 17 15:41 ops/healthcheck.sh
+
+═══ Ejecución (output completo) ═══
+{
+  "ts": "2026-05-17T18:41:04Z",
+  "instance": "maria-paez",
+  "overall_ok": true,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":899728,"restarts":13} }
+    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":60} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":2628} }
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":7} }
+    ,"vault": { "ok": "skipped", "detail": {"reason":"MARIA_VAULT_KEY no seteada (vault no usado todavía)"} }
+  }
+}
+
+═══ Exit code: 0 ═══
+
+# exit=0
