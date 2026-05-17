@@ -120,6 +120,24 @@ function validarDestinatario({ usuario, canal, destino }) {
         return { ok: true, motivo: `libreta-${c.visibilidad} (${c.nombre})` };
       }
     }
+    // Hilo activo: si el destino tiene mensajes entrantes recientes en el
+    // bucket del usuario, permitir envío. Estamos respondiendo a una
+    // conversación ya iniciada por el tercero — no es spam por iniciativa
+    // de Maria. Cubre el caso "alguien le escribió primero a Maria y todavía
+    // no llegó a la libreta" (típico: asesor comercial que respondió a una
+    // consulta previa, sin que Maria capture su número telefónico).
+    try {
+      const fila = mem.db.prepare(`
+        SELECT 1 FROM eventos
+        WHERE usuario_id = ? AND canal = 'whatsapp' AND direccion = 'entrante'
+          AND timestamp >= datetime('now', '-30 days')
+          AND de = ?
+        LIMIT 1
+      `).get(usuario.id, destino);
+      if (fila) {
+        return { ok: true, motivo: 'hilo activo (entrante reciente)' };
+      }
+    } catch { /* si falla la query, no bloqueamos por esta vía */ }
     return { ok: false, motivo: `WA "${destino}" no está en libreta ni es usuario activo` };
   }
 
@@ -145,6 +163,21 @@ function validarDestinatario({ usuario, canal, destino }) {
         return { ok: true, motivo: `libreta-${c.visibilidad} (${c.nombre})` };
       }
     }
+    // Hilo activo: si el email del destino tiene entrantes recientes en el
+    // bucket del usuario, permitir. Mismo principio que para WA: responder
+    // a quien escribió primero está OK aunque no esté en libreta.
+    try {
+      const fila = mem.db.prepare(`
+        SELECT 1 FROM eventos
+        WHERE usuario_id = ? AND canal = 'gmail' AND direccion = 'entrante'
+          AND timestamp >= datetime('now', '-30 days')
+          AND LOWER(de) LIKE ?
+        LIMIT 1
+      `).get(usuario.id, `%${dest}%`);
+      if (fila) {
+        return { ok: true, motivo: 'hilo activo (entrante reciente)' };
+      }
+    } catch { /* no bloqueamos por esta vía */ }
     return { ok: false, motivo: `email "${destino}" no está en libreta ni es usuario activo` };
   }
 
