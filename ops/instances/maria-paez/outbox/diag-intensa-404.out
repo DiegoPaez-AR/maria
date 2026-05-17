@@ -1,0 +1,121 @@
+# ejecutado: 2026-05-17T18:58:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ Archivos en docroot ═══"
+#   ls -la /var/www/intensa.io/
+#   
+#   echo ""
+#   echo "═══ Permisos del dir padre ═══"
+#   namei -l /var/www/intensa.io/index.html
+#   
+#   echo ""
+#   echo "═══ Test acceso como www-data ═══"
+#   sudo -u www-data cat /var/www/intensa.io/index.html | head -2 2>&1
+#   
+#   echo ""
+#   echo "═══ nginx error.log últimas 30 ═══"
+#   tail -30 /var/log/nginx/error.log
+#   echo "─── intensa.io.error.log si existe ───"
+#   tail -30 /var/log/nginx/intensa.io.error.log 2>&1
+#   
+#   echo ""
+#   echo "═══ nginx -T para intensa.io ═══"
+#   nginx -T 2>/dev/null | grep -A 30 "server_name intensa.io"
+#   
+#   echo ""
+#   echo "═══ Curl con debug ═══"
+#   curl -v -H "Host: intensa.io" http://127.0.0.1/ 2>&1 | head -30
+
+# ───── output ─────
+═══ Archivos en docroot ═══
+total 44
+drwxr-xr-x 2 www-data www-data  4096 May 17 18:56 .
+drwxr-xr-x 5 root     root      4096 May 17 18:56 ..
+-rw-r--r-- 1 www-data www-data 14356 May 17 18:56 index.html
+-rw-r--r-- 1 www-data www-data  2167 May 17 18:56 script.js
+-rw-r--r-- 1 www-data www-data 14955 May 17 18:56 styles.css
+
+═══ Permisos del dir padre ═══
+f: /var/www/intensa.io/index.html
+drwxr-xr-x root     root     /
+drwxr-xr-x root     root     var
+drwxr-xr-x root     root     www
+drwxr-xr-x www-data www-data intensa.io
+-rw-r--r-- www-data www-data index.html
+
+═══ Test acceso como www-data ═══
+<!DOCTYPE html>
+<html lang="es">
+
+═══ nginx error.log últimas 30 ═══
+─── intensa.io.error.log si existe ───
+
+═══ nginx -T para intensa.io ═══
+    server_name intensa.io www.intensa.io;
+
+    root /var/www/intensa.io;
+    index index.html;
+
+    access_log /var/log/nginx/intensa.io.access.log;
+    error_log  /var/log/nginx/intensa.io.error.log;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml application/json text/html;
+    gzip_min_length 256;
+
+    # Cache largo para assets versionables (si aparecen)
+    location ~* \.(css|js|svg|png|jpg|jpeg|webp|woff2?)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# configuration file /etc/nginx/sites-enabled/veritas-trace.conf:
+# Landing en / (estática, /var/www/veritas-trace)
+# POC en /POC/ (proxy_pass al uvicorn 127.0.0.1:8000, FastAPI con --root-path /POC)
+server {
+    server_name veritas-trace.com www.veritas-trace.com;
+
+    root /var/www/veritas-trace;
+
+═══ Curl con debug ═══
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 127.0.0.1:80...
+* Connected to 127.0.0.1 (127.0.0.1) port 80
+> GET / HTTP/1.1
+> Host: intensa.io
+> User-Agent: curl/8.5.0
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Server: nginx/1.24.0 (Ubuntu)
+< Date: Sun, 17 May 2026 21:58:02 GMT
+< Content-Type: text/html
+< Content-Length: 14356
+< Last-Modified: Sun, 17 May 2026 21:56:01 GMT
+< Connection: keep-alive
+< ETag: "6a0a3971-3814"
+< Accept-Ranges: bytes
+< 
+{ [14356 bytes data]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intensa — Agentes de IA para automatización empresarial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+# exit=0
