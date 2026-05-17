@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intensa — Agentes de IA para automatización empresarial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark"></span> intensa</div>
+    <div class="nav-links">
+      <a href="#producto">Producto</a>
+      <a href="#flujo">Cómo funciona</a>
+      <a href="#casos">Casos</a>
+      <a href="#precios">Precios</a>
+      <a href="#contacto" class="nav-cta">Hablar con ventas</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      <span>v2.4 · agentes autónomos en producción</span>
+    </div>
+    <h1>Agentes de IA que <em>ejecutan trabajo real</em> dentro de tu empresa.</h1>
+    <p class="hero-sub">Intensa despliega agentes autónomos que se conectan a tus sistemas, razonan sobre tus procesos y completan tareas de principio a fin. Sin chatbots. Sin RPA frágil.</p>
+    <div class="hero-cta">
+      <a href="#contacto" class="btn btn-primary">Solicitar demo <span class="arrow">→</span></a>
+      <a href="#producto" class="btn btn-ghost">Ver producto</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="label">intensa@prod ~ agent-runtime</div>
+      </div>
+      <div class="terminal-body">
+        <div class="term-line"><span class="term-prompt">›</span><span class="term-cmd">intensa run agent.invoice-recon --source erp</span></div>
+        <div class="term-line"><span class="term-out">→ conectando a SAP · 1,284 facturas detectadas</span></div>
+        <div class="term-line"><span class="term-out">→ <span class="term-tag">[razonando]</span> conciliando contra órdenes de compra</span></div>
+        <div class="term-line"><span class="term-out">→ <span class="term-tag">[acción]</span> 47 discrepancias escaladas · ticket #4821</span></div>
+        <div class="term-line"><span class="term-out">→ 1,237 facturas aprobadas automáticamente</span></div>
+        <div class="term-line"><span class="term-ok">✓ completado en 4m 12s · ahorro: 38 horas/operador</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- FEATURES -->
+<section id="producto" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// producto</span>
+      <h2>Una plataforma. <em>Agentes a medida.</em></h2>
+      <p class="section-sub">Construye, despliega y supervisa agentes de IA especializados para cada proceso. Con observabilidad, control de versiones y trazabilidad de cada decisión.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">01</div>
+        <h3>Razonamiento estructurado</h3>
+        <p>Los agentes operan con planes ejecutables, no respuestas. Cada paso es inspeccionable y reversible.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">02</div>
+        <h3>Conectores empresariales</h3>
+        <p>SAP, Salesforce, NetSuite, HubSpot, Workday y +200 sistemas. Conexión en horas, no semanas.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">03</div>
+        <h3>Human-in-the-loop</h3>
+        <p>Define umbrales de confianza. El agente actúa solo cuando está seguro; escala lo demás a tu equipo.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">04</div>
+        <h3>Observabilidad total</h3>
+        <p>Traces, logs y replays de cada ejecución. Audita decisiones, mide impacto, itera con datos.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">05</div>
+        <h3>Seguridad por diseño</h3>
+        <p>SOC 2 Type II, datos cifrados en reposo y tránsito, despliegue on-premise o VPC dedicada.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">06</div>
+        <h3>SDK abierto</h3>
+        <p>Extiende agentes con código Python o TypeScript. Sin lock-in, sin cajas negras.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="flujo" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// flujo</span>
+      <h2>De problema operativo a <em>agente en producción.</em></h2>
+      <p class="section-sub">Cuatro fases. Sin consultoría interminable. Sin proyectos de 18 meses.</p>
+    </div>
+    <div class="steps">
+      <div class="step-list">
+        <div class="step active" data-step="1">
+          <div class="step-num">01 / Mapeo</div>
+          <h4>Identificamos el proceso</h4>
+          <p>Workshop de 90 minutos para mapear el flujo, datos involucrados y criterios de éxito.</p>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-num">02 / Conexión</div>
+          <h4>Integramos tus sistemas</h4>
+          <p>Conectores listos a tu ERP, CRM y herramientas internas. Lectura segura, escritura controlada.</p>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-num">03 / Despliegue</div>
+          <h4>Lanzamos en sombra</h4>
+          <p>El agente ejecuta en paralelo a tu equipo durante 2 semanas. Calibramos confianza y precisión.</p>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-num">04 / Operación</div>
+          <h4>Autonomía graduada</h4>
+          <p>Pasamos a producción con umbrales que vos controlás. Monitoreo continuo, mejoras semanales.</p>
+        </div>
+      </div>
+      <div class="step-visual" id="stepVisual">
+        <div class="visual-title">
+          <span>agent.runtime</span>
+          <span id="stepLabel">step 01 / mapeo</span>
+        </div>
+        <div id="visualContent">
+          <div class="visual-node"><span class="status"></span> análisis de proceso · cuentas por pagar</div>
+          <div class="visual-arrow"></div>
+          <div class="visual-node"><span class="status pending"></span> identificando entradas y salidas</div>
+          <div class="visual-arrow"></div>
+          <div class="visual-node"><span class="status idle"></span> definiendo criterios de éxito</div>
+          <div class="visual-arrow"></div>
+          <div class="visual-node"><span class="status idle"></span> documentando excepciones</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section id="casos" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// casos</span>
+      <h2>Procesos donde <em>los agentes ganan</em>.</h2>
+      <p class="section-sub">Operaciones repetitivas, intensivas en datos, con reglas claras y excepciones manejables.</p>
+    </div>
+    <div class="cases-grid">
+      <div class="case">
+        <div class="case-meta">
+          <span>// finanzas</span>
+          <span class="badge">activo</span>
+        </div>
+        <h4>Conciliación de facturas</h4>
+        <p>Match automático entre facturas, órdenes de compra y recepciones. Escala discrepancias con contexto.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">94%</div><div class="lbl">automatización</div></div>
+          <div class="stat"><div class="num">12×</div><div class="lbl">más rápido</div></div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-meta">
+          <span>// ventas</span>
+          <span class="badge">activo</span>
+        </div>
+        <h4>Calificación de leads</h4>
+        <p>Enriquece, segmenta y asigna leads en tiempo real con datos de CRM, web y fuentes externas.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">3.2×</div><div class="lbl">conversión</div></div>
+          <div class="stat"><div class="num">&lt;30s</div><div class="lbl">respuesta</div></div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-meta">
+          <span>// operaciones</span>
+          <span class="badge">activo</span>
+        </div>
+        <h4>Procesamiento de órdenes</h4>
+        <p>Lee emails, PDFs y portales B2B. Crea órdenes en tu ERP, valida stock y notifica al cliente.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">86%</div><div class="lbl">sin intervención</div></div>
+          <div class="stat"><div class="num">40h</div><div class="lbl">/semana ahorradas</div></div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-meta">
+          <span>// soporte</span>
+          <span class="badge">activo</span>
+        </div>
+        <h4>Resolución de tickets L1</h4>
+        <p>Diagnostica, ejecuta runbooks y resuelve incidentes recurrentes con acceso a tus sistemas internos.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">71%</div><div class="lbl">resolución total</div></div>
+          <div class="stat"><div class="num">4.6/5</div><div class="lbl">CSAT</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// integraciones</span>
+      <h2>Vive donde <em>tu trabajo ya vive.</em></h2>
+      <p class="section-sub">+200 conectores certificados. APIs, webhooks y SDK para lo que falte.</p>
+    </div>
+    <div class="integrations">
+      <div class="integration">SAP</div>
+      <div class="integration">Salesforce</div>
+      <div class="integration">NetSuite</div>
+      <div class="integration">HubSpot</div>
+      <div class="integration">Workday</div>
+      <div class="integration">Oracle</div>
+      <div class="integration">Slack</div>
+      <div class="integration">Teams</div>
+      <div class="integration">Jira</div>
+      <div class="integration">ServiceNow</div>
+      <div class="integration">Snowflake</div>
+      <div class="integration">+200</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="precios" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">// precios</span>
+      <h2>Precios <em>simples.</em> Sin sorpresas.</h2>
+      <p class="section-sub">Pagás por ejecución exitosa, no por intentos. Setup incluido en todos los planes.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-name">// starter</div>
+        <div class="plan-price">$2.4k<span class="period">/mes</span></div>
+        <div class="plan-desc">Para validar tu primer caso de uso con resultados medibles en 30 días.</div>
+        <ul class="plan-features">
+          <li>1 agente en producción</li>
+          <li>Hasta 5,000 ejecuciones/mes</li>
+          <li>10 conectores incluidos</li>
+          <li>Soporte por email</li>
+          <li>SLA 99.5%</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost">Empezar →</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name">// growth</div>
+        <div class="plan-price">$7.8k<span class="period">/mes</span></div>
+        <div class="plan-desc">Para escalar 3-5 procesos críticos con equipos operando en simultáneo.</div>
+        <ul class="plan-features">
+          <li>5 agentes en producción</li>
+          <li>Hasta 50,000 ejecuciones/mes</li>
+          <li>Conectores ilimitados</li>
+          <li>Soporte dedicado + Slack</li>
+          <li>SLA 99.9% · revisiones mensuales</li>
+        </ul>
+        <a href="#contacto" class="btn btn-primary">Solicitar →</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name">// enterprise</div>
+        <div class="plan-price">Custom</div>
+        <div class="plan-desc">Despliegues complejos, VPC dedicada, cumplimiento regulatorio y soporte 24/7.</div>
+        <ul class="plan-features">
+          <li>Agentes ilimitados</li>
+          <li>Ejecuciones ilimitadas</li>
+          <li>On-prem / VPC dedicada</li>
+          <li>SSO, SCIM, audit logs</li>
+          <li>SOC 2 · ISO 27001 · HIPAA</li>
+        </ul>
+        <a href="#contacto" class="btn btn-ghost">Contactar →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="contacto" class="reveal">
+  <div class="final-cta">
+    <h2>Lo que automatizás hoy, <em>se compone solo mañana.</em></h2>
+    <p>Agendá una demo de 30 minutos. Te mostramos un agente corriendo sobre datos reales de tu industria.</p>
+    <div class="hero-cta">
+      <a href="mailto:hola@intensa.ai" class="btn btn-primary">Solicitar demo <span class="arrow">→</span></a>
+      <a href="#" class="btn btn-ghost">Leer el whitepaper</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark"></span> intensa</div>
+        <p>Agentes de IA para automatización empresarial. Construido para operaciones serias.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Producto</h5>
+        <a href="#producto">Plataforma</a>
+        <a href="#flujo">Cómo funciona</a>
+        <a href="#casos">Casos de uso</a>
+        <a href="#precios">Precios</a>
+      </div>
+      <div class="footer-col">
+        <h5>Recursos</h5>
+        <a href="#">Documentación</a>
+        <a href="#">SDK</a>
+        <a href="#">Changelog</a>
+        <a href="#">Status</a>
+      </div>
+      <div class="footer-col">
+        <h5>Compañía</h5>
+        <a href="#">Sobre nosotros</a>
+        <a href="#">Carreras</a>
+        <a href="#">Seguridad</a>
+        <a href="#">Contacto</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 intensa labs</span>
+      <span>built in latam · running globally</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
