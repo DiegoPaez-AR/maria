@@ -159,9 +159,27 @@ function seccionCumples(usuario) {
   return lineas.length ? lineas.join('\n') : '(no hay cumpleaños en los próximos 7 días)';
 }
 
-// Si el usuario acaba de mandar un vCard hace poco (últimos 10 min), exponemos
-// el contexto para que el LLM sepa qué es "lo" si dice "sí, hacelo público".
+// Si el usuario acaba de mandar vCard(s) hace poco (últimos 10 min), exponemos
+// el contexto para que el LLM sepa qué son "los" o "lo" si dice "sí, hacelos
+// públicos". Soporta 1 vcard (legacy ultimo_vcard) o N (ultimos_vcards).
 function seccionUltimoVCard(usuario) {
+  const lista = mem.getEstadoUsuario(usuario.id, 'ultimos_vcards');
+  // Caso múltiple — prioritario porque cubre ambos shapes (1 también queda acá).
+  if (lista && Array.isArray(lista.lista) && lista.lista.length > 0) {
+    const edad = Date.now() - (lista.ts || 0);
+    if (edad > 10 * 60 * 1000) return null;
+    const min = Math.round(edad / 60000);
+    const n = lista.lista.length;
+    if (n === 1) {
+      const v = lista.lista[0];
+      return `Hace ${min} min ${usuario.nombre} mandó un vCard de "${v.nombre}" (whatsapp ${v.whatsapp || '-'}, cumple ${v.cumple || '-'}). Lo guardé como PRIVADO. Si dice "pública", "sí", "compartilo", etc., emití cambiar_visibilidad_contacto con contactoId=${v.contactoId} y visibilidad=publica.`;
+    }
+    const detalle = lista.lista.map(v => `"${v.nombre}" (contactoId=${v.contactoId}, whatsapp=${v.whatsapp || '-'}${v.cumple ? `, cumple=${v.cumple}` : ''})`).join('; ');
+    const accs = lista.lista.map(v => `cambiar_visibilidad_contacto con contactoId=${v.contactoId} y visibilidad=publica`).join(' + ');
+    return `Hace ${min} min ${usuario.nombre} mandó ${n} vCards: ${detalle}. Los guardé como PRIVADOS. Si dice "públicos", "sí", "compartilos", etc., emití ${n} acciones (una por contacto): ${accs}.`;
+  }
+  // Fallback legacy — solo se usa si por algún path queda ultimo_vcard sin
+  // ultimos_vcards (no debería pasar con el handler nuevo, pero por seguridad).
   const v = mem.getEstadoUsuario(usuario.id, 'ultimo_vcard');
   if (!v) return null;
   const edad = Date.now() - (v.ts || 0);
