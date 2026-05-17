@@ -14,6 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 const { google } = require('googleapis');
+const vault = require('./vault');
 
 const SCOPES = [
   'https://www.googleapis.com/auth/gmail.modify',
@@ -51,6 +52,52 @@ function _encodeHeader(v) {
 let _authClient = null;
 
 /**
+ * Cargar el token desde disco. Soporta dos formatos:
+ *   - cifrado (.enc) — preferido cuando MARIA_VAULT_KEY está seteado
+ *   - plano (.json)  — fallback / pre-vault
+ *
+ * Si MARIA_VAULT_KEY está seteado pero solo existe el plano, hace
+ * auto-migración: cifra el plano a .enc, renombra el plano a .bak.<ts>.
+ * El operador puede borrar el .bak después de confirmar que anda.
+ */
+function _cargarToken() {
+  const encPath = `${TOKEN_PATH}.enc`;
+  const tieneKey = vault.tieneKey();
+  if (tieneKey && fs.existsSync(encPath)) {
+    return { token: vault.descifrarArchivo(encPath), formato: 'enc' };
+  }
+  if (fs.existsSync(TOKEN_PATH)) {
+    const token = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
+    if (tieneKey) {
+      // Auto-migración: hay key + plano + no .enc → cifrar y backupear plano.
+      try {
+        vault.cifrarArchivo(encPath, token);
+        const stamp = new Date().toISOString().replace(/[:.]/g, '').slice(0, 15);
+        const bak = `${TOKEN_PATH}.bak.${stamp}`;
+        fs.renameSync(TOKEN_PATH, bak);
+        console.log(`[google] auto-migración: token cifrado → ${encPath}; plano respaldado en ${bak}`);
+        return { token, formato: 'enc' };
+      } catch (err) {
+        console.warn(`[google] auto-migración falló: ${err.message} — sigo usando token plano`);
+      }
+    }
+    return { token, formato: 'json' };
+  }
+  throw new Error(`google.autenticar: no encontré token en ${TOKEN_PATH} ni ${encPath}. Corré auth-gmail.js para autorizar.`);
+}
+
+/**
+ * Persiste un token actualizado en el mismo formato en que está cargado.
+ */
+function _persistirToken(token, formato) {
+  if (formato === 'enc') {
+    vault.cifrarArchivo(`${TOKEN_PATH}.enc`, token);
+  } else {
+    fs.writeFileSync(TOKEN_PATH, JSON.stringify(token, null, 2));
+  }
+}
+
+/**
  * Devuelve un OAuth2Client ya con el token cargado. Cachea.
  */
 async function autenticar() {
@@ -58,12 +105,18 @@ async function autenticar() {
   const creds = JSON.parse(fs.readFileSync(CRED_PATH, 'utf8'));
   const info  = creds.installed || creds.web;
   const oAuth = new google.auth.OAuth2(info.client_id, info.client_secret, info.redirect_uris[0]);
-  oAuth.setCredentials(JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8')));
-  // persistir refrescos automáticos
+  const { token: cargado, formato } = _cargarToken();
+  oAuth.setCredentials(cargado);
+  // persistir refrescos automáticos (Google emite 'tokens' cuando rota el refresh_token).
   oAuth.on('tokens', (tokens) => {
     if (tokens.refresh_token) {
-      const cur = JSON.parse(fs.readFileSync(TOKEN_PATH, 'utf8'));
-      fs.writeFileSync(TOKEN_PATH, JSON.stringify({ ...cur, ...tokens }, null, 2));
+      try {
+        const { token: cur } = _cargarToken();
+        _persistirToken({ ...cur, ...tokens }, formato);
+        console.log(`[google] refresh_token rotado, persistido en formato ${formato}`);
+      } catch (err) {
+        console.error(`[google] no pude persistir tokens nuevos: ${err.message}`);
+      }
     }
   });
   _authClient = oAuth;

@@ -1,8 +1,9 @@
 // vault.js — cifrado simétrico para datos sensibles persistidos.
 //
 // Uso típico: blobs de credenciales de proveedores externos (Microsoft Graph
-// OAuth, CalDAV passwords, etc.) que viven en columnas TEXT de la DB. NO
-// cifra el token.json de Maria ni la libreta de contactos.
+// OAuth, CalDAV passwords, etc.) que viven en columnas TEXT de la DB. También
+// cifra el token.json de Maria en disco vía cifrarArchivo/descifrarArchivo
+// (formato .enc, AES-256-GCM idéntico al de columnas DB).
 //
 // AES-256-GCM con key en env var MARIA_VAULT_KEY (32 bytes en hex = 64 chars).
 // Generar con: openssl rand -hex 32
@@ -80,4 +81,34 @@ function autoTest() {
   }
 }
 
-module.exports = { cifrar, descifrar, autoTest };
+const fs = require('fs');
+
+/**
+ * Lee un archivo .enc (formato cifrado producido por cifrarArchivo) y
+ * devuelve el objeto descifrado.
+ * Tira si el archivo no existe, la key cambió, o el blob fue manipulado.
+ */
+function descifrarArchivo(filePath) {
+  const b64 = fs.readFileSync(filePath, 'utf8').trim();
+  return descifrar(b64);
+}
+
+/**
+ * Cifra un objeto y lo escribe a un archivo. Atomic via write-then-rename
+ * para evitar archivo corrupto si el proceso muere a mitad.
+ */
+function cifrarArchivo(filePath, obj) {
+  const blob = cifrar(obj);
+  const tmp = `${filePath}.tmp.${process.pid}`;
+  fs.writeFileSync(tmp, blob, { mode: 0o600 });
+  fs.renameSync(tmp, filePath);
+}
+
+/**
+ * ¿Tenemos key seteada? Útil para decidir si usar plano o cifrado sin tirar.
+ */
+function tieneKey() {
+  return !!process.env.MARIA_VAULT_KEY;
+}
+
+module.exports = { cifrar, descifrar, autoTest, cifrarArchivo, descifrarArchivo, tieneKey };
