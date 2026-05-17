@@ -1,0 +1,55 @@
+# ejecutado: 2026-05-17T20:48:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -e
+#   cd /root/secretaria
+#   echo "═══ npm install tsdav ═══"
+#   npm install tsdav --save 2>&1 | tail -15
+#   
+#   echo ""
+#   echo "═══ tsdav version instalada ═══"
+#   node -e "console.log(require('./node_modules/tsdav/package.json').version)" 2>&1
+#   
+#   echo ""
+#   echo "═══ Smoke: ¿el provider caldav carga sin errores? ═══"
+#   node -e "
+#   (async () => {
+#     try {
+#       const c = require('./providers/caldav');
+#       console.log('caldav module OK, exports:', Object.keys(c).join(', '));
+#       // forzar import dinámico de tsdav
+#       const tsdavMod = await import('tsdav');
+#       console.log('tsdav import OK, exports principales:', Object.keys(tsdavMod).filter(k => /Client|Account|fetch/.test(k)).slice(0, 10).join(', '));
+#     } catch (err) {
+#       console.error('FALLO:', err.message);
+#       process.exit(1);
+#     }
+#   })();
+#   " 2>&1
+#   
+#   echo ""
+#   echo "═══ providers/index.js carga ═══"
+#   node -e "const p = require('./providers'); console.log('OK, factory exports:', Object.keys(p).join(', '));" 2>&1
+
+# ───── output ─────
+═══ npm install tsdav ═══
+
+added 4 packages, and audited 275 packages in 1s
+
+43 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+═══ tsdav version instalada ═══
+2.2.2
+
+═══ Smoke: ¿el provider caldav carga sin errores? ═══
+caldav module OK, exports: kind, getContext, listarEventosProximos, listarEventosDelUsuario, crearEvento, obtenerEvento, modificarEvento, borrarEvento, buscarConflictos, listarCalendarios, chequearAccesoCalendar, aceptarCalendarShare, getMariaCalendarId, idCalendarioCumples, listarCumples, linkCrearEventoPrellenado
+(node:984951) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+FALLO: Cannot use import statement outside a module
+
+# exit=0
