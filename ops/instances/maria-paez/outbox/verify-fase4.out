@@ -1,0 +1,51 @@
+# ejecutado: 2026-05-17T21:02:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no")'
+#   echo ""
+#   echo "═══ módulos cargan? ═══"
+#   cd /root/secretaria && node -e "
+#   const detect = require('./providers/detect');
+#   const ex = require('./executor');
+#   const pb = require('./prompt-builder');
+#   console.log('detect.detectarProvider(diego@icloud.com):', JSON.stringify(detect.detectarProvider('diego@icloud.com')));
+#   console.log('detect.detectarProvider(foo@gmail.com):', JSON.stringify(detect.detectarProvider('foo@gmail.com')));
+#   console.log('detect.detectarProvider(custom@miempresa.com):', JSON.stringify(detect.detectarProvider('custom@miempresa.com')));
+#   " 2>&1
+#   echo ""
+#   echo "═══ smoke detect ═══"
+#   cd /root/secretaria && node scripts/smoke-test-detect.js 2>&1 | tail -3
+#   echo ""
+#   echo "═══ ¿el prompt del owner incluye instrucciones nuevas? ═══"
+#   grep -c "configurar_caldav\|seccionProviderDetectado" /root/secretaria/prompt-builder.js
+#   grep -c "_configurarCaldav\|caldav configurado" /root/secretaria/executor.js
+#   echo ""
+#   echo "═══ errores recientes pm2 ═══"
+#   pm2 logs maria-paez --lines 20 --nostream 2>&1 | grep -iE "error|fatal|SyntaxError" | tail -10
+
+# ───── output ─────
+═══ pm2 ═══
+pid: 987633 restart: 47
+
+═══ módulos cargan? ═══
+detect.detectarProvider(diego@icloud.com): {"kind":"caldav","subKind":"icloud","server_url":"https://caldav.icloud.com/","bloqueado":false}
+detect.detectarProvider(foo@gmail.com): {"kind":"google","subKind":null,"server_url":null,"bloqueado":false}
+detect.detectarProvider(custom@miempresa.com): null
+
+═══ smoke detect ═══
+  ✓  "arroba-al-final@"  →  (null)
+
+Resultados: 24 OK, 0 fallaron (de 24)
+
+═══ ¿el prompt del owner incluye instrucciones nuevas? ═══
+4
+4
+
+═══ errores recientes pm2 ═══
+/root/.pm2/logs/maria-paez-error.log last 20 lines:
+
+# exit=0
