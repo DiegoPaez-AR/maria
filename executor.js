@@ -17,6 +17,7 @@ const waSend = require('./wa-send');
 const providers = require('./providers');
 const waValidate = require('./wa-validate');
 const vault = require('./vault');
+const microsoftProvider = require('./providers/microsoft');
 
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
@@ -75,6 +76,8 @@ async function ejecutarUna(accion, ctx) {
     case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
     case 'configurar_caldav': return await _configurarCaldav(accion, ctx);
+    case 'iniciar_microsoft_auth': return await _iniciarMicrosoftAuth(accion, ctx);
+    case 'configurar_microsoft': return await _configurarMicrosoft(accion, ctx);
     case 'set_calendar_acceso': return await _setCalendarAcceso(accion, ctx);
     case 'buscar_contacto_global': return _buscarContactoGlobal(accion, ctx);
     case 'buscar_slots_comunes':   return await _buscarSlotsComunes(accion, ctx);
@@ -962,6 +965,159 @@ async function _configurarCaldav(a, ctx) {
     server_url: a.server_url,
     calendar_url: calendar.url,
     calendars_disponibles: calendars.map(c => ({ url: c.url, displayName: c.displayName })),
+    eventos_sanitizados: redacted,
+  };
+}
+
+// ─── Microsoft Graph OAuth flow ──────────────────────────────────────────
+//
+// Onboarding de un user no-Google con cuenta Microsoft (outlook, hotmail,
+// office365, etc.). Es 2-step porque el user tiene que ir al browser
+// a autorizar y volver con el authorization code:
+//
+//   1. iniciar_microsoft_auth → genera PKCE pair, arma authorize URL,
+//      guarda code_verifier + state + target_user_id en estado_usuario
+//      (clave: 'ms_oauth_pending'). Devuelve la URL para que el LLM se la
+//      mande al user.
+//   2. configurar_microsoft(code, state) → busca el estado pendiente,
+//      intercambia code por tokens, descubre calendar default, cifra creds
+//      con vault, persiste en usuarios.calendar_auth_json. Sanitiza el
+//      code de los logs (similar a configurar_caldav con password).
+
+async function _iniciarMicrosoftAuth(a, ctx) {
+  // Target id: owner puede iniciar para cualquier usuario, el resto solo para sí.
+  const targetId = a.id || a.usuario_id || ctx.usuario.id;
+  const target = usuarios.obtener(targetId);
+  if (!target) throw new Error(`iniciar_microsoft_auth: usuario id=${targetId} no encontrado`);
+  if (target.id !== ctx.usuario.id && !usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('iniciar_microsoft_auth: solo el owner puede iniciar para otros usuarios');
+  }
+
+  const { verifier, challenge } = microsoftProvider.nuevoPkcePair();
+  const crypto = require('crypto');
+  const state = crypto.randomBytes(16).toString('hex');
+  const url = microsoftProvider.buildAuthUrl({
+    state,
+    codeChallenge: challenge,
+    loginHint: target.email || null,
+  });
+
+  // Persistir el pending en estado_usuario del owner (no del target — el
+  // target todavía no tiene context de Maria). TTL 15 min.
+  mem.setEstadoUsuario(ctx.usuario.id, 'ms_oauth_pending', {
+    target_user_id: target.id,
+    target_nombre: target.nombre,
+    verifier, state,
+    ts: Date.now(),
+  });
+
+  mem.log({
+    usuarioId: ctx.usuario.id,
+    canal: 'sistema', direccion: 'interno',
+    cuerpo: `microsoft oauth iniciado para ${target.nombre} (id=${target.id})`,
+    metadata: { target_user_id: target.id, state },
+  });
+  console.log(`[executor] microsoft oauth iniciado: target=${target.nombre} (id=${target.id}) state=${state.slice(0,8)}...`);
+
+  return {
+    auth_url: url,
+    target_user_id: target.id,
+    target_nombre: target.nombre,
+    expires_in_minutos: 15,
+    instrucciones: `Pasale al user esta URL para que autorice. Al final del flow, su browser va a quedar en una página que dice "no se puede acceder a este sitio" o similar — eso es normal. Lo importante es la URL del browser, que va a tener un parámetro ?code=... muy largo. El user te pasa ESE code (todo el valor de code), no la URL completa.`,
+  };
+}
+
+async function _configurarMicrosoft(a, ctx) {
+  _requerir(a, ['code']);
+
+  // Recuperar pending. Si no hay, error claro.
+  const pending = mem.getEstadoUsuario(ctx.usuario.id, 'ms_oauth_pending');
+  if (!pending) {
+    throw new Error('configurar_microsoft: no hay onboarding Microsoft pendiente — correr iniciar_microsoft_auth primero');
+  }
+  const edadMin = (Date.now() - (pending.ts || 0)) / 60_000;
+  if (edadMin > 15) {
+    throw new Error(`configurar_microsoft: el código expiró (${edadMin.toFixed(0)} min) — re-correr iniciar_microsoft_auth`);
+  }
+
+  const target = usuarios.obtener(pending.target_user_id);
+  if (!target) throw new Error(`configurar_microsoft: target_user_id=${pending.target_user_id} ya no existe`);
+
+  // Intercambiar code por tokens.
+  let tokens;
+  try {
+    tokens = await microsoftProvider.intercambiarCodePorTokens({
+      code: a.code,
+      codeVerifier: pending.verifier,
+    });
+  } catch (err) {
+    throw new Error(`configurar_microsoft: el server rechazó el código — ${err.message}. Probablemente expiró o se copió mal. Re-correr iniciar_microsoft_auth.`);
+  }
+  if (!tokens.refresh_token) {
+    throw new Error('configurar_microsoft: Microsoft no devolvió refresh_token. Verificar que el scope offline_access esté incluído en los permisos de Azure.');
+  }
+
+  // Descubrir calendar default vía un fetch directo con el access_token recién recibido.
+  let calendarId = null;
+  try {
+    const res = await fetch('https://graph.microsoft.com/v1.0/me/calendar', {
+      headers: { 'Authorization': `Bearer ${tokens.access_token}` },
+    });
+    if (res.ok) {
+      const cal = await res.json();
+      calendarId = cal.id || null;
+    }
+  } catch (err) {
+    console.warn(`[executor] configurar_microsoft: no pude descubrir calendar_id: ${err.message}`);
+  }
+
+  const credsBlob = vault.cifrar({
+    refresh_token: tokens.refresh_token,
+    access_token: tokens.access_token,
+    expires_at: Date.now() + (tokens.expires_in || 3600) * 1000,
+    scope: tokens.scope || 'Calendars.ReadWrite User.Read offline_access',
+    calendar_id: calendarId,
+  });
+
+  usuarios.actualizar(target.id, {
+    calendar_provider: 'microsoft',
+    calendar_auth_json: credsBlob,
+    calendar_acceso: 'write',
+  });
+
+  // Sanitizar el code en logs recientes.
+  let redacted = 0;
+  try {
+    const filas = mem.db.prepare(`
+      SELECT id, cuerpo FROM eventos
+      WHERE timestamp >= datetime('now','-30 minutes')
+        AND cuerpo LIKE ?
+    `).all(`%${a.code}%`);
+    for (const f of filas) {
+      const nuevo = f.cuerpo.split(a.code).join('[REDACTED]');
+      mem.db.prepare('UPDATE eventos SET cuerpo = ? WHERE id = ?').run(nuevo, f.id);
+      redacted++;
+    }
+  } catch (err) {
+    console.warn(`[executor] configurar_microsoft: sanitización falló: ${err.message}`);
+  }
+
+  // Limpiar el pending.
+  mem.setEstadoUsuario(ctx.usuario.id, 'ms_oauth_pending', null);
+
+  mem.log({
+    usuarioId: ctx.usuario.id,
+    canal: 'sistema', direccion: 'interno',
+    cuerpo: `microsoft configurado para ${target.nombre} (id=${target.id})`,
+    metadata: { target_user_id: target.id, calendar_id: calendarId, redacted_eventos: redacted },
+  });
+  console.log(`[executor] microsoft configurado: ${target.nombre} (id=${target.id}) calendar=${calendarId} redacted=${redacted}`);
+
+  return {
+    usuario_id: target.id,
+    nombre: target.nombre,
+    calendar_id: calendarId,
     eventos_sanitizados: redacted,
   };
 }

@@ -41,3 +41,11 @@ CALENDAR_WATCH_MS=28800000
 # Generar con: openssl rand -hex 32
 # IMPORTANTE: este valor NUNCA va al git. El .conf está en .gitignore.
 # MARIA_VAULT_KEY=<64 chars hex>
+
+# ─── Microsoft Graph (Fase 2 — usuarios non-Google con Outlook/Office365) ────
+# Registrar la app en portal.azure.com (ver docs/onboarding-flow.md sección MS).
+# Defaults — los 3 son iguales para todas las instancias salvo que quieras
+# restringir a un tenant específico (tenant_id en lugar de 'common').
+# MS_CLIENT_ID=<UUID del Azure registrado>
+# MS_TENANT=common
+# MS_REDIRECT_URI=http://localhost/maria-oauth-callback

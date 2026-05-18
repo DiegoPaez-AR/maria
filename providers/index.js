@@ -15,6 +15,7 @@
 
 const googleProvider = require('./google');
 const caldavProvider = require('./caldav');
+const microsoftProvider = require('./microsoft');
 
 function _resolverProvider(usuario) {
   const kind = (usuario && usuario.calendar_provider) || 'google';
@@ -24,7 +25,7 @@ function _resolverProvider(usuario) {
     case 'caldav':
       return caldavProvider;
     case 'microsoft':
-      throw new Error(`provider 'microsoft' no implementado todavía (Fase 2)`);
+      return microsoftProvider;
     default:
       throw new Error(`calendar_provider desconocido "${kind}" para usuario ${usuario && usuario.id}`);
   }
