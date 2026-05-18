@@ -1,0 +1,39 @@
+# ejecutado: 2026-05-18T08:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no")'
+#   echo ""
+#   echo "═══ ¿código tiene fix? ═══"
+#   grep -c "const startTs = _lastIncoming" /root/secretaria/whatsapp-handler.js
+#   grep -c "function _despacharGrupo.*startTs" /root/secretaria/whatsapp-handler.js
+#   echo ""
+#   echo "═══ errores recientes (últimas 100 lineas) ═══"
+#   pm2 logs maria-paez --lines 100 --nostream 2>&1 | grep -iE "ReferenceError|SyntaxError|fatal|error despachando" | tail -10
+#   echo ""
+#   echo "═══ healthcheck ═══"
+#   bash /root/secretaria/ops/healthcheck.sh | python3 -c 'import sys,json; d=json.load(sys.stdin); print("overall_ok:",d["overall_ok"])'
+
+# ───── output ─────
+═══ pm2 ═══
+pid: 1097945 restart: 55
+
+═══ ¿código tiene fix? ═══
+1
+1
+
+═══ errores recientes (últimas 100 lineas) ═══
+0|maria-pa | 2026-05-17 16:07:14: SyntaxError: Unexpected identifier
+0|maria-pa | 2026-05-17 16:07:15: SyntaxError: Unexpected identifier
+0|maria-pa | 2026-05-17 16:07:16: SyntaxError: Unexpected identifier
+0|maria-pa | 2026-05-18 07:15:19: [WA debounce] error despachando grupo de 5491134274828@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:33:28: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:33:44: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
+
+═══ healthcheck ═══
+overall_ok: True
+
+# exit=0
