@@ -16,6 +16,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const unknownFlow = require('./unknown-flow');
+const detectProvider = require('./providers/detect');
 
 const INSTRUCCIONES_PATH = process.env.INSTRUCCIONES_PATH || path.join(__dirname, 'instrucciones.txt');
 
@@ -168,6 +169,33 @@ function seccionUltimoVCard(usuario) {
   if (edad > 10 * 60 * 1000) return null;
   const min = Math.round(edad / 60000);
   return `Hace ${min} min ${usuario.nombre} mandó un vCard de "${v.nombre}" (whatsapp ${v.whatsapp || '-'}, cumple ${v.cumple || '-'}). Lo guardé como PRIVADO. Si dice "pública", "sí", "compartilo", etc., emití cambiar_visibilidad_contacto con contactoId=${v.contactoId} y visibilidad=publica.`;
+}
+
+// Si el usuario atendido tiene email pero todavía NO tiene calendar
+// configurado (calendar_acceso === 'none'), exponemos el provider detectado
+// por dominio del email + URL del server si aplica. Sirve para que el LLM
+// guíe directo al flow 2a/2b/2c sin tener que preguntar primero qué provider.
+function seccionProviderDetectado(usuario) {
+  if (!usuario || !usuario.email) return null;
+  if (usuario.calendar_acceso && usuario.calendar_acceso !== 'none') return null;
+  let det;
+  try {
+    det = detectProvider.detectarProvider(usuario.email);
+  } catch { return null; }
+  if (!det) {
+    return `Email del user: ${usuario.email}. El dominio NO matchea ningún provider conocido — preguntale al user con qué herramienta de calendar trabaja (Google, iCloud, Yahoo, Outlook, otro) y manejá según paso 2 del ONBOARDING.`;
+  }
+  const desc = detectProvider.descripcionProvider(det);
+  if (det.kind === 'google') {
+    return `Email: ${usuario.email} → provider detectado: ${desc}. Andá al paso 2a del ONBOARDING (compartir calendar con ${ASISTENTE_FROM_EMAIL}).`;
+  }
+  if (det.kind === 'caldav') {
+    return `Email: ${usuario.email} → provider detectado: ${desc}. Andá al paso 2b del ONBOARDING con el sub-flow de ${det.subKind || 'caldav'} (server_url: ${det.server_url}). Cuando tengas username + password app-specific, emití configurar_caldav.`;
+  }
+  if (det.kind === 'microsoft') {
+    return `Email: ${usuario.email} → provider detectado: ${desc}. Andá al paso 2c del ONBOARDING (Microsoft Graph). Es 2-step: primer turno emití iniciar_microsoft_auth (te devuelve la auth_url), pasásela al user. Segundo turno cuando el user te pase el code: emití configurar_microsoft.`;
+  }
+  return `Email: ${usuario.email} → provider detectado: ${desc}.`;
 }
 
 function seccionHechos(usuario) {
@@ -354,6 +382,7 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
   const libreta       = seccionLibreta(usuario);
   const cumples       = seccionCumples(usuario);
   const ultimoVCard   = seccionUltimoVCard(usuario);
+  const providerDet   = seccionProviderDetectado(usuario);
   const contacto      = seccionContacto(usuario, {
     de: entrada.de,
     nombre: entrada.nombre,
