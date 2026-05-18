@@ -120,3 +120,87 @@ node -e "
 
 - `scripts/smoke-test-detect.js`: verifica que `detectarProvider()` clasifica correctamente emails de prueba (cada dominio conocido + uno desconocido).
 - `scripts/smoke-test-caldav.js`: verifica end-to-end un CalDAV real con credenciales por env vars.
+
+---
+
+## Microsoft Graph (Fase 2 — activa desde 2026-05-17)
+
+Setup de Azure (one-time, ya hecho):
+- App registrada en portal.azure.com → "Maria Secretaria"
+- Tipo: multi-tenant + cuentas personales (`AzureADandPersonalMicrosoftAccount`)
+- Cliente público (sin secret) con PKCE
+- Token version v2 (`requestedAccessTokenVersion: 2`)
+- Scopes delegados: `Calendars.ReadWrite`, `Calendars.ReadWrite.Shared`, `offline_access`, `User.Read`
+- Redirect URI: `http://localhost/maria-oauth-callback` (placeholder — usamos out-of-band)
+
+### Variables del .conf
+
+```
+MS_CLIENT_ID=<UUID del registro Azure>
+MS_TENANT=common
+MS_REDIRECT_URI=http://localhost/maria-oauth-callback
+```
+
+### Flow conversacional
+
+1. Detección: el dominio del email del user (e.g. `@outlook.com`, `@hotmail.com`) hace que `providers/detect.js` marque `kind='microsoft'`. La sección `[PROVIDER DETECTADO]` del prompt le dice al LLM que vaya por el flow 2c.
+
+2. **Turno 1** — Maria emite:
+
+   ```json
+   { "tipo": "iniciar_microsoft_auth", "id": <usuario_id> }
+   ```
+
+   El executor genera PKCE pair (verifier+challenge), state random, arma la authorize URL contra `login.microsoftonline.com/common/oauth2/v2.0/authorize` con `client_id`, `scope`, `code_challenge`, `state`, y guarda el verifier+state+target_user_id en `estado_usuario.ms_oauth_pending` (clave del owner, TTL 15 min).
+
+   La acción devuelve `{ auth_url, ... }`. El LLM le pasa la URL **exacta** al user en `respuesta_a_remitente`.
+
+3. El user abre la URL en su browser, se loguea con su cuenta Microsoft, autoriza permisos. Microsoft redirige a `http://localhost/maria-oauth-callback?code=<largo>` (esa URL no existe — el browser muestra error "no se puede acceder a este sitio"). El user copia el valor del `code` de la URL y se lo manda a Maria por chat.
+
+4. **Turno 2** — Maria emite:
+
+   ```json
+   { "tipo": "configurar_microsoft", "code": "<code que el user pasó>" }
+   ```
+
+   El executor:
+   - Recupera el pending (verifier + state).
+   - Intercambia el code (+ verifier) por `refresh_token + access_token` en `login.microsoftonline.com/.../token`.
+   - Descubre el calendar default vía `GET /me/calendar` de Graph.
+   - Cifra `{refresh_token, access_token, expires_at, scope, calendar_id}` con vault.
+   - UPDATE `usuarios.calendar_auth_json` + setea `calendar_provider='microsoft'` + `calendar_acceso='write'`.
+   - Sanitiza el code en `eventos.cuerpo` recientes (post-hoc UPDATE).
+   - Limpia el pending de estado_usuario.
+
+5. Maria le dice al user que borre el mensaje del chat con el code.
+
+### Operación normal
+
+Una vez configurado:
+- `providers.forUser(usuarioMS)` devuelve `microsoftProvider` bound.
+- Cada acción de calendar (`crear_evento`, etc.) sobre ese user invoca Microsoft Graph.
+- El cache módulo-level de access_tokens evita refrescos repetidos.
+- Cuando el access_token caduca (1h por default), el provider hace refresh con el refresh_token → Microsoft rota el refresh_token (sliding window) → persistimos el nuevo cifrado.
+
+### Limitaciones
+
+- **Tokens vienen con scope `User.Read` siempre** aunque solo pidamos Calendars — está OK, es el comportamiento estándar de MS.
+- **No usamos shares de calendar** (Microsoft Graph las soporta pero el user opera con su propia cuenta — más simple).
+- **No tenemos `linkCrearEventoPrellenado`** — Outlook Web no tiene un equivalente directo al `eventedit?...` de Google Calendar.
+- **El refresh_token se rota** — si por algún motivo el blob cifrado se pierde o corrupta, hay que re-correr `iniciar_microsoft_auth` desde cero.
+
+### Troubleshooting
+
+| Síntoma | Causa probable | Fix |
+|---|---|---|
+| `configurar_microsoft: el server rechazó el código` | code expiró (>15 min) o se copió mal | re-correr iniciar_microsoft_auth |
+| `Microsoft no devolvió refresh_token` | falta scope `offline_access` en Azure | agregar el scope en portal.azure.com |
+| `Property api.requestedAccessTokenVersion is invalid` (al guardar Azure) | manifest está en v1 | editar manifest: `api.requestedAccessTokenVersion: 2` |
+| Auth URL muestra "AADSTS50194" | tu signInAudience no soporta cuentas personales | manifest: `signInAudience: AzureADandPersonalMicrosoftAccount` |
+| Token refresh siempre falla | el refresh_token expiró (90 días sin usar) | re-correr iniciar_microsoft_auth |
+
+### Implementación
+
+- `providers/microsoft.js` — provider completo + helpers OAuth.
+- `executor.js > _iniciarMicrosoftAuth + _configurarMicrosoft` — acciones del flow.
+- Estado pendiente: `estado_usuario.ms_oauth_pending` del owner.
