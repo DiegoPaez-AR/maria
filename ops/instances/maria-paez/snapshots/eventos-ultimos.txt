@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5340  2026-05-18 19:44:13  whatsapp  saliente   34342575317160@lid   Antes de escribirle a Pablo, ¿qué horarios querés que le proponga? Tus huecos disponibles esta semana son:                                                                                              
+                                                                                                                                                                                                                                                                             
+                                                                     • *Martes 19/05*: 12:00 a 3:30 PM                                                                                                                                                                       
+                                                                     • *Miércoles 20/05*: mañana libre hasta 1:00 PM                                                                                                                                                         
+                                                                     • *Jueves                                                                                                                                                                                               
+
+5339  2026-05-18 19:44:13  sistema   interno                         claude_call whatsapp: 33374ms prompt=67631c raw=667c                                                                                                                                                    
+
 5338  2026-05-18 19:43:39  whatsapp  entrante   5491132317896@c.us   ofrecele los horarios y en funcion de en cual pueda el, contestale a Analia                                                                                                                             
 
 5337  2026-05-18 19:43:29  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -212,7 +220,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5242  2026-05-18 16:00:45  whatsapp  saliente   34342575317160@lid   Ezequiel de Honda Briones me pasó la cotización del Legacy: la diferencia que tenés que pagar para llevarte el HR-V EXL es de *$30.000.000*. ¿Qué le contesto?                                          
 
 5241  2026-05-18 16:00:45  sistema   interno                         claude_call whatsapp: 21791ms prompt=67529c raw=469c                                                                                                                                                    
-
-5240  2026-05-18 16:00:23  whatsapp  entrante   232185965629610@lid  Maria, ahi me cotizaron el SUBARU te quedaria una difernecia de $30.000.000                                                                                                                             
-
-5239  2026-05-18 16:00:23  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ezequiel es vendedor de Honda Briones, concesionaria que Diego pidió a Maria contactar; responde con la cotización del Subaru Legacy como p
