@@ -1,0 +1,98 @@
+# ejecutado: 2026-05-17T23:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Llamadas Claude últimos 7 días (tipo=claude_call en metadata) ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT
+#     COUNT(*) AS total,
+#     SUM(CASE WHEN metadata_json LIKE '%\"error_msg\":null%' OR metadata_json NOT LIKE '%error_msg%' THEN 1 ELSE 0 END) AS ok,
+#     SUM(CASE WHEN metadata_json LIKE '%error_msg%' AND metadata_json NOT LIKE '%\"error_msg\":null%' THEN 1 ELSE 0 END) AS error,
+#     MIN(json_extract(metadata_json, '\$.ms')) AS min_ms,
+#     MAX(json_extract(metadata_json, '\$.ms')) AS max_ms,
+#     ROUND(AVG(json_extract(metadata_json, '\$.ms'))) AS avg_ms
+#   FROM eventos
+#   WHERE canal='sistema' AND cuerpo LIKE 'claude_call%'
+#     AND timestamp >= datetime('now','-7 days');
+#   "
+#   
+#   echo ""
+#   echo "═══ Top 15 más lentos (con prompt_chars y resultado) ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT
+#     datetime(timestamp) AS ts,
+#     json_extract(metadata_json, '\$.ms') AS ms,
+#     json_extract(metadata_json, '\$.prompt_chars') AS prompt_c,
+#     json_extract(metadata_json, '\$.raw_chars') AS raw_c,
+#     substr(json_extract(metadata_json, '\$.error_msg'), 1, 50) AS err
+#   FROM eventos
+#   WHERE canal='sistema' AND cuerpo LIKE 'claude_call%'
+#     AND timestamp >= datetime('now','-7 days')
+#   ORDER BY ms DESC
+#   LIMIT 15;
+#   "
+#   
+#   echo ""
+#   echo "═══ Bucketización por duración (ms) ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT
+#     CASE
+#       WHEN ms < 5000   THEN '0-5s'
+#       WHEN ms < 15000  THEN '5-15s'
+#       WHEN ms < 30000  THEN '15-30s'
+#       WHEN ms < 60000  THEN '30-60s'
+#       WHEN ms < 120000 THEN '60-120s'
+#       WHEN ms < 180000 THEN '120-180s'
+#       ELSE '180s+'
+#     END AS bucket,
+#     COUNT(*) AS n
+#   FROM (
+#     SELECT CAST(json_extract(metadata_json, '\$.ms') AS INTEGER) AS ms
+#     FROM eventos
+#     WHERE canal='sistema' AND cuerpo LIKE 'claude_call%'
+#       AND timestamp >= datetime('now','-7 days')
+#   )
+#   GROUP BY 1
+#   ORDER BY MIN(ms);
+#   "
+
+# ───── output ─────
+═══ Llamadas Claude últimos 7 días (tipo=claude_call en metadata) ═══
+total  ok   error  min_ms  max_ms  avg_ms 
+-----  ---  -----  ------  ------  -------
+322    319  3      7552    264215  26467.0
+
+═══ Top 15 más lentos (con prompt_chars y resultado) ═══
+ts                   ms      prompt_c  raw_c  err               
+-------------------  ------  --------  -----  ------------------
+2026-05-16 22:36:14  264215  53503     1048   claude exit null: 
+2026-05-16 16:40:21  218691  50999     794    claude exit null: 
+2026-05-16 22:27:39  189515  54427     1567   claude exit null: 
+2026-05-16 22:31:05  173859  52802     1312                     
+2026-05-17 20:44:04  123393  35362     743                      
+2026-05-16 22:22:47  92651   54998     1060                     
+2026-05-12 14:33:03  83797   47485     930                      
+2026-05-16 22:32:06  78960   55630     1174                     
+2026-05-15 16:22:51  76967   45965     540                      
+2026-05-16 21:29:36  74882   50933     694                      
+2026-05-16 22:36:43  73160   53666     783                      
+2026-05-17 19:17:52  72958   2260      2207                     
+2026-05-17 23:30:30  72505   63646     614                      
+2026-05-17 19:36:07  68293   33845     803                      
+2026-05-17 19:48:23  67082   33836     777                      
+
+═══ Bucketización por duración (ms) ═══
+bucket    n  
+--------  ---
+5-15s     97 
+15-30s    159
+30-60s    49 
+60-120s   12 
+120-180s  2  
+180s+     3  
+
+# exit=0
