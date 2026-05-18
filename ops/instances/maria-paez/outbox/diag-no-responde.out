@@ -1,0 +1,112 @@
+# ejecutado: 2026-05-18T09:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ pm2 status actual ═══"
+#   pm2 jlist 2>/dev/null | python3 -c '
+#   import sys, json, datetime
+#   d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]
+#   r=d[0] if d else None
+#   if r:
+#       print("pid:", r["pid"], "status:", r["pm2_env"]["status"], "restarts:", r["pm2_env"]["restart_time"])
+#       print("arrancó:", datetime.datetime.fromtimestamp(r["pm2_env"]["pm_uptime"]/1000).isoformat())
+#   '
+#   
+#   echo ""
+#   echo "═══ Eventos entrantes últimos 5 min ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), canal, direccion, substr(de,1,30), substr(cuerpo,1,80) FROM eventos WHERE timestamp >= datetime('now','-5 minutes') ORDER BY timestamp ASC LIMIT 15;"
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 60 (todo, sin filtro) ═══"
+#   pm2 logs maria-paez --lines 60 --nostream 2>&1 | tail -55
+#   
+#   echo ""
+#   echo "═══ ¿WA conectado? estado boot ═══"
+#   pm2 logs maria-paez --lines 200 --nostream 2>&1 | grep -iE "WA ready|WA authenticated|WA disconnected|QR|loading" | tail -10
+
+# ───── output ─────
+═══ pm2 status actual ═══
+pid: 1097945 status: online restarts: 55
+arrancó: 2026-05-18T08:39:02.350000
+
+═══ Eventos entrantes últimos 5 min ═══
+datetime(timestamp)  canal    direccion  substr(de,1,30)  substr(cuerpo,1,80)                                
+-------------------  -------  ---------  ---------------  ---------------------------------------------------
+2026-05-18 12:02:58  sistema  interno                     unhandledRejection: _lastIncoming is not defined   
+2026-05-18 12:03:32  sistema  interno                     unhandledRejection: _lastIncoming is not defined   
+2026-05-18 12:04:13  sistema  interno                     meeting-prep: 2 alerta(s) agendada(s) (12 usuarios)
+
+═══ pm2 logs últimas 60 (todo, sin filtro) ═══
+0|maria-pa | 2026-05-18 07:00:14: [morning-brief/Sebastian Ameijeira] ✓ enviado a 5491163004389@c.us
+0|maria-pa | 2026-05-18 07:00:14: [morning-brief/Rubén Ward] ✓ enviado a 5491154024727@c.us
+0|maria-pa | 2026-05-18 07:00:14: [morning-brief/Enrique Sosa] ✓ enviado a 59899643028@c.us
+0|maria-pa | 2026-05-18 07:15:10: [meeting-prep/Hernan Fulco] + id=178 MC Daily @ 2026-05-18T12:00:00.000Z
+0|maria-pa | 2026-05-18 07:15:19: [WA ←] Santiago Bignone (5491134274828@c.us): Hola. Por ahora no me envíes más la agenda diaria. Hasta que te avise
+0|maria-pa | 2026-05-18 07:45:10: [meeting-prep/Hernan Fulco] + id=179 Daily CMP @ 2026-05-18T12:30:00.000Z
+0|maria-pa | 2026-05-18 08:00:10: [meeting-prep/Hernan Fulco] + id=180 Amelia @ 2026-05-18T12:45:00.000Z
+0|maria-pa | 2026-05-18 08:00:10: [meeting-prep/Santiago Bignone] + id=181 Escribir a Fran @ 2026-05-18T12:45:00.000Z
+0|maria-pa | 2026-05-18 08:18:32: [unknown-flow/wa] match en contactos: 176136659198049@lid = "Subaru Concesionaria" de Diego (id=1)
+0|maria-pa | 2026-05-18 08:18:32: [unknown-flow/wa] tercero_de_usuario: 176136659198049@lid (Turnos/Recepcion) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-18 08:33:28: [WA ←] Diego (5491132317896@c.us): hola buen dia
+0|maria-pa | 2026-05-18 08:33:44: [WA ←] Diego (5491132317896@c.us): sabes como esta el clima hoy en Buenos Aires?
+0|maria-pa | 2026-05-18 08:39:02: 
+0|maria-pa | 2026-05-18 08:39:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-18 08:39:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-18 08:39:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-18 08:39:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-18 08:39:04:   Usuarios:   12 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa
+0|maria-pa | 2026-05-18 08:39:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-18 08:39:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-18 08:39:04: ✓ whisper OK
+0|maria-pa | 2026-05-18 08:39:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-18 08:39:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-18 08:39:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-18 08:39:08: [WA authenticated]
+0|maria-pa | 2026-05-18 08:39:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-18 08:39:10: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-18 08:39:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-18 08:39:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-18 08:39:10: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-18 08:39:10: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-18 08:39:10: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-18 08:39:10: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-18 08:39:11: [calendar-watch/Santiago Bignone] calendar_acceso write → none
+0|maria-pa | 2026-05-18 08:39:11: [calendar-watch] tick: 1 cambio(s) detectado(s)
+0|maria-pa | 2026-05-18 08:45:10: [programados] 2 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-18 08:45:10: [programados] ✓ id=176 (whatsapp/137456250806423@lid) [meeting_prep:2:333qr3igt5su72km6pjvsp321i_20260518T120000Z]
+0|maria-pa | 2026-05-18 08:45:10: [programados] ✓ id=177 (whatsapp/137456250806423@lid) [meeting_prep:2:4dmnrichpnc2rjd9njlkfecsc4_20260518T120000Z]
+0|maria-pa | 2026-05-18 08:49:10: [meeting-prep/Diego] + id=182 Seguimiento comercial @ 2026-05-18T13:30:00.000Z
+0|maria-pa | 2026-05-18 09:00:10: [programados] 5 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-18 09:00:10: [programados] ✓ id=172 (whatsapp/5491121773859@c.us) [usuario]
+0|maria-pa | 2026-05-18 09:00:10: [programados] ✓ id=173 (whatsapp/5491123149614@c.us) [usuario]
+0|maria-pa | 2026-05-18 09:00:10: [programados] ✓ id=174 (whatsapp/5491138756003@c.us) [usuario]
+0|maria-pa | 2026-05-18 09:00:10: [programados] ✓ id=175 (whatsapp/5491165305417@c.us) [usuario]
+0|maria-pa | 2026-05-18 09:00:17: [programados] ✓ id=178 (whatsapp/137456250806423@lid) [meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260518T121500Z]
+0|maria-pa | 2026-05-18 09:04:10: [meeting-prep/Hernan Fulco] + id=183 Planning MC @ 2026-05-18T13:45:00.000Z
+0|maria-pa | 2026-05-18 09:04:11: [meeting-prep/Santiago Bignone] + id=184 Chequear fotos @ 2026-05-18T13:45:00.000Z
+
+
+═══ ¿WA conectado? estado boot ═══
+0|maria-pa | 2026-05-17 23:08:08: [WA authenticated]
+0|maria-pa | 2026-05-17 23:08:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 23:08:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-17 23:25:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-17 23:25:08: [WA authenticated]
+0|maria-pa | 2026-05-17 23:25:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-18 08:39:08: [WA authenticated]
+0|maria-pa | 2026-05-18 08:39:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-18 08:39:10: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-18 08:45:10: [programados] ✓ id=176 (whatsapp/137456250806423@lid) [meeting_prep:2:333qr3igt5su72km6pjvsp321i_20260518T120000Z]
+
+# exit=0
