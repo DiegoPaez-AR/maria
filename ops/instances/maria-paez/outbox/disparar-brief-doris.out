@@ -1,0 +1,39 @@
+# ejecutado: 2026-05-18T09:51:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria && node -e "
+#   (async () => {
+#     const usuarios = require('./usuarios');
+#     const mb = require('./morning-brief');
+#     const doris = usuarios.obtener(6);
+#     console.log('Doris:', doris.nombre, 'calendar:', doris.calendar_id, doris.calendar_acceso);
+#   
+#     // Necesitamos el waClient del proceso pm2 — pero este script corre standalone.
+#     // Componemos el brief y lo mandamos via google email (no WA) como fallback,
+#     // o intentamos importar el client desde el proceso pm2 (no se puede).
+#     //
+#     // Approach pragmático: componer el brief y mostrar el texto. Para enviarlo
+#     // por WA hay que esperar al loop natural (mañana 7am en su TZ) o reiniciar
+#     // pm2 forzando el ciclo.
+#   
+#     const texto = await mb.componerBrief(doris);
+#     console.log('═══ TEXTO DEL BRIEF (que se mandaría a Doris) ═══');
+#     console.log(texto);
+#   })().catch(err => console.error('FALLO:', err.message));
+#   " 2>&1
+
+# ───── output ─────
+Doris: Doris Capurro calendar: doris@capurro.com.ar read
+═══ TEXTO DEL BRIEF (que se mandaría a Doris) ═══
+☀️ *Buen día, Doris Capurro.* lunes 18 de mayo.
+
+*📅 Agenda del día*
+• todo el día — hugo romero
+• 12:00 a. m. — Romi - Vacaciones
+• 09:00 a. m. — natacion
+• 11:00 a. m. — servilletitas, servilletas planchadas de la misma manera y mantel,
+
+# exit=0
