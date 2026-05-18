@@ -438,8 +438,13 @@ async function _disparar(client, from) {
   _colas.delete(from);
 
   _enProceso.set(from, true);
+  // Snapshot del ts del último entrante. Si llega un mensaje nuevo
+  // durante el procesamiento, _hayMsgNuevoDesdeStart() lo detecta
+  // y aborta los sendMessage de respuesta (las acciones se ejecutan
+  // igual, son idempotentes). Ver fix 2026-05-17 abort send.
+  const startTs = _lastIncoming.get(from) || Date.now();
   try {
-    await _despacharGrupo(client, from, items);
+    await _despacharGrupo(client, from, items, startTs);
   } catch (err) {
     console.error(`[WA debounce] error despachando grupo de ${from}:`, err);
   } finally {
@@ -455,7 +460,7 @@ async function _disparar(client, from) {
   }
 }
 
-async function _despacharGrupo(client, from, items) {
+async function _despacharGrupo(client, from, items, startTs) {
   if (!items.length) return;
   const principal = items[0];
   const cuerpoCombinado  = items.map(i => i.cuerpo).filter(Boolean).join('\n');
