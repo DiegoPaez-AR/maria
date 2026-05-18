@@ -1,0 +1,46 @@
+# ejecutado: 2026-05-17T23:09:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 reload ═══"
+#   pm2 jlist 2>/dev/null | python3 -c 'import sys,json; d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]; r=d[0] if d else None; print("pid:", r["pid"], "restart:", r["pm2_env"]["restart_time"]) if r else print("no")'
+#   
+#   echo ""
+#   echo "═══ ¿código vivo tiene el fix? ═══"
+#   grep -c "idleTimeoutMs\|_resetIdle\|killedByTimer" /root/secretaria/claude-client.js
+#   
+#   echo ""
+#   echo "═══ Defaults nuevos (timeouts) ═══"
+#   grep -E "CLAUDE_TIMEOUT_MS|CLAUDE_IDLE_TIMEOUT_MS" /root/secretaria/claude-client.js | head -5
+#   
+#   echo ""
+#   echo "═══ Verificar errores recientes post-reload ═══"
+#   pm2 logs maria-paez --lines 15 --nostream 2>&1 | grep -iE "error|fatal|SyntaxError" | tail -5
+#   
+#   echo ""
+#   echo "═══ Smoke test: provider carga sin error ═══"
+#   cd /root/secretaria && node -e "
+#   const c = require('./claude-client');
+#   console.log('exports:', Object.keys(c).join(','));
+#   " 2>&1
+
+# ───── output ─────
+═══ pm2 reload ═══
+pid: 1011063 restart: 53
+
+═══ ¿código vivo tiene el fix? ═══
+16
+
+═══ Defaults nuevos (timeouts) ═══
+  timeoutMs = parseInt(process.env.CLAUDE_TIMEOUT_MS, 10) || 480000,        // 8 min global cap
+  idleTimeoutMs = parseInt(process.env.CLAUDE_IDLE_TIMEOUT_MS, 10) || 90000, // 90s sin output → kill
+
+═══ Verificar errores recientes post-reload ═══
+/root/.pm2/logs/maria-paez-error.log last 15 lines:
+
+═══ Smoke test: provider carga sin error ═══
+exports: invocarClaude,invocarClaudeJSON,invocarClaudeJSONConConsultas,extraerJSON
+
+# exit=0
