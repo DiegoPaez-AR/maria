@@ -1,0 +1,140 @@
+# ejecutado: 2026-05-18T09:37:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Últimos 15 eventos WA (entrante/saliente) últimas 2h ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT datetime(timestamp), direccion, substr(de,1,28) AS de, substr(cuerpo,1,100) AS msg
+#   FROM eventos WHERE canal='whatsapp' AND timestamp >= datetime('now','-2 hours')
+#   ORDER BY timestamp DESC LIMIT 15;
+#   "
+#   
+#   echo ""
+#   echo "═══ Últimas 50 lineas pm2 logs SIN FILTRO ═══"
+#   pm2 logs maria-paez --lines 50 --nostream 2>&1 | tail -45
+#   
+#   echo ""
+#   echo "═══ errores recientes (ultimo hora) ═══"
+#   pm2 logs maria-paez --lines 200 --nostream 2>&1 | grep -E "^0\|maria-pa | 2026-05-18 (1[0-2]|0[7-9])" | grep -iE "error|fatal|abort|unhandled" | tail -15
+#   
+#   echo ""
+#   echo "═══ pm2 status ═══"
+#   pm2 jlist 2>/dev/null | python3 -c '
+#   import sys,json,datetime
+#   d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]
+#   r=d[0] if d else None
+#   if r:
+#       arr=datetime.datetime.fromtimestamp(r["pm2_env"]["pm_uptime"]/1000)
+#       age=(datetime.datetime.now() - arr).total_seconds()
+#       print("pid:",r["pid"],"restart:",r["pm2_env"]["restart_time"],"arrancó:",arr.isoformat(),"hace",int(age),"s")
+#   '
+
+# ───── output ─────
+═══ Últimos 15 eventos WA (entrante/saliente) últimas 2h ═══
+datetime(timestamp)  direccion  de                   msg                                                                                                 
+-------------------  ---------  -------------------  ----------------------------------------------------------------------------------------------------
+2026-05-18 12:31:35  entrante   5491132317896@c.us   el subaru tiene 115.000km                                                                           
+
+2026-05-18 12:30:51  entrante   5491132317896@c.us   si, escribile a flavio                                                                              
+
+2026-05-18 12:30:30  entrante   121328598274271@lid  Perfecto                                                                                            
+                                                     Gracias                                                                                             
+
+2026-05-18 12:30:16  saliente   137456250806423@lid  ⏰ *En 15min*: Daily CMP (09:45 a. m.)                                                               
+                                                     Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sond                                      
+
+2026-05-18 12:29:53  saliente   34342575317160@lid   Sergio de VW Espasa me preguntó cuántos km tiene el Subaru Legacy. ¿Me decís el kilometraje así le c
+
+2026-05-18 12:29:53  saliente   5491132317896@c.us   Guardado, gracias. ¿Qué querés que le escriba a Flavio?                                             
+
+2026-05-18 12:29:53  saliente   121328598274271@lid  Lo consulto y te confirmo enseguida!                                                                
+
+2026-05-18 12:29:32  entrante   121328598274271@lid  Perfecto                                                                                            
+                                                     Cuantos km tiene?                                                                                   
+
+2026-05-18 12:29:11  entrante   5491132317896@c.us   ahi te pase, Flavio Cairo                                                                           
+
+2026-05-18 12:28:40  entrante   121328598274271@lid  Decime cuantos km tiene                                                                             
+
+2026-05-18 12:27:55  saliente                        (forward de false_34342575317160@lid_3EB09A2DFA30BD220B1C99 → 121328598274271@lid)                  
+
+2026-05-18 12:27:54  saliente                        (forward de false_34342575317160@lid_3EB08ED962249F6AF20631 → 121328598274271@lid)                  
+
+2026-05-18 12:27:54  saliente                        (forward de false_34342575317160@lid_3EB07681642B5421A64E15 → 121328598274271@lid)                  
+
+2026-05-18 12:27:54  saliente                        (forward de false_34342575317160@lid_3EB0E19788DAC7B22D3693 → 121328598274271@lid)                  
+
+2026-05-18 12:27:54  saliente                        (forward de false_34342575317160@lid_3EB08430842C6BA4B68903 → 121328598274271@lid)                  
+
+═══ Últimas 50 lineas pm2 logs SIN FILTRO ═══
+0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:00:33: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:02:58: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:02:58:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:02:58:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:02:58:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:02:58:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:02:58: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:02:58:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:02:58:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:02:58:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:02:58:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:03:32: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:03:32: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:11:51: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
+0|maria-pa | 2026-05-18 09:11:51:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
+0|maria-pa | 2026-05-18 09:11:51:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|maria-pa | 2026-05-18 09:11:51:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
+0|maria-pa | 2026-05-18 09:11:51:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
+0|maria-pa | 2026-05-18 09:11:51:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
+0|maria-pa | 2026-05-18 09:12:53: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
+0|maria-pa | 2026-05-18 09:12:53:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
+0|maria-pa | 2026-05-18 09:12:53:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|maria-pa | 2026-05-18 09:12:53:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
+0|maria-pa | 2026-05-18 09:12:53:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
+0|maria-pa | 2026-05-18 09:12:53:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
+0|maria-pa | 2026-05-18 09:26:06: [upsertContacto] descarto whatsapp=@lid para "Sergio Moreno Castro" (no es estable)
+0|maria-pa | 2026-05-18 09:33:06: [claude-client] idle timeout 90000ms sin output — SIGKILL (prompt=65888c, stdout=0c)
+0|maria-pa | 2026-05-18 09:33:19: [WA/Diego] Claude falló: Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c, stdout=1094c)
+
+
+═══ errores recientes (ultimo hora) ═══
+0|maria-pa | 2026-05-17 16:07:15: SyntaxError: Unexpected identifier
+0|maria-pa | 2026-05-17 16:07:16: SyntaxError: Unexpected identifier
+0|maria-pa | 2026-05-18 07:15:19: [WA debounce] error despachando grupo de 5491134274828@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:33:28: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:33:44: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:53:36: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 08:53:36: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:02:58: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:02:58: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:03:32: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:03:32: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:11:51: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
+0|maria-pa | 2026-05-18 09:12:53: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
+
+═══ pm2 status ═══
+pid: 1104426 restart: 57 arrancó: 2026-05-18T09:17:02.893000 hace 1199 s
+
+# exit=0
