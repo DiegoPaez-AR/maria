@@ -1,5 +1,23 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5399  2026-05-18 20:52:35  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+5398  2026-05-18 20:52:35  whatsapp  saliente   103676316278817@lid  Lo consulto con Diego y te confirmo enseguida.                                                                                                                                                          
+
+5397  2026-05-18 20:52:35  whatsapp  saliente   34342575317160@lid   Analia pregunta de qué empresa la estamos contactando. ¿Qué le digo?                                                                                                                                    
+
+5396  2026-05-18 20:52:35  sistema   interno                         claude_call whatsapp: 29683ms prompt=65637c raw=641c                                                                                                                                                    
+
+5395  2026-05-18 20:52:27  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+5394  2026-05-18 20:52:27  whatsapp  saliente   175419449995277@lid  Lo consulto con Diego y te confirmo la dirección enseguida.                                                                                                                                             
+
+5393  2026-05-18 20:52:27  whatsapp  saliente   34342575317160@lid   Pablo Casal te pide la dirección exacta de Edenor en Belgrano. ¿Sabés cuál es la calle y número?                                                                                                        
+
+5392  2026-05-18 20:52:27  sistema   interno                         claude_call whatsapp: 29069ms prompt=65686c raw=735c                                                                                                                                                    
+
+5391  2026-05-18 20:52:05  whatsapp  entrante   103676316278817@lid  perdón María, d qué empresa  nos contactan?                                                                                                                                                             
+
 5390  2026-05-18 20:51:57  whatsapp  entrante   175419449995277@lid  Ok. Te pido si podes confirmarme la dirección                                                                                                                                                           
 
 5389  2026-05-18 20:50:47  whatsapp  saliente   103676316278817@lid  Hola Analia, soy María Páez, secretaria personal de Diego Páez. Te escribí para coordinar la reunión entre Diego y Diego Poguetti. ¿Ya pudiste confirmar si el viernes 22/05 a las 11:30 hs le queda bie
@@ -192,21 +210,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5301  2026-05-18 19:10:27  whatsapp  saliente   167933254885560@lid  Claro Ariel, se lo consulto a Diego y te cuento.                                                                                                                                                        
 
 5300  2026-05-18 19:10:27  whatsapp  saliente   34342575317160@lid   Ariel de Espasa me pregunta si le podés explicar por qué decidiste no avanzar con la Taos. ¿Querés que le cuente algo o le digo que fue una decisión personal y listo?                                  
-
-5299  2026-05-18 19:10:27  sistema   interno                         claude_call whatsapp: 26708ms prompt=69122c raw=936c                                                                                                                                                    
-
-5298  2026-05-18 19:10:00  whatsapp  entrante   167933254885560@lid  María te puedo preguntar que le consultes por qué para saber.                                                                                                                                           
-
-5297  2026-05-18 19:10:00  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de Volkswagen Espasa con quien Maria gestionó la compra de la Taos Highline Bi Tono a pedido de Diego (owner, id
-
-5296  2026-05-18 19:10:00  sistema   interno                         claude_call unknown-flow: 15713ms prompt=57800c raw=373c                                                                                                                                                
-
-5295  2026-05-18 19:07:43  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-5294  2026-05-18 19:07:43  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5293  2026-05-18 19:07:43  whatsapp  saliente   167933254885560@lid  Ariel, buenas tardes. Diego me confirma que no va a avanzar con la Taos. Muchas gracias por toda la atención y la información que nos diste.                                                            
-
-5292  2026-05-18 19:07:43  whatsapp  saliente   5491132317896@c.us   Listo, le aviso a Ariel.                                                                                                                                                                                
-
-5291  2026-05-18 19:07:43  sistema   interno                         claude_call whatsapp: 47618ms prompt=68623c raw=580c                                                                                                                                                    

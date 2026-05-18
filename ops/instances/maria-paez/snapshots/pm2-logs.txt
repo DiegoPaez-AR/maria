@@ -1,12 +1,3 @@
-0|maria-pa | 2026-05-18 11:53:05: [unknown-flow/wa] FSM cerrado 232185965629610@lid — sin match
-0|maria-pa | 2026-05-18 11:53:37: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=7 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=9, Santiago Bignone=30, Doris Capurro=21, Nicolas Kosinski=60, Walter Vera=6, Cristian Ruiz=6, Sebastian Ameijeira=3, Rubén Ward=3, Enrique Sosa=1} remitente=232185965629610@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-18 11:53:59: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Diego avisó a las 14:27 que 'te escribe un asesor desde otro número en minutos'; minutos después llegó este mensaje de Ezequiel de Honda Briones cotizando el Subaru de Diego y pasando el valor del HR-V EXL, en línea directa con las gestiones de compra/tasación que Diego venía manejando con María.
-0|maria-pa | 2026-05-18 11:54:24: [WA →3ro] Diego/eze: Perfecto, Ezequiel — quedamos esperando la cotización del Subaru y los datos del HR-V EXL. ¡Gracias!
-0|maria-pa | 2026-05-18 11:54:24: [WA acciones/Diego] 1/1 ejecutadas
-0|maria-pa | 2026-05-18 11:54:24: [unknown-flow/wa] tercero_de_usuario: 232185965629610@lid (eze) → contexto de Diego (id=1)
-0|maria-pa | 2026-05-18 11:54:41: [WA] media → /tmp/maria-attach-false_232185965629610_lid_3EB07B941E95BFB6289F7D.jpg (27 KB)
-0|maria-pa | 2026-05-18 11:54:51: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=10 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=9, Santiago Bignone=30, Doris Capurro=21, Nicolas Kosinski=60, Walter Vera=6, Cristian Ruiz=6, Sebastian Ameijeira=3, Rubén Ward=3, Enrique Sosa=1} remitente=232185965629610@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-18 11:55:15: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ezequiel de Honda Briones responde una consulta dejada a nombre de Diego Páez por la HR-V EXL; Diego avisó a las 14:27 que 'un asesor te escribe desde otro número en minutos', lo que coincide exactamente con este contacto.
 0|maria-pa | 2026-05-18 11:55:55: [unknown-flow/wa] tercero_de_usuario: 232185965629610@lid (eze) → contexto de Diego (id=1)
 0|maria-pa | 2026-05-18 11:56:42: [WA ←] Diego (5491132317896@c.us): Honda briones es uno de los que te pedi que contactaras ayer, y esta manana tambien les mandaste mensaje, asumo que debe ser de la concesionaria Honda
 0|maria-pa | 2026-05-18 11:57:19: [WA →3ro] Diego/Diego: Sí, exacto — es Ezequiel de Honda Briones. Ya lo tengo cargado y le respondí. Me prometió la cotización del Subaru y los datos del HR-V EXL, estoy esperando que
@@ -197,4 +188,13 @@
 0|maria-pa | 2026-05-18 17:50:47: [WA →3ro] Diego/Analia: Hola Analia, soy María Páez, secretaria personal de Diego Páez. Te escribí para coordinar la reunión entre Diego y Diego Poguetti. ¿Ya pudiste confirmar si el v
 0|maria-pa | 2026-05-18 17:50:47: [unknown-flow/wa] tercero_de_usuario: 103676316278817@lid (Analia) → contexto de Diego (id=1)
 0|maria-pa | 2026-05-18 17:51:57: [unknown-flow/wa] match en contactos: 175419449995277@lid = "Pablo Casal" de Diego (id=1)
+0|maria-pa | 2026-05-18 17:52:05: [unknown-flow/wa] match en contactos: 103676316278817@lid = "Analia Frangi" de Diego (id=1)
+0|maria-pa | 2026-05-18 17:52:27: [WA →usr] Diego (34342575317160@lid): Pablo Casal te pide la dirección exacta de Edenor en Belgrano. ¿Sabés cuál es la calle y número?
+0|maria-pa | 2026-05-18 17:52:27: [WA →3ro] Diego/Pablo Casal: Lo consulto con Diego y te confirmo la dirección enseguida.
+0|maria-pa | 2026-05-18 17:52:27: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-18 17:52:27: [unknown-flow/wa] tercero_de_usuario: 175419449995277@lid (Pablo Casal) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-18 17:52:35: [WA →usr] Diego (34342575317160@lid): Analia pregunta de qué empresa la estamos contactando. ¿Qué le digo?
+0|maria-pa | 2026-05-18 17:52:35: [WA →3ro] Diego/Analia: Lo consulto con Diego y te confirmo enseguida.
+0|maria-pa | 2026-05-18 17:52:35: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-18 17:52:35: [unknown-flow/wa] tercero_de_usuario: 103676316278817@lid (Analia) → contexto de Diego (id=1)
 
