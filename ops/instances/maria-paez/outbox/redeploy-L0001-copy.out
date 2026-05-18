@@ -1,0 +1,55 @@
+# ejecutado: 2026-05-18T13:48:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   cd /root/secretaria
+#   git fetch -q origin main
+#   echo "═══ deploy.sh ═══"
+#   bash ops/sites/intensa.io/deploy.sh 2>&1 | tail -25
+#   
+#   echo ""
+#   echo "═══ verificar nuevas frases en HTML servido ═══"
+#   HTML=$(curl -sk "https://intensa.io/L0001/")
+#   echo "$HTML" | grep -oE "Maria escribe por vos|escribe desde su propia cuenta|Nunca toca tu inbox|coordina con tus terceros" | sort -u
+#   echo ""
+#   echo "Frases viejas que deberían estar AUSENTES:"
+#   echo "$HTML" | grep -oE "Email gestionado|contesta mails|tu mail y tus contactos|del email mientras" | sort -u || echo "  (none — limpio)"
+
+# ───── output ─────
+═══ deploy.sh ═══
+'/root/secretaria/ops/sites/intensa.io/L0001//script.js' -> '/var/www/intensa.io/L0001/script.js'
+    index.html con cache-bust v=20260518-134802
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/18 13:48:02 [warn] 1151281#1151281: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+intensa.io/L0001/ HTTPS 200
+
+═══ DONE ═══
+
+═══ verificar nuevas frases en HTML servido ═══
+coordina con tus terceros
+Maria escribe por vos
+Nunca toca tu inbox
+
+Frases viejas que deberían estar AUSENTES:
+
+# exit=0
