@@ -1,0 +1,215 @@
+# ejecutado: 2026-05-18T09:31:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Eventos calendar-watch con Doris (últimos 30 días) ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT datetime(timestamp), substr(cuerpo,1,250) AS msg
+#   FROM eventos
+#   WHERE timestamp >= datetime('now','-30 days')
+#     AND (cuerpo LIKE '%Doris%' OR cuerpo LIKE '%doris%' OR cuerpo LIKE '%calendar-watch%')
+#     AND (cuerpo LIKE '%calendar%' OR cuerpo LIKE '%acceso%' OR cuerpo LIKE '%share%')
+#   ORDER BY timestamp DESC LIMIT 30;
+#   "
+#   
+#   echo ""
+#   echo "═══ Acciones set_calendar_acceso o actualizar_usuario para Doris ═══"
+#   sqlite3 -header "$DB" "
+#   SELECT datetime(timestamp), substr(cuerpo,1,200), substr(metadata_json,1,200)
+#   FROM eventos
+#   WHERE timestamp >= datetime('now','-30 days') AND canal='sistema'
+#     AND (cuerpo LIKE '%set_calendar_acceso%' OR cuerpo LIKE '%actualizar_usuario%')
+#     AND (cuerpo LIKE '%Doris%' OR cuerpo LIKE '%id=6%' OR metadata_json LIKE '%doris%' OR metadata_json LIKE '%\"id\":6%')
+#   ORDER BY timestamp DESC LIMIT 20;
+#   "
+#   
+#   echo ""
+#   echo "═══ ¿Doris está en el calendarList de Maria? (acceso real) ═══"
+#   cd /root/secretaria && node -e "
+#   (async () => {
+#     const g = require('./google');
+#     const cals = await g.listarCalendarios();
+#     console.log('Maria tiene', cals.length, 'calendars compartidos:');
+#     for (const c of cals) {
+#       console.log('  -', c.summary || c.id, '|', c.accessRole, '|', c.id);
+#     }
+#   })();
+#   " 2>&1
+
+# ───── output ─────
+═══ Eventos calendar-watch con Doris (últimos 30 días) ═══
+datetime(timestamp)  msg                                                                                                                                                                                                                                                       
+-------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2026-05-16 11:16:10  Doris Capurro has accepted this invitation.                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                     Natación                                                                                                                                                                                                                                                  
+                     Saturday May 16, 2026 ⋅ 12pm – 1pm                                                                                                                                                                                                                        
+                     Argentina Standard Time - Buenos Aires                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                     Organizer                                                                                                                                                                                                                                                 
+                     maria.paez.secre@gmail.com                                                                                                                                                                                                                                
+                     maria.paez.secre@gmail.com                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                               
+                     Guests                                                                                                                                                                                                                                                    
+                     Doris Capurro                                                                                                                                                                                                                                             
+                     View all guest info                                                                                                                                                                                                                                       
+
+2026-05-16 11:01:51  Hola Doris,                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                               
+                     Perfecto, ya recibí la invitación para compartir tu calendario. La voy a aceptar ahora mismo y de ahí en adelante ya te puedo ver la agenda directamente.                                                                                                 
+                                                                                                                                                                                                                                                                               
+                     Maria Paez                                                                                                                                                                                                                                                
+                     Email: maria.paez.secre@gmail.com                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                               
+                     THIS MESSAGE IS CONFIDENTIAL. It may                                                                                                                                                                                                                      
+
+2026-05-16 11:01:50  razonamiento Gmail 19e3071c5cdfe329 (Doris Capurro): Doris compartió su calendar con Maria — invitación de Google Calendar. Confirmo recepción y acepto; el executor debería procesar la aceptación vía el link o el sistema de calendarios.              
+
+2026-05-16 11:01:10  Doris Capurro shared a calendar\n\nDoris Capurro <doris@capurro.com.ar> has                                                                                                                                                                               
+                     invited you to see all event details on the calendar: "Doris                                                                                                                                                                                              
+                     Capurro".\n\nAccept the invite to join this shared calendar. You can still                                                                                                                                                                                
+                     choose to hide or remove the                                                                                                                                                                                                                              
+
+2026-05-13 12:34:45  ¡Hola Doris! Soy *María Páez*, la secretaria personal de Diego. Quería recordarte que estoy acá para ayudarte con lo que necesites:                                                                                                                       
+                                                                                                                                                                                                                                                                               
+                     📅 Agendar y coordinar reuniones                                                                                                                                                                                                                           
+                     ✉️ Redactar y gestionar emails                                                                                                                                                                                                                            
+                     📝 Hacer seguimiento de pendientes y tareas                                                                                                                                                                                                                
+                     ⏰ Recordato                                                                                                                                                                                                                                               
+
+2026-05-12 07:00:24  ☀️ *Buen día, Diego.* martes 12 de mayo.                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                               
+                     *📅 Agenda del día*                                                                                                                                                                                                                                        
+                     • 08:00 a. m. — Yoga                                                                                                                                                                                                                                      
+                     • 08:30 a. m. — Comisión de viaje del Cristóforo                                                                                                                                                                                                          
+                     • 12:00 p. m. — Reunión Diego / Daniel Salvucci @Carlos Pellegrini 1521, piso 8, CABA                                                                                                                                                                     
+                     • 01:00 p. m. — Reunión en Tancat                                                                                                                                                                                                                         
+
+2026-05-11 19:45:23  Recordatorio — tenés 10 tareas abiertas 📝                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                                               
+                     1. Pedir presupuesto DC Iplan — 508h                                                                                                                                                                                                                      
+                     2. Pedir presupuesto DC Telecentro — 508h                                                                                                                                                                                                                 
+                     3. Pedir presupuesto DC Claro — 508h                                                                                                                                                                                                                      
+                     4. iProt Seguridad — 508h                                                                                                                                                                                                                                 
+                     5. Espejo Subaru — 508h                                                                                                                                                                                                                                   
+                     6. Doris IT Roch — 471h                                                                                                                                                                                                                                   
+                     7. DDJJ 2025 — 13                                                                                                                                                                                                                                         
+
+2026-05-11 07:00:09  ☀️ *Buen día, Diego.* lunes 11 de mayo.                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                               
+                     *📅 Agenda del día*                                                                                                                                                                                                                                        
+                     • 10:00 a. m. — Reunión Diego / Pablo Santa Cruz @Victorino de la Plaza 74, San Martín                                                                                                                                                                    
+                     • 10:00 a. m. — Reunión Diego / Pablo Santa Cruz @Victorino de la Plaza 74, San Martín                                                                                                                                                                    
+                     • 10:45 a. m. —                                                                                                                                                                                                                                           
+
+2026-05-10 21:08:17  Claro. Acá están los archivos de la carpeta `/root/secretaria`:                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                               
+                     *JS principales:*                                                                                                                                                                                                                                         
+                     auth-gmail.js, calendar-watch.js, claude-client.js, context-fetcher.js, daily-report.js, executor.js, gmail-handler.js, google.js, index.js, meeting-prep.js, memory.js                                                                                   
+
+2026-05-10 19:24:10  Recordatorio — tenés 11 tareas abiertas 📝                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                                               
+                     1. Pedir presupuesto DC Iplan — 484h                                                                                                                                                                                                                      
+                     2. Pedir presupuesto DC Telecentro — 484h                                                                                                                                                                                                                 
+                     3. Pedir presupuesto DC Claro — 484h                                                                                                                                                                                                                      
+                     4. iProt Seguridad — 484h                                                                                                                                                                                                                                 
+                     5. Espejo Subaru — 484h                                                                                                                                                                                                                                   
+                     6. Doris IT Roch — 447h                                                                                                                                                                                                                                   
+                     7. Pagar a Ani —                                                                                                                                                                                                                                          
+
+2026-05-10 07:00:09  ☀️ *Buen día, Diego.* domingo 10 de mayo.                                                                                                                                                                                                                 
+                                                                                                                                                                                                                                                                               
+                     *📅 Agenda del día*                                                                                                                                                                                                                                        
+                     (sin eventos hoy)                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                               
+                     *📝 Pendientes*                                                                                                                                                                                                                                            
+                     1. Pedir presupuesto DC Iplan                                                                                                                                                                                                                             
+                     2. Pedir presupuesto DC Telecentro                                                                                                                                                                                                                        
+                     3. Pedir presupuesto DC Claro                                                                                                                                                                                                                             
+                     4. iProt Seguridad                                                                                                                                                                                                                                        
+                     5. Espejo Subaru                                                                                                                                                                                                                                          
+                     6. Doris IT Roch                                                                                                                                                                                                                                          
+                     7. Pag                                                                                                                                                                                                                                                    
+
+2026-05-09 19:24:08  Recordatorio — tenés 9 tareas abiertas 📝                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                               
+                     1. Pedir presupuesto DC Iplan — 460h                                                                                                                                                                                                                      
+                     2. Pedir presupuesto DC Telecentro — 460h                                                                                                                                                                                                                 
+                     3. Pedir presupuesto DC Claro — 460h                                                                                                                                                                                                                      
+                     4. iProt Seguridad — 460h                                                                                                                                                                                                                                 
+                     5. Espejo Subaru — 460h                                                                                                                                                                                                                                   
+                     6. Doris IT Roch — 423h                                                                                                                                                                                                                                   
+                     7. Pagar a Ani — 1                                                                                                                                                                                                                                        
+
+2026-05-09 07:00:09  ☀️ *Buen día, Diego.* sábado 9 de mayo.                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                               
+                     *📅 Agenda del día*                                                                                                                                                                                                                                        
+                     (sin eventos hoy)                                                                                                                                                                                                                                         
+                                                                                                                                                                                                                                                                               
+                     *📝 Pendientes*                                                                                                                                                                                                                                            
+                     1. Pedir presupuesto DC Iplan                                                                                                                                                                                                                             
+                     2. Pedir presupuesto DC Telecentro                                                                                                                                                                                                                        
+                     3. Pedir presupuesto DC Claro                                                                                                                                                                                                                             
+                     4. iProt Seguridad                                                                                                                                                                                                                                        
+                     5. Espejo Subaru                                                                                                                                                                                                                                          
+                     6. Doris IT Roch                                                                                                                                                                                                                                          
+                     7. Pagar                                                                                                                                                                                                                                                  
+
+2026-05-09 01:28:54  Acá van tus pendientes:                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                               
+                     1️⃣ Pedir presupuesto DC *Iplan*                                                                                                                                                                                                                          
+                     2️⃣ Pedir presupuesto DC *Telecentro*                                                                                                                                                                                                                     
+                     3️⃣ Pedir presupuesto DC *Claro*                                                                                                                                                                                                                          
+                     4️⃣ *iProt Seguridad*                                                                                                                                                                                                                                     
+                     5️⃣ *Espejo Subaru*                                                                                                                                                                                                                                       
+                     6️⃣ *Doris IT Roch*                                                                                                                                                                                                                                       
+                     7️⃣ *Pagar a Ani*                                                                                                                                                                                                                                         
+                     8️⃣ *DDJJ 2025*                                                                                                                                                                                                                                           
+                     9️⃣ Revisar qué pasa cuan                                                                                                                                                                                                                                 
+
+2026-05-07 18:50:15  Recordatorio — tenés 9 tareas abiertas 📝                                                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                               
+                     1. Pedir presupuesto DC Iplan — 411h                                                                                                                                                                                                                      
+                     2. Pedir presupuesto DC Telecentro — 411h                                                                                                                                                                                                                 
+                     3. Pedir presupuesto DC Claro — 411h                                                                                                                                                                                                                      
+                     4. iProt Seguridad — 411h                                                                                                                                                                                                                                 
+                     5. Espejo Subaru — 411h                                                                                                                                                                                                                                   
+                     6. Doris IT Roch — 374h                                                                                                                                                                                                                                   
+                     7. Pagar a Ani — 1                                                                                                                                                                                                                                        
+
+2026-05-07 07:00:16  ☀️ *Buen día, Diego.* jueves 7 de mayo.                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                               
+                     *📅 Agenda del día*                                                                                                                                                                                                                                        
+                     • 08:00 a. m. — Yoga                                                                                                                                                                                                                                      
+                     • 12:00 p. m. — GN + VR Weekly                                                                                                                                                                                                                            
+                     • 02:30 p. m. — Reunión con MM @Libertador 498 piso 24                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                               
+                     *📝 Pendientes*                                                                                                                                                                                                                                            
+                     1. Pedir presupuesto DC Iplan                                                                                                                                                                                                                             
+                     2. Pedir presupuesto DC Telecentro                                                                                                                                                                                                                        
+                     3.                                                                                                                                                                                                                                                        
+
+2026-04-23 15:29:39  Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. Para poder manejar tu agenda necesito que compartas tu Google Calendar 
+
+2026-04-23 15:29:36  Hola Doris, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. Para poder manejar tu agenda necesito que compartas tu Google Calendar 
+
+2026-04-20 15:08:21  No, avisé a todos por WA pero no mandé invitación de calendario. Si querés la agendo con todos los asistentes ahora — tengo los emails de Doris, Agustina, Carina y Romina. ¿Te la mando?                                                                 
+
+═══ Acciones set_calendar_acceso o actualizar_usuario para Doris ═══
+
+═══ ¿Doris está en el calendarList de Maria? (acceso real) ═══
+Maria tiene 6 calendars compartidos:
+  - Holidays in Argentina | reader | en.ar#holiday@group.v.calendar.google.com
+  - hernan.fulco@sondeosglobal.com | owner | hernan.fulco@sondeosglobal.com
+  - diego@paez.is | owner | diego@paez.is
+  - maria.paez.secre@gmail.com | owner | maria.paez.secre@gmail.com
+  - doris@capurro.com.ar | reader | doris@capurro.com.ar
+  - natali.funez23@gmail.com | reader | natali.funez23@gmail.com
+
+# exit=0
