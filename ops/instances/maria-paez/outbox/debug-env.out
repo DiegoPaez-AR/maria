@@ -1,0 +1,47 @@
+# ejecutado: 2026-05-17T21:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ env MARIA_DB en este shell ═══"
+#   echo "MARIA_DB=$MARIA_DB"
+#   echo "ASISTENTE_SLUG=$ASISTENTE_SLUG"
+#   echo ""
+#   echo "═══ env desde node (con default fallback) ═══"
+#   cd /root/secretaria && node -e "
+#   console.log('process.env.MARIA_DB =', process.env.MARIA_DB || '(unset)');
+#   console.log('__dirname:', __dirname);
+#   const path = require('path');
+#   const def = path.join(__dirname, 'db', 'maria.sqlite');
+#   console.log('DB default que usaría sin env:', def);
+#   const fs = require('fs');
+#   console.log('¿Existe la DB default?', fs.existsSync(def));
+#   const realPath = process.env.MARIA_DB || def;
+#   console.log('DB que va a abrir:', realPath);
+#   console.log('¿Existe?', fs.existsSync(realPath));
+#   " 2>&1
+#   echo ""
+#   echo "═══ Veamos cómo cron-master setea env ═══"
+#   grep -n "export\|set -a\|MARIA_DB" /root/secretaria/ops/cron-master.sh | head -10
+
+# ───── output ─────
+═══ env MARIA_DB en este shell ═══
+MARIA_DB=
+ASISTENTE_SLUG=
+
+═══ env desde node (con default fallback) ═══
+process.env.MARIA_DB = (unset)
+__dirname: .
+DB default que usaría sin env: db/maria.sqlite
+¿Existe la DB default? true
+DB que va a abrir: db/maria.sqlite
+¿Existe? true
+
+═══ Veamos cómo cron-master setea env ═══
+25:export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.nvm/versions/node/$(ls /root/.nvm/versions/node 2>/dev/null | tail -1)/bin:$PATH"
+26:export HOME=/root
+88:    # Cargar env del .conf para extraer MARIA_DB
+89:    DB=$(grep -E '^MARIA_DB=' "$cf" | head -1 | cut -d= -f2- | tr -d '"')
+
+# exit=0
