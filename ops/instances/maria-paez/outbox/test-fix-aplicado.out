@@ -1,0 +1,74 @@
+# ejecutado: 2026-05-17T21:16:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ env actual (debería estar propagado) ═══"
+#   echo "MARIA_DB=$MARIA_DB"
+#   echo "ASISTENTE_SLUG=$ASISTENTE_SLUG"
+#   echo "MARIA_VAULT_KEY=${MARIA_VAULT_KEY:+SETEADO}${MARIA_VAULT_KEY:-NO SETEADO}"
+#   
+#   echo ""
+#   echo "═══ ¿se recreó la DB legacy? ═══"
+#   ls -la /root/secretaria/db 2>&1 | head -5
+#   echo "Si existe y está vacía, la limpiamos en este mismo tick..."
+#   if [ -f /root/secretaria/db/maria.sqlite ]; then
+#     eventos=$(sqlite3 /root/secretaria/db/maria.sqlite "SELECT COUNT(*) FROM eventos;" 2>/dev/null || echo "?")
+#     if [ "$eventos" = "0" ]; then
+#       DESTDIR="/root/secretaria/state/_old/$(date +%Y%m%d-%H%M%S)-legacy-db"
+#       mkdir -p "$DESTDIR"
+#       mv -v /root/secretaria/db "$DESTDIR/db"
+#       echo "Movida (fantasma re-creada por algún script con env viejo)"
+#     else
+#       echo "tiene $eventos eventos — NO mover"
+#     fi
+#   else
+#     echo "no existe — bueno, no se recreó"
+#   fi
+#   
+#   echo ""
+#   echo "═══ test node con env propagado ═══"
+#   cd /root/secretaria && node -e "
+#   console.log('MARIA_DB=', process.env.MARIA_DB || '(unset!)');
+#   const u = require('./usuarios');
+#   const lista = u.listarActivos();
+#   console.log('listarActivos count:', lista.length);
+#   console.log('primeros 3 nombres:', lista.slice(0,3).map(x => x.nombre).join(', '));
+#   console.log('resolver Doris:', u.resolverPorWa('5491144471264@c.us')?.nombre || 'null');
+#   console.log('resolver Diego sin 9:', u.resolverPorWa('541132317896@c.us')?.nombre || 'null');
+#   console.log('resolver Enrique:', u.resolverPorWa('59899643028@c.us')?.nombre || 'null');
+#   " 2>&1
+#   
+#   echo ""
+#   echo "═══ Final: ¿/root/secretaria/db existe? ═══"
+#   ls -la /root/secretaria/db 2>&1 | head -2
+
+# ───── output ─────
+═══ env actual (debería estar propagado) ═══
+MARIA_DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+ASISTENTE_SLUG=maria-paez
+MARIA_VAULT_KEY=SETEADO5ec076d1b2a1e53354d926315a56dc9cde9f9cedc2d4797886c6a2cffa5a5604
+
+═══ ¿se recreó la DB legacy? ═══
+total 172
+drwxr-xr-x+  2 root root   4096 May 17 21:14 .
+drwxr-xr-x+ 12 root root   4096 May 17 21:14 ..
+-rw-r--r--+  1 root root 167936 May 17 21:14 maria.sqlite
+Si existe y está vacía, la limpiamos en este mismo tick...
+renamed '/root/secretaria/db' -> '/root/secretaria/state/_old/20260517-211602-legacy-db/db'
+Movida (fantasma re-creada por algún script con env viejo)
+
+═══ test node con env propagado ═══
+MARIA_DB= /root/secretaria/state/maria-paez/db/maria.sqlite
+listarActivos count: 12
+primeros 3 nombres: Diego, Hernan Fulco, Natali Funez
+resolver Doris: Doris Capurro
+resolver Diego sin 9: Diego
+resolver Enrique: Enrique Sosa
+
+═══ Final: ¿/root/secretaria/db existe? ═══
+total 8
+drwxr-xr-x+  2 root root 4096 May 17 21:16 .
+
+# exit=0
