@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5219  2026-05-18 15:10:45  whatsapp  saliente   59899643028@c.us     ¡Sí! Puedo redactarte documentos: cartas, informes, propuestas, actas, presentaciones en texto, correos formales, contratos simples… lo que necesites. Te los paso por acá y los copiás donde quieras. ¿
+
+5218  2026-05-18 15:10:45  sistema   interno                         claude_call whatsapp: 12976ms prompt=35308c raw=475c                                                                                                                                                    
+
+5217  2026-05-18 15:10:32  whatsapp  entrante   59899643028@c.us     Puedes hacer documentos?                                                                                                                                                                                
+
 5216  2026-05-18 15:08:42  whatsapp  saliente   59899643028@c.us     ¡Buen día! Entendido, trabajando en modo regional hoy. ¿En qué te puedo ayudar con los temas de Perú y Chile?                                                                                           
 
 5215  2026-05-18 15:08:42  sistema   interno                         claude_call whatsapp: 10063ms prompt=35291c raw=323c                                                                                                                                                    
@@ -217,9 +223,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5121  2026-05-18 12:39:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)                                                                                                       
 
 5120  2026-05-18 12:39:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-5119  2026-05-18 12:37:12  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (12 usuarios)                                                                                                                                                     
-
-5118  2026-05-18 12:33:19  sistema   interno                         Claude falló en WA (Diego): Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c, stdout=1094c)                                                                              
-
-5117  2026-05-18 12:33:19  sistema   interno                         claude_call whatsapp: 103668ms prompt=65888c raw=1094c ERROR=Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c,                                                           
