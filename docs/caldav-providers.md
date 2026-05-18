@@ -114,3 +114,24 @@ Métodos que apliquen sobre el calendar de Maria (`getMariaCalendarId`, `listarC
 - `providers/caldav.js` — provider con la interface `CalendarProvider` (mismo shape que `providers/google.js`).
 - Usa `tsdav` (npm) para WebDAV/CalDAV. Importada dinámicamente (`await import('tsdav')`) por ser ESM-only.
 - iCal: parser/generator inline mínimo (RFC 5545 §3.6 VEVENT). Para casos complejos (RRULE, recurrencias, VTIMEZONE) sería mejor `ical.js`, pero el set actual de operaciones de Maria no las necesita.
+
+---
+
+## Notas sobre `npm audit` (decisión 2026-05-17)
+
+`tsdav@1.1.6` arrastra varias dependencias viejas que `npm audit` reporta con CVEs. Análisis del impacto real:
+
+| Dep transitiva | CVE | Severity | ¿Aplica a Maria? |
+|---|---|---|---|
+| `cross-fetch` (vía tsdav) | DoS / SSRF en cadenas viejas | high | bajo riesgo — Maria solo lo usa contra endpoints CalDAV trusted (iCloud, Yahoo, Fastmail). No procesa input externo no-validado. |
+| `semver` (vía levelup, dev only) | ReDoS | high | **no aplica** — `levelup` es transitivo de tooling, no se carga en runtime |
+| `elliptic` (vía browserify-sign → crypto-browserify) | risky crypto primitive | high | **no aplica** — esa cadena es solo para builds de browser. Node.js usa `crypto` nativo |
+| `bl` (vía levelup, dev only) | memory exposure | moderate | **no aplica** — runtime no toca esa cadena |
+
+**Decisión**: aceptar las 11 vulnerabilities y NO forzar `npm audit fix --force`, porque eso upgradearía tsdav a 2.x (ESM-only) que rompe el `require()` y dynamic `import()` desde CJS. Re-evaluar si:
+
+- aparece una versión 1.x mantenida de tsdav (poco probable),
+- alguno de los CVE pasa de "transitivo no-runtime" a path real,
+- decidimos migrar Maria a ESM (refactor grande, no en agenda).
+
+Si se necesita una alternativa más limpia: implementación CalDAV ad-hoc con `node-fetch` + parser/generator iCal mínimo (~200 líneas — el provider actual ya tiene los helpers de iCal inline, solo faltaría el cliente WebDAV).
