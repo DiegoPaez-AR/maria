@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5206  2026-05-18 14:58:27  whatsapp  saliente   232185965629610@lid  Perfecto, lo consulto con Diego y te confirmo el kilometraje enseguida.                                                                                                                                 
+
+5205  2026-05-18 14:58:27  whatsapp  saliente   34342575317160@lid   Ezequiel de Honda Briones me pide el kilometraje del Subaru Legacy para hacer la tasación. ¿Cuántos km tiene?                                                                                           
+
+5204  2026-05-18 14:58:27  sistema   interno                         claude_call whatsapp: 12550ms prompt=67983c raw=393c                                                                                                                                                    
+
+5203  2026-05-18 14:58:14  whatsapp  entrante   232185965629610@lid  Maria necesitaria para cotizar el SUBARU, el kilometraje que tiene el vehiculo                                                                                                                          
+
+5202  2026-05-18 14:58:14  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Es Ezequiel de Honda Briones, concesionaria que Diego pidió contactar; en el historial Diego confirma explícitamente que es de esa concesio
+
+5201  2026-05-18 14:58:14  sistema   interno                         claude_call unknown-flow: 19448ms prompt=51825c raw=365c                                                                                                                                                
+
 5200  2026-05-18 14:57:19  whatsapp  saliente   5491132317896@c.us   Sí, exacto — es Ezequiel de Honda Briones. Ya lo tengo cargado y le respondí. Me prometió la cotización del Subaru y los datos del HR-V EXL, estoy esperando que me mande todo.                         
 
 5199  2026-05-18 14:57:19  sistema   interno                         claude_call whatsapp: 36722ms prompt=67723c raw=418c                                                                                                                                                    
@@ -213,16 +225,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5108  2026-05-18 12:29:53  whatsapp  saliente   121328598274271@lid  Lo consulto y te confirmo enseguida!                                                                                                                                                                    
 
 5107  2026-05-18 12:29:53  whatsapp  saliente   5491132317896@c.us   Guardado, gracias. ¿Qué querés que le escriba a Flavio?                                                                                                                                                 
-
-5106  2026-05-18 12:29:53  whatsapp  saliente   34342575317160@lid   Sergio de VW Espasa me preguntó cuántos km tiene el Subaru Legacy. ¿Me decís el kilometraje así le contesto?                                                                                            
-
-5105  2026-05-18 12:29:52  sistema   interno                         claude_call whatsapp: 41309ms prompt=66261c raw=291c                                                                                                                                                    
-
-5104  2026-05-18 12:29:52  sistema   interno                         claude_call whatsapp: 19820ms prompt=67108c raw=440c                                                                                                                                                    
-
-5103  2026-05-18 12:29:32  whatsapp  entrante   121328598274271@lid  Perfecto                                                                                                                                                                                                
-                                                                     Cuantos km tiene?                                                                                                                                                                                       
-
-5102  2026-05-18 12:29:32  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno Castro es vendedor de Volkswagen Espasa; María le escribió a pedido de Diego para gestionar la consulta por la Taos Highline 
-
-5101  2026-05-18 12:29:32  sistema   interno                         claude_call unknown-flow: 22657ms prompt=50724c raw=379c                                                                                                                                                
