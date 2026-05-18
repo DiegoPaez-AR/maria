@@ -1,0 +1,124 @@
+# ejecutado: 2026-05-18T09:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ pm2 status + uptime ═══"
+#   pm2 jlist 2>/dev/null | python3 -c '
+#   import sys, json, datetime
+#   d=[x for x in json.load(sys.stdin) if x["name"]=="maria-paez"]
+#   r=d[0] if d else None
+#   if r:
+#       ms = r["pm2_env"]["pm_uptime"]
+#       arr = datetime.datetime.fromtimestamp(ms/1000)
+#       age = (datetime.datetime.now() - arr).total_seconds()
+#       print("pid:", r["pid"], "status:", r["pm2_env"]["status"], "restarts:", r["pm2_env"]["restart_time"])
+#       print("arrancó:", arr.isoformat(), f"(hace {int(age)}s)")
+#   '
+#   
+#   echo ""
+#   echo "═══ Eventos WA últimos 10 minutos ═══"
+#   sqlite3 -header -column "$DB" "SELECT datetime(timestamp), direccion, substr(de,1,30), substr(cuerpo,1,80) FROM eventos WHERE canal='whatsapp' AND timestamp >= datetime('now','-10 minutes') ORDER BY timestamp ASC;"
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 80 (TODO sin filtro) ═══"
+#   pm2 logs maria-paez --lines 80 --nostream 2>&1 | tail -80
+
+# ───── output ─────
+═══ pm2 status + uptime ═══
+pid: 1102935 status: online restarts: 56
+arrancó: 2026-05-18T09:09:02.722000 (hace 300s)
+
+═══ Eventos WA últimos 10 minutos ═══
+datetime(timestamp)  direccion  substr(de,1,30)     substr(cuerpo,1,80)                          
+-------------------  ---------  ------------------  ---------------------------------------------
+2026-05-18 12:11:51  entrante   5491132317896@c.us  sabes como esta el clima hoy en Buenos Aires?
+2026-05-18 12:11:51  entrante   5491132317896@c.us  hola buen dia                                
+2026-05-18 12:12:53  entrante   5491132317896@c.us  tas por ahi?                                 
+
+═══ pm2 logs últimas 80 (TODO sin filtro) ═══
+0|maria-pa | 2026-05-17 18:00:13: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 54959899643028@c.us: No LID for user
+0|maria-pa | 2026-05-17 18:00:13: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+0|maria-pa | 2026-05-18 07:15:19: [WA debounce] error despachando grupo de 5491134274828@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 07:15:19:     at _despacharGrupo (/root/secretaria/whatsapp-handler.js:560:7)
+0|maria-pa | 2026-05-18 07:15:19:     at _disparar (/root/secretaria/whatsapp-handler.js:442:11)
+0|maria-pa | 2026-05-18 07:15:19:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 07:15:19:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 07:15:19:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 08:15:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
+0|maria-pa | 2026-05-18 08:18:32: [unknown-flow/wa] reprocesar tercero falló: startTs is not defined
+0|maria-pa | 2026-05-18 08:20:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
+0|maria-pa | 2026-05-18 08:25:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
+0|maria-pa | 2026-05-18 08:30:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
+0|maria-pa | 2026-05-18 08:33:28: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:33:28:     at _despacharGrupo (/root/secretaria/whatsapp-handler.js:560:7)
+0|maria-pa | 2026-05-18 08:33:28:     at _disparar (/root/secretaria/whatsapp-handler.js:442:11)
+0|maria-pa | 2026-05-18 08:33:28:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 08:33:28:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 08:33:28:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 08:33:44: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
+0|maria-pa | 2026-05-18 08:33:44:     at _despacharGrupo (/root/secretaria/whatsapp-handler.js:560:7)
+0|maria-pa | 2026-05-18 08:33:44:     at _disparar (/root/secretaria/whatsapp-handler.js:442:11)
+0|maria-pa | 2026-05-18 08:33:44:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 08:33:44:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 08:33:44:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 08:35:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
+0|maria-pa | 2026-05-18 08:39:12: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
+0|maria-pa | 2026-05-18 08:53:36: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 08:53:36:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 08:53:36:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 08:53:36:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 08:53:36:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 08:53:36: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 08:53:36:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 08:53:36:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 08:53:36:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 08:53:36:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:00:33: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:00:33: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:02:58: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:02:58:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:02:58:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:02:58:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:02:58:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:02:58: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:02:58:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:02:58:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:02:58:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:02:58:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:03:32: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:03:32: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:11:51: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
+0|maria-pa | 2026-05-18 09:11:51:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
+0|maria-pa | 2026-05-18 09:11:51:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|maria-pa | 2026-05-18 09:11:51:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
+0|maria-pa | 2026-05-18 09:11:51:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
+0|maria-pa | 2026-05-18 09:11:51:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
+0|maria-pa | 2026-05-18 09:12:53: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
+0|maria-pa | 2026-05-18 09:12:53:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
+0|maria-pa | 2026-05-18 09:12:53:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|maria-pa | 2026-05-18 09:12:53:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
+0|maria-pa | 2026-05-18 09:12:53:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
+0|maria-pa | 2026-05-18 09:12:53:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
+
+
+# exit=0
