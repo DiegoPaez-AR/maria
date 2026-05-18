@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5193  2026-05-18 14:54:24  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+5192  2026-05-18 14:54:24  whatsapp  saliente   232185965629610@lid  Perfecto, Ezequiel — quedamos esperando la cotización del Subaru y los datos del HR-V EXL. ¡Gracias!                                                                                                    
+
+5191  2026-05-18 14:54:24  sistema   interno                         claude_call whatsapp: 24997ms prompt=67954c raw=641c                                                                                                                                                    
+
 5190  2026-05-18 14:53:59  whatsapp  entrante   232185965629610@lid  Estamos cotizando tu subaru en unos minutos te paso la cotizacion , mientras te paso el valor del HR-V EXL y sus gastos                                                                                 
 
 5189  2026-05-18 14:53:59  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Diego avisó a las 14:27 que 'te escribe un asesor desde otro número en minutos'; minutos después llegó este mensaje de Ezequiel de Honda Br
@@ -219,9 +225,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5095  2026-05-18 12:27:55  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
 
 5094  2026-05-18 12:27:55  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB09A2DFA30BD220B1C99 → 121328598274271@lid)                                                                                                                      
-
-5093  2026-05-18 12:27:54  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
-
-5092  2026-05-18 12:27:54  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB0FE187E9A17B4B44061 → 121328598274271@lid)                                                                                                                      
-
-5091  2026-05-18 12:27:54  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
