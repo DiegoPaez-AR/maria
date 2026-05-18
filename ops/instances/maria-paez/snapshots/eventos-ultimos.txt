@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5225  2026-05-18 15:13:01  whatsapp  entrante   59899643028@c.us     En cada tarea                                                                                                                                                                                           
+
+5224  2026-05-18 15:12:51  sistema   interno                         claude_call whatsapp: 8751ms prompt=35842c raw=263c                                                                                                                                                     
+
+5223  2026-05-18 15:12:42  whatsapp  entrante   59899643028@c.us     Necesito dividir un texto en tareas con un cuadro de check list                                                                                                                                         
+
 5222  2026-05-18 15:11:28  whatsapp  saliente   59899643028@c.us     No, documentos de Excel no puedo armarlos — solo texto plano (Word, PDF, cartas, informes, etc.). Para planillas te recomendaría hacerlo directamente en Excel o Google Sheets. ¿Te ayudo con algo en te
 
 5221  2026-05-18 15:11:28  sistema   interno                         claude_call whatsapp: 9743ms prompt=35497c raw=469c                                                                                                                                                     
@@ -217,9 +223,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5127  2026-05-18 12:43:02  whatsapp  entrante   5491132317896@c.us   flavio es un vendedor de Subaru, escribile para ver lo del auto                                                                                                                                         
 
 5126  2026-05-18 12:42:06  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5125  2026-05-18 12:42:06  whatsapp  saliente   121328598274271@lid  ¡Disculpá la demora, Sergio! El Subaru tiene 115.000 km.                                                                                                                                                
-
-5124  2026-05-18 12:42:06  whatsapp  saliente   34342575317160@lid   Tuve un problema y se cortó justo antes de mandar los mensajes. A Sergio le mando ahora los 115.000 km. A Flavio no me llegaste a decir qué querías que le escribiera — ¿qué le mando?                  
-
-5123  2026-05-18 12:42:06  sistema   interno                         claude_call whatsapp: 84531ms prompt=65428c raw=625c                                                                                                                                                    
