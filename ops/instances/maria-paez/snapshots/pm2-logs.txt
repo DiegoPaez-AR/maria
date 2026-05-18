@@ -1,13 +1,3 @@
-0|maria-pa | 2026-05-17 16:07:10:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:10:     at require (node:internal/modules/helpers:177:18)
-0|maria-pa | 2026-05-17 16:07:10:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
-0|maria-pa | 2026-05-17 16:07:10:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
-0|maria-pa | 2026-05-17 16:07:10:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
-0|maria-pa | 2026-05-17 16:07:10:     at Module.load (node:internal/modules/cjs/loader:1197:32)
-0|maria-pa | 2026-05-17 16:07:10:     at Module._load (node:internal/modules/cjs/loader:1013:12)
-0|maria-pa | 2026-05-17 16:07:10:     at Module.require (node:internal/modules/cjs/loader:1225:19)
-0|maria-pa | 2026-05-17 16:07:10:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:11: /root/secretaria/prompt-builder.js:558
 0|maria-pa | 2026-05-17 16:07:11:       // Cruza los calendars de varios usuarios actuales (solo gente que comparte calendar con Maria — terceros NO, a esos los invitás aparte). Devuelve hasta 15 slots libres comunes en ventana laboral (9-19 default, ajustable). Usalo cuando el user pide "buscá un horario común con X e Y" o "cuándo podemos juntarnos". El resultado incluye `slots: [{start, end}]` que vos formatées en lenguaje natural. Si algún usuario está en `no_encontrados` o `sin_calendar`, decíselo al user y pedile la disponibilidad por otra vía.
 0|maria-pa | 2026-05-17 16:07:11:                                                                                                                                                                                                                                                                                                                                                       ^^^^^
 0|maria-pa | 2026-05-17 16:07:11: 
@@ -197,4 +187,14 @@
 0|maria-pa | 2026-05-18 08:53:36:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
 0|maria-pa | 2026-05-18 08:53:36:     at listOnTimeout (node:internal/timers:569:17)
 0|maria-pa | 2026-05-18 08:53:36:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:00:33: ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
+0|maria-pa | 2026-05-18 09:00:33: [unhandledRejection] ReferenceError: _lastIncoming is not defined
+0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
+0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
+0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
+0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
 
