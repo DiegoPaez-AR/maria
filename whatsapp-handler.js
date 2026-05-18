@@ -239,6 +239,7 @@ const _DEBOUNCE_MS = Number(process.env.WA_DEBOUNCE_MS || 10000);
 const _colas         = new Map(); // from → { items, timer }
 const _enProceso     = new Map(); // from → true mientras se está despachando
 const _colaPendiente = new Map(); // from → items[] acumulados durante un despacho en curso
+const _lastIncoming  = new Map(); // from → ts (Date.now()) del último mensaje entrante — usado para abortar respuestas obsoletas si entró algo nuevo durante el procesamiento
 
 async function handleMessage(client, msg) {
   if (msg.fromMe) return;
@@ -408,6 +409,11 @@ async function _preProcesarMensaje(client, msg, { pushname, contact, messageId, 
 }
 
 function _encolar(client, from, item) {
+  // Trackear timestamp del último mensaje entrante por chat. Usado para
+  // abortar el envío de respuestas que quedan obsoletas porque entró un
+  // mensaje nuevo durante el procesamiento.
+  _lastIncoming.set(from, Date.now());
+
   // Si ya estamos despachando un grupo para este `from`, encolamos al
   // "siguiente lote" para evitar que María responda dos veces cuando el
   // user manda un mensaje nuevo mientras la primera respuesta todavía se
