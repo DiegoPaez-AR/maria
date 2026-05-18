@@ -1,0 +1,61 @@
+# ejecutado: 2026-05-18T09:33:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ ANTES ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, calendar_id, calendar_acceso, calendar_provider FROM usuarios WHERE id=6;"
+#   
+#   echo ""
+#   echo "═══ UPDATE: setear calendar_id + calendar_acceso (Maria tiene reader access verificado) ═══"
+#   sqlite3 "$DB" "UPDATE usuarios SET calendar_id='doris@capurro.com.ar', calendar_acceso='read', actualizado=CURRENT_TIMESTAMP WHERE id=6; SELECT 'changes='||changes();"
+#   
+#   echo ""
+#   echo "═══ DESPUÉS ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, calendar_id, calendar_acceso, datetime(actualizado) FROM usuarios WHERE id=6;"
+#   
+#   echo ""
+#   echo "═══ Smoke: ahora Maria ve eventos de Doris? ═══"
+#   cd /root/secretaria && node -e "
+#   (async () => {
+#     const usuarios = require('./usuarios');
+#     const providers = require('./providers');
+#     const doris = usuarios.obtener(6);
+#     console.log('Doris ahora:', doris.calendar_id, doris.calendar_acceso);
+#     const p = await providers.forUser(doris);
+#     const eventos = await p.listarEventosDelUsuario(doris, { dias: 14 });
+#     console.log('eventos próximos 14d:', eventos.length);
+#     for (const e of eventos.slice(0, 8)) console.log('  -', e.start, '-', (e.summary || '(sin título)').slice(0,60));
+#   })();
+#   " 2>&1
+
+# ───── output ─────
+═══ ANTES ═══
+id  nombre         calendar_id  calendar_acceso  calendar_provider
+--  -------------  -----------  ---------------  -----------------
+6   Doris Capurro               none             google           
+
+═══ UPDATE: setear calendar_id + calendar_acceso (Maria tiene reader access verificado) ═══
+changes=1
+
+═══ DESPUÉS ═══
+id  nombre         calendar_id           calendar_acceso  datetime(actualizado)
+--  -------------  --------------------  ---------------  ---------------------
+6   Doris Capurro  doris@capurro.com.ar  read             2026-05-18 12:33:01  
+
+═══ Smoke: ahora Maria ve eventos de Doris? ═══
+Doris ahora: doris@capurro.com.ar read
+eventos próximos 14d: 20
+  - 2026-05-18 - hugo romero
+  - 2026-05-18T00:00:00-03:00 - Romi - Vacaciones
+  - 2026-05-18T09:00:00-03:00 - natacion
+  - 2026-05-18T11:00:00-03:00 - servilletitas, servilletas planchadas de la misma manera y m
+  - 2026-05-19T10:00:00-03:00 - HIRSCH
+  - 2026-05-19T14:30:00-03:00 - llamar secretaria de Rendo
+  - 2026-05-19T17:00:00-03:00 - OCM Santa Cruz
+  - 2026-05-20T13:00:00-03:00 - Juan Carlos Fernandez
+
+# exit=0
