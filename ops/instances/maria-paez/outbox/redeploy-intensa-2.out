@@ -1,0 +1,70 @@
+# ejecutado: 2026-05-17T23:01:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "═══ Redeploy intensa.io con toggle EN|ES + cache-bust ═══"
+#   bash /root/secretaria/ops/sites/intensa.io/deploy.sh
+#   
+#   echo ""
+#   echo "═══ Verificar HTML deployado tiene cache-bust ═══"
+#   grep -E "script\.js|styles\.css" /var/www/intensa.io/index.html
+#   
+#   echo ""
+#   echo "═══ ¿toggle EN|ES en HTML? ═══"
+#   grep "lang-btn\|lang-flag" /var/www/intensa.io/index.html | head -5
+#   
+#   echo ""
+#   echo "═══ ¿translations en script.js? ═══"
+#   grep -c "translations\|applyTranslations\|lang-btn" /var/www/intensa.io/script.js
+#   
+#   echo ""
+#   echo "═══ Smoke HTTPS ═══"
+#   curl -sk -H "Host: intensa.io" -o /dev/null -w "intensa.io     HTTPS %{http_code}\n" https://127.0.0.1/
+#   curl -sk -H "Host: www.intensa.io" -o /dev/null -w "www.intensa.io HTTPS %{http_code}\n" https://127.0.0.1/
+
+# ───── output ─────
+═══ Redeploy intensa.io con toggle EN|ES + cache-bust ═══
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+  index.html con cache-bust v=20260517-230102
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/17 23:01:02 [warn] 1009947#1009947: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+
+═══ DONE ═══
+
+═══ Verificar HTML deployado tiene cache-bust ═══
+<link rel="stylesheet" href="styles.css?v=20260517-230102">
+<script src="script.js?v=20260517-230102"></script>
+
+═══ ¿toggle EN|ES en HTML? ═══
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+
+═══ ¿translations en script.js? ═══
+7
+
+═══ Smoke HTTPS ═══
+intensa.io     HTTPS 200
+www.intensa.io HTTPS 200
+
+# exit=0
