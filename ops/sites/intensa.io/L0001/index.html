@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Maria — Tu secretaria personal con IA, 24/7 por WhatsApp</title>
+<meta name="description" data-i18n="meta.desc" content="Maria agenda reuniones, coordina con terceros, gestiona pendientes y responde por WhatsApp y email. Sin app que instalar, sin curva de aprendizaje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-mark">M</span>
+      <span>maria</span>
+    </div>
+    <div class="nav-links">
+      <a href="#que-hace" data-i18n="nav.que">Qué hace</a>
+      <a href="#casos" data-i18n="nav.casos">Para quién</a>
+      <a href="#planes" data-i18n="nav.planes">Planes</a>
+      <a href="#suscribirme" class="nav-cta" data-i18n="nav.cta">Suscribirme</a>
+      <div class="lang-toggle" id="langToggle" role="group" aria-label="Switch language">
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      <span data-i18n="hero.eyebrow">Secretaria personal con IA · disponible 24/7</span>
+    </div>
+    <h1 data-i18n-html="hero.h1">Tenés más cosas para hacer que tiempo. <em>Maria se ocupa.</em></h1>
+    <p class="hero-sub" data-i18n="hero.sub">Le escribís por WhatsApp como a cualquier persona. Ella agenda, coordina con tus contactos, te recuerda lo que te olvidás, contesta mails y maneja tu día. Sin app que instalar.</p>
+    <div class="hero-cta">
+      <a href="#planes" class="btn btn-primary"><span data-i18n="hero.ver-planes">Ver planes</span> <span class="arrow">→</span></a>
+      <a href="#que-hace" class="btn btn-ghost" data-i18n="hero.como">Cómo funciona</a>
+    </div>
+
+    <div class="chat-mock">
+      <div class="chat-line user">
+        <div class="bubble" data-i18n="chat.1">Maria, agendame con Carla el jueves a las 3, mandale invite</div>
+      </div>
+      <div class="chat-line maria">
+        <div class="bubble" data-i18n="chat.2">Listo. Reunión con Carla el jueves 22 de mayo a las 15:00. Le mandé invite a su email con link de Meet. Te dejo aviso 15min antes.</div>
+      </div>
+      <div class="chat-line user">
+        <div class="bubble" data-i18n="chat.3">y mañana a las 9 recordame de llamar al contador</div>
+      </div>
+      <div class="chat-line maria">
+        <div class="bubble" data-i18n="chat.4">Anotado, te aviso mañana 9am.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- QUE HACE -->
+<section id="que-hace" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n-html="que.h2">Una persona menos en tu cabeza. <em>Todo lo que ella hace por vos.</em></h2>
+      <p class="section-sub" data-i18n="que.sub">Maria conecta con tu calendar, tu mail y tus contactos. Le hablás como a una persona y ella ejecuta.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">📅</div>
+        <h3 data-i18n="feat.1.h">Tu agenda</h3>
+        <p data-i18n="feat.1.p">Agendar, mover y cancelar reuniones. Avisos 15min antes. Brief matutino con tu día. Funciona con Google Calendar, iCloud, Outlook, Yahoo.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <h3 data-i18n="feat.2.h">Coordinación con terceros</h3>
+        <p data-i18n="feat.2.p">"Coordiná un café con Juan la próxima semana" — Maria habla con Juan, propone horarios, agenda y te avisa cuando está confirmado.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📝</div>
+        <h3 data-i18n="feat.3.h">Pendientes y recordatorios</h3>
+        <p data-i18n="feat.3.p">"Recordame el martes pagar al contador". "Si Juan no me responde en 3 días, avisame". Maria te lo cuida.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📎</div>
+        <h3 data-i18n="feat.4.h">Audios, PDFs, contactos</h3>
+        <p data-i18n="feat.4.p">Le mandás un audio — lo transcribe. Una factura en PDF — la lee. La tarjeta de un contacto — la guarda en libreta.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">✉️</div>
+        <h3 data-i18n="feat.5.h">Email gestionado</h3>
+        <p data-i18n="feat.5.p">"Mandale a Mariana el contrato y agendá llamada de seguimiento". Maria escribe el mail desde su cuenta, te deja en copia y agenda.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌐</div>
+        <h3 data-i18n="feat.6.h">Multi-idioma nativo</h3>
+        <p data-i18n="feat.6.p">Le hablás en castellano, contacta a un proveedor en inglés. Maria habla los dos sin que tengas que pedirlo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASOS -->
+<section id="casos" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n-html="casos.h2">¿Para quién es <em>Maria</em>?</h2>
+      <p class="section-sub" data-i18n="casos.sub">Si tu día arranca con 47 mensajes sin contestar, llegaste al lugar correcto.</p>
+    </div>
+    <div class="cases-grid">
+      <div class="case">
+        <div class="case-emoji">👔</div>
+        <h4 data-i18n="caso.1.h">Profesional independiente</h4>
+        <p data-i18n="caso.1.p">Consultores, abogados, médicos, terapeutas. Manejar tu agenda + coordinar con clientes + recordatorios sin tener que pensar.</p>
+      </div>
+      <div class="case">
+        <div class="case-emoji">🚀</div>
+        <h4 data-i18n="caso.2.h">Founder / Emprendedor</h4>
+        <p data-i18n="caso.2.p">Tu equipo, tus inversores, tus reuniones. Que alguien se ocupe del calendar y del email mientras vos hacés lo importante.</p>
+      </div>
+      <div class="case">
+        <div class="case-emoji">🏃</div>
+        <h4 data-i18n="caso.3.h">Persona ocupada</h4>
+        <p data-i18n="caso.3.p">Familia, hobbies, viajes, trámites. La cabeza llena de cosas chiquitas que olvidás. Maria es tu memoria externa.</p>
+      </div>
+      <div class="case">
+        <div class="case-emoji">🏢</div>
+        <h4 data-i18n="caso.4.h">Equipo chico</h4>
+        <p data-i18n="caso.4.p">Hasta 5 usuarios, una sola Maria. Cada uno con su agenda y privacidad. Ideal para socios o equipo fundador.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAL -->
+<section class="reveal alt">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n-html="dif.h2">No es un chatbot. <em>Es un asistente que ejecuta.</em></h2>
+    </div>
+    <div class="dif-grid">
+      <div class="dif-item">
+        <div class="dif-x">✗</div>
+        <div class="dif-body">
+          <h5 data-i18n="dif.1.t">Chatbots tradicionales</h5>
+          <p data-i18n="dif.1.p">Te responden cosas que ya podías googlear. Te leen lo que está en tu agenda.</p>
+        </div>
+      </div>
+      <div class="dif-item check">
+        <div class="dif-x">✓</div>
+        <div class="dif-body">
+          <h5 data-i18n="dif.2.t">Maria</h5>
+          <p data-i18n="dif.2.p">Agenda eventos, manda emails, contacta a tus terceros, te recuerda lo que pediste. Hace, no solo dice.</p>
+        </div>
+      </div>
+      <div class="dif-item">
+        <div class="dif-x">✗</div>
+        <div class="dif-body">
+          <h5 data-i18n="dif.3.t">Apps de productividad</h5>
+          <p data-i18n="dif.3.p">Otra app más para abrir. Otra interfaz que aprender. Otro lugar donde olvidás cosas.</p>
+        </div>
+      </div>
+      <div class="dif-item check">
+        <div class="dif-x">✓</div>
+        <div class="dif-body">
+          <h5 data-i18n="dif.4.t">Maria</h5>
+          <p data-i18n="dif.4.p">Vive donde vos ya vivís: WhatsApp. Cero app, cero login, cero curva de aprendizaje.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANES -->
+<section id="planes" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n-html="planes.h2">Elegí tu plan. <em>Cancelás cuando quieras.</em></h2>
+      <p class="section-sub" data-i18n="planes.sub">Precios en USD. Facturación mensual. Sin permanencia.</p>
+    </div>
+    <div class="planes-grid">
+      <div class="plan">
+        <div class="plan-name" data-i18n="plan.1.name">Personal</div>
+        <div class="plan-price">$39<span class="period" data-i18n="plan.period">/mes</span></div>
+        <div class="plan-desc" data-i18n="plan.1.desc">Para una persona. Agenda + recordatorios + coordinación con tus contactos.</div>
+        <ul class="plan-features">
+          <li data-i18n="plan.1.f1">1 usuario</li>
+          <li data-i18n="plan.1.f2">Agenda integrada (Google / iCloud / Outlook)</li>
+          <li data-i18n="plan.1.f3">Coordinación con terceros</li>
+          <li data-i18n="plan.1.f4">Audios, PDFs, contactos</li>
+          <li data-i18n="plan.1.f5">Brief matutino</li>
+          <li data-i18n="plan.1.f6">Soporte por WhatsApp</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" data-lemon-product="personal" data-i18n="plan.cta">Suscribirme →</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-badge" data-i18n="plan.badge">Más popular</div>
+        <div class="plan-name" data-i18n="plan.2.name">Pro</div>
+        <div class="plan-price">$79<span class="period" data-i18n="plan.period">/mes</span></div>
+        <div class="plan-desc" data-i18n="plan.2.desc">Para profesionales y founders. Todo lo de Personal + email gestionado + prioridad.</div>
+        <ul class="plan-features">
+          <li data-i18n="plan.2.f1">Todo lo de Personal</li>
+          <li data-i18n="plan.2.f2">Email gestionado (Maria escribe desde su cuenta)</li>
+          <li data-i18n="plan.2.f3">Reglas de follow-up automáticas</li>
+          <li data-i18n="plan.2.f4">Memoria de largo plazo curada</li>
+          <li data-i18n="plan.2.f5">Multi-idioma nativo</li>
+          <li data-i18n="plan.2.f6">Soporte prioritario</li>
+        </ul>
+        <a href="#" class="btn btn-primary" data-lemon-product="pro" data-i18n="plan.cta-pro">Suscribirme →</a>
+      </div>
+      <div class="plan">
+        <div class="plan-name" data-i18n="plan.3.name">Equipo</div>
+        <div class="plan-price">$199<span class="period" data-i18n="plan.period">/mes</span></div>
+        <div class="plan-desc" data-i18n="plan.3.desc">Hasta 5 personas compartiendo una Maria. Ideal para founders + equipo.</div>
+        <ul class="plan-features">
+          <li data-i18n="plan.3.f1">Hasta 5 usuarios</li>
+          <li data-i18n="plan.3.f2">Aislamiento total de agenda por usuario</li>
+          <li data-i18n="plan.3.f3">Libreta de contactos compartida (opcional)</li>
+          <li data-i18n="plan.3.f4">Coordinación cross-equipo (buscar huecos comunes)</li>
+          <li data-i18n="plan.3.f5">Reportes operativos</li>
+          <li data-i18n="plan.3.f6">Onboarding asistido</li>
+        </ul>
+        <a href="#" class="btn btn-ghost" data-lemon-product="equipo" data-i18n="plan.cta">Suscribirme →</a>
+      </div>
+    </div>
+    <p class="planes-nota" data-i18n="planes.nota">¿Necesitás algo más? Maria también se despliega on-premise para empresas. <a href="mailto:hola@intensa.io" data-i18n="planes.nota-link">Escribinos</a>.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="reveal alt">
+  <div class="container">
+    <div class="section-header">
+      <h2 data-i18n="faq.h2">Preguntas frecuentes</h2>
+    </div>
+    <div class="faqs">
+      <details class="faq">
+        <summary data-i18n="faq.1.q">¿Cómo funciona el primer día?</summary>
+        <p data-i18n="faq.1.a">Apenas te suscribís, te llega un WhatsApp de Maria presentándose. Te pide tu email y qué calendar usás, te guía para conectar la integración (1-2 minutos), y a partir de ahí ya podés hablarle de cualquier cosa.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.2.q">¿Es seguro? ¿Quién ve mis datos?</summary>
+        <p data-i18n="faq.2.a">Tus credenciales de calendar viven cifradas (AES-256). Maria solo lee/escribe en TU calendar, nadie más. Tus mensajes de WhatsApp no se exponen a otros usuarios. Auditamos cada acción que ejecuta.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.3.q">¿Puede mandar mensajes en mi nombre sin que yo confirme?</summary>
+        <p data-i18n="faq.3.a">Para coordinar con terceros (escribir a Juan para agendar reunión), sí — esa es la idea. Pero antes de cualquier acción "fuerte" (cancelar reunión grande, mandar email a alguien nuevo, etc.) te pide confirmación. Vos controlás el umbral.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.4.q">¿Funciona con Outlook / iCloud / Yahoo?</summary>
+        <p data-i18n="faq.4.a">Sí. Google Calendar (Gmail/Workspace), Microsoft (Outlook/Office 365), iCloud, Yahoo, Fastmail. Para los no-Google necesitamos un app-password de tu cuenta — el setup lo guía Maria en el chat.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.5.q">¿Puedo cancelar?</summary>
+        <p data-i18n="faq.5.a">Cuando quieras. Sin permanencia, sin cargos ocultos. Cancelás desde tu panel de cliente y dejás de pagar al ciclo siguiente.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.6.q">¿Maria aprende con el tiempo?</summary>
+        <p data-i18n="faq.6.a">Sí. Construye memoria de largo plazo sobre quién es quién en tu vida, qué preferencias tenés ("no me agendes nada antes de las 10"), qué follow-ups soltaste, etc. Cuanto más la usás, más se afina.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="suscribirme" class="reveal">
+  <div class="final-cta">
+    <h2 data-i18n-html="cta.h2">Empezá hoy. <em>Maria está lista cuando vos.</em></h2>
+    <p data-i18n="cta.p">Setup en 2 minutos. Sin app, sin tarjeta de crédito atada — cancelás cuando quieras.</p>
+    <div class="hero-cta">
+      <a href="#planes" class="btn btn-primary"><span data-i18n="cta.elegir">Elegir mi plan</span> <span class="arrow">→</span></a>
+      <a href="mailto:hola@intensa.io" class="btn btn-ghost" data-i18n="cta.preguntar">Tengo una pregunta</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark">M</span> <span>maria</span></div>
+        <p data-i18n="footer.tag">Tu secretaria personal con IA. Por intensa labs.</p>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="footer.prod">Producto</h5>
+        <a href="#que-hace" data-i18n="footer.que">Qué hace</a>
+        <a href="#casos" data-i18n="footer.casos">Para quién</a>
+        <a href="#planes" data-i18n="footer.planes">Planes</a>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="footer.legal">Legal</h5>
+        <a href="#" data-i18n="footer.terms">Términos</a>
+        <a href="#" data-i18n="footer.priv">Privacidad</a>
+        <a href="#" data-i18n="footer.refunds">Reembolsos</a>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="footer.contacto">Contacto</h5>
+        <a href="mailto:hola@intensa.io">hola@intensa.io</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 intensa labs</span>
+      <span data-i18n="footer.built">made with care · running in latam</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

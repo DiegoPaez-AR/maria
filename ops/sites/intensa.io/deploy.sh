@@ -34,6 +34,35 @@ chmod -R 644 "$DEST"/*
 find "$DEST" -type d -exec chmod 755 {} +
 
 echo ""
+echo "═══ 1b. Sincronizar landings (L0001/) ═══"
+# Cada landing vive en un subdir SRC/Lxxxx/. Sincronizamos cada uno y aplicamos
+# cache-bust a sus refs a styles.css/script.js (mismo STAMP que el sitio raíz).
+shopt -s nullglob
+for landing_src in "$SRC"/L*/; do
+    landing_name=$(basename "$landing_src")
+    landing_dest="$DEST/$landing_name"
+    echo "  → $landing_name"
+    mkdir -p "$landing_dest"
+    cp -v "$landing_src/styles.css" "$landing_src/script.js" "$landing_dest/" 2>/dev/null || true
+    if [ -f "$landing_src/index.html" ]; then
+        sed "s|styles\.css|styles.css?v=${STAMP}|g; s|script\.js|script.js?v=${STAMP}|g" "$landing_src/index.html" > "$landing_dest/index.html"
+        echo "    index.html con cache-bust v=${STAMP}"
+    fi
+    # Cualquier otro archivo del landing (imágenes, etc.) se copia tal cual
+    for f in "$landing_src"*; do
+        bn=$(basename "$f")
+        case "$bn" in
+            index.html|styles.css|script.js) ;;
+            *) cp -v "$f" "$landing_dest/" ;;
+        esac
+    done
+    chown -R www-data:www-data "$landing_dest"
+    find "$landing_dest" -type f -exec chmod 644 {} +
+    find "$landing_dest" -type d -exec chmod 755 {} +
+done
+shopt -u nullglob
+
+echo ""
 echo "═══ 2. Vhost nginx ═══"
 if [ ! -f "$VHOST_DEST" ]; then
     echo "Vhost no existe — copiando del repo (versión inicial HTTP-only)..."
@@ -72,6 +101,18 @@ if grep -q "ssl_certificate" "$VHOST_DEST" 2>/dev/null; then
     curl -sk -H "Host: www.intensa.io" -o /dev/null -w "www.intensa.io    HTTPS %{http_code}\n" https://127.0.0.1/
 fi
 curl -sk -H "Host: www.veritas-trace.com" -o /dev/null -w "veritas-trace (no se rompió) HTTPS %{http_code}\n" https://127.0.0.1/ -k
+
+# Smoke test de landings (si existen)
+shopt -s nullglob
+for landing_dest in "$DEST"/L*/; do
+    landing_name=$(basename "$landing_dest")
+    if grep -q "ssl_certificate" "$VHOST_DEST" 2>/dev/null; then
+        curl -sk -H "Host: intensa.io" -o /dev/null -w "intensa.io/${landing_name}/ HTTPS %{http_code}\n" "https://127.0.0.1/${landing_name}/"
+    else
+        curl -s -H "Host: intensa.io" -o /dev/null -w "intensa.io/${landing_name}/ HTTP %{http_code}\n" "http://127.0.0.1/${landing_name}/"
+    fi
+done
+shopt -u nullglob
 
 echo ""
 echo "═══ DONE ═══"
