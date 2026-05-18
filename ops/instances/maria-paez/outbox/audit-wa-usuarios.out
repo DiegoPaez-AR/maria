@@ -1,0 +1,82 @@
+# ejecutado: 2026-05-17T21:04:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Tabla usuarios completa (id, nombre, wa_lid, wa_cus, email) ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, wa_lid, wa_cus, email FROM usuarios WHERE activo = 1 ORDER BY id;"
+#   
+#   echo ""
+#   echo "═══ Verificación: ¿resolverPorWa resuelve cada wa_cus de vuelta al user correcto? ═══"
+#   cd /root/secretaria && node -e "
+#   const usuarios = require('./usuarios');
+#   const list = usuarios.listarActivos();
+#   for (const u of list) {
+#     const slots = [];
+#     if (u.wa_cus) slots.push({ tipo: 'wa_cus', valor: u.wa_cus });
+#     if (u.wa_lid) slots.push({ tipo: 'wa_lid', valor: u.wa_lid });
+#     for (const s of slots) {
+#       const resuelto = usuarios.resolverPorWa(s.valor);
+#       const ok = resuelto && resuelto.id === u.id;
+#       const marker = ok ? '✓' : '✗';
+#       const info = resuelto ? \`→ id=\${resuelto.id} (\${resuelto.nombre})\` : '→ null';
+#       console.log(\`  \${marker} \${u.nombre.padEnd(22)} \${s.tipo}=\${s.valor.padEnd(28)} \${info}\`);
+#     }
+#     if (slots.length === 0) {
+#       console.log(\`  ·  \${u.nombre.padEnd(22)} (sin wa_cus ni wa_lid — solo email)\`);
+#     }
+#   }
+#   " 2>&1
+#   
+#   echo ""
+#   echo "═══ Resumen formato wa_cus por país (regex prefijo) ═══"
+#   sqlite3 -column "$DB" "
+#   SELECT
+#     CASE
+#       WHEN wa_cus LIKE '549%' THEN '549 (AR móvil con 9)'
+#       WHEN wa_cus LIKE '54%' AND wa_cus NOT LIKE '549%' THEN '54 (AR sin 9)'
+#       WHEN wa_cus LIKE '598%' THEN '598 (UY)'
+#       WHEN wa_cus LIKE '595%' THEN '595 (PY)'
+#       WHEN wa_cus LIKE '55%' THEN '55 (BR)'
+#       WHEN wa_cus LIKE '34%' THEN '34 (ES)'
+#       WHEN wa_cus LIKE '1%' THEN '1 (US/CA)'
+#       WHEN wa_cus IS NULL THEN '(sin wa_cus)'
+#       ELSE 'otro (' || substr(wa_cus, 1, 3) || ')'
+#     END AS pais,
+#     COUNT(*) AS n,
+#     GROUP_CONCAT(nombre, ', ') AS users
+#   FROM usuarios
+#   WHERE activo = 1
+#   GROUP BY 1
+#   ORDER BY n DESC;
+#   "
+
+# ───── output ─────
+═══ Tabla usuarios completa (id, nombre, wa_lid, wa_cus, email) ═══
+id  nombre               wa_lid               wa_cus              email                           
+--  -------------------  -------------------  ------------------  --------------------------------
+1   Diego                34342575317160@lid   541132317896@c.us   diego@paez.is                   
+2   Hernan Fulco         137456250806423@lid  5491126829596@c.us  hernan.fulco@sondeosglobal.com  
+3   Natali Funez         232637088149596@lid  5491150105262@c.us  nfunez@iplan.com.ar             
+4   Fernando Boero                            5491166903856@c.us                                  
+5   Santiago Bignone                          5491134274828@c.us  santiagocbignone@gmail.com      
+6   Doris Capurro        105171031949561@lid  5491144471264@c.us  doris@capurro.com.ar            
+7   Nicolas Kosinski     227143674011812@lid  5491150080522@c.us  nkosinski@froneus.com           
+8   Walter Vera                               5491138433288@c.us  wvera@froneus.com               
+9   Cristian Ruiz                             5491126406612@c.us  cruiz@froneus.com               
+10  Sebastian Ameijeira                       5491163004389@c.us  sameijeira@froneus.com          
+11  Rubén Ward                                5491154024727@c.us  ruben.ward@sondeosglobal.com    
+12  Enrique Sosa                              59899643028@c.us    enrique.sosa@globalnetmobile.com
+
+═══ Verificación: ¿resolverPorWa resuelve cada wa_cus de vuelta al user correcto? ═══
+  ✓ Diego                  wa_cus=541132317896@c.us            → id=1 (Diego)
+
+═══ Resumen formato wa_cus por país (regex prefijo) ═══
+549 (AR móvil con 9)  10  Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward
+598 (UY)              1   Enrique Sosa                                                                                                                                              
+54 (AR sin 9)         1   Diego                                                                                                                                                     
+
+# exit=0
