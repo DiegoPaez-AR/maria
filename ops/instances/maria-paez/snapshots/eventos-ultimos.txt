@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5302  2026-05-18 19:10:27  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+5301  2026-05-18 19:10:27  whatsapp  saliente   167933254885560@lid  Claro Ariel, se lo consulto a Diego y te cuento.                                                                                                                                                        
+
+5300  2026-05-18 19:10:27  whatsapp  saliente   34342575317160@lid   Ariel de Espasa me pregunta si le podés explicar por qué decidiste no avanzar con la Taos. ¿Querés que le cuente algo o le digo que fue una decisión personal y listo?                                  
+
+5299  2026-05-18 19:10:27  sistema   interno                         claude_call whatsapp: 26708ms prompt=69122c raw=936c                                                                                                                                                    
+
 5298  2026-05-18 19:10:00  whatsapp  entrante   167933254885560@lid  María te puedo preguntar que le consultes por qué para saber.                                                                                                                                           
 
 5297  2026-05-18 19:10:00  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de Volkswagen Espasa con quien Maria gestionó la compra de la Taos Highline Bi Tono a pedido de Diego (owner, id
@@ -218,11 +226,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5204  2026-05-18 14:58:27  sistema   interno                         claude_call whatsapp: 12550ms prompt=67983c raw=393c                                                                                                                                                    
 
 5203  2026-05-18 14:58:14  whatsapp  entrante   232185965629610@lid  Maria necesitaria para cotizar el SUBARU, el kilometraje que tiene el vehiculo                                                                                                                          
-
-5202  2026-05-18 14:58:14  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Es Ezequiel de Honda Briones, concesionaria que Diego pidió contactar; en el historial Diego confirma explícitamente que es de esa concesio
-
-5201  2026-05-18 14:58:14  sistema   interno                         claude_call unknown-flow: 19448ms prompt=51825c raw=365c                                                                                                                                                
-
-5200  2026-05-18 14:57:19  whatsapp  saliente   5491132317896@c.us   Sí, exacto — es Ezequiel de Honda Briones. Ya lo tengo cargado y le respondí. Me prometió la cotización del Subaru y los datos del HR-V EXL, estoy esperando que me mande todo.                         
-
-5199  2026-05-18 14:57:19  sistema   interno                         claude_call whatsapp: 36722ms prompt=67723c raw=418c                                                                                                                                                    
