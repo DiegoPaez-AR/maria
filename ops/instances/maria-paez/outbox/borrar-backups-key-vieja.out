@@ -1,0 +1,52 @@
+# ejecutado: 2026-05-17T21:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ Listar backups del 17-may (anteriores a rotación) ═══"
+#   ls -la /root/secretaria/state/maria-paez/token.json.bak.* 2>/dev/null
+#   ls -la /root/secretaria/state/maria-paez/token.json.enc.bak.* 2>/dev/null
+#   ls -la /root/secretaria/config/instances/maria-paez.conf.bak.* 2>/dev/null
+#   
+#   echo ""
+#   echo "═══ Borrar ═══"
+#   # Todos los backups del token (plano y .enc), incluyendo el de la rotación
+#   for f in /root/secretaria/state/maria-paez/token.json.bak.* /root/secretaria/state/maria-paez/token.json.enc.bak.*; do
+#     [ -e "$f" ] || continue
+#     rm -v "$f"
+#   done
+#   
+#   # Backup del .conf con key vieja en plano
+#   for f in /root/secretaria/config/instances/maria-paez.conf.bak.*; do
+#     [ -e "$f" ] || continue
+#     rm -v "$f"
+#   done
+#   
+#   echo ""
+#   echo "═══ Verificación: ¿quedaron backups? ═══"
+#   ls /root/secretaria/state/maria-paez/token.json* 2>&1
+#   ls /root/secretaria/config/instances/maria-paez.conf* 2>&1
+
+# ───── output ─────
+═══ Listar backups del 17-may (anteriores a rotación) ═══
+-rw-r--r--+ 1 root root 574 May  8 11:54 /root/secretaria/state/maria-paez/token.json.bak.20260508-115436
+-rw-r--r--  1 root root 574 May 15 15:06 /root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1806
+-rw-r--r--  1 root root 599 May 15 15:19 /root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1819
+-rw-r--r--+ 1 root root 561 May 15 15:19 /root/secretaria/state/maria-paez/token.json.bak.2026-05-17T2337
+-rw------- 1 root root 760 May 17 21:19 /root/secretaria/state/maria-paez/token.json.enc.bak.rotate-20260517-211901
+-rw-r--r--+ 1 root root 2138 May 17 21:19 /root/secretaria/config/instances/maria-paez.conf.bak.rotate-20260517-211901
+
+═══ Borrar ═══
+removed '/root/secretaria/state/maria-paez/token.json.bak.20260508-115436'
+removed '/root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1806'
+removed '/root/secretaria/state/maria-paez/token.json.bak.2026-05-15T1819'
+removed '/root/secretaria/state/maria-paez/token.json.bak.2026-05-17T2337'
+removed '/root/secretaria/state/maria-paez/token.json.enc.bak.rotate-20260517-211901'
+removed '/root/secretaria/config/instances/maria-paez.conf.bak.rotate-20260517-211901'
+
+═══ Verificación: ¿quedaron backups? ═══
+/root/secretaria/state/maria-paez/token.json.enc
+/root/secretaria/config/instances/maria-paez.conf
+
+# exit=0
