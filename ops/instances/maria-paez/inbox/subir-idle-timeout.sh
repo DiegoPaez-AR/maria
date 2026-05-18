@@ -1,0 +1,34 @@
+#!/bin/bash
+set +e
+CONF="/root/secretaria/config/instances/maria-paez.conf"
+
+echo "═══ Valores actuales en .conf ═══"
+grep -E "^CLAUDE_(IDLE_)?TIMEOUT_MS" "$CONF"
+
+echo ""
+if grep -q "^CLAUDE_IDLE_TIMEOUT_MS=" "$CONF"; then
+  echo "Ya está seteado — actualizando a 240000"
+  sed -i 's|^CLAUDE_IDLE_TIMEOUT_MS=.*|CLAUDE_IDLE_TIMEOUT_MS=240000|' "$CONF"
+else
+  echo "Agregando CLAUDE_IDLE_TIMEOUT_MS=240000 al .conf"
+  cat >> "$CONF" <<'CONF_EOF'
+
+# Claude idle timeout — sube de 90s a 240s. Con prompts ~65KB (owner con
+# mucho historial + adjuntos) Claude tarda 90-150s antes de stream output.
+# El global sigue en 480s (8 min) que es cap absoluto.
+CLAUDE_IDLE_TIMEOUT_MS=240000
+CONF_EOF
+fi
+
+echo ""
+echo "═══ Valor final ═══"
+grep -E "^CLAUDE_" "$CONF"
+
+echo ""
+echo "═══ Reload pm2 con env nuevo ═══"
+cd /root/secretaria && pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -3
+sleep 5
+
+echo ""
+echo "═══ Verificar env propagado ═══"
+pm2 env 0 2>&1 | grep -E "CLAUDE_(IDLE_)?TIMEOUT" | head -3
