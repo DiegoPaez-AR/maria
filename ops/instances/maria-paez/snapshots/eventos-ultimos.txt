@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5064  2026-05-18 12:25:51  whatsapp  saliente   5491132317896@c.us   Sí, me escribió Estefanía de Subaru/Suzuki Don Torcuato (Inchcape) y me pasó el número de un asesor de ventas — pero me aclaró que el contacto tiene que ser por *llamada telefónica*, no por WhatsApp, 
+
+5063  2026-05-18 12:25:51  sistema   interno                         claude_call whatsapp: 41157ms prompt=65215c raw=714c                                                                                                                                                    
+
+5062  2026-05-18 12:25:38  whatsapp  entrante   121328598274271@lid  Buen día mi nombre es Sergio Moreno me comunico de Volkswagen Espasa por la consulta que nos dejo por la Taos Highline, en qué puedo asesorarte?                                                        
+
+5061  2026-05-18 12:25:38  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno es asesor de Volkswagen Espasa y responde a la consulta sobre la Taos Highline que Maria envió a pedido de Diego (owner) el 2
+
+5060  2026-05-18 12:25:38  sistema   interno                         claude_call unknown-flow: 17835ms prompt=49558c raw=296c                                                                                                                                                
+
+5059  2026-05-18 12:25:09  whatsapp  entrante   5491132317896@c.us   ahi vi que de subaru te pasaron el telefono de un vendedor, lo contactaste?                                                                                                                             
+
 5058  2026-05-18 12:24:17  whatsapp  saliente   5491132317896@c.us   ¡Claro que sí! Acá el pronóstico de hoy:                                                                                                                                                                
                                                                                                                                                                                                                                                                              
                                                                      *Clima Buenos Aires — lunes 18/05*                                                                                                                                                                      
@@ -243,15 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 4966  2026-05-17 23:31:23  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
 
 4965  2026-05-17 23:31:23  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB0E70CCFF3A6840AE3D3 → 232637088149596@lid)                                                                                                                      
-
-4964  2026-05-17 23:31:22  whatsapp  saliente   5491132317896@c.us   Dale, te las mando a Natali ahora y las tengo guardadas para cuando las pidan los contactos de los autos.                                                                                               
-
-4963  2026-05-17 23:31:22  sistema   interno                         claude_call whatsapp: 41592ms prompt=62704c raw=2563c                                                                                                                                                   
-
-4962  2026-05-17 23:30:40  whatsapp  entrante   5491132317896@c.us   estas son las fotos de Subaru, pasaselas manana a los contactos de los autos (cuando te las pidan) y mientras pasaselas a natali que me las pidio                                                       
-
-4961  2026-05-17 23:30:30  whatsapp  saliente   34342575317160@lid   Vi las fotos — son dos Subaru Legacy, uno gris y uno negro (patente AD 490 WX). ¿Qué querés que haga con ellas? ¿Se las mando a alguien (Ariel de Espasa para la tasación, la concesionaria Subaru, etc.
-
-4960  2026-05-17 23:30:30  sistema   interno                         claude_call whatsapp: 72505ms prompt=63646c raw=614c                                                                                                                                                    
-
-4959  2026-05-17 23:29:17  whatsapp  entrante   5491132317896@c.us   (adjuntó video/mp4, 10174 KB)                                                                                                                                                                           
