@@ -1,0 +1,113 @@
+# ejecutado: 2026-05-18T12:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Deploya intensa.io con la nueva landing L0001/ y hace smoke test
+#   set -u
+#   
+#   echo "═══ git pull ═══"
+#   cd /root/secretaria
+#   git fetch -q origin main
+#   git log --oneline -3
+#   ls -la ops/sites/intensa.io/L0001/ 2>&1
+#   
+#   echo ""
+#   echo "═══ deploy.sh ═══"
+#   bash ops/sites/intensa.io/deploy.sh 2>&1
+#   
+#   echo ""
+#   echo "═══ smoke público (DNS) ═══"
+#   # El que importa — desde fuera del nginx local, vía LB de Cloudflare/DNS resolución real
+#   curl -sk -o /dev/null -w "https://intensa.io/L0001/ → %{http_code}  (%{size_download} bytes)\n" "https://intensa.io/L0001/"
+#   curl -sk -o /dev/null -w "https://intensa.io/L0001/styles.css → %{http_code}\n" "https://intensa.io/L0001/styles.css"
+#   curl -sk -o /dev/null -w "https://intensa.io/L0001/script.js  → %{http_code}\n" "https://intensa.io/L0001/script.js"
+#   echo ""
+#   echo "Primeros 30 lines del index sirvido:"
+#   curl -sk "https://intensa.io/L0001/" | head -30
+
+# ───── output ─────
+═══ git pull ═══
+106b729a5 inbox: deploy L0001 + smoke test público
+0d9994dd3 intensa.io: landing L0001 (Maria) + deploy.sh soporta subfolders L*/
+af5fc94f5 ops: snapshot 2026-05-18T11:59:01-03:00
+total 56
+drwxr-xr-x+ 2 root root  4096 May 18 12:00 .
+drwxr-xr-x+ 3 root root  4096 May 18 12:00 ..
+-rw-r--r--+ 1 root root 16088 May 18 12:00 index.html
+-rw-r--r--+ 1 root root 17998 May 18 12:00 script.js
+-rw-r--r--+ 1 root root 11735 May 18 12:00 styles.css
+
+═══ deploy.sh ═══
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+  index.html con cache-bust v=20260518-120003
+
+═══ 1b. Sincronizar landings (L0001/) ═══
+  → L0001
+'/root/secretaria/ops/sites/intensa.io/L0001//styles.css' -> '/var/www/intensa.io/L0001/styles.css'
+'/root/secretaria/ops/sites/intensa.io/L0001//script.js' -> '/var/www/intensa.io/L0001/script.js'
+    index.html con cache-bust v=20260518-120003
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/18 12:00:03 [warn] 1132936#1132936: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+intensa.io/L0001/ HTTPS 200
+
+═══ DONE ═══
+
+═══ smoke público (DNS) ═══
+https://intensa.io/L0001/ → 200  (16124 bytes)
+https://intensa.io/L0001/styles.css → 200
+https://intensa.io/L0001/script.js  → 200
+
+Primeros 30 lines del index sirvido:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Maria — Tu secretaria personal con IA, 24/7 por WhatsApp</title>
+<meta name="description" data-i18n="meta.desc" content="Maria agenda reuniones, coordina con terceros, gestiona pendientes y responde por WhatsApp y email. Sin app que instalar, sin curva de aprendizaje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=20260518-120003">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-mark">M</span>
+      <span>maria</span>
+    </div>
+    <div class="nav-links">
+      <a href="#que-hace" data-i18n="nav.que">Qué hace</a>
+      <a href="#casos" data-i18n="nav.casos">Para quién</a>
+      <a href="#planes" data-i18n="nav.planes">Planes</a>
+      <a href="#suscribirme" class="nav-cta" data-i18n="nav.cta">Suscribirme</a>
+      <div class="lang-toggle" id="langToggle" role="group" aria-label="Switch language">
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+
+# exit=0
