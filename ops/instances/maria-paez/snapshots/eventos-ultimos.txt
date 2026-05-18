@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5165  2026-05-18 13:06:14  sistema   interno                         claude_call whatsapp: 8930ms prompt=67389c raw=290c                                                                                                                                                     
+
+5164  2026-05-18 13:06:04  whatsapp  entrante   121328598274271@lid  Perfecto quedo a la espera muchas gracias                                                                                                                                                               
+
+5163  2026-05-18 13:06:04  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno Castro es el vendedor de Volkswagen Espasa que contactó a Diego por la Taos Highline; Maria gestionó toda la conversación (fo
+
+5162  2026-05-18 13:06:04  sistema   interno                         claude_call unknown-flow: 10293ms prompt=52027c raw=332c                                                                                                                                                
+
 5161  2026-05-18 13:05:16  whatsapp  saliente   121328598274271@lid  ¡Perfecto, Sergio! Se lo consulto a Diego y te confirmo cuándo puede pasar.                                                                                                                             
 
 5160  2026-05-18 13:05:16  whatsapp  saliente   34342575317160@lid   Sergio te invita a pasar por el salón a ver la Taos Highline Bi Tono. Están en Paseo Colón 494, Puerto Madero, de 9 a 19hs, y preguntás por él. ¿Querés ir? ¿Cuándo te viene bien?                      
@@ -205,11 +213,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5067  2026-05-18 12:26:06  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 5066  2026-05-18 12:26:06  whatsapp  saliente   121328598274271@lid  Buen día Sergio! Gracias por comunicarte. Diego está interesado en la *Taos Highline Bi Tono* — precio, disponibilidad de colores, financiación y tiempos de entrega. Además, tiene un *Subaru Legacy 2.
-
-5065  2026-05-18 12:26:06  sistema   interno                         claude_call whatsapp: 27649ms prompt=65963c raw=851c                                                                                                                                                    
-
-5064  2026-05-18 12:25:51  whatsapp  saliente   5491132317896@c.us   Sí, me escribió Estefanía de Subaru/Suzuki Don Torcuato (Inchcape) y me pasó el número de un asesor de ventas — pero me aclaró que el contacto tiene que ser por *llamada telefónica*, no por WhatsApp, 
-
-5063  2026-05-18 12:25:51  sistema   interno                         claude_call whatsapp: 41157ms prompt=65215c raw=714c                                                                                                                                                    
-
-5062  2026-05-18 12:25:38  whatsapp  entrante   121328598274271@lid  Buen día mi nombre es Sergio Moreno me comunico de Volkswagen Espasa por la consulta que nos dejo por la Taos Highline, en qué puedo asesorarte?                                                        
