@@ -1,5 +1,14 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5197  2026-05-18 14:55:55  sistema   interno                         claude_call whatsapp: 39757ms prompt=68338c raw=424c                                                                                                                                                    
+
+5196  2026-05-18 14:55:15  whatsapp  entrante   232185965629610@lid  Nos dejaste una consulta a nombre de Diego Paez                                                                                                                                                         
+                                                                     (adjuntó image/jpeg, 27 KB)                                                                                                                                                                             
+
+5195  2026-05-18 14:55:15  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ezequiel de Honda Briones responde una consulta dejada a nombre de Diego Páez por la HR-V EXL; Diego avisó a las 14:27 que 'un asesor te es
+
+5194  2026-05-18 14:55:15  sistema   interno                         claude_call unknown-flow: 23936ms prompt=51416c raw=363c                                                                                                                                                
+
 5193  2026-05-18 14:54:24  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 5192  2026-05-18 14:54:24  whatsapp  saliente   232185965629610@lid  Perfecto, Ezequiel — quedamos esperando la cotización del Subaru y los datos del HR-V EXL. ¡Gracias!                                                                                                    
@@ -217,11 +226,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5099  2026-05-18 12:28:59  sistema   interno                         claude_call whatsapp: 19343ms prompt=66850c raw=356c                                                                                                                                                    
 
 5098  2026-05-18 12:28:40  whatsapp  entrante   121328598274271@lid  Decime cuantos km tiene                                                                                                                                                                                 
-
-5097  2026-05-18 12:28:40  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno Castro es el vendedor de VW Espasa que contactó a María sobre la consulta de Diego por la Taos Highline; la gestión (tasación
-
-5096  2026-05-18 12:28:40  sistema   interno                         claude_call unknown-flow: 34873ms prompt=50640c raw=443c                                                                                                                                                
-
-5095  2026-05-18 12:27:55  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
-
-5094  2026-05-18 12:27:55  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB09A2DFA30BD220B1C99 → 121328598274271@lid)                                                                                                                      
