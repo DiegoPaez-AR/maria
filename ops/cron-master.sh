@@ -93,6 +93,10 @@ for inst in "${INSTANCES[@]}"; do
   mkdir -p "$INBOX" "$OUTBOX" "$SNAPS"
 
   # 2a) Ejecutar inbox de esta instancia
+  # Cargar env del .conf en el shell ACTUAL (subshell) para que los scripts
+  # ad-hoc del inbox tengan MARIA_DB, MARIA_VAULT_KEY, GOOGLE_TOKEN_PATH,
+  # ASISTENTE_SLUG, etc. Sin esto, scripts que hagan `node -e "require('./memory')"`
+  # leen la DB legacy en /root/secretaria/db/ en vez de state/<slug>/db/.
   for cmd_file in "$INBOX"/*.sh; do
     [ -f "$cmd_file" ] || continue
     name=$(basename "$cmd_file" .sh)
@@ -106,7 +110,14 @@ for inst in "${INSTANCES[@]}"; do
       sed 's/^/#   /' "$cmd_file"
       echo ""
       echo "# ───── output ─────"
-      bash "$cmd_file" 2>&1
+      (
+        if [ "$cf" != "LEGACY" ] && [ -f "$cf" ]; then
+          set -a
+          . "$cf"
+          set +a
+        fi
+        bash "$cmd_file" 2>&1
+      )
       echo ""
       echo "# exit=$?"
     } > "$out"
