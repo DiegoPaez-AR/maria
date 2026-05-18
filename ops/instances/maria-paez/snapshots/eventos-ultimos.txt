@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5381  2026-05-18 20:38:01  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+5380  2026-05-18 20:38:01  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+5379  2026-05-18 20:38:01  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5378  2026-05-18 20:38:01  whatsapp  saliente   5491154025172@c.us   Hola Pablo, la reunión sería en las oficinas de Edenor en Belgrano. Lo de si es el Poguetti de Noro te lo confirmo en un momento.                                                                       
+
+5377  2026-05-18 20:38:01  whatsapp  saliente   34342575317160@lid   Le mando a Pablo el lugar (Edenor, Belgrano). ¿Poguetti es el de Noro?                                                                                                                                  
+
+5376  2026-05-18 20:38:01  sistema   interno                         claude_call whatsapp: 39854ms prompt=66178c raw=943c                                                                                                                                                    
+
+5375  2026-05-18 20:37:21  whatsapp  entrante   5491132317896@c.us   supongo que en la oficinas de Edenor, Belgrano                                                                                                                                                          
+
 5374  2026-05-18 20:36:33  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 5373  2026-05-18 20:36:33  whatsapp  saliente   175419449995277@lid  Lo consulto con Diego y te confirmo enseguida.                                                                                                                                                          
@@ -196,21 +210,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5283  2026-05-18 17:57:01  whatsapp  saliente   34342575317160@lid   Ariel de Espasa insiste en saber si querés avanzar con la Taos Highline Bi Tono o no. También me aclara que *tienen stock* de la Taos Bitono disponible, y que cuando decidas avanzar te explican los re
 
 5282  2026-05-18 17:57:01  sistema   interno                         claude_call whatsapp: 24157ms prompt=69866c raw=749c                                                                                                                                                    
-
-5281  2026-05-18 17:56:36  whatsapp  entrante   167933254885560@lid  Dale María, te pido más allá de por sí o por no si está de acuerdo y quiero avanzar,                                                                                                                    
-                                                                      que me digas no, no no va a avanzar o si le sirve o no, o la duda que tengan en cuanto a la disponibilidad                                                                                             
-                                                                      de lo                                                                                                                                                                                                  
-
-5280  2026-05-18 17:56:36  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es asesor comercial de VW Espasa; el historial Diego↔Maria confirma que Maria lleva en su nombre la negociación de compra de 
-
-5279  2026-05-18 17:56:36  sistema   interno                         claude_call unknown-flow: 19142ms prompt=57688c raw=415c                                                                                                                                                
-
-5278  2026-05-18 17:52:28  whatsapp  saliente   167933254885560@lid  Perfecto Ariel, estoy esperando que Diego me confirme. En cuanto tenga respuesta te aviso.                                                                                                              
-
-5277  2026-05-18 17:52:28  sistema   interno                         claude_call whatsapp: 21184ms prompt=68699c raw=391c                                                                                                                                                    
-
-5276  2026-05-18 17:52:06  whatsapp  entrante   167933254885560@lid  María, después que hablas conmigo, avísame si le interesa la propuesta y cualquier cosa                                                                                                                 
-                                                                      hablamos tele frincamente, o habló con vos, o conmigo con vos que era para quitarle cualquier                                                                                                          
-                                                                      dudal en cuanto                                                                                                                                                                                        
-
-5275  2026-05-18 17:52:06  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de VW Espasa con quien Maria lleva la gestión de compra de la Taos Highline Bi Tono a pedido de Diego 
