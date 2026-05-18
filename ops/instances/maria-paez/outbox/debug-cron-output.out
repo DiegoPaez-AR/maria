@@ -1,0 +1,81 @@
+# ejecutado: 2026-05-17T22:43:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "STARTING SCRIPT"
+#   echo "═══ PWD: $(pwd) ═══"
+#   echo "═══ env vars relevantes ═══"
+#   echo "MARIA_DB=$MARIA_DB"
+#   echo "ASISTENTE_SLUG=$ASISTENTE_SLUG"
+#   echo ""
+#   echo "═══ files en /var/www/intensa.io ═══"
+#   ls -la /var/www/intensa.io/ 2>&1
+#   echo ""
+#   echo "═══ HTML head + nav (primeras 30 lineas) ═══"
+#   head -30 /var/www/intensa.io/index.html
+#   echo ""
+#   echo "═══ ¿precios? ═══"
+#   grep -c "precios\|PRICING\|pricing-grid" /var/www/intensa.io/index.html
+#   echo ""
+#   echo "═══ ¿toggle? ═══"
+#   grep -c "lang-toggle" /var/www/intensa.io/index.html
+#   echo ""
+#   echo "ENDING SCRIPT"
+
+# ───── output ─────
+STARTING SCRIPT
+═══ PWD: /root/secretaria ═══
+═══ env vars relevantes ═══
+MARIA_DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+ASISTENTE_SLUG=maria-paez
+
+═══ files en /var/www/intensa.io ═══
+total 56
+drwxr-xr-x 2 www-data www-data  4096 May 17 18:56 .
+drwxr-xr-x 5 root     root      4096 May 17 18:56 ..
+-rw-r--r-- 1 www-data www-data 14484 May 17 22:38 index.html
+-rw-r--r-- 1 www-data www-data 16139 May 17 22:38 script.js
+-rw-r--r-- 1 www-data www-data 15840 May 17 22:38 styles.css
+
+═══ HTML head + nav (primeras 30 lineas) ═══
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Intensa — Agentes de IA para automatización empresarial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark"></span> intensa</div>
+    <div class="nav-links">
+      <a href="#producto" data-i18n="nav.producto">Producto</a>
+      <a href="#flujo" data-i18n="nav.flujo">Cómo funciona</a>
+      <a href="#casos" data-i18n="nav.casos">Casos</a>
+      <a href="#contacto" class="nav-cta" data-i18n="nav.cta">Hablar con ventas</a>
+      <button class="lang-toggle" id="langToggle" aria-label="Switch language" title="Switch language">
+        <span class="lang-flag" data-flag="es">🇪🇸</span>
+        <span class="lang-flag" data-flag="en">🇬🇧</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+
+═══ ¿precios? ═══
+0
+
+═══ ¿toggle? ═══
+1
+
+ENDING SCRIPT
+
+# exit=0
