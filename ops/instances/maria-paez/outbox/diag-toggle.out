@@ -1,0 +1,72 @@
+# ejecutado: 2026-05-17T22:58:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "═══ ¿el index.html servido tiene data-i18n? ═══"
+#   grep -c "data-i18n" /var/www/intensa.io/index.html
+#   
+#   echo ""
+#   echo "═══ ¿script.js tiene translations + applyTranslations? ═══"
+#   grep -c "translations\|applyTranslations" /var/www/intensa.io/script.js
+#   
+#   echo ""
+#   echo "═══ Primeras 5 lineas del toggle button en HTML ═══"
+#   grep -A 4 "langToggle" /var/www/intensa.io/index.html
+#   
+#   echo ""
+#   echo "═══ Lineas 1-15 del script.js (header + translations) ═══"
+#   head -15 /var/www/intensa.io/script.js
+#   
+#   echo ""
+#   echo "═══ ¿hay errores en sintaxis del script.js? ═══"
+#   node -c /var/www/intensa.io/script.js 2>&1 && echo "sintaxis OK" || echo "sintaxis FALLÓ"
+#   
+#   echo ""
+#   echo "═══ Lineas del DOMContentLoaded ═══"
+#   grep -A 2 "DOMContentLoaded\|langToggle" /var/www/intensa.io/script.js | head -20
+
+# ───── output ─────
+═══ ¿el index.html servido tiene data-i18n? ═══
+100
+
+═══ ¿script.js tiene translations + applyTranslations? ═══
+5
+
+═══ Primeras 5 lineas del toggle button en HTML ═══
+      <button class="lang-toggle" id="langToggle" aria-label="Switch language" title="Switch language">
+        <span class="lang-flag" data-flag="es">🇪🇸</span>
+        <span class="lang-flag" data-flag="en">🇬🇧</span>
+      </button>
+    </div>
+
+═══ Lineas 1-15 del script.js (header + translations) ═══
+// ─── i18n ────────────────────────────────────────────────────────────────
+const translations = {
+  es: {
+    'title': 'Intensa — Agentes de IA para automatización empresarial',
+    'nav.producto': 'Producto',
+    'nav.flujo': 'Cómo funciona',
+    'nav.casos': 'Casos',
+    'nav.cta': 'Hablar con ventas',
+    'hero.eyebrow': 'v2.4 · agentes autónomos en producción',
+    'hero.h1': 'Agentes de IA que <em>ejecutan trabajo real</em> dentro de tu empresa.',
+    'hero.sub': 'Intensa despliega agentes autónomos que se conectan a tus sistemas, razonan sobre tus procesos y completan tareas de principio a fin. Sin chatbots. Sin RPA frágil.',
+    'hero.demo': 'Solicitar demo',
+    'hero.ver': 'Ver producto',
+    'term.l1': '→ conectando a SAP · 1,284 facturas detectadas',
+    'term.l2': '→ <span class="term-tag">[razonando]</span> conciliando contra órdenes de compra',
+
+═══ ¿hay errores en sintaxis del script.js? ═══
+sintaxis OK
+
+═══ Lineas del DOMContentLoaded ═══
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations(currentLang);
+
+--
+  const toggle = document.getElementById('langToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+
+# exit=0
