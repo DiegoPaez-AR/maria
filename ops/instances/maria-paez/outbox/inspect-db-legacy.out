@@ -1,0 +1,68 @@
+# ejecutado: 2026-05-17T21:11:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   LEGACY="/root/secretaria/db/maria.sqlite"
+#   
+#   echo "═══ Existe la DB legacy? ═══"
+#   ls -la "$LEGACY" 2>&1
+#   
+#   echo ""
+#   echo "═══ ¿Está open por algún proceso? ═══"
+#   lsof "$LEGACY" 2>&1 | head -10
+#   
+#   echo ""
+#   echo "═══ Tablas y últimos cambios ═══"
+#   sqlite3 "$LEGACY" ".tables" 2>&1
+#   echo ""
+#   sqlite3 -header -column "$LEGACY" "SELECT 'usuarios:' || COUNT(*) FROM usuarios UNION ALL SELECT 'eventos:' || COUNT(*) FROM eventos UNION ALL SELECT 'contactos:' || COUNT(*) FROM contactos UNION ALL SELECT 'estado_usuario:' || COUNT(*) FROM estado_usuario;" 2>&1
+#   
+#   echo ""
+#   echo "═══ Último evento (timestamp) ═══"
+#   sqlite3 "$LEGACY" "SELECT MAX(timestamp) FROM eventos;" 2>&1
+#   echo ""
+#   sqlite3 -header -column "$LEGACY" "SELECT datetime(timestamp), canal, substr(cuerpo,1,80) FROM eventos ORDER BY timestamp DESC LIMIT 5;" 2>&1
+#   
+#   echo ""
+#   echo "═══ Usuarios en la legacy ═══"
+#   sqlite3 -header -column "$LEGACY" "SELECT id, nombre, wa_cus, activo FROM usuarios;" 2>&1
+#   
+#   echo ""
+#   echo "═══ ¿Hay diferencia con state/_old? ═══"
+#   ls -la /root/secretaria/state/_old/ 2>&1 | head -10
+
+# ───── output ─────
+═══ Existe la DB legacy? ═══
+-rw-r--r--+ 1 root root 167936 May 17 19:58 /root/secretaria/db/maria.sqlite
+
+═══ ¿Está open por algún proceso? ═══
+
+═══ Tablas y últimos cambios ═══
+contactos       estado_usuario  follow_ups      notas_contacto  programados   
+estado          eventos         hechos          pendientes      usuarios      
+
+'usuarios:' || COUNT(*)
+-----------------------
+usuarios:1             
+eventos:0              
+contactos:0            
+estado_usuario:0       
+
+═══ Último evento (timestamp) ═══
+
+
+
+═══ Usuarios en la legacy ═══
+id  nombre  wa_cus             activo
+--  ------  -----------------  ------
+1   Diego   541132317896@c.us  1     
+
+═══ ¿Hay diferencia con state/_old? ═══
+total 12
+drwxr-xr-x+ 3 root root 4096 May 15 09:07 .
+drwxr-xr-x+ 4 root root 4096 May 15 09:07 ..
+drwxr-xr-x+ 5 root root 4096 May 15 09:07 20260515-090701
+
+# exit=0
