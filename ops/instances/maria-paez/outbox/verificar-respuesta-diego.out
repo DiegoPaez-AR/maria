@@ -1,0 +1,68 @@
+# ejecutado: 2026-05-18T09:42:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Últimos 12 eventos WA (entrante/saliente) últimos 10 min ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT datetime(timestamp), direccion, substr(de,1,28) AS de, substr(cuerpo,1,140) AS msg
+#   FROM eventos WHERE canal='whatsapp' AND timestamp >= datetime('now','-10 minutes')
+#   ORDER BY timestamp DESC LIMIT 12;
+#   "
+#   
+#   echo ""
+#   echo "═══ pm2 logs últimas 25 lineas ═══"
+#   pm2 logs maria-paez --lines 30 --nostream 2>&1 | tail -22
+#   
+#   echo ""
+#   echo "═══ Estado claude_call más reciente ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT datetime(timestamp), substr(cuerpo, 1, 200)
+#   FROM eventos WHERE canal='sistema' AND cuerpo LIKE 'claude_call%'
+#     AND timestamp >= datetime('now','-15 minutes')
+#   ORDER BY timestamp DESC LIMIT 5;
+#   "
+
+# ───── output ─────
+═══ Últimos 12 eventos WA (entrante/saliente) últimos 10 min ═══
+datetime(timestamp)  direccion  de                  msg             
+-------------------  ---------  ------------------  ----------------
+2026-05-18 12:40:41  entrante   5491132317896@c.us  les respondiste?
+
+═══ pm2 logs últimas 25 lineas ═══
+0|maria-pa | 2026-05-18 09:39:04: ✓ whisper OK
+0|maria-pa | 2026-05-18 09:39:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-18 09:39:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-18 09:39:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-18 09:39:08: [WA authenticated]
+0|maria-pa | 2026-05-18 09:39:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-18 09:39:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-18 09:39:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-18 09:39:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-18 09:39:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-18 09:39:09: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-18 09:39:09: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-18 09:39:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-18 09:40:41: [WA ←] Diego (5491132317896@c.us): les respondiste?
+
+
+═══ Estado claude_call más reciente ═══
+datetime(timestamp)  substr(cuerpo, 1, 200)                                                                                                                       
+-------------------  ---------------------------------------------------------------------------------------------------------------------------------------------
+2026-05-18 12:33:19  claude_call whatsapp: 103668ms prompt=65888c raw=1094c ERROR=Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c,
+2026-05-18 12:31:25  claude_call whatsapp: 34055ms prompt=66160c raw=391c                                                                                         
+2026-05-18 12:30:39  claude_call whatsapp: 8691ms prompt=66912c raw=283c                                                                                          
+2026-05-18 12:30:30  claude_call unknown-flow: 18542ms prompt=50740c raw=459c                                                                                     
+2026-05-18 12:29:52  claude_call whatsapp: 19820ms prompt=67108c raw=440c                                                                                         
+
+# exit=0
