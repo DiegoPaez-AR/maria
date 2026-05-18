@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5295  2026-05-18 19:07:43  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+5294  2026-05-18 19:07:43  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5293  2026-05-18 19:07:43  whatsapp  saliente   167933254885560@lid  Ariel, buenas tardes. Diego me confirma que no va a avanzar con la Taos. Muchas gracias por toda la atención y la información que nos diste.                                                            
+
+5292  2026-05-18 19:07:43  whatsapp  saliente   5491132317896@c.us   Listo, le aviso a Ariel.                                                                                                                                                                                
+
+5291  2026-05-18 19:07:43  sistema   interno                         claude_call whatsapp: 47618ms prompt=68623c raw=580c                                                                                                                                                    
+
 5290  2026-05-18 19:06:55  whatsapp  entrante   5491132317896@c.us   Decile que no me interesa, que muchas gracias                                                                                                                                                           
 
 5289  2026-05-18 18:41:55  sistema   interno                         claude_call whatsapp: 10085ms prompt=69081c raw=343c                                                                                                                                                    
@@ -217,13 +227,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 5196  2026-05-18 14:55:15  whatsapp  entrante   232185965629610@lid  Nos dejaste una consulta a nombre de Diego Paez                                                                                                                                                         
                                                                      (adjuntó image/jpeg, 27 KB)                                                                                                                                                                             
-
-5195  2026-05-18 14:55:15  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ezequiel de Honda Briones responde una consulta dejada a nombre de Diego Páez por la HR-V EXL; Diego avisó a las 14:27 que 'un asesor te es
-
-5194  2026-05-18 14:55:15  sistema   interno                         claude_call unknown-flow: 23936ms prompt=51416c raw=363c                                                                                                                                                
-
-5193  2026-05-18 14:54:24  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-5192  2026-05-18 14:54:24  whatsapp  saliente   232185965629610@lid  Perfecto, Ezequiel — quedamos esperando la cotización del Subaru y los datos del HR-V EXL. ¡Gracias!                                                                                                    
-
-5191  2026-05-18 14:54:24  sistema   interno                         claude_call whatsapp: 24997ms prompt=67954c raw=641c                                                                                                                                                    
