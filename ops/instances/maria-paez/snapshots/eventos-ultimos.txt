@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5369  2026-05-18 20:35:56  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+5368  2026-05-18 20:35:56  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+5367  2026-05-18 20:35:56  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+5366  2026-05-18 20:35:56  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5365  2026-05-18 20:35:56  whatsapp  saliente   5491161673400@c.us   Hola Analia, para la otra parte el horario disponible es el viernes 22/05 a las 11:30 hs. ¿Le queda bien a Diego Poguetti?                                                                              
+
+5364  2026-05-18 20:35:56  sistema   interno                         claude_call whatsapp: 57659ms prompt=66654c raw=1128c                                                                                                                                                   
+
 5363  2026-05-18 20:34:58  whatsapp  entrante   175419449995277@lid  Viernes 22 11:30 hs                                                                                                                                                                                     
 
 5362  2026-05-18 20:30:22  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -200,17 +212,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5271  2026-05-18 17:50:06  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es asesor de VW Espasa; toda la negociación de la Taos Highline Bi Tono y tasación del Subaru Legacy es una gestión que Diego
 
 5270  2026-05-18 17:50:06  sistema   interno                         claude_call unknown-flow: 18739ms prompt=56547c raw=372c                                                                                                                                                
-
-5269  2026-05-18 17:49:20  whatsapp  saliente   167933254885560@lid  Perfecto Ariel, gracias por la aclaración. Lo consulto con Diego y te confirmo.                                                                                                                         
-
-5268  2026-05-18 17:49:20  whatsapp  saliente   34342575317160@lid   Ariel de Espasa me aclaró la cotización que te mandó: la diferencia de *$40.000.000* ya tiene todo incluido — flete, formularios y el patentamiento hecho por Espasa. Si preferís hacer el patentamiento
-
-5267  2026-05-18 17:49:20  sistema   interno                         claude_call whatsapp: 34535ms prompt=68734c raw=765c                                                                                                                                                    
-
-5266  2026-05-18 17:48:45  whatsapp  entrante   167933254885560@lid  María mira yo te mandé la cotización ya todo incluido con el patentamiento                                                                                                                              
-                                                                      realizado por espasa que no es obligatorio, a veces lo puedo hacer el cliente,                                                                                                                         
-                                                                      el valor de toma del vehículo y la diferenci                                                                                                                                                           
-
-5265  2026-05-18 17:48:45  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es asesor comercial de VW Espasa; el historial Diego↔Maria muestra que Diego está gestionando la compra de una Taos Highline 
-
-5264  2026-05-18 17:48:45  sistema   interno                         claude_call unknown-flow: 20227ms prompt=56475c raw=469c                                                                                                                                                
