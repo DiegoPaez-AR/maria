@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5243  2026-05-18 16:00:45  whatsapp  saliente   232185965629610@lid  Perfecto Ezequiel, se lo consulto a Diego y te confirmo.                                                                                                                                                
+
+5242  2026-05-18 16:00:45  whatsapp  saliente   34342575317160@lid   Ezequiel de Honda Briones me pasó la cotización del Legacy: la diferencia que tenés que pagar para llevarte el HR-V EXL es de *$30.000.000*. ¿Qué le contesto?                                          
+
+5241  2026-05-18 16:00:45  sistema   interno                         claude_call whatsapp: 21791ms prompt=67529c raw=469c                                                                                                                                                    
+
+5240  2026-05-18 16:00:23  whatsapp  entrante   232185965629610@lid  Maria, ahi me cotizaron el SUBARU te quedaria una difernecia de $30.000.000                                                                                                                             
+
+5239  2026-05-18 16:00:23  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ezequiel es vendedor de Honda Briones, concesionaria que Diego pidió a Maria contactar; responde con la cotización del Subaru Legacy como p
+
+5238  2026-05-18 16:00:23  sistema   interno                         claude_call unknown-flow: 21085ms prompt=53546c raw=325c                                                                                                                                                
+
 5237  2026-05-18 15:59:52  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 5236  2026-05-18 15:59:52  sistema   interno                         claude_call whatsapp: 38105ms prompt=68446c raw=1032c                                                                                                                                                   
@@ -216,21 +228,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5145  2026-05-18 13:03:08  whatsapp  entrante   121328598274271@lid  Diferencia por la Taos Highline Bitono $36.000.000 incluye flete y formularios tenemos entrega inmediata                                                                                                
 
 5144  2026-05-18 13:03:08  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno Castro es el vendedor de Volkswagen Espasa que contactó a Maria a raíz de una consulta que Diego (id=1) dejó sobre la Taos Hi
-
-5143  2026-05-18 13:03:08  sistema   interno                         claude_call unknown-flow: 17563ms prompt=51330c raw=384c                                                                                                                                                
-
-5142  2026-05-18 12:50:10  whatsapp  saliente   105171031949561@lid  ☀️ *Buen día, Doris Capurro.* lunes 18 de mayo.                                                                                                                                                         
-                                                                                                                                                                                                                                                                             
-                                                                     *📅 Agenda del día*                                                                                                                                                                                      
-                                                                     • todo el día — hugo romero                                                                                                                                                                             
-                                                                     • 12:00 a. m. — Romi - Vacaciones                                                                                                                                                                       
-                                                                     • 09:00 a. m. — natacion                                                                                                                                                                                
-                                                                     • 11:00 a. m. — servilletitas, servilletas pl                                                                                                                                                           
-
-5141  2026-05-18 12:45:44  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-5140  2026-05-18 12:45:44  whatsapp  saliente   5491134274828@c.us   Anotado, no te mando más la agenda.                                                                                                                                                                     
-
-5139  2026-05-18 12:45:44  sistema   interno                         claude_call whatsapp: 9475ms prompt=35480c raw=471c                                                                                                                                                     
-
-5138  2026-05-18 12:45:34  whatsapp  entrante   5491134274828@c.us   no me informs más la agenda                                                                                                                                                                             
