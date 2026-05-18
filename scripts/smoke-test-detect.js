@@ -30,10 +30,10 @@ const casos = [
   { email: 'user@messagingengine.com',  esperado: { kind: 'caldav', subKind: 'fastmail' } },
 
   // Microsoft (bloqueado)
-  { email: 'user@outlook.com',          esperado: { kind: 'microsoft', bloqueado: true } },
-  { email: 'user@hotmail.com',          esperado: { kind: 'microsoft', bloqueado: true } },
-  { email: 'user@live.com',             esperado: { kind: 'microsoft', bloqueado: true } },
-  { email: 'user@msn.com',              esperado: { kind: 'microsoft', bloqueado: true } },
+  { email: 'user@outlook.com',          esperado: { kind: 'microsoft' } },
+  { email: 'user@hotmail.com',          esperado: { kind: 'microsoft' } },
+  { email: 'user@live.com',             esperado: { kind: 'microsoft' } },
+  { email: 'user@msn.com',              esperado: { kind: 'microsoft' } },
 
   // Desconocido (custom)
   { email: 'user@miempresa.com.ar',     esperado: null },

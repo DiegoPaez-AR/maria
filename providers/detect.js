@@ -22,8 +22,8 @@ const CALDAV_SERVERS = {
 const RULES = [
   // Google
   { kind: 'google',    test: d => /^(gmail|googlemail)\.com$/i.test(d) },
-  // Microsoft (sigue bloqueado, Fase 2)
-  { kind: 'microsoft', bloqueado: true,
+  // Microsoft Graph (activo desde Fase 2)
+  { kind: 'microsoft',
     test: d => /^(outlook\.[a-z.]+|hotmail\.[a-z.]+|live\.[a-z.]+|msn\.com|office365\.com)$/i.test(d) },
   // CalDAV — iCloud
   { kind: 'caldav', subKind: 'icloud', server_url: CALDAV_SERVERS.icloud,
