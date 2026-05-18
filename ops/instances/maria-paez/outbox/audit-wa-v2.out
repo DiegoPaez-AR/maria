@@ -1,0 +1,105 @@
+# ejecutado: 2026-05-17T21:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="/root/secretaria/state/maria-paez/db/maria.sqlite"
+#   
+#   echo "═══ Verificación SQL: cada wa_cus matchea exactamente UN user activo ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT
+#     u.id, u.nombre, u.wa_cus,
+#     (SELECT COUNT(*) FROM usuarios WHERE wa_cus = u.wa_cus AND activo = 1) AS matches
+#   FROM usuarios u
+#   WHERE u.activo = 1 AND u.wa_cus IS NOT NULL
+#   ORDER BY u.id;
+#   "
+#   
+#   echo ""
+#   echo "═══ Verificación SQL: cada wa_lid matchea exactamente UN user activo ═══"
+#   sqlite3 -header -column "$DB" "
+#   SELECT
+#     u.id, u.nombre, u.wa_lid,
+#     (SELECT COUNT(*) FROM usuarios WHERE wa_lid = u.wa_lid AND activo = 1) AS matches
+#   FROM usuarios u
+#   WHERE u.activo = 1 AND u.wa_lid IS NOT NULL
+#   ORDER BY u.id;
+#   "
+#   
+#   echo ""
+#   echo "═══ Test runtime: resolverPorWa para cada usuario (one-shot) ═══"
+#   cd /root/secretaria && node -e "
+#   process.on('uncaughtException', e => { console.error('UNCAUGHT:', e.message); process.exit(1); });
+#   const usuarios = require('./usuarios');
+#   const list = usuarios.listarActivos();
+#   console.log('total activos:', list.length);
+#   let ok=0, fail=0;
+#   for (const u of list) {
+#     try {
+#       if (u.wa_cus) {
+#         const r = usuarios.resolverPorWa(u.wa_cus);
+#         if (r && r.id === u.id) ok++; else { fail++; console.log('FAIL wa_cus', u.id, u.nombre, '→', r && r.id); }
+#       }
+#       if (u.wa_lid) {
+#         const r = usuarios.resolverPorWa(u.wa_lid);
+#         if (r && r.id === u.id) ok++; else { fail++; console.log('FAIL wa_lid', u.id, u.nombre, '→', r && r.id); }
+#       }
+#     } catch (e) { fail++; console.log('THROW', u.id, u.nombre, e.message); }
+#   }
+#   console.log('resueltos OK:', ok, 'fallaron:', fail);
+#   " 2>&1
+#   
+#   echo ""
+#   echo "═══ Test fallback 9-móvil: usuarios AR resuelven con/sin 9 ═══"
+#   cd /root/secretaria && node -e "
+#   const u = require('./usuarios');
+#   const tests = [
+#     // user 1 Diego: en DB sin 9, probar con 9 y sin
+#     '541132317896@c.us', '5491132317896@c.us',
+#     // user 6 Doris: en DB con 9, probar sin
+#     '5491144471264@c.us', '541144471264@c.us',
+#   ];
+#   for (const t of tests) {
+#     const r = u.resolverPorWa(t);
+#     console.log(t.padEnd(28), '→', r ? r.id + ' (' + r.nombre + ')' : 'null');
+#   }
+#   " 2>&1
+
+# ───── output ─────
+═══ Verificación SQL: cada wa_cus matchea exactamente UN user activo ═══
+id  nombre               wa_cus              matches
+--  -------------------  ------------------  -------
+1   Diego                541132317896@c.us   1      
+2   Hernan Fulco         5491126829596@c.us  1      
+3   Natali Funez         5491150105262@c.us  1      
+4   Fernando Boero       5491166903856@c.us  1      
+5   Santiago Bignone     5491134274828@c.us  1      
+6   Doris Capurro        5491144471264@c.us  1      
+7   Nicolas Kosinski     5491150080522@c.us  1      
+8   Walter Vera          5491138433288@c.us  1      
+9   Cristian Ruiz        5491126406612@c.us  1      
+10  Sebastian Ameijeira  5491163004389@c.us  1      
+11  Rubén Ward           5491154024727@c.us  1      
+12  Enrique Sosa         59899643028@c.us    1      
+
+═══ Verificación SQL: cada wa_lid matchea exactamente UN user activo ═══
+id  nombre            wa_lid               matches
+--  ----------------  -------------------  -------
+1   Diego             34342575317160@lid   1      
+2   Hernan Fulco      137456250806423@lid  1      
+3   Natali Funez      232637088149596@lid  1      
+6   Doris Capurro     105171031949561@lid  1      
+7   Nicolas Kosinski  227143674011812@lid  1      
+
+═══ Test runtime: resolverPorWa para cada usuario (one-shot) ═══
+total activos: 1
+resueltos OK: 1 fallaron: 0
+
+═══ Test fallback 9-móvil: usuarios AR resuelven con/sin 9 ═══
+541132317896@c.us            → 1 (Diego)
+5491132317896@c.us           → 1 (Diego)
+5491144471264@c.us           → null
+541144471264@c.us            → null
+
+# exit=0
