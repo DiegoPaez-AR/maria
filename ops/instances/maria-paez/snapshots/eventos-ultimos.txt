@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5099  2026-05-18 12:28:59  sistema   interno                         claude_call whatsapp: 19343ms prompt=66850c raw=356c                                                                                                                                                    
+
+5098  2026-05-18 12:28:40  whatsapp  entrante   121328598274271@lid  Decime cuantos km tiene                                                                                                                                                                                 
+
+5097  2026-05-18 12:28:40  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno Castro es el vendedor de VW Espasa que contactó a María sobre la consulta de Diego por la Taos Highline; la gestión (tasación
+
+5096  2026-05-18 12:28:40  sistema   interno                         claude_call unknown-flow: 34873ms prompt=50640c raw=443c                                                                                                                                                
+
 5095  2026-05-18 12:27:55  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
 
 5094  2026-05-18 12:27:55  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB09A2DFA30BD220B1C99 → 121328598274271@lid)                                                                                                                      
@@ -247,11 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5001  2026-05-18 01:15:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)                                                                                                       
 
 5000  2026-05-18 01:15:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-4999  2026-05-18 01:13:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)                                                                                                       
-
-4998  2026-05-18 01:13:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-4997  2026-05-18 01:09:11  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)                                                                                                       
-
-4996  2026-05-18 01:09:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
