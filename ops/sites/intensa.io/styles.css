@@ -618,32 +618,32 @@ footer {
 .lang-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  padding: 4px 8px;
-  cursor: pointer;
+  padding: 4px 10px;
   margin-left: 4px;
-  transition: background 0.2s, border-color 0.2s;
 }
-.lang-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
+.lang-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  background: transparent;
+  border: 0;
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: color 0.15s;
 }
-.lang-flag {
-  font-size: 16px;
-  line-height: 1;
-  opacity: 0.35;
-  transition: opacity 0.2s, transform 0.2s;
-  filter: grayscale(40%);
-}
-.lang-flag.active {
-  opacity: 1;
-  filter: none;
-  transform: scale(1.05);
+.lang-btn:hover { color: var(--text); }
+.lang-btn.active { color: var(--text); font-weight: 500; }
+.lang-sep {
+  color: rgba(255, 255, 255, 0.18);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
 }
 @media (max-width: 720px) {
-  .lang-toggle { padding: 3px 6px; gap: 2px; }
-  .lang-flag { font-size: 14px; }
+  .lang-toggle { padding: 3px 8px; gap: 4px; }
+  .lang-btn { font-size: 11px; }
 }

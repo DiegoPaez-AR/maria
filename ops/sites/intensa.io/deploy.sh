@@ -23,7 +23,12 @@ VHOST_LINK="/etc/nginx/sites-enabled/intensa.io.conf"
 
 echo "═══ 1. Crear/actualizar docroot ═══"
 mkdir -p "$DEST"
-cp -v "$SRC/index.html" "$SRC/styles.css" "$SRC/script.js" "$DEST/"
+cp -v "$SRC/styles.css" "$SRC/script.js" "$DEST/"
+# Cache-bust: inyectar timestamp en las refs a styles.css/script.js del index.html
+# para forzar al browser a recargar tras cada deploy.
+STAMP=$(date +%Y%m%d-%H%M%S)
+sed "s|styles\.css|styles.css?v=${STAMP}|g; s|script\.js|script.js?v=${STAMP}|g" "$SRC/index.html" > "$DEST/index.html"
+echo "  index.html con cache-bust v=${STAMP}"
 chown -R www-data:www-data "$DEST"
 chmod -R 644 "$DEST"/*
 find "$DEST" -type d -exec chmod 755 {} +

@@ -244,8 +244,8 @@ function applyTranslations(lang) {
   // Step visual: re-render con textos del idioma actual
   renderStep(currentStep, lang);
   // Update flag visibility
-  document.querySelectorAll('.lang-flag').forEach(f => {
-    f.classList.toggle('active', f.dataset.flag === lang);
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
   });
 }
 
@@ -266,15 +266,16 @@ function renderStep(stepNum, lang) {
 document.addEventListener('DOMContentLoaded', () => {
   applyTranslations(currentLang);
 
-  // Toggle button
-  const toggle = document.getElementById('langToggle');
-  if (toggle) {
-    toggle.addEventListener('click', () => {
-      currentLang = currentLang === 'es' ? 'en' : 'es';
+  // Language buttons: cada uno setea el idioma específico (no flip)
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      if (lang === currentLang) return;
+      currentLang = lang;
       localStorage.setItem('intensa-lang', currentLang);
       applyTranslations(currentLang);
     });
-  }
+  });
 
   // Step interaction
   const steps = document.querySelectorAll('.step');
