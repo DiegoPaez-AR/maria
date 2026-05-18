@@ -500,6 +500,8 @@ async function _despacharGrupo(client, from, items) {
               ...(attachmentPaths.length ? { attachmentPaths } : {}),
             },
             msgOriginal,
+            startTs,
+            from,
           });
         },
       });
@@ -555,6 +557,8 @@ async function _despacharGrupo(client, from, items) {
         ...(attachmentPaths.length ? { attachmentPaths } : {}),
       },
       msgOriginal,
+      startTs,
+      from,
     });
   } finally {
     for (const p of attachmentPaths) { try { fs.unlinkSync(p); } catch {} }
@@ -566,7 +570,7 @@ async function _despacharGrupo(client, from, items) {
  * acciones. Se invoca tanto para mensajes de usuarios conocidos como para
  * mensajes reencaminados desde unknown-flow.
  */
-async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
+async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, startTs = null, from = null }) {
   const prompt = await construirPrompt({
     usuario,
     canal: 'whatsapp',
@@ -612,8 +616,21 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
     !!destinoUsuario && !!entrada.de &&
     (entrada.de === usuario.wa_lid || entrada.de === usuario.wa_cus);
 
+  // Helper: chequea si llegó mensaje nuevo del mismo `from` durante el
+  // procesamiento. Si sí, abortar este envío — el próximo lote (que ya
+  // incluirá los mensajes nuevos) va a generar una respuesta coherente.
+  // Las acciones ya se ejecutaron — son idempotentes por diseño.
+  function _hayMsgNuevoDesdeStart() {
+    if (!startTs || !from) return false;
+    const last = _lastIncoming.get(from);
+    return !!(last && last > startTs);
+  }
+
   // 1) Mandar al usuario atendido (si hay texto y destino).
   if (respUsr.trim() && destinoUsuario) {
+    if (_hayMsgNuevoDesdeStart()) {
+      console.log(`[WA →usr] ABORTADO ${usuario.nombre} (${destinoUsuario}): llegó msg nuevo durante procesamiento — el próximo lote responde`);
+    } else
     try {
       await client.sendMessage(destinoUsuario, respUsr);
       mem.log({
@@ -632,6 +649,9 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
   // 2) Mandar al remitente (si hay texto, hay destino, y NO es el mismo
   //    chat que el usuario — evitamos doble mensaje en flujo normal).
   if (respRem.trim() && destinoRemitente && !remitenteEsUsuario) {
+    if (_hayMsgNuevoDesdeStart()) {
+      console.log(`[WA →3ro] ABORTADO ${entrada.nombre || destinoRemitente}: llegó msg nuevo durante procesamiento`);
+    } else
     try {
       await client.sendMessage(destinoRemitente, respRem);
       mem.log({
@@ -649,6 +669,9 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal }) {
     // Caso edge: flujo normal y el LLM puso el texto en respuesta_a_remitente
     // en vez de respuesta_a_usuario. Para no perder el mensaje, lo mandamos
     // al usuario (que es el remitente).
+    if (_hayMsgNuevoDesdeStart()) {
+      console.log(`[WA →usr/fb] ABORTADO ${usuario.nombre}: llegó msg nuevo durante procesamiento`);
+    } else
     try {
       await client.sendMessage(destinoUsuario, respRem);
       mem.log({
