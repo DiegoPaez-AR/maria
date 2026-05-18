@@ -141,7 +141,11 @@ const DISALLOWED_TOOLS = (process.env.CLAUDE_DISALLOWED_TOOLS ?? 'Bash,Edit,Writ
  * memory.logClaudeCall un evento sistema con tiempo, sizes y error si hubo.
  * Si no se pasa, no loguea (back-compat).
  */
-function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = null } = {}) {
+function invocarClaude(prompt, {
+  timeoutMs = parseInt(process.env.CLAUDE_TIMEOUT_MS, 10) || 480000,        // 8 min global cap
+  idleTimeoutMs = parseInt(process.env.CLAUDE_IDLE_TIMEOUT_MS, 10) || 90000, // 90s sin output → kill
+  extraArgs = [], audit = null,
+} = {}) {
   const _t0 = Date.now();
   return new Promise((resolve, reject) => {
     const args = ['-p'];
@@ -197,13 +201,31 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = nul
     const p = spawn(cmd, finalArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
     let stdout = '', stderr = '';
 
-    const to = setTimeout(() => {
-      p.kill('SIGKILL');
-      reject(new Error(`Timeout ${timeoutMs}ms invocando claude`));
+    // Dos timers: global (cap absoluto) e idle (sin bytes por X). El idle se
+    // resetea en cada chunk recibido — si Claude está streamiando output
+    // progresivamente, no aborta arbitrariamente. Si Claude se cuelga
+    // (no produce nada por idleTimeoutMs), corta rápido sin esperar el global.
+    let killedByTimer = null; // 'global' | 'idle' | null
+    const globalTo = setTimeout(() => {
+      if (killedByTimer) return;
+      killedByTimer = 'global';
+      console.warn(`[claude-client] global timeout ${timeoutMs}ms — SIGKILL`);
+      try { p.kill('SIGKILL'); } catch {}
     }, timeoutMs);
+    let idleTo = null;
+    function _resetIdle() {
+      if (idleTo) clearTimeout(idleTo);
+      idleTo = setTimeout(() => {
+        if (killedByTimer) return;
+        killedByTimer = 'idle';
+        console.warn(`[claude-client] idle timeout ${idleTimeoutMs}ms sin output — SIGKILL (prompt=${prompt.length}c, stdout=${stdout.length}c)`);
+        try { p.kill('SIGKILL'); } catch {}
+      }, idleTimeoutMs);
+    }
+    _resetIdle();
 
-    p.stdout.on('data', d => stdout += d.toString());
-    p.stderr.on('data', d => stderr += d.toString());
+    p.stdout.on('data', d => { stdout += d.toString(); _resetIdle(); });
+    p.stderr.on('data', d => { stderr += d.toString(); _resetIdle(); });
 
     function _audit(error_msg) {
       if (!audit) return;
@@ -222,9 +244,23 @@ function invocarClaude(prompt, { timeoutMs = 180000, extraArgs = [], audit = nul
       }
     }
 
-    p.on('error', err => { clearTimeout(to); _audit(err.message); reject(err); });
+    function _cleanup() {
+      clearTimeout(globalTo);
+      if (idleTo) clearTimeout(idleTo);
+    }
+    p.on('error', err => { _cleanup(); _audit(err.message); reject(err); });
     p.on('close', code => {
-      clearTimeout(to);
+      _cleanup();
+      if (killedByTimer === 'global') {
+        const msg = `Timeout global ${timeoutMs}ms invocando claude (prompt=${prompt.length}c)`;
+        _audit(msg);
+        return reject(new Error(msg));
+      }
+      if (killedByTimer === 'idle') {
+        const msg = `Idle timeout ${idleTimeoutMs}ms invocando claude (sin output por ese tiempo; prompt=${prompt.length}c, stdout=${stdout.length}c)`;
+        _audit(msg);
+        return reject(new Error(msg));
+      }
       if (code !== 0) {
         const msg = `claude exit ${code}: ${stderr.trim().slice(0,200)}`;
         _audit(msg);
