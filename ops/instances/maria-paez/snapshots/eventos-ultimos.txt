@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5313  2026-05-18 19:17:21  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+5312  2026-05-18 19:17:21  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5311  2026-05-18 19:17:21  whatsapp  saliente   167933254885560@lid  Ariel, el motivo por el que Diego decidió no avanzar es que el valor de tasación del Subaru le resultó bajo. Muchas gracias igual por toda la atención y la predisposición.                             
+
+5310  2026-05-18 19:17:21  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+5309  2026-05-18 19:17:21  whatsapp  saliente   34342575317160@lid   Listo, le explico a Ariel que el motivo fue el valor bajo de tasación del Subaru.                                                                                                                       
+
+5308  2026-05-18 19:17:21  sistema   interno                         claude_call whatsapp: 45124ms prompt=68318c raw=908c                                                                                                                                                    
+
 5307  2026-05-18 19:16:35  whatsapp  entrante   5491132317896@c.us   por que el valor al que me toman el subaru es muy bajo                                                                                                                                                  
 
 5306  2026-05-18 19:12:10  sistema   interno                         claude_call whatsapp: 9582ms prompt=68885c raw=332c                                                                                                                                                     
@@ -214,15 +226,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5215  2026-05-18 15:08:42  sistema   interno                         claude_call whatsapp: 10063ms prompt=35291c raw=323c                                                                                                                                                    
 
 5214  2026-05-18 15:08:32  whatsapp  entrante   59899643028@c.us     Hola, es feriado en Uruguay pero estoy atendiendo temas de Perú y chile en este momento                                                                                                                 
-
-5213  2026-05-18 15:04:11  whatsapp  saliente   5491132317896@c.us   Anotado, no le escribo nada a Flavio.                                                                                                                                                                   
-
-5212  2026-05-18 15:04:11  sistema   interno                         claude_call whatsapp: 31350ms prompt=67315c raw=251c                                                                                                                                                    
-
-5211  2026-05-18 15:03:39  whatsapp  entrante   5491132317896@c.us   a Flavio no le contestes nada                                                                                                                                                                           
-
-5210  2026-05-18 15:03:29  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5209  2026-05-18 15:03:29  whatsapp  saliente   232185965629610@lid  El Subaru Legacy tiene 115.000 km.                                                                                                                                                                      
-
-5208  2026-05-18 15:03:29  sistema   interno                         claude_call whatsapp: 51328ms prompt=67369c raw=385c                                                                                                                                                    
