@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5256  2026-05-18 17:41:08  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+5255  2026-05-18 17:41:08  whatsapp  saliente   167933254885560@lid  Buenas tardes, Ariel! Lo consulto con Diego y te confirmo cuál de las dos opciones de patentamiento prefiere. Quedamos esperando la diferencia también cuando la tengas.                                
+
+5254  2026-05-18 17:41:08  whatsapp  saliente   34342575317160@lid   Ariel de Espasa me escribe — está cotizando el Subaru y en un rato me pasa la diferencia por la Taos. Pero antes necesita saber cómo querés hacer el patentamiento:                                     
+                                                                                                                                                                                                                                                                             
+                                                                     *Opción 1:* Lo patentás vos (client                                                                                                                                                                     
+
+5253  2026-05-18 17:41:08  sistema   interno                         claude_call whatsapp: 26962ms prompt=68067c raw=1236c                                                                                                                                                   
+
 5252  2026-05-18 17:40:40  whatsapp  entrante   167933254885560@lid  María, ¿cómo andan buenas tardes? Bueno, María, ahí mandé a cotizar el usado, ahora en un                                                                                                               
                                                                       rato me dan a pasar la diferencia que queda por la tabuítono, ¿no?                                                                                                                                     
                                                                       Bueno, me he expuesto que se abonaba de c                                                                                                                                                              
@@ -218,11 +228,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5158  2026-05-18 13:04:53  whatsapp  entrante   121328598274271@lid  Podes venir al salón a verla estamos en Paseo Colón 494 Puerto Madero CABA de 9 a 19hs pregunta por Sergio Moreno                                                                                       
 
 5157  2026-05-18 13:04:53  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Sergio Moreno Castro es el vendedor de Volkswagen Espasa que contactó a Diego por la Taos Highline; Maria lleva adelante esa gestión a pedi
-
-5156  2026-05-18 13:04:53  sistema   interno                         claude_call unknown-flow: 19693ms prompt=51799c raw=375c                                                                                                                                                
-
-5155  2026-05-18 13:04:23  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
-
-5154  2026-05-18 13:04:23  whatsapp  saliente                        (forward de false_121328598274271@lid_3A91A67705E1262376B5 → 34342575317160@lid)                                                                                                                        
-
-5153  2026-05-18 13:04:23  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
