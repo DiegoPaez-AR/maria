@@ -1,0 +1,75 @@
+# ejecutado: 2026-05-17T22:54:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ Estado actual del vhost intensa.io ═══"
+#   ls -la /etc/nginx/sites-enabled/intensa.io.conf
+#   echo "¿Tiene SSL?"
+#   grep -c "ssl_certificate" /etc/nginx/sites-available/intensa.io.conf
+#   
+#   echo ""
+#   echo "═══ Re-correr certbot para re-aplicar SSL ═══"
+#   certbot --nginx \
+#     -d intensa.io -d www.intensa.io \
+#     --redirect --non-interactive --agree-tos \
+#     -m diego@paez.is --no-eff-email \
+#     --reinstall 2>&1 | tail -20
+#   
+#   echo ""
+#   echo "═══ ¿vhost ahora tiene SSL? ═══"
+#   grep -c "ssl_certificate" /etc/nginx/sites-available/intensa.io.conf
+#   grep -c "ssl_certificate" /etc/nginx/sites-enabled/intensa.io.conf
+#   
+#   echo ""
+#   echo "═══ Smoke tests ═══"
+#   curl -s -H "Host: intensa.io" -o /dev/null -w "HTTP intensa.io     %{http_code}\n" http://127.0.0.1/
+#   curl -sk -H "Host: intensa.io" -o /dev/null -w "HTTPS intensa.io    %{http_code}\n" https://127.0.0.1/
+#   curl -sk -H "Host: www.intensa.io" -o /dev/null -w "HTTPS www.intensa  %{http_code}\n" https://127.0.0.1/
+#   curl -sk -H "Host: www.veritas-trace.com" -o /dev/null -w "HTTPS veritas      %{http_code}\n" https://127.0.0.1/
+#   
+#   echo ""
+#   echo "═══ Verificar cert servido ═══"
+#   echo "intensa.io →"
+#   echo "" | openssl s_client -connect 127.0.0.1:443 -servername intensa.io 2>/dev/null | openssl x509 -noout -subject 2>/dev/null
+#   echo "veritas-trace.com →"
+#   echo "" | openssl s_client -connect 127.0.0.1:443 -servername www.veritas-trace.com 2>/dev/null | openssl x509 -noout -subject 2>/dev/null
+
+# ───── output ─────
+═══ Estado actual del vhost intensa.io ═══
+lrwxrwxrwx 1 root root 42 May 17 18:56 /etc/nginx/sites-enabled/intensa.io.conf -> /etc/nginx/sites-available/intensa.io.conf
+¿Tiene SSL?
+0
+
+═══ Re-correr certbot para re-aplicar SSL ═══
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Certificate not yet due for renewal
+Deploying certificate
+Successfully deployed certificate for intensa.io to /etc/nginx/sites-enabled/intensa.io.conf
+Successfully deployed certificate for www.intensa.io to /etc/nginx/sites-enabled/intensa.io.conf
+Congratulations! You have successfully enabled HTTPS on https://intensa.io and https://www.intensa.io
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+═══ ¿vhost ahora tiene SSL? ═══
+2
+2
+
+═══ Smoke tests ═══
+HTTP intensa.io     301
+HTTPS intensa.io    200
+HTTPS www.intensa  200
+HTTPS veritas      200
+
+═══ Verificar cert servido ═══
+intensa.io →
+subject=CN = intensa.io
+veritas-trace.com →
+subject=CN = www.veritas-trace.com
+
+# exit=0
