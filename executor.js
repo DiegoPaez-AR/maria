@@ -16,6 +16,7 @@ const seguridad = require('./seguridad');
 const waSend = require('./wa-send');
 const providers = require('./providers');
 const waValidate = require('./wa-validate');
+const vault = require('./vault');
 
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
@@ -73,6 +74,7 @@ async function ejecutarUna(accion, ctx) {
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
     case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
+    case 'configurar_caldav': return await _configurarCaldav(accion, ctx);
     case 'set_calendar_acceso': return await _setCalendarAcceso(accion, ctx);
     case 'buscar_contacto_global': return _buscarContactoGlobal(accion, ctx);
     case 'buscar_slots_comunes':   return await _buscarSlotsComunes(accion, ctx);
@@ -859,6 +861,109 @@ async function _setCalendarAcceso(a, ctx) {
   });
   console.log(`[executor] set_calendar_acceso/${u.nombre}: ${modoFinal}${detectado ? ' (autodetect)' : ''}`);
   return { usuarioId: u.id, calendar_acceso: modoFinal, autodetect: !!a.autodetect, detectado };
+}
+
+// ─── CalDAV setup ────────────────────────────────────────────────────────
+//
+// Configura un usuario para que use CalDAV en vez de Google. Valida las
+// credenciales contra el server (descubre calendarios), cifra el blob con
+// vault y persiste en usuarios.calendar_auth_json. Setea calendar_provider
+// = 'caldav' y calendar_acceso = 'write' (los users CalDAV siempre tienen
+// write con sus propias credenciales — no hay tiers).
+//
+// Owner-only por default (solo el owner configura otros users). Los users
+// no-owner pueden auto-configurarse pasando id = ctx.usuario.id explícito.
+//
+// Sanitización: el password llega vía un mensaje del user, queda en
+// eventos.cuerpo plano. Tras OK, hacemos UPDATE limpiando el password
+// literal en eventos recientes (últimas 30 min) reemplazándolo por
+// [REDACTED]. Heurística aceptable para el riesgo conocido.
+async function _configurarCaldav(a, ctx) {
+  _requerir(a, ['server_url', 'username', 'password']);
+
+  // Resolver id del usuario destino. Si no se pasa, asume el usuario actual.
+  const targetId = a.id || a.usuario_id || ctx.usuario.id;
+  const target = usuarios.obtener(targetId);
+  if (!target) throw new Error(`configurar_caldav: usuario id=${targetId} no encontrado`);
+
+  // Permiso: owner puede configurar a cualquiera; los demás solo a sí mismos.
+  if (target.id !== ctx.usuario.id && !usuarios.esOwner(ctx.usuario.id)) {
+    throw new Error('configurar_caldav: solo el owner puede configurar otros usuarios');
+  }
+
+  // Validar las creds intentando descubrir calendarios.
+  let calendars;
+  try {
+    const { createDAVClient } = await import('tsdav');
+    const client = await createDAVClient({
+      serverUrl: a.server_url,
+      credentials: { username: a.username, password: a.password },
+      authMethod: 'Basic',
+      defaultAccountType: 'caldav',
+    });
+    calendars = await client.fetchCalendars();
+  } catch (err) {
+    throw new Error(`configurar_caldav: el server rechazó las credenciales — ${err.message}. Revisá que sea un app-specific password y que el server URL sea correcto.`);
+  }
+  if (!calendars || !calendars.length) {
+    throw new Error(`configurar_caldav: el server no devolvió calendarios para ${a.username}. Verificá que la cuenta tenga al menos un calendar habilitado.`);
+  }
+
+  // Resolver calendar default.
+  let calendar = null;
+  if (a.calendar_id) {
+    calendar = calendars.find(c => c.url === a.calendar_id || c.displayName === a.calendar_id);
+  }
+  if (!calendar) calendar = calendars[0];
+
+  // Cifrar blob con vault y persistir.
+  const credsBlob = vault.cifrar({
+    server_url: a.server_url,
+    username: a.username,
+    password: a.password,
+    calendar_url: calendar.url,
+    calendar_id: a.calendar_id || null,
+  });
+
+  usuarios.actualizar(target.id, {
+    calendar_provider: 'caldav',
+    calendar_auth_json: credsBlob,
+    calendar_acceso: 'write',
+  });
+
+  // Sanitizar logs: reemplazar el password literal en eventos recientes.
+  let redacted = 0;
+  try {
+    const filas = mem.db.prepare(`
+      SELECT id, cuerpo FROM eventos
+      WHERE timestamp >= datetime('now','-30 minutes')
+        AND cuerpo LIKE ?
+    `).all(`%${a.password}%`);
+    for (const fila of filas) {
+      const nuevo = fila.cuerpo.split(a.password).join('[REDACTED]');
+      mem.db.prepare('UPDATE eventos SET cuerpo = ? WHERE id = ?').run(nuevo, fila.id);
+      redacted++;
+    }
+  } catch (err) {
+    console.warn(`[executor] configurar_caldav: sanitización falló: ${err.message}`);
+  }
+
+  mem.log({
+    usuarioId: ctx.usuario.id,
+    canal: 'sistema', direccion: 'interno',
+    cuerpo: `caldav configurado para ${target.nombre} (id=${target.id})`,
+    metadata: { server_url: a.server_url, username: a.username, calendars: calendars.length, calendar_url: calendar.url, redacted_eventos: redacted },
+  });
+  console.log(`[executor] caldav configurado: ${target.nombre} (id=${target.id}) → ${a.server_url} (${calendars.length} cal, redacted=${redacted})`);
+
+  return {
+    usuario_id: target.id,
+    nombre: target.nombre,
+    server_url: a.server_url,
+    calendar_url: calendar.url,
+    calendars_disponibles: calendars.map(c => ({ url: c.url, displayName: c.displayName })),
+    eventos_sanitizados: redacted,
+  };
 }
 
 module.exports = { ejecutarAcciones };
