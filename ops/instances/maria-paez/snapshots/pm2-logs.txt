@@ -1,21 +1,3 @@
-0|maria-pa | 2026-05-18 19:17:15:  Pregunta la Diego para saber mi pueblo, que lo puedo usar.
-0|maria-pa | 2026-05-18 19:17:15:  Más o menos qué valor o qué expectativa tenía del
-0|maria-pa | 2026-05-18 19:17:25: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=51 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=9, Santiago Bignone=30, Doris Capurro=27, Nicolas Kosinski=60, Walter Vera=6, Cristian Ruiz=6, Sebastian Ameijeira=3, Rubén Ward=3, Enrique Sosa=15} remitente=167933254885560@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-18 19:17:45: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor de VW Espasa con quien Maria llevó adelante la gestión de compra de Taos + tasación del Subaru Legacy a pedido de Diego (owner); ahora pregunta cuánto esperaba Diego por el auto, continuando esa misma gestión.
-0|maria-pa | 2026-05-18 19:18:02: [WA →usr] Diego (34342575317160@lid): Te escribe Ariel Quiroga de Espasa — pregunta qué valor esperás por la tasación del Subaru Legacy, para ver si puede pelear algo más en la diferencia. ¿Qué núme
-0|maria-pa | 2026-05-18 19:18:02: [WA →3ro] Diego/Ariel Quiroga: Hola Ariel, lo consulto con Diego y te confirmo enseguida.
-0|maria-pa | 2026-05-18 19:18:02: [WA acciones/Diego] 1/1 ejecutadas
-0|maria-pa | 2026-05-18 19:18:02: [unknown-flow/wa] tercero_de_usuario: 167933254885560@lid (Ariel Quiroga) → contexto de Diego (id=1)
-0|maria-pa | 2026-05-18 19:36:52: [WA ←] Diego (5491132317896@c.us): No menos de usd24000
-0|maria-pa | 2026-05-18 19:37:39: [WA →3ro] Diego/Diego: Perfecto, se lo paso a Ariel ahora.
-0|maria-pa | 2026-05-18 19:37:39: [WA acciones/Diego] 2/2 ejecutadas
-0|maria-pa | 2026-05-18 19:38:47: [WA] transcribiendo audio…
-0|maria-pa | 2026-05-18 19:38:52: [WA audio→texto] Dale, Dale, María. Bueno, está buenos a darlos porque yo lo puedo, por lo menos lo voy a plantearla, porque me van a preguntar si te pasé la contestación que di
-0|maria-pa | 2026-05-18 19:39:03: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=54 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=9, Santiago Bignone=30, Doris Capurro=27, Nicolas Kosinski=60, Walter Vera=6, Cristian Ruiz=6, Sebastian Ameijeira=3, Rubén Ward=3, Enrique Sosa=15} remitente=167933254885560@lid contactos_ambiguos=0
-0|maria-pa | 2026-05-18 19:39:21: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de Volkswagen Espasa con quien Maria estaba gestionando, a pedido de Diego, la compra de una Taos y la tasación del Subaru Legacy; este mensaje continúa directamente esa negociación.
-0|maria-pa | 2026-05-18 19:39:27: [WA] transcribiendo audio…
-0|maria-pa | 2026-05-18 19:39:34: [WA audio→texto] pero igualmente yo lo voy a consultar mañana lo voy a plantear y por otro lado
-0|maria-pa | 2026-05-18 19:39:34:  tenés la opción en el caso que lo pude a él vender por su cuenta en fue a
 0|maria-pa | 2026-05-18 19:39:34:  parti
 0|maria-pa | 2026-05-18 19:39:51: [WA →3ro] ABORTADO Ariel Quiroga: llegó msg nuevo durante procesamiento
 0|maria-pa | 2026-05-18 19:39:51: [unknown-flow/wa] tercero_de_usuario: 167933254885560@lid (Ariel Quiroga) → contexto de Diego (id=1)
@@ -197,4 +179,22 @@
 0|maria-pa | 2026-05-19 09:00:07: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
 0|maria-pa | 2026-05-19 09:00:07: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
 0|maria-pa | 2026-05-19 09:00:07: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-19 09:00:11: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-19 09:00:11: [WA authenticated]
+0|maria-pa | 2026-05-19 09:00:12: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-19 09:00:12: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-19 09:00:12: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-19 09:00:12: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-19 09:00:12: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-19 09:00:12: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-19 09:00:12: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-19 09:00:12: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-19 09:00:20: [programados] ✓ id=195 (whatsapp/137456250806423@lid) [meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260519T121500Z]
 
