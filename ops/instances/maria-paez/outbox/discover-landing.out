@@ -1,0 +1,175 @@
+# ejecutado: 2026-05-19T11:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Descubrir dónde vive intensa.io/L0001 y cómo se deploya.
+#   set +e
+#   
+#   echo "═══ NGINX vhost de intensa.io ═══"
+#   for f in /etc/nginx/sites-enabled/intensa* /etc/nginx/sites-available/intensa* /etc/nginx/conf.d/intensa*; do
+#     [ -f "$f" ] && { echo "--- $f ---"; cat "$f"; echo; }
+#   done
+#   
+#   echo "═══ Localizar root de intensa.io ═══"
+#   nginx -T 2>/dev/null | grep -A 2 "server_name.*intensa" | head -20
+#   
+#   echo "═══ ls de los paths probables ═══"
+#   for d in /var/www/intensa.io /var/www/intensa /root/intensa.io /root/intensa /srv/intensa.io; do
+#     [ -d "$d" ] && { echo "--- $d ---"; ls -la "$d" 2>&1 | head -10; }
+#   done
+#   
+#   echo "═══ Buscar L0001 ═══"
+#   find /var/www /root /srv -maxdepth 5 -type d -iname "L0001" 2>/dev/null
+#   
+#   echo "═══ Buscar deploy.sh ==="
+#   find /var/www /root /srv -maxdepth 4 -name "deploy.sh" 2>/dev/null | head -10
+#   
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ NGINX vhost de intensa.io ═══
+--- /etc/nginx/sites-enabled/intensa.io.conf ---
+# /etc/nginx/sites-available/intensa.io.conf
+# Sitio estático intensa.io. Servido desde /var/www/intensa.io/.
+# SSL: agregado por certbot --nginx (no editar las líneas managed by Certbot).
+
+server {
+    server_name intensa.io www.intensa.io;
+
+    root /var/www/intensa.io;
+    index index.html;
+
+    access_log /var/log/nginx/intensa.io.access.log;
+    error_log  /var/log/nginx/intensa.io.error.log;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml application/json text/html;
+    gzip_min_length 256;
+
+    # Cache largo para assets versionables (si aparecen)
+    location ~* \.(css|js|svg|png|jpg|jpeg|webp|woff2?)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/intensa.io/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/intensa.io/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+
+server {
+    if ($host = www.intensa.io) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = intensa.io) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+    server_name intensa.io www.intensa.io;
+    return 404; # managed by Certbot
+
+
+
+
+}
+--- /etc/nginx/sites-available/intensa.io.conf ---
+# /etc/nginx/sites-available/intensa.io.conf
+# Sitio estático intensa.io. Servido desde /var/www/intensa.io/.
+# SSL: agregado por certbot --nginx (no editar las líneas managed by Certbot).
+
+server {
+    server_name intensa.io www.intensa.io;
+
+    root /var/www/intensa.io;
+    index index.html;
+
+    access_log /var/log/nginx/intensa.io.access.log;
+    error_log  /var/log/nginx/intensa.io.error.log;
+
+    gzip on;
+    gzip_types text/css application/javascript image/svg+xml application/json text/html;
+    gzip_min_length 256;
+
+    # Cache largo para assets versionables (si aparecen)
+    location ~* \.(css|js|svg|png|jpg|jpeg|webp|woff2?)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+        try_files $uri =404;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/intensa.io/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/intensa.io/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+
+server {
+    if ($host = www.intensa.io) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = intensa.io) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+    server_name intensa.io www.intensa.io;
+    return 404; # managed by Certbot
+
+
+
+
+}
+═══ Localizar root de intensa.io ═══
+    server_name intensa.io www.intensa.io;
+
+    root /var/www/intensa.io;
+--
+    server_name intensa.io www.intensa.io;
+    return 404; # managed by Certbot
+
+═══ ls de los paths probables ═══
+--- /var/www/intensa.io ---
+total 60
+drwxr-xr-x 3 www-data www-data  4096 May 18 12:00 .
+drwxr-xr-x 5 root     root      4096 May 17 18:56 ..
+-rw-r--r-- 1 www-data www-data 14565 May 18 13:48 index.html
+drwxr-xr-x 2 www-data www-data  4096 May 18 12:00 L0001
+-rw-r--r-- 1 www-data www-data 16221 May 18 13:48 script.js
+-rw-r--r-- 1 www-data www-data 15895 May 18 13:48 styles.css
+═══ Buscar L0001 ═══
+/var/www/intensa.io/L0001
+/root/secretaria/ops/sites/intensa.io/L0001
+═══ Buscar deploy.sh ===
+═══ DONE ═══
+
+# exit=0
