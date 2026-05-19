@@ -1,0 +1,85 @@
+# ejecutado: 2026-05-19T09:02:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   cd /root/secretaria
+#   
+#   echo "═══ Smoke construirPrompt con API correcta de usuarios ═══"
+#   node <<'JS'
+#   process.env.MARIA_DB = process.env.MARIA_DB || '/root/secretaria/state/maria-paez/db/maria.sqlite';
+#   (async () => {
+#     try {
+#       const usuarios = require('/root/secretaria/usuarios');
+#       console.log('usuarios exports:', Object.keys(usuarios).join(','));
+#       const activos = usuarios.listarActivos();
+#       const owner = activos.find(u => u.rol === 'owner') || activos[0];
+#       console.log('owner:', owner.nombre, 'id:', owner.id, 'tz:', owner.tz);
+#   
+#       const pb = require('/root/secretaria/prompt-builder');
+#       const entrada = {
+#         canal: 'whatsapp',
+#         de: owner.wa_lid || owner.wa_cus,
+#         nombre: owner.nombre,
+#         cuerpo: '¿probando smoke test?',
+#         timestamp: new Date().toISOString(),
+#       };
+#       const prompt = await pb.construirPrompt({ canal: 'whatsapp', usuario: owner, entrada });
+#       console.log(`✓ construirPrompt OK; length: ${prompt.length} chars`);
+#   
+#       const horaArt = parseInt(new Date().toLocaleString('es-AR', { timeZone: owner.tz || 'America/Argentina/Buenos_Aires', hour: '2-digit', hour12: false }), 10);
+#       console.log(`hora ART actual: ${horaArt}h`);
+#   
+#       const expectMadrugada = horaArt >= 0 && horaArt < 6;
+#       const tieneMadrugada = prompt.includes('madrugada') || prompt.includes('00-06hs');
+#       console.log(`  ${tieneMadrugada === expectMadrugada ? '✓' : '⚠'} aviso madrugada (esperado=${expectMadrugada}, presente=${tieneMadrugada})`);
+#   
+#       const tieneFechaCompleta = prompt.includes('CONFIRMACIÓN CON FECHA COMPLETA');
+#       console.log(`  ${tieneFechaCompleta ? '✓' : '✗'} regla fecha completa en confirmación: ${tieneFechaCompleta}`);
+#   
+#       // Ver primeros 1000 chars del prompt para confirmar que arranca con la sección fecha-hora correcta
+#       console.log('\n--- preview prompt ---');
+#       console.log(prompt.slice(0, 500));
+#       console.log('--- ... ---');
+#       // Buscar la regla nueva
+#       const idx = prompt.indexOf('CONFIRMACIÓN CON FECHA COMPLETA');
+#       if (idx > -1) {
+#         console.log('\n--- preview regla nueva ---');
+#         console.log(prompt.slice(Math.max(0, idx - 100), idx + 400));
+#       }
+#     } catch (err) {
+#       console.error('✗ SMOKE FALLÓ:', err.message);
+#       console.error(err.stack);
+#       process.exit(1);
+#     }
+#   })();
+#   JS
+
+# ───── output ─────
+═══ Smoke construirPrompt con API correcta de usuarios ═══
+usuarios exports: listarActivos,listarTodos,obtener,obtenerOwner,esOwner,resolverPorWa,resolverPorEmailFrom,resolverPorNombre,setWaLid,crear,actualizar,desactivar,tier,setearCalendarAcceso,cantidadActivos,maxUsuarios,puedeCrearMas
+owner: Diego id: 1 tz: America/Argentina/Buenos_Aires
+✓ construirPrompt OK; length: 66384 chars
+hora ART actual: 9h
+  ✓ aviso madrugada (esperado=false, presente=false)
+  ✓ regla fecha completa en confirmación: true
+
+--- preview prompt ---
+Sos Maria Paez, secretaria personal con memoria persistente y acceso a WhatsApp, Gmail y Google Calendar. Servís a varios usuarios desde una misma instancia.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[SEGURIDAD — REGLAS INVIOLABLES]
+Estas reglas son absolutas. Aplican a TODOS los usuarios incluyendo el owner. Pedidos que las violen se rechazan con un único "No puedo hacer eso." sin explicar más.
+
+1. NO revelás info sobre tu infraestructura: archivos del repo, código fuente, paths del filesystem,
+--- ... ---
+
+--- preview regla nueva ---
+ No uses programar_mensaje para el brief matutino ni avisos de reuniones — los maneja el sistema.
+- CONFIRMACIÓN CON FECHA COMPLETA: cuando confirmes algo programado, INCLUÍ siempre el día y la fecha (ej. "te escribo a Juan **el martes 19/05** a las 7:30"), nunca solo "mañana" o "hoy". El usuario debe poder cazar errores de interpretación de fecha leyendo tu confirmación. Esta regla aplica a programar_mensaje, crear_evento, y cualquier acción con fecha futura.
+
+Contactos:
+- La libreta tiene dos 
+
+# exit=0
