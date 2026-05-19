@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5513  2026-05-19 10:14:59  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+5512  2026-05-19 10:14:59  whatsapp  saliente   5491132317896@c.us   Anotado. Nada a nadie entre las 0 y las 6, salvo que me lo pidan explícitamente.                                                                                                                        
+
+5511  2026-05-19 10:14:59  sistema   interno                         claude_call whatsapp: 29776ms prompt=68707c raw=679c                                                                                                                                                    
+
+5510  2026-05-19 10:14:29  whatsapp  entrante   5491132317896@c.us   Y en general, no le mandes a nadie mensajes entre las 0 y las 6, salvo que te lo pidan, como yo que te pedí el brief matutino a las 4                                                                   
+
 5509  2026-05-19 10:13:30  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
 
 5508  2026-05-19 10:13:30  whatsapp  saliente   5491132317896@c.us   Dale, lo tengo. Si a las 16 Analia todavía no mandó nada, le escribo yo directamente.                                                                                                                   
@@ -255,11 +263,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5415  2026-05-18 20:59:22  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
 
 5414  2026-05-18 20:59:22  whatsapp  saliente   5491161673400@c.us   Hola Analia, para terminar de coordinar la reunión del viernes 22/05 a las 11:30 hs: ¿me podés pasar la dirección exacta del lugar?                                                                     
-
-5413  2026-05-18 20:59:21  sistema   interno                         claude_call whatsapp: 77113ms prompt=65630c raw=1554c                                                                                                                                                   
-
-5412  2026-05-18 20:59:19  whatsapp  entrante   103676316278817@lid  cuanto tiempo ncesitan para la reunión?                                                                                                                                                                 
-
-5411  2026-05-18 20:58:04  whatsapp  entrante   5491132317896@c.us   pedile a Analia que te pase la direccion y pasasela a Pablo y ponemela a mi en la reunion del calendario                                                                                                
-
-5410  2026-05-18 20:57:54  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
