@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5509  2026-05-19 10:13:30  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+5508  2026-05-19 10:13:30  whatsapp  saliente   5491132317896@c.us   Dale, lo tengo. Si a las 16 Analia todavía no mandó nada, le escribo yo directamente.                                                                                                                   
+
+5507  2026-05-19 10:13:30  sistema   interno                         claude_call whatsapp: 38474ms prompt=68930c raw=830c                                                                                                                                                    
+
 5506  2026-05-19 10:12:51  whatsapp  entrante   5491132317896@c.us   Ok, entonces no me lo mandes a mi, guárdalo vos y espera a que Analia conteste para avanzar, si hoy a las 16 no contesto, podes escribirle a ella preguntándole                                         
 
 5505  2026-05-19 10:11:14  whatsapp  saliente   5491132317896@c.us   No tenés que hacer nada vos — ese aviso es automático mío para recordarte que tengo una consulta abierta esperando a Analia Frangi (la dirección de la reunión del viernes 22). En cuanto ella me la man
@@ -257,9 +263,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5411  2026-05-18 20:58:04  whatsapp  entrante   5491132317896@c.us   pedile a Analia que te pase la direccion y pasasela a Pablo y ponemela a mi en la reunion del calendario                                                                                                
 
 5410  2026-05-18 20:57:54  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-5409  2026-05-18 20:57:54  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5408  2026-05-18 20:57:54  whatsapp  saliente   5491161673400@c.us   Hola Analia, somos de AreaIT (www.areait.com.ar). ¿Ya pudiste confirmar si el viernes 22/05 a las 11:30 hs le queda bien a Diego Poguetti?                                                              
-
-5407  2026-05-18 20:57:47  sistema   interno                         claude_call whatsapp: 28685ms prompt=65613c raw=665c                                                                                                                                                    
