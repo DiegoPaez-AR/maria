@@ -1,0 +1,114 @@
+# ejecutado: 2026-05-19T14:24:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ 1. Limpiar y re-deploy ═══"
+#   rm -rf /var/www/intensa.io/maria/signup /var/www/intensa.io/maria/cuenta /var/www/intensa.io/maria/terminos
+#   cd /root/secretaria/ops/sites/intensa.io
+#   bash deploy.sh 2>&1 | grep -E "═══|cache-bust|HTTP|→" | head -25
+#   
+#   echo
+#   echo "═══ 2. Estructura deployada ═══"
+#   ls /var/www/intensa.io/maria/
+#   echo "  cuenta:"
+#   ls /var/www/intensa.io/maria/cuenta/
+#   echo "  signup:"
+#   ls /var/www/intensa.io/maria/signup/
+#   echo "  terminos:"
+#   ls /var/www/intensa.io/maria/terminos/
+#   
+#   echo
+#   echo "═══ 3. Smoke tests con asserts ═══"
+#   function check() {
+#     local label=$1 cmd=$2 expected=$3
+#     local actual=$(eval "$cmd")
+#     if [ -n "$actual" ]; then
+#       echo "  ✓ $label: $(echo "$actual" | head -c 60)"
+#     else
+#       echo "  ✗ $label: VACÍO"
+#     fi
+#   }
+#   check "terminos HTTP 200" "curl -sk -o /dev/null -w '%{http_code}' https://intensa.io/maria/terminos/ | grep 200" "200"
+#   check "signup checkbox" "curl -sk https://intensa.io/maria/signup/ | grep -o 'name=\"acepto_terminos\" required' | head -1" "match"
+#   check "cuenta turnstile" "curl -sk https://intensa.io/maria/cuenta/ | grep -o 'data-sitekey=\"0x4AAAAAA[A-Za-z0-9_-]*\"' | head -1" "match"
+#   check "terminos h1" "curl -sk https://intensa.io/maria/terminos/ | grep -o 'Términos y Condiciones' | head -1" "match"
+#   check "terminos warn beta" "curl -sk https://intensa.io/maria/terminos/ | grep -o 'BETA' | head -1" "match"
+#   check "terminos Confold S.A." "curl -sk https://intensa.io/maria/terminos/ | grep -o 'Confold S.A' | head -1" "match"
+#   check "landing footer terminos link" "curl -sk https://intensa.io/maria/ | grep -o 'href=\"/maria/terminos/\"' | head -1" "match"
+#   check "landing Confold copyright" "curl -sk https://intensa.io/maria/ | grep -o 'Confold S.A.' | head -1" "match"
+#   
+#   echo
+#   echo "═══ 4. Backend smoke ═══"
+#   echo "  rechaza signup SIN terminos:"
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"test","email":"test@invalid.fake","wa":"5491111111111","calendar_provider":"google"}' \
+#     https://intensa.io/maria/api/signup/start
+#   
+#   echo
+#   echo "  Limpia signup_pending de prueba previo (smoke-test-doNotUse@test.invalid)..."
+#   sqlite3 /root/secretaria/state/control/control.sqlite "DELETE FROM signup_pending WHERE email LIKE 'smoke-test-%' OR email LIKE 'test@invalid%';" 2>&1
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ 1. Limpiar y re-deploy ═══
+═══ 1. Crear/actualizar docroot ═══
+  index.html con cache-bust v=20260519-142402
+═══ 1b. Sincronizar landings (subdirs de SRC/) ═══
+  → maria
+    index.html con cache-bust v=20260519-142402
+    cache-bust v=20260519-142402 en cuenta/index.html
+    cache-bust v=20260519-142402 en signup/index.html
+    cache-bust v=20260519-142402 en terminos/index.html
+═══ 2. Vhost nginx ═══
+═══ 3. Validar config nginx ═══
+═══ 4. Reload nginx (atomic) ═══
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+═══ DONE ═══
+
+═══ 2. Estructura deployada ═══
+cuenta
+index.html
+script.js
+signup
+styles.css
+terminos
+  cuenta:
+index.html
+script.js
+styles.css
+  signup:
+index.html
+script.js
+styles.css
+  terminos:
+index.html
+script.js
+styles.css
+
+═══ 3. Smoke tests con asserts ═══
+  ✓ terminos HTTP 200: 200
+  ✓ signup checkbox: name="acepto_terminos" required
+  ✓ cuenta turnstile: data-sitekey="0x4AAAAAADSjZdSiOLo4gIGt"
+  ✓ terminos h1: Términos y Condiciones
+  ✓ terminos warn beta: BETA
+  ✓ terminos Confold S.A.: Confold S.A
+  ✓ landing footer terminos link: href="/maria/terminos/"
+  ✓ landing Confold copyright: Confold S.A.
+
+═══ 4. Backend smoke ═══
+  rechaza signup SIN terminos:
+{"error":"must_accept_terms","message":"Tenés que aceptar los Términos y Condiciones para continuar."}
+  Limpia signup_pending de prueba previo (smoke-test-doNotUse@test.invalid)...
+
+═══ DONE ═══
+
+# exit=0
