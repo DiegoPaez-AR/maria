@@ -184,23 +184,45 @@ async function _onSubscriptionCreated(evt, signupToken) {
 }
 
 async function _crearClienteSinSignup(evt) {
-  // Caso de fallback: alguien pagó sin haber pasado por el signup form de Intensa
-  // (ej. compró desde un share link de LS). Lo registramos en `clientes` sin instancia
-  // y avisamos al operador para resolución manual.
+  // Caso de fallback: el signup_token expiró o no matchea (ej. limpieza manual,
+  // o el cliente compró por un share link de LS sin pasar por nuestro signup).
+  // Hacemos best-effort: tomamos el email del payload de LS, asignamos a la
+  // instancia con más cupo, dejamos `inactive` para que un humano confirme y
+  // setee el WA antes de activar el usuario.
   const c = db.control();
   const data = evt.data;
   const attrs = data.attributes;
-  c.prepare(`
-    INSERT OR IGNORE INTO clientes (
-      nombre, email, wa, instancia_slug, estado, lemon_customer_id, lemon_subscription_id, ultimo_evento, ultimo_evento_en
-    ) VALUES (?, ?, ?, '_pending_assignment', 'inactive', ?, ?, 'subscription_created_no_signup', datetime('now'))
-  `).run(
-    attrs.user_name || 'sin nombre',
-    attrs.user_email,
-    'sin-wa-' + Date.now(),                 // placeholder — UNIQUE constraint requiere algo
-    String(attrs.customer_id), String(data.id)
-  );
-  console.warn(`[webhook] cliente creado SIN signup_pending — revisar manual: ${attrs.user_email}`);
+  const subscriptionId = String(data.id);
+  const customerId = String(attrs.customer_id);
+  const instance = instances.assignBestInstance();
+  if (!instance) {
+    console.warn(`[webhook] sin instancia disponible para fallback de ${attrs.user_email} — abortando creación`);
+    throw new Error('No hay instancia con cupo disponible para fallback.');
+  }
+  // wa placeholder único para no violar UNIQUE (NULL no se puede en columna NOT NULL).
+  const waPlaceholder = `_pending_${customerId}`;
+  try {
+    c.prepare(`
+      INSERT OR IGNORE INTO clientes (
+        nombre, email, wa, instancia_slug, estado,
+        lemon_customer_id, lemon_subscription_id, lemon_customer_portal,
+        ultimo_evento, ultimo_evento_en,
+        terminos_aceptados_en, terminos_version
+      ) VALUES (?, ?, ?, ?, 'inactive', ?, ?, ?, 'subscription_created_no_signup', datetime('now'), datetime('now'), 'v1-2026-05-19')
+    `).run(
+      attrs.user_name || 'sin nombre',
+      attrs.user_email,
+      waPlaceholder,
+      instance.slug,
+      customerId,
+      subscriptionId,
+      attrs.urls?.customer_portal || null,
+    );
+    console.warn(`[webhook] cliente FALLBACK creado en ${instance.slug} (inactive) para ${attrs.user_email} — necesita resolución manual del WA antes de activar`);
+  } catch (err) {
+    console.error(`[webhook] fallback INSERT falló: ${err.message}`);
+    throw err;
+  }
 }
 
 async function _onSubscriptionUpdated(evt) {
