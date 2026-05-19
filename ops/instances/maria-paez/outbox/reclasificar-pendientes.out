@@ -1,0 +1,93 @@
+# ejecutado: 2026-05-19T10:54:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Reclasifica el pendiente id=75 a (maria, trigger_externo). Idempotente.
+#   # Espera hasta 30s a que la migración del refactor haya creado las columnas
+#   # (la migración corre dentro del proceso pm2 al arrancar, no es sincrónica con
+#   # el reload trigger del cron).
+#   
+#   set +e
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "═══ DB en uso ═══"
+#   echo "$DB"
+#   
+#   # Wait-loop: hasta que la columna 'dueno' exista en pendientes.
+#   for i in 1 2 3 4 5 6 7 8 9 10; do
+#     if sqlite3 "$DB" "SELECT dueno FROM pendientes LIMIT 1" >/dev/null 2>&1; then
+#       echo "columnas nuevas presentes (intento $i)"
+#       break
+#     fi
+#     if [ "$i" = "10" ]; then
+#       echo "ERROR: la columna 'dueno' no apareció tras 10 intentos (30s)."
+#       echo "Estado actual de pendientes:"
+#       sqlite3 "$DB" "PRAGMA table_info(pendientes);" | head -30
+#       exit 1
+#     fi
+#     echo "intento $i — columnas todavía no migradas, espero 3s..."
+#     sleep 3
+#   done
+#   
+#   echo
+#   echo "═══ Pendientes abiertos ANTES ═══"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, dueno, disparador, COALESCE(recordar_desde,'') AS recordar_desde, substr(desc,1,80) AS desc FROM pendientes WHERE estado='abierto' ORDER BY id;"
+#   
+#   echo
+#   echo "═══ UPDATE id=75 → (maria, trigger_externo) ═══"
+#   sqlite3 "$DB" "
+#   UPDATE pendientes
+#      SET dueno='maria', disparador='trigger_externo'
+#    WHERE id=75
+#      AND estado='abierto'
+#      AND desc LIKE 'Cuando Analia Frangi%';
+#   "
+#   echo "rows updated: $(sqlite3 "$DB" "SELECT changes()")"
+#   
+#   echo
+#   echo "═══ Pendientes abiertos DESPUÉS ═══"
+#   sqlite3 -header -column "$DB" \
+#     "SELECT id, dueno, disparador, COALESCE(recordar_desde,'') AS recordar_desde, substr(desc,1,80) AS desc FROM pendientes WHERE estado='abierto' ORDER BY id;"
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ DB en uso ═══
+/root/secretaria/state/maria-paez/db/maria.sqlite
+columnas nuevas presentes (intento 1)
+
+═══ Pendientes abiertos ANTES ═══
+id  dueno    disparador         recordar_desde  desc                                                                            
+--  -------  -----------------  --------------  --------------------------------------------------------------------------------
+2   usuario  manual                             Pedir presupuesto DC Iplan                                                      
+3   usuario  manual                             Pedir presupuesto DC Telecentro                                                 
+4   usuario  manual                             Pedir presupuesto DC Claro                                                      
+5   usuario  manual                             iProt Seguridad                                                                 
+6   usuario  manual                             Espejo Subaru                                                                   
+37  usuario  manual                             DDJJ 2025                                                                       
+57  usuario  manual                             Turno de pasaporte                                                              
+75  usuario  respuesta_usuario                  Cuando Analia Frangi pase la dirección del lugar de la reunión del 22/05: actual
+77  usuario  manual                             Pagar a Eugenio                                                                 
+
+═══ UPDATE id=75 → (maria, trigger_externo) ═══
+rows updated: 0
+
+═══ Pendientes abiertos DESPUÉS ═══
+id  dueno    disparador       recordar_desde  desc                                                                            
+--  -------  ---------------  --------------  --------------------------------------------------------------------------------
+2   usuario  manual                           Pedir presupuesto DC Iplan                                                      
+3   usuario  manual                           Pedir presupuesto DC Telecentro                                                 
+4   usuario  manual                           Pedir presupuesto DC Claro                                                      
+5   usuario  manual                           iProt Seguridad                                                                 
+6   usuario  manual                           Espejo Subaru                                                                   
+37  usuario  manual                           DDJJ 2025                                                                       
+57  usuario  manual                           Turno de pasaporte                                                              
+75  maria    trigger_externo                  Cuando Analia Frangi pase la dirección del lugar de la reunión del 22/05: actual
+77  usuario  manual                           Pagar a Eugenio                                                                 
+
+═══ DONE ═══
+
+# exit=0
