@@ -1,0 +1,116 @@
+# ejecutado: 2026-05-19T15:23:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 logs intensa-api: últimos 80 con focus en signup ═══"
+#   pm2 logs intensa-api --lines 200 --nostream 2>&1 | grep -iE "signup|sendEmail|sendWa|maria-paez respondió|signup_pending|POST /(start|verify)" | tail -40
+#   
+#   echo
+#   echo "═══ pm2 logs maria-paez: últimas 40 líneas que toquen internal-api ═══"
+#   pm2 logs maria-paez --lines 300 --nostream 2>&1 | grep -iE "internal-api|send-wa|send-email|getNumberId" | tail -30
+#   
+#   echo
+#   echo "═══ Test internal-api directo: send-wa a 5491132317896 ═══"
+#   INTERNAL_SECRET=$(grep '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   curl -s -X POST -H "Content-Type: application/json" -H "X-Intensa-Secret: $INTERNAL_SECRET" \
+#     -d '{"to":"5491132317896","body":"[diag] test de send-wa desde internal-api — '"$(date +%H:%M:%S)"'"}' \
+#     http://127.0.0.1:4501/send-wa
+#   echo
+#   echo
+#   echo "═══ Test internal-api directo: send-email a diego@paez.is ═══"
+#   curl -s -X POST -H "Content-Type: application/json" -H "X-Intensa-Secret: $INTERNAL_SECRET" \
+#     -d '{"to":"diego@paez.is","subject":"[diag] test send-email","html":"<p>diag '"$(date +%H:%M:%S)"'</p>"}' \
+#     http://127.0.0.1:4501/send-email
+#   echo
+#   echo
+#   echo "═══ Test desde intensa-api → internal-api (simular el path real del signup) ═══"
+#   # Hacer un signup completo y ver si los códigos efectivamente llegan
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"Diego diag","email":"diego@paez.is","wa":"5491132317896","calendar_provider":"ninguno","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start
+#   echo
+#   echo
+#   echo "  ver si quedó signup_pending y los códigos generados:"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, nombre, email, wa, email_code, wa_code, datetime(creado) FROM signup_pending WHERE email='diego@paez.is' ORDER BY id DESC LIMIT 1;"
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ pm2 logs intensa-api: últimos 80 con focus en signup ═══
+2|intensa- | 2026-05-19 14:06:06:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+2|intensa- | 2026-05-19 14:06:06:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:08:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:08:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:08:02:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+2|intensa- | 2026-05-19 14:08:02:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:08:02: [codes] sendEmail failed: Maria maria-paez respondió 503: gmail_not_ready
+2|intensa- | 2026-05-19 14:08:02: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 14:24:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:24:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:24:02:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+2|intensa- | 2026-05-19 14:24:02:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:36:04: [codes] sendEmail failed: Maria maria-paez respondió 503: gmail_not_ready
+2|intensa- | 2026-05-19 14:36:04: [ERROR] POST /signup/start: Error: Provider de calendar inválido
+2|intensa- | 2026-05-19 14:36:04:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:36:04:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:23:11)
+2|intensa- | 2026-05-19 14:36:04:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:36:04: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 14:55:15: [signup/verify] LEMON_PRODUCT_VARIANT_ID o LEMON_BUY_BASE no configurado — devolviendo URL de placeholder
+2|intensa- | 2026-05-19 15:06:02: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 15:09:08: [signup/verify] LEMON_PRODUCT_VARIANT_ID o LEMON_BUY_BASE no configurado — devolviendo URL de placeholder
+2|intensa- | 2026-05-19 15:09:08: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 14:06:06: [2026-05-19T17:06:06.500Z] POST /signup/start → 400 3ms
+2|intensa- | 2026-05-19 14:08:02: [2026-05-19T17:08:02.579Z] POST /signup/start → 400 2ms
+2|intensa- | 2026-05-19 14:08:02: [codes] signup_pending id=1 email=smoke-test-donotuse@test.invalid wa=5491999999999
+2|intensa- | 2026-05-19 14:08:02: [2026-05-19T17:08:02.608Z] POST /start → 200 12ms
+2|intensa- | 2026-05-19 14:24:02: [2026-05-19T17:24:02.791Z] POST /signup/start → 400 3ms
+2|intensa- | 2026-05-19 14:36:04: [codes] signup_pending id=2 email=sincal-verify@test.invalid wa=5491777777777
+2|intensa- | 2026-05-19 14:36:04: [2026-05-19T17:36:04.797Z] POST /start → 200 17ms
+2|intensa- | 2026-05-19 14:36:04: [2026-05-19T17:36:04.840Z] POST /signup/start → 400 1ms
+2|intensa- | 2026-05-19 14:52:37: [codes] signup_pending id=3 email=diego@paez.net wa=16464256178
+2|intensa- | 2026-05-19 14:52:37: [2026-05-19T17:52:37.430Z] POST /start → 200 14ms
+2|intensa- | 2026-05-19 14:55:11: [2026-05-19T17:55:11.795Z] POST /verify → 200 2ms
+2|intensa- | 2026-05-19 14:55:16: [2026-05-19T17:55:16.000Z] POST /verify → 200 4ms
+2|intensa- | 2026-05-19 15:06:02: [codes] signup_pending id=4 email=diag@invalid.test wa=5491999999998
+2|intensa- | 2026-05-19 15:06:02: [2026-05-19T18:06:02.151Z] POST /start → 200 7ms
+2|intensa- | 2026-05-19 15:09:07: [codes] signup_pending id=5 email=smoke-checkout@test.invalid wa=5491999999997
+2|intensa- | 2026-05-19 15:09:07: [2026-05-19T18:09:07.971Z] POST /start → 200 13ms
+2|intensa- | 2026-05-19 15:09:08: [2026-05-19T18:09:08.044Z] POST /verify → 200 3ms
+2|intensa- | 2026-05-19 15:19:41: [2026-05-19T18:19:41.259Z] POST /start → 200 1ms
+
+═══ pm2 logs maria-paez: últimas 40 líneas que toquen internal-api ═══
+0|maria-pa | 2026-05-19 14:08:02: [internal-api/send-wa] error: No LID for user
+0|maria-pa | 2026-05-19 14:36:04: [internal-api/send-wa] error: No LID for user
+0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] getNumberId returned null para 5491999999998@c.us — intento envío igual
+0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] error: Error: No LID for user
+0|maria-pa | 2026-05-19 15:06:02:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
+0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] getNumberId returned null para 5491999999997@c.us — intento envío igual
+0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] error: Error: No LID for user
+0|maria-pa | 2026-05-19 15:09:08:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
+0|maria-pa | 2026-05-19 13:53:11: [internal-api] ASISTENTE_INTERNAL_PORT no seteado, internal-api desactivado
+0|maria-pa | 2026-05-19 13:54:46: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-05-19 14:35:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-05-19 14:40:08: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-05-19 14:40:16: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+
+═══ Test internal-api directo: send-wa a 5491132317896 ═══
+{"ok":true,"sent_to":"34342575317160@lid"}
+
+═══ Test internal-api directo: send-email a diego@paez.is ═══
+{"ok":true}
+
+═══ Test desde intensa-api → internal-api (simular el path real del signup) ═══
+{"ok":true,"signup_id":6,"message":"Códigos enviados a tu email y WhatsApp. Vencen en 10 minutos."}
+
+  ver si quedó signup_pending y los códigos generados:
+id  nombre      email          wa             email_code  wa_code  datetime(creado)   
+--  ----------  -------------  -------------  ----------  -------  -------------------
+6   Diego diag  diego@paez.is  5491132317896  992559      483636   2026-05-19 18:23:03
+
+═══ DONE ═══
+
+# exit=0
