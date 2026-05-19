@@ -120,19 +120,28 @@ async function _onSubscriptionCreated(evt, signupToken) {
     throw new Error('No hay instancia con cupo disponible. Cliente queda sin asignar — revisar manual.');
   }
 
-  // Crear usuario en la DB de la instancia
+  // Crear usuario en la DB de la instancia.
+  // Si el cliente eligió "ninguno" en el signup, el usuario nace con
+  // calendar_provider='google' (placeholder) y calendar_acceso='none', así
+  // Maria sabe que no tiene calendar conectado todavía y se salta el flow F4
+  // de onboarding de calendario.
+  const sinCalendar = pending.calendar_provider === 'ninguno' || !pending.calendar_provider;
+  const provider = sinCalendar ? 'google' : pending.calendar_provider;
+  const acceso = sinCalendar ? 'none' : 'write';
+
   const idb = new Database(`/root/secretaria/state/${instance.slug}/db/maria.sqlite`);
   let usuarioId;
   try {
     const r = idb.prepare(`
-      INSERT INTO usuarios (nombre, email, wa_cus, calendar_id, calendar_provider, rol, tz, activo, bienvenida_enviada, lemon_customer_id, lemon_subscription_id)
-      VALUES (?, ?, ?, ?, ?, 'usuario', 'America/Argentina/Buenos_Aires', 1, 0, ?, ?)
+      INSERT INTO usuarios (nombre, email, wa_cus, calendar_id, calendar_provider, calendar_acceso, rol, tz, activo, bienvenida_enviada, lemon_customer_id, lemon_subscription_id)
+      VALUES (?, ?, ?, ?, ?, ?, 'usuario', 'America/Argentina/Buenos_Aires', 1, 0, ?, ?)
     `).run(
       pending.nombre,
       pending.email,
       `${pending.wa}@c.us`,
-      pending.email,                    // calendar_id default al email (se ajusta en F4)
-      pending.calendar_provider || 'google',
+      sinCalendar ? null : pending.email,   // calendar_id null si no tiene calendar
+      provider,
+      acceso,
       customerId,
       subscriptionId,
     );

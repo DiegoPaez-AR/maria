@@ -7,6 +7,17 @@ const usuarios = require('./usuarios');
 const CHECK_MS = 30_000;
 
 const BIENVENIDA_TEMPLATES = {
+  ninguno: (nombre) =>
+`Hola ${nombre}, soy María, tu secretaria personal 👋
+
+Tu suscripción está activa con prueba gratuita de 7 días. Por ahora elegiste empezar sin calendario integrado — está perfecto, podemos arrancar igual.
+
+Te puedo ayudar con: tomar nota de pendientes y recordártelos, coordinar con tus contactos por WhatsApp o email, leer audios/PDFs/imágenes que me mandes, y mucho más.
+
+Cuando quieras conectar un calendario (Google, Outlook o iCloud), decímelo y te paso los pasos.
+
+Vivo en este chat las 24hs.`,
+
   google: (nombre) =>
 `Hola ${nombre}, soy María, tu secretaria personal 👋
 
@@ -36,7 +47,10 @@ Cualquier cosa, escribime — vivo en este chat las 24hs.`,
 };
 
 function _renderBienvenida(usuario) {
-  const tpl = BIENVENIDA_TEMPLATES[usuario.calendar_provider] || BIENVENIDA_TEMPLATES.google;
+  // Si el user eligió "sin calendario" en signup, calendar_acceso=='none' y
+  // queremos el template específico que NO pregunta por provider.
+  const key = usuario.calendar_acceso === 'none' ? 'ninguno' : usuario.calendar_provider;
+  const tpl = BIENVENIDA_TEMPLATES[key] || BIENVENIDA_TEMPLATES.google;
   return tpl(usuario.nombre);
 }
 

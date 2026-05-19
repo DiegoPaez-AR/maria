@@ -19,7 +19,7 @@ function _validateStart(b) {
   // wa esperado: solo dígitos, 10-15 chars. Aceptamos +/espacios y los limpiamos.
   const waClean = String(wa || '').replace(/[\s+\-()]/g, '');
   if (!/^\d{10,15}$/.test(waClean)) throw _err('bad_wa', 'WhatsApp inválido (10-15 dígitos)');
-  if (calendar_provider && !['google', 'microsoft', 'caldav'].includes(calendar_provider))
+  if (calendar_provider && !['google', 'microsoft', 'caldav', 'ninguno'].includes(calendar_provider))
     throw _err('bad_provider', 'Provider de calendar inválido');
   // Términos y Condiciones — obligatorio
   if (!b.acepto_terminos || b.acepto_terminos !== true) {
