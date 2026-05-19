@@ -1,0 +1,212 @@
+# ejecutado: 2026-05-19T08:30:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   echo "DB: $DB"
+#   echo ""
+#   
+#   # Timezone: AR es UTC-3, así que "00:00 ART de hoy 2026-05-19" = "2026-05-19 03:00:00 UTC"
+#   # Ayer todo el día ART = 2026-05-18 03:00:00 UTC → 2026-05-19 03:00:00 UTC
+#   DIEGO="5491132317896@c.us"
+#   
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  CONVERSACIÓN COMPLETA CON DIEGO desde 00:00 ART de hoy        "
+#   echo "  (UTC >= 2026-05-19 03:00:00)                                  "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -separator '|' "$DB" <<SQL
+#   .mode list
+#   .headers off
+#   SELECT
+#     id,
+#     timestamp,
+#     CASE direccion WHEN 'entrante' THEN '◀ DIEGO' WHEN 'saliente' THEN '▶ MARIA' ELSE direccion END AS dir,
+#     COALESCE(cuerpo, '')
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 03:00:00'
+#     AND canal = 'whatsapp'
+#     AND (de = '$DIEGO' OR para_json LIKE '%$DIEGO%')
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  ACCIONES Y FALLOS RELACIONADOS (sistema/interno) hoy desde 0  "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -separator '|' "$DB" <<SQL
+#   .mode list
+#   .headers off
+#   SELECT id, timestamp, substr(cuerpo, 1, 220)
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 03:00:00'
+#     AND canal = 'sistema'
+#     AND (cuerpo LIKE '%FALLÓ%' OR cuerpo LIKE '%error%' OR cuerpo LIKE '%enviar_wa%' OR cuerpo LIKE '%programar_mensaje%' OR cuerpo LIKE '%mandar_email%' OR cuerpo LIKE '%crear_evento%')
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  RESUMEN AYER (2026-05-18 ART): mensajes por usuario           "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -header -column "$DB" <<SQL
+#   SELECT
+#     COALESCE(u.nombre, e.de) AS quien,
+#     e.de AS wa,
+#     SUM(CASE WHEN e.direccion='entrante' THEN 1 ELSE 0 END) AS recibidos,
+#     SUM(CASE WHEN e.direccion='saliente' THEN 1 ELSE 0 END) AS enviados,
+#     MIN(e.timestamp) AS primero,
+#     MAX(e.timestamp) AS ultimo
+#   FROM eventos e
+#   LEFT JOIN usuarios u ON u.wa_cus = e.de OR e.de LIKE '%' || u.wa_cus
+#   WHERE e.canal = 'whatsapp'
+#     AND e.timestamp >= '2026-05-18 03:00:00'
+#     AND e.timestamp <  '2026-05-19 03:00:00'
+#   GROUP BY e.de
+#   ORDER BY (recibidos + enviados) DESC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  AYER — fallos/errores del sistema (claude calls, acciones)    "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -separator '|' "$DB" <<SQL
+#   .mode list
+#   .headers off
+#   SELECT id, timestamp, substr(cuerpo, 1, 200)
+#   FROM eventos
+#   WHERE canal = 'sistema'
+#     AND timestamp >= '2026-05-18 03:00:00'
+#     AND timestamp <  '2026-05-19 03:00:00'
+#     AND (cuerpo LIKE '%FALLÓ%' OR cuerpo LIKE '%timeout%' OR cuerpo LIKE '%ReferenceError%' OR cuerpo LIKE '%TypeError%' OR cuerpo LIKE '%SIGKILL%' OR cuerpo LIKE '%error%')
+#   ORDER BY id ASC
+#   LIMIT 80;
+#   SQL
+#   
+#   echo ""
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  AYER — acciones ejecutadas (counts)                           "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -header -column "$DB" <<SQL
+#   SELECT
+#     TRIM(SUBSTR(cuerpo, INSTR(cuerpo, 'acción ejecutada: ') + LENGTH('acción ejecutada: '))) AS accion,
+#     COUNT(*) AS veces
+#   FROM eventos
+#   WHERE canal = 'sistema'
+#     AND timestamp >= '2026-05-18 03:00:00'
+#     AND timestamp <  '2026-05-19 03:00:00'
+#     AND cuerpo LIKE 'acción ejecutada:%'
+#   GROUP BY accion
+#   ORDER BY veces DESC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  AYER — claude_call latencias (estadísticas)                   "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -header -column "$DB" <<SQL
+#   SELECT
+#     COUNT(*) AS total_calls,
+#     ROUND(AVG(CAST(SUBSTR(cuerpo, INSTR(cuerpo,':')+2, INSTR(cuerpo,'ms')-INSTR(cuerpo,':')-2) AS INT)), 0) AS avg_ms,
+#     MAX(CAST(SUBSTR(cuerpo, INSTR(cuerpo,':')+2, INSTR(cuerpo,'ms')-INSTR(cuerpo,':')-2) AS INT)) AS max_ms
+#   FROM eventos
+#   WHERE canal = 'sistema'
+#     AND timestamp >= '2026-05-18 03:00:00'
+#     AND timestamp <  '2026-05-19 03:00:00'
+#     AND cuerpo LIKE 'claude_call%';
+#   SQL
+
+# ───── output ─────
+DB: /root/secretaria/state/maria-paez/db/maria.sqlite
+
+═══════════════════════════════════════════════════════════════
+  CONVERSACIÓN COMPLETA CON DIEGO desde 00:00 ART de hoy        
+  (UTC >= 2026-05-19 03:00:00)                                  
+═══════════════════════════════════════════════════════════════
+Parse error near line 3: no such column: para_json
+   = 'whatsapp'   AND (de = '5491132317896@c.us' OR para_json LIKE '%54911323178
+                                      error here ---^
+
+═══════════════════════════════════════════════════════════════
+  ACCIONES Y FALLOS RELACIONADOS (sistema/interno) hoy desde 0  
+═══════════════════════════════════════════════════════════════
+5466|2026-05-19 03:43:05|acción ejecutada: programar_mensaje
+5470|2026-05-19 04:15:04|acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 2026-05-29T14:00:00-03
+5474|2026-05-19 04:17:07|acción ejecutada: crear_evento
+5475|2026-05-19 04:17:07|acción ejecutada: programar_mensaje
+5479|2026-05-19 04:17:47|acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": t
+5509|2026-05-19 10:13:30|acción ejecutada: programar_mensaje
+5531|2026-05-19 11:10:25|acción ejecutada: enviar_wa
+5547|2026-05-19 11:18:50|acción ejecutada: programar_mensaje
+5548|2026-05-19 11:18:50|acción ejecutada: programar_mensaje
+5554|2026-05-19 11:21:24|acción FALLÓ: enviar_wa — No pude mandar WA a 5491143092046@c.us: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+5556|2026-05-19 11:21:24|acción ejecutada: enviar_wa
+5564|2026-05-19 11:25:27|acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+5569|2026-05-19 11:27:18|acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+5574|2026-05-19 11:29:34|acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+
+═══════════════════════════════════════════════════════════════
+  RESUMEN AYER (2026-05-18 ART): mensajes por usuario           
+═══════════════════════════════════════════════════════════════
+quien                wa                   recibidos  enviados  primero              ultimo             
+-------------------  -------------------  ---------  --------  -------------------  -------------------
+5491132317896@c.us   5491132317896@c.us   33         12        2026-05-18 11:33:28  2026-05-19 00:43:16
+34342575317160@lid   34342575317160@lid   0          27        2026-05-18 07:00:10  2026-05-19 02:09:17
+167933254885560@lid  167933254885560@lid  12         13        2026-05-18 17:40:40  2026-05-19 00:44:16
+Enrique Sosa         59899643028@c.us     8          7         2026-05-18 10:00:14  2026-05-18 20:02:42
+121328598274271@lid  121328598274271@lid  10         4         2026-05-18 12:25:38  2026-05-18 13:06:04
+                                          0          12        2026-05-18 12:27:53  2026-05-18 13:04:23
+232185965629610@lid  232185965629610@lid  7          5         2026-05-18 14:52:55  2026-05-18 18:41:44
+103676316278817@lid  103676316278817@lid  6          5         2026-05-18 20:50:26  2026-05-18 21:01:09
+137456250806423@lid  137456250806423@lid  0          9         2026-05-18 10:00:10  2026-05-18 19:45:17
+Santiago Bignone     5491134274828@c.us   3          5         2026-05-18 10:00:11  2026-05-18 13:45:57
+175419449995277@lid  175419449995277@lid  4          3         2026-05-18 20:17:07  2026-05-18 20:52:27
+105171031949561@lid  105171031949561@lid  0          6         2026-05-18 10:00:12  2026-05-18 19:39:53
+5491154025172@c.us   5491154025172@c.us   0          5         2026-05-18 19:43:29  2026-05-18 20:41:16
+5491161673400@c.us   5491161673400@c.us   0          4         2026-05-18 19:43:29  2026-05-18 20:59:22
+117003583000810@lid  117003583000810@lid  2          1         2026-05-18 13:10:19  2026-05-18 13:11:11
+Doris Capurro        5491144471264@c.us   3          0         2026-05-18 19:36:46  2026-05-18 19:39:19
+159936646537471@lid  159936646537471@lid  1          1         2026-05-18 14:27:17  2026-05-18 14:27:41
+176136659198049@lid  176136659198049@lid  1          0         2026-05-18 11:18:32  2026-05-18 11:18:32
+227143674011812@lid  227143674011812@lid  0          1         2026-05-18 10:00:12  2026-05-18 10:00:12
+232637088149596@lid  232637088149596@lid  0          1         2026-05-18 10:00:10  2026-05-18 10:00:10
+5491121773859@c.us   5491121773859@c.us   0          1         2026-05-18 12:00:10  2026-05-18 12:00:10
+5491123149614@c.us   5491123149614@c.us   0          1         2026-05-18 12:00:10  2026-05-18 12:00:10
+Cristian Ruiz        5491126406612@c.us   0          1         2026-05-18 10:00:13  2026-05-18 10:00:13
+Walter Vera          5491138433288@c.us   0          1         2026-05-18 10:00:13  2026-05-18 10:00:13
+5491138756003@c.us   5491138756003@c.us   0          1         2026-05-18 12:00:10  2026-05-18 12:00:10
+5491140851873@c.us   5491140851873@c.us   0          1         2026-05-18 12:44:03  2026-05-18 12:44:03
+Rubén Ward           5491154024727@c.us   0          1         2026-05-18 10:00:14  2026-05-18 10:00:14
+Sebastian Ameijeira  5491163004389@c.us   0          1         2026-05-18 10:00:14  2026-05-18 10:00:14
+5491165305417@c.us   5491165305417@c.us   0          1         2026-05-18 12:00:10  2026-05-18 12:00:10
+Fernando Boero       5491166903856@c.us   0          1         2026-05-18 10:00:11  2026-05-18 10:00:11
+
+═══════════════════════════════════════════════════════════════
+  AYER — fallos/errores del sistema (claude calls, acciones)    
+═══════════════════════════════════════════════════════════════
+5117|2026-05-18 12:33:19|claude_call whatsapp: 103668ms prompt=65888c raw=1094c ERROR=Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c,
+5118|2026-05-18 12:33:19|Claude falló en WA (Diego): Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c, stdout=1094c)
+
+═══════════════════════════════════════════════════════════════
+  AYER — acciones ejecutadas (counts)                           
+═══════════════════════════════════════════════════════════════
+accion             veces
+-----------------  -----
+enviar_wa          17   
+agregar_pendiente  14   
+quitar_pendiente   13   
+reenviar_wa        12   
+upsert_contacto    4    
+recordar_hecho     2    
+crear_evento       1    
+
+═══════════════════════════════════════════════════════════════
+  AYER — claude_call latencias (estadísticas)                   
+═══════════════════════════════════════════════════════════════
+total_calls  avg_ms   max_ms
+-----------  -------  ------
+110          26648.0  103668
+
+# exit=0
