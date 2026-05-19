@@ -1,0 +1,92 @@
+# ejecutado: 2026-05-19T17:26:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "═══ 1. Webhook events recibidos (últimos 10) ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, event_name, procesado, COALESCE(substr(error,1,60),'') AS error, datetime(recibido_en) FROM webhook_events ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 2. Clientes en control.clientes ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, nombre, email, wa, estado, instancia_slug, instancia_usuario_id, lemon_customer_id, lemon_subscription_id, datetime(creado) FROM clientes ORDER BY id DESC;"
+#   
+#   echo
+#   echo "═══ 3. Usuarios nuevos en maria-paez ═══"
+#   sqlite3 -header -column /root/secretaria/state/maria-paez/db/maria.sqlite \
+#     "SELECT id, nombre, email, wa_cus, activo, bienvenida_enviada, calendar_acceso, lemon_subscription_id FROM usuarios ORDER BY id DESC LIMIT 5;"
+#   
+#   echo
+#   echo "═══ 4. Logs intensa-api últimos webhook ═══"
+#   pm2 logs intensa-api --lines 100 --nostream 2>&1 | grep -iE "webhook|cliente creado|signup_pending" | tail -15
+#   
+#   echo
+#   echo "═══ 5. Logs maria-paez bienvenida-loop ═══"
+#   pm2 logs maria-paez --lines 200 --nostream 2>&1 | grep -iE "bienvenida|WA →usr|wa_send" | tail -20
+#   
+#   echo
+#   echo "═══ 6. Eventos salientes recientes en maria-paez ═══"
+#   sqlite3 -header -column /root/secretaria/state/maria-paez/db/maria.sqlite \
+#     "SELECT id, datetime(timestamp), direccion, substr(de,1,20), substr(cuerpo,1,80) FROM eventos WHERE direccion='saliente' AND timestamp >= datetime('now','-15 minutes') ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ 1. Webhook events recibidos (últimos 10) ═══
+id  event_name                    procesado  error                          datetime(recibido_en)
+--  ----------------------------  ---------  -----------------------------  ---------------------
+5   subscription_payment_success  1                                         2026-05-19 20:24:59  
+4   subscription_updated          1                                         2026-05-19 20:24:54  
+3   subscription_created          0          FOREIGN KEY constraint failed  2026-05-19 20:24:51  
+2   subscription_payment_success  1                                         2026-05-19 20:24:19  
+
+═══ 2. Clientes en control.clientes ═══
+
+═══ 3. Usuarios nuevos en maria-paez ═══
+id  nombre               email                             wa_cus              activo  bienvenida_enviada  calendar_acceso  lemon_subscription_id
+--  -------------------  --------------------------------  ------------------  ------  ------------------  ---------------  ---------------------
+12  Enrique Sosa         enrique.sosa@globalnetmobile.com  59899643028@c.us    1       1                   none                                  
+11  Rubén Ward           ruben.ward@sondeosglobal.com      5491154024727@c.us  1       1                   none                                  
+10  Sebastian Ameijeira  sameijeira@froneus.com            5491163004389@c.us  1       1                   none                                  
+9   Cristian Ruiz        cruiz@froneus.com                 5491126406612@c.us  1       1                   none                                  
+8   Walter Vera          wvera@froneus.com                 5491138433288@c.us  1       1                   none                                  
+
+═══ 4. Logs intensa-api últimos webhook ═══
+2|intensa- | 2026-05-19 17:24:51:     at _onSubscriptionCreated (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:126:12)
+2|intensa- | 2026-05-19 17:24:51:     at _procesar (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:93:12)
+2|intensa- | 2026-05-19 17:24:51:     at /root/secretaria/ops/backend/intensa-api/routes/webhook.js:67:13
+2|intensa- | 2026-05-19 17:24:56: [webhook] subscription_created sin signup_pending matching. Token=ae7c26796b844c534efe34bc7bf132247811bfc9099e4167c6678baff1eb8bea. Datos LS: email=diego@paez.is
+2|intensa- | 2026-05-19 17:24:56: [webhook] error procesando subscription_created (a1d1bf42-bcb5-4f9b-bdad-6dfa41d69e88): SqliteError: FOREIGN KEY constraint failed
+2|intensa- | 2026-05-19 17:24:56:     at _crearClienteSinSignup (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:197:6)
+2|intensa- | 2026-05-19 17:24:56:     at _onSubscriptionCreated (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:126:12)
+2|intensa- | 2026-05-19 17:24:56:     at _procesar (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:93:12)
+2|intensa- | 2026-05-19 17:24:56:     at /root/secretaria/ops/backend/intensa-api/routes/webhook.js:67:13
+2|intensa- | 2026-05-19 17:25:21: [webhook] subscription_created sin signup_pending matching. Token=ae7c26796b844c534efe34bc7bf132247811bfc9099e4167c6678baff1eb8bea. Datos LS: email=diego@paez.is
+2|intensa- | 2026-05-19 17:25:21: [webhook] error procesando subscription_created (a1d1bf42-bcb5-4f9b-bdad-6dfa41d69e88): SqliteError: FOREIGN KEY constraint failed
+2|intensa- | 2026-05-19 17:25:21:     at _crearClienteSinSignup (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:197:6)
+2|intensa- | 2026-05-19 17:25:21:     at _onSubscriptionCreated (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:126:12)
+2|intensa- | 2026-05-19 17:25:21:     at _procesar (/root/secretaria/ops/backend/intensa-api/routes/webhook.js:93:12)
+2|intensa- | 2026-05-19 17:25:21:     at /root/secretaria/ops/backend/intensa-api/routes/webhook.js:67:13
+
+═══ 5. Logs maria-paez bienvenida-loop ═══
+0|maria-pa | 2026-05-19 13:54:46: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 14:01:57: [WA →usr] Diego (34342575317160@lid): Diego Teubal confirmó: mañana *miércoles 20/05 a las 16:15* pasás por *Húsares 2080* y Darío va a estar. Ojo que tenés «Personal» desde las 15:30 — ¿actualizo e
+0|maria-pa | 2026-05-19 14:05:16: [WA →usr] Diego (34342575317160@lid): El bagel con ensalada está listo en Farinelli, podés pasar a retirarlo cuando quieras.
+0|maria-pa | 2026-05-19 14:06:33: [WA →usr] Diego (34342575317160@lid): Diego, Farinelli me acaba de pedir que no te avisara todavía — pero ya lo había hecho. Si hay algo que cambió con tu pedido, conviene que lo sepas.
+0|maria-pa | 2026-05-19 14:35:09: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 14:40:08: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 14:40:16: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 15:56:20: [WA →usr] Nicolas Kosinski (227143674011812@lid) [via respuesta_a_remitente]: ¡Hola, Nicolás! ¿En qué te puedo ayudar?
+0|maria-pa | 2026-05-19 15:57:34: [WA →usr] ABORTADO Nicolas Kosinski (227143674011812@lid): llegó msg nuevo durante procesamiento — el próximo lote responde
+0|maria-pa | 2026-05-19 15:58:14: [WA →usr] Nicolas Kosinski (227143674011812@lid): Acá va el borrador. No tengo info específica de Froneus, así que dejé un espacio para la reseña — completalo y me avisás si querés que lo mande yo o lo mandás v
+0|maria-pa | 2026-05-19 16:00:38: [WA →usr] Nicolas Kosinski (227143674011812@lid): Listo, investigué froneus.com. Acá va el texto completo:
+
+═══ 6. Eventos salientes recientes en maria-paez ═══
+
+═══ DONE ═══
+
+# exit=0
