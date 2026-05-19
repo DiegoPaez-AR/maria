@@ -20,6 +20,8 @@ const TR = {
     'step1.cal-ms': 'Microsoft Outlook / Office 365',
     'step1.cal-caldav': 'iCloud · Fastmail · Yahoo',
     'step1.cta': 'Continuar',
+    'step1.lbl-terminos': 'Acepto los <a href="/maria/terminos/" target="_blank">Términos y Condiciones</a> — entiendo que María está en BETA, que no hay garantía sobre su funcionamiento, y que la máxima compensación posible es el reembolso del último mes efectivamente cobrado.',
+    'err.must_accept_terms': 'Tenés que aceptar los Términos y Condiciones para continuar.',
     'step1.legal': 'Al continuar aceptás recibir mensajes de María por WhatsApp y email para validar tu identidad. No spam.',
     'step2.h1': 'Validá los dos códigos.',
     'step2.sub': 'Te mandamos uno a tu <em>email</em> y otro a tu <em>WhatsApp</em>. Ingresalos abajo. Vencen en 10 minutos.',
@@ -60,6 +62,8 @@ const TR = {
     'step1.cal-ms': 'Microsoft Outlook / Office 365',
     'step1.cal-caldav': 'iCloud · Fastmail · Yahoo',
     'step1.cta': 'Continue',
+    'step1.lbl-terminos': 'I accept the <a href="/maria/terminos/" target="_blank">Terms and Conditions</a> — I understand that María is in BETA, that no warranty is provided on its operation, and that the maximum possible compensation is the refund of the last month effectively charged.',
+    'err.must_accept_terms': 'You must accept the Terms and Conditions to continue.',
     'step1.legal': 'By continuing you agree to receive messages from María via WhatsApp and email to verify your identity. No spam.',
     'step2.h1': 'Verify both codes.',
     'step2.sub': 'We sent one to your <em>email</em> and another to your <em>WhatsApp</em>. Enter both. They expire in 10 minutes.',
@@ -141,11 +145,16 @@ document.getElementById('form-datos').addEventListener('submit', async (e) => {
   btn.disabled = true;
 
   const fd = new FormData(e.target);
+  const acepto = !!fd.get('acepto_terminos');
+  if (!acepto) {
+    showError('errors-step1', t('err.must_accept_terms')); btn.disabled = false; return;
+  }
   const data = {
     nombre: fd.get('nombre').trim(),
     email: fd.get('email').trim(),
     wa: fd.get('wa').trim(),
     calendar_provider: fd.get('calendar_provider') || null,
+    acepto_terminos: true,
   };
   if (!data.nombre || data.nombre.length < 2) {
     showError('errors-step1', t('err.bad_nombre')); btn.disabled = false; return;

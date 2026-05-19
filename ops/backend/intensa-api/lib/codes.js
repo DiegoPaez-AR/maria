@@ -58,8 +58,8 @@ function iniciarSignup({ nombre, email, wa, calendar_provider }) {
   const expira = new Date(ahora.getTime() + TTL_MIN * 60_000).toISOString();
 
   const r = c.prepare(`
-    INSERT INTO signup_pending (nombre, email, wa, calendar_provider, email_code, wa_code, expira_en)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO signup_pending (nombre, email, wa, calendar_provider, email_code, wa_code, expira_en, terminos_aceptados_en)
+    VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
   `).run(nombre, email, wa, calendar_provider || null, email_code, wa_code, expira);
 
   // Enviar códigos vía Maria signup_bot. Best-effort; si falla el envío, devolvemos error.

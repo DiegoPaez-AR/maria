@@ -21,7 +21,11 @@ function _validateStart(b) {
   if (!/^\d{10,15}$/.test(waClean)) throw _err('bad_wa', 'WhatsApp inválido (10-15 dígitos)');
   if (calendar_provider && !['google', 'microsoft', 'caldav'].includes(calendar_provider))
     throw _err('bad_provider', 'Provider de calendar inválido');
-  return { nombre: nombre.trim(), email: email.toLowerCase().trim(), wa: waClean, calendar_provider: calendar_provider || null };
+  // Términos y Condiciones — obligatorio
+  if (!b.acepto_terminos || b.acepto_terminos !== true) {
+    throw _err('must_accept_terms', 'Tenés que aceptar los Términos y Condiciones para continuar.');
+  }
+  return { nombre: nombre.trim(), email: email.toLowerCase().trim(), wa: waClean, calendar_provider: calendar_provider || null, acepto_terminos: true };
 }
 
 function _err(code, message, status = 400) {

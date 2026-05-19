@@ -133,3 +133,16 @@ footer { background: var(--bg-alt); padding: 28px 0; margin-top: auto; }
 @media (max-width: 640px) {
   .signup-main { padding: 32px 0 60px; }
 }
+
+/* Checkbox de términos */
+.checkbox-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 20px 0; padding: 14px 16px;
+  background: var(--bg-alt); border-radius: 12px;
+  font-size: 0.88rem; line-height: 1.5; color: var(--text-dim);
+}
+.checkbox-row input[type=checkbox] {
+  width: auto; margin-top: 2px;
+}
+.checkbox-row span { flex: 1; }
+.checkbox-row a { color: var(--primary); text-decoration: underline; }

@@ -146,12 +146,14 @@ async function _onSubscriptionCreated(evt, signupToken) {
     INSERT INTO clientes (
       nombre, email, wa, calendar_provider, instancia_slug, instancia_usuario_id, estado,
       lemon_customer_id, lemon_subscription_id, lemon_customer_portal,
-      ultimo_cobro_en, proximo_cobro_en, ultimo_evento, ultimo_evento_en
-    ) VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, datetime('now'))
+      ultimo_cobro_en, proximo_cobro_en, ultimo_evento, ultimo_evento_en,
+      terminos_aceptados_en, terminos_version
+    ) VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?)
   `).run(
     pending.nombre, pending.email, pending.wa, pending.calendar_provider,
     instance.slug, usuarioId, customerId, subscriptionId, attrs.urls?.customer_portal || null,
     attrs.created_at, attrs.renews_at, 'subscription_created',
+    pending.terminos_aceptados_en || new Date().toISOString(), 'v1-2026-05-19',
   );
 
   instances.incrementarUsuarios(instance.slug);

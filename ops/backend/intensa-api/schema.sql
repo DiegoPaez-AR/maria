@@ -50,6 +50,9 @@ CREATE TABLE IF NOT EXISTS clientes (
   actualizado             DATETIME DEFAULT CURRENT_TIMESTAMP,
   inactivado_en           DATETIME,
   cancelado_en            DATETIME,                       -- al ponerse en cancelled, agendamos borrado +90d
+  -- Aceptación de Términos y Condiciones (al momento del signup)
+  terminos_aceptados_en   DATETIME NOT NULL,
+  terminos_version        TEXT,                            -- ej 'v1-2026-05-19'
   -- FK soft (cross-DB, no enforceable en SQLite)
   FOREIGN KEY (instancia_slug) REFERENCES instances(slug)
 );
@@ -77,7 +80,9 @@ CREATE TABLE IF NOT EXISTS signup_pending (
   token_emitido_en  DATETIME,
   -- TTL
   creado            DATETIME DEFAULT CURRENT_TIMESTAMP,
-  expira_en         DATETIME NOT NULL              -- creado + 10min
+  expira_en         DATETIME NOT NULL,             -- creado + 10min
+  -- Aceptación de Términos y Condiciones (obligatorio)
+  terminos_aceptados_en DATETIME
 );
 CREATE INDEX IF NOT EXISTS idx_signup_expira ON signup_pending(expira_en);
 CREATE INDEX IF NOT EXISTS idx_signup_token  ON signup_pending(signup_token) WHERE signup_token IS NOT NULL;
