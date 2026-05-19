@@ -49,13 +49,19 @@ for landing_src in "$SRC"/*/; do
         sed "s|styles\.css|styles.css?v=${STAMP}|g; s|script\.js|script.js?v=${STAMP}|g" "$landing_src/index.html" > "$landing_dest/index.html"
         echo "    index.html con cache-bust v=${STAMP}"
     fi
-    # Cualquier otro archivo del landing (imágenes, etc.) se copia tal cual
-    for f in "$landing_src"*; do
-        bn=$(basename "$f")
-        case "$bn" in
-            index.html|styles.css|script.js) ;;
-            *) cp -v "$f" "$landing_dest/" ;;
-        esac
+    # Otros archivos y subdirectorios del landing (signup/, cuenta/, terminos/,
+    # imágenes, etc.) se sincronizan con rsync para preservar la jerarquía.
+    # Excluimos los 3 archivos top-level que ya manejamos arriba con cache-bust.
+    rsync -a --exclude=index.html --exclude=styles.css --exclude=script.js \
+        "$landing_src" "$landing_dest/" 2>/dev/null || true
+    # Para CADA subdir adentro del landing (ej. signup/, cuenta/, terminos/),
+    # aplicamos cache-bust también a sus index.html.
+    for sub in "$landing_dest"/*/; do
+        [ -d "$sub" ] || continue
+        if [ -f "$sub/index.html" ]; then
+            sed -i "s|styles\.css|styles.css?v=${STAMP}|g; s|script\.js|script.js?v=${STAMP}|g" "$sub/index.html"
+            echo "    cache-bust v=${STAMP} en $(basename "$sub")/index.html"
+        fi
     done
     chown -R www-data:www-data "$landing_dest"
     find "$landing_dest" -type f -exec chmod 644 {} +
