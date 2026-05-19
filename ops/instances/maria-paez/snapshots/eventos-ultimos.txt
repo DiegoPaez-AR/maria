@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5479  2026-05-19 04:17:47  sistema   interno                         acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, ree
+
+5478  2026-05-19 04:17:47  whatsapp  saliente   5491132317896@c.us   Dale, te agendo IONQ el miércoles 27 de 10 a 12.                                                                                                                                                        
+
+5477  2026-05-19 04:17:47  sistema   interno                         claude_call whatsapp: 30083ms prompt=68310c raw=479c                                                                                                                                                    
+
+5476  2026-05-19 04:17:17  whatsapp  entrante   5491132317896@c.us   Ponerme una reunión el miércoles 27 de 10 a 12 con IONQ                                                                                                                                                 
+
+5475  2026-05-19 04:17:07  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+5474  2026-05-19 04:17:07  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+5473  2026-05-19 04:17:07  calendar  saliente                        creado: IONQ (2026-05-29T10:00:00-03:00 → 2026-05-29T18:00:00-03:00)                                                                                                                                    
+
+5472  2026-05-19 04:17:06  sistema   interno                         claude_call whatsapp: 89469ms prompt=68195c raw=1180c                                                                                                                                                   
+
 5471  2026-05-19 04:15:36  whatsapp  entrante   5491132317896@c.us   Y avísale mañana a las 8 a Ruben que me olvide que tenía ya tomado el almuerzo del viernes 29 por que viene gente de IONQ, que si podemos mover el armuerzo con Andy y Alex a otro día.                 
 
 5470  2026-05-19 04:15:04  sistema   interno                         acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 20
@@ -196,19 +212,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5381  2026-05-18 20:38:01  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 5380  2026-05-18 20:38:01  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-5379  2026-05-18 20:38:01  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5378  2026-05-18 20:38:01  whatsapp  saliente   5491154025172@c.us   Hola Pablo, la reunión sería en las oficinas de Edenor en Belgrano. Lo de si es el Poguetti de Noro te lo confirmo en un momento.                                                                       
-
-5377  2026-05-18 20:38:01  whatsapp  saliente   34342575317160@lid   Le mando a Pablo el lugar (Edenor, Belgrano). ¿Poguetti es el de Noro?                                                                                                                                  
-
-5376  2026-05-18 20:38:01  sistema   interno                         claude_call whatsapp: 39854ms prompt=66178c raw=943c                                                                                                                                                    
-
-5375  2026-05-18 20:37:21  whatsapp  entrante   5491132317896@c.us   supongo que en la oficinas de Edenor, Belgrano                                                                                                                                                          
-
-5374  2026-05-18 20:36:33  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-5373  2026-05-18 20:36:33  whatsapp  saliente   175419449995277@lid  Lo consulto con Diego y te confirmo enseguida.                                                                                                                                                          
-
-5372  2026-05-18 20:36:33  whatsapp  saliente   34342575317160@lid   Pablo Casal te pregunta dónde sería la reunión con Poguetti (si en Carlos Pellegrini o en otro lado), y si es el Poguetti de Noro. ¿Qué le confirmo?                                                    
