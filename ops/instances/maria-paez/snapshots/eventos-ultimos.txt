@@ -1,5 +1,20 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5556  2026-05-19 11:21:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5555  2026-05-19 11:21:24  whatsapp  saliente   5491154024727@c.us   Hola Rubén, buen día! Te escribe María de parte de Diego. Me pidió que te avisara que se le olvidó que tenía ya tomado el almuerzo del viernes 29 porque viene gente de IONQ. ¿Pueden mover el almuerzo 
+
+5554  2026-05-19 11:21:24  sistema   interno                         acción FALLÓ: enviar_wa — No pude mandar WA a 5491143092046@c.us: No LID for user                                                                                                                       
+                                                                     s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)                                                                                                                                  
+
+5553  2026-05-19 11:21:23  sistema   interno                         acción ejecutada: cancelar_programado                                                                                                                                                                   
+
+5552  2026-05-19 11:21:23  sistema   interno                         acción ejecutada: cancelar_programado                                                                                                                                                                   
+
+5551  2026-05-19 11:21:23  whatsapp  saliente   34342575317160@lid   Dale, los mando ya.                                                                                                                                                                                     
+
+5550  2026-05-19 11:21:23  sistema   interno                         claude_call whatsapp: 47279ms prompt=68172c raw=877c                                                                                                                                                    
+
 5549  2026-05-19 11:20:35  whatsapp  entrante   5491132317896@c.us   mandalos los dos ya                                                                                                                                                                                     
 
 5548  2026-05-19 11:18:50  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
@@ -238,19 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5458  2026-05-19 03:39:35  sistema   interno                         claude_call whatsapp: 37954ms prompt=67429c raw=638c                                                                                                                                                    
 
 5457  2026-05-19 03:38:57  whatsapp  entrante   5491132317896@c.us   No entiendo la pregunta                                                                                                                                                                                 
-
-5456  2026-05-19 02:09:17  whatsapp  saliente   34342575317160@lid   Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     1. Cuando Analia Frangi pase la dirección del lugar de la reunión del 22/05: actualizarla en el evento 'Reunión Diego Páez / Diego Poguetti' del viernes 22/05                                          
-
-5455  2026-05-19 00:44:16  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5454  2026-05-19 00:44:16  whatsapp  saliente   167933254885560@lid  Hola Ariel, consulté con Diego — le parece perfecta la opción. Me pidió que te diga que en cuanto venda el Subaru, vuelven a retomar con vos lo de la Taos.                                             
-
-5453  2026-05-19 00:44:16  sistema   interno                         claude_call whatsapp: 59788ms prompt=67172c raw=585c                                                                                                                                                    
-
-5452  2026-05-19 00:43:16  whatsapp  entrante   5491132317896@c.us   Si, perfecto. Decile que apenas lo venda lo volvemos a contratar                                                                                                                                        
-
-5451  2026-05-18 22:40:42  whatsapp  saliente   167933254885560@lid  Perfecto Ariel, entendido en los dos frentes — lo consulto con Diego y te confirmo. Gracias por la info.                                                                                                
-
-5450  2026-05-18 22:40:42  whatsapp  saliente   34342575317160@lid   Ariel Quiroga suma una opción nueva: si vendés el Subaru por tu cuenta a un particular (en vez de darlo como parte de pago), él puede pelear un precio de contado mucho mejor para la Taos. Lo de la tas
