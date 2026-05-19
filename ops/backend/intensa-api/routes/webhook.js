@@ -12,7 +12,8 @@ const Database = require('better-sqlite3');
 // Necesitamos el body crudo para validar HMAC. Express.json() ya parsea; necesitamos
 // un middleware previo que capture el raw.
 const router = express.Router();
-router.use(express.json({ verify: (req, res, buf) => { req.rawBody = buf; } }));
+// NO usamos express.json acá — el body ya viene crudo (Buffer) gracias al
+// express.raw() montado en index.js antes de este router.
 
 router.post('/', async (req, res, next) => {
   try {
@@ -24,14 +25,25 @@ router.post('/', async (req, res, next) => {
     const sig = req.headers['x-signature'];
     if (!sig) return res.status(401).json({ error: 'missing_signature' });
 
+    // req.body es Buffer (raw) gracias a express.raw() en index.js.
+    const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body || {}));
+
     // Validar HMAC-SHA256 del body crudo con secret
-    const expected = crypto.createHmac('sha256', secret).update(req.rawBody).digest('hex');
-    if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
-      console.warn('[webhook] firma inválida');
+    const expected = crypto.createHmac('sha256', secret).update(rawBody).digest('hex');
+    const sigBuf = Buffer.from(String(sig), 'utf8');
+    const expBuf = Buffer.from(expected, 'utf8');
+    if (sigBuf.length !== expBuf.length || !crypto.timingSafeEqual(sigBuf, expBuf)) {
+      console.warn(`[webhook] firma inválida (got=${String(sig).slice(0,12)}… expected=${expected.slice(0,12)}…)`);
       return res.status(401).json({ error: 'invalid_signature' });
     }
 
-    const evt = req.body;
+    let evt;
+    try {
+      evt = JSON.parse(rawBody.toString('utf8'));
+    } catch (parseErr) {
+      console.error('[webhook] body no parsea como JSON:', parseErr.message);
+      return res.status(400).json({ error: 'invalid_json' });
+    }
     const eventName = evt?.meta?.event_name;
     const eventId = evt?.meta?.webhook_id || evt?.data?.id;
     if (!eventName || !eventId) {

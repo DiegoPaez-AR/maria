@@ -29,10 +29,7 @@ const PORT = Number(process.env.INTENSA_API_PORT || 4080);
 const HOST = process.env.INTENSA_API_HOST || '127.0.0.1';
 
 const app = express();
-app.use(express.json({ limit: '256kb' }));
-app.use(cookieParser());
-
-// Logger mínimo
+// Logger mínimo (antes de los parsers para no perder timing)
 app.use((req, res, next) => {
   const t = Date.now();
   res.on('finish', () => {
@@ -41,12 +38,20 @@ app.use((req, res, next) => {
   next();
 });
 
+// ⚠ Webhook PRIMERO con express.raw() para capturar el body como Buffer
+// (necesario para validar HMAC). El router de webhook va antes del json parser
+// global, así NO se consume el stream antes de tener el rawBody.
+app.use('/webhook', express.raw({ type: 'application/json', limit: '256kb' }), require('./routes/webhook'));
+
+// Para todos los demás endpoints: JSON parser normal.
+app.use(express.json({ limit: '256kb' }));
+app.use(cookieParser());
+
 // Health
 app.get('/health', (req, res) => res.json({ ok: true, ts: new Date().toISOString() }));
 
 // Routes
 app.use('/signup', require('./routes/signup'));
-app.use('/webhook', require('./routes/webhook'));
 app.use('/cuenta', require('./routes/cuenta'));
 
 // 404 handler
