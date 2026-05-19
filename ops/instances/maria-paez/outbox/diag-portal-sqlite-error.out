@@ -1,0 +1,137 @@
+# ejecutado: 2026-05-19T17:37:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 logs intensa-api últimas 30 líneas SQLite ═══"
+#   pm2 logs intensa-api --lines 100 --nostream 2>&1 | grep -iE "SQLITE|cuenta/login|portal_otp|ERROR|portal_sessions" | tail -20
+#   
+#   echo
+#   echo "═══ Verificar schema actual de portal_otp ═══"
+#   sqlite3 /root/secretaria/state/control/control.sqlite ".schema portal_otp"
+#   
+#   echo
+#   echo "═══ Verificar schema actual de clientes (post recreate v2) ═══"
+#   sqlite3 /root/secretaria/state/control/control.sqlite ".schema clientes" | head -30
+#   
+#   echo
+#   echo "═══ INSERT manual para reproducir el error ═══"
+#   sqlite3 /root/secretaria/state/control/control.sqlite \
+#     "INSERT INTO portal_otp (cliente_id, canal, code, expira_en) VALUES (1, 'email', '123456', datetime('now','+10 minutes'));" 2>&1
+#   
+#   echo
+#   echo "═══ portal_otp tras INSERT ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT * FROM portal_otp WHERE cliente_id=1;"
+#   
+#   echo
+#   echo "═══ Probar /cuenta/login con captcha=skip (deja ver el flow completo) ═══"
+#   # El backend va a fallar el captcha pero igual loguea el error real si hubiera SQLITE upstream
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"canal":"email","identificador":"diego@paez.is","turnstile_token":"skip"}' \
+#     https://intensa.io/maria/api/cuenta/login
+#   echo
+#   echo
+#   echo "═══ logs post-test ═══"
+#   sleep 1
+#   pm2 logs intensa-api --lines 30 --nostream 2>&1 | tail -15
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ pm2 logs intensa-api últimas 30 líneas SQLite ═══
+2|intensa- | 2026-05-19 17:35:52: [2026-05-19T20:35:52.500Z] POST /cuenta/login → 500 341ms
+/root/.pm2/logs/intensa-api-error.log last 100 lines:
+2|intensa- | 2026-05-19 15:33:34: [ERROR] GET /cuenta/me: Error: No autenticado
+2|intensa- | 2026-05-19 15:36:02:   'error-codes': [ 'invalid-input-response' ],
+2|intensa- | 2026-05-19 15:36:02: [ERROR] POST /cuenta/login: Error: Captcha inválido
+2|intensa- | 2026-05-19 17:24:51: [webhook] error procesando subscription_created (a1d1bf42-bcb5-4f9b-bdad-6dfa41d69e88): SqliteError: FOREIGN KEY constraint failed
+2|intensa- | 2026-05-19 17:24:56: [webhook] error procesando subscription_created (a1d1bf42-bcb5-4f9b-bdad-6dfa41d69e88): SqliteError: FOREIGN KEY constraint failed
+2|intensa- | 2026-05-19 17:25:21: [webhook] error procesando subscription_created (a1d1bf42-bcb5-4f9b-bdad-6dfa41d69e88): SqliteError: FOREIGN KEY constraint failed
+2|intensa- | 2026-05-19 17:31:02: [codes] cleanup error: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:31:03:   'error-codes': [ 'invalid-input-response' ],
+2|intensa- | 2026-05-19 17:31:03: [ERROR] POST /cuenta/login: Error: Captcha inválido
+2|intensa- | 2026-05-19 17:32:02: [codes] cleanup error: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:33:02: [codes] cleanup error: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:34:02: [codes] cleanup error: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:35:02: [codes] cleanup error: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:35:16: [ERROR] GET /cuenta/me: Error: No autenticado
+2|intensa- | 2026-05-19 17:35:43: [ERROR] GET /cuenta/me: Error: No autenticado
+2|intensa- | 2026-05-19 17:35:52: [ERROR] POST /cuenta/login: SqliteError: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:35:52:     at Database.prepare (/root/secretaria/ops/backend/intensa-api/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+2|intensa- | 2026-05-19 17:36:02: [codes] cleanup error: no such table: main.clientes_old
+
+═══ Verificar schema actual de portal_otp ═══
+CREATE TABLE portal_otp (
+  id                INTEGER PRIMARY KEY AUTOINCREMENT,
+  cliente_id        INTEGER NOT NULL REFERENCES "clientes_old"(id) ON DELETE CASCADE,
+  canal             TEXT NOT NULL CHECK(canal IN ('email','wa')),
+  code              TEXT NOT NULL,                -- 6 dígitos
+  intentos          INTEGER NOT NULL DEFAULT 0,
+  usado             INTEGER NOT NULL DEFAULT 0,
+  creado            DATETIME DEFAULT CURRENT_TIMESTAMP,
+  expira_en         DATETIME NOT NULL              -- 10min
+);
+CREATE INDEX idx_portal_otp_cliente ON portal_otp(cliente_id, expira_en);
+
+═══ Verificar schema actual de clientes (post recreate v2) ═══
+CREATE TABLE clientes (
+  id                      INTEGER PRIMARY KEY AUTOINCREMENT,
+  nombre                  TEXT NOT NULL,
+  email                   TEXT NOT NULL UNIQUE,
+  wa                      TEXT NOT NULL UNIQUE,
+  calendar_provider       TEXT CHECK(calendar_provider IN ('google','microsoft','caldav','ninguno')),
+  instancia_slug          TEXT NOT NULL,
+  instancia_usuario_id    INTEGER,
+  estado                  TEXT NOT NULL DEFAULT 'active' CHECK(estado IN ('active','inactive','cancelled')),
+  lemon_customer_id       TEXT,
+  lemon_subscription_id   TEXT UNIQUE,
+  lemon_customer_portal   TEXT,
+  ultimo_cobro_en         DATETIME,
+  proximo_cobro_en        DATETIME,
+  ultimo_evento           TEXT,
+  ultimo_evento_en        DATETIME,
+  creado                  DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado             DATETIME DEFAULT CURRENT_TIMESTAMP,
+  inactivado_en           DATETIME,
+  cancelado_en            DATETIME,
+  terminos_aceptados_en   DATETIME NOT NULL,
+  terminos_version        TEXT,
+  FOREIGN KEY (instancia_slug) REFERENCES instances(slug)
+);
+CREATE INDEX idx_clientes_estado     ON clientes(estado);
+CREATE INDEX idx_clientes_instancia  ON clientes(instancia_slug, estado);
+CREATE INDEX idx_clientes_cancelado  ON clientes(cancelado_en) WHERE estado='cancelled';
+
+═══ INSERT manual para reproducir el error ═══
+
+═══ portal_otp tras INSERT ═══
+id  cliente_id  canal  code    intentos  usado  creado               expira_en          
+--  ----------  -----  ------  --------  -----  -------------------  -------------------
+1   1           email  123456  0         0      2026-05-19 20:37:01  2026-05-19 20:47:01
+
+═══ Probar /cuenta/login con captcha=skip (deja ver el flow completo) ═══
+{"error":"captcha_invalid","message":"Captcha inválido"}
+
+═══ logs post-test ═══
+2|intensa- | 2026-05-19 17:35:52:     at /root/secretaria/ops/backend/intensa-api/routes/cuenta.js:69:7
+2|intensa- | 2026-05-19 17:35:52:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2|intensa- | 2026-05-19 17:36:02: [codes] cleanup error: no such table: main.clientes_old
+2|intensa- | 2026-05-19 17:37:02: [cuenta] turnstile fail: {
+2|intensa- | 2026-05-19 17:37:02:   'error-codes': [ 'invalid-input-response' ],
+2|intensa- | 2026-05-19 17:37:02:   success: false,
+2|intensa- | 2026-05-19 17:37:02:   messages: []
+2|intensa- | 2026-05-19 17:37:02: }
+2|intensa- | 2026-05-19 17:37:02: [ERROR] POST /cuenta/login: Error: Captcha inválido
+2|intensa- | 2026-05-19 17:37:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:21:50)
+2|intensa- | 2026-05-19 17:37:02:     at _validateTurnstile (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:41:11)
+2|intensa- | 2026-05-19 17:37:02:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2|intensa- | 2026-05-19 17:37:02:     at async /root/secretaria/ops/backend/intensa-api/routes/cuenta.js:51:5
+2|intensa- | 2026-05-19 17:37:02: [codes] cleanup error: no such table: main.clientes_old
+
+
+═══ DONE ═══
+
+# exit=0
