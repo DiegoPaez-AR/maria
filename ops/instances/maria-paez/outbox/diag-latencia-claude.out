@@ -1,0 +1,207 @@
+# ejecutado: 2026-05-19T20:11:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # diag-latencia-claude.sh — diagnóstico de latencia de las llamadas a Claude.
+#   # Lo manda Claude (Cowork) por el canal asíncrono. Solo lee/mide, no toca código.
+#   set -uo pipefail
+#   export PATH="/usr/local/bin:/usr/bin:/bin:${PATH:-}"
+#   
+#   echo "════════════════════════════════════════════════════════════"
+#   echo " DIAG LATENCIA CLAUDE — $(date '+%Y-%m-%d %H:%M:%S %z')"
+#   echo "════════════════════════════════════════════════════════════"
+#   
+#   # ─── 1. ENTORNO ───────────────────────────────────────────────
+#   echo
+#   echo "── 1. ENTORNO ──────────────────────────────────────────────"
+#   echo "node:    $(node --version 2>/dev/null || echo '?')"
+#   echo -n "claude:  "; claude --version 2>/dev/null || echo '(no encontrado)'
+#   echo "bin:     $(command -v claude 2>/dev/null || echo '?')"
+#   echo "ANTHROPIC_API_KEY:     $([ -n "${ANTHROPIC_API_KEY:-}" ] && echo 'seteada (billing API)' || echo '<unset> → auth ~/.claude (Pro/Max)')"
+#   echo "CLAUDE_SETTINGS_FILE:  ${CLAUDE_SETTINGS_FILE:-<unset>}"
+#   echo "CLAUDE_TIMEOUT_MS:     ${CLAUDE_TIMEOUT_MS:-<default 480000>}"
+#   echo "CLAUDE_IDLE_TIMEOUT_MS:${CLAUDE_IDLE_TIMEOUT_MS:-<default 90000>}"
+#   echo "CLAUDE_ALLOWED_TOOLS:  ${CLAUDE_ALLOWED_TOOLS:-<default WebSearch,WebFetch,Read>}"
+#   echo
+#   echo "mcp-config.json activo:"
+#   sed 's/^/  /' /root/secretaria/mcp-config.json 2>/dev/null || echo "  (no existe)"
+#   echo
+#   echo "playwright MCP en cache de npx:"
+#   if ls -d ~/.npm/_npx/*/node_modules/@playwright/mcp 2>/dev/null | head -3 | sed 's/^/  ✓ /'; then :; else
+#     echo "  ✗ NO cacheado — npx resuelve/baja @playwright/mcp@latest en cada arranque de claude"
+#   fi
+#   
+#   # ─── 2. STATS DB — claude_call últimos 7 días ─────────────────
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   echo
+#   echo "── 2. CLAUDE_CALL HISTÓRICO (DB: $DB) ──────────────────────"
+#   if [ ! -f "$DB" ]; then
+#     echo "  ✗ DB no encontrada"
+#   else
+#     TSV=$(sqlite3 -separator '|' "$DB" \
+#       "SELECT timestamp, cuerpo FROM eventos
+#        WHERE cuerpo LIKE 'claude_call %'
+#          AND timestamp >= datetime('now','-7 days')
+#        ORDER BY timestamp;")
+#     echo "$TSV" | awk -F'|' '
+#     function pct(arr, n, p,   idx){ idx=int((p/100.0)*(n-1))+1; return arr[idx] }
+#     {
+#       ts=$1; body=$2;
+#       if (match(body, /claude_call ([a-z_-]+): ([0-9]+)ms prompt=([0-9]+)c raw=([0-9]+)c/, m)) {
+#         canal=m[1]; ms=m[2]+0; pc=m[3]+0; rc=m[4]+0;
+#         err=(body ~ /ERROR=/)?1:0;
+#         day=substr(ts,1,10);
+#         n++; allms[n]=ms; sum+=ms; if(ms>mx){mx=ms;mxts=ts;mxc=canal;mxpc=pc}
+#         cN[canal]++; cSum[canal]+=ms; if(ms>cMx[canal])cMx[canal]=ms;
+#         dN[day]++; dSum[day]+=ms; if(ms>dMx[day])dMx[day]=ms;
+#         errN+=err;
+#         # correlacion size→duracion
+#         b = (pc<20000)?"1.<20k" : (pc<40000)?"2.20-40k" : (pc<60000)?"3.40-60k" : (pc<80000)?"4.60-80k" : "5.>80k";
+#         bN[b]++; bSum[b]+=ms; if(ms>bMx[b])bMx[b]=ms; bPc[b]+=pc;
+#         # top slowest
+#         slowms[n]=ms; slowline[ms" "n]=ts" | "canal" | "ms"ms | prompt="pc"c | raw="rc"c"(err?" | ERROR":"");
+#       }
+#     }
+#     END{
+#       if(n==0){print "  (sin eventos claude_call en la ventana)"; exit}
+#       # sort durations
+#       for(i=1;i<=n;i++) s[i]=allms[i];
+#       for(i=1;i<=n;i++)for(j=i+1;j<=n;j++)if(s[j]<s[i]){t=s[i];s[i]=s[j];s[j]=t}
+#       printf "  total llamadas: %d   errores/timeouts: %d (%.1f%%)\n", n, errN, errN*100.0/n;
+#       printf "  duración (s):  min %.1f   p50 %.1f   p90 %.1f   p99 %.1f   max %.1f   avg %.1f\n",
+#         s[1]/1000, pct(s,n,50)/1000, pct(s,n,90)/1000, pct(s,n,99)/1000, s[n]/1000, sum/n/1000;
+#       print "";
+#       print "  POR CANAL:";
+#       for(c in cN) printf "    %-14s n=%-4d avg=%6.1fs  max=%6.1fs\n", c, cN[c], cSum[c]/cN[c]/1000, cMx[c]/1000;
+#       print "";
+#       print "  POR DÍA:";
+#       nd=0; for(d in dN) days[++nd]=d;
+#       for(i=1;i<=nd;i++)for(j=i+1;j<=nd;j++)if(days[j]<days[i]){t=days[i];days[i]=days[j];days[j]=t}
+#       for(i=1;i<=nd;i++){d=days[i]; printf "    %s  n=%-4d avg=%6.1fs  max=%6.1fs\n", d, dN[d], dSum[d]/dN[d]/1000, dMx[d]/1000}
+#       print "";
+#       print "  CORRELACIÓN tamaño-de-prompt → duración:";
+#       nb=0; for(b in bN) bk[++nb]=b;
+#       for(i=1;i<=nb;i++)for(j=i+1;j<=nb;j++)if(bk[j]<bk[i]){t=bk[i];bk[i]=bk[j];bk[j]=t}
+#       for(i=1;i<=nb;i++){b=bk[i]; printf "    prompt %-9s n=%-4d avg=%6.1fs  max=%6.1fs  (avg prompt=%dk c)\n",
+#         substr(b,3), bN[b], bSum[b]/bN[b]/1000, bMx[b]/1000, int(bPc[b]/bN[b]/1000)}
+#       print "";
+#       print "  10 LLAMADAS MÁS LENTAS:";
+#       cnt=0;
+#       for(k in slowline){ keys[++cnt]=k }
+#       # ordenar keys por ms desc (la key arranca con ms)
+#       for(i=1;i<=cnt;i++)for(j=i+1;j<=cnt;j++){
+#         ki=keys[i]+0; kj=keys[j]+0; if(kj>ki){t=keys[i];keys[i]=keys[j];keys[j]=t}
+#       }
+#       for(i=1;i<=cnt && i<=10;i++) print "    "slowline[keys[i]];
+#     }'
+#   fi
+#   
+#   # ─── 3. MICROBENCHMARK — overhead del MCP de playwright ───────
+#   echo
+#   echo "── 3. MICROBENCHMARK claude -p (prompt trivial) ────────────"
+#   echo "   Mide el piso de latencia: arranque de CLI + (carga de MCP)."
+#   echo "   Cada corrida: prompt 'Respondé solo OK'. timeout 100s."
+#   PROMPT='Respondé únicamente con la palabra OK y nada más.'
+#   bench() {
+#     local label="$1"; shift
+#     local t0 t1 dt out rc
+#     t0=$(date +%s.%N)
+#     out=$(printf '%s' "$PROMPT" | timeout 100 claude -p "$@" 2>/tmp/_bencherr || true)
+#     rc=$?
+#     t1=$(date +%s.%N)
+#     dt=$(awk -v a="$t0" -v b="$t1" 'BEGIN{printf "%.1f", b-a}')
+#     out=$(printf '%s' "$out" | tr -d '\n' | cut -c1-50)
+#     printf "   %-32s %7ss  rc=%-3d out=[%s]\n" "$label" "$dt" "$rc" "$out"
+#     if [ "$rc" != "0" ]; then echo "        stderr: $(head -c200 /tmp/_bencherr | tr -d '\n')"; fi
+#   }
+#   MCP=/root/secretaria/mcp-config.json
+#   bench "CON mcp-config (corrida 1/cold)" --mcp-config "$MCP"
+#   bench "CON mcp-config (corrida 2/warm)" --mcp-config "$MCP"
+#   bench "SIN mcp-config (corrida 1)"
+#   bench "SIN mcp-config (corrida 2)"
+#   
+#   echo
+#   echo "════════════════════════════════════════════════════════════"
+#   echo " FIN DIAG — $(date '+%H:%M:%S')"
+#   echo "════════════════════════════════════════════════════════════"
+
+# ───── output ─────
+════════════════════════════════════════════════════════════
+ DIAG LATENCIA CLAUDE — 2026-05-19 20:11:01 -0300
+════════════════════════════════════════════════════════════
+
+── 1. ENTORNO ──────────────────────────────────────────────
+node:    v18.19.1
+claude:  2.1.110 (Claude Code)
+bin:     /usr/local/bin/claude
+ANTHROPIC_API_KEY:     <unset> → auth ~/.claude (Pro/Max)
+CLAUDE_SETTINGS_FILE:  <unset>
+CLAUDE_TIMEOUT_MS:     <default 480000>
+CLAUDE_IDLE_TIMEOUT_MS:240000
+CLAUDE_ALLOWED_TOOLS:  <default WebSearch,WebFetch,Read>
+
+mcp-config.json activo:
+  {
+    "mcpServers": {
+      "playwright": {
+        "command": "npx",
+        "args": ["-y", "@playwright/mcp@latest", "--headless"]
+      }
+    }
+  }
+
+playwright MCP en cache de npx:
+  ✓ /root/.npm/_npx/9833c18b2d85bc59/node_modules/@playwright/mcp
+
+── 2. CLAUDE_CALL HISTÓRICO (DB: /root/secretaria/state/maria-paez/db/maria.sqlite) ──────────────────────
+  total llamadas: 467   errores/timeouts: 4 (0.9%)
+  duración (s):  min 7.6   p50 22.4   p90 52.0   p99 123.4   max 264.2   avg 28.8
+
+  POR CANAL:
+    unknown-flow   n=91   avg=  23.2s  max=  54.3s
+    gmail          n=4    avg=  16.5s  max=  40.5s
+    memoria-curada n=26   avg=  28.1s  max=  73.0s
+    whatsapp       n=346  avg=  30.5s  max= 264.2s
+
+  POR DÍA:
+    2026-05-12  n=9    avg=  11.7s  max=  23.0s
+    2026-05-13  n=40   avg=  19.3s  max=  56.6s
+    2026-05-14  n=16   avg=  24.3s  max=  65.7s
+    2026-05-15  n=48   avg=  22.0s  max=  77.0s
+    2026-05-16  n=74   avg=  38.8s  max= 264.2s
+    2026-05-17  n=99   avg=  25.0s  max= 123.4s
+    2026-05-18  n=109  avg=  26.3s  max= 103.7s
+    2026-05-19  n=72   avg=  40.4s  max= 131.7s
+
+  CORRELACIÓN tamaño-de-prompt → duración:
+    prompt <20k      n=26   avg=  28.1s  max=  73.0s  (avg prompt=2k c)
+    prompt 20-40k    n=112  avg=  18.7s  max= 123.4s  (avg prompt=31k c)
+    prompt 40-60k    n=146  avg=  29.9s  max= 264.2s  (avg prompt=50k c)
+    prompt 60-80k    n=183  avg=  34.2s  max= 131.7s  (avg prompt=68k c)
+
+  10 LLAMADAS MÁS LENTAS:
+    2026-05-16 22:36:14 | whatsapp | 264215ms | prompt=53503c | raw=1048c | ERROR
+    2026-05-16 16:40:21 | whatsapp | 218691ms | prompt=50999c | raw=794c | ERROR
+    2026-05-16 22:27:39 | whatsapp | 189515ms | prompt=54427c | raw=1567c | ERROR
+    2026-05-16 22:31:05 | whatsapp | 173859ms | prompt=52802c | raw=1312c
+    2026-05-19 17:22:17 | whatsapp | 131704ms | prompt=70407c | raw=678c
+    2026-05-17 20:44:04 | whatsapp | 123393ms | prompt=35362c | raw=743c
+    2026-05-18 12:33:19 | whatsapp | 103668ms | prompt=65888c | raw=1094c | ERROR
+    2026-05-19 11:15:18 | whatsapp | 101901ms | prompt=68658c | raw=567c
+    2026-05-19 16:32:29 | whatsapp | 101667ms | prompt=71563c | raw=554c
+    2026-05-19 11:53:08 | whatsapp | 97589ms | prompt=66971c | raw=628c
+
+── 3. MICROBENCHMARK claude -p (prompt trivial) ────────────
+   Mide el piso de latencia: arranque de CLI + (carga de MCP).
+   Cada corrida: prompt 'Respondé solo OK'. timeout 100s.
+   CON mcp-config (corrida 1/cold)      6.3s  rc=0   out=[OK]
+   CON mcp-config (corrida 2/warm)      6.3s  rc=0   out=[OK]
+   SIN mcp-config (corrida 1)           3.7s  rc=0   out=[OK]
+   SIN mcp-config (corrida 2)           3.7s  rc=0   out=[OK]
+
+════════════════════════════════════════════════════════════
+ FIN DIAG — 20:11:22
+════════════════════════════════════════════════════════════
+
+# exit=0
