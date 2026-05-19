@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5639  2026-05-19 12:37:31  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
+
+5638  2026-05-19 12:37:31  whatsapp  saliente                        (forward de false_167933254885560@lid_3EB04AA103B73E6023117A → 34342575317160@lid)                                                                                                                      
+
+5637  2026-05-19 12:37:30  whatsapp  saliente   167933254885560@lid  Gracias Ariel, se lo paso a Diego ahora.                                                                                                                                                                
+
+5636  2026-05-19 12:37:30  whatsapp  saliente   34342575317160@lid   Ariel te acaba de mandar la cotización de KAVAK para el Subaru. Resumen:                                                                                                                                
+                                                                                                                                                                                                                                                                             
+                                                                     *Inmediata:* $21.745.885 (US$ 14.945)                                                                                                                                                                   
+                                                                     *Pago en 30 días:* $23.050.884 (US$ 15.842)                                                                                                                                                             
+                                                                     *Permuta (comprando un auto en KAVAK):* $24.                                                                                                                                                            
+
+5635  2026-05-19 12:37:30  sistema   interno                         claude_call whatsapp: 51477ms prompt=69363c raw=880c                                                                                                                                                    
+
 5634  2026-05-19 12:36:38  whatsapp  entrante   167933254885560@lid  (adjuntó image/jpeg, 80 KB)                                                                                                                                                                             
 
 5633  2026-05-19 12:36:38  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de VW Espasa con quien Maria gestiona activamente a pedido de Diego (id=1) la compra de una Taos Highl
@@ -203,13 +217,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5539  2026-05-19 11:15:18  sistema   interno                         claude_call whatsapp: 101901ms prompt=68658c raw=567c                                                                                                                                                   
 
 5538  2026-05-19 11:13:36  sistema   interno                         claude_call whatsapp: 31565ms prompt=68006c raw=531c                                                                                                                                                    
-
-5537  2026-05-19 11:13:04  whatsapp  entrante   5491132317896@c.us   ambos                                                                                                                                                                                                   
-
-5536  2026-05-19 11:13:04  whatsapp  entrante   5491132317896@c.us   si                                                                                                                                                                                                      
-
-5535  2026-05-19 11:12:35  whatsapp  saliente   5491132317896@c.us   Están programados para mañana (miércoles 20) a las 8 — cuando dijiste "mañana a las 8" los agendé para el 20. ¿Querés que los mande ahora?                                                              
-
-5534  2026-05-19 11:12:35  sistema   interno                         claude_call whatsapp: 48500ms prompt=68428c raw=497c                                                                                                                                                    
-
-5533  2026-05-19 11:11:46  whatsapp  entrante   5491132317896@c.us   les mandaste los mensajes a Ruben y a Diego teubal que te pedi anoche?                                                                                                                                  
