@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5710  2026-05-19 16:58:28  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5709  2026-05-19 16:58:28  whatsapp  saliente   5491156920073@c.us   Hola! Quisiera hacer un pedido: un bagel con ensalada, por favor. ¿Pueden tomarlo? Muchas gracias.                                                                                                      
+
+5708  2026-05-19 16:58:28  whatsapp  saliente   5491132317896@c.us   ¡Ya les escribo a Farinelli para pedirlo!                                                                                                                                                               
+
+5707  2026-05-19 16:58:28  sistema   interno                         claude_call whatsapp: 38047ms prompt=70337c raw=444c                                                                                                                                                    
+
 5706  2026-05-19 16:57:49  whatsapp  entrante   5491132317896@c.us   a farinelli                                                                                                                                                                                             
 
 5705  2026-05-19 16:57:03  whatsapp  saliente   5491132317896@c.us   Entendido! ¿De dónde lo pido? Pasame el lugar o el número y lo encargo ahora.                                                                                                                           
@@ -227,11 +235,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5610  2026-05-19 11:59:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (12 usuarios)                                                                                                       
 
 5609  2026-05-19 11:59:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-5608  2026-05-19 11:55:40  sistema   interno                         claude_call whatsapp: 8648ms prompt=67573c raw=205c                                                                                                                                                     
-
-5607  2026-05-19 11:55:31  whatsapp  entrante   5491132317896@c.us   gracias                                                                                                                                                                                                 
-
-5606  2026-05-19 11:54:53  whatsapp  saliente   5491154024727@c.us   ¡Hola Rubén! Acá estoy, decime.                                                                                                                                                                         
-
-5605  2026-05-19 11:54:53  sistema   interno                         claude_call whatsapp: 8412ms prompt=35616c raw=261c                                                                                                                                                     
