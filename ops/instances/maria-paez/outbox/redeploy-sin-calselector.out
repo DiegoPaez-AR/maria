@@ -1,0 +1,70 @@
+# ejecutado: 2026-05-19T15:25:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io && bash deploy.sh 2>&1 | grep cache-bust | head -3
+#   echo
+#   pm2 restart intensa-api --update-env 2>&1 | tail -3
+#   sleep 4
+#   
+#   echo
+#   echo "═══ Smoke: signup ya no pide calendar ═══"
+#   echo "  HTML del signup tiene select de calendar?:"
+#   COUNT=$(curl -sk https://intensa.io/maria/signup/ | grep -c 'select name="calendar_provider"')
+#   echo "    select count = $COUNT (esperamos 0)"
+#   echo
+#   echo "  backend acepta signup SIN calendar_provider:"
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"Test sincal","email":"sincal-2@invalid.test","wa":"5491999999996","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start
+#   echo
+#   sqlite3 /root/secretaria/state/control/control.sqlite "DELETE FROM signup_pending WHERE email LIKE 'sincal-%';"
+#   
+#   echo
+#   echo "═══ Bonus: ver logs intensa-api de errores en signup recientes ═══"
+#   pm2 logs intensa-api --lines 100 --nostream 2>&1 | grep -iE "ERROR.*signup|sendEmail|sendWa|signup_pending" | tail -20
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+  index.html con cache-bust v=20260519-152502
+    index.html con cache-bust v=20260519-152502
+    cache-bust v=20260519-152502 en cuenta/index.html
+
+│ 2  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1407992  │ 0s     │ 2    │ online    │ 0%       │ 9.1mb    │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 1399645  │ 44m    │ 68   │ online    │ 0%       │ 170.9mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+═══ Smoke: signup ya no pide calendar ═══
+  HTML del signup tiene select de calendar?:
+    select count = 0 (esperamos 0)
+
+  backend acepta signup SIN calendar_provider:
+{"ok":true,"signup_id":7,"message":"Códigos enviados a tu email y WhatsApp. Vencen en 10 minutos."}
+
+═══ Bonus: ver logs intensa-api de errores en signup recientes ═══
+2|intensa- | 2026-05-19 14:08:02: [codes] signup_pending id=1 email=smoke-test-donotuse@test.invalid wa=5491999999999
+2|intensa- | 2026-05-19 14:36:04: [codes] signup_pending id=2 email=sincal-verify@test.invalid wa=5491777777777
+2|intensa- | 2026-05-19 14:52:37: [codes] signup_pending id=3 email=diego@paez.net wa=16464256178
+2|intensa- | 2026-05-19 15:06:02: [codes] signup_pending id=4 email=diag@invalid.test wa=5491999999998
+2|intensa- | 2026-05-19 15:09:07: [codes] signup_pending id=5 email=smoke-checkout@test.invalid wa=5491999999997
+2|intensa- | 2026-05-19 15:23:03: [codes] signup_pending id=6 email=diego@paez.is wa=5491132317896
+2|intensa- | 2026-05-19 15:25:07: [codes] signup_pending id=7 email=sincal-2@invalid.test wa=5491999999996
+2|intensa- | 2026-05-19 14:06:06: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:08:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:08:02: [codes] sendEmail failed: Maria maria-paez respondió 503: gmail_not_ready
+2|intensa- | 2026-05-19 14:08:02: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 14:24:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:36:04: [codes] sendEmail failed: Maria maria-paez respondió 503: gmail_not_ready
+2|intensa- | 2026-05-19 14:36:04: [ERROR] POST /signup/start: Error: Provider de calendar inválido
+2|intensa- | 2026-05-19 14:36:04: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 15:06:02: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 15:09:08: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+2|intensa- | 2026-05-19 15:25:07: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+
+═══ DONE ═══
+
+# exit=0
