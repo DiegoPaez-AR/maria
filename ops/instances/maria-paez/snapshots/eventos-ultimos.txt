@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5576  2026-05-19 11:36:28  whatsapp  entrante   5491132317896@c.us   escribile a diego aca                                                                                                                                                                                   
+
+5575  2026-05-19 11:36:08  sistema   interno                         contacto vcard (privado): Diego Teubal → 5491144491280@c.us                                                                                                                                             
+
 5574  2026-05-19 11:29:34  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
 
 5573  2026-05-19 11:29:34  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
@@ -249,7 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5478  2026-05-19 04:17:47  whatsapp  saliente   5491132317896@c.us   Dale, te agendo IONQ el miércoles 27 de 10 a 12.                                                                                                                                                        
 
 5477  2026-05-19 04:17:47  sistema   interno                         claude_call whatsapp: 30083ms prompt=68310c raw=479c                                                                                                                                                    
-
-5476  2026-05-19 04:17:17  whatsapp  entrante   5491132317896@c.us   Ponerme una reunión el miércoles 27 de 10 a 12 con IONQ                                                                                                                                                 
-
-5475  2026-05-19 04:17:07  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
