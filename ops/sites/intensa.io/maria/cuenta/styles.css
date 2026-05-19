@@ -1,0 +1,48 @@
+.canal-toggle {
+  display: flex; gap: 12px; margin-bottom: 16px;
+}
+.radio {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  cursor: pointer; font-size: 0.9rem;
+  margin-bottom: 0 !important;
+}
+.radio input { width: auto; margin: 0; }
+.radio > span { margin: 0; }
+
+.cf-turnstile { margin: 12px 0; }
+
+.btn-ghost {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg-alt); border-color: var(--primary); color: var(--primary); }
+
+.btn-danger {
+  background: rgba(197, 54, 74, 0.08); color: var(--error);
+  border: 1px solid rgba(197, 54, 74, 0.2);
+}
+.btn-danger:hover { background: var(--error); color: white; }
+
+.card-info {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; margin-bottom: 24px;
+}
+.info-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+.info-row:last-child { border-bottom: 0; }
+.info-label { color: var(--text-dim); font-size: 0.9rem; }
+.info-value { color: var(--text); font-weight: 500; text-align: right; }
+.info-value.estado-active { color: var(--success); }
+.info-value.estado-inactive,
+.info-value.estado-cancelled { color: var(--error); }
+
+.actions {
+  display: flex; flex-direction: column; gap: 10px; align-items: stretch;
+}
+.actions .btn { justify-content: center; }

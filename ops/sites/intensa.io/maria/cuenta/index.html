@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Tu cuenta — María</title>
+<meta name="description" data-i18n="meta.desc" content="Tu cuenta de María. Ver pagos, cambiar datos, cancelar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../signup/styles.css">
+<link rel="stylesheet" href="styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/maria/" class="logo">
+      <span class="logo-mark">M</span>
+      <span>maria</span>
+    </a>
+    <div class="nav-links">
+      <a href="/maria/" data-i18n="nav.atras">← maria.io</a>
+      <div class="lang-toggle">
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="signup-main">
+  <div class="container narrow">
+
+    <!-- LOGIN -->
+    <section id="step-login" class="step active reveal">
+      <h1 data-i18n-html="login.h1">Tu cuenta.</h1>
+      <p class="step-sub" data-i18n="login.sub">Ingresá con tu email o WhatsApp. Te mandamos un código para entrar — sin contraseñas.</p>
+
+      <form id="form-login" novalidate>
+        <div class="canal-toggle">
+          <label class="radio">
+            <input type="radio" name="canal" value="email" checked>
+            <span data-i18n="login.por-email">Por email</span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="canal" value="wa">
+            <span data-i18n="login.por-wa">Por WhatsApp</span>
+          </label>
+        </div>
+
+        <label>
+          <span id="lbl-identificador" data-i18n="login.lbl-email">Email</span>
+          <input type="text" name="identificador" required autocomplete="email" placeholder="vos@empresa.com">
+        </label>
+
+        <div id="turnstile-container" class="cf-turnstile" data-sitekey="" data-theme="light"></div>
+
+        <div class="errors" id="errors-login" aria-live="polite"></div>
+
+        <button type="submit" class="btn btn-primary" id="btn-login">
+          <span data-i18n="login.cta">Enviarme el código</span> <span class="arrow">→</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- VERIFY CODE -->
+    <section id="step-verify" class="step reveal">
+      <h1 data-i18n-html="verify.h1">Ingresá el código.</h1>
+      <p class="step-sub" data-i18n="verify.sub">Si los datos son correctos, te mandamos un código de 6 dígitos.</p>
+      <form id="form-verify" novalidate>
+        <label>
+          <span data-i18n="verify.lbl-code">Código</span>
+          <input type="text" name="code" required inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" placeholder="123456">
+        </label>
+        <div class="errors" id="errors-verify" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary" id="btn-verify">
+          <span data-i18n="verify.cta">Entrar</span> <span class="arrow">→</span>
+        </button>
+        <p class="step-link"><a href="#" id="link-volver-login" data-i18n="verify.volver">Usar otro identificador</a></p>
+      </form>
+    </section>
+
+    <!-- ME -->
+    <section id="step-me" class="step reveal">
+      <h1 data-i18n-html="me.h1">Hola, <em id="me-nombre"></em>.</h1>
+      <p class="step-sub" data-i18n="me.sub">Tu suscripción a María.</p>
+
+      <div class="card-info">
+        <div class="info-row">
+          <span class="info-label" data-i18n="me.estado">Estado</span>
+          <span class="info-value" id="me-estado">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label" data-i18n="me.email">Email</span>
+          <span class="info-value" id="me-email">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label" data-i18n="me.wa">WhatsApp</span>
+          <span class="info-value" id="me-wa">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label" data-i18n="me.ultimo-cobro">Último cobro</span>
+          <span class="info-value" id="me-ultimo">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label" data-i18n="me.proximo-cobro">Próximo cobro</span>
+          <span class="info-value" id="me-proximo">—</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a href="#" id="link-portal" class="btn btn-ghost" target="_blank" rel="noopener" data-i18n="me.portal">Ver pagos / actualizar tarjeta</a>
+        <button type="button" class="btn btn-ghost" id="btn-cambiar" data-i18n="me.cambiar">Cambiar email o WhatsApp</button>
+        <button type="button" class="btn btn-danger" id="btn-cancelar" data-i18n="me.cancelar">Cancelar suscripción</button>
+      </div>
+
+      <p class="step-link"><a href="#" id="link-logout" data-i18n="me.salir">Salir</a></p>
+    </section>
+
+    <!-- CHANGE EMAIL/WA -->
+    <section id="step-cambiar" class="step reveal">
+      <h1 data-i18n-html="cambiar.h1">Cambiar datos.</h1>
+      <form id="form-cambiar" novalidate>
+        <label>
+          <span data-i18n="cambiar.lbl-email">Nuevo email (dejá vacío si no cambiás)</span>
+          <input type="email" name="nuevo_email" autocomplete="email">
+        </label>
+        <label>
+          <span data-i18n="cambiar.lbl-wa">Nuevo WhatsApp (con código de país)</span>
+          <input type="tel" name="nuevo_wa" autocomplete="tel">
+        </label>
+        <div class="errors" id="errors-cambiar" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary" id="btn-cambiar-submit">
+          <span data-i18n="cambiar.cta">Guardar</span>
+        </button>
+        <p class="step-link"><a href="#" id="link-volver-me" data-i18n="cambiar.volver">Volver</a></p>
+      </form>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="footer-mini">© 2026 intensa labs · <a href="/maria/">maría</a> · <a href="mailto:hola@intensa.io">hola@intensa.io</a></p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

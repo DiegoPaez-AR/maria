@@ -31,6 +31,8 @@ const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
 const { iniciarCalendarWatch } = require('./calendar-watch');
 const { iniciarFollowUps } = require('./follow-ups');
+const { iniciarBienvenida } = require('./bienvenida-loop');
+const internalApi = require('./internal-api');
 const { iniciarMemoriaCurada } = require('./memoria-curada');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
@@ -49,6 +51,8 @@ let briefInterval = null;
 let meetingPrepInterval = null;
 let calendarWatchInterval = null;
 let followUpsInterval = null;
+let bienvenidaInterval = null;
+let internalApiServer = null;
 let memoriaCuradaInterval = null;
 let waClient = null;
 
@@ -123,6 +127,13 @@ async function main() {
       });
 
       console.log(`▸ arrancando memoria-curada (cada ${MEMORIA_CURADA_MS/3600_000}h)`);
+      bienvenidaInterval = iniciarBienvenida({
+        waClient: client, intervaloMs: 30_000,
+      });
+      console.log('▸ arrancando bienvenida-loop (cada 30s)');
+
+      internalApiServer = internalApi.start({ waClient: client, gmailAuth: null });
+
       memoriaCuradaInterval = iniciarMemoriaCurada({
         intervaloMs: MEMORIA_CURADA_MS,
       });

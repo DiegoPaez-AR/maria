@@ -84,3 +84,39 @@ if (!confs.length) {
     }),
   };
 }
+
+
+// ─── intensa-api (servicio de control: signup/webhook/portal cliente) ───
+// Lee env de /root/secretaria/.env-intensa-api si existe (creds LS, Turnstile, etc.).
+function _intensaApiEnv() {
+  const envFile = '/root/secretaria/.env-intensa-api';
+  const env = { NODE_ENV: 'production', TZ: 'America/Argentina/Buenos_Aires' };
+  if (fs.existsSync(envFile)) {
+    for (let line of fs.readFileSync(envFile,'utf8').split('\n')) {
+      line = line.trim();
+      if (!line || line.startsWith('#')) continue;
+      const eq = line.indexOf('=');
+      if (eq < 0) continue;
+      const k = line.slice(0, eq).trim();
+      let v = line.slice(eq + 1).trim();
+      if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+      env[k] = v;
+    }
+  }
+  return env;
+}
+
+const _intensaApi = {
+  name: 'intensa-api',
+  script: 'ops/backend/intensa-api/index.js',
+  cwd: ROOT,
+  autorestart: true,
+  max_memory_restart: '512M',
+  log_date_format: 'YYYY-MM-DD HH:mm:ss',
+  merge_logs: true,
+  env: _intensaApiEnv(),
+};
+
+if (module.exports.apps && Array.isArray(module.exports.apps)) {
+  module.exports.apps.push(_intensaApi);
+}

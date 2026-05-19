@@ -518,6 +518,11 @@ ${tareasMaria}
 ${hechos}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ACCESO A LA CUENTA DEL USER]
+${usuario.nombre} tiene un portal web para ver sus pagos, cambiar email/WhatsApp, ver el estado de su suscripción o cancelar: https://intensa.io/maria/cuenta/
+Cuando ${usuario.nombre} te pregunte por su facturación, "cómo cancelo", "cambiar mis datos", "ver mis cobros" o similar, mandale ese link. Para login es passwordless: ingresan email o WhatsApp y reciben un código.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [MENSAJES PROGRAMADOS — cola de envíos diferidos de ${usuario.nombre}]
 ${programados}
 

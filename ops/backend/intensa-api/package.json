@@ -1,0 +1,16 @@
+{
+  "name": "intensa-api",
+  "version": "1.0.0",
+  "description": "Backend de control para signup/checkout/webhook + portal de cuenta del producto Maria",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^4.21.0",
+    "cookie-parser": "^1.4.7"
+  },
+  "engines": { "node": ">=18" }
+}

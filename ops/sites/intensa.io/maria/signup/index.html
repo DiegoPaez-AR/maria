@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Suscribirme — María</title>
+<meta name="description" data-i18n="meta.desc" content="Suscribite a María. Validamos tu email y WhatsApp con un código antes de cobrar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/maria/" class="logo">
+      <span class="logo-mark">M</span>
+      <span>maria</span>
+    </a>
+    <div class="nav-links">
+      <a href="/maria/#planes" data-i18n="nav.atras">← Volver</a>
+      <div class="lang-toggle" id="langToggle" role="group" aria-label="Switch language">
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="signup-main">
+  <div class="container narrow">
+
+    <!-- STEP 1: datos -->
+    <section id="step-datos" class="step active reveal">
+      <h1 data-i18n-html="step1.h1">Suscribirme a <em>María</em>.</h1>
+      <p class="step-sub" data-i18n="step1.sub">Primero te validamos por email y WhatsApp. Después pagás. USD 49/mes con prueba gratuita de 7 días.</p>
+
+      <form id="form-datos" autocomplete="on" novalidate>
+        <label>
+          <span data-i18n="step1.lbl-nombre">Tu nombre</span>
+          <input type="text" name="nombre" required minlength="2" maxlength="100" autocomplete="name" placeholder="Diego Paez">
+        </label>
+        <label>
+          <span data-i18n="step1.lbl-email">Email</span>
+          <input type="email" name="email" required autocomplete="email" placeholder="vos@empresa.com">
+        </label>
+        <label>
+          <span data-i18n="step1.lbl-wa">WhatsApp (con código de país)</span>
+          <input type="tel" name="wa" required autocomplete="tel" placeholder="+54 9 11 1234 5678" inputmode="tel">
+          <small class="hint" data-i18n="step1.hint-wa">Te vamos a mandar un código por WhatsApp — asegurate de que sea el correcto.</small>
+        </label>
+        <label>
+          <span data-i18n="step1.lbl-cal">Tu calendario</span>
+          <select name="calendar_provider" required>
+            <option value="" data-i18n="step1.cal-elegi">— elegí —</option>
+            <option value="google" data-i18n="step1.cal-google">Google (Gmail / Workspace)</option>
+            <option value="microsoft" data-i18n="step1.cal-ms">Microsoft Outlook / Office 365</option>
+            <option value="caldav" data-i18n="step1.cal-caldav">iCloud · Fastmail · Yahoo</option>
+          </select>
+        </label>
+
+        <div class="errors" id="errors-step1" aria-live="polite"></div>
+
+        <button type="submit" class="btn btn-primary" id="btn-step1">
+          <span data-i18n="step1.cta">Continuar</span> <span class="arrow">→</span>
+        </button>
+
+        <p class="legal-note" data-i18n-html="step1.legal">Al continuar aceptás recibir mensajes de María por WhatsApp y email para validar tu identidad. No spam.</p>
+      </form>
+    </section>
+
+    <!-- STEP 2: códigos -->
+    <section id="step-codigos" class="step reveal">
+      <h1 data-i18n-html="step2.h1">Validá los dos códigos.</h1>
+      <p class="step-sub" id="step2-sub" data-i18n-html="step2.sub">Te mandamos uno a tu <em>email</em> y otro a tu <em>WhatsApp</em>. Ingresalos abajo. Vencen en 10 minutos.</p>
+
+      <form id="form-codigos" novalidate>
+        <label>
+          <span data-i18n="step2.lbl-email-code">Código de email</span>
+          <input type="text" name="email_code" required inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" placeholder="123456">
+        </label>
+        <label>
+          <span data-i18n="step2.lbl-wa-code">Código de WhatsApp</span>
+          <input type="text" name="wa_code" required inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" placeholder="123456">
+        </label>
+
+        <div class="errors" id="errors-step2" aria-live="polite"></div>
+
+        <button type="submit" class="btn btn-primary" id="btn-step2">
+          <span data-i18n="step2.cta">Ir a pagar</span> <span class="arrow">→</span>
+        </button>
+
+        <p class="step-link">
+          <a href="#" id="link-reenviar" data-i18n="step2.reenviar">¿No te llegaron? Reenviar</a>
+          ·
+          <a href="#" id="link-volver" data-i18n="step2.volver">Corregir datos</a>
+        </p>
+      </form>
+    </section>
+
+    <!-- STEP 3: redirect a LS -->
+    <section id="step-pagar" class="step reveal">
+      <h1 data-i18n-html="step3.h1">Casi listo. <em>Te llevamos al checkout.</em></h1>
+      <p class="step-sub" data-i18n="step3.sub">En 3 segundos te redirigimos a LemonSqueezy para finalizar el pago. La prueba de 7 días arranca al confirmar.</p>
+      <p><a href="#" id="link-checkout" class="btn btn-primary" data-i18n="step3.cta">Ir al checkout ahora</a></p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="footer-mini">© 2026 intensa labs · <a href="/maria/">maría</a> · <a href="mailto:hola@intensa.io">hola@intensa.io</a></p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

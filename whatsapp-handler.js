@@ -480,6 +480,33 @@ async function _despacharGrupo(client, from, items, startTs) {
 
   let usuario = usuarios.resolverPorWa(from);
 
+  // Usuario inactivo (suscripción pausada / cancelada) → responder UNA vez con
+  // link al portal y no procesar más. Track del último aviso en estado_usuario.
+  if (usuario && usuario.activo === 0) {
+    const ULTIMO_AVISO_KEY = 'aviso_inactivo_ts';
+    const ultimoAviso = mem.getEstadoUsuario(usuario.id, ULTIMO_AVISO_KEY);
+    const ahora = Date.now();
+    const HORAS_REPETIR = 24 * 60 * 60_000; // re-avisar máximo cada 24h
+    if (!ultimoAviso || (ahora - new Date(ultimoAviso).getTime()) > HORAS_REPETIR) {
+      try {
+        await client.sendMessage(from, `Hola ${usuario.nombre}, tu suscripción está pausada. Para reactivarla, entrá a https://intensa.io/maria/cuenta/ y actualizá tu medio de pago.`);
+        mem.log({
+          usuarioId: usuario.id, canal: 'whatsapp', direccion: 'saliente',
+          para: from, cuerpo: '(aviso inactivo enviado)',
+          metadata: { tipo: 'inactivo_aviso' },
+        });
+        mem.setEstadoUsuario(usuario.id, ULTIMO_AVISO_KEY, new Date(ahora).toISOString());
+      } catch (e) { console.warn('[wa-handler/inactivo] error enviando aviso:', e.message); }
+    }
+    mem.log({
+      usuarioId: usuario.id, canal: 'whatsapp', direccion: 'entrante',
+      de: from, nombre: pushname, cuerpo,
+      metadata: { tipo: 'inactivo_ignorado', messageId },
+    });
+    console.log(`[wa-handler] usuario ${usuario.nombre} inactivo — entrante registrado, sin procesar`);
+    return;
+  }
+
   if (!usuario) {
     // Desconocido → unknown-flow. Pasamos el cuerpo combinado y, en el
     // reprocesar (cuando matchee a un user), propagamos los attachments.
