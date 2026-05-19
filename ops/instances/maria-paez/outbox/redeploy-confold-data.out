@@ -1,0 +1,27 @@
+# ejecutado: 2026-05-19T15:03:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io
+#   bash deploy.sh 2>&1 | grep -E "cache-bust" | head -3
+#   echo
+#   echo "Verificar datos de Confold en producción:"
+#   curl -sk "https://intensa.io/maria/terminos/" | grep -oE '(RUT 218377600011|Pradines Clemente 1795|Montevideo 11500)' | head -3
+#   echo
+#   echo "DONE"
+
+# ───── output ─────
+  index.html con cache-bust v=20260519-150302
+    index.html con cache-bust v=20260519-150302
+    cache-bust v=20260519-150302 en cuenta/index.html
+
+Verificar datos de Confold en producción:
+RUT 218377600011
+Pradines Clemente 1795
+Montevideo 11500
+
+DONE
+
+# exit=0
