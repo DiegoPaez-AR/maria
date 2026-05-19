@@ -1,0 +1,44 @@
+#!/bin/bash
+# diag-latencia-modelo.sh — qué modelo usa la CLI y comparativa de velocidad.
+set -uo pipefail
+export PATH="/usr/local/bin:/usr/bin:/bin:${PATH:-}"
+echo "═══ DIAG MODELO/LATENCIA — $(date '+%Y-%m-%d %H:%M:%S %z') ═══"
+
+echo
+echo "── modelo configurado en la CLI ──"
+echo "  ~/.claude.json (solo líneas 'model'):"
+grep -oE '"[a-zA-Z]*[Mm]odel[a-zA-Z]*" *: *"[^"]*"' ~/.claude.json 2>/dev/null | sed 's/^/    /' | head -10 || echo "    (sin claves model)"
+echo "  ANTHROPIC_MODEL env: ${ANTHROPIC_MODEL:-<unset>}"
+echo "  CLAUDE_MODEL env:    ${CLAUDE_MODEL:-<unset>}"
+
+# prompt de prueba ~50k chars (mismo para los 3 modelos → el delta es el modelo)
+P=$(mktemp)
+{
+  echo "Sos un asistente. Abajo hay contexto de relleno y al final una instrucción."
+  yes "Linea de contexto de relleno para medir velocidad de inferencia segun tamano de prompt; sin informacion util real aca." | head -460
+  echo "INSTRUCCION FINAL: ignora todo el relleno de arriba y responde unicamente con la palabra OK."
+} > "$P"
+echo
+echo "── microbenchmark por modelo (prompt de prueba: $(wc -c < "$P") chars) ──"
+echo "   wall = tiempo total medido; api/total = lo que reporta la CLI."
+
+parse='let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{let o=JSON.parse(s);let m=o.modelUsage?Object.keys(o.modelUsage).join(","):(o.model||"?");console.log("modelo="+m+"  total="+(o.duration_ms||"?")+"ms  api="+(o.duration_api_ms||"?")+"ms  turns="+(o.num_turns||"?")+"  cost=$"+(o.total_cost_usd!=null?o.total_cost_usd.toFixed(4):"?")+"  err="+(o.is_error||false));}catch(e){console.log("  parse-fail: "+s.slice(0,160));}});'
+
+bench_model() {
+  local label="$1" model="$2"
+  local args=(-p --output-format json)
+  [ -n "$model" ] && args+=(--model "$model")
+  local t0 t1 wall J
+  t0=$(date +%s.%N)
+  J=$(timeout 150 claude "${args[@]}" < "$P" 2>/tmp/_e || true)
+  t1=$(date +%s.%N)
+  wall=$(awk -v a="$t0" -v b="$t1" 'BEGIN{printf "%.1f", b-a}')
+  printf "  %-20s wall=%7ss | %s\n" "$label" "$wall" "$(printf '%s' "$J" | node -e "$parse")"
+  [ -s /tmp/_e ] && echo "       stderr: $(head -c160 /tmp/_e | tr -d '\n')"
+}
+bench_model "default (sin flag)" ""
+bench_model "--model sonnet"     "sonnet"
+bench_model "--model haiku"      "haiku"
+rm -f "$P"
+echo
+echo "═══ FIN — $(date '+%H:%M:%S') ═══"
