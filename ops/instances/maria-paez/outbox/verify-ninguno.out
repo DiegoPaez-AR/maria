@@ -1,0 +1,55 @@
+# ejecutado: 2026-05-19T14:36:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   sleep 3
+#   echo "═══ Verificar que el backend acepta 'ninguno' como provider ═══"
+#   RESP=$(curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"test-sincal","email":"sincal-verify@test.invalid","wa":"5491777777777","calendar_provider":"ninguno","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start)
+#   echo "  response: $RESP"
+#   echo
+#   echo "  Limpiar test signup..."
+#   sqlite3 /root/secretaria/state/control/control.sqlite "DELETE FROM signup_pending WHERE email='sincal-verify@test.invalid';"
+#   
+#   echo
+#   echo "═══ Verificar que el backend RECHAZA un provider inválido ═══"
+#   RESP2=$(curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"bad","email":"bad@test.invalid","wa":"5491666666666","calendar_provider":"XXX","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start)
+#   echo "  response: $RESP2"
+#   echo
+#   echo "═══ Estructura final del select ═══"
+#   curl -sk https://intensa.io/maria/signup/ | grep -oE '<option value="[^"]*"' | head -10
+#   
+#   echo
+#   echo "═══ pm2 health ═══"
+#   pm2 list | grep -E "maria-paez|intensa-api"
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ Verificar que el backend acepta 'ninguno' como provider ═══
+  response: {"ok":true,"signup_id":2,"message":"Códigos enviados a tu email y WhatsApp. Vencen en 10 minutos."}
+
+  Limpiar test signup...
+
+═══ Verificar que el backend RECHAZA un provider inválido ═══
+  response: {"error":"bad_provider","message":"Provider de calendar inválido"}
+
+═══ Estructura final del select ═══
+<option value=""
+<option value="google"
+<option value="microsoft"
+<option value="caldav"
+<option value="ninguno"
+
+═══ pm2 health ═══
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1398302  │ 61s    │ 2    │ online    │ 0%       │ 65.3mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 1398209  │ 62s    │ 66   │ online    │ 0%       │ 154.4mb  │ root     │ disabled │
+
+═══ DONE ═══
+
+# exit=0
