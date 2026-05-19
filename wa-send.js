@@ -161,6 +161,35 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
       de: destinoFinal, cuerpo: texto,
       metadata: { ...(metadata || {}), destinoOriginal: destinoCrudo, destinoFinal, tag, ...(resueltoVia ? { resueltoVia } : {}) },
     });
+
+    // BUG F FIX: si el destinatario es un usuario activo distinto del emisor,
+    // loggear el mismo saliente ASOCIADO a su usuario_id también. Así, cuando
+    // el destinatario responda, su historial cross-canal incluye lo que Maria
+    // le mandó (aunque la acción haya sido pedida por otro usuario).
+    // Sin esto: A le pide a Maria escribir a B (activo). Cuando B responde,
+    // Maria no ve su propio mensaje en el historial de B y lo trata como
+    // conversación nueva.
+    try {
+      const receptor = usuarios.resolverPorWa(destinoFinal);
+      if (receptor && receptor.id && receptor.id !== usuarioId) {
+        mem.log({
+          usuarioId: receptor.id,
+          canal: 'whatsapp', direccion: 'saliente',
+          de: destinoFinal, cuerpo: texto,
+          metadata: {
+            ...(metadata || {}),
+            destinoOriginal: destinoCrudo,
+            destinoFinal,
+            tag: `${tag}+mirror`,
+            mirroredFrom: usuarioId,
+            ...(resueltoVia ? { resueltoVia } : {}),
+          },
+        });
+      }
+    } catch (err) {
+      // no fatal — el log principal ya quedó
+      console.warn(`[wa-send] mirror log al receptor falló: ${err.message}`);
+    }
   }
   return { destinoFinal, enviado: true };
 }
