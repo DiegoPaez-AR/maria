@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5659  2026-05-19 13:03:44  whatsapp  saliente   167933254885560@lid  ¡Gracias a vos Ariel! Igualmente, que tengas un buen día.                                                                                                                                               
+
+5658  2026-05-19 13:03:44  sistema   interno                         claude_call whatsapp: 10065ms prompt=69454c raw=380c                                                                                                                                                    
+
+5657  2026-05-19 13:03:33  whatsapp  entrante   167933254885560@lid  Gracias a vos, por tu amabilidad!! , que tengas un hermoso dia.                                                                                                                                         
+
+5656  2026-05-19 13:03:33  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es asesor comercial de VW Espasa con quien Diego (id=1) pidió a Maria gestionar la consulta por la Taos Highline y la tasació
+
+5655  2026-05-19 13:03:33  sistema   interno                         claude_call unknown-flow: 17343ms prompt=62770c raw=389c                                                                                                                                                
+
 5654  2026-05-19 13:01:53  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 5653  2026-05-19 13:01:53  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
@@ -211,14 +221,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5559  2026-05-19 11:23:14  whatsapp  saliente   5491132317896@c.us   El de Rubén sí, fue. El de Teubal no pude mandarlo — me dio un error con su número. ¿Tenés otro contacto para él o querés que lo intente por otro lado?                                                 
 
 5558  2026-05-19 11:23:13  sistema   interno                         claude_call whatsapp: 33839ms prompt=66967c raw=395c                                                                                                                                                    
-
-5557  2026-05-19 11:22:39  whatsapp  entrante   5491132317896@c.us   los mandaste?                                                                                                                                                                                           
-
-5556  2026-05-19 11:21:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5555  2026-05-19 11:21:24  whatsapp  saliente   5491154024727@c.us   Hola Rubén, buen día! Te escribe María de parte de Diego. Me pidió que te avisara que se le olvidó que tenía ya tomado el almuerzo del viernes 29 porque viene gente de IONQ. ¿Pueden mover el almuerzo 
-
-5554  2026-05-19 11:21:24  sistema   interno                         acción FALLÓ: enviar_wa — No pude mandar WA a 5491143092046@c.us: No LID for user                                                                                                                       
-                                                                     s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)                                                                                                                                  
-
-5553  2026-05-19 11:21:23  sistema   interno                         acción ejecutada: cancelar_programado                                                                                                                                                                   
