@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5583  2026-05-19 11:37:41  whatsapp  entrante   167933254885560@lid  María sí tiene opciones de financiación, yo no sé lo principio lo que me he                                                                                                                             
+                                                                      expuesto de entrada que era el usado más contado pero sí tiene opciones de                                                                                                                             
+                                                                      financiación, hay una opción ahora te armó con                                                                                                                                                         
+
+5582  2026-05-19 11:37:41  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Ariel Quiroga es el asesor comercial de VW Espasa con quien Maria gestiona, a pedido de Diego (id=1), la compra de una Taos; el mensaje act
+
+5581  2026-05-19 11:37:41  sistema   interno                         claude_call unknown-flow: 18801ms prompt=62243c raw=427c                                                                                                                                                
+
+5580  2026-05-19 11:37:18  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5579  2026-05-19 11:37:18  whatsapp  saliente   5491144491280@c.us   Hola Diego, buen día! Te escribe María de parte de Diego. Me pidió preguntarte si puede pasar a buscar los papeles mañana (miércoles 20) a las 16:15. ¿Te viene bien?                                   
+
+5578  2026-05-19 11:37:18  whatsapp  saliente   5491132317896@c.us   Dale, le mando ahora.                                                                                                                                                                                   
+
+5577  2026-05-19 11:37:18  sistema   interno                         claude_call whatsapp: 49575ms prompt=66759c raw=609c                                                                                                                                                    
+
 5576  2026-05-19 11:36:28  whatsapp  entrante   5491132317896@c.us   escribile a diego aca                                                                                                                                                                                   
 
 5575  2026-05-19 11:36:08  sistema   interno                         contacto vcard (privado): Diego Teubal → 5491144491280@c.us                                                                                                                                             
@@ -239,17 +255,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5484  2026-05-19 05:39:16  whatsapp  saliente   34342575317160@lid   Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
                                                                                                                                                                                                                                                                              
                                                                      1. Cuando Analia Frangi pase la dirección del lugar de la reunión del 22/05: actualizarla en el evento 'Reunión Diego Páez / Diego Poguetti' del viernes 22/05                                          
-
-5483  2026-05-19 04:32:00  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-5482  2026-05-19 04:32:00  whatsapp  saliente   5491132317896@c.us   Anotado — pagar a Eugenio.                                                                                                                                                                              
-
-5481  2026-05-19 04:32:00  sistema   interno                         claude_call whatsapp: 29969ms prompt=67870c raw=437c                                                                                                                                                    
-
-5480  2026-05-19 04:31:30  whatsapp  entrante   5491132317896@c.us   Agrégame un pendiente pagar a Eugenio                                                                                                                                                                   
-
-5479  2026-05-19 04:17:47  sistema   interno                         acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, ree
-
-5478  2026-05-19 04:17:47  whatsapp  saliente   5491132317896@c.us   Dale, te agendo IONQ el miércoles 27 de 10 a 12.                                                                                                                                                        
-
-5477  2026-05-19 04:17:47  sistema   interno                         claude_call whatsapp: 30083ms prompt=68310c raw=479c                                                                                                                                                    
