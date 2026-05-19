@@ -14,12 +14,6 @@ const TR = {
     'step1.lbl-email': 'Email',
     'step1.lbl-wa': 'WhatsApp (con código de país)',
     'step1.hint-wa': 'Te vamos a mandar un código por WhatsApp — asegurate de que sea el correcto.',
-    'step1.lbl-cal': 'Tu calendario',
-    'step1.cal-elegi': '— elegí —',
-    'step1.cal-google': 'Google (Gmail / Workspace)',
-    'step1.cal-ms': 'Microsoft Outlook / Office 365',
-    'step1.cal-caldav': 'iCloud · Fastmail · Yahoo',
-    'step1.cal-ninguno': 'Sin calendario por ahora',
     'step1.cta': 'Continuar',
     'step1.lbl-terminos': 'Acepto los <a href="/maria/terminos/" target="_blank">Términos y Condiciones</a>.',
     'err.must_accept_terms': 'Tenés que aceptar los Términos y Condiciones para continuar.',
@@ -57,12 +51,6 @@ const TR = {
     'step1.lbl-email': 'Email',
     'step1.lbl-wa': 'WhatsApp (with country code)',
     'step1.hint-wa': 'We will send you a code via WhatsApp — make sure it\'s correct.',
-    'step1.lbl-cal': 'Your calendar',
-    'step1.cal-elegi': '— choose —',
-    'step1.cal-google': 'Google (Gmail / Workspace)',
-    'step1.cal-ms': 'Microsoft Outlook / Office 365',
-    'step1.cal-caldav': 'iCloud · Fastmail · Yahoo',
-    'step1.cal-ninguno': 'No calendar for now',
     'step1.cta': 'Continue',
     'step1.lbl-terminos': 'I accept the <a href="/maria/terminos/" target="_blank">Terms and Conditions</a>.',
     'err.must_accept_terms': 'You must accept the Terms and Conditions to continue.',
@@ -155,7 +143,6 @@ document.getElementById('form-datos').addEventListener('submit', async (e) => {
     nombre: fd.get('nombre').trim(),
     email: fd.get('email').trim(),
     wa: fd.get('wa').trim(),
-    calendar_provider: fd.get('calendar_provider') || null,
     acepto_terminos: true,
   };
   if (!data.nombre || data.nombre.length < 2) {
@@ -216,7 +203,6 @@ document.getElementById('link-reenviar').addEventListener('click', async (e) => 
     nombre: fd.get('nombre').trim(),
     email: fd.get('email').trim(),
     wa: fd.get('wa').trim().replace(/[\s+\-()]/g, ''),
-    calendar_provider: fd.get('calendar_provider') || null,
   };
   const r = await apiCall('/start', data);
   if (r.ok) {

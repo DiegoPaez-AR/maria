@@ -11,7 +11,7 @@ const router = express.Router();
 // Validación básica de inputs
 function _validateStart(b) {
   if (!b || typeof b !== 'object') throw _err('bad_body', 'Body inválido');
-  const { nombre, email, wa, calendar_provider } = b;
+  const { nombre, email, wa } = b;
   if (!nombre || typeof nombre !== 'string' || nombre.length < 2 || nombre.length > 100)
     throw _err('bad_nombre', 'Nombre inválido');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
@@ -19,13 +19,14 @@ function _validateStart(b) {
   // wa esperado: solo dígitos, 10-15 chars. Aceptamos +/espacios y los limpiamos.
   const waClean = String(wa || '').replace(/[\s+\-()]/g, '');
   if (!/^\d{10,15}$/.test(waClean)) throw _err('bad_wa', 'WhatsApp inválido (10-15 dígitos)');
-  if (calendar_provider && !['google', 'microsoft', 'caldav', 'ninguno'].includes(calendar_provider))
-    throw _err('bad_provider', 'Provider de calendar inválido');
   // Términos y Condiciones — obligatorio
   if (!b.acepto_terminos || b.acepto_terminos !== true) {
     throw _err('must_accept_terms', 'Tenés que aceptar los Términos y Condiciones para continuar.');
   }
-  return { nombre: nombre.trim(), email: email.toLowerCase().trim(), wa: waClean, calendar_provider: calendar_provider || null, acepto_terminos: true };
+  // calendar_provider: SIEMPRE 'ninguno' por default — Maria configura después
+  // el provider real por chat con el cliente, basado en el dominio del email
+  // u onboarding F4. Acá no preguntamos para minimizar fricción.
+  return { nombre: nombre.trim(), email: email.toLowerCase().trim(), wa: waClean, calendar_provider: 'ninguno', acepto_terminos: true };
 }
 
 function _err(code, message, status = 400) {
