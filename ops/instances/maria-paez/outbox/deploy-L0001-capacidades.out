@@ -1,0 +1,83 @@
+# ejecutado: 2026-05-19T11:47:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Re-deploya intensa.io con los cambios de la sección "Capacidades y límites".
+#   # El deploy.sh es idempotente — corre el sync + cache-bust + reload nginx.
+#   
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io || { echo "ERROR: no encontré el src dir"; exit 1; }
+#   
+#   echo "═══ Corriendo deploy.sh ═══"
+#   bash deploy.sh
+#   
+#   echo
+#   echo "═══ Smoke test del anchor #capacidades ═══"
+#   curl -sk "https://intensa.io/L0001/" | grep -E "id=\"capacidades\"|caps-grid|cap-num" | head -5
+#   
+#   echo
+#   echo "═══ HTTPS status code de la landing ═══"
+#   curl -sk -o /dev/null -w "https://intensa.io/L0001/  →  %{http_code}\n" https://intensa.io/L0001/
+#   
+#   echo
+#   echo "═══ Tamaño del index deployado ═══"
+#   ls -la /var/www/intensa.io/L0001/index.html /var/www/intensa.io/L0001/styles.css /var/www/intensa.io/L0001/script.js
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ Corriendo deploy.sh ═══
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+  index.html con cache-bust v=20260519-114702
+
+═══ 1b. Sincronizar landings (L0001/) ═══
+  → L0001
+'/root/secretaria/ops/sites/intensa.io/L0001//styles.css' -> '/var/www/intensa.io/L0001/styles.css'
+'/root/secretaria/ops/sites/intensa.io/L0001//script.js' -> '/var/www/intensa.io/L0001/script.js'
+    index.html con cache-bust v=20260519-114702
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/19 11:47:02 [warn] 1368703#1368703: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+intensa.io/L0001/ HTTPS 200
+
+═══ DONE ═══
+
+═══ Smoke test del anchor #capacidades ═══
+<section id="capacidades" class="reveal">
+    <div class="caps-grid">
+        <div class="cap-num">500</div>
+        <div class="cap-num">50</div>
+        <div class="cap-num">50</div>
+
+═══ HTTPS status code de la landing ═══
+https://intensa.io/L0001/  →  200
+
+═══ Tamaño del index deployado ═══
+-rw-r--r-- 1 www-data www-data 19346 May 19 11:47 /var/www/intensa.io/L0001/index.html
+-rw-r--r-- 1 www-data www-data 21123 May 19 11:47 /var/www/intensa.io/L0001/script.js
+-rw-r--r-- 1 www-data www-data 13583 May 19 11:47 /var/www/intensa.io/L0001/styles.css
+
+═══ DONE ═══
+
+# exit=0
