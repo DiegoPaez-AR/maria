@@ -104,7 +104,9 @@ async function _cumplesHoy(usuario) {
 }
 
 function _pendientesLista(usuario) {
-  const ps = mem.listarPendientes(usuario.id);
+  // Solo los que son del usuario; las tareas propias de Maria (dueno='maria') no
+  // van en el brief, las gestiona ella sola.
+  const ps = mem.listarPendientes(usuario.id).filter(p => (p.dueno || 'usuario') === 'usuario');
   if (!ps.length) return null;
   return ps.map((p, i) => `${i+1}. ${p.desc}`).join('\n');
 }

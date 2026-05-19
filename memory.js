@@ -244,6 +244,50 @@ function _migrarUsuariosCalendarProvider() {
 }
 _migrarUsuariosCalendarProvider();
 
+// Modelo explícito de quién ejecuta un pendiente y qué lo dispara.
+//   - dueno: 'usuario' (default, retrocompat) | 'maria'
+//     · usuario  → el pendiente requiere acción/respuesta del usuario.
+//     · maria    → Maria lo ejecuta sola, no pinguea al usuario.
+//   - disparador: 'manual' (default) | 'respuesta_usuario' | 'trigger_externo'
+//     · manual            → se ejecuta cuando alguien decida hacerlo.
+//     · respuesta_usuario → Maria espera que el usuario conteste algo (ex 'consulta').
+//     · trigger_externo   → se ejecuta cuando aparezca un evento externo (ej. tercero
+//                            manda dato esperado). No pinguea — el LLM lo cierra solo.
+//   - recordar_desde: si está seteado, el loop de recordatorios.js no pinguea hasta esa fecha.
+// Backfill: pendientes existentes con meta_json.tipo='consulta' pasan a
+// disparador='respuesta_usuario'; el resto queda en 'manual' (default).
+// Combo inválido (maria, respuesta_usuario) lo evita el prompt del LLM, no el CHECK,
+// porque agregar un CHECK compuesto requiere recrear la tabla.
+function _migrarPendientesDuenoDisparador() {
+  let cambios = false;
+  if (!_tieneColumna('pendientes', 'dueno')) {
+    db.exec(`ALTER TABLE pendientes ADD COLUMN dueno TEXT NOT NULL DEFAULT 'usuario' CHECK(dueno IN ('usuario','maria'))`);
+    cambios = true;
+  }
+  if (!_tieneColumna('pendientes', 'disparador')) {
+    db.exec(`ALTER TABLE pendientes ADD COLUMN disparador TEXT NOT NULL DEFAULT 'manual' CHECK(disparador IN ('manual','respuesta_usuario','trigger_externo'))`);
+    // Backfill desde meta_json.tipo.
+    const rows = db.prepare(`SELECT id, meta_json FROM pendientes WHERE estado='abierto' AND meta_json IS NOT NULL`).all();
+    const upd = db.prepare(`UPDATE pendientes SET disparador = ? WHERE id = ?`);
+    let n = 0;
+    for (const r of rows) {
+      try {
+        const m = JSON.parse(r.meta_json);
+        if (m && m.tipo === 'consulta') { upd.run('respuesta_usuario', r.id); n++; }
+        // tipo='tarea' o ausente → manual (ya es default).
+      } catch {}
+    }
+    if (n) console.log(`[memory] backfill: ${n} pendientes con meta.tipo='consulta' → disparador='respuesta_usuario'`);
+    cambios = true;
+  }
+  if (!_tieneColumna('pendientes', 'recordar_desde')) {
+    db.exec(`ALTER TABLE pendientes ADD COLUMN recordar_desde DATETIME`);
+    cambios = true;
+  }
+  if (cambios) console.log('[memory] migración: pendientes.dueno/disparador/recordar_desde agregados');
+}
+_migrarPendientesDuenoDisparador();
+
 // Índices que dependen de usuario_id (los creamos acá porque en el exec inicial
 // la columna podía no existir todavía en DBs viejos).
 db.exec(`
@@ -829,7 +873,12 @@ function borrarEstadoUsuario(usuarioId, clave) { delEstadoUsuario.run(usuarioId,
 
 const CAMPOS_META_CONOCIDOS = new Set([
   'remitente', 'canal_origen', 'de', 'email', 'messageId', 'ultimo_recordatorio',
+  // Estos viajan como columnas propias, no van al meta_json:
+  'dueno', 'disparador', 'recordar_desde', 'tipo',
 ]);
+
+const DUENOS_VALIDOS = new Set(['usuario', 'maria']);
+const DISPARADORES_VALIDOS = new Set(['manual', 'respuesta_usuario', 'trigger_externo']);
 
 function _descomponerMeta(meta = {}) {
   const conocidos = {
@@ -866,13 +915,21 @@ function _rehidratarPendiente(row) {
     estado: row.estado,
     cerrado: row.cerrado,
     ultimo_recordatorio: row.ultimo_recordatorio,
+    dueno: row.dueno || 'usuario',
+    disparador: row.disparador || 'manual',
+    recordar_desde: row.recordar_desde || null,
     meta,
   };
 }
 
 const insertPendiente = db.prepare(`
-  INSERT INTO pendientes (usuario_id, desc, remitente, canal_origen, destino_wa, destino_email, email_message_id, meta_json)
-  VALUES (@usuario_id, @desc, @remitente, @canal_origen, @destino_wa, @destino_email, @email_message_id, @meta_json)
+  INSERT INTO pendientes (
+    usuario_id, desc, dueno, disparador,
+    remitente, canal_origen, destino_wa, destino_email, email_message_id, meta_json
+  ) VALUES (
+    @usuario_id, @desc, @dueno, @disparador,
+    @remitente, @canal_origen, @destino_wa, @destino_email, @email_message_id, @meta_json
+  )
 `);
 const qPendientesAbiertosUsuario = db.prepare(`
   SELECT * FROM pendientes WHERE usuario_id = ? AND estado = 'abierto' ORDER BY creado ASC, id ASC
@@ -887,18 +944,54 @@ const cerrarPendienteStmt = db.prepare(`
 const marcarRecordatorioStmt = db.prepare(`
   UPDATE pendientes SET ultimo_recordatorio = ? WHERE id = ?
 `);
+const posponerPendienteStmt = db.prepare(`
+  UPDATE pendientes SET recordar_desde = ? WHERE id = ?
+`);
 
 function agregarPendiente(usuarioId, desc, meta = {}) {
   if (!usuarioId) throw new Error('agregarPendiente: usuarioId requerido');
   if (!desc) throw new Error('agregarPendiente: desc requerido');
+
+  const dueno = meta.dueno || 'usuario';
+  const disparador = meta.disparador || (meta.tipo === 'consulta' ? 'respuesta_usuario' : 'manual');
+  if (!DUENOS_VALIDOS.has(dueno)) {
+    throw new Error(`agregarPendiente: dueno inválido (${dueno}). Valores: usuario | maria`);
+  }
+  if (!DISPARADORES_VALIDOS.has(disparador)) {
+    throw new Error(`agregarPendiente: disparador inválido (${disparador}). Valores: manual | respuesta_usuario | trigger_externo`);
+  }
+  if (dueno === 'maria' && disparador === 'respuesta_usuario') {
+    throw new Error('agregarPendiente: combo inválido (dueno=maria + disparador=respuesta_usuario). Maria no se pregunta a sí misma.');
+  }
+
   const { conocidos, resto } = _descomponerMeta(meta);
   const info = insertPendiente.run({
     usuario_id: usuarioId,
     desc,
+    dueno,
+    disparador,
     ...conocidos,
     meta_json: Object.keys(resto).length ? JSON.stringify(resto) : null,
   });
   return info.lastInsertRowid;
+}
+
+/**
+ * Posterga el próximo ping de recordatorios para un pendiente hasta `hastaISO`.
+ * Solo tiene efecto para pendientes que entran al loop (dueno='usuario' y
+ * disparador ∈ {manual, respuesta_usuario}); para tarea_condicional el loop
+ * lo ignora igual.
+ */
+function posponerPendiente(usuarioId, id, hastaISO) {
+  if (!usuarioId) throw new Error('posponerPendiente: usuarioId requerido');
+  if (!id) throw new Error('posponerPendiente: id requerido');
+  if (!hastaISO) throw new Error('posponerPendiente: hastaISO requerido');
+  const row = qPendientePorId.get(id);
+  if (!row) return null;
+  if (row.usuario_id !== usuarioId) return null; // aislamiento
+  if (row.estado !== 'abierto') return null;
+  posponerPendienteStmt.run(hastaISO, id);
+  return _rehidratarPendiente(qPendientePorId.get(id));
 }
 
 function listarPendientes(usuarioId) {
@@ -1353,6 +1446,7 @@ module.exports = {
   obtenerPendiente,
   quitarPendiente,
   marcarRecordatorioPendiente,
+  posponerPendiente,
   // contactos
   upsertContacto,
   buscarContacto,

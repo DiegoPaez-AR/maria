@@ -144,7 +144,7 @@ except Exception as ex:
       'SELECT id, timestamp, canal, direccion, COALESCE(de,""), substr(COALESCE(cuerpo,""),1,200) AS cuerpo FROM eventos ORDER BY id DESC LIMIT 100' \
       > "$SNAPS/eventos-ultimos.txt" 2>&1
     sqlite3 -header -column "$DB" \
-      'SELECT id, estado, creado, desc, COALESCE(meta_json,"") FROM pendientes WHERE estado="abierto" ORDER BY id' \
+      'SELECT id, estado, creado, dueno, disparador, COALESCE(recordar_desde,"") AS recordar_desde, desc, COALESCE(meta_json,"") FROM pendientes WHERE estado="abierto" ORDER BY id' \
       > "$SNAPS/pendientes-abiertos.txt" 2>&1
     sqlite3 -header -column "$DB" \
       'SELECT clave, valor, COALESCE(fuente,""), actualizado FROM hechos ORDER BY clave' \

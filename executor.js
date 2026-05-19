@@ -63,6 +63,7 @@ async function ejecutarUna(accion, ctx) {
     case 'reenviar_wa':        return await _reenviarWA(accion, ctx);
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
+    case 'posponer_pendiente': return _posponerPendiente(accion, ctx);
     case 'upsert_contacto':    return _upsertContacto(accion, ctx);
     case 'cambiar_visibilidad_contacto': return _cambiarVisibilidadContacto(accion, ctx);
     case 'set_cumple_contacto':          return _setCumpleContacto(accion, ctx);
@@ -480,9 +481,39 @@ async function _enviarWA(a, ctx) {
 // ─── Memoria (pendientes + contactos + programados + hechos) ─────────────
 
 function _agregarPendiente(a, ctx) {
-  _requerir(a, ['desc']);
-  mem.agregarPendiente(ctx.usuario.id, a.desc, a.meta || {});
-  return { desc: a.desc, agregado: true };
+  _requerir(a, ['desc', 'dueno', 'disparador']);
+  // dueno/disparador van en la raíz de la acción. El resto de meta queda libre.
+  const meta = { ...(a.meta || {}), dueno: a.dueno, disparador: a.disparador };
+  const id = mem.agregarPendiente(ctx.usuario.id, a.desc, meta);
+  return { id, desc: a.desc, dueno: a.dueno, disparador: a.disparador, agregado: true };
+}
+
+function _posponerPendiente(a, ctx) {
+  _requerir(a, ['id', 'hasta']);
+  const hastaISO = _resolverHasta(a.hasta, ctx);
+  const r = mem.posponerPendiente(ctx.usuario.id, a.id, hastaISO);
+  if (!r) throw new Error(`posponer_pendiente: no encontré el pendiente id=${a.id} (o no es tuyo)`);
+  return { id: r.id, recordar_desde: r.recordar_desde, pospuesto: true };
+}
+
+// Acepta ISO 8601 absoluto o offset relativo ("+3h", "+30m", "+1d").
+// Cualquier otra cosa, error explícito.
+function _resolverHasta(valor, _ctx) {
+  if (typeof valor !== 'string' || !valor.trim()) {
+    throw new Error('posponer_pendiente: hasta debe ser ISO 8601 o offset ("+3h","+30m","+1d")');
+  }
+  const v = valor.trim();
+  const mRel = v.match(/^\+(\d+)(m|h|d)$/);
+  if (mRel) {
+    const n = Number(mRel[1]);
+    const mult = mRel[2] === 'm' ? 60_000 : mRel[2] === 'h' ? 3_600_000 : 86_400_000;
+    return new Date(Date.now() + n * mult).toISOString();
+  }
+  const t = new Date(v).getTime();
+  if (isNaN(t)) {
+    throw new Error(`posponer_pendiente: hasta no parsea (${v}). Usá ISO 8601 ("2026-05-19T19:00:00Z") o offset ("+3h").`);
+  }
+  return new Date(t).toISOString();
 }
 
 function _quitarPendiente(a, ctx) {

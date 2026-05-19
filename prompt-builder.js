@@ -104,17 +104,19 @@ function seccionHistorial(usuario, { horas = 48, max = 50 } = {}) {
   return mem.contextoCrossCanal(usuario.id, { desdeHoras: horas, max });
 }
 
-function seccionPendientes(usuario, { tipo = null } = {}) {
+function seccionPendientes(usuario, { dueno = null, disparador = null, vacioMsg = '(sin pendientes)' } = {}) {
   let p = mem.listarPendientes(usuario.id);
-  if (tipo) p = p.filter(x => (x.meta?.tipo || 'consulta') === tipo);
-  if (!p.length) {
-    if (tipo === 'tarea')    return '(sin tareas activas)';
-    if (tipo === 'consulta') return '(sin consultas abiertas)';
-    return '(sin pendientes)';
+  if (dueno) p = p.filter(x => x.dueno === dueno);
+  if (disparador) {
+    if (Array.isArray(disparador)) p = p.filter(x => disparador.includes(x.disparador));
+    else p = p.filter(x => x.disparador === disparador);
   }
+  if (!p.length) return vacioMsg;
   return p.map(item => {
     const partes = [`[id:${item.id}] ${item.desc}`];
     if (item.creado) partes.push(`desde ${String(item.creado).slice(0,16).replace('T',' ')}`);
+    partes.push(`disparador: ${item.disparador}`);
+    if (item.recordar_desde) partes.push(`pospuesto hasta: ${String(item.recordar_desde).slice(0,16).replace('T',' ')}`);
     if (item.meta?.remitente)    partes.push(`remitente: ${item.meta.remitente}`);
     if (item.meta?.canal_origen) partes.push(`canal: ${item.meta.canal_origen}`);
     if (item.meta?.de)           partes.push(`destino: ${item.meta.de}`);
@@ -386,8 +388,9 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
   const instrucciones = seccionInstrucciones();
   const fecha         = seccionFechaHora(tz);
   const historial     = seccionHistorial(usuario, { horas: horasHistorial });
-  const consultas     = seccionPendientes(usuario, { tipo: 'consulta' });
-  const tareas        = seccionPendientes(usuario, { tipo: 'tarea' });
+  const consultas     = seccionPendientes(usuario, { dueno: 'usuario', disparador: 'respuesta_usuario', vacioMsg: '(sin consultas abiertas)' });
+  const tareas        = seccionPendientes(usuario, { dueno: 'usuario', disparador: 'manual',            vacioMsg: '(sin tareas activas)' });
+  const tareasMaria   = seccionPendientes(usuario, { dueno: 'maria',                                    vacioMsg: '(sin tareas mías abiertas)' });
   const hechos        = seccionHechos(usuario);
   const programados   = seccionProgramados(usuario, { max: 10 });
   const libreta       = seccionLibreta(usuario);
@@ -496,14 +499,19 @@ ${agenda}
 ${historial}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[CONSULTAS ABIERTAS — cosas que preguntó un tercero y necesitás input de ${usuario.nombre}, o que ${usuario.nombre} te pidió preguntarle a alguien]
-(Se cierran cuando ${usuario.nombre} o el tercero responde. Emití quitar_pendiente apenas se resuelva.)
+[CONSULTAS ABIERTAS DE ${usuario.nombre.toUpperCase()} — dueno=usuario · disparador=respuesta_usuario]
+(Maria espera respuesta de ${usuario.nombre}. Se cierran con quitar_pendiente apenas ${usuario.nombre} conteste algo accionable. Si ${usuario.nombre} pide "esperá hasta X" o "recordame a las Y", emití posponer_pendiente con hasta=ISO/offset en vez de seguir insistiendo.)
 ${consultas}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[TAREAS DE ${usuario.nombre.toUpperCase()} — cosas que ${usuario.nombre} se anotó para hacer]
-(Son SUS tareas personales — vos sos el inbox. SOLO las cerrás si ${usuario.nombre} dice explícitamente "listo", "hecho", "ya", "completé", "terminé", "cerrá X" sobre una tarea puntual. NUNCA cierres por "dale", "bueno", "después", "lo veo", "avanzo", "me encargo" — eso es ack, no cierre. Ante cualquier duda, dejala abierta.)
+[TAREAS DE ${usuario.nombre.toUpperCase()} — dueno=usuario · disparador=manual]
+(Son SUS tareas personales — vos sos el inbox. SOLO las cerrás si ${usuario.nombre} dice explícitamente "listo", "hecho", "ya", "completé", "terminé", "cerrá X" sobre una tarea puntual. NUNCA cierres por "dale", "bueno", "después", "lo veo", "avanzo", "me encargo" — eso es ack, no cierre. Si ${usuario.nombre} pide postergar, posponer_pendiente. Ante cualquier duda, dejala abierta.)
 ${tareas}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[TAREAS PROPIAS DE MARIA — dueno=maria · NO pingan a ${usuario.nombre}]
+(Cosas que TENÉS QUE EJECUTAR VOS, sin pinguear a ${usuario.nombre}. Incluye dueno=maria con disparador=manual (ejecutar cuando puedas) y disparador=trigger_externo (ejecutar cuando aparezca el evento que se describe en desc — típicamente un tercero responde algo esperado). En cada turno, revisá el [HISTORIAL CROSS-CANAL] y la [AGENDA]: si ya se cumplió el trigger de alguna, ejecutá las acciones que correspondan y emití quitar_pendiente con su id.)
+${tareasMaria}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [HECHOS SOBRE ${usuario.nombre.toUpperCase()} — preferencias/datos que te pidió recordar]
@@ -666,8 +674,9 @@ Tipos de acción disponibles:
   { "tipo": "enviar_wa", "a": "541...@c.us", "texto": "..." }
   { "tipo": "reenviar_wa", "messageId": "<wa_msg_id del mensaje original>", "a": "541...@c.us o @lid del destino" }
       // Forward NATIVO de WhatsApp. Sirve para CUALQUIER tipo de archivo (PDF, imagen, video, audio, documento, sticker, ubicación, vCard, hasta un texto). El destino lo recibe marcado como "Reenviado", el archivo va intacto sin re-procesar. Necesitás el wa_msg_id del mensaje original — viene como [wa_msg_id=...] al final de la línea correspondiente en [HISTORIAL CROSS-CANAL]. Útil cuando el usuario te pide "pasame el archivo que me mandó X" — buscá en el historial el mensaje con media y emití reenviar_wa hacia el wa del usuario. Si WA purgó el media del CDN (más de 30 días) o el id no existe, la acción falla con error explícito y avisás al usuario.
-  { "tipo": "agregar_pendiente", "desc": "...", "meta": { "tipo": "consulta"|"tarea", "remitente": "...", "canal_origen": "gmail", "messageId": "...", "de": "..." } }
+  { "tipo": "agregar_pendiente", "desc": "...", "dueno": "usuario"|"maria", "disparador": "manual"|"respuesta_usuario"|"trigger_externo", "meta": { "remitente": "...", "canal_origen": "gmail", "messageId": "...", "de": "..." } }
   { "tipo": "quitar_pendiente", "id": 42 }
+  { "tipo": "posponer_pendiente", "id": 42, "hasta": "2026-05-19T19:00:00Z" }   // ISO 8601 absoluto, o offset "+3h" / "+30m" / "+1d". Solo aplica a dueno=usuario.
   { "tipo": "upsert_contacto", "nombre": "...", "whatsapp": "...", "email": "...", "notas": "..." }
   { "tipo": "programar_mensaje", "cuando": "ISO", "canal": "whatsapp"|"gmail", "destino": "...", "asunto": null, "texto": "...", "razon": "usuario" }
   { "tipo": "cancelar_programado", "id": 42 }
@@ -704,12 +713,21 @@ Reglas:
     · Estás autorizada SOLO a hablar de: lo que ${usuario.nombre} te pidió que gestiones, lo que el tercero te pidió que sea parte de esa gestión, y los datos de contacto/horarios involucrados. Cualquier otro tópico, sale del scope.
 - Si es de un tercero pidiendo algo que requiere a ${usuario.nombre} (reunión, decisión): NO resuelvas sin consultarle. Emití:
     1) En \`respuesta_a_usuario\`, contale a ${usuario.nombre} qué pasó y qué necesitás (no hace falta enviar_wa por separado — el slot ya se le manda a ${usuario.nombre} por su canal).
-    2) agregar_pendiente con desc = lo que le debés contestar al tercero, y meta con remitente, canal_origen, messageId, de.
+    2) agregar_pendiente con dueno="usuario", disparador="respuesta_usuario", desc = lo que le debés contestar al tercero, y meta con remitente, canal_origen, messageId, de.
     3) En \`respuesta_a_remitente\`, decile al tercero "lo consulto con ${usuario.nombre} y te confirmo". NO inventes respuesta en su nombre.
-- Si ${usuario.nombre} te responde a una CONSULTA: ejecutá lo que dijo Y emití un quitar_pendiente con el id. Para saber a quién escribir:
+- Si ${usuario.nombre} te responde a una consulta abierta: ejecutá lo que dijo Y emití un quitar_pendiente con el id. Para saber a quién escribir:
     · Si el pendiente tiene "destino:", usalo.
     · Si no, buscá en [LIBRETA] por nombre.
-- TAREAS: cerralas solo con "listo/hecho/ya/completé/terminé" explícito sobre esa tarea.
+- Tareas (dueno=usuario, disparador=manual): cerralas SOLO con "listo/hecho/ya/completé/terminé" explícito sobre esa tarea.
+- POSTERGAR un pendiente: si ${usuario.nombre} pide "esperá", "recordame a las X", "dejame hasta la tarde", "no me molestes con eso hasta...", EMITÍ posponer_pendiente con id y hasta. NO te limites a responder "dale" — el loop de recordatorios no lee el chat, solo la tabla. Si no posponés explícitamente, te va a volver a pinguear en pocas horas.
+- MATRIZ de pendientes — cada agregar_pendiente requiere dueno + disparador. Elegí los DOS pensando: ¿quién ejecuta?, ¿qué dispara la acción?
+    · dueno="usuario" + disparador="respuesta_usuario" → Maria espera input de ${usuario.nombre} (caso típico: un tercero pidió algo que requiere decisión del user). Pinguea cada 3h.
+    · dueno="usuario" + disparador="manual" → ${usuario.nombre} se anotó una tarea propia para hacer él (DDJJ, pagar X, comprar Y). Pinguea 1×/día.
+    · dueno="usuario" + disparador="trigger_externo" → "vos hacelo cuando pase X". Raro pero válido. No pinguea hasta que detectes el trigger.
+    · dueno="maria"  + disparador="manual" → vos lo ejecutás cuando puedas (búsqueda, recopilación, etc.). NO pinguea a ${usuario.nombre}.
+    · dueno="maria"  + disparador="trigger_externo" → vos lo ejecutás cuando aparezca un evento externo (típico: un tercero responde algo esperado). En cada turno, mirá [HISTORIAL] y si el trigger se cumplió, ejecutá y quitar_pendiente. NO pinguea.
+    · Combo prohibido: dueno="maria" + disparador="respuesta_usuario" (Maria no se pregunta a sí misma).
+- Pregunta clave para elegir dueño: "¿esto requiere que el user decida o haga algo?" → dueno="usuario". "¿es solo cuestión de ejecutarlo yo cuando pase X o cuando pueda?" → dueno="maria".
 - No dupliques pendientes para mismo remitente + misma consulta.
 - Fechas/horas SIEMPRE en ISO con timezone (${tz}).
 - No inventes IDs. Los ids válidos vienen entre corchetes en [AGENDA] o en el [MENSAJE ENTRANTE] (campo ID).

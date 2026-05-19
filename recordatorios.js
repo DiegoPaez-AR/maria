@@ -1,10 +1,17 @@
 // recordatorios.js — re-ping de pendientes POR usuario por WhatsApp
 //
-// Hay dos tipos de pendientes con reglas distintas:
-//   · consulta → Maria le preguntó algo al usuario y espera respuesta.
-//                 UMBRAL 2h, COOLDOWN 3h (insiste rápido si no contestó).
-//   · tarea    → el usuario mismo se anotó algo para hacer él.
-//                 UMBRAL 24h, COOLDOWN 24h (una vez por día, no spam).
+// Solo entran al loop los pendientes con dueno='usuario'. Los de dueno='maria'
+// son tareas que Maria ejecuta sola — no se pingan a nadie.
+//
+// Por disparador:
+//   · respuesta_usuario → Maria espera que el usuario conteste algo.
+//                          UMBRAL 2h, COOLDOWN 3h (insiste rápido).
+//   · manual            → el usuario se anotó una tarea para hacer él.
+//                          UMBRAL 24h, COOLDOWN 24h (una vez por día).
+//   · trigger_externo   → NO pinguea. Espera el trigger; el LLM lo cierra.
+//
+// Si un pendiente tiene `recordar_desde` seteado, el loop lo ignora hasta
+// que esa fecha pase (postpone explícito vía posponer_pendiente).
 //
 // Multi-user: iteramos usuarios.listarActivos(). Cada usuario tiene sus
 // propios pendientes, su propio cooldown (en estado_usuario) y su propio
@@ -22,15 +29,16 @@ const TAREA_COOLDOWN_H    = Number(process.env.RECORDATORIO_TAREA_COOLDOWN_H   |
 const KEY_ULT_CONSULTA = 'ultimo_recordatorio_consultas';
 const KEY_ULT_TAREA    = 'ultimo_recordatorio_tareas';
 
-const CONFIG = {
-  consulta: {
+// Cada bucket = un disparador procesable, con su cooldown y su copy.
+const BUCKETS = {
+  respuesta_usuario: {
     umbralH:    CONSULTA_UMBRAL_H,
     cooldownH:  CONSULTA_COOLDOWN_H,
     keyGlobal:  KEY_ULT_CONSULTA,
     encabezado: (n) => `Te debo consulta sobre ${n === 1 ? 'algo pendiente' : `${n} cosas pendientes`} 👇`,
     cierre:     'Decime qué hago con cada uno.',
   },
-  tarea: {
+  manual: {
     umbralH:    TAREA_UMBRAL_H,
     cooldownH:  TAREA_COOLDOWN_H,
     keyGlobal:  KEY_ULT_TAREA,
@@ -50,15 +58,11 @@ function _destinoWA(usuario) {
   return usuario.wa_lid || usuario.wa_cus || null;
 }
 
-function _tipoDe(p) {
-  return p.meta?.tipo || 'consulta';
-}
-
-function _formatearTexto(tipo, candidatos) {
-  const cfg = CONFIG[tipo];
+function _formatearTexto(disparador, candidatos) {
+  const cfg = BUCKETS[disparador];
   const lineas = candidatos.map((p, i) => {
     const partes = [p.desc];
-    if (tipo === 'consulta' && p.meta?.remitente) partes.push(`de ${p.meta.remitente}`);
+    if (disparador === 'respuesta_usuario' && p.meta?.remitente) partes.push(`de ${p.meta.remitente}`);
     if (p.creado) {
       const h = Math.floor(_horasDesde(p.creado));
       if (h >= 1) partes.push(`${h}h`);
@@ -69,10 +73,10 @@ function _formatearTexto(tipo, candidatos) {
 }
 
 /**
- * Procesa UN tipo para UN usuario. Devuelve { enviado, cuantos, motivo }.
+ * Procesa UN disparador para UN usuario. Devuelve { enviado, cuantos, motivo }.
  */
-async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
-  const cfg = CONFIG[tipo];
+async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waClient }) {
+  const cfg = BUCKETS[disparador];
   const destino = _destinoWA(usuario);
   if (!destino) return { enviado: false, motivo: 'sin-destino-wa' };
 
@@ -81,8 +85,14 @@ async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
     return { enviado: false, motivo: 'cooldown-global' };
   }
 
+  const ahoraMs = Date.now();
   const candidatos = pendientes.filter(p => {
-    if (_tipoDe(p) !== tipo) return false;
+    if (p.dueno !== 'usuario') return false;
+    if (p.disparador !== disparador) return false;
+    if (p.recordar_desde) {
+      const t = new Date(p.recordar_desde).getTime();
+      if (!isNaN(t) && t > ahoraMs) return false;
+    }
     const edad = _horasDesde(p.creado);
     if (edad < cfg.umbralH) return false;
     const ultimoPing = p.ultimo_recordatorio || p.meta?.ultimo_recordatorio;
@@ -92,22 +102,22 @@ async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
 
   if (!candidatos.length) return { enviado: false, motivo: 'sin-candidatos' };
 
-  const texto = _formatearTexto(tipo, candidatos);
+  const texto = _formatearTexto(disparador, candidatos);
 
   let destinoFinal;
   try {
     const r = await waSend.enviarWAUsuario(waClient, usuario, texto, {
-      tag: `recordatorios/${usuario.nombre}/${tipo}`,
-      metadata: { tipo: 'recordatorio', subtipo: tipo, cuantos: candidatos.length },
+      tag: `recordatorios/${usuario.nombre}/${disparador}`,
+      metadata: { tipo: 'recordatorio', disparador, cuantos: candidatos.length },
     });
     destinoFinal = r.destinoFinal;
   } catch (err) {
-    console.error(`[recordatorios/${usuario.nombre}/${tipo}] falló sendMessage:`, err.message);
+    console.error(`[recordatorios/${usuario.nombre}/${disparador}] falló sendMessage:`, err.message);
     mem.log({
       usuarioId: usuario.id,
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `recordatorio ${tipo} falló: ${err.message}`,
-      metadata: { destino, cuantos: candidatos.length, tipo },
+      cuerpo: `recordatorio ${disparador} falló: ${err.message}`,
+      metadata: { destino, cuantos: candidatos.length, disparador },
     });
     return { enviado: false, motivo: 'error', error: err.message };
   }
@@ -118,13 +128,14 @@ async function _procesarTipoUsuario(tipo, usuario, pendientes, { waClient }) {
   }
   mem.setEstadoUsuario(usuario.id, cfg.keyGlobal, ahora);
 
-  console.log(`[recordatorios/${usuario.nombre}/${tipo}] ping → ${destinoFinal} (${candidatos.length})`);
+  console.log(`[recordatorios/${usuario.nombre}/${disparador}] ping → ${destinoFinal} (${candidatos.length})`);
 
   return { enviado: true, cuantos: candidatos.length };
 }
 
 /**
- * Una pasada del loop: para cada usuario activo procesa consulta y tarea.
+ * Una pasada del loop: para cada usuario activo procesa los dos buckets que
+ * pingan (respuesta_usuario y manual). trigger_externo no entra acá.
  */
 async function tickOnce({ waClient } = {}) {
   if (!waClient) return { enviado: false, motivo: 'no-waClient' };
@@ -134,8 +145,8 @@ async function tickOnce({ waClient } = {}) {
   for (const u of activos) {
     const pendientes = mem.listarPendientes(u.id);
     if (!pendientes.length) continue;
-    const resConsulta = await _procesarTipoUsuario('consulta', u, pendientes, { waClient });
-    const resTarea    = await _procesarTipoUsuario('tarea',    u, pendientes, { waClient });
+    const resConsulta = await _procesarDisparadorUsuario('respuesta_usuario', u, pendientes, { waClient });
+    const resTarea    = await _procesarDisparadorUsuario('manual',            u, pendientes, { waClient });
     resultados.push({ usuario: u.nombre, consulta: resConsulta, tarea: resTarea });
   }
   return { resultados };
