@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5471  2026-05-19 04:15:36  whatsapp  entrante   5491132317896@c.us   Y avísale mañana a las 8 a Ruben que me olvide que tenía ya tomado el almuerzo del viernes 29 por que viene gente de IONQ, que si podemos mover el armuerzo con Andy y Alex a otro día.                 
+
+5470  2026-05-19 04:15:04  sistema   interno                         acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 20
+
+5469  2026-05-19 04:15:03  whatsapp  saliente   5491132317896@c.us   Dale, te agendo IONQ el viernes 29 de 10 a 18.                                                                                                                                                          
+
+5468  2026-05-19 04:15:03  sistema   interno                         claude_call whatsapp: 69667ms prompt=67655c raw=513c                                                                                                                                                    
+
 5467  2026-05-19 04:13:53  whatsapp  entrante   5491132317896@c.us   Ponerme una reunión el viernes 29 de 10 a 18 con el título IONQ                                                                                                                                         
 
 5466  2026-05-19 03:43:05  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
@@ -204,13 +212,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5373  2026-05-18 20:36:33  whatsapp  saliente   175419449995277@lid  Lo consulto con Diego y te confirmo enseguida.                                                                                                                                                          
 
 5372  2026-05-18 20:36:33  whatsapp  saliente   34342575317160@lid   Pablo Casal te pregunta dónde sería la reunión con Poguetti (si en Carlos Pellegrini o en otro lado), y si es el Poguetti de Noro. ¿Qué le confirmo?                                                    
-
-5371  2026-05-18 20:36:32  sistema   interno                         claude_call whatsapp: 26074ms prompt=66418c raw=746c                                                                                                                                                    
-
-5370  2026-05-18 20:36:06  whatsapp  entrante   175419449995277@lid  Si podés indicarme el lugar, la dirección donde se realizaría la reunión, si es en                                                                                                                      
-                                                                      cartos peligrini o en algún lugar más, por favor.                                                                                                                                                      
-                                                                     Diego Poveti es el Diego Poveti de Noro o alguien más.                                                                                                                                                  
-
-5369  2026-05-18 20:35:56  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-5368  2026-05-18 20:35:56  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
