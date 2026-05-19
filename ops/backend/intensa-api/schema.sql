@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS clientes (
   nombre                  TEXT NOT NULL,
   email                   TEXT NOT NULL UNIQUE,
   wa                      TEXT NOT NULL UNIQUE,           -- formato 549XXXXXXXX, sin @c.us
-  calendar_provider       TEXT CHECK(calendar_provider IN ('google','microsoft','caldav')),
+  calendar_provider       TEXT CHECK(calendar_provider IN ('google','microsoft','caldav','ninguno')),
   instancia_slug          TEXT NOT NULL,                  -- FK a instances.slug
   instancia_usuario_id    INTEGER,                        -- id del usuario en la DB de su instancia
   estado                  TEXT NOT NULL DEFAULT 'active' CHECK(estado IN ('active','inactive','cancelled')),
