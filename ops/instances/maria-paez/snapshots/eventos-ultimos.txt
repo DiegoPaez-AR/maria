@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5728  2026-05-19 17:07:17  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5727  2026-05-19 17:07:17  whatsapp  saliente   5491156920073@c.us   Disculpá, le había avisado a Diego justo antes de que me llegara tu mensaje. Ya confirmó que va para allá.                                                                                              
+
+5726  2026-05-19 17:07:17  sistema   interno                         claude_call whatsapp: 76713ms prompt=69895c raw=527c                                                                                                                                                    
+
 5725  2026-05-19 17:06:33  whatsapp  saliente   222788661055558@lid  Ya le había avisado a Diego antes de recibir tu mensaje. Si hay algún cambio con el pedido, avisame y le informo.                                                                                       
 
 5724  2026-05-19 17:06:33  whatsapp  saliente   34342575317160@lid   Diego, Farinelli me acaba de pedir que no te avisara todavía — pero ya lo había hecho. Si hay algo que cambió con tu pedido, conviene que lo sepas.                                                     
@@ -222,16 +228,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5630  2026-05-19 12:33:59  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
 
 5629  2026-05-19 12:33:59  whatsapp  saliente                        (forward de false_167933254885560@lid_A5F1E871BF2B7FDE3A2F4285EF64C2E7 → 34342575317160@lid)                                                                                                            
-
-5628  2026-05-19 12:33:58  whatsapp  saliente   167933254885560@lid  Gracias Ariel, lo revisamos con Diego y te avisamos.                                                                                                                                                    
-
-5627  2026-05-19 12:33:58  whatsapp  saliente   34342575317160@lid   Te llegó el presupuesto de la Taos Bitono de Ariel (te reenvío la imagen). Resumen:                                                                                                                     
-                                                                                                                                                                                                                                                                             
-                                                                     *TAOS BITONO — Valor toma del Subaru: $22.000.000*                                                                                                                                                      
-                                                                                                                                                                                                                                                                             
-                                                                     *Opción 1*                                                                                                                                                                                              
-                                                                     Anticipó: $24.000.000                                                                                                                                                                                   
-                                                                     Toma del usado: $22.000.000                                                                                                                                                                             
-                                                                     12                                                                                                                                                                                                      
-
-5626  2026-05-19 12:33:58  sistema   interno                         claude_call whatsapp: 44592ms prompt=68741c raw=1437c                                                                                                                                                   

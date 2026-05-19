@@ -1,0 +1,114 @@
+# ejecutado: 2026-05-19T14:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Re-deploy con el fix de subdirs en deploy.sh + smoke tests detallados.
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io
+#   echo "═══ 1. Limpiar dirs viejos en docroot (para forzar re-sync limpio) ═══"
+#   rm -rf /var/www/intensa.io/maria/signup /var/www/intensa.io/maria/cuenta /var/www/intensa.io/maria/terminos 2>/dev/null
+#   ls /var/www/intensa.io/maria/
+#   
+#   echo
+#   echo "═══ 2. bash deploy.sh ═══"
+#   bash deploy.sh 2>&1 | tail -25
+#   
+#   echo
+#   echo "═══ 3. Verificar dirs deployados ═══"
+#   ls -la /var/www/intensa.io/maria/
+#   echo "  signup/:"
+#   ls /var/www/intensa.io/maria/signup/ 2>/dev/null
+#   echo "  cuenta/:"
+#   ls /var/www/intensa.io/maria/cuenta/ 2>/dev/null
+#   echo "  terminos/:"
+#   ls /var/www/intensa.io/maria/terminos/ 2>/dev/null
+#   
+#   echo
+#   echo "═══ 4. Smoke tests con contenido ═══"
+#   echo "  /maria/terminos/ status:"
+#   curl -sk -o /dev/null -w "    %{http_code}\n" https://intensa.io/maria/terminos/
+#   echo "  signup checkbox términos:"
+#   curl -sk https://intensa.io/maria/signup/ | grep -o 'name="acepto_terminos" required' | head -1
+#   echo "  cuenta turnstile sitekey:"
+#   curl -sk https://intensa.io/maria/cuenta/ | grep -o 'data-sitekey="0x4AAAAAA[A-Za-z0-9_-]*"' | head -1
+#   echo "  landing footer terminos link:"
+#   curl -sk https://intensa.io/maria/ | grep -o 'href="/maria/terminos/"' | head -1
+#   echo "  landing Confold copyright:"
+#   curl -sk https://intensa.io/maria/ | grep -o 'Confold' | head -1
+#   echo "  backend rechaza signup sin terminos:"
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"test","email":"t@t.com","wa":"5491111111111","calendar_provider":"google"}' \
+#     https://intensa.io/maria/api/signup/start | head -1
+#   echo
+#   echo "  backend acepta signup CON terminos:"
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"test","email":"smoke-test-doNotUse@test.invalid","wa":"5491999999999","calendar_provider":"google","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start
+#   echo
+#   
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ 1. Limpiar dirs viejos en docroot (para forzar re-sync limpio) ═══
+index.html
+script.js
+styles.css
+
+═══ 2. bash deploy.sh ═══
+'/root/secretaria/ops/sites/intensa.io/maria//styles.css' -> '/var/www/intensa.io/maria/styles.css'
+'/root/secretaria/ops/sites/intensa.io/maria//script.js' -> '/var/www/intensa.io/maria/script.js'
+    index.html con cache-bust v=20260519-140802
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/19 14:08:02 [warn] 1392978#1392978: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+
+═══ DONE ═══
+
+═══ 3. Verificar dirs deployados ═══
+total 76
+drwxr-xr-x 5 www-data www-data  4096 May 19 14:06 .
+drwxr-xr-x 3 www-data www-data  4096 May 19 12:06 ..
+drwxr-xr-x 2 www-data www-data  4096 May 19 14:06 cuenta
+-rw-r--r-- 1 www-data www-data 17825 May 19 14:08 index.html
+-rw-r--r-- 1 www-data www-data 19976 May 19 14:08 script.js
+drwxr-xr-x 2 www-data www-data  4096 May 19 14:06 signup
+-rw-r--r-- 1 www-data www-data 14147 May 19 14:08 styles.css
+drwxr-xr-x 2 www-data www-data  4096 May 19 14:06 terminos
+  signup/:
+  cuenta/:
+  terminos/:
+
+═══ 4. Smoke tests con contenido ═══
+  /maria/terminos/ status:
+    403
+  signup checkbox términos:
+  cuenta turnstile sitekey:
+  landing footer terminos link:
+href="/maria/terminos/"
+  landing Confold copyright:
+Confold
+  backend rechaza signup sin terminos:
+{"error":"must_accept_terms","message":"Tenés que aceptar los Términos y Condiciones para continuar."}
+  backend acepta signup CON terminos:
+{"ok":true,"signup_id":1,"message":"Códigos enviados a tu email y WhatsApp. Vencen en 10 minutos."}
+═══ DONE ═══
+
+# exit=0
