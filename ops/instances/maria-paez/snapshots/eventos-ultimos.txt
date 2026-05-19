@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5564  2026-05-19 11:25:27  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
+
+5563  2026-05-19 11:25:27  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+5562  2026-05-19 11:25:27  whatsapp  saliente   5491132317896@c.us   Dale, actualizo el contacto y le mando ahora.                                                                                                                                                           
+
+5561  2026-05-19 11:25:26  sistema   interno                         claude_call whatsapp: 56453ms prompt=67029c raw=830c                                                                                                                                                    
+
 5560  2026-05-19 11:24:29  whatsapp  entrante   5491132317896@c.us   si, perdon, actualiza el contacto con este numero: +54 9 11 4449-1280, y mandale ahi                                                                                                                    
 
 5559  2026-05-19 11:23:14  whatsapp  saliente   5491132317896@c.us   El de Rubén sí, fue. El de Teubal no pude mandarlo — me dio un error con su número. ¿Tenés otro contacto para él o querés que lo intente por otro lado?                                                 
@@ -245,11 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5466  2026-05-19 03:43:05  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
 
 5465  2026-05-19 03:43:05  whatsapp  saliente   5491132317896@c.us   Dale, le escribo mañana a las 7:30.                                                                                                                                                                     
-
-5464  2026-05-19 03:43:05  sistema   interno                         claude_call whatsapp: 49493ms prompt=67971c raw=647c                                                                                                                                                    
-
-5463  2026-05-19 03:42:15  whatsapp  entrante   5491132317896@c.us   Escribime a diego Teubal mañana 7:30 y pregúntale si puedo pasar a buscar los papeles mañana a las 16:15                                                                                                
-
-5462  2026-05-19 03:40:41  sistema   interno                         contacto vcard (privado): Diego Teubal → 5491143092046@c.us                                                                                                                                             
-
-5461  2026-05-19 03:40:19  sistema   interno                         claude_call whatsapp: 8427ms prompt=67556c raw=208c                                                                                                                                                     
