@@ -72,8 +72,12 @@ router.post('/verify', async (req, res, next) => {
       console.warn('[signup/verify] LEMON_PRODUCT_VARIANT_ID o LEMON_BUY_BASE no configurado — devolviendo URL de placeholder');
     }
 
+    // Recuperamos los datos del signup_pending para pre-rellenar el checkout
+    const row = db.control().prepare(`SELECT nombre, email FROM signup_pending WHERE signup_token=?`).get(r.signup_token);
     const checkoutUrl = _buildCheckoutUrl(buyBase, {
       checkout_data: { custom: { signup_token: r.signup_token } },
+      email: row?.email,
+      name:  row?.nombre,
     });
 
     res.json({
@@ -90,15 +94,22 @@ router.post('/verify', async (req, res, next) => {
 
 function _buildCheckoutUrl(buyBase, opts) {
   if (!buyBase) return '#lemon-not-configured';
-  // LemonSqueezy acepta query params para preset y custom data:
-  // ?checkout[custom][signup_token]=XYZ&checkout[email]=...&checkout[name]=...
-  const u = new URL(buyBase);
+  // LemonSqueezy espera el formato literal `?checkout[custom][key]=value` —
+  // los brackets NO deben ir URL-encodeados (ni %5B ni %5D), si no LS no
+  // reconoce el parámetro y devuelve 'Se ha producido un error de procesamiento'.
+  // Construimos el query string a mano para evitar el encoding agresivo de URL.
+  const parts = [];
   if (opts.checkout_data && opts.checkout_data.custom) {
     for (const [k, v] of Object.entries(opts.checkout_data.custom)) {
-      u.searchParams.set(`checkout[custom][${k}]`, v);
+      // Solo encodeamos el value, no la key (brackets literales).
+      parts.push(`checkout[custom][${k}]=${encodeURIComponent(v)}`);
     }
   }
-  return u.toString();
+  if (opts.email)          parts.push(`checkout[email]=${encodeURIComponent(opts.email)}`);
+  if (opts.name)           parts.push(`checkout[name]=${encodeURIComponent(opts.name)}`);
+  if (!parts.length) return buyBase;
+  const sep = buyBase.includes('?') ? '&' : '?';
+  return buyBase + sep + parts.join('&');
 }
 
 module.exports = router;
