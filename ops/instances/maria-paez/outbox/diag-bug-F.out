@@ -1,0 +1,166 @@
+# ejecutado: 2026-05-19T09:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "═══ 1. Identidad de Rubén ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, wa_cus, wa_lid, rol FROM usuarios WHERE nombre LIKE '%Rub%' OR nombre LIKE '%Ward%';"
+#   
+#   echo ""
+#   echo "═══ 2. Eventos del enviar_wa a Rubén hoy con usuario_id ═══"
+#   sqlite3 -header -column "$DB" <<'SQL'
+#   SELECT id, timestamp, canal, direccion, de, usuario_id, substr(cuerpo,1,90) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 00:00:00'
+#     AND canal='whatsapp'
+#     AND (de LIKE '%54024727%' OR de = (SELECT wa_lid FROM usuarios WHERE nombre LIKE '%Rub%') OR de = (SELECT wa_cus FROM usuarios WHERE nombre LIKE '%Rub%'))
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ 3. Mismo timeframe pero filtrado por usuario_id=ruben ═══"
+#   sqlite3 -header -column "$DB" <<'SQL'
+#   SELECT id, timestamp, canal, direccion, de, usuario_id, substr(cuerpo,1,90) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 00:00:00'
+#     AND canal='whatsapp'
+#     AND usuario_id = (SELECT id FROM usuarios WHERE nombre LIKE '%Rub%')
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ 4. Y los del usuario_id=diego para mismo destinatario ═══"
+#   sqlite3 -header -column "$DB" <<'SQL'
+#   SELECT id, timestamp, direccion, de, usuario_id, substr(cuerpo,1,90) AS cuerpo
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 00:00:00'
+#     AND canal='whatsapp'
+#     AND direccion = 'saliente'
+#     AND usuario_id = 1
+#     AND de LIKE '%54024727%'
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ 5. Buscar dónde se loggea el saliente de enviar_wa ═══"
+#   grep -n "mem.log\|usuario_id\|direccion.*saliente" /root/secretaria/executor.js | head -20
+#   echo "---"
+#   echo "Función _enviarWA:"
+#   awk '/_enviarWA|async function _enviarWA/,/^}/' /root/secretaria/executor.js | head -80
+
+# ───── output ─────
+═══ 1. Identidad de Rubén ═══
+id  nombre      wa_cus              wa_lid  rol    
+--  ----------  ------------------  ------  -------
+11  Rubén Ward  5491154024727@c.us          usuario
+
+═══ 2. Eventos del enviar_wa a Rubén hoy con usuario_id ═══
+id    timestamp            canal     direccion  de                  usuario_id  cuerpo                                                                                    
+----  -------------------  --------  ---------  ------------------  ----------  ------------------------------------------------------------------------------------------
+5497  2026-05-19 10:00:14  whatsapp  saliente   5491154024727@c.us  11          ☀️ *Buen día, Rubén Ward.* martes 19 de mayo.                                             
+                                                                                                                                                                          
+                                                                                *📅 Agenda del día*                                                                        
+                                                                                (sin eventos hoy)                                                                         
+
+5555  2026-05-19 11:21:24  whatsapp  saliente   5491154024727@c.us  1           Hola Rubén, buen día! Te escribe María de parte de Diego. Me pidió que te avisara que se l
+
+5604  2026-05-19 11:54:45  whatsapp  entrante   5491154024727@c.us  11          Pregunto                                                                                  
+
+5606  2026-05-19 11:54:53  whatsapp  saliente   5491154024727@c.us  11          ¡Hola Rubén! Acá estoy, decime.                                                           
+
+═══ 3. Mismo timeframe pero filtrado por usuario_id=ruben ═══
+id    timestamp            canal     direccion  de                  usuario_id  cuerpo                                       
+----  -------------------  --------  ---------  ------------------  ----------  ---------------------------------------------
+5497  2026-05-19 10:00:14  whatsapp  saliente   5491154024727@c.us  11          ☀️ *Buen día, Rubén Ward.* martes 19 de mayo.
+                                                                                                                             
+                                                                                *📅 Agenda del día*                           
+                                                                                (sin eventos hoy)                            
+
+5604  2026-05-19 11:54:45  whatsapp  entrante   5491154024727@c.us  11          Pregunto                                     
+
+5606  2026-05-19 11:54:53  whatsapp  saliente   5491154024727@c.us  11          ¡Hola Rubén! Acá estoy, decime.              
+
+═══ 4. Y los del usuario_id=diego para mismo destinatario ═══
+id    timestamp            direccion  de                  usuario_id  cuerpo                                                                                    
+----  -------------------  ---------  ------------------  ----------  ------------------------------------------------------------------------------------------
+5555  2026-05-19 11:21:24  saliente   5491154024727@c.us  1           Hola Rubén, buen día! Te escribe María de parte de Diego. Me pidió que te avisara que se l
+
+═══ 5. Buscar dónde se loggea el saliente de enviar_wa ═══
+4:// conversación) y se guardan asociadas a su usuario_id. enviar_wa resuelve
+35:      mem.log({
+43:      mem.log({
+251:  mem.log({
+253:    canal: 'calendar', direccion: 'saliente',
+308:  mem.log({
+310:    canal: 'calendar', direccion: 'saliente',
+340:  mem.log({
+342:    canal: 'calendar', direccion: 'saliente',
+365:  mem.log({
+367:    canal: 'gmail', direccion: 'saliente',
+400:  mem.log({
+402:    canal: 'gmail', direccion: 'saliente',
+438:  mem.log({
+440:    canal: 'whatsapp', direccion: 'saliente',
+740:    const u = usuarios.obtener(c.usuario_id);
+742:      usuario: u ? { id: u.id, nombre: u.nombre, rol: u.rol } : { id: c.usuario_id, nombre: '(usuario desconocido)' },
+859:  mem.log({
+888:  const targetId = a.id || a.usuario_id || ctx.usuario.id;
+954:  mem.log({
+---
+Función _enviarWA:
+    case 'enviar_wa':          return await _enviarWA(accion, ctx);
+    case 'reenviar_wa':        return await _reenviarWA(accion, ctx);
+    case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
+    case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
+    case 'upsert_contacto':    return _upsertContacto(accion, ctx);
+    case 'cambiar_visibilidad_contacto': return _cambiarVisibilidadContacto(accion, ctx);
+    case 'set_cumple_contacto':          return _setCumpleContacto(accion, ctx);
+    case 'programar_mensaje':  return _programarMensaje(accion, ctx);
+    case 'cancelar_programado':return _cancelarProgramado(accion, ctx);
+    case 'crear_follow_up':    return _crearFollowUp(accion, ctx);
+    case 'cerrar_follow_up':   return _cerrarFollowUp(accion, ctx);
+    case 'recordar_hecho':     return _recordarHecho(accion, ctx);
+    case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
+    case 'crear_usuario':      return _crearUsuario(accion, ctx);
+    case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
+    case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
+    case 'configurar_caldav': return await _configurarCaldav(accion, ctx);
+    case 'iniciar_microsoft_auth': return await _iniciarMicrosoftAuth(accion, ctx);
+    case 'configurar_microsoft': return await _configurarMicrosoft(accion, ctx);
+    case 'set_calendar_acceso': return await _setCalendarAcceso(accion, ctx);
+    case 'buscar_contacto_global': return _buscarContactoGlobal(accion, ctx);
+    case 'buscar_slots_comunes':   return await _buscarSlotsComunes(accion, ctx);
+    case 'confirmar_prospecto_pendiente':
+      return _confirmarProspectoPendiente(accion, ctx);
+    case 'rechazar_prospecto_pendiente':
+      return _rechazarProspectoPendiente(accion, ctx);
+    default:
+      throw new Error(`Tipo de acción desconocido: ${accion.tipo}`);
+  }
+}
+async function _enviarWA(a, ctx) {
+  _requerir(a, ['a', 'texto']);
+  if (!ctx.waClient) throw new Error('enviar_wa: ctx.waClient no fue provisto al executor');
+
+  // Validar destinatario contra libreta visible / usuarios activos.
+  const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
+  if (!_v.ok) throw new Error(`enviar_wa: ${_v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
+
+  let destinoFinal;
+  try {
+    const r = await waSend.enviarWADirecto(ctx.waClient, a.a, a.texto, {
+      tag: 'enviar_wa',
+      usuarioId: ctx.usuario.id,
+      metadata: { destinoOriginal: a.a },
+    });
+    destinoFinal = r.destinoFinal;
+  } catch (err) {
+    throw new Error(`No pude mandar WA a ${a.a}: ${err.message}`);
+  }
+  return { a: destinoFinal, enviado: true };
+}
+
+# exit=0
