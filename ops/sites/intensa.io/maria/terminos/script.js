@@ -9,7 +9,7 @@ const TR = {
     'warn.title': '⚠ María is in BETA.',
     'warn.body': ' Read these terms in detail before subscribing. By paying you declare to have accepted them.',
     's1.h': '1. Who operates the service',
-    's1.p': 'The "María" service is operated by <strong>Confold S.A.</strong>, a corporation organized under the laws of the Eastern Republic of Uruguay, marketed under the "Intensa Labs" brand. Legal address and registration details are being updated. Operational contact: <a href="mailto:hola@intensa.io">hola@intensa.io</a>.',
+    's1.p': 'The "María" service is operated by <strong>Confold Sociedad Anónima</strong>, RUT 218377600011, with legal address at Pradines Clemente 1795, Montevideo 11500, Eastern Republic of Uruguay. Marketed under the "Intensa Labs" brand. Operational contact: <a href="mailto:hola@intensa.io">hola@intensa.io</a>.',
     's2.h': '2. Product status — BETA',
     's2.p': 'María is a product in active development. This concretely means:',
     's2.l1': 'Service interruptions may occur without prior notice.',
