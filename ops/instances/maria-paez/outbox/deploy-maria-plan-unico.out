@@ -1,0 +1,97 @@
+# ejecutado: 2026-05-19T12:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Deploy del rename L0001 → maria + cleanup del dir viejo.
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io || { echo "ERROR: no encontre src dir"; exit 1; }
+#   
+#   echo "═══ 1. Corriendo deploy.sh (sync + cache-bust + reload nginx) ═══"
+#   bash deploy.sh
+#   
+#   echo
+#   echo "═══ 2. Borrar dir viejo /var/www/intensa.io/L0001/ (queda colgado tras el rename) ═══"
+#   if [ -d /var/www/intensa.io/L0001 ]; then
+#     rm -rf /var/www/intensa.io/L0001
+#     echo "  borrado"
+#   else
+#     echo "  no existía"
+#   fi
+#   
+#   echo
+#   echo "═══ 3. Smoke test del nuevo path ═══"
+#   curl -sk -o /dev/null -w "https://intensa.io/maria/   → HTTP %{http_code}\n" https://intensa.io/maria/
+#   curl -sk "https://intensa.io/maria/" | grep -oE 'data-lemon-product="maria"|\$50<span class="period"|Un plan' | head -5
+#   
+#   echo
+#   echo "═══ 4. Verificar que L0001 retorna 404 ═══"
+#   curl -sk -o /dev/null -w "https://intensa.io/L0001/  → HTTP %{http_code} (esperamos 404)\n" https://intensa.io/L0001/
+#   
+#   echo
+#   echo "═══ 5. Listado del docroot deployado ═══"
+#   ls -la /var/www/intensa.io/
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ 1. Corriendo deploy.sh (sync + cache-bust + reload nginx) ═══
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+  index.html con cache-bust v=20260519-120602
+
+═══ 1b. Sincronizar landings (subdirs de SRC/) ═══
+  → maria
+'/root/secretaria/ops/sites/intensa.io/maria//styles.css' -> '/var/www/intensa.io/maria/styles.css'
+'/root/secretaria/ops/sites/intensa.io/maria//script.js' -> '/var/www/intensa.io/maria/script.js'
+    index.html con cache-bust v=20260519-120602
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/19 12:06:02 [warn] 1371656#1371656: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+intensa.io/L0001/ HTTPS 200
+
+═══ DONE ═══
+
+═══ 2. Borrar dir viejo /var/www/intensa.io/L0001/ (queda colgado tras el rename) ═══
+  borrado
+
+═══ 3. Smoke test del nuevo path ═══
+https://intensa.io/maria/   → HTTP 200
+Un plan
+$50<span class="period"
+data-lemon-product="maria"
+
+═══ 4. Verificar que L0001 retorna 404 ═══
+https://intensa.io/L0001/  → HTTP 200 (esperamos 404)
+
+═══ 5. Listado del docroot deployado ═══
+total 60
+drwxr-xr-x 3 www-data www-data  4096 May 19 12:06 .
+drwxr-xr-x 5 root     root      4096 May 17 18:56 ..
+-rw-r--r-- 1 www-data www-data 14565 May 19 12:06 index.html
+drwxr-xr-x 2 www-data www-data  4096 May 19 12:06 maria
+-rw-r--r-- 1 www-data www-data 16221 May 19 12:06 script.js
+-rw-r--r-- 1 www-data www-data 15895 May 19 12:06 styles.css
+
+═══ DONE ═══
+
+# exit=0
