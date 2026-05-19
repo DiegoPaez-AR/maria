@@ -1,0 +1,73 @@
+# ejecutado: 2026-05-19T08:41:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "═══ Programados pendientes para los próximos 2 días ═══"
+#   sqlite3 -header -column "$DB" <<'SQL'
+#   SELECT
+#     id,
+#     cuando,
+#     canal,
+#     destino,
+#     enviado,
+#     substr(texto,1,90) AS texto,
+#     COALESCE(razon,'') AS razon,
+#     creado
+#   FROM programados
+#   WHERE enviado = 0
+#     AND cuando >= '2026-05-19T00:00:00'
+#     AND cuando <  '2026-05-21T00:00:00'
+#   ORDER BY cuando ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ Programados con destinos sospechosos (números Teubal viejos/nuevos) ═══"
+#   sqlite3 -header -column "$DB" <<'SQL'
+#   SELECT id, cuando, destino, enviado, substr(texto,1,80) AS texto, creado
+#   FROM programados
+#   WHERE (destino LIKE '%43092046%' OR destino LIKE '%4491280%')
+#   ORDER BY id DESC LIMIT 30;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ Auditar 'enviado' y estado real ═══"
+#   sqlite3 -header -column "$DB" "SELECT enviado, COUNT(*) FROM programados WHERE cuando >= '2026-05-19' AND cuando < '2026-05-21' GROUP BY enviado;"
+
+# ───── output ─────
+═══ Programados pendientes para los próximos 2 días ═══
+id   cuando                    canal     destino              enviado  texto                                                                                       razon                                                       creado             
+---  ------------------------  --------  -------------------  -------  ------------------------------------------------------------------------------------------  ----------------------------------------------------------  -------------------
+192  2026-05-19T11:45:00.000Z  whatsapp  137456250806423@lid  0        ⏰ *En 15min*: Lautaro está de Vacaciones (09:00 a. m.)                                      meeting_prep:2:333qr3igt5su72km6pjvsp321i_20260519T120000Z  2026-05-19 10:04:10
+
+193  2026-05-19T11:45:00.000Z  whatsapp  137456250806423@lid  0        ⏰ *En 15min*: Cristian está de vacaciones (09:00 a. m.)                                     meeting_prep:2:4dmnrichpnc2rjd9njlkfecsc4_20260519T120000Z  2026-05-19 10:04:10
+
+195  2026-05-19T12:00:00.000Z  whatsapp  137456250806423@lid  0        ⏰ *En 15min*: MC Daily (09:15 a. m.)                                                        meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260519T121500Z  2026-05-19 10:19:10
+                                                                       Con: cristian.incarnato@sondeos.com.ar, elina.torello                                                                                                                      
+
+196  2026-05-19T12:30:00.000Z  whatsapp  137456250806423@lid  0        ⏰ *En 15min*: Daily CMP (09:45 a. m.)                                                       meeting_prep:2:mj353rh0ornn2pd0no1jnl2gbu_20260519T124500Z  2026-05-19 10:49:10
+                                                                       Con: agustin.escobar@sondeosglobal.com, alejandro.fu                                                                                                                       
+
+197  2026-05-19T12:45:00.000Z  whatsapp  137456250806423@lid  0        ⏰ *En 15min*: Sondeos publica posteo estático Voces del Ecosistema (Restar) (10:00 a. m.)   meeting_prep:2:6dokejdcc8eabst4glsipdkn00                   2026-05-19 11:04:10
+
+198  2026-05-19T12:45:00.000Z  whatsapp  105171031949561@lid  0        ⏰ *En 15min*: HIRSCH (10:00 a. m.)                                                          meeting_prep:6:1d6kae3bnuj9qtk132kgncr8ds                   2026-05-19 11:04:11
+
+194  2026-05-19T19:00:00.000Z  whatsapp  5491161673400@c.us   0        Hola Analia, te escribo de parte de Diego. Para la reunión del viernes 22/05, ¿podés pasar  usuario                                                     2026-05-19 10:13:30
+
+═══ Programados con destinos sospechosos (números Teubal viejos/nuevos) ═══
+id   cuando                    destino             enviado  texto                                                                             creado             
+---  ------------------------  ------------------  -------  --------------------------------------------------------------------------------  -------------------
+199  2026-05-20T10:30:00.000Z  5491143092046@c.us  -1       Hola Diego, buenos días! Te escribe María de parte de Diego Páez. Te quería cons  2026-05-19 11:18:50
+189  2026-05-20T10:30:00.000Z  5491143092046@c.us  -1       Hola Diego, buenos días! Te escribe María. Diego quería consultarte si puede pas  2026-05-19 03:43:05
+
+═══ Auditar 'enviado' y estado real ═══
+enviado  COUNT(*)
+-------  --------
+-1       4       
+0        7       
+1        1       
+
+# exit=0
