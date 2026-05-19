@@ -34,11 +34,12 @@ chmod -R 644 "$DEST"/*
 find "$DEST" -type d -exec chmod 755 {} +
 
 echo ""
-echo "═══ 1b. Sincronizar landings (L0001/) ═══"
-# Cada landing vive en un subdir SRC/Lxxxx/. Sincronizamos cada uno y aplicamos
-# cache-bust a sus refs a styles.css/script.js (mismo STAMP que el sitio raíz).
+echo "═══ 1b. Sincronizar landings (subdirs de SRC/) ═══"
+# Cada landing vive en un subdir de SRC/ (ej. maria/, L0042/). Sincronizamos cada
+# uno y aplicamos cache-bust a sus refs a styles.css/script.js (mismo STAMP que el
+# sitio raíz). Ignoramos archivos top-level (index.html, vhost.conf, etc.).
 shopt -s nullglob
-for landing_src in "$SRC"/L*/; do
+for landing_src in "$SRC"/*/; do
     landing_name=$(basename "$landing_src")
     landing_dest="$DEST/$landing_name"
     echo "  → $landing_name"
