@@ -294,3 +294,54 @@ footer { background: var(--bg-alt); padding: 60px 0 24px; border-top: 1px solid 
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
   .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
 }
+
+/* ─── Capacidades y límites ──────────────────── */
+.caps-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px; margin-bottom: 48px;
+}
+.cap-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 18px; padding: 28px 22px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  transition: all 0.2s;
+}
+.cap-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.05); }
+.cap-num {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1;
+  color: var(--primary); margin-bottom: 12px; letter-spacing: -0.02em;
+}
+.cap-label { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
+
+.caps-detail {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px; margin-bottom: 32px;
+}
+.caps-detail-col h3 {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  margin-bottom: 16px;
+}
+.caps-list {
+  list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.caps-list li {
+  color: var(--text-dim); font-size: 0.95rem; line-height: 1.5;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.caps-badge {
+  display: inline-block; padding: 2px 10px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
+  text-transform: uppercase; flex-shrink: 0; margin-top: 2px;
+}
+.caps-stable { background: rgba(40, 140, 80, 0.12); color: #1f7a4d; }
+.caps-beta { background: rgba(217, 119, 87, 0.15); color: var(--primary-dark); }
+
+.caps-priv {
+  text-align: center; color: var(--text-dim); font-size: 0.95rem;
+  max-width: 720px; margin: 0 auto;
+  padding: 18px 24px; background: var(--bg-alt);
+  border-radius: 14px;
+}
+.caps-priv strong { color: var(--text); }
