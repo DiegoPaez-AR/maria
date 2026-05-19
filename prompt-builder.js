@@ -52,7 +52,18 @@ function seccionFechaHora(tz) {
     weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
     hour: '2-digit', minute: '2-digit',
   });
-  return `Ahora: ${str} (zona ${tz}). ISO: ${ahora.toISOString()}`;
+  // Heurística: si la hora local del usuario está entre 00:00 y 06:00,
+  // probablemente para él aún es "noche de ayer". Cuando dice "mañana",
+  // suele querer decir el día calendario actual más tarde (no el siguiente).
+  // Sin esta advertencia el LLM interpreta literalmente y programa para 24h después.
+  let aviso = '';
+  try {
+    const hAr = parseInt(ahora.toLocaleString('es-AR', { timeZone: tz, hour: '2-digit', hour12: false }), 10);
+    if (hAr >= 0 && hAr < 6) {
+      aviso = ` ⚠️ Estás procesando un mensaje de madrugada (00-06hs locales). La gente típicamente considera "hoy" al día previo hasta dormir. Si el usuario dice "mañana", probablemente se refiere al PRÓXIMO amanecer (que es el día calendario actual más tarde), NO al día calendario siguiente. Si tenés dudas, preguntale antes de programar.`;
+    }
+  } catch {}
+  return `Ahora: ${str} (zona ${tz}). ISO: ${ahora.toISOString()}.${aviso}`;
 }
 
 async function seccionAgenda(usuario, { dias = 7 } = {}) {
@@ -214,7 +225,7 @@ function seccionProgramados(usuario, { max = 10 } = {}) {
     const d = new Date(p.cuando);
     const cuando = `${DIAS_SEMANA[d.getDay()].slice(0,3)} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${d.toLocaleTimeString('es-AR', { timeZone: usuario.tz, hour: '2-digit', minute: '2-digit' })}`;
     const razon = p.razon ? ` [${p.razon}]` : '';
-    const txt = (p.texto || '').replace(/\s+/g, ' ').slice(0, 100);
+    const txt = (p.texto || '').replace(/\s+/g, ' ').slice(0, 500);
     return `- [id:${p.id}] ${cuando} → ${p.canal}/${p.destino}${razon}: ${txt}`;
   }).join('\n');
 }
@@ -718,6 +729,7 @@ Hechos persistentes:
 Mensajes programados:
 - Si pide "recordame a las 17", "insistile el martes", etc., emití programar_mensaje con ISO-${tz} y canal/destino.
 - No uses programar_mensaje para el brief matutino ni avisos de reuniones — los maneja el sistema.
+- CONFIRMACIÓN CON FECHA COMPLETA: cuando confirmes algo programado, INCLUÍ siempre el día y la fecha (ej. "te escribo a Juan **el martes 19/05** a las 7:30"), nunca solo "mañana" o "hoy". El usuario debe poder cazar errores de interpretación de fecha leyendo tu confirmación. Esta regla aplica a programar_mensaje, crear_evento, y cualquier acción con fecha futura.
 
 Contactos:
 - La libreta tiene dos lados: PRIVADA (solo de ${usuario.nombre}) y PÚBLICA (compartida con todos los usuarios). Cuando busques a alguien, primero mirá la privada, después la pública.

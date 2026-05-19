@@ -712,6 +712,37 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
         .map(r => `${r.accion?.tipo || '?'}: ${r.error}`)
         .join(' | ');
       console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ${fallas}`);
+
+      // BUG B FIX: avisar proactivamente al owner si alguna acción CON
+      // efecto externo (envío, programación, evento, email) falló. Las
+      // acciones internas (hechos, pendientes, contactos) no necesitan
+      // aviso porque no tienen efecto que el user esté esperando ver.
+      const ACCIONES_VISIBLES = new Set([
+        'enviar_wa', 'reenviar_wa', 'enviar_email', 'responder_email',
+        'programar_mensaje', 'cancelar_programado',
+        'crear_evento', 'modificar_evento', 'borrar_evento',
+      ]);
+      const fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
+      if (fallasVisibles.length && destinoUsuario) {
+        const detalle = fallasVisibles.map(r => {
+          const a = r.accion || {};
+          const target = a.a || a.to || a.destino || a.summary || a.id || '';
+          return `• ${a.tipo}${target ? ` → ${String(target).slice(0,80)}` : ''}: ${r.error}`;
+        }).join('\n');
+        const aviso = `⚠️ Heads up: ${fallasVisibles.length === 1 ? 'una acción falló' : `${fallasVisibles.length} acciones fallaron`} mientras te respondía:\n${detalle}`;
+        try {
+          await client.sendMessage(destinoUsuario, aviso);
+          mem.log({
+            usuarioId: usuario.id,
+            canal: 'whatsapp', direccion: 'saliente',
+            de: destinoUsuario, nombre: usuario.nombre, cuerpo: aviso,
+            metadata: { slot: 'aviso_fallos', fallas: fallasVisibles.length },
+          });
+          console.log(`[WA →usr] AVISO fallos a ${usuario.nombre}: ${fallasVisibles.length}`);
+        } catch (err) {
+          console.error('[WA] enviar aviso fallos falló:', err.message);
+        }
+      }
     }
   }
 }

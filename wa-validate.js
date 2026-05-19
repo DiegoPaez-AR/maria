@@ -54,22 +54,46 @@ async function normalizarWaCus(input, client) {
     throw new Error(`validar_wa: "${input}" no contiene dígitos`);
   }
 
-  let wid;
-  try {
-    wid = await client.getNumberId(digitos);
-  } catch (err) {
-    throw new Error(
-      `validar_wa: WhatsApp respondió error consultando ${digitos}: ${err.message}. ` +
-      `Reintentá en un minuto o verificá el número con el owner.`
-    );
+  // Probar el número tal cual, y si no encuentra, probar fallback AR
+  // (con/sin "9" móvil — Argentina tiene el quirk de que algunos móviles se
+  // registran en WhatsApp con "9" tras el +54 y otros sin). Ej: +54 9 11 ...
+  // vs +54 11 ... pueden ser el mismo número desde el punto de vista de WA.
+  const candidatos = [digitos];
+  if (/^54\d{10}$/.test(digitos)) {
+    // 54 + 10 dígitos (sin "9") → probar también con "9"
+    candidatos.push('549' + digitos.slice(2));
+  } else if (/^549\d{10}$/.test(digitos)) {
+    // 549 + 10 dígitos → probar también sin el "9"
+    candidatos.push('54' + digitos.slice(3));
+  }
+
+  let wid = null;
+  let lastErr = null;
+  for (const cand of candidatos) {
+    try {
+      const r = await client.getNumberId(cand);
+      if (r && r._serialized) {
+        wid = r;
+        break;
+      }
+    } catch (err) {
+      lastErr = err;
+    }
   }
 
   if (!wid || !wid._serialized) {
+    if (lastErr) {
+      throw new Error(
+        `validar_wa: WhatsApp respondió error consultando ${digitos}: ${lastErr.message}. ` +
+        `Reintentá en un minuto o verificá el número con el owner.`
+      );
+    }
     throw new Error(
-      `validar_wa: el número "${digitos}" no existe en WhatsApp. ` +
-      `Verificá el código de país con el owner — comunes: Argentina=+54, Uruguay=+598, Paraguay=+595, ` +
-      `Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1. ` +
-      `Pedile el número en formato internacional completo antes de reintentar.`
+      `validar_wa: el número "${digitos}" no aparece en WhatsApp${candidatos.length > 1 ? ` (probé también ${candidatos.slice(1).join(', ')})` : ''}. ` +
+      `IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp ` +
+      `resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona ` +
+      `no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: ` +
+      `Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.`
     );
   }
 
