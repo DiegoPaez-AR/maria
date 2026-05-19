@@ -1,0 +1,315 @@
+# ejecutado: 2026-05-19T14:31:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io
+#   bash deploy.sh 2>&1 | grep -E "cache-bust|→" | head -5
+#   echo
+#   echo "verificar checkbox simplificado:"
+#   curl -sk "https://intensa.io/maria/signup/$(date +%s)" 2>/dev/null
+#   # usar cache-bust query
+#   curl -sk "https://intensa.io/maria/signup/" | grep -o 'step1.lbl-terminos">[^<]*' | head -1
+#   echo
+#   echo "DONE"
+
+# ───── output ─────
+  index.html con cache-bust v=20260519-143102
+  → maria
+    index.html con cache-bust v=20260519-143102
+    cache-bust v=20260519-143102 en cuenta/index.html
+    cache-bust v=20260519-143102 en signup/index.html
+
+verificar checkbox simplificado:
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-i18n="title">Intensa — Agentes de IA para automatización empresarial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=20260519-143102">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark"></span> intensa</div>
+    <div class="nav-links">
+      <a href="#producto" data-i18n="nav.producto">Producto</a>
+      <a href="#flujo" data-i18n="nav.flujo">Cómo funciona</a>
+      <a href="#casos" data-i18n="nav.casos">Casos</a>
+      <a href="#contacto" class="nav-cta" data-i18n="nav.cta">Hablar con ventas</a>
+      <div class="lang-toggle" id="langToggle" role="group" aria-label="Switch language">
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      <span data-i18n="hero.eyebrow">v2.4 · agentes autónomos en producción</span>
+    </div>
+    <h1 data-i18n-html="hero.h1">Agentes de IA que <em>ejecutan trabajo real</em> dentro de tu empresa.</h1>
+    <p class="hero-sub" data-i18n="hero.sub">Intensa despliega agentes autónomos que se conectan a tus sistemas, razonan sobre tus procesos y completan tareas de principio a fin. Sin chatbots. Sin RPA frágil.</p>
+    <div class="hero-cta">
+      <a href="#contacto" class="btn btn-primary"><span data-i18n="hero.demo">Solicitar demo</span> <span class="arrow">→</span></a>
+      <a href="#producto" class="btn btn-ghost" data-i18n="hero.ver">Ver producto</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="label">intensa@prod ~ agent-runtime</div>
+      </div>
+      <div class="terminal-body">
+        <div class="term-line"><span class="term-prompt">›</span><span class="term-cmd">intensa run agent.invoice-recon --source erp</span></div>
+        <div class="term-line"><span class="term-out" data-i18n="term.l1">→ conectando a SAP · 1,284 facturas detectadas</span></div>
+        <div class="term-line"><span class="term-out" data-i18n-html="term.l2">→ <span class="term-tag">[razonando]</span> conciliando contra órdenes de compra</span></div>
+        <div class="term-line"><span class="term-out" data-i18n-html="term.l3">→ <span class="term-tag">[acción]</span> 47 discrepancias escaladas · ticket #4821</span></div>
+        <div class="term-line"><span class="term-out" data-i18n="term.l4">→ 1,237 facturas aprobadas automáticamente</span></div>
+        <div class="term-line"><span class="term-ok" data-i18n="term.ok">✓ completado en 4m 12s · ahorro: 38 horas/operador</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="producto" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="prod.tag">// producto</span>
+      <h2 data-i18n-html="prod.h2">Una plataforma. <em>Agentes a medida.</em></h2>
+      <p class="section-sub" data-i18n="prod.sub">Construye, despliega y supervisa agentes de IA especializados para cada proceso. Con observabilidad, control de versiones y trazabilidad de cada decisión.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">01</div>
+        <h3 data-i18n="feat.1.h">Razonamiento estructurado</h3>
+        <p data-i18n="feat.1.p">Los agentes operan con planes ejecutables, no respuestas. Cada paso es inspeccionable y reversible.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">02</div>
+        <h3 data-i18n="feat.2.h">Conectores empresariales</h3>
+        <p data-i18n="feat.2.p">SAP, Salesforce, NetSuite, HubSpot, Workday y +200 sistemas. Conexión en horas, no semanas.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">03</div>
+        <h3 data-i18n="feat.3.h">Human-in-the-loop</h3>
+        <p data-i18n="feat.3.p">Define umbrales de confianza. El agente actúa solo cuando está seguro; escala lo demás a tu equipo.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">04</div>
+        <h3 data-i18n="feat.4.h">Observabilidad total</h3>
+        <p data-i18n="feat.4.p">Traces, logs y replays de cada ejecución. Audita decisiones, mide impacto, itera con datos.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">05</div>
+        <h3 data-i18n="feat.5.h">Seguridad por diseño</h3>
+        <p data-i18n="feat.5.p">SOC 2 Type II, datos cifrados en reposo y tránsito, despliegue on-premise o VPC dedicada.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">06</div>
+        <h3 data-i18n="feat.6.h">SDK abierto</h3>
+        <p data-i18n="feat.6.p">Extiende agentes con código Python o TypeScript. Sin lock-in, sin cajas negras.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="flujo" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="flow.tag">// flujo</span>
+      <h2 data-i18n-html="flow.h2">De problema operativo a <em>agente en producción.</em></h2>
+      <p class="section-sub" data-i18n="flow.sub">Cuatro fases. Sin consultoría interminable. Sin proyectos de 18 meses.</p>
+    </div>
+    <div class="steps">
+      <div class="step-list">
+        <div class="step active" data-step="1">
+          <div class="step-num" data-i18n="step.1.n">01 / Mapeo</div>
+          <h4 data-i18n="step.1.h">Identificamos el proceso</h4>
+          <p data-i18n="step.1.p">Workshop de 90 minutos para mapear el flujo, datos involucrados y criterios de éxito.</p>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-num" data-i18n="step.2.n">02 / Conexión</div>
+          <h4 data-i18n="step.2.h">Integramos tus sistemas</h4>
+          <p data-i18n="step.2.p">Conectores listos a tu ERP, CRM y herramientas internas. Lectura segura, escritura controlada.</p>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-num" data-i18n="step.3.n">03 / Despliegue</div>
+          <h4 data-i18n="step.3.h">Lanzamos en sombra</h4>
+          <p data-i18n="step.3.p">El agente ejecuta en paralelo a tu equipo durante 2 semanas. Calibramos confianza y precisión.</p>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-num" data-i18n="step.4.n">04 / Operación</div>
+          <h4 data-i18n="step.4.h">Autonomía graduada</h4>
+          <p data-i18n="step.4.p">Pasamos a producción con umbrales que vos controlás. Monitoreo continuo, mejoras semanales.</p>
+        </div>
+      </div>
+      <div class="step-visual" id="stepVisual">
+        <div class="visual-title">
+          <span>agent.runtime</span>
+          <span id="stepLabel" data-i18n="step.label">step 01 / mapeo</span>
+        </div>
+        <div id="visualContent">
+          <div class="visual-node"><span class="status"></span> <span data-i18n="vis.1">análisis de proceso · cuentas por pagar</span></div>
+          <div class="visual-arrow"></div>
+          <div class="visual-node"><span class="status pending"></span> <span data-i18n="vis.2">identificando entradas y salidas</span></div>
+          <div class="visual-arrow"></div>
+          <div class="visual-node"><span class="status idle"></span> <span data-i18n="vis.3">definiendo criterios de éxito</span></div>
+          <div class="visual-arrow"></div>
+          <div class="visual-node"><span class="status idle"></span> <span data-i18n="vis.4">documentando excepciones</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="casos" class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="cases.tag">// casos</span>
+      <h2 data-i18n-html="cases.h2">Procesos donde <em>los agentes ganan</em>.</h2>
+      <p class="section-sub" data-i18n="cases.sub">Operaciones repetitivas, intensivas en datos, con reglas claras y excepciones manejables.</p>
+    </div>
+    <div class="cases-grid">
+      <div class="case">
+        <div class="case-meta">
+          <span data-i18n="case.1.area">// finanzas</span>
+          <span class="badge" data-i18n="case.badge">activo</span>
+        </div>
+        <h4 data-i18n="case.1.h">Conciliación de facturas</h4>
+        <p data-i18n="case.1.p">Match automático entre facturas, órdenes de compra y recepciones. Escala discrepancias con contexto.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">94%</div><div class="lbl" data-i18n="case.1.m1">automatización</div></div>
+          <div class="stat"><div class="num">12×</div><div class="lbl" data-i18n="case.1.m2">más rápido</div></div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-meta">
+          <span data-i18n="case.2.area">// ventas</span>
+          <span class="badge" data-i18n="case.badge">activo</span>
+        </div>
+        <h4 data-i18n="case.2.h">Calificación de leads</h4>
+        <p data-i18n="case.2.p">Enriquece, segmenta y asigna leads en tiempo real con datos de CRM, web y fuentes externas.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">3.2×</div><div class="lbl" data-i18n="case.2.m1">conversión</div></div>
+          <div class="stat"><div class="num">&lt;30s</div><div class="lbl" data-i18n="case.2.m2">respuesta</div></div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-meta">
+          <span data-i18n="case.3.area">// operaciones</span>
+          <span class="badge" data-i18n="case.badge">activo</span>
+        </div>
+        <h4 data-i18n="case.3.h">Procesamiento de órdenes</h4>
+        <p data-i18n="case.3.p">Lee emails, PDFs y portales B2B. Crea órdenes en tu ERP, valida stock y notifica al cliente.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">86%</div><div class="lbl" data-i18n="case.3.m1">sin intervención</div></div>
+          <div class="stat"><div class="num">40h</div><div class="lbl" data-i18n="case.3.m2">/semana ahorradas</div></div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-meta">
+          <span data-i18n="case.4.area">// soporte</span>
+          <span class="badge" data-i18n="case.badge">activo</span>
+        </div>
+        <h4 data-i18n="case.4.h">Resolución de tickets L1</h4>
+        <p data-i18n="case.4.p">Diagnostica, ejecuta runbooks y resuelve incidentes recurrentes con acceso a tus sistemas internos.</p>
+        <div class="case-metric">
+          <div class="stat"><div class="num">71%</div><div class="lbl" data-i18n="case.4.m1">resolución total</div></div>
+          <div class="stat"><div class="num">4.6/5</div><div class="lbl" data-i18n="case.4.m2">CSAT</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-i18n="int.tag">// integraciones</span>
+      <h2 data-i18n-html="int.h2">Vive donde <em>tu trabajo ya vive.</em></h2>
+      <p class="section-sub" data-i18n="int.sub">+200 conectores certificados. APIs, webhooks y SDK para lo que falte.</p>
+    </div>
+    <div class="integrations">
+      <div class="integration">SAP</div>
+      <div class="integration">Salesforce</div>
+      <div class="integration">NetSuite</div>
+      <div class="integration">HubSpot</div>
+      <div class="integration">Workday</div>
+      <div class="integration">Oracle</div>
+      <div class="integration">Slack</div>
+      <div class="integration">Teams</div>
+      <div class="integration">Jira</div>
+      <div class="integration">ServiceNow</div>
+      <div class="integration">Snowflake</div>
+      <div class="integration">+200</div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" class="reveal">
+  <div class="final-cta">
+    <h2 data-i18n-html="cta.h2">Lo que automatizás hoy, <em>se compone solo mañana.</em></h2>
+    <p data-i18n="cta.p">Agendá una demo de 30 minutos. Te mostramos un agente corriendo sobre datos reales de tu industria.</p>
+    <div class="hero-cta">
+      <a href="mailto:hola@intensa.ai" class="btn btn-primary"><span data-i18n="cta.demo">Solicitar demo</span> <span class="arrow">→</span></a>
+      <a href="#" class="btn btn-ghost" data-i18n="cta.wp">Leer el whitepaper</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark"></span> intensa</div>
+        <p data-i18n="footer.tag">Agentes de IA para automatización empresarial. Construido para operaciones serias.</p>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="footer.prod">Producto</h5>
+        <a href="#producto" data-i18n="footer.plat">Plataforma</a>
+        <a href="#flujo" data-i18n="footer.como">Cómo funciona</a>
+        <a href="#casos" data-i18n="footer.casos">Casos de uso</a>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="footer.recursos">Recursos</h5>
+        <a href="#" data-i18n="footer.docs">Documentación</a>
+        <a href="#" data-i18n="footer.sdk">SDK</a>
+        <a href="#" data-i18n="footer.changelog">Changelog</a>
+        <a href="#" data-i18n="footer.status">Status</a>
+      </div>
+      <div class="footer-col">
+        <h5 data-i18n="footer.comp">Compañía</h5>
+        <a href="#" data-i18n="footer.about">Sobre nosotros</a>
+        <a href="#" data-i18n="footer.carreras">Carreras</a>
+        <a href="#" data-i18n="footer.seg">Seguridad</a>
+        <a href="#" data-i18n="footer.cont">Contacto</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 intensa labs</span>
+      <span data-i18n="footer.built">built in latam · running globally</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js?v=20260519-143102"></script>
+</body>
+</html>
+step1.lbl-terminos">Acepto los 
+
+DONE
+
+# exit=0
