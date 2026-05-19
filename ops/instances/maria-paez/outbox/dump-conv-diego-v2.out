@@ -1,0 +1,91 @@
+# ejecutado: 2026-05-19T08:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   # Verificar esquema primero
+#   echo "═══ COLUMNAS de eventos ═══"
+#   sqlite3 "$DB" "PRAGMA table_info(eventos);"
+#   echo ""
+#   
+#   DIEGO_CUS="5491132317896@c.us"
+#   DIEGO_LID="34342575317160@lid"
+#   
+#   echo "═══════════════════════════════════════════════════════════════"
+#   echo "  CONVERSACIÓN DIEGO (cus + lid) desde 00:00 ART hoy            "
+#   echo "═══════════════════════════════════════════════════════════════"
+#   sqlite3 -separator '|' "$DB" <<SQL
+#   .mode list
+#   .headers off
+#   SELECT
+#     id,
+#     timestamp,
+#     CASE
+#       WHEN direccion='entrante' THEN '◀ DIEGO  '
+#       WHEN direccion='saliente' THEN '▶ MARIA  '
+#       ELSE direccion
+#     END,
+#     REPLACE(REPLACE(SUBSTR(COALESCE(cuerpo,''), 1, 280), char(10), ' ↵ '), char(13), '')
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 03:00:00'
+#     AND canal = 'whatsapp'
+#     AND (de = '$DIEGO_CUS' OR de = '$DIEGO_LID' OR para = '$DIEGO_CUS' OR para = '$DIEGO_LID')
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ Identidades de Diego (usuarios.id, wa_cus, lid alternates) ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, wa_cus, wa_lid FROM usuarios WHERE nombre LIKE '%Diego%' OR wa_cus = '5491132317896@c.us' OR wa_cus LIKE '%32317896%' LIMIT 5;"
+#   
+#   echo ""
+#   echo "═══ AYER — claude_calls largas (>60s) — entender carga real ═══"
+#   sqlite3 -separator '|' "$DB" <<SQL
+#   .mode list
+#   .headers off
+#   SELECT id, timestamp, substr(cuerpo, 1, 180)
+#   FROM eventos
+#   WHERE canal='sistema'
+#     AND timestamp >= '2026-05-18 03:00:00'
+#     AND timestamp <  '2026-05-19 03:00:00'
+#     AND cuerpo LIKE 'claude_call%'
+#     AND CAST(SUBSTR(cuerpo, INSTR(cuerpo,':')+2, INSTR(cuerpo,'ms')-INSTR(cuerpo,':')-2) AS INT) > 60000
+#   ORDER BY id ASC;
+#   SQL
+
+# ───── output ─────
+═══ COLUMNAS de eventos ═══
+0|id|INTEGER|0||1
+1|timestamp|DATETIME|0|CURRENT_TIMESTAMP|0
+2|canal|TEXT|1||0
+3|direccion|TEXT|1||0
+4|de|TEXT|0||0
+5|nombre|TEXT|0||0
+6|asunto|TEXT|0||0
+7|cuerpo|TEXT|0||0
+8|tipo_original|TEXT|0||0
+9|metadata_json|TEXT|0||0
+10|usuario_id|INTEGER|0||0
+
+═══════════════════════════════════════════════════════════════
+  CONVERSACIÓN DIEGO (cus + lid) desde 00:00 ART hoy            
+═══════════════════════════════════════════════════════════════
+Parse error near line 3: no such column: para
+  91132317896@c.us' OR de = '34342575317160@lid' OR para = '5491132317896@c.us' 
+                                      error here ---^
+
+═══ Identidades de Diego (usuarios.id, wa_cus, lid alternates) ═══
+id  nombre  wa_cus             wa_lid            
+--  ------  -----------------  ------------------
+1   Diego   541132317896@c.us  34342575317160@lid
+
+═══ AYER — claude_calls largas (>60s) — entender carga real ═══
+5057|2026-05-18 12:24:17|claude_call whatsapp: 74716ms prompt=65059c raw=451c
+5117|2026-05-18 12:33:19|claude_call whatsapp: 103668ms prompt=65888c raw=1094c ERROR=Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c,
+5123|2026-05-18 12:42:06|claude_call whatsapp: 84531ms prompt=65428c raw=625c
+5343|2026-05-18 19:46:53|claude_call whatsapp: 85974ms prompt=67320c raw=1195c
+5413|2026-05-18 20:59:21|claude_call whatsapp: 77113ms prompt=65630c raw=1554c
+
+# exit=0
