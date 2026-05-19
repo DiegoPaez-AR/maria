@@ -1,0 +1,138 @@
+# ejecutado: 2026-05-19T15:36:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   
+#   echo "═══ 1. Clientes en control.clientes ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, nombre, email, wa, estado, instancia_slug, instancia_usuario_id, datetime(creado), lemon_subscription_id FROM clientes ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 2. Webhook events recibidos de LS ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, event_name, procesado, substr(COALESCE(error,''),1,80), datetime(recibido_en) FROM webhook_events ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 3. Usuarios creados en maria-paez (últimos 5) ═══"
+#   sqlite3 -header -column /root/secretaria/state/maria-paez/db/maria.sqlite \
+#     "SELECT id, nombre, email, wa_cus, calendar_acceso, activo, bienvenida_enviada, lemon_customer_id, datetime(creado_en) FROM usuarios ORDER BY id DESC LIMIT 5;"
+#   
+#   echo
+#   echo "═══ 4. Eventos recientes en eventos de maria-paez (busco bienvenida) ═══"
+#   sqlite3 -header -column /root/secretaria/state/maria-paez/db/maria.sqlite \
+#     "SELECT id, datetime(timestamp), direccion, substr(de||para,1,30), substr(cuerpo,1,80) FROM eventos WHERE direccion='saliente' OR cuerpo LIKE '%bienvenida%' ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 5. Logs intensa-api (webhook + signup) ═══"
+#   pm2 logs intensa-api --lines 200 --nostream 2>&1 | grep -iE "webhook|cliente|signup_pending id=|sendEmail|sendWa|cuenta/login|portal_otp" | tail -30
+#   
+#   echo
+#   echo "═══ 6. Logs maria-paez (bienvenida + internal-api) ═══"
+#   pm2 logs maria-paez --lines 300 --nostream 2>&1 | grep -iE "bienvenida|internal-api/send|nuevo usuario" | tail -20
+#   
+#   echo
+#   echo "═══ 7. portal_otp activos ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, cliente_id, canal, code, usado, datetime(creado), datetime(expira_en) FROM portal_otp ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ 8. Test portal: pedir código a un email ═══"
+#   # Si Diego ya es cliente, esto debería mandar OTP. Si no, devuelve OK silencioso.
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"canal":"email","identificador":"diego@paez.is","turnstile_token":"skip"}' \
+#     https://intensa.io/maria/api/cuenta/login
+#   echo
+#   sleep 1
+#   echo
+#   echo "  últimos logs intensa-api post-request:"
+#   pm2 logs intensa-api --lines 20 --nostream 2>&1 | tail -10
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ 1. Clientes en control.clientes ═══
+
+═══ 2. Webhook events recibidos de LS ═══
+
+═══ 3. Usuarios creados en maria-paez (últimos 5) ═══
+Error: in prepare, no such column: creado_en
+  , bienvenida_enviada, lemon_customer_id, datetime(creado_en) FROM usuarios ORD
+                                      error here ---^
+
+═══ 4. Eventos recientes en eventos de maria-paez (busco bienvenida) ═══
+Error: in prepare, no such column: para
+  CT id, datetime(timestamp), direccion, substr(de||para,1,30), substr(cuerpo,1,
+                                      error here ---^
+
+═══ 5. Logs intensa-api (webhook + signup) ═══
+2|intensa- | 2026-05-19 15:32:34:     at /root/secretaria/ops/backend/intensa-api/routes/webhook.js:28:58
+2|intensa- | 2026-05-19 15:32:40: [ERROR] POST /webhook: TypeError [ERR_INVALID_ARG_TYPE]: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined
+2|intensa- | 2026-05-19 15:32:40:     at /root/secretaria/ops/backend/intensa-api/routes/webhook.js:28:58
+2|intensa- | 2026-05-19 15:33:05: [ERROR] POST /webhook: TypeError [ERR_INVALID_ARG_TYPE]: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined
+2|intensa- | 2026-05-19 15:33:05:     at /root/secretaria/ops/backend/intensa-api/routes/webhook.js:28:58
+2|intensa- | 2026-05-19 15:33:21: [ERROR] POST /cuenta/login: Error: Captcha inválido
+2|intensa- | 2026-05-19 14:08:02: [codes] signup_pending id=1 email=smoke-test-donotuse@test.invalid wa=5491999999999
+2|intensa- | 2026-05-19 14:30:28: [cuenta/login] identificador desconocido (wa): +5491132317896
+2|intensa- | 2026-05-19 14:34:09: [cuenta/login] identificador desconocido (email): diego@paez.is
+2|intensa- | 2026-05-19 14:36:04: [codes] signup_pending id=2 email=sincal-verify@test.invalid wa=5491777777777
+2|intensa- | 2026-05-19 14:37:02: [cuenta/login] identificador desconocido (email): diego@paez.is
+2|intensa- | 2026-05-19 14:52:37: [codes] signup_pending id=3 email=diego@paez.net wa=16464256178
+2|intensa- | 2026-05-19 15:06:02: [codes] signup_pending id=4 email=diag@invalid.test wa=5491999999998
+2|intensa- | 2026-05-19 15:09:07: [codes] signup_pending id=5 email=smoke-checkout@test.invalid wa=5491999999997
+2|intensa- | 2026-05-19 15:23:03: [codes] signup_pending id=6 email=diego@paez.is wa=5491132317896
+2|intensa- | 2026-05-19 15:25:07: [codes] signup_pending id=7 email=sincal-2@invalid.test wa=5491999999996
+2|intensa- | 2026-05-19 15:26:02: [codes] signup_pending id=8 email=diego@paez.net wa=16464256178
+2|intensa- | 2026-05-19 15:30:17: [codes] signup_pending id=9 email=diego@paez.is wa=541132317896
+2|intensa- | 2026-05-19 15:31:37: [2026-05-19T18:31:37.474Z] POST /webhook → 500 2ms
+2|intensa- | 2026-05-19 15:31:39: [2026-05-19T18:31:39.827Z] POST /webhook → 500 2ms
+2|intensa- | 2026-05-19 15:31:42: [2026-05-19T18:31:42.911Z] POST /webhook → 500 1ms
+2|intensa- | 2026-05-19 15:31:45: [2026-05-19T18:31:45.270Z] POST /webhook → 500 2ms
+2|intensa- | 2026-05-19 15:32:08: [2026-05-19T18:32:08.403Z] POST /webhook → 500 1ms
+2|intensa- | 2026-05-19 15:32:10: [2026-05-19T18:32:10.756Z] POST /webhook → 500 3ms
+2|intensa- | 2026-05-19 15:32:27: [cuenta/login] identificador desconocido (wa): +541132317896
+2|intensa- | 2026-05-19 15:32:34: [2026-05-19T18:32:34.767Z] POST /webhook → 500 2ms
+2|intensa- | 2026-05-19 15:32:40: [2026-05-19T18:32:40.241Z] POST /webhook → 500 1ms
+2|intensa- | 2026-05-19 15:33:05: [2026-05-19T18:33:05.691Z] POST /webhook → 500 2ms
+2|intensa- | 2026-05-19 15:33:21: [2026-05-19T18:33:21.604Z] POST /cuenta/login → 400 63ms
+2|intensa- | 2026-05-19 15:33:38: [cuenta/login] identificador desconocido (email): diego@paez.is
+
+═══ 6. Logs maria-paez (bienvenida + internal-api) ═══
+0|maria-pa | 2026-05-19 14:08:02: [internal-api/send-wa] error: No LID for user
+0|maria-pa | 2026-05-19 14:36:04: [internal-api/send-wa] error: No LID for user
+0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] getNumberId returned null para 5491999999998@c.us — intento envío igual
+0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] error: Error: No LID for user
+0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] getNumberId returned null para 5491999999997@c.us — intento envío igual
+0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] error: Error: No LID for user
+0|maria-pa | 2026-05-19 15:25:07: [internal-api/send-wa] getNumberId returned null para 5491999999996@c.us — intento envío igual
+0|maria-pa | 2026-05-19 15:25:07: [internal-api/send-wa] error: Error: No LID for user
+0|maria-pa | 2026-05-19 13:53:02: [memory] migración: usuarios.bienvenida_enviada agregado, backfilled a 1 para usuarios existentes
+0|maria-pa | 2026-05-19 13:53:02: [memory] migración: usuarios.bienvenida_enviada/lemon_*/cliente_id agregados
+0|maria-pa | 2026-05-19 13:53:11: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 13:54:46: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 14:35:09: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 14:40:08: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-19 14:40:16: ▸ arrancando bienvenida-loop (cada 30s)
+
+═══ 7. portal_otp activos ═══
+
+═══ 8. Test portal: pedir código a un email ═══
+{"error":"captcha_invalid","message":"Captcha inválido"}
+
+  últimos logs intensa-api post-request:
+2|intensa- | 2026-05-19 15:36:02:   'error-codes': [ 'invalid-input-response' ],
+2|intensa- | 2026-05-19 15:36:02:   success: false,
+2|intensa- | 2026-05-19 15:36:02:   messages: []
+2|intensa- | 2026-05-19 15:36:02: }
+2|intensa- | 2026-05-19 15:36:02: [ERROR] POST /cuenta/login: Error: Captcha inválido
+2|intensa- | 2026-05-19 15:36:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:21:50)
+2|intensa- | 2026-05-19 15:36:02:     at _validateTurnstile (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:41:11)
+2|intensa- | 2026-05-19 15:36:02:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2|intensa- | 2026-05-19 15:36:02:     at async /root/secretaria/ops/backend/intensa-api/routes/cuenta.js:51:5
+
+
+═══ DONE ═══
+
+# exit=0
