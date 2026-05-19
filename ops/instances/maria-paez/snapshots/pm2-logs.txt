@@ -1,18 +1,3 @@
-0|maria-pa | 2026-05-17 16:07:13:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:13:     at require (node:internal/modules/helpers:177:18)
-0|maria-pa | 2026-05-17 16:07:13:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
-0|maria-pa | 2026-05-17 16:07:13:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
-0|maria-pa | 2026-05-17 16:07:13:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
-0|maria-pa | 2026-05-17 16:07:13:     at Module.load (node:internal/modules/cjs/loader:1197:32)
-0|maria-pa | 2026-05-17 16:07:13:     at Module._load (node:internal/modules/cjs/loader:1013:12)
-0|maria-pa | 2026-05-17 16:07:13:     at Module.require (node:internal/modules/cjs/loader:1225:19)
-0|maria-pa | 2026-05-17 16:07:13:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:14: /root/secretaria/prompt-builder.js:558
-0|maria-pa | 2026-05-17 16:07:14:       // Cruza los calendars de varios usuarios actuales (solo gente que comparte calendar con Maria — terceros NO, a esos los invitás aparte). Devuelve hasta 15 slots libres comunes en ventana laboral (9-19 default, ajustable). Usalo cuando el user pide "buscá un horario común con X e Y" o "cuándo podemos juntarnos". El resultado incluye `slots: [{start, end}]` que vos formatées en lenguaje natural. Si algún usuario está en `no_encontrados` o `sin_calendar`, decíselo al user y pedile la disponibilidad por otra vía.
-0|maria-pa | 2026-05-17 16:07:14:                                                                                                                                                                                                                                                                                                                                                       ^^^^^
-0|maria-pa | 2026-05-17 16:07:14: 
-0|maria-pa | 2026-05-17 16:07:14: SyntaxError: Unexpected identifier
-0|maria-pa | 2026-05-17 16:07:14:     at internalCompileFunction (node:internal/vm:73:18)
 0|maria-pa | 2026-05-17 16:07:14:     at wrapSafe (node:internal/modules/cjs/loader:1274:20)
 0|maria-pa | 2026-05-17 16:07:14:     at Module._compile (node:internal/modules/cjs/loader:1320:27)
 0|maria-pa | 2026-05-17 16:07:14:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
@@ -197,4 +182,19 @@
 0|maria-pa | 2026-05-19 15:06:02:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
 0|maria-pa | 2026-05-19 15:06:02:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
 0|maria-pa | 2026-05-19 15:06:02:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
+0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] getNumberId returned null para 5491999999997@c.us — intento envío igual
+0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] error: Error: No LID for user
+0|maria-pa | 2026-05-19 15:09:08: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
+0|maria-pa | 2026-05-19 15:09:08:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
+0|maria-pa | 2026-05-19 15:09:08:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
+0|maria-pa | 2026-05-19 15:09:08:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
+0|maria-pa | 2026-05-19 15:09:08:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
+0|maria-pa | 2026-05-19 15:09:08:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
+0|maria-pa | 2026-05-19 15:09:08:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
+0|maria-pa | 2026-05-19 15:09:08:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
+0|maria-pa | 2026-05-19 15:09:08:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
+0|maria-pa | 2026-05-19 15:09:08:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
+0|maria-pa | 2026-05-19 15:09:08:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
+0|maria-pa | 2026-05-19 15:09:08:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
+0|maria-pa | 2026-05-19 15:09:08:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
 

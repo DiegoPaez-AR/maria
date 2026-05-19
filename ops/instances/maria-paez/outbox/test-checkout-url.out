@@ -1,0 +1,63 @@
+# ejecutado: 2026-05-19T15:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ pm2 restart intensa-api para tomar el fix de signup.js ═══"
+#   pm2 restart intensa-api --update-env 2>&1 | tail -3
+#   sleep 5
+#   
+#   echo
+#   echo "═══ Smoke E2E: signup completo + ver el checkout_url devuelto ═══"
+#   echo "  1. /signup/start"
+#   R1=$(curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"Diego Paez","email":"smoke-checkout@test.invalid","wa":"5491999999997","calendar_provider":"ninguno","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start)
+#   echo "  resp: $R1"
+#   SID=$(echo "$R1" | python3 -c "import sys,json; print(json.load(sys.stdin).get('signup_id',''))")
+#   
+#   echo
+#   echo "  2. extraer codes from DB y /signup/verify"
+#   CODES=$(sqlite3 /root/secretaria/state/control/control.sqlite "SELECT email_code, wa_code FROM signup_pending WHERE id=$SID;")
+#   EMAIL_CODE=$(echo "$CODES" | cut -d'|' -f1)
+#   WA_CODE=$(echo "$CODES" | cut -d'|' -f2)
+#   echo "  codes: email=$EMAIL_CODE wa=$WA_CODE"
+#   
+#   R2=$(curl -sk -X POST -H "Content-Type: application/json" \
+#     -d "{\"signup_id\":$SID,\"email_code\":\"$EMAIL_CODE\",\"wa_code\":\"$WA_CODE\"}" \
+#     https://intensa.io/maria/api/signup/verify)
+#   echo "  resp: $R2"
+#   echo
+#   echo "  checkout_url:"
+#   echo "$R2" | python3 -c "import sys,json; d=json.load(sys.stdin); print('   ', d.get('checkout_url',''))"
+#   
+#   echo
+#   echo "  3. cleanup"
+#   sqlite3 /root/secretaria/state/control/control.sqlite "DELETE FROM signup_pending WHERE email LIKE 'smoke-checkout%';"
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ pm2 restart intensa-api para tomar el fix de signup.js ═══
+│ 2  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1404623  │ 0s     │ 1    │ online    │ 0%       │ 13.5mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 1399645  │ 28m    │ 68   │ online    │ 0%       │ 167.1mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+═══ Smoke E2E: signup completo + ver el checkout_url devuelto ═══
+  1. /signup/start
+  resp: {"ok":true,"signup_id":5,"message":"Códigos enviados a tu email y WhatsApp. Vencen en 10 minutos."}
+
+  2. extraer codes from DB y /signup/verify
+  codes: email=236843 wa=432002
+  resp: {"ok":true,"email_verified":true,"wa_verified":true,"signup_token":"db3282c2a456f7942c8f559f48af40362dbb1dda8354b04e913431e39314e62c","checkout_url":"https://intensa.lemonsqueezy.com/checkout/buy/10c60c3c-40a0-4c6d-9259-0646be3777a4?checkout[custom][signup_token]=db3282c2a456f7942c8f559f48af40362dbb1dda8354b04e913431e39314e62c&checkout[email]=smoke-checkout%40test.invalid&checkout[name]=Diego%20Paez"}
+
+  checkout_url:
+    https://intensa.lemonsqueezy.com/checkout/buy/10c60c3c-40a0-4c6d-9259-0646be3777a4?checkout[custom][signup_token]=db3282c2a456f7942c8f559f48af40362dbb1dda8354b04e913431e39314e62c&checkout[email]=smoke-checkout%40test.invalid&checkout[name]=Diego%20Paez
+
+  3. cleanup
+
+═══ DONE ═══
+
+# exit=0
