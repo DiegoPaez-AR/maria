@@ -1,0 +1,127 @@
+# ejecutado: 2026-05-19T14:37:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ Clientes registrados en control.sqlite ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, nombre, email, wa, estado, instancia_slug FROM clientes ORDER BY id DESC LIMIT 20;"
+#   
+#   echo
+#   echo "═══ Sessions y OTPs activos del portal ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT COUNT(*) AS portal_sessions FROM portal_sessions WHERE expira_en > datetime('now');"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT COUNT(*) AS portal_otp_activos FROM portal_otp WHERE usado=0 AND expira_en > datetime('now');"
+#   
+#   echo
+#   echo "═══ Logs intensa-api últimas 60 líneas (busco cuenta/login) ═══"
+#   pm2 logs intensa-api --lines 200 --nostream 2>&1 | tail -60
+#   
+#   echo
+#   echo "═══ Endpoint cuenta/login con email NO registrado (smoke) ═══"
+#   RESP=$(curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"canal":"email","identificador":"diego@paez.is","turnstile_token":"skip"}' \
+#     https://intensa.io/maria/api/cuenta/login)
+#   echo "  response: $RESP"
+#   
+#   echo
+#   echo "═══ Logs intensa-api después del request ═══"
+#   sleep 1
+#   pm2 logs intensa-api --lines 20 --nostream 2>&1 | tail -10
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ Clientes registrados en control.sqlite ═══
+
+═══ Sessions y OTPs activos del portal ═══
+portal_sessions
+---------------
+0              
+portal_otp_activos
+------------------
+0                 
+
+═══ Logs intensa-api últimas 60 líneas (busco cuenta/login) ═══
+1|intensa- | 2026-05-19 14:06:06:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+1|intensa- | 2026-05-19 14:06:06:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+1|intensa- | 2026-05-19 14:06:06:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:06:06:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:149:13)
+1|intensa- | 2026-05-19 14:06:06:     at Route.dispatch (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:119:3)
+1|intensa- | 2026-05-19 14:06:06:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:06:06:     at /root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:284:15
+1|intensa- | 2026-05-19 14:06:06:     at Function.process_params (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:346:12)
+1|intensa- | 2026-05-19 14:06:06:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:280:10)
+1|intensa- | 2026-05-19 14:08:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+1|intensa- | 2026-05-19 14:08:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+1|intensa- | 2026-05-19 14:08:02:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+1|intensa- | 2026-05-19 14:08:02:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+1|intensa- | 2026-05-19 14:08:02:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:08:02:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:149:13)
+1|intensa- | 2026-05-19 14:08:02:     at Route.dispatch (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:119:3)
+1|intensa- | 2026-05-19 14:08:02:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:08:02:     at /root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:284:15
+1|intensa- | 2026-05-19 14:08:02:     at Function.process_params (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:346:12)
+1|intensa- | 2026-05-19 14:08:02:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:280:10)
+1|intensa- | 2026-05-19 14:08:02: [codes] sendEmail failed: Maria maria-paez respondió 503: gmail_not_ready
+1|intensa- | 2026-05-19 14:08:02: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+1|intensa- | 2026-05-19 14:24:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+1|intensa- | 2026-05-19 14:24:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+1|intensa- | 2026-05-19 14:24:02:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+1|intensa- | 2026-05-19 14:24:02:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+1|intensa- | 2026-05-19 14:24:02:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:24:02:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:149:13)
+1|intensa- | 2026-05-19 14:24:02:     at Route.dispatch (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:119:3)
+1|intensa- | 2026-05-19 14:24:02:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:24:02:     at /root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:284:15
+1|intensa- | 2026-05-19 14:24:02:     at Function.process_params (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:346:12)
+1|intensa- | 2026-05-19 14:24:02:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:280:10)
+1|intensa- | 2026-05-19 14:30:15: [ERROR] GET /cuenta/me: Error: No autenticado
+1|intensa- | 2026-05-19 14:30:15:     at _err (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:21:50)
+1|intensa- | 2026-05-19 14:30:15:     at _requireSession (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:146:25)
+1|intensa- | 2026-05-19 14:30:15:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:30:15:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:149:13)
+1|intensa- | 2026-05-19 14:30:15:     at Route.dispatch (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:119:3)
+1|intensa- | 2026-05-19 14:30:15:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:30:15:     at /root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:284:15
+1|intensa- | 2026-05-19 14:30:15:     at Function.process_params (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:346:12)
+1|intensa- | 2026-05-19 14:30:15:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:280:10)
+1|intensa- | 2026-05-19 14:30:15:     at Function.handle (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:175:3)
+1|intensa- | 2026-05-19 14:30:28: [cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode
+1|intensa- | 2026-05-19 14:34:09: [cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode
+1|intensa- | 2026-05-19 14:36:04: [codes] sendEmail failed: Maria maria-paez respondió 503: gmail_not_ready
+1|intensa- | 2026-05-19 14:36:04: [ERROR] POST /signup/start: Error: Provider de calendar inválido
+1|intensa- | 2026-05-19 14:36:04:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+1|intensa- | 2026-05-19 14:36:04:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:23:11)
+1|intensa- | 2026-05-19 14:36:04:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+1|intensa- | 2026-05-19 14:36:04:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:36:04:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:149:13)
+1|intensa- | 2026-05-19 14:36:04:     at Route.dispatch (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:119:3)
+1|intensa- | 2026-05-19 14:36:04:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:36:04:     at /root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:284:15
+1|intensa- | 2026-05-19 14:36:04:     at Function.process_params (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:346:12)
+1|intensa- | 2026-05-19 14:36:04:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:280:10)
+1|intensa- | 2026-05-19 14:36:04: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+
+
+═══ Endpoint cuenta/login con email NO registrado (smoke) ═══
+  response: {"ok":true,"message":"Si el dato es correcto, te enviamos un código."}
+
+═══ Logs intensa-api después del request ═══
+1|intensa- | 2026-05-19 14:36:04:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:36:04:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:149:13)
+1|intensa- | 2026-05-19 14:36:04:     at Route.dispatch (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/route.js:119:3)
+1|intensa- | 2026-05-19 14:36:04:     at Layer.handle [as handle_request] (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/layer.js:95:5)
+1|intensa- | 2026-05-19 14:36:04:     at /root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:284:15
+1|intensa- | 2026-05-19 14:36:04:     at Function.process_params (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:346:12)
+1|intensa- | 2026-05-19 14:36:04:     at next (/root/secretaria/ops/backend/intensa-api/node_modules/express/lib/router/index.js:280:10)
+1|intensa- | 2026-05-19 14:36:04: [codes] sendWa failed: Maria maria-paez respondió 502: wa_send_failed
+1|intensa- | 2026-05-19 14:37:02: [cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode
+
+
+═══ DONE ═══
+
+# exit=0
