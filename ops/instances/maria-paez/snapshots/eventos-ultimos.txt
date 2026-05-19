@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5569  2026-05-19 11:27:18  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
+
+5568  2026-05-19 11:27:18  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+5567  2026-05-19 11:27:18  whatsapp  saliente   5491132317896@c.us   El de Teubal todavía no — me rebotó de nuevo, el número no quedó cargado bien la primera vez. Lo reintento ahora mismo.                                                                                 
+
+5566  2026-05-19 11:27:17  sistema   interno                         claude_call whatsapp: 66835ms prompt=67030c raw=823c                                                                                                                                                    
+
 5565  2026-05-19 11:26:10  whatsapp  entrante   5491132317896@c.us   le mandaste?                                                                                                                                                                                            
 
 5564  2026-05-19 11:25:27  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
@@ -245,11 +253,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5471  2026-05-19 04:15:36  whatsapp  entrante   5491132317896@c.us   Y avísale mañana a las 8 a Ruben que me olvide que tenía ya tomado el almuerzo del viernes 29 por que viene gente de IONQ, que si podemos mover el armuerzo con Andy y Alex a otro día.                 
 
 5470  2026-05-19 04:15:04  sistema   interno                         acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 20
-
-5469  2026-05-19 04:15:03  whatsapp  saliente   5491132317896@c.us   Dale, te agendo IONQ el viernes 29 de 10 a 18.                                                                                                                                                          
-
-5468  2026-05-19 04:15:03  sistema   interno                         claude_call whatsapp: 69667ms prompt=67655c raw=513c                                                                                                                                                    
-
-5467  2026-05-19 04:13:53  whatsapp  entrante   5491132317896@c.us   Ponerme una reunión el viernes 29 de 10 a 18 con el título IONQ                                                                                                                                         
-
-5466  2026-05-19 03:43:05  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
