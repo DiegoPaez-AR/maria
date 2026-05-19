@@ -1,0 +1,197 @@
+# ejecutado: 2026-05-19T08:39:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "═══ 1. Esquema y registros de Teubal en tabla contactos ═══"
+#   sqlite3 "$DB" "PRAGMA table_info(contactos);"
+#   echo "---"
+#   sqlite3 -header -column "$DB" "SELECT * FROM contactos WHERE nombre LIKE '%Teubal%' OR wa LIKE '%4491280%' OR wa LIKE '%43092046%' ORDER BY id;"
+#   
+#   echo ""
+#   echo "═══ 2. Es usuario activo? ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, wa_cus, wa_lid, calendar_acceso FROM usuarios WHERE nombre LIKE '%Teubal%' OR wa_cus LIKE '%4491280%' OR wa_cus LIKE '%43092046%';"
+#   
+#   echo ""
+#   echo "═══ 3. Trail completo de eventos relacionados con Teubal hoy ═══"
+#   sqlite3 "$DB" <<'SQL'
+#   .mode list
+#   .headers off
+#   .separator ' '
+#   SELECT id, timestamp, canal, direccion, COALESCE(de,'-'), substr(COALESCE(cuerpo,''), 1, 280)
+#   FROM eventos
+#   WHERE timestamp >= '2026-05-19 03:00:00'
+#     AND (cuerpo LIKE '%Teubal%' OR cuerpo LIKE '%4491280%' OR cuerpo LIKE '%43092046%' OR de LIKE '%4491280%' OR de LIKE '%43092046%')
+#   ORDER BY id ASC;
+#   SQL
+#   
+#   echo ""
+#   echo "═══ 4. Programados pendientes para Teubal ═══"
+#   sqlite3 -header -column "$DB" "SELECT id, cuando, canal, destino, substr(texto,1,80) AS texto, COALESCE(razon,'') FROM programados WHERE (destino LIKE '%4491280%' OR destino LIKE '%43092046%' OR razon LIKE '%Teubal%' OR texto LIKE '%Teubal%') ORDER BY id DESC LIMIT 20;"
+#   
+#   echo ""
+#   echo "═══ 5. wa-validate.js — ver el helper que está rechazando ═══"
+#   head -80 /root/secretaria/wa-validate.js 2>/dev/null || find /root/secretaria -name "wa-validate*" -not -path "*/node_modules/*" -not -path "*/ops/*" 2>/dev/null
+#   echo ""
+#   
+#   echo "═══ 6. Probar getNumberId contra WhatsApp para ambos números ═══"
+#   node <<'JS'
+#   (async () => {
+#     try {
+#       const wa = require('/root/secretaria/wa');  // o como se llame
+#       console.log('wa exports:', Object.keys(wa));
+#     } catch (e) {
+#       console.log('require wa falló:', e.message);
+#     }
+#   
+#     // Buscar handler whatsapp con cliente disponible
+#     try {
+#       const path = require('path');
+#       const fs = require('fs');
+#       const cands = fs.readdirSync('/root/secretaria')
+#         .filter(f => /whatsapp|wa-?validate|wa-?handler/i.test(f));
+#       console.log('archivos candidatos:', cands);
+#     } catch (e) {}
+#   })();
+#   JS
+
+# ───── output ─────
+═══ 1. Esquema y registros de Teubal en tabla contactos ═══
+0|id|INTEGER|0||1
+1|usuario_id|INTEGER|1||0
+2|nombre|TEXT|1||0
+3|whatsapp|TEXT|0||0
+4|email|TEXT|0||0
+5|notas|TEXT|0||0
+6|visibilidad|TEXT|1|'privada'|0
+7|cumple|TEXT|0||0
+8|creado|DATETIME|0|CURRENT_TIMESTAMP|0
+9|actualizado|DATETIME|0|CURRENT_TIMESTAMP|0
+---
+Error: in prepare, no such column: wa
+   * FROM contactos WHERE nombre LIKE '%Teubal%' OR wa LIKE '%4491280%' OR wa LI
+                                      error here ---^
+
+═══ 2. Es usuario activo? ═══
+
+═══ 3. Trail completo de eventos relacionados con Teubal hoy ═══
+5462 2026-05-19 03:40:41 sistema interno - contacto vcard (privado): Diego Teubal → 5491143092046@c.us
+5463 2026-05-19 03:42:15 whatsapp entrante 5491132317896@c.us Escribime a diego Teubal mañana 7:30 y pregúntale si puedo pasar a buscar los papeles mañana a las 16:15
+5533 2026-05-19 11:11:46 whatsapp entrante 5491132317896@c.us les mandaste los mensajes a Ruben y a Diego teubal que te pedi anoche?
+5540 2026-05-19 11:15:18 whatsapp saliente 34342575317160@lid Voy a mandarlos ahora, pero el texto de los dos se me cortó en el preview — ¿me reconfirmás exactamente qué les tenía que decir a Rubén y a Teubal?
+5541 2026-05-19 11:17:21 whatsapp entrante 5491132317896@c.us Escribime a diego Teubal mañana 7:30 y pregúntale si puedo pasar a buscar los papeles mañana a las 16:15
+5544 2026-05-19 11:18:50 whatsapp saliente 5491132317896@c.us Dale, cancelo los programados de antes y los reprogramo con el texto correcto: Teubal a las 7:30 y Rubén a las 8.
+5554 2026-05-19 11:21:24 sistema interno - acción FALLÓ: enviar_wa — No pude mandar WA a 5491143092046@c.us: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+5559 2026-05-19 11:23:14 whatsapp saliente 5491132317896@c.us El de Rubén sí, fue. El de Teubal no pude mandarlo — me dio un error con su número. ¿Tenés otro contacto para él o querés que lo intente por otro lado?
+5564 2026-05-19 11:25:27 sistema interno - acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+5567 2026-05-19 11:27:18 whatsapp saliente 5491132317896@c.us El de Teubal todavía no — me rebotó de nuevo, el número no quedó cargado bien la primera vez. Lo reintento ahora mismo.
+5569 2026-05-19 11:27:18 sistema interno - acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+5574 2026-05-19 11:29:34 sistema interno - acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+5575 2026-05-19 11:36:08 sistema interno - contacto vcard (privado): Diego Teubal → 5491144491280@c.us
+5579 2026-05-19 11:37:18 whatsapp saliente 5491144491280@c.us Hola Diego, buen día! Te escribe María de parte de Diego. Me pidió preguntarte si puede pasar a buscar los papeles mañana (miércoles 20) a las 16:15. ¿Te viene bien?
+
+═══ 4. Programados pendientes para Teubal ═══
+id   cuando                    canal     destino             texto                                                                             COALESCE(razon,'')                                        
+---  ------------------------  --------  ------------------  --------------------------------------------------------------------------------  ----------------------------------------------------------
+199  2026-05-20T10:30:00.000Z  whatsapp  5491143092046@c.us  Hola Diego, buenos días! Te escribe María de parte de Diego Páez. Te quería cons  usuario                                                   
+
+189  2026-05-20T10:30:00.000Z  whatsapp  5491143092046@c.us  Hola Diego, buenos días! Te escribe María. Diego quería consultarte si puede pas  usuario                                                   
+
+144  2026-05-13T13:45:00.000Z  whatsapp  34342575317160@lid  ⏰ *En 15min*: Reu Lank - Dragones (11:00 a. m.)                                   meeting_prep:1:4ounseu8rcdml5mc2nt9gcu2fb_20260513T140000Z
+                                                             Con: mteubal@dragonesvc.com, ric                                                                                                            
+
+110  2026-05-06T18:45:00.000Z  whatsapp  34342575317160@lid  ⏰ *En 15min*: PRESENTACION KONA PARA INVERSORES (04:00 p. m.)                     meeting_prep:1:7bmosqs2ei1dq69pa1igkulv6f                 
+                                                             Con: simonrobertog                                                                                                                          
+
+═══ 5. wa-validate.js — ver el helper que está rechazando ═══
+// wa-validate.js
+// Helper centralizado para validar números de WhatsApp antes de persistirlos.
+//
+// PROBLEMA QUE RESUELVE
+// ─────────────────────
+// Cuando el LLM arma un wa_cus (`<digitos>@c.us`) interpretando un número
+// dictado en lenguaje natural, puede:
+//   - asumir prefijo Argentina (54) cuando el número es de otro país,
+//   - omitir dígitos, agregar dígitos extra,
+//   - construir un wid que no corresponde a ningún user en WhatsApp.
+//
+// Caso real (2026-05-10): contacto "Enrique Sosa" guardado con
+// `54959899643028@c.us` (mal — Enrique tiene país UY, +598). Cuando una
+// semana después se promovió a usuario, intentar enviar bienvenida explotó
+// con "No LID for user".
+//
+// CÓMO VALIDA
+// ───────────
+// Llama `client.getNumberId(digitos)` (WhatsApp Web hace lookup contra los
+// servers de WA) y devuelve el `_serialized` real (puede ser `@c.us` o
+// `@lid`). Si WA no encuentra al user, lanza error con mensaje claro que
+// incluye códigos de país comunes — el LLM lo ve y le pregunta al owner.
+//
+// CASOS ESPECIALES
+// ────────────────
+// - input `@lid`: ya válido (lo capturó el runtime), se devuelve tal cual.
+// - input vacío/null: se devuelve null (caller decide qué hacer).
+// - sin client (e.g. ejecutado desde gmail-handler sin sesión WA): error
+//   explícito — no permitimos guardar wa sin verificar.
+
+async function normalizarWaCus(input, client) {
+  if (input == null) return null;
+  if (typeof input !== 'string') {
+    throw new Error(`validar_wa: input no es string (${typeof input})`);
+  }
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  // Si ya es un @lid bien formado, asumir válido — el runtime lo capturó
+  // del msg.from cuando el usuario escribió desde un dispositivo vinculado.
+  if (/^\d+@lid$/.test(trimmed)) return trimmed;
+
+  if (!client) {
+    throw new Error(
+      `validar_wa: no tengo cliente de WhatsApp disponible para verificar "${input}". ` +
+      `Cargá el contacto desde una conversación de WhatsApp o pedile al owner que escriba primero.`
+    );
+  }
+
+  // Extraer solo dígitos. Acepta "+598 95 989 9643", "598959899643@c.us",
+  // "598 959-899-643", etc.
+  const digitos = trimmed.replace(/[^\d]/g, '');
+  if (!digitos) {
+    throw new Error(`validar_wa: "${input}" no contiene dígitos`);
+  }
+
+  let wid;
+  try {
+    wid = await client.getNumberId(digitos);
+  } catch (err) {
+    throw new Error(
+      `validar_wa: WhatsApp respondió error consultando ${digitos}: ${err.message}. ` +
+      `Reintentá en un minuto o verificá el número con el owner.`
+    );
+  }
+
+  if (!wid || !wid._serialized) {
+    throw new Error(
+      `validar_wa: el número "${digitos}" no existe en WhatsApp. ` +
+      `Verificá el código de país con el owner — comunes: Argentina=+54, Uruguay=+598, Paraguay=+595, ` +
+      `Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1. ` +
+      `Pedile el número en formato internacional completo antes de reintentar.`
+    );
+  }
+
+  return wid._serialized;
+}
+
+module.exports = { normalizarWaCus };
+
+═══ 6. Probar getNumberId contra WhatsApp para ambos números ═══
+require wa falló: Cannot find module '/root/secretaria/wa'
+Require stack:
+- /root/secretaria/[stdin]
+archivos candidatos: [ 'wa-validate.js', 'whatsapp-handler.js' ]
+
+# exit=0
