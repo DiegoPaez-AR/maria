@@ -52,7 +52,7 @@ for landing_src in "$SRC"/*/; do
     # Otros archivos y subdirectorios del landing (signup/, cuenta/, terminos/,
     # imágenes, etc.) se sincronizan con rsync para preservar la jerarquía.
     # Excluimos los 3 archivos top-level que ya manejamos arriba con cache-bust.
-    rsync -a --exclude=index.html --exclude=styles.css --exclude=script.js \
+    rsync -a --exclude=/index.html --exclude=/styles.css --exclude=/script.js \
         "$landing_src" "$landing_dest/" 2>/dev/null || true
     # Para CADA subdir adentro del landing (ej. signup/, cuenta/, terminos/),
     # aplicamos cache-bust también a sus index.html.
