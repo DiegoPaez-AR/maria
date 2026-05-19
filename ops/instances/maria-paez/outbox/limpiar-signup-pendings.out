@@ -1,0 +1,47 @@
+# ejecutado: 2026-05-19T15:41:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ Limpiando signup_pending viejos de Diego para poder reintentar limpio ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, email, wa, datetime(creado), datetime(expira_en) FROM signup_pending WHERE email LIKE 'diego%' OR wa LIKE '%132317896';"
+#   sqlite3 /root/secretaria/state/control/control.sqlite \
+#     "DELETE FROM signup_pending WHERE email LIKE 'diego%' OR wa LIKE '%132317896';"
+#   echo
+#   echo "═══ Limpiar también webhook test event y signup_pending de tests ═══"
+#   sqlite3 /root/secretaria/state/control/control.sqlite \
+#     "DELETE FROM webhook_events WHERE event_name='test_event';
+#      DELETE FROM signup_pending WHERE email LIKE '%invalid%' OR email LIKE '%@test.invalid%';"
+#   echo
+#   echo "═══ Estado actual ═══"
+#   echo "  signup_pending:"
+#   sqlite3 /root/secretaria/state/control/control.sqlite "SELECT COUNT(*) FROM signup_pending;"
+#   echo "  clientes:"
+#   sqlite3 /root/secretaria/state/control/control.sqlite "SELECT COUNT(*) FROM clientes;"
+#   echo "  webhook_events:"
+#   sqlite3 /root/secretaria/state/control/control.sqlite "SELECT COUNT(*) FROM webhook_events;"
+#   echo
+#   echo "═══ DONE — Diego puede reintentar signup limpio ahora ═══"
+
+# ───── output ─────
+═══ Limpiando signup_pending viejos de Diego para poder reintentar limpio ═══
+id  email           wa            datetime(creado)     datetime(expira_en)
+--  --------------  ------------  -------------------  -------------------
+8   diego@paez.net  16464256178   2026-05-19 18:26:02  2026-05-19 18:36:02
+9   diego@paez.is   541132317896  2026-05-19 18:30:17  2026-05-19 18:40:17
+
+═══ Limpiar también webhook test event y signup_pending de tests ═══
+
+═══ Estado actual ═══
+  signup_pending:
+0
+  clientes:
+0
+  webhook_events:
+0
+
+═══ DONE — Diego puede reintentar signup limpio ahora ═══
+
+# exit=0
