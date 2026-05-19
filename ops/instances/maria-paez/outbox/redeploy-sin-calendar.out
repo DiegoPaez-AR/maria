@@ -1,0 +1,68 @@
+# ejecutado: 2026-05-19T14:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Re-deploy: opción 'sin calendario' + corrección precio 49.99.
+#   set +e
+#   cd /root/secretaria/ops/sites/intensa.io
+#   bash deploy.sh 2>&1 | grep -E "cache-bust" | head -5
+#   
+#   echo
+#   echo "═══ Smoke tests ═══"
+#   echo "  landing precio:"
+#   curl -sk https://intensa.io/maria/ | grep -oE '\$[0-9]+\.?[0-9]*<span class="period"' | head -1
+#   echo "  signup texto USD 49.99:"
+#   curl -sk https://intensa.io/maria/signup/ | grep -oE 'USD 49\.99/mes' | head -1
+#   echo "  signup option 'sin calendario':"
+#   curl -sk https://intensa.io/maria/signup/ | grep -oE 'value="ninguno"[^>]*>[^<]+' | head -1
+#   echo
+#   echo "═══ pm2 restart intensa-api para tomar el cambio del webhook handler ═══"
+#   pm2 restart intensa-api --update-env 2>&1 | tail -3
+#   
+#   echo
+#   echo "  backend acepta 'ninguno' como provider:"
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"test-sincal","email":"smoke-sincal@test.invalid","wa":"5491888888888","calendar_provider":"ninguno","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start
+#   echo
+#   echo "  (limpiando signup test...)"
+#   sqlite3 /root/secretaria/state/control/control.sqlite "DELETE FROM signup_pending WHERE email LIKE 'smoke-sincal%' OR email LIKE 'test@invalid%' OR email LIKE 'smoke-test-%';"
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+  index.html con cache-bust v=20260519-143502
+    index.html con cache-bust v=20260519-143502
+    cache-bust v=20260519-143502 en cuenta/index.html
+    cache-bust v=20260519-143502 en signup/index.html
+    cache-bust v=20260519-143502 en terminos/index.html
+
+═══ Smoke tests ═══
+  landing precio:
+$49.99<span class="period"
+  signup texto USD 49.99:
+USD 49.99/mes
+  signup option 'sin calendario':
+value="ninguno" data-i18n="step1.cal-ninguno">Sin calendario por ahora
+
+═══ pm2 restart intensa-api para tomar el cambio del webhook handler ═══
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1398302  │ 0s     │ 2    │ online    │ 0%       │ 11.1mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 1398209  │ 0s     │ 66   │ online    │ 120%     │ 90.5mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+  backend acepta 'ninguno' como provider:
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx/1.24.0 (Ubuntu)</center>
+</body>
+</html>
+
+  (limpiando signup test...)
+
+═══ DONE ═══
+
+# exit=0
