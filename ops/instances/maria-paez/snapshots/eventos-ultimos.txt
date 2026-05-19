@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                         cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5785  2026-05-19 23:11:59  sistema   interno                                                            acción ejecutada: enviar_wa                                                                                                                                                                             
+
+5784  2026-05-19 23:11:59  whatsapp  saliente   5491137646922@c.us                                      Hola! Quisiera hacer un pedido para retirar:                                                                                                                                                            
+                                                                                                        - 1 Mexican con doble carne y papas                                                                                                                                                                     
+                                                                                                        - 2 Hamburguesas con queso simples con Aros                                                                                                                                                             
+                                                                                                        - 1 Hamburguesa sola (pan y carne) simple con papas                                                                                                                                                     
+                                                                                                        ¿Me pueden avisar cuand                                                                                                                                                                                 
+
+5783  2026-05-19 23:11:59  whatsapp  saliente   5491132317896@c.us                                      Dale, le mando el pedido a Poch ahora. Cuando me avisen que está listo te digo.                                                                                                                         
+
+5782  2026-05-19 23:11:59  sistema   interno                                                            claude_call whatsapp: 51277ms prompt=71818c raw=652c                                                                                                                                                    
+
 5781  2026-05-19 23:11:07  whatsapp  entrante   5491132317896@c.us                                      hola, podras pedir en poch 4 hamburguesas:                                                                                                                                                              
                                                                                                         1 Mexican con doble carne y papas                                                                                                                                                                       
                                                                                                         2 Hamburguesas con queso simples con Aros                                                                                                                                                               
@@ -261,11 +273,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 5687  2026-05-19 16:33:59  whatsapp  entrante   222788661055558@lid                                     Hola!                                                                                                                                                                                                   
 
 5686  2026-05-19 16:33:11  sistema   interno                                                            meeting-prep: 1 alerta(s) agendada(s) (12 usuarios)                                                                                                                                                     
-
-5685  2026-05-19 16:32:29  sistema   interno                                                            acción ejecutada: enviar_wa                                                                                                                                                                             
-
-5684  2026-05-19 16:32:29  whatsapp  saliente   5491156920073@c.us                                      Hola! Quisiera pedirles que me envíen la carta actualizada del restaurante, por favor. Muchas gracias.                                                                                                  
-
-5683  2026-05-19 16:32:29  whatsapp  saliente   5491132317896@c.us                                      No encontré la carta completa online, le escribo a Farinelli ahora y en cuanto me la manden te la reenvío.                                                                                              
-
-5682  2026-05-19 16:32:29  sistema   interno                                                            claude_call whatsapp: 101667ms prompt=71563c raw=554c                                                                                                                                                   
