@@ -1,0 +1,83 @@
+# ejecutado: 2026-05-19T15:06:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "═══ Últimos 40 requests al intensa-api ═══"
+#   pm2 logs intensa-api --lines 200 --nostream 2>&1 | grep -E "POST|GET|ERROR|signup|cuenta" | tail -40
+#   
+#   echo
+#   echo "═══ signup_pending recientes (últimos 10) ═══"
+#   sqlite3 -header -column /root/secretaria/state/control/control.sqlite \
+#     "SELECT id, substr(nombre,1,20) AS nombre, email, wa, calendar_provider, email_verified, wa_verified, datetime(creado) AS creado FROM signup_pending ORDER BY id DESC LIMIT 10;"
+#   
+#   echo
+#   echo "═══ Probar /signup/start con datos reales (no diego) ═══"
+#   curl -sk -X POST -H "Content-Type: application/json" \
+#     -d '{"nombre":"Diag","email":"diag@invalid.test","wa":"5491999999998","calendar_provider":"ninguno","acepto_terminos":true}' \
+#     https://intensa.io/maria/api/signup/start
+#   echo
+#   echo
+#   echo "═══ Limpiar ═══"
+#   sqlite3 /root/secretaria/state/control/control.sqlite "DELETE FROM signup_pending WHERE email LIKE 'diag@invalid%';"
+#   
+#   echo
+#   echo "═══ DONE ═══"
+
+# ───── output ─────
+═══ Últimos 40 requests al intensa-api ═══
+2|intensa- | 2026-05-19 14:08:02: [codes] signup_pending id=1 email=smoke-test-donotuse@test.invalid wa=5491999999999
+2|intensa- | 2026-05-19 14:08:02: [2026-05-19T17:08:02.608Z] POST /start → 200 12ms
+2|intensa- | 2026-05-19 14:24:02: [2026-05-19T17:24:02.791Z] POST /signup/start → 400 3ms
+2|intensa- | 2026-05-19 14:30:15: [2026-05-19T17:30:15.833Z] GET /cuenta/me → 401 1ms
+2|intensa- | 2026-05-19 14:30:28: [cuenta/login] identificador desconocido (wa): +5491132317896
+2|intensa- | 2026-05-19 14:30:28: [2026-05-19T17:30:28.886Z] POST /login → 200 1ms
+2|intensa- | 2026-05-19 14:34:09: [cuenta/login] identificador desconocido (email): diego@paez.is
+2|intensa- | 2026-05-19 14:34:09: [2026-05-19T17:34:09.476Z] POST /login → 200 1ms
+2|intensa- | 2026-05-19 14:36:04: [codes] signup_pending id=2 email=sincal-verify@test.invalid wa=5491777777777
+2|intensa- | 2026-05-19 14:36:04: [2026-05-19T17:36:04.797Z] POST /start → 200 17ms
+2|intensa- | 2026-05-19 14:36:04: [2026-05-19T17:36:04.840Z] POST /signup/start → 400 1ms
+2|intensa- | 2026-05-19 14:37:02: [cuenta/login] identificador desconocido (email): diego@paez.is
+2|intensa- | 2026-05-19 14:37:02: [2026-05-19T17:37:02.594Z] POST /login → 200 2ms
+2|intensa- | 2026-05-19 14:52:37: [codes] signup_pending id=3 email=diego@paez.net wa=16464256178
+2|intensa- | 2026-05-19 14:52:37: [2026-05-19T17:52:37.430Z] POST /start → 200 14ms
+2|intensa- | 2026-05-19 14:55:11: [2026-05-19T17:55:11.795Z] POST /verify → 200 2ms
+2|intensa- | 2026-05-19 14:55:16: [2026-05-19T17:55:16.000Z] POST /verify → 200 4ms
+2|intensa- | 2026-05-19 14:06:06: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:06:06:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:06:06:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+2|intensa- | 2026-05-19 14:06:06:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:08:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:08:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:08:02:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+2|intensa- | 2026-05-19 14:08:02:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:24:02: [ERROR] POST /signup/start: Error: Tenés que aceptar los Términos y Condiciones para continuar.
+2|intensa- | 2026-05-19 14:24:02:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:24:02:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:26:11)
+2|intensa- | 2026-05-19 14:24:02:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:30:15: [ERROR] GET /cuenta/me: Error: No autenticado
+2|intensa- | 2026-05-19 14:30:15:     at _err (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:21:50)
+2|intensa- | 2026-05-19 14:30:15:     at _requireSession (/root/secretaria/ops/backend/intensa-api/routes/cuenta.js:146:25)
+2|intensa- | 2026-05-19 14:30:28: [cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode
+2|intensa- | 2026-05-19 14:34:09: [cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode
+2|intensa- | 2026-05-19 14:36:04: [ERROR] POST /signup/start: Error: Provider de calendar inválido
+2|intensa- | 2026-05-19 14:36:04:     at _err (/root/secretaria/ops/backend/intensa-api/routes/signup.js:32:13)
+2|intensa- | 2026-05-19 14:36:04:     at _validateStart (/root/secretaria/ops/backend/intensa-api/routes/signup.js:23:11)
+2|intensa- | 2026-05-19 14:36:04:     at /root/secretaria/ops/backend/intensa-api/routes/signup.js:40:18
+2|intensa- | 2026-05-19 14:37:02: [cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode
+2|intensa- | 2026-05-19 14:55:15: [signup/verify] LEMON_PRODUCT_VARIANT_ID o LEMON_BUY_BASE no configurado — devolviendo URL de placeholder
+
+═══ signup_pending recientes (últimos 10) ═══
+id  nombre      email           wa           calendar_provider  email_verified  wa_verified  creado             
+--  ----------  --------------  -----------  -----------------  --------------  -----------  -------------------
+3   juan perez  diego@paez.net  16464256178  google             1               1            2026-05-19 17:52:37
+
+═══ Probar /signup/start con datos reales (no diego) ═══
+{"ok":true,"signup_id":4,"message":"Códigos enviados a tu email y WhatsApp. Vencen en 10 minutos."}
+
+═══ Limpiar ═══
+
+═══ DONE ═══
+
+# exit=0
