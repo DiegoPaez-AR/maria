@@ -11,12 +11,12 @@ const http = require('http');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
-const { enviarGmail } = require('./gmail-handler');
+const google = require('./google');
 
 const PORT = Number(process.env.ASISTENTE_INTERNAL_PORT || 0);
 const SECRET = process.env.ASISTENTE_INTERNAL_SECRET || '';
 
-function start({ waClient, gmailAuth } = {}) {
+function start({ waClient } = {}) {
   if (!PORT) {
     console.log('[internal-api] ASISTENTE_INTERNAL_PORT no seteado, internal-api desactivado');
     return null;
@@ -51,16 +51,27 @@ function start({ waClient, gmailAuth } = {}) {
         // Normalizar destino: si no tiene @c.us, agregarlo
         const dest = to.includes('@') ? to : `${to}@c.us`;
         try {
-          await waClient.sendMessage(dest, text);
+          // Verificar primero si el número está registrado en WhatsApp.
+          // Esto evita el error opaco 'Evaluation failed' cuando el número no
+          // tiene cuenta de WA o tiene problemas de getNumberId.
+          let resolvedDest = dest;
+          try {
+            const numberId = await waClient.getNumberId(dest);
+            if (numberId && numberId._serialized) resolvedDest = numberId._serialized;
+            else console.warn(`[internal-api/send-wa] getNumberId returned null para ${dest} — intento envío igual`);
+          } catch (resErr) {
+            console.warn(`[internal-api/send-wa] getNumberId error para ${dest}:`, resErr.message);
+          }
+          await waClient.sendMessage(resolvedDest, text);
           mem.log({
             usuarioId: null,
             canal: 'whatsapp', direccion: 'saliente',
-            para: dest, cuerpo: text,
+            para: resolvedDest, cuerpo: text,
             metadata: { tipo: 'internal-api/send-wa' },
           });
-          return send(200, { ok: true, sent_to: dest });
+          return send(200, { ok: true, sent_to: resolvedDest });
         } catch (err) {
-          console.error('[internal-api/send-wa] error:', err.message);
+          console.error('[internal-api/send-wa] error:', err.stack || err.message);
           return send(502, { error: 'wa_send_failed', detail: err.message });
         }
       }
@@ -68,12 +79,18 @@ function start({ waClient, gmailAuth } = {}) {
       if (req.url === '/send-email') {
         const { to, subject, html, text } = body;
         if (!to || !subject || (!html && !text)) return send(400, { error: 'bad_body' });
-        if (!gmailAuth) return send(503, { error: 'gmail_not_ready' });
+        // google.js maneja la autenticación internamente vía autenticar(). No
+        // necesitamos pasarle un auth desde acá.
         try {
-          await enviarGmail(gmailAuth, { to, subject, html, text });
+          await google.enviarEmail({
+            to,
+            asunto: subject,
+            texto: text || _htmlAText(html || ''),
+            html: html || undefined,
+          });
           return send(200, { ok: true });
         } catch (err) {
-          console.error('[internal-api/send-email] error:', err.message);
+          console.error('[internal-api/send-email] error:', err.stack || err.message);
           return send(502, { error: 'email_send_failed', detail: err.message });
         }
       }
@@ -107,6 +124,19 @@ function readJson(req) {
     });
     req.on('error', reject);
   });
+}
+
+function _htmlAText(html) {
+  return String(html)
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 module.exports = { start };

@@ -132,7 +132,7 @@ async function main() {
       });
       console.log('▸ arrancando bienvenida-loop (cada 30s)');
 
-      internalApiServer = internalApi.start({ waClient: client, gmailAuth: null });
+      internalApiServer = internalApi.start({ waClient: client });
 
       memoriaCuradaInterval = iniciarMemoriaCurada({
         intervaloMs: MEMORIA_CURADA_MS,
