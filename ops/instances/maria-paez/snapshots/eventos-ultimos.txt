@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5982  2026-05-20 18:00:31  whatsapp  saliente   105171031949561@lid  Exacto, Romi es todo el día — no bloquea horario. Quedó agendado mañana jueves 21/05 a las 2 p. m. en tu oficina con Ricardo y Memo.                                                                    
+
+5981  2026-05-20 18:00:31  sistema   interno                         claude_call whatsapp: 26401ms prompt=43624c raw=424c                                                                                                                                                    
+
+5980  2026-05-20 18:00:04  whatsapp  entrante   5491144471264@c.us   No, no pisa porque el horario es a las dos de la tarde.                                                                                                                                                 
+
 5979  2026-05-20 17:59:54  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
 
 5978  2026-05-20 17:59:54  calendar  saliente                        creado: Ricardo y Memo (2026-05-21T14:00:00-03:00 → 2026-05-21T15:00:00-03:00) [en calendar de Maria]                                                                                                   
@@ -219,9 +225,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5884  2026-05-20 14:49:42  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 5883  2026-05-20 14:49:42  whatsapp  saliente   5491132317896@c.us   Dale, te aviso a vos también en cuanto Analía me confirme.                                                                                                                                              
-
-5882  2026-05-20 14:49:42  sistema   interno                         claude_call whatsapp: 42071ms prompt=71324c raw=864c                                                                                                                                                    
-
-5881  2026-05-20 14:48:59  whatsapp  entrante   5491132317896@c.us   ok, avisame a mi tambien condo te confirme                                                                                                                                                              
-
-5880  2026-05-20 14:48:22  whatsapp  saliente   34342575317160@lid   La reunión quedó confirmada para el *viernes 22/05 a las 2:30 pm*. Todavía estoy esperando que Analía Frangi me pase la dirección del lugar — en cuanto llegue, la actualizo en el evento y se la mando 
