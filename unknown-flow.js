@@ -236,7 +236,7 @@ function _lookupEnContactos({ from, senderEmail, cusReal = null }) {
  *
  * Si algo falla (fetch, LLM, JSON), devuelve null y el caller cae al FSM.
  */
-async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asunto, waClient, contactosAmbiguos = null }) {
+async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asunto, waClient, contactosAmbiguos = null, chat = null }) {
   const owner = _estadoOwner();
   if (!owner) return null;
 
@@ -245,7 +245,7 @@ async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asu
 
   // Fetch historias en paralelo (best-effort, cada una captura sus errores).
   const promHistWA    = (canal === 'whatsapp' && waClient && from)
-    ? ctxFetcher.historialWA(waClient, from, { dias: 14, max: 200 })
+    ? ctxFetcher.historialWA(waClient, from, { dias: 14, max: 200, chat })
     : Promise.resolve({ ok: true, lineas: [], total: 0 });
   const promHistMail  = senderEmail
     ? ctxFetcher.historialEmail(_google(), senderEmail, { dias: 14, max: 50 })
@@ -416,10 +416,15 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
 /**
  * Handler para WhatsApp. Devuelve true si fue procesado acá.
  */
-async function handleWA({ client, msg, contact = null, cuerpo, mediaInfo = null, reprocesarComoUsuario }) {
-  const from = msg.from;
+async function handleWA({ client, msg, contact = null, cuerpo, from: fromArg = null, mediaInfo = null, reprocesarComoUsuario }) {
+  // `from` viene normalizado por el handler (@lid resuelto a @c.us estable).
+  // Caemos a msg.from solo si el handler no lo paso (compat).
+  const from = fromArg || msg.from;
   const pushname = msg._data?.notifyName || null;
   const messageId = msg.id?._serialized || null;
+  // Chat vivo del mensaje entrante: lo usamos para leer el historial real de
+  // WA sin depender de getChatById(from), que falla si el jid roto/rota.
+  const chat = (msg && typeof msg.getChat === 'function') ? await msg.getChat().catch(() => null) : null;
   const owner = _estadoOwner();
   // cusReal = @c.us real del remitente (resuelto vía msg.getContact()), aunque
   // msg.from sea @lid. Es la clave estable; el @lid rota.
@@ -467,7 +472,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, mediaInfo = null,
 
   // Primera vez → LLM pre-pass (eventualmente con info de contactos ambiguos).
   const llm = await _resolverConLLM({
-    canal: 'whatsapp', cuerpo, from, pushname, waClient: client,
+    canal: 'whatsapp', cuerpo, from, pushname, waClient: client, chat,
     contactosAmbiguos: lookupContactos?.ambiguo || null,
   });
 

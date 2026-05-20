@@ -241,6 +241,47 @@ const _enProceso     = new Map(); // from → true mientras se está despachando
 const _colaPendiente = new Map(); // from → items[] acumulados durante un despacho en curso
 const _lastIncoming  = new Map(); // from → ts (Date.now()) del último mensaje entrante — usado para abortar respuestas obsoletas si entró algo nuevo durante el procesamiento
 
+// Cache lid -> @c.us telefonico. El @lid puede rotar entre sesiones de WA;
+// dentro de una sesion es estable, asi que cachear evita pegarle a
+// getContactLidAndPhone en cada mensaje del mismo contacto.
+const _cacheLidCus = new Map();
+
+// Resuelve el @c.us telefonico ESTABLE de un remitente que llego como @lid.
+// El @lid rota; el numero de telefono no. Cascada de fuentes, de mas a
+// menos confiable:
+//   1) client.getContactLidAndPhone([lid]) -- API oficial de whatsapp-web.js
+//      (lid -> phone number). Feature-detected: si la version de la lib no
+//      la expone, se saltea sin romper.
+//   2) contact.id._serialized -- si msg.getContact() ya lo resolvio a @c.us.
+//   3) contact.number -- numero del Contact, ultimo recurso.
+// Devuelve "<digitos>@c.us" o null. Nunca tira (degradacion silenciosa: el
+// caller deja el @lid, igual que el comportamiento previo).
+async function _resolverCusEstable(client, lid, contact) {
+  if (_cacheLidCus.has(lid)) return _cacheLidCus.get(lid);
+  let cus = null;
+  try {
+    if (client && typeof client.getContactLidAndPhone === 'function') {
+      const pares = await client.getContactLidAndPhone([lid]);
+      const pn = Array.isArray(pares) && pares[0] && pares[0].pn;
+      const dig = String(pn || '').replace(/\D/g, '');
+      if (dig.length >= 8) cus = `${dig}@c.us`;
+    }
+  } catch (e) {
+    console.warn(`[WA lid-resolve] getContactLidAndPhone fallo (${lid}): ${e.message}`);
+  }
+  if (!cus) {
+    const cid = contact && contact.id && contact.id._serialized;
+    if (cid && cid.endsWith('@c.us')) cus = cid;
+  }
+  if (!cus) {
+    const dig = String((contact && contact.number) || '').replace(/\D/g, '');
+    if (dig.length >= 8) cus = `${dig}@c.us`;
+  }
+  console.log(`[WA lid-resolve] ${lid} -> ${cus || '(no resuelto, queda @lid)'}`);
+  if (cus) _cacheLidCus.set(lid, cus);
+  return cus;
+}
+
 async function handleMessage(client, msg) {
   if (msg.fromMe) return;
 
@@ -263,11 +304,9 @@ async function handleMessage(client, msg) {
   let from = msg.from;
   let fromLid = null;
   if (from && from.endsWith('@lid')) {
-    const cusReal = contact?.id?._serialized;
-    if (cusReal && cusReal.endsWith('@c.us')) {
-      fromLid = from;
-      from = cusReal;
-    }
+    fromLid = from;
+    const cusEstable = await _resolverCusEstable(client, from, contact);
+    if (cusEstable) from = cusEstable;
   }
 
   // Marcar el chat como leído inmediatamente (best-effort). Antes Maria
@@ -525,6 +564,8 @@ async function _despacharGrupo(client, from, items, startTs) {
     try {
       await unknownFlow.handleWA({
         client,
+        from,
+        fromLid: principal.fromLid,
         msg: msgOriginal,
         contact,
         cuerpo: cuerpoCombinado,

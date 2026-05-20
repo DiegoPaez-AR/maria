@@ -85,7 +85,26 @@ function resolverPorWa(from) {
     }
   }
   // Intento cruzado por las dudas
-  return qPorWaLid.get(from) || qPorWaCus.get(from) || null;
+  const cruz = qPorWaLid.get(from) || qPorWaCus.get(from);
+  if (cruz) return cruz;
+  // Fallback final: match por sufijo de digitos (>=8). Cubre wa_cus guardado
+  // en otra representacion que la que llega (54 11... vs 54 9 11..., con/sin
+  // codigo de pais). No aplica a @lid: sus digitos no son telefonicos.
+  return _resolverPorDigitos(from);
+}
+
+// Match por sufijo de digitos contra el wa_cus de los usuarios. Ultima red
+// de la resolucion de identidad WA.
+function _resolverPorDigitos(from) {
+  if (!from || String(from).endsWith('@lid')) return null;
+  const d = String(from).replace(/\D/g, '');
+  if (d.length < 8) return null;
+  for (const u of qTodosIncl.all()) {
+    if (!u.wa_cus) continue;
+    const dc = String(u.wa_cus).replace(/\D/g, '');
+    if (dc.length >= 8 && (dc.endsWith(d) || d.endsWith(dc))) return u;
+  }
+  return null;
 }
 
 /**

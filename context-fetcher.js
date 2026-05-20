@@ -21,13 +21,13 @@ const MS_DIA = 24 * 3600 * 1000;
  *
  * Devuelve { ok: boolean, lineas: string[], total: number, error?: string }.
  */
-async function historialWA(waClient, from, { dias = 14, max = 200 } = {}) {
-  if (!waClient || !from) return { ok: false, lineas: [], total: 0, error: 'waClient/from faltantes' };
+async function historialWA(waClient, from, { dias = 14, max = 200, chat = null } = {}) {
+  if (!waClient || (!from && !chat)) return { ok: false, lineas: [], total: 0, error: 'waClient/from faltantes' };
   const desde = Date.now() - dias * MS_DIA;
   try {
-    const chat = await waClient.getChatById(from);
-    if (!chat) return { ok: true, lineas: [], total: 0 };
-    const mensajes = await chat.fetchMessages({ limit: max });
+    const chatObj = chat || (from ? await waClient.getChatById(from) : null);
+    if (!chatObj) return { ok: true, lineas: [], total: 0 };
+    const mensajes = await chatObj.fetchMessages({ limit: max });
     const filtrados = (mensajes || [])
       .filter(m => {
         const tsMs = (m.timestamp ? m.timestamp * 1000 : 0);
