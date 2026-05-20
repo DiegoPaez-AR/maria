@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6009  2026-05-20 19:41:57  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+6008  2026-05-20 19:41:57  whatsapp  saliente   14242831584@c.us     ¡Perfecto Facu! Jueves a las 6 o 6:30 te anoto. Le confirmo a Diego y te aviso en un momento.                                                                                                           
+
+6007  2026-05-20 19:41:57  whatsapp  saliente   34342575317160@lid   Facu me responde que el jueves a las 6 o 6:30 PM le viene perfecto. Aclara que va a estar por Palermo ese día. Como vos me habías pedido reunión virtual, ¿la hacemos igual por Meet o la aprovechamos p
+
+6006  2026-05-20 19:41:57  sistema   interno                         claude_call whatsapp: 63189ms prompt=72955c raw=1325c                                                                                                                                                   
+
 6005  2026-05-20 19:40:53  whatsapp  entrante   14242831584@c.us     Este jueves tipo 6 o 6:30pm me vendria perfecto. Yo voy a estar por Palermo, crees que a Diego le quedaria bien                                                                                         
 
 6004  2026-05-20 19:40:33  whatsapp  saliente   14242831584@c.us     ¡Hola Facu! ¿Alguno de los horarios que te pasé te queda bien? Así coordino con Guillermo también y les confirmo a los dos.                                                                             
@@ -231,11 +239,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5911  2026-05-20 17:02:26  whatsapp  saliente   5491122420656@c.us   ¡Hola Esteban! Sí, soy María Páez. Contame, ¿en qué te puedo ayudar?                                                                                                                                    
 
 5910  2026-05-20 17:02:26  sistema   interno                         claude_call whatsapp: 21436ms prompt=71383c raw=599c                                                                                                                                                    
-
-5909  2026-05-20 17:02:04  whatsapp  entrante   5491122420656@c.us   María Paez                                                                                                                                                                                              
-
-5908  2026-05-20 17:02:04  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas Volvo que contactó a Maria en respuesta al interés de Diego en comprar una EX-30 Plus; Diego lo c
-
-5907  2026-05-20 17:02:04  sistema   interno                         claude_call unknown-flow: 20598ms prompt=58732c raw=441c                                                                                                                                                
-
-5906  2026-05-20 16:33:13  sistema   interno                         meeting-prep: 3 alerta(s) agendada(s) (12 usuarios)                                                                                                                                                     
