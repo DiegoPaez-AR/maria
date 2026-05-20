@@ -1,0 +1,18 @@
+#!/bin/bash
+set -uo pipefail
+export PATH="/usr/local/bin:/usr/bin:/bin:${PATH:-}"
+echo "═══ VERIFY mcp-config sin playwright — $(date '+%Y-%m-%d %H:%M:%S %z') ═══"
+echo "── mcp-config.json activo ──"; sed 's/^/  /' /root/secretaria/mcp-config.json
+echo
+echo "── pm2 maria-paez ──"
+pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{let p=JSON.parse(s).find(x=>x.name==="maria-paez");let pe=p.pm2_env||{};console.log("  status="+pe.status+"  restarts="+pe.restart_time+"  uptime_min="+(((Date.now()-(pe.pm_uptime||Date.now()))/60000).toFixed(1)));}catch(e){console.log("  "+e.message)}})'
+echo
+echo "── timing claude -p con --mcp-config (como invoca Maria) ──"
+for i in 1 2; do
+  t0=$(date +%s.%N)
+  o=$(printf 'Respondé únicamente OK.' | timeout 60 claude -p --mcp-config /root/secretaria/mcp-config.json 2>/dev/null || true)
+  t1=$(date +%s.%N)
+  printf "  corrida %d: %ss  out=[%s]\n" "$i" "$(awk -v a=$t0 -v b=$t1 'BEGIN{printf "%.1f",b-a}')" "$(printf '%s' "$o"|tr -d '\n'|cut -c1-20)"
+done
+echo "  referencia previa: con playwright 6.3s · sin --mcp-config 3.7s"
+echo "═══ FIN — $(date '+%H:%M:%S') ═══"
