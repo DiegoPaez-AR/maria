@@ -1,5 +1,20 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5979  2026-05-20 17:59:54  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+5978  2026-05-20 17:59:54  calendar  saliente                        creado: Ricardo y Memo (2026-05-21T14:00:00-03:00 → 2026-05-21T15:00:00-03:00) [en calendar de Maria]                                                                                                   
+
+5977  2026-05-20 17:59:53  sistema   interno                         claude_call whatsapp: 39738ms prompt=43469c raw=691c                                                                                                                                                    
+
+5976  2026-05-20 17:59:13  whatsapp  entrante   5491144471264@c.us   Te imagino que está bien.                                                                                                                                                                               
+
+5975  2026-05-20 17:59:03  whatsapp  saliente   105171031949561@lid  ⚠️ Heads up: una acción falló mientras te respondía:                                                                                                                                                    
+                                                                     • crear_evento → Ricardo y Memo: conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00.                                                     
+
+5974  2026-05-20 17:59:03  sistema   interno                         acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true
+
+5973  2026-05-20 17:59:03  sistema   interno                         claude_call whatsapp: 30888ms prompt=43140c raw=696c                                                                                                                                                    
+
 5972  2026-05-20 17:58:32  whatsapp  entrante   5491144471264@c.us   María, me puedes agendar mañana a dos de la tarde en mi oficina con Ricardo y Memo.                                                                                                                     
 
 5971  2026-05-20 17:54:41  sistema   interno                         claude_call whatsapp: 12416ms prompt=72910c raw=239c                                                                                                                                                    
@@ -210,17 +225,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5881  2026-05-20 14:48:59  whatsapp  entrante   5491132317896@c.us   ok, avisame a mi tambien condo te confirme                                                                                                                                                              
 
 5880  2026-05-20 14:48:22  whatsapp  saliente   34342575317160@lid   La reunión quedó confirmada para el *viernes 22/05 a las 2:30 pm*. Todavía estoy esperando que Analía Frangi me pase la dirección del lugar — en cuanto llegue, la actualizo en el evento y se la mando 
-
-5879  2026-05-20 14:48:22  sistema   interno                         claude_call whatsapp: 38022ms prompt=71167c raw=529c                                                                                                                                                    
-
-5878  2026-05-20 14:47:44  whatsapp  entrante   5491132317896@c.us   al final que paso con la reunion con Diego Poguetti?                                                                                                                                                    
-
-5877  2026-05-20 14:45:09  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: nike, velas (12:00 p. m.)                                                                                                                                                                 
-
-5876  2026-05-20 14:32:58  whatsapp  saliente   259776902607055@lid  ¡Buenos días! Muy bien, gracias. Sí, lo recuerdo — ya me había intentado contactar. Mandame el contacto así lo guardo y me pongo en contacto con él.                                                    
-
-5875  2026-05-20 14:32:58  sistema   interno                         claude_call whatsapp: 32758ms prompt=71525c raw=582c                                                                                                                                                    
-
-5874  2026-05-20 14:32:25  whatsapp  entrante   259776902607055@lid  Buenos dóas Maria, como estas? te paso el contacto del asesor de ventas que intento comunicarse contigo                                                                                                 
-
-5873  2026-05-20 14:31:41  whatsapp  saliente   5491132317896@c.us   Perfecto, ya lo tomé así. Le mandé todo a Volvo — interés en la EX-30 Plus y las fotos y el video del Subaru. Ahora esperamos que te contacten.                                                         
