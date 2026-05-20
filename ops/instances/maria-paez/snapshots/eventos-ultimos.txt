@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6028  2026-05-20 19:58:55  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+6027  2026-05-20 19:58:55  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+6026  2026-05-20 19:58:55  whatsapp  saliente   14242831584@c.us     ¡Hola Facu! Todo confirmado: el jueves 21 a las 6:30 PM la hacemos virtual por Meet con vos, Guillermo y Diego. Para mandarte la invitación al calendar, ¿me pasás tu email?                            
+
+6025  2026-05-20 19:58:55  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+6024  2026-05-20 19:58:55  calendar  saliente                        creado: Reunión Diego / Facu / Guillermo (2026-05-21T18:30:00-03:00 → 2026-05-21T19:30:00-03:00) · Meet: https://meet.google.com/uto-qfmc-mux                                                           
+
+6023  2026-05-20 19:58:54  whatsapp  saliente   5491149353680@c.us   ¡Perfecto Guillermo! Hacemos la reunión virtual entonces: *jueves 21 a las 6:30 PM* por Meet con Diego y Facu. Para mandarte la invitación al calendar, ¿me pasás tu email?                             
+
+6022  2026-05-20 19:58:53  whatsapp  saliente   34342575317160@lid   La reunión del jueves con Facu y Guillermo quedó confirmada: *jueves 21 a las 6:30 PM*, virtual por Meet. La agendo ahora y les pido el email a los dos para mandarles la invitación de calendar.       
+
+6021  2026-05-20 19:58:53  sistema   interno                         claude_call whatsapp: 146685ms prompt=73711c raw=1245c                                                                                                                                                  
+
 6020  2026-05-20 19:56:26  whatsapp  entrante   5491149353680@c.us   Hola me parece bien jueves 21 a las hola! 6:30pm si ya confirmaron Diego y Facu. Prefiero virtual ese jueves, pero si ellos se reúnen presencialmente, intento acomodarme para asistir en persona       
 
 6019  2026-05-20 19:52:57  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -222,20 +238,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5930  2026-05-20 17:06:45  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
 
 5929  2026-05-20 17:06:45  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB086D213338C2B8240CF → 5491122420656@c.us)                                                                                                                       
-
-5928  2026-05-20 17:06:44  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
-
-5927  2026-05-20 17:06:44  whatsapp  saliente                        (forward de false_34342575317160@lid_3EB0E70CCFF3A6840AE3D3 → 5491122420656@c.us)                                                                                                                       
-
-5926  2026-05-20 17:06:44  sistema   interno                         claude_call whatsapp: 46838ms prompt=72637c raw=2243c                                                                                                                                                   
-
-5925  2026-05-20 17:05:57  whatsapp  entrante   5491122420656@c.us   Para el usado me tiene que mandar un.par de fotos , año., modelo, km y si tiene los servicios oficiales                                                                                                 
-                                                                     Ahora le paso la información                                                                                                                                                                            
-
-5924  2026-05-20 17:05:57  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas Volvo (DITECAR) que Diego (id=1) le pidió a Maria contactar para consultar por la EX-30 Plus y ta
-
-5923  2026-05-20 17:05:57  sistema   interno                         claude_call unknown-flow: 20803ms prompt=59272c raw=390c                                                                                                                                                
-
-5922  2026-05-20 17:04:17  whatsapp  saliente   5491122420656@c.us   ¡Así es, Esteban! Me comunico de parte de Diego Páez, que tiene interés en la *EX-30 Plus*. ¿Podés contarme qué disponibilidad tienen y los precios actuales? También mencionarle que tiene un *Subaru L
-
-5921  2026-05-20 17:04:17  sistema   interno                         claude_call whatsapp: 17887ms prompt=72112c raw=683c                                                                                                                                                    
