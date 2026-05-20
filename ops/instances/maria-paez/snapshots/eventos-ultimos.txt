@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6058  2026-05-20 20:14:53  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+
+6057  2026-05-20 20:14:53  calendar  saliente                        modificado: Reunión Diego / Facu / Guillermo (2026-05-21T18:30:00-03:00 → 2026-05-21T19:30:00-03:00)                                                                                                    
+
+6056  2026-05-20 20:14:52  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+6055  2026-05-20 20:14:52  whatsapp  saliente   14242831584@c.us     ¡Perfecto! Te mando la invitación al calendar a f@thequantumalliance.com ahora.                                                                                                                         
+
+6054  2026-05-20 20:14:44  sistema   interno                         claude_call whatsapp: 32282ms prompt=72290c raw=765c                                                                                                                                                    
+
+6053  2026-05-20 20:14:12  whatsapp  entrante   14242831584@c.us     f@thequantumalliance.com                                                                                                                                                                                
+
 6052  2026-05-20 20:13:58  sistema   interno                         claude_call whatsapp: 5644ms prompt=72281c raw=182c                                                                                                                                                     
 
 6051  2026-05-20 20:13:52  whatsapp  entrante   14242831584@c.us     genial!                                                                                                                                                                                                 
@@ -211,18 +223,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5960  2026-05-20 17:33:12  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (12 usuarios)                                                                                                                                                     
 
 5959  2026-05-20 17:30:09  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: roxana (02:45 p. m.)                                                                                                                                                                      
-
-5958  2026-05-20 17:15:24  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: AI Soporte (02:30 p. m.)                                                                                                                                                                  
-                                                                     Con: alejandra.carvajal@sondeosglobal.com, lautaro.taretto@sondeosglobal.com, cmarchetti@gpf-soluciones.com.ar, hernan.fulco@sondeosglobal.com, katlerine.torres@                                       
-
-5957  2026-05-20 17:15:16  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.)                                                                                                                                            
-                                                                     Con: hernan.fulco@sondeosglobal.com, lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com                                                                                             
-                                                                     Buenas, dejo este slot como rec                                                                                                                                                                         
-
-5956  2026-05-20 17:08:50  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-5955  2026-05-20 17:08:50  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
-
-5954  2026-05-20 17:08:50  whatsapp  saliente                        (forward de false_149366295818298@lid_AC16B91DEF799B135D602D9526C5947A → 34342575317160@lid)                                                                                                            
-
-5953  2026-05-20 17:08:49  whatsapp  saliente   5491122420656@c.us   ¡Gracias, Esteban! Le paso la info a Diego y te escribo.                                                                                                                                                
