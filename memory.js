@@ -318,6 +318,17 @@ function _migrarUsuariosLemonFields() {
 }
 _migrarUsuariosLemonFields();
 
+// brief_activo: opt-out del morning-brief por usuario. Default 1 (recibe el
+// brief matutino). Cuando un usuario pide "no me mandes mas el resumen diario"
+// el action configurar_brief lo pone en 0; morning-brief.js lo respeta.
+function _migrarUsuariosBriefActivo() {
+  if (!_tieneColumna('usuarios', 'brief_activo')) {
+    db.exec(`ALTER TABLE usuarios ADD COLUMN brief_activo INTEGER NOT NULL DEFAULT 1`);
+    console.log('[memory] migracion: usuarios.brief_activo agregado (default 1)');
+  }
+}
+_migrarUsuariosBriefActivo();
+
 // Índices que dependen de usuario_id (los creamos acá porque en el exec inicial
 // la columna podía no existir todavía en DBs viejos).
 db.exec(`

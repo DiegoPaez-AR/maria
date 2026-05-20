@@ -31,6 +31,9 @@ const updateUsuarioWaLid = db.prepare(`
 const updateUsuarioActivo = db.prepare(`
   UPDATE usuarios SET activo = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
 `);
+const updateBriefActivo = db.prepare(`
+  UPDATE usuarios SET brief_activo = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
+`);
 
 // ─── Listado / búsqueda ──────────────────────────────────────────────────
 
@@ -320,6 +323,13 @@ function setearCalendarAcceso(usuarioId, modo) {
   updateCalendarAcceso.run(modo, usuarioId);
 }
 
+// Opt-out del morning-brief. activo truthy -> 1 (recibe), falsy -> 0 (no recibe).
+function setBriefActivo(usuarioId, activo) {
+  if (!obtener(usuarioId)) throw new Error(`setBriefActivo: usuario id=${usuarioId} no existe`);
+  updateBriefActivo.run(activo ? 1 : 0, usuarioId);
+  return obtener(usuarioId);
+}
+
 module.exports = {
   listarActivos,
   listarTodos,
@@ -335,6 +345,7 @@ module.exports = {
   desactivar,
   tier,
   setearCalendarAcceso,
+  setBriefActivo,
   cantidadActivos,
   maxUsuarios,
   puedeCrearMas,

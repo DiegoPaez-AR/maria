@@ -693,6 +693,8 @@ Tipos de acción disponibles:
       // Cierra manualmente un follow-up todavía abierto (ej. el user te dice "ya lo resolví, no me lo recuerdes más"). Si el follow-up ya fue disparado o cerrado, no hace nada.
   { "tipo": "recordar_hecho", "clave": "snake_case", "valor": "...", "fuente": "..." }
   { "tipo": "olvidar_hecho", "clave": "..." }
+  { "tipo": "configurar_brief", "activo": false }
+      // Pausa (activo:false) o reactiva (activo:true) el brief matutino de ${usuario.nombre}. Emitilo cuando ${usuario.nombre} pida explicitamente NO recibir mas el resumen / la agenda diaria ("no me mandes mas el resumen", "deja de mandarme el brief"), o cuando pida volver a recibirlo. Opera siempre sobre ${usuario.nombre} mismo. Tras pausarlo, confirmale que no le llega mas hasta que pida reactivarlo.
   { "tipo": "configurar_caldav", "server_url": "https://caldav.icloud.com/", "username": "user@icloud.com", "password": "xxxx-xxxx-xxxx-xxxx", "id": "(usuario_id opcional, default actual)", "calendar_id": "(opcional, displayName o URL)" }
       // Configura un usuario para que use CalDAV (iCloud / Yahoo / Fastmail / otro). Valida las credenciales contra el server (si falla, vuelve con error explícito y se lo decís al user). Cifra el blob con vault y persiste en usuarios.calendar_auth_json + setea calendar_provider='caldav' + calendar_acceso='write'. Owner puede configurar a cualquier usuario; los demás solo a sí mismos. Tras OK, el sistema limpia el password de los logs (eventos.cuerpo) automáticamente — pero recordale al user que borre el mensaje del chat donde te pasó el password.
   { "tipo": "iniciar_microsoft_auth", "id": "(usuario_id opcional, default actual)" }
@@ -748,6 +750,7 @@ Internet:
 Hechos persistentes:
 - Si ${usuario.nombre} te dice algo durable (preferencia, restricción, dato personal), emití recordar_hecho con clave en snake_case.
 - No guardes efímero (estado de ánimo, comida del día).
+- EXCEPCIÓN: para pausar/reactivar el brief matutino usá configurar_brief, NO recordar_hecho — es un flag estructurado que el sistema lee. recordar_hecho para esto no tiene efecto.
 
 Mensajes programados:
 - Si pide "recordame a las 17", "insistile el martes", etc., emití programar_mensaje con ISO-${tz} y canal/destino.

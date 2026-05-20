@@ -152,6 +152,7 @@ async function enviarBrief(waClient, usuario) {
 // ─── Loop ────────────────────────────────────────────────────────────────
 
 async function tickUsuario(waClient, usuario) {
+  if (Number(usuario.brief_activo) === 0) return; // usuario pauso su brief (configurar_brief)
   const tz        = usuario.tz || 'America/Argentina/Buenos_Aires';
   const briefHora   = usuario.brief_hora   || '04';
   const briefMinuto = usuario.brief_minuto || '00';

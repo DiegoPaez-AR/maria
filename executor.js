@@ -73,6 +73,7 @@ async function ejecutarUna(accion, ctx) {
     case 'cerrar_follow_up':   return _cerrarFollowUp(accion, ctx);
     case 'recordar_hecho':     return _recordarHecho(accion, ctx);
     case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
+    case 'configurar_brief':  return _configurarBrief(accion, ctx);
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
     case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
@@ -718,6 +719,16 @@ async function _crearUsuario(a, ctx) {
   }
   console.log(`[executor] usuario creado: id=${u.id} nombre=${u.nombre}${u.calendar_id ? '' : ' (sin calendar_id todavía)'}`);
   return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null };
+}
+
+// Opt-out del brief matutino. Cualquier usuario puede pausar/reactivar el SUYO
+// -- opera sobre ctx.usuario, sin owner-check ni id ajeno.
+function _configurarBrief(a, ctx) {
+  const activo = !(a.activo === false || a.activo === 0 || a.activo === 'false'
+                   || a.activo === 'no' || a.activo === 'off' || a.activo === 'pausar');
+  usuarios.setBriefActivo(ctx.usuario.id, activo ? 1 : 0);
+  console.log(`[executor] brief ${activo ? 'reactivado' : 'pausado'} para ${ctx.usuario.nombre} (id=${ctx.usuario.id})`);
+  return { usuario: ctx.usuario.nombre, brief_activo: activo ? 1 : 0 };
 }
 
 async function _actualizarUsuario(a, ctx) {
