@@ -1,0 +1,59 @@
+# ejecutado: 2026-05-20T09:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Baja de Santiago Bignone del morning-brief: pidio 3 veces no recibirlo.
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   echo "DB: $DB"
+#   if ! sqlite3 "$DB" "SELECT brief_activo FROM usuarios LIMIT 1;" >/dev/null 2>&1; then
+#     echo "ERROR: columna brief_activo no existe todavia — abortando"
+#     exit 1
+#   fi
+#   echo "--- ANTES (todos los usuarios) ---"
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,brief_activo FROM usuarios WHERE activo=1 ORDER BY id;"
+#   echo
+#   echo "--- UPDATE Santiago Bignone ---"
+#   sqlite3 "$DB" "UPDATE usuarios SET brief_activo=0, actualizado=CURRENT_TIMESTAMP WHERE nombre='Santiago Bignone'; SELECT 'filas afectadas: '||changes();"
+#   echo
+#   echo "--- DESPUES ---"
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,brief_activo FROM usuarios WHERE activo=1 ORDER BY id;"
+
+# ───── output ─────
+DB: /root/secretaria/state/maria-paez/db/maria.sqlite
+--- ANTES (todos los usuarios) ---
+id  nombre               brief_activo
+--  -------------------  ------------
+1   Diego                1           
+2   Hernan Fulco         1           
+3   Natali Funez         1           
+4   Fernando Boero       1           
+5   Santiago Bignone     1           
+6   Doris Capurro        1           
+7   Nicolas Kosinski     1           
+8   Walter Vera          1           
+9   Cristian Ruiz        1           
+10  Sebastian Ameijeira  1           
+11  Rubén Ward           1           
+12  Enrique Sosa         1           
+
+--- UPDATE Santiago Bignone ---
+filas afectadas: 1
+
+--- DESPUES ---
+id  nombre               brief_activo
+--  -------------------  ------------
+1   Diego                1           
+2   Hernan Fulco         1           
+3   Natali Funez         1           
+4   Fernando Boero       1           
+5   Santiago Bignone     0           
+6   Doris Capurro        1           
+7   Nicolas Kosinski     1           
+8   Walter Vera          1           
+9   Cristian Ruiz        1           
+10  Sebastian Ameijeira  1           
+11  Rubén Ward           1           
+12  Enrique Sosa         1           
+
+# exit=0
