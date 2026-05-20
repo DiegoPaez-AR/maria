@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6019  2026-05-20 19:52:57  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+6018  2026-05-20 19:52:57  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+6017  2026-05-20 19:52:57  whatsapp  saliente   5491149353680@c.us   Guillermo, te escribo de nuevo porque estamos afinando el horario. Tenemos propuesto *jueves 21 a las 6:30 PM* con Diego y Facu. ¿Te viene bien? Y una pregunta: ¿preferís juntarse en persona en Palerm
+
+6016  2026-05-20 19:52:57  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+6015  2026-05-20 19:52:57  whatsapp  saliente   14242831584@c.us     ¡Buenísimo Facu! Diego termina una reunión a las 6, así que te propongo *jueves 21 a las 6:30 PM*. ¿Te viene bien esa hora? Y ya que vas a estar por Palermo, ¿preferís que nos juntemos en persona o lo
+
+6014  2026-05-20 19:52:56  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+6013  2026-05-20 19:52:56  sistema   interno                         claude_call whatsapp: 81841ms prompt=73277c raw=1621c                                                                                                                                                   
+
 6012  2026-05-20 19:51:34  whatsapp  entrante   5491132317896@c.us   Como prefieran ellos, estoy para las dos cosas                                                                                                                                                          
 
 6011  2026-05-20 19:43:39  sistema   interno                         claude_call whatsapp: 16539ms prompt=73438c raw=349c                                                                                                                                                    
@@ -225,17 +239,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 5921  2026-05-20 17:04:17  sistema   interno                         claude_call whatsapp: 17887ms prompt=72112c raw=683c                                                                                                                                                    
 
 5920  2026-05-20 17:03:59  whatsapp  entrante   5491122420656@c.us   Usted se contacto por un Volvo EX30                                                                                                                                                                     
-
-5919  2026-05-20 17:03:59  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas de Volvo/DITECAR que contactó a Diego sobre la EX-30; Diego confirmó en su historial ('Era para m
-
-5918  2026-05-20 17:03:59  sistema   interno                         claude_call unknown-flow: 16604ms prompt=58694c raw=449c                                                                                                                                                
-
-5917  2026-05-20 17:03:32  sistema   interno                         claude_call whatsapp: 16302ms prompt=71819c raw=444c                                                                                                                                                    
-
-5916  2026-05-20 17:03:16  whatsapp  entrante   5491122420656@c.us   Como le va??                                                                                                                                                                                            
-
-5915  2026-05-20 17:03:16  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas Volvo que contactó a Diego sobre su interés en la EX-30 Plus; Diego confirmó explícitamente en su
-
-5914  2026-05-20 17:03:16  sistema   interno                         claude_call unknown-flow: 21912ms prompt=58696c raw=417c                                                                                                                                                
-
-5913  2026-05-20 17:03:12  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (12 usuarios)                                                                                                                                                     
