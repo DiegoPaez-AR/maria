@@ -1,0 +1,137 @@
+# ejecutado: 2026-05-21T08:42:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   OUT="/root/.pm2/logs/maria-paez-out.log"
+#   
+#   echo "=== EVENTOS DE SEGURIDAD / INJECTION / RATE-LIMIT (24h) ==="
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, canal, substr(COALESCE(cuerpo,''),1,160) cuerpo FROM eventos WHERE timestamp >= datetime('now','-24 hours') AND (cuerpo LIKE '%injection%' OR cuerpo LIKE '%rate_limit%' OR cuerpo LIKE '%seguridad%' OR cuerpo LIKE '%injecc%') ORDER BY id;"
+#   echo
+#   echo "=== eventos con 'AVISO' o 'fallo' en 24h ==="
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, direccion, substr(COALESCE(cuerpo,''),1,180) cuerpo FROM eventos WHERE timestamp >= datetime('now','-24 hours') AND (cuerpo LIKE '%AVISO%' OR cuerpo LIKE '%fallo%') ORDER BY id;"
+#   echo
+#   echo "=== contexto log: AVISO fallos a Doris ==="
+#   grep -n -B3 -A3 "AVISO fallos" "$OUT" | tail -20
+#   echo
+#   echo "=== Diego Teubal escribio en 24h? (busco su numero 144491280 y lid viejo) ==="
+#   sqlite3 -header -column "$DB" "SELECT id,timestamp,canal,direccion,substr(COALESCE(de,para,''),1,24) wa,substr(COALESCE(cuerpo,''),1,90) cuerpo FROM eventos WHERE timestamp >= datetime('now','-24 hours') AND (de LIKE '%144491280%' OR para LIKE '%144491280%' OR de LIKE '%278606039236859%' OR para LIKE '%278606039236859%' OR cuerpo LIKE '%Teubal%') ORDER BY id;"
+#   echo "(si vacio: Teubal no aparecio en la ventana de 24h)"
+#   echo
+#   echo "=== ultimos 12 eventos (pulso actual) ==="
+#   sqlite3 -column "$DB" "SELECT timestamp, canal, direccion, substr(COALESCE(cuerpo,''),1,75) FROM eventos ORDER BY id DESC LIMIT 12;"
+
+# ───── output ─────
+=== EVENTOS DE SEGURIDAD / INJECTION / RATE-LIMIT (24h) ===
+id    timestamp            canal     cuerpo                                                                        
+----  -------------------  --------  ------------------------------------------------------------------------------
+6091  2026-05-20 21:43:09  whatsapp  Recordatorio — tenés 8 tareas abiertas 📝                                      
+                                                                                                                   
+                                     1. Pedir presupuesto DC Iplan — 726h                                          
+                                     2. Pedir presupuesto DC Telecentro — 726h                                     
+                                     3. Pedir presupuesto DC Claro — 726h                                          
+                                     4.                                                                            
+
+6105  2026-05-20 23:15:40  whatsapp  Dale, la agrego. Tus tareas abiertas:                                         
+                                                                                                                   
+                                     1. Pedir presupuesto DC Iplan                                                 
+                                     2. Pedir presupuesto DC Telecentro                                            
+                                     3. Pedir presupuesto DC Claro                                                 
+                                     4. iProt Seguridad                                                            
+                                     5. Espe                                                                       
+
+6115  2026-05-21 07:00:17  whatsapp  ☀️ *Buen día, Diego.* jueves 21 de mayo.                                      
+                                                                                                                   
+                                     *📅 Agenda del día*                                                            
+                                     • 08:00 a. m. — Yoga                                                          
+                                     • 11:00 a. m. — Sens - Socios @Restaurante Narda Comedor, Mcal. Antonio José d
+
+6117  2026-05-21 10:00:10  whatsapp  ☀️ *Buen día, Hernan Fulco.* jueves 21 de mayo.                               
+                                                                                                                   
+                                     *📅 Agenda del día*                                                            
+                                     • 09:00 a. m. — Lautaro está de Vacaciones                                    
+                                     • 09:00 a. m. — Cristian está de vacaciones                                   
+                                     • 09:                                                                         
+
+=== eventos con 'AVISO' o 'fallo' en 24h ===
+id    timestamp            direccion  cuerpo                                                                                                                                                                              
+----  -------------------  ---------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5883  2026-05-20 14:49:42  saliente   Dale, te aviso a vos también en cuanto Analía me confirme.                                                                                                                          
+
+5891  2026-05-20 15:19:34  saliente   Todo va bien. Acá el resumen:                                                                                                                                                       
+                                                                                                                                                                                                                          
+                                      📌 Le mandé a Volvo (el número que me pasaste) el interés tuyo en la *EX-30 Plus* más todas las fotos y el video del Subaru Legacy para la parte de pa                               
+
+6008  2026-05-20 19:41:57  saliente   ¡Perfecto Facu! Jueves a las 6 o 6:30 te anoto. Le confirmo a Diego y te aviso en un momento.                                                                                       
+
+6015  2026-05-20 19:52:57  saliente   ¡Buenísimo Facu! Diego termina una reunión a las 6, así que te propongo *jueves 21 a las 6:30 PM*. ¿Te viene bien esa hora? Y ya que vas a estar por Palermo, ¿preferís que nos junt
+
+6084  2026-05-20 21:26:32  saliente   El horario está confirmado: *viernes 22 a las 14:30, hasta las 15:00*, con link de Meet. También le mandé la invitación al calendar a Pablo Casal.                                  
+                                                                                                                                                                                                                          
+                                      Lo que todavía estoy esperando e                                                                                                                                                    
+
+=== contexto log: AVISO fallos a Doris ===
+2865-2026-05-20 14:58:40: [WA audio→texto] Te imagino que está bien.
+2866-2026-05-20 14:59:03: [WA →usr] ABORTADO Doris Capurro (105171031949561@lid): llegó msg nuevo durante procesamiento — el próximo lote responde
+2867-2026-05-20 14:59:03: [WA acciones/Doris Capurro] 0/1 ejecutadas
+2868:2026-05-20 14:59:03: [WA →usr] AVISO fallos a Doris Capurro: 1
+2869-2026-05-20 14:59:13: [WA ←] Doris Capurro (5491144471264@c.us) 🎤: Te imagino que está bien.
+2870-2026-05-20 14:59:28: [WA] transcribiendo audio…
+2871-2026-05-20 14:59:31: [WA audio→texto] No, no pisa porque el horario es a las dos de la tarde.
+
+=== Diego Teubal escribio en 24h? (busco su numero 144491280 y lid viejo) ===
+Error: in prepare, no such column: para
+  T id,timestamp,canal,direccion,substr(COALESCE(de,para,''),1,24) wa,substr(COA
+                                      error here ---^
+(si vacio: Teubal no aparecio en la ventana de 24h)
+
+=== ultimos 12 eventos (pulso actual) ===
+2026-05-21 10:48:13  sistema   interno    meeting-prep: 1 alerta(s) agendada(s) (12 usuarios)   
+
+2026-05-21 10:45:10  whatsapp  saliente   ⏰ *En 15min*: Yoga (08:00 a. m.)                      
+
+2026-05-21 10:18:13  sistema   interno    meeting-prep: 1 alerta(s) agendada(s) (12 usuarios)   
+
+2026-05-21 10:03:13  sistema   interno    meeting-prep: 2 alerta(s) agendada(s) (12 usuarios)   
+
+2026-05-21 10:00:14  whatsapp  saliente   ☀️ *Buen día, Enrique Sosa.* jueves 21 de mayo.       
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          (sin ev                                               
+
+2026-05-21 10:00:14  whatsapp  saliente   ☀️ *Buen día, Rubén Ward.* jueves 21 de mayo.         
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          (sin even                                             
+
+2026-05-21 10:00:13  whatsapp  saliente   ☀️ *Buen día, Sebastian Ameijeira.* jueves 21 de mayo.
+                                                                                                
+                                          *📅 Agenda del día*                                    
+
+2026-05-21 10:00:13  whatsapp  saliente   ☀️ *Buen día, Cristian Ruiz.* jueves 21 de mayo.      
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          (sin e                                                
+
+2026-05-21 10:00:13  whatsapp  saliente   ☀️ *Buen día, Walter Vera.* jueves 21 de mayo.        
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          (sin eve                                              
+
+2026-05-21 10:00:12  whatsapp  saliente   ☀️ *Buen día, Nicolas Kosinski.* jueves 21 de mayo.   
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          (si                                                   
+
+2026-05-21 10:00:12  whatsapp  saliente   ☀️ *Buen día, Doris Capurro.* jueves 21 de mayo.      
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          • 12:0                                                
+
+2026-05-21 10:00:11  whatsapp  saliente   ☀️ *Buen día, Fernando Boero.* jueves 21 de mayo.     
+                                                                                                
+                                          *📅 Agenda del día*                                    
+                                          (sin                                                  
+
+# exit=0
