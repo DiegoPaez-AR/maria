@@ -1,200 +1,200 @@
-0|maria-pa | 2026-05-17 16:07:15:     at Module.require (node:internal/modules/cjs/loader:1225:19)
-0|maria-pa | 2026-05-17 16:07:15:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:15:     at require (node:internal/modules/helpers:177:18)
-0|maria-pa | 2026-05-17 16:07:15:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
-0|maria-pa | 2026-05-17 16:07:15:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
-0|maria-pa | 2026-05-17 16:07:15:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
-0|maria-pa | 2026-05-17 16:07:15:     at Module.load (node:internal/modules/cjs/loader:1197:32)
-0|maria-pa | 2026-05-17 16:07:15:     at Module._load (node:internal/modules/cjs/loader:1013:12)
-0|maria-pa | 2026-05-17 16:07:15:     at Module.require (node:internal/modules/cjs/loader:1225:19)
-0|maria-pa | 2026-05-17 16:07:15:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:16: /root/secretaria/prompt-builder.js:558
-0|maria-pa | 2026-05-17 16:07:16:       // Cruza los calendars de varios usuarios actuales (solo gente que comparte calendar con Maria — terceros NO, a esos los invitás aparte). Devuelve hasta 15 slots libres comunes en ventana laboral (9-19 default, ajustable). Usalo cuando el user pide "buscá un horario común con X e Y" o "cuándo podemos juntarnos". El resultado incluye `slots: [{start, end}]` que vos formatées en lenguaje natural. Si algún usuario está en `no_encontrados` o `sin_calendar`, decíselo al user y pedile la disponibilidad por otra vía.
-0|maria-pa | 2026-05-17 16:07:16:                                                                                                                                                                                                                                                                                                                                                       ^^^^^
-0|maria-pa | 2026-05-17 16:07:16: 
-0|maria-pa | 2026-05-17 16:07:16: SyntaxError: Unexpected identifier
-0|maria-pa | 2026-05-17 16:07:16:     at internalCompileFunction (node:internal/vm:73:18)
-0|maria-pa | 2026-05-17 16:07:16:     at wrapSafe (node:internal/modules/cjs/loader:1274:20)
-0|maria-pa | 2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1320:27)
-0|maria-pa | 2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
-0|maria-pa | 2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
-0|maria-pa | 2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
-0|maria-pa | 2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
-0|maria-pa | 2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 16:07:16:     at require (node:internal/modules/helpers:177:18)
-0|maria-pa | 2026-05-17 16:07:16:     at Object.<anonymous> (/root/secretaria/whatsapp-handler.js:27:29)
-0|maria-pa | 2026-05-17 16:07:16:     at Module._compile (node:internal/modules/cjs/loader:1356:14)
-0|maria-pa | 2026-05-17 16:07:16:     at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
-0|maria-pa | 2026-05-17 16:07:16:     at Module.load (node:internal/modules/cjs/loader:1197:32)
-0|maria-pa | 2026-05-17 16:07:16:     at Module._load (node:internal/modules/cjs/loader:1013:12)
-0|maria-pa | 2026-05-17 16:07:16:     at Module.require (node:internal/modules/cjs/loader:1225:19)
-0|maria-pa | 2026-05-17 16:07:16:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-05-17 17:13:05: [executor] acción #1 (enviar_wa) falló: No pude mandar WA a 54959899643028@c.us: No LID for user
-0|maria-pa | 2026-05-17 17:13:05: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-17 17:13:05: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 54959899643028@c.us: No LID for user
-0|maria-pa | 2026-05-17 17:13:05: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-17 18:00:13: [executor] acción #0 (enviar_wa) falló: No pude mandar WA a 54959899643028@c.us: No LID for user
-0|maria-pa | 2026-05-17 18:00:13: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-17 18:00:13: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 54959899643028@c.us: No LID for user
-0|maria-pa | 2026-05-17 18:00:13: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-18 07:15:19: [WA debounce] error despachando grupo de 5491134274828@c.us: ReferenceError: startTs is not defined
-0|maria-pa | 2026-05-18 07:15:19:     at _despacharGrupo (/root/secretaria/whatsapp-handler.js:560:7)
-0|maria-pa | 2026-05-18 07:15:19:     at _disparar (/root/secretaria/whatsapp-handler.js:442:11)
-0|maria-pa | 2026-05-18 07:15:19:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 07:15:19:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 07:15:19:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 08:15:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
-0|maria-pa | 2026-05-18 08:18:32: [unknown-flow/wa] reprocesar tercero falló: startTs is not defined
-0|maria-pa | 2026-05-18 08:20:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
-0|maria-pa | 2026-05-18 08:25:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
-0|maria-pa | 2026-05-18 08:30:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
-0|maria-pa | 2026-05-18 08:33:28: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
-0|maria-pa | 2026-05-18 08:33:28:     at _despacharGrupo (/root/secretaria/whatsapp-handler.js:560:7)
-0|maria-pa | 2026-05-18 08:33:28:     at _disparar (/root/secretaria/whatsapp-handler.js:442:11)
-0|maria-pa | 2026-05-18 08:33:28:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 08:33:28:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 08:33:28:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 08:33:44: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: startTs is not defined
-0|maria-pa | 2026-05-18 08:33:44:     at _despacharGrupo (/root/secretaria/whatsapp-handler.js:560:7)
-0|maria-pa | 2026-05-18 08:33:44:     at _disparar (/root/secretaria/whatsapp-handler.js:442:11)
-0|maria-pa | 2026-05-18 08:33:44:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 08:33:44:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 08:33:44:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 08:35:10: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
-0|maria-pa | 2026-05-18 08:39:12: [meeting-prep/Santiago Bignone] listar cal falló: Not Found
-0|maria-pa | 2026-05-18 08:53:36: ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 08:53:36:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 08:53:36:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 08:53:36:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 08:53:36:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 08:53:36: [unhandledRejection] ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 08:53:36:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 08:53:36:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 08:53:36:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 08:53:36:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:00:33: ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:00:33: [unhandledRejection] ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:00:33:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:00:33:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:00:33:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:00:33:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:02:58: ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:02:58:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:02:58:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:02:58:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:02:58:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:02:58: [unhandledRejection] ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:02:58:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:02:58:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:02:58:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:02:58:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:03:32: ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:03:32: [unhandledRejection] ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:11:51: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
-0|maria-pa | 2026-05-18 09:11:51:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
-0|maria-pa | 2026-05-18 09:11:51:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-0|maria-pa | 2026-05-18 09:11:51:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
-0|maria-pa | 2026-05-18 09:11:51:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
-0|maria-pa | 2026-05-18 09:11:51:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
-0|maria-pa | 2026-05-18 09:12:53: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
-0|maria-pa | 2026-05-18 09:12:53:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
-0|maria-pa | 2026-05-18 09:12:53:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-0|maria-pa | 2026-05-18 09:12:53:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
-0|maria-pa | 2026-05-18 09:12:53:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
-0|maria-pa | 2026-05-18 09:12:53:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
-0|maria-pa | 2026-05-18 09:26:06: [upsertContacto] descarto whatsapp=@lid para "Sergio Moreno Castro" (no es estable)
-0|maria-pa | 2026-05-18 09:33:06: [claude-client] idle timeout 90000ms sin output — SIGKILL (prompt=65888c, stdout=0c)
-0|maria-pa | 2026-05-18 09:33:19: [WA/Diego] Claude falló: Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c, stdout=1094c)
-0|maria-pa | 2026-05-18 11:54:24: [upsertContacto] descarto whatsapp=@lid para "Ezequiel Honda Briones" (no es estable)
-0|maria-pa | 2026-05-18 12:59:52: [upsertContacto] descarto whatsapp=@lid para "Ezequiel Honda Briones" (no es estable)
-0|maria-pa | 2026-05-18 16:17:21: [upsertContacto] descarto whatsapp=@lid para "Ariel Quiroga" (no es estable)
-0|maria-pa | 2026-05-19 01:15:04: [executor] acción #0 (crear_evento) falló: conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 2026-05-29T14:00:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 01:15:04: [WA acciones/Diego] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 2026-05-29T14:00:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 01:17:47: [executor] acción #0 (crear_evento) falló: conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 01:17:47: [WA acciones/Diego] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 08:21:24: [executor] acción #2 (enviar_wa) falló: No pude mandar WA a 5491143092046@c.us: No LID for user
-0|maria-pa | 2026-05-19 08:21:24: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-19 08:21:24: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 5491143092046@c.us: No LID for user
-0|maria-pa | 2026-05-19 08:21:24: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-19 08:25:27: [upsertContacto] descarto whatsapp=@lid para "Diego Teubal" (no es estable)
-0|maria-pa | 2026-05-19 08:25:27: [executor] acción #1 (enviar_wa) falló: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:25:27: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:27:18: [upsertContacto] descarto whatsapp=@lid para "Diego Teubal" (no es estable)
-0|maria-pa | 2026-05-19 08:27:18: [executor] acción #1 (enviar_wa) falló: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:27:18: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:29:34: [upsertContacto] descarto whatsapp=@lid para "Diego Teubal" (no es estable)
-0|maria-pa | 2026-05-19 08:29:34: [executor] acción #1 (enviar_wa) falló: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:29:34: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 14:08:02: [internal-api/send-wa] error: No LID for user
-0|maria-pa | 2026-05-19 14:08:02: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 14:36:04: [internal-api/send-wa] error: No LID for user
-0|maria-pa | 2026-05-19 14:36:04: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] getNumberId returned null para 5491999999998@c.us — intento envío igual
-0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] error: Error: No LID for user
-0|maria-pa | 2026-05-19 15:06:02: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:06:02:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
-0|maria-pa | 2026-05-19 15:06:02:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-05-19 15:06:02:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-05-19 15:06:02:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-05-19 15:06:02:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-05-19 15:06:02:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
-0|maria-pa | 2026-05-19 15:06:02:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
-0|maria-pa | 2026-05-19 15:06:02:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
-0|maria-pa | 2026-05-19 15:06:02:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
-0|maria-pa | 2026-05-19 15:06:02:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
-0|maria-pa | 2026-05-19 15:06:02:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
-0|maria-pa | 2026-05-19 15:06:02:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
-0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] getNumberId returned null para 5491999999997@c.us — intento envío igual
-0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] error: Error: No LID for user
-0|maria-pa | 2026-05-19 15:09:08: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:09:08:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
-0|maria-pa | 2026-05-19 15:09:08:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-05-19 15:09:08:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-05-19 15:09:08:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-05-19 15:09:08:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-05-19 15:09:08:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
-0|maria-pa | 2026-05-19 15:09:08:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
-0|maria-pa | 2026-05-19 15:09:08:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
-0|maria-pa | 2026-05-19 15:09:08:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
-0|maria-pa | 2026-05-19 15:09:08:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
-0|maria-pa | 2026-05-19 15:09:08:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
-0|maria-pa | 2026-05-19 15:09:08:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
-0|maria-pa | 2026-05-19 15:25:07: [internal-api/send-wa] getNumberId returned null para 5491999999996@c.us — intento envío igual
-0|maria-pa | 2026-05-19 15:25:07: [internal-api/send-wa] error: Error: No LID for user
-0|maria-pa | 2026-05-19 15:25:07: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:25:07:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
-0|maria-pa | 2026-05-19 15:25:07:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-05-19 15:25:07:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-05-19 15:25:07:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-05-19 15:25:07:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-05-19 15:25:07:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
-0|maria-pa | 2026-05-19 15:25:07:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
-0|maria-pa | 2026-05-19 15:25:07:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
-0|maria-pa | 2026-05-19 15:25:07:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
-0|maria-pa | 2026-05-19 15:25:07:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
-0|maria-pa | 2026-05-19 15:25:07:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
-0|maria-pa | 2026-05-19 15:25:07:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
-0|maria-pa | 2026-05-20 14:02:26: [upsertContacto] descarto whatsapp=@lid para "Esteban Mallea Gil" (no es estable)
-0|maria-pa | 2026-05-20 14:59:03: [executor] acción #0 (crear_evento) falló: conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-20 14:59:03: [WA acciones/Doris Capurro] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-20 17:00:51: [upsertContacto] descarto whatsapp=@lid para "Guillermo Bagnato" (no es estable)
-0|maria-pa | 2026-05-20 17:14:52: [upsertContacto] descarto whatsapp=@lid para "Facundo Martin Diaz" (no es estable)
-0|maria-pa | 2026-05-20 18:21:04: [upsertContacto] descarto whatsapp=@lid para "Dario Fainguersch" (no es estable)
-0|maria-pa | 2026-05-20 19:36:31: [upsertContacto] descarto whatsapp=@lid para "Esteban Mallea Gil" (no es estable)
-0|maria-pa | 2026-05-20 23:03:34: [executor] acción #0 (upsert_contacto) falló: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
-0|maria-pa | 2026-05-20 23:03:34: [WA acciones/Diego] FALLARON: upsert_contacto: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
-0|maria-pa | 2026-05-21 18:19:17: [claude-client] idle timeout 240000ms sin output — SIGKILL (prompt=71978c, stdout=0c)
-0|maria-pa | 2026-05-21 18:20:55: [WA/Diego] Claude falló: Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=71978c, stdout=392c)
+0|maria-pa | 2026-05-21 08:53:10: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-21 08:53:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-21 08:53:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-21 08:53:10: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-21 08:53:10: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-21 08:53:10: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-21 08:53:10: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-21 08:53:10: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-05-21 08:54:08: [memoria-curada] Diego × Dario Fainguersch: nota actualizada (3 eventos nuevos, 2150 chars)
+0|maria-pa | 2026-05-21 08:54:28: [memoria-curada] Diego × Facundo Martin Diaz: nota actualizada (12 eventos nuevos, 1715 chars)
+0|maria-pa | 2026-05-21 08:54:58: [memoria-curada] Diego × Guillermo Bagnato: nota actualizada (10 eventos nuevos, 2738 chars)
+0|maria-pa | 2026-05-21 08:55:21: [memoria-curada] Diego × Pablo Casal: nota actualizada (5 eventos nuevos, 2532 chars)
+0|maria-pa | 2026-05-21 08:55:21: [memoria-curada] tick: 4/172 contactos curados
+0|maria-pa | 2026-05-21 09:00:10: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 09:00:18: [programados] ✓ id=230 (whatsapp/137456250806423@lid) [meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260521T121500Z]
+0|maria-pa | 2026-05-21 09:03:11: [meeting-prep/Diego] + id=232 Sens - Socios @ 2026-05-21T13:45:00.000Z
+0|maria-pa | 2026-05-21 09:03:11: [meeting-prep/Hernan Fulco] + id=233 Seguimiento de Tickets/Ciberseguridad @ 2026-05-21T13:45:00.000Z
+0|maria-pa | 2026-05-21 09:30:10: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 09:30:18: [programados] ✓ id=231 (whatsapp/137456250806423@lid) [meeting_prep:2:mj353rh0ornn2pd0no1jnl2gbu_20260521T124500Z]
+0|maria-pa | 2026-05-21 09:59:22: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
+0|maria-pa | 2026-05-21 09:59:23: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-21 09:59:26: [WA audio→texto] el 9.10 y 11 ya están
+0|maria-pa | 2026-05-21 09:59:36: [WA ←] Diego (5491132317896@c.us) 🎤: el 9.10 y 11 ya están
+0|maria-pa | 2026-05-21 10:00:16: [WA →3ro] Diego/Diego: Listo, las cierro.
+0|maria-pa | 2026-05-21 10:00:16: [WA acciones/Diego] 3/3 ejecutadas
+0|maria-pa | 2026-05-21 10:03:10: [WA ←] Diego (5491132317896@c.us): Pásame la lista
+0|maria-pa | 2026-05-21 10:03:11: [meeting-prep/Diego] + id=234 GN + VR Weekly @ 2026-05-21T14:45:00.000Z
+0|maria-pa | 2026-05-21 10:03:12: [meeting-prep/Doris Capurro] + id=235 manos @ 2026-05-21T14:45:00.000Z
+0|maria-pa | 2026-05-21 10:03:45: [WA →3ro] Diego/Diego: Tus tareas abiertas:
+0|maria-pa | 2026-05-21 10:03:45: 
+0|maria-pa | 2026-05-21 10:03:45: 1. Pedir presupuesto DC Iplan
+0|maria-pa | 2026-05-21 10:03:45: 2. Pedir presupuesto DC Telecentro
+0|maria-pa | 2026-05-21 10:03:45: 3. Pedir presupuesto DC Claro
+0|maria-pa | 2026-05-21 10:03:45: 4. iProt Seguridad
+0|maria-pa | 2026-05-21 10:03:45: 5. Espejo Subaru
+0|maria-pa | 2026-05-21 10:03:45: 6. DDJJ
+0|maria-pa | 2026-05-21 10:09:52: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-21 10:09:56: [WA audio→texto] Aria, ¿tenés el contacto de Santiago Gapurra? ¿Te lo pasé?
+0|maria-pa | 2026-05-21 10:10:06: [WA ←] Diego (5491132317896@c.us) 🎤: Aria, ¿tenés el contacto de Santiago Gapurra? ¿Te lo pasé?
+0|maria-pa | 2026-05-21 10:10:11: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-21 10:10:16: [WA audio→texto] acá justo estoy con él y me dice que si lo tenés lo puedes agregar como usuario
+0|maria-pa | 2026-05-21 10:10:16:  a Santiago Capurro dale la bienvenida explicámele el tema de la agenda y eso
+0|maria-pa | 2026-05-21 10:10:16:  a
+0|maria-pa | 2026-05-21 10:10:35: [WA →3ro] ABORTADO Diego: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-21 10:10:45: [WA ←] Diego (5491132317896@c.us) 🎤: acá justo estoy con él y me dice que si lo tenés lo puedes agregar como usuario
+0|maria-pa | 2026-05-21 10:10:45:  a Santiago Capurro dale la bienvenida explicámele el tema de la agenda y eso
+0|maria-pa | 2026-05-21 10:10:45:  a
+0|maria-pa | 2026-05-21 10:12:26: [WA →usr] Diego (34342575317160@lid): Dale, lo doy de alta y le mando el mensaje de bienvenida ahora.
+0|maria-pa | 2026-05-21 10:12:26: [executor] usuario creado: id=13 nombre=Santiago Capurro (sin calendar_id todavía)
+0|maria-pa | 2026-05-21 10:12:33: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-21 10:12:41: [bienvenida] WA enviado a Santiago Capurro (id=13) → 134076010885285@lid
+0|maria-pa | 2026-05-21 10:16:09: [WA lid-resolve] 149366295818298@lid -> 5491122420656@c.us
+0|maria-pa | 2026-05-21 10:16:19: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=43 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=12, Santiago Bignone=37, Doris Capurro=45, Nicolas Kosinski=60, Walter Vera=9, Cristian Ruiz=9, Sebastian Ameijeira=6, Rubén Ward=8, Enrique Sosa=18, Santiago Capurro=1} remitente=5491122420656@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-21 10:16:35: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es asesor Volvo DITECAR; Maria lo gestiona a pedido de Diego (id=1) para la compra de una EX30 y tasación del Subaru Legacy. Su mensaje 'ahi lo mandé a cotizar' es la respuesta directa a los datos del Subaru que Maria le pasó anoche (22:36) por instrucción de Diego.
+0|maria-pa | 2026-05-21 10:16:55: [WA →3ro] ABORTADO Esteban Mallea Gil: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-21 10:16:55: [unknown-flow/wa] tercero_de_usuario: 5491122420656@c.us (Esteban Mallea Gil) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 10:17:05: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=45 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=12, Santiago Bignone=37, Doris Capurro=45, Nicolas Kosinski=60, Walter Vera=9, Cristian Ruiz=9, Sebastian Ameijeira=6, Rubén Ward=8, Enrique Sosa=18, Santiago Capurro=1} remitente=5491122420656@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-21 10:17:28: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas Volvo DITECAR con quien María gestiona, a pedido de Diego, la compra del EX-30 Plus y la tasación del Subaru Legacy; su mensaje es la respuesta a esa gestión activa.
+0|maria-pa | 2026-05-21 10:17:59: [unknown-flow/wa] tercero_de_usuario: 5491122420656@c.us (Esteban Mallea Gil) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 10:33:11: [meeting-prep/Hernan Fulco] + id=236 Revisión comisiones Emiliano @ 2026-05-21T15:15:00.000Z
+0|maria-pa | 2026-05-21 10:45:10: [programados] 2 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 10:45:18: [programados] ✓ id=232 (whatsapp/34342575317160@lid) [meeting_prep:1:55bcs1badto58db9n0tpoia98r]
+0|maria-pa | 2026-05-21 10:45:25: [programados] ✓ id=233 (whatsapp/137456250806423@lid) [meeting_prep:2:3534njaj7nnorqqra1m7d9016g_20260521T140000Z]
+0|maria-pa | 2026-05-21 11:24:56: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=46 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=12, Santiago Bignone=37, Doris Capurro=45, Nicolas Kosinski=60, Walter Vera=9, Cristian Ruiz=9, Sebastian Ameijeira=6, Rubén Ward=8, Enrique Sosa=18, Santiago Capurro=1} remitente=5491122420656@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-21 11:25:14: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas de Volvo DITECAR con quien Maria está gestionando, a pedido explícito de Diego (id=1), la compra de un Volvo EX30 y la tasación del Subaru Legacy; este mensaje es la respuesta con el valor de tasación (USD 17.000) que continúa directamente esa gestión.
+0|maria-pa | 2026-05-21 11:25:57: [WA →usr] Diego (34342575317160@lid): Esteban de Volvo confirmó USD 17.000 para la toma del Subaru. ¿Querés seguir adelante, negociar o lo dejamos?
+0|maria-pa | 2026-05-21 11:25:58: [WA →3ro] Diego/Esteban Mallea Gil: Perfecto, lo consulto con Diego y te confirmo.
+0|maria-pa | 2026-05-21 11:25:58: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-21 11:25:58: [unknown-flow/wa] tercero_de_usuario: 5491122420656@c.us (Esteban Mallea Gil) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 11:26:59: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=48 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=12, Santiago Bignone=37, Doris Capurro=45, Nicolas Kosinski=60, Walter Vera=9, Cristian Ruiz=9, Sebastian Ameijeira=6, Rubén Ward=8, Enrique Sosa=18, Santiago Capurro=1} remitente=5491122420656@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-21 11:27:15: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de Volvo DITECAR que Maria está gestionando a pedido de Diego (id=1) para la compra del EX30 y tasación del Subaru Legacy; el '👍👍' es su confirmación al mensaje de Maria 'Perfecto, lo consulto con Diego y te confirmo'.
+0|maria-pa | 2026-05-21 11:27:31: [unknown-flow/wa] tercero_de_usuario: 5491122420656@c.us (Esteban Mallea Gil) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 11:27:41: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=50 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=60, Fernando Boero=12, Santiago Bignone=37, Doris Capurro=45, Nicolas Kosinski=60, Walter Vera=9, Cristian Ruiz=9, Sebastian Ameijeira=6, Rubén Ward=8, Enrique Sosa=18, Santiago Capurro=1} remitente=5491122420656@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-21 11:27:59: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Esteban Mallea Gil es el asesor de ventas Volvo DITECAR con quien Maria lleva la negociación del EX30 y tasación del Subaru Legacy a pedido explícito de Diego (usuario 1); el mensaje actual es continuación directa de esa gestión.
+0|maria-pa | 2026-05-21 11:28:55: [WA →3ro] Diego/Esteban Mallea Gil: Entendido, lo tenemos en cuenta.
+0|maria-pa | 2026-05-21 11:28:55: [unknown-flow/wa] tercero_de_usuario: 5491122420656@c.us (Esteban Mallea Gil) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 11:37:14: [WA ←] Diego (5491132317896@c.us): El de honda que me había ofrecido?
+0|maria-pa | 2026-05-21 11:37:41: [claude-client] consulta buscar_en_historial("Honda HR-V tasación Subaru cotización") → 0 resultados
+0|maria-pa | 2026-05-21 11:38:20: [WA →3ro] Diego/Diego: Tengo registrado que Ezequiel en Honda Briones estaba cotizando la HR-V EXL con el Subaru como parte de pago, pero no tengo los números concretos a mano. ¿Queré
+0|maria-pa | 2026-05-21 11:45:10: [programados] 2 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 11:45:18: [programados] ✓ id=234 (whatsapp/34342575317160@lid) [meeting_prep:1:eclncjav5ls9lp0s7tmbrevkhr_20260521T150000Z]
+0|maria-pa | 2026-05-21 11:45:18: [programados] ✓ id=235 (whatsapp/105171031949561@lid) [meeting_prep:6:72kd9fksmcha5rdgus2tnpcqic]
+0|maria-pa | 2026-05-21 12:03:12: [meeting-prep/Doris Capurro] + id=237 Ricardo y Memo @ 2026-05-21T16:45:00.000Z
+0|maria-pa | 2026-05-21 12:15:10: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 12:15:18: [programados] ✓ id=236 (whatsapp/137456250806423@lid) [meeting_prep:2:43s4uced0bum2c64bdfpkt15at]
+0|maria-pa | 2026-05-21 13:45:11: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 13:45:18: [programados] ✓ id=237 (whatsapp/105171031949561@lid) [meeting_prep:6:6ekfqp9ebc8vsamoecfar1rob8]
+0|maria-pa | 2026-05-21 14:03:11: [meeting-prep/Hernan Fulco] + id=238 Reunion Proyectos @ 2026-05-21T18:45:00.000Z
+0|maria-pa | 2026-05-21 14:03:12: [meeting-prep/Doris Capurro] + id=239 alejandro lew @ 2026-05-21T18:45:00.000Z
+0|maria-pa | 2026-05-21 14:18:12: [GMAIL poll] 1 email(s) nuevo(s)
+0|maria-pa | 2026-05-21 14:18:12: [GMAIL ←] Doris Capurro <doris@capurro.com.ar> | "Declined: Ricardo y Memo @ Thu May 21, 2026 2pm - 3pm (GMT-3) (maria.paez.secre@gmail.com)"
+0|maria-pa | 2026-05-21 14:18:12: [meeting-prep/Doris Capurro] + id=240 CHachahuen @ 2026-05-21T17:45:00.000Z
+0|maria-pa | 2026-05-21 14:18:41: [GMAIL/Doris Capurro] 19e4b87d6421dd3d — sin acciones ni respuesta, queda no-leído
+0|maria-pa | 2026-05-21 14:45:11: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 14:45:18: [programados] ✓ id=240 (whatsapp/105171031949561@lid) [meeting_prep:6:jeleushakil08suupq5n0pfdjc]
+0|maria-pa | 2026-05-21 15:03:11: [meeting-prep/Diego] + id=241 Froneus Financiero @ 2026-05-21T19:45:00.000Z
+0|maria-pa | 2026-05-21 15:45:11: [programados] 2 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 15:45:18: [programados] ✓ id=238 (whatsapp/137456250806423@lid) [meeting_prep:2:4vk1dpfftofusp8ih1c3e4mc31]
+0|maria-pa | 2026-05-21 15:45:18: [programados] ✓ id=239 (whatsapp/105171031949561@lid) [meeting_prep:6:6artgmetvjbiq3o52u6efrqj7r]
+0|maria-pa | 2026-05-21 15:54:53: [WA ←] Diego (5491132317896@c.us): esta confirmado el lugar de la reunion de manana con poguetti?
+0|maria-pa | 2026-05-21 15:55:38: [WA →3ro] Diego/Diego: Todavía no, estoy esperando que Analia Frangi me pase la dirección. En cuanto la tenga te aviso y actualizo el evento.
+0|maria-pa | 2026-05-21 15:56:05: [WA ←] Diego (5491132317896@c.us): preguntale pf
+0|maria-pa | 2026-05-21 15:57:03: [WA →3ro] Diego/Diego: Le escribo ahora.
+0|maria-pa | 2026-05-21 15:57:03: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-21 16:01:03: [WA lid-resolve] 103676316278817@lid -> 5491161673400@c.us
+0|maria-pa | 2026-05-21 16:01:13: [unknown-flow/wa] match en contactos: 5491161673400@c.us = "Analia Frangi" de Diego (id=1)
+0|maria-pa | 2026-05-21 16:02:20: [WA →usr] Diego (34342575317160@lid): La reunión con Poguetti mañana no se hace — Analia acaba de confirmar. Me dice que la semana que viene te da una nueva fecha. Ya borro el evento del viernes y l
+0|maria-pa | 2026-05-21 16:02:20: [WA →3ro] Diego/Analia: Entendido, mañana no entonces. Cuando tengas la nueva fecha me avisás y lo coordinamos, ¡gracias Analia!
+0|maria-pa | 2026-05-21 16:02:21: [WA acciones/Diego] 4/4 ejecutadas
+0|maria-pa | 2026-05-21 16:02:21: [unknown-flow/wa] tercero_de_usuario: 5491161673400@c.us (Analia) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 16:06:50: [WA lid-resolve] 175419449995277@lid -> 5491154025172@c.us
+0|maria-pa | 2026-05-21 16:07:00: [unknown-flow/wa] match en contactos: 5491154025172@c.us = "Pablo Casal" de Diego (id=1)
+0|maria-pa | 2026-05-21 16:07:02: 
+0|maria-pa | 2026-05-21 16:07:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-21 16:07:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-21 16:07:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-21 16:07:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-21 16:07:04:   Usuarios:   13 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro
+0|maria-pa | 2026-05-21 16:07:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-21 16:07:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-21 16:07:04: ✓ whisper OK
+0|maria-pa | 2026-05-21 16:07:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-21 16:07:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-21 16:07:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-21 16:07:09: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-21 16:07:09: [WA authenticated]
+0|maria-pa | 2026-05-21 16:07:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-21 16:07:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-21 16:07:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-21 16:07:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-21 16:07:09: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-21 16:07:09: ▸ arrancando bienvenida-loop (cada 30s)
+0|maria-pa | 2026-05-21 16:07:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-21 16:07:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-05-21 16:08:11: [memoria-curada] Diego × Analia Frangi: nota actualizada (4 eventos nuevos, 2446 chars)
+0|maria-pa | 2026-05-21 16:08:11: [memoria-curada] tick: 1/172 contactos curados
+0|maria-pa | 2026-05-21 16:32:10: [meeting-prep/Diego] + id=242 Reunión Diego / Facu / Guillermo @ 2026-05-21T21:15:00.000Z
+0|maria-pa | 2026-05-21 16:37:09: [recordatorios/Diego/respuesta_usuario] ping → 34342575317160@lid (1)
+0|maria-pa | 2026-05-21 16:38:06: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
+0|maria-pa | 2026-05-21 16:38:16: [WA ←] Diego (5491132317896@c.us): no hagas nada, y borralo de tus pendientes
+0|maria-pa | 2026-05-21 16:38:35: [WA →3ro] Diego/Diego: Listo, borrado.
+0|maria-pa | 2026-05-21 16:38:35: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-21 16:45:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 16:45:16: [programados] ✓ id=241 (whatsapp/34342575317160@lid) [meeting_prep:1:jkanbtrlrnog4ebl30kcm4ofid_20260521T200000Z]
+0|maria-pa | 2026-05-21 16:50:15: [WA change_state] OPENING
+0|maria-pa | 2026-05-21 16:50:16: [WA change_state] PAIRING
+0|maria-pa | 2026-05-21 16:50:16: [WA change_state] CONNECTED
+0|maria-pa | 2026-05-21 17:05:43: [WA lid-resolve] 114207659921663@lid -> 5491149353680@c.us
+0|maria-pa | 2026-05-21 17:05:53: [unknown-flow/wa] match en contactos: 5491149353680@c.us = "Guillermo Bagnato" de Diego (id=1)
+0|maria-pa | 2026-05-21 17:06:06: [WA →3ro] Diego/Guillermo Bagnato: ¡Hola Guillermo! ¿En qué te puedo ayudar?
+0|maria-pa | 2026-05-21 17:06:06: [unknown-flow/wa] tercero_de_usuario: 5491149353680@c.us (Guillermo Bagnato) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 17:06:32: [unknown-flow/wa] match en contactos: 5491149353680@c.us = "Guillermo Bagnato" de Diego (id=1)
+0|maria-pa | 2026-05-21 17:09:00: [WA →3ro] Diego/Guillermo Bagnato: Perdoná Guillermo, no debería haber pasado. Revisá la carpeta de spam por favor — la invitación se mandó a G@thequantumalliance.com. Si no la encontrás ahí, avi
+0|maria-pa | 2026-05-21 17:09:00: [unknown-flow/wa] tercero_de_usuario: 5491149353680@c.us (Guillermo Bagnato) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 17:17:05: [unknown-flow/wa] match en contactos: 5491149353680@c.us = "Guillermo Bagnato" de Diego (id=1)
+0|maria-pa | 2026-05-21 17:19:18: [claude-client] consulta buscar_en_historial("Reunión Diego Facu Guillermo meet") → 0 resultados
+0|maria-pa | 2026-05-21 17:19:51: [WA →usr] Diego (34342575317160@lid): Guillermo dice que no le llegó la invitación ni en spam. Me pidió que le mande el link de Meet por WhatsApp. ¿Me pasás el link del Meet de la reunión de hoy con
+0|maria-pa | 2026-05-21 17:19:51: [WA →3ro] Diego/Guillermo Bagnato: Entendido Guillermo, te mando el link de Meet en un momento.
+0|maria-pa | 2026-05-21 17:19:51: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-21 17:19:51: [unknown-flow/wa] tercero_de_usuario: 5491149353680@c.us (Guillermo Bagnato) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-21 17:30:40: [WA change_state] OPENING
+0|maria-pa | 2026-05-21 17:30:40: [WA change_state] PAIRING
+0|maria-pa | 2026-05-21 17:30:40: [WA change_state] CONNECTED
+0|maria-pa | 2026-05-21 17:58:59: [WA change_state] OPENING
+0|maria-pa | 2026-05-21 17:59:00: [WA change_state] PAIRING
+0|maria-pa | 2026-05-21 17:59:00: [WA change_state] CONNECTED
+0|maria-pa | 2026-05-21 18:02:11: [meeting-prep/Doris Capurro] + id=243 cena con el embajador Peter Lamelas @ 2026-05-21T22:45:00.000Z
+0|maria-pa | 2026-05-21 18:09:52: [WA ←] Diego (5491132317896@c.us): esta en la reunion del calendario, no lo podes ver vos?
+0|maria-pa | 2026-05-21 18:11:28: [claude-client] consulta buscar_en_historial("meet.google.com Guillermo Facu Reunión") → 0 resultados
+0|maria-pa | 2026-05-21 18:13:52: [WA →3ro] ABORTADO Diego: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-21 18:14:02: [WA ←] Diego (5491132317896@c.us) [3 msgs agrupados]: ahi me lo pasaste vos
+0|maria-pa | 2026-05-21 18:14:02: pasale esto mismo a guille
+0|maria-pa | 2026-05-21 18:14:02: ahi sale el link
+0|maria-pa | 2026-05-21 18:15:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-21 18:15:09: [programados] ✓ id=242 (whatsapp/34342575317160@lid) [meeting_prep:1:glmdc35dg8cggqkmb0dnat5c8k]
+0|maria-pa | 2026-05-21 18:15:17: [claude-client] consulta buscar_en_historial("meet.google.com Guillermo Facu Reunión") → 0 resultados
+0|maria-pa | 2026-05-21 18:21:05: [WA ←] Diego (5491132317896@c.us) [5 msgs agrupados]: perdon, me equivoque, ese link era de la reu anterior
+0|maria-pa | 2026-05-21 18:21:05: esta no tiene link
+0|maria-pa | 2026-05-21 18:21:05: ahora lo genero yo
+0|maria-pa | 2026-05-21 18:21:05: es este: Reunión Diego / Facu / Guillermo
+0|maria-pa | 2026-05-21 18:21:05: Thursday, May 21 · 18:30 –
+0|maria-pa | 2026-05-21 18:21:42: [WA →3ro] Diego/Diego: Dale, les mando el link a los dos ahora.
+0|maria-pa | 2026-05-21 18:21:56: [WA acciones/Diego] 3/3 ejecutadas
 
