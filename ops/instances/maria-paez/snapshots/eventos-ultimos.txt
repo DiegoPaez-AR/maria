@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                       cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6114  2026-05-21 02:04:49  whatsapp  saliente   5491132317896@c.us                    Mañana a las 17 ya tenés *Froneus Financiero* hasta las 18. ¿Lo agendo igual, lo movemos a otro horario, o le propongo otro slot a Fabio?                                                               
+
+6113  2026-05-21 02:04:49  sistema   interno                                          claude_call whatsapp: 42505ms prompt=72736c raw=407c                                                                                                                                                    
+
+6112  2026-05-21 02:04:06  whatsapp  entrante   5491132317896@c.us                    Mándale a Fabio una reunión tema: Deogueria mañana a las 17                                                                                                                                             
+
 6111  2026-05-21 02:03:34  sistema   interno                                          acción FALLÓ: upsert_contacto — validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la
 
 6110  2026-05-21 02:03:33  whatsapp  saliente   5491132317896@c.us                    Listo, le agrego el email a Fabio.                                                                                                                                                                      
@@ -223,9 +229,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 6016  2026-05-20 19:52:57  sistema   interno                                          acción ejecutada: enviar_wa                                                                                                                                                                             
 
 6015  2026-05-20 19:52:57  whatsapp  saliente   14242831584@c.us                      ¡Buenísimo Facu! Diego termina una reunión a las 6, así que te propongo *jueves 21 a las 6:30 PM*. ¿Te viene bien esa hora? Y ya que vas a estar por Palermo, ¿preferís que nos juntemos en persona o lo
-
-6014  2026-05-20 19:52:56  sistema   interno                                          acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-6013  2026-05-20 19:52:56  sistema   interno                                          claude_call whatsapp: 81841ms prompt=73277c raw=1621c                                                                                                                                                   
-
-6012  2026-05-20 19:51:34  whatsapp  entrante   5491132317896@c.us                    Como prefieran ellos, estoy para las dos cosas                                                                                                                                                          
