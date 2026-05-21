@@ -282,6 +282,43 @@ async function _resolverCusEstable(client, lid, contact) {
   return cus;
 }
 
+// Cuando una o más acciones VISIBLES fallan, Maria redacta ella misma el aviso
+// para el usuario — segundo turno acotado del LLM. El error crudo del executor
+// se le pasa SOLO al modelo (para eso está escrito); jamás va literal al user.
+// Devuelve el texto del aviso, o un fallback genérico y seguro si el turno falla.
+async function _componerAvisoFallas(usuario, textoQueLeDijo, fallasVisibles) {
+  const nombreAsis = process.env.ASISTENTE_NOMBRE || 'su secretaria';
+  const detalle = fallasVisibles.map(r => {
+    const a = r.accion || {};
+    const target = a.a || a.to || a.destino || a.summary || a.id || '';
+    return `- ${a.tipo}${target ? ` (${String(target).slice(0, 80)})` : ''}: ${r.error}`;
+  }).join('\n');
+  const prompt = [
+    `Sos ${nombreAsis}, secretaria personal de ${usuario.nombre}. Hablás en primera persona, como una persona real. NUNCA mencionás "sistema", "acción", "bot" ni nombres técnicos (crear_evento, enviar_wa, forzar, etc.).`,
+    ``,
+    `Hace un momento le dijiste esto a ${usuario.nombre} por WhatsApp:`,
+    `<<<`,
+    String(textoQueLeDijo || '(no le dijiste nada todavía)').slice(0, 1200),
+    `>>>`,
+    ``,
+    `Pero una o más de las cosas que ibas a hacer NO se concretaron. Detalle TÉCNICO — es solo para que entiendas vos qué pasó; NO lo copies literal ni uses su vocabulario:`,
+    detalle,
+    ``,
+    `Redactá un mensaje breve y natural para ${usuario.nombre} avisándole con honestidad qué quedó sin hacer y por qué, en tu voz. Si el detalle indica que se puede reintentar con su confirmación (por ejemplo: un evento que se superpone con otro y se podría agendar igual encima), ofrecele esa opción en lenguaje natural. Si no hay nada que el usuario pueda decidir, simplemente avisale con claridad. Nada de jerga ni nombres técnicos.`,
+    ``,
+    `Respondé SOLO con JSON válido, sin markdown: {"aviso": "el texto del mensaje"}`,
+  ].join('\n');
+  try {
+    const { json } = await invocarClaudeJSON(prompt);
+    const aviso = json && typeof json.aviso === 'string' ? json.aviso.trim() : '';
+    if (aviso) return aviso;
+    console.warn('[WA aviso-fallas] el segundo turno no devolvió un aviso usable');
+  } catch (err) {
+    console.error('[WA aviso-fallas] segundo turno falló:', err.message);
+  }
+  return `Disculpá ${usuario.nombre}, una de las cosas que te dije que iba a hacer no me salió. ¿Me la recordás así la reintento?`;
+}
+
 async function handleMessage(client, msg) {
   if (msg.fromMe) return;
 
@@ -781,10 +818,10 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
         .join(' | ');
       console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ${fallas}`);
 
-      // BUG B FIX: avisar proactivamente al owner si alguna acción CON
-      // efecto externo (envío, programación, evento, email) falló. Las
-      // acciones internas (hechos, pendientes, contactos) no necesitan
-      // aviso porque no tienen efecto que el user esté esperando ver.
+      // Si una acción CON efecto externo (envío, evento, email, programación)
+      // falló, Maria redacta el aviso para el usuario en su propia voz vía un
+      // segundo turno acotado (_componerAvisoFallas). El error crudo del
+      // executor NUNCA va literal al usuario — es vocabulario interno del LLM.
       const ACCIONES_VISIBLES = new Set([
         'enviar_wa', 'reenviar_wa', 'enviar_email', 'responder_email',
         'programar_mensaje', 'cancelar_programado',
@@ -792,12 +829,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
       ]);
       const fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
       if (fallasVisibles.length && destinoUsuario) {
-        const detalle = fallasVisibles.map(r => {
-          const a = r.accion || {};
-          const target = a.a || a.to || a.destino || a.summary || a.id || '';
-          return `• ${a.tipo}${target ? ` → ${String(target).slice(0,80)}` : ''}: ${r.error}`;
-        }).join('\n');
-        const aviso = `⚠️ Heads up: ${fallasVisibles.length === 1 ? 'una acción falló' : `${fallasVisibles.length} acciones fallaron`} mientras te respondía:\n${detalle}`;
+        const aviso = await _componerAvisoFallas(usuario, respUsr, fallasVisibles);
         try {
           await client.sendMessage(destinoUsuario, aviso);
           mem.log({
