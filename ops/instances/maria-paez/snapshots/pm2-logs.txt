@@ -1,4 +1,3 @@
-0|maria-pa | 2026-05-17 16:07:15:     at Module._load (node:internal/modules/cjs/loader:1013:12)
 0|maria-pa | 2026-05-17 16:07:15:     at Module.require (node:internal/modules/cjs/loader:1225:19)
 0|maria-pa | 2026-05-17 16:07:15:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
 0|maria-pa | 2026-05-17 16:07:15:     at require (node:internal/modules/helpers:177:18)
@@ -197,4 +196,5 @@
 0|maria-pa | 2026-05-20 23:03:34: [executor] acción #0 (upsert_contacto) falló: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
 0|maria-pa | 2026-05-20 23:03:34: [WA acciones/Diego] FALLARON: upsert_contacto: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
 0|maria-pa | 2026-05-21 18:19:17: [claude-client] idle timeout 240000ms sin output — SIGKILL (prompt=71978c, stdout=0c)
+0|maria-pa | 2026-05-21 18:20:55: [WA/Diego] Claude falló: Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=71978c, stdout=392c)
 
