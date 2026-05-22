@@ -31,7 +31,6 @@ const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
 const { iniciarCalendarWatch } = require('./calendar-watch');
 const { iniciarFollowUps } = require('./follow-ups');
-const { iniciarBienvenida } = require('./bienvenida-loop');
 const internalApi = require('./internal-api');
 const { iniciarMemoriaCurada } = require('./memoria-curada');
 
@@ -51,7 +50,6 @@ let briefInterval = null;
 let meetingPrepInterval = null;
 let calendarWatchInterval = null;
 let followUpsInterval = null;
-let bienvenidaInterval = null;
 let internalApiServer = null;
 let memoriaCuradaInterval = null;
 let waClient = null;
@@ -127,15 +125,6 @@ async function main() {
       });
 
       console.log(`▸ arrancando memoria-curada (cada ${MEMORIA_CURADA_MS/3600_000}h)`);
-      // bienvenida-loop DESACTIVADO 2026-05-22 (pedido de Diego): mandaba un WA
-      // de bienvenida con "prueba gratuita de 7 días" que duplicaba el saludo
-      // que Maria ya hace ella misma en el onboarding conversacional.
-      // Para reactivar, descomentar — ojo: los usuarios agregados mientras
-      // estuvo apagado tienen bienvenida_enviada=0 y recibirían el WA atrasado.
-      // bienvenidaInterval = iniciarBienvenida({
-      //   waClient: client, intervaloMs: 30_000,
-      // });
-      // console.log('▸ arrancando bienvenida-loop (cada 30s)');
 
       internalApiServer = internalApi.start({ waClient: client });
 
