@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                 
 ----  -------------------  --------  ---------  -------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6358  2026-05-22 22:34:58  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                     
+
+6357  2026-05-22 22:34:58  whatsapp  saliente   5491132317896@c.us   Anotado, cierro el pago a Eugenio.                                                                                                                                     
+
+6356  2026-05-22 22:34:58  sistema   interno                         claude_call whatsapp: 27596ms prompt=71434c raw=303c                                                                                                                   
+
+6355  2026-05-22 22:34:30  whatsapp  entrante   5491132317896@c.us   La 8 ya está                                                                                                                                                           
+
 6354  2026-05-22 22:22:09  whatsapp  saliente   34342575317160@lid   Recordatorio — tenés 8 tareas abiertas 📝                                                                                                                               
                                                                                                                                                                                                                                             
                                                                      1. Pedir presupuesto DC Iplan — 775h                                                                                                                                   
@@ -293,11 +301,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 6260  2026-05-21 21:21:05  whatsapp  entrante   5491132317896@c.us   esta no tiene link                                                                                                                                                     
 
 6259  2026-05-21 21:21:05  whatsapp  entrante   5491132317896@c.us   perdon, me equivoque, ese link era de la reu anterior                                                                                                                  
-
-6258  2026-05-21 21:20:55  sistema   interno                         Claude falló en WA (Diego): Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=71978c, stdout=392c)                                             
-
-6257  2026-05-21 21:20:55  sistema   interno                         claude_call whatsapp: 337641ms prompt=71978c raw=392c ERROR=Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=71978c                           
-
-6256  2026-05-21 21:15:17  sistema   interno                         claude_call whatsapp: 74244ms prompt=71434c raw=487c                                                                                                                   
-
-6255  2026-05-21 21:15:09  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión Diego / Facu / Guillermo (06:30 p. m.)                                                                                                           
