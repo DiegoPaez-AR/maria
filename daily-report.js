@@ -61,6 +61,12 @@ function fmtUptime(ms) {
 
 function pad(s, n) { return String(s).padEnd(n); }
 
+function fmtMs(ms) {
+  if (ms == null) return '?';
+  if (ms >= 1000) return (ms / 1000).toFixed(1) + 's';
+  return ms + 'ms';
+}
+
 // ─── Stats por instancia ──────────────────────────────────────────────────
 
 function statsInstancia(env) {
@@ -74,7 +80,10 @@ function statsInstancia(env) {
                 cal_creados: 0, cal_modificados: 0, cal_borrados: 0 },
     errores: { wa_disconnect: [], claude_fail: 0, fallaron: 0,
                 invalid_grant: 0,
-                deploys: 0, crashes: 0, sigint_timestamps: [] },
+                deploys: 0, crashes: 0, sigint_timestamps: [],
+                wa_reconexiones: 0, anomalias: [] },
+    latencia: null,     // { total, contextos:[{ctx,n,p50,p95,max}], lentas30, lentas60 }
+    programados: null,  // { pendientes, atrasados }
     seguridad: {
       // Cada item: { hhmm, jid, nombre, mensaje, is_owner } cuando aplica.
       security_audit: [],        // [security] o [audit] explícitos
@@ -132,6 +141,14 @@ function statsInstancia(env) {
     const sigints = [];
     const boots = [];
 
+    // ── Detección de anomalías sin clasificar ──
+    // RE_PROBLEMA: línea con pinta de error. RE_CONOCIDO: ya la captura otro
+    // clasificador (no la dupliques). RE_BENIGNO: menciona "error" sin serlo.
+    const anomMap = new Map();
+    const RE_PROBLEMA = /\b(error|exception|unhandled|rejection|ECONNRESET|ECONNREFUSED|ENOTFOUND|ETIMEDOUT|EAI_AGAIN|ENOENT|EACCES|EPIPE|fatal|TypeError|ReferenceError|RangeError|SyntaxError)\b|cannot read|is not a function|is not defined|unhandledRejection/i;
+    const RE_CONOCIDO = /\[WA disconnected\]|Claude falló|FALLARON|invalid_grant|SIGINT recibido|\[security\]|\[audit\]|destinatario.*(denegad|bloqueado|no.permitido|inv[aá]lido)|(bwrap|sandbox).*(fail|violation|error)|rate.?limit|throttle|too many|(tool|herramienta).*(denegad|bloqued|restring)|prompt.*(violation|injection)|jailbreak|\[WA alert\]|\[alerta\]|alert.*owner/i;
+    const RE_BENIGNO = /sin error|0 error|no error|errores?:\s*(0|null|none)|error_code:\s*null/i;
+
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
       const line = ev.raw;
@@ -167,7 +184,22 @@ function statsInstancia(env) {
       if (/(tool|herramienta).*(denegad|bloqued|restring)/i.test(line))                push(stats.seguridad.tool_denegado, true);
       if (/prompt.*(violation|injection)|jailbreak/i.test(line))                       push(stats.seguridad.prompt_violation, true);
       if (/\[WA alert\]|\[alerta\]|alert.*owner/i.test(line))                          push(stats.seguridad.alerta_owner, false);
+
+      // ── Reconexiones WA: cada ciclo arranca con un change_state OPENING ──
+      if (/\[WA change_state\] OPENING/.test(line)) stats.errores.wa_reconexiones++;
+
+      // ── Anomalías: pinta de error que ningún clasificador conocido agarró ──
+      if (RE_PROBLEMA.test(line) && !RE_CONOCIDO.test(line) && !RE_BENIGNO.test(line)) {
+        // Firma: el texto sin timestamps/ids/hex para agrupar repeticiones.
+        const sig = ev.text.replace(/[0-9a-f]{6,}/gi, '·').replace(/\d+/g, '#').trim().slice(0, 160);
+        const prev = anomMap.get(sig);
+        if (prev) { prev.n++; prev.ultimoHhmm = hhmm; }
+        else anomMap.set(sig, { n: 1, sample: ev.text.slice(0, 160), primerHhmm: hhmm, ultimoHhmm: hhmm });
+      }
     }
+
+    // Anomalías ordenadas por frecuencia (más repetidas primero).
+    stats.errores.anomalias = [...anomMap.values()].sort((a, b) => b.n - a.n);
 
     // ── Correlación SIGINT → boot (≤60s) = deploy; sin boot = crash ──
     // Refinamiento: si el SIGINT es muy reciente (últimos 5 min) y pm2 está online,
@@ -240,6 +272,48 @@ function statsInstancia(env) {
         if (/^borrado:/i.test(r.cuerpo))     stats.eventos.cal_borrados++;
       }
 
+      // ── Latencia de claude_call (24h) ──
+      // Los eventos se loguean como canal='sistema' con cuerpo
+      // "claude_call <contexto>: <N>ms ...". GLOB trata el "_" literal.
+      const ccRows = db.prepare(`
+        SELECT cuerpo FROM eventos
+        WHERE canal='sistema' AND cuerpo GLOB 'claude_call*' AND timestamp >= ?
+      `).all(desde);
+      const _porCtx = {};
+      let lentas30 = 0, lentas60 = 0;
+      for (const r of ccRows) {
+        const m = String(r.cuerpo).match(/^claude_call\s+(\S+):\s*(\d+)\s*ms/);
+        if (!m) continue;
+        const ms = parseInt(m[2], 10);
+        (_porCtx[m[1]] || (_porCtx[m[1]] = [])).push(ms);
+        if (ms > 30000) lentas30++;
+        if (ms > 60000) lentas60++;
+      }
+      const _pct = (arr, q) => {
+        if (!arr.length) return 0;
+        const s = [...arr].sort((a, b) => a - b);
+        return s[Math.min(s.length - 1, Math.floor(q * (s.length - 1)))];
+      };
+      const _contextos = Object.keys(_porCtx).map(ctx => {
+        const a = _porCtx[ctx];
+        return { ctx, n: a.length, p50: _pct(a, 0.5), p95: _pct(a, 0.95), max: Math.max(...a) };
+      }).sort((x, y) => y.n - x.n);
+      stats.latencia = {
+        total: _contextos.reduce((s, c) => s + c.n, 0),
+        contextos: _contextos, lentas30, lentas60,
+      };
+
+      // ── Cola de programados (enviado=0; -1 = cancelado, no cuenta) ──
+      // `cuando` se guarda siempre con .toISOString() → comparable lexicográfico
+      // contra otro ISO. "atrasado" = vencido y todavía sin despachar.
+      const _nowIso = new Date().toISOString();
+      const _prog = db.prepare(`
+        SELECT COUNT(*) AS pendientes,
+               COALESCE(SUM(CASE WHEN cuando <= ? THEN 1 ELSE 0 END), 0) AS atrasados
+        FROM programados WHERE enviado = 0
+      `).get(_nowIso);
+      stats.programados = { pendientes: _prog.pendientes || 0, atrasados: _prog.atrasados || 0 };
+
       const usuarios = db.prepare(`SELECT id, nombre, rol FROM usuarios WHERE activo=1 ORDER BY rol DESC, id`).all();
       for (const u of usuarios) {
         const abiertos = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id=? AND estado='abierto'`).get(u.id).n;
@@ -293,6 +367,32 @@ function renderTexto(allStats, fechaStr) {
     if (e.fallaron)             lines.push(`⚠️ Acciones parciales: ${e.fallaron}`);
     if (e.invalid_grant)        lines.push(`⚠️ Google invalid_grant: ${e.invalid_grant}`);
     if (e.crashes > 0)          lines.push(`🔴 Crashes (SIGINT sin recovery): ${e.crashes}`);
+
+    // ── Rendimiento: latencia Claude + cola de programados ──
+    if (s.latencia && s.latencia.total) {
+      lines.push(`Latencia Claude 24h (${s.latencia.total} llamadas):`);
+      for (const c of s.latencia.contextos) {
+        lines.push(`   · ${c.ctx}: p50 ${fmtMs(c.p50)} · p95 ${fmtMs(c.p95)} · máx ${fmtMs(c.max)}  (${c.n})`);
+      }
+      if (s.latencia.lentas30) {
+        lines.push(`   ${s.latencia.lentas60 ? '🔴' : '⚠️'} ${s.latencia.lentas30} llamada(s) >30s · ${s.latencia.lentas60} >60s`);
+      }
+    }
+    if (s.programados) {
+      let pl = `Programados en cola: ${s.programados.pendientes}`;
+      if (s.programados.atrasados) pl += `  🔴 ${s.programados.atrasados} ATRASADOS`;
+      lines.push(pl);
+    }
+    if (e.wa_reconexiones) lines.push(`WA reconexiones (change_state): ${e.wa_reconexiones}`);
+
+    // ── Anomalías sin clasificar ──
+    if (e.anomalias && e.anomalias.length) {
+      lines.push(`⚠️ Anomalías sin clasificar: ${e.anomalias.length}`);
+      for (const a of e.anomalias.slice(0, 5)) {
+        lines.push(`   ×${a.n}  ${a.primerHhmm}  ${a.sample.slice(0, 90)}`);
+      }
+      if (e.anomalias.length > 5) lines.push(`   …+${e.anomalias.length - 5} más`);
+    }
 
     // ── Seguridad (sólo se imprime si hay matches) ──
     const seg = s.seguridad || {};
@@ -352,7 +452,10 @@ function _evaluarSalud(s) {
   if (e.crashes > 0)                         return { color: '#dc2626', label: 'CRASHES' };
   if (e.wa_disconnect.length > 0)            return { color: '#f59e0b', label: 'Atención' };
   if (e.claude_fail > 0 || e.fallaron > 0)   return { color: '#f59e0b', label: 'Atención' };
+  if (s.programados && s.programados.atrasados > 0) return { color: '#f59e0b', label: 'Cola atascada' };
+  if (e.anomalias && e.anomalias.length > 0)        return { color: '#f59e0b', label: 'Atención' };
   // Deploys (incluso muchos) no afectan salud — son operación normal.
+  // La latencia de Claude se informa pero NO mueve el badge (thinking largo conocido).
   return { color: '#10b981', label: 'OK' };
 }
 
@@ -434,9 +537,41 @@ function renderHTML(allStats, fechaStr) {
     if (e.fallaron) erroresHtml.push(`<div style="padding:6px 10px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:3px;margin-bottom:6px;font-size:13px;">⚠️ Acciones parciales: <strong>${e.fallaron}</strong></div>`);
     if (e.invalid_grant) erroresHtml.push(`<div style="padding:6px 10px;background:#fee2e2;border-left:3px solid #dc2626;border-radius:3px;margin-bottom:6px;font-size:13px;color:#991b1b;">🔴 Google invalid_grant ×${e.invalid_grant} — <strong>reauth necesario</strong></div>`);
     if (e.crashes > 0) erroresHtml.push(`<div style="padding:6px 10px;background:#fee2e2;border-left:3px solid #dc2626;border-radius:3px;margin-bottom:6px;font-size:13px;color:#991b1b;">🔴 Crashes <strong>×${e.crashes}</strong> (SIGINT sin reinicio dentro de 60s)</div>`);
+    if (e.anomalias && e.anomalias.length) {
+      for (const a of e.anomalias.slice(0, 6)) {
+        erroresHtml.push(`<div style="padding:6px 10px;background:#fef3c7;border-left:3px solid #f59e0b;border-radius:3px;margin-bottom:6px;font-size:13px;">⚠️ <strong>×${a.n}</strong> <code style="background:#fde68a;padding:1px 4px;border-radius:2px;font-size:11px;">${_esc(a.primerHhmm)}</code> ${_esc(a.sample.slice(0, 120))}${a.sample.length > 120 ? '…' : ''}</div>`);
+      }
+      if (e.anomalias.length > 6) erroresHtml.push(`<div style="font-size:11px;color:#64748b;margin-bottom:6px;">…+${e.anomalias.length - 6} anomalía(s) más sin clasificar</div>`);
+    }
     if (!erroresHtml.length) erroresHtml.push(`<div style="padding:8px 10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:3px;font-size:13px;color:#065f46;">✓ sin errores destacados${e.deploys > 0 ? ` · ${e.deploys} deploy${e.deploys === 1 ? '' : 's'} normal${e.deploys === 1 ? '' : 'es'} en 24h` : ''}</div>`);
     html.push(erroresHtml.join(''));
     html.push(`</td></tr>`);
+
+    // ── Rendimiento: latencia Claude + cola de programados + reconexiones WA ──
+    {
+      const L = s.latencia;
+      const P = s.programados;
+      const filasLat = (L && L.contextos.length)
+        ? L.contextos.map(c => `<tr style="border-top:1px solid #f8fafc;">
+      <td style="padding:6px 0;font-size:13px;">${_esc(c.ctx)} <span style="color:#94a3b8;font-size:11px;">×${c.n}</span></td>
+      <td align="right" style="padding:6px 0;font-size:13px;font-variant-numeric:tabular-nums;color:#64748b;">p50 <strong style="color:#1f2937;">${fmtMs(c.p50)}</strong> · p95 <strong style="color:#1f2937;">${fmtMs(c.p95)}</strong> · máx <strong style="color:${c.max > 60000 ? '#dc2626' : c.max > 30000 ? '#d97706' : '#1f2937'};">${fmtMs(c.max)}</strong></td>
+    </tr>`).join('')
+        : `<tr><td style="padding:6px 0;font-size:13px;color:#94a3b8;">sin llamadas claude_call registradas en 24h</td></tr>`;
+      const slowNote = (L && L.lentas30)
+        ? `<div style="margin-top:8px;padding:5px 10px;background:${L.lentas60 ? '#fee2e2' : '#fef3c7'};border-left:3px solid ${L.lentas60 ? '#dc2626' : '#f59e0b'};border-radius:3px;font-size:12px;">${L.lentas60 ? '🔴' : '⚠️'} ${L.lentas30} llamada${L.lentas30 === 1 ? '' : 's'} &gt;30s · ${L.lentas60} &gt;60s</div>`
+        : '';
+      const progLine = P
+        ? `<div style="margin-top:10px;font-size:13px;color:#1f2937;">Programados en cola: <strong>${P.pendientes}</strong>${P.atrasados ? ` <span style="background:#fee2e2;color:#991b1b;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600;margin-left:4px;">🔴 ${P.atrasados} atrasado${P.atrasados === 1 ? '' : 's'}</span>` : ` <span style="color:#94a3b8;font-size:12px;">· al día</span>`}</div>`
+        : '';
+      const reconLine = e.wa_reconexiones
+        ? `<div style="margin-top:6px;font-size:12px;color:#64748b;">🔄 Reconexiones WA (change_state): <strong style="color:#1f2937;">${e.wa_reconexiones}</strong></div>`
+        : '';
+      html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">Rendimiento — latencia Claude (24h)</div>
+  <table cellpadding="0" cellspacing="0" border="0" width="100%">${filasLat}</table>
+  ${slowNote}${progLine}${reconLine}
+</td></tr>`);
+    }
 
     // ── Seguridad (sólo si hay matches en pm2 logs) ──
     const seg = s.seguridad || {};
