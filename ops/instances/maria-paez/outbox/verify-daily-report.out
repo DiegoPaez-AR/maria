@@ -1,0 +1,65 @@
+# ejecutado: 2026-05-23T00:12:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Verificación post-deploy: corre daily-report.js en DRY_RUN para revisar
+#   # los bloques nuevos (latencia Claude, cola de programados, anomalías)
+#   # SIN mandar el mail. Output queda en outbox/verify-daily-report.out.
+#   cd /root/secretaria || { echo "ERROR: no pude cd /root/secretaria"; exit 1; }
+#   echo "host: $(hostname)  fecha: $(date -Is)"
+#   echo "node: $(node --version)"
+#   echo "==================== DRY_RUN daily-report.js ===================="
+#   DRY_RUN=1 /usr/bin/node daily-report.js 2>&1
+#   RC=$?
+#   echo "==================== exit code: $RC ===================="
+
+# ───── output ─────
+host: ubuntu-4gb-nbg1-2  fecha: 2026-05-23T00:12:01-03:00
+node: v18.19.1
+==================== DRY_RUN daily-report.js ====================
+Stats para maria-paez...
+
+────── PREVIEW (texto) ──────
+📊 Reporte diario VPS Maria — 23/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 2161096 · uptime 1m · 154.5 MB · 1.4% CPU
+Proceso: 5 deploys · 0 crashes (restarts lifetime: 4)
+WhatsApp: 3↓ / 38↑ (0 audios)
+Gmail:    0↓ / 0↑
+Calendar: 0 creados · 0 modificados · 0 borrados
+Latencia Claude 24h (6 llamadas):
+   · whatsapp: p50 27.6s · p95 27.6s · máx 30.6s  (3)
+   · memoria-curada: p50 23.5s · p95 23.5s · máx 26.4s  (3)
+   ⚠️ 1 llamada(s) >30s · 0 >60s
+Programados en cola: 0
+WA reconexiones (change_state): 4
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Nicolas Kosinski: 0 abiertos (+0 -0)
+  Walter Vera: 0 abiertos (+0 -0)
+  Cristian Ruiz: 0 abiertos (+0 -0)
+  Sebastian Ameijeira: 0 abiertos (+0 -0)
+  Rubén Ward: 0 abiertos (+0 -0)
+  Enrique Sosa: 0 abiertos (+0 -0)
+  Santiago Capurro: 0 abiertos (+0 -0)
+  Facundo Diaz: 0 abiertos (+0 -0)
+  Guillermo Bagnato: 0 abiertos (+0 -0)
+  Diego [owner]: 9 abiertos (+1 -1)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 12168 bytes
+
+DRY_RUN=1 — no mando email
+==================== exit code: 0 ====================
+
+# exit=0
