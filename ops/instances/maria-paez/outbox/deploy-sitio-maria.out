@@ -1,0 +1,78 @@
+# ejecutado: 2026-05-24T07:47:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Deploy intensa.io: FAQ de Maria +3 entradas (ejemplos de uso, lenguaje
+#   # natural, horario de soporte 8x5) y se quitó la card "Equipo chico".
+#   set +e
+#   echo "fecha: $(date -Is)"
+#   cd /root/secretaria || { echo "ERROR cd"; exit 1; }
+#   echo "=== HEAD del repo ==="
+#   git log -1 --format='%h %s' | cat
+#   echo
+#   echo "=== deploy.sh ==="
+#   bash ops/sites/intensa.io/deploy.sh 2>&1
+#   RC=$?
+#   echo
+#   echo "=== verificación intensa.io/maria/ (exit deploy.sh=$RC) ==="
+#   curl -sk -H "Host: intensa.io" -o /dev/null -w "  /maria/         HTTPS %{http_code}\n" https://127.0.0.1/maria/
+#   curl -sk -H "Host: intensa.io" -o /dev/null -w "  /maria/script.js HTTPS %{http_code}\n" "https://127.0.0.1/maria/script.js"
+#   HTML=$(curl -sk -H "Host: intensa.io" https://127.0.0.1/maria/)
+#   JS=$(curl -sk -H "Host: intensa.io" "https://127.0.0.1/maria/script.js")
+#   echo "  FAQ nuevo en HTML servido: faq.7.q x$(echo "$HTML" | grep -c 'faq.7.q') · faq.9.q x$(echo "$HTML" | grep -c 'faq.9.q')"
+#   echo "  caso.4 en HTML servido (debe ser 0): $(echo "$HTML" | grep -c 'caso.4')"
+#   echo "  claves nuevas en JS servido: faq.9.a x$(echo "$JS" | grep -c 'faq.9.a')"
+#   echo "  caso.4 en JS servido (debe ser 0): $(echo "$JS" | grep -c 'caso.4')"
+
+# ───── output ─────
+fecha: 2026-05-24T07:47:02-03:00
+=== HEAD del repo ===
+f7928d5072 sitio: FAQ de Maria +3 entradas (ejemplos, lenguaje natural, soporte 8x5); quita card 'Equipo chico'
+
+=== deploy.sh ===
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+  index.html con cache-bust v=20260524-074702
+
+═══ 1b. Sincronizar landings (subdirs de SRC/) ═══
+  → maria
+'/root/secretaria/ops/sites/intensa.io/maria//styles.css' -> '/var/www/intensa.io/maria/styles.css'
+'/root/secretaria/ops/sites/intensa.io/maria//script.js' -> '/var/www/intensa.io/maria/script.js'
+    index.html con cache-bust v=20260524-074702
+    cache-bust v=20260524-074702 en cuenta/index.html
+    cache-bust v=20260524-074702 en signup/index.html
+    cache-bust v=20260524-074702 en terminos/index.html
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/05/24 07:47:02 [warn] 2454761#2454761: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+
+═══ DONE ═══
+
+=== verificación intensa.io/maria/ (exit deploy.sh=0) ===
+  /maria/         HTTPS 200
+  /maria/script.js HTTPS 200
+  FAQ nuevo en HTML servido: faq.7.q x1 · faq.9.q x1
+  caso.4 en HTML servido (debe ser 0): 0
+  claves nuevas en JS servido: faq.9.a x2
+  caso.4 en JS servido (debe ser 0): 0
+
+# exit=0
