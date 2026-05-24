@@ -1,0 +1,164 @@
+# ejecutado: 2026-05-24T07:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Sonda + restart limpio de maria-paez.
+#   # Motivo: 24/05 06:02 ART el proceso re-ejecutó boot() 2 veces
+#   # (2x "Maria arrancó" + 2x EADDRINUSE :4501) sin que pm2 registre restart
+#   # -> riesgo de loops duplicados. Restart para colapsar a un arranque único.
+#   set +e
+#   cd /root/secretaria 2>/dev/null
+#   
+#   echo "########## ANTES ##########"
+#   date -Is
+#   echo
+#   echo "--- pm2 list ---"
+#   pm2 list 2>/dev/null
+#   echo
+#   echo "--- listeners en :4501 ---"
+#   ss -ltnp 2>/dev/null | grep ':4501' || echo "(nada escuchando en 4501)"
+#   echo
+#   LOGS=$(pm2 logs maria-paez --lines 5000 --nostream 2>/dev/null)
+#   echo "--- conteo en pm2 logs (ultimas 5000 lineas) ---"
+#   echo "  'Maria arrancó' x $(echo "$LOGS" | grep -c 'Maria arrancó')"
+#   echo "  'EADDRINUSE'     x $(echo "$LOGS" | grep -c 'EADDRINUSE')"
+#   echo "  'WA ready'       x $(echo "$LOGS" | grep -c 'WA ready')"
+#   echo
+#   echo "--- ultima actividad WA ---"
+#   echo "$LOGS" | grep -E '\[WA (.|ready)' | tail -5
+#   
+#   echo
+#   echo "########## RESTART ##########"
+#   pm2 restart maria-paez 2>&1
+#   echo "restart lanzado — esperando 40s para que reconecte WhatsApp..."
+#   sleep 40
+#   
+#   echo
+#   echo "########## DESPUES ##########"
+#   date -Is
+#   echo
+#   echo "--- pm2 list ---"
+#   pm2 list 2>/dev/null
+#   echo
+#   echo "--- listeners en :4501 (debe haber exactamente 1) ---"
+#   ss -ltnp 2>/dev/null | grep ':4501' || echo "(nada escuchando en 4501)"
+#   echo
+#   echo "--- log del arranque nuevo (ultimas 55 lineas) ---"
+#   pm2 logs maria-paez --lines 55 --nostream 2>/dev/null | tail -55
+#   echo
+#   echo "########## FIN ##########"
+
+# ───── output ─────
+########## ANTES ##########
+2026-05-24T07:12:02-03:00
+
+--- pm2 list ---
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1991296  │ 2D     │ 0    │ online    │ 0%       │ 69.3mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 2161096  │ 31h    │ 4    │ online    │ 0%       │ 179.0mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+--- listeners en :4501 ---
+LISTEN 0      511        127.0.0.1:4501       0.0.0.0:*    users:(("node /root/secr",pid=2161096,fd=32))                                             
+
+--- conteo en pm2 logs (ultimas 5000 lineas) ---
+  'Maria arrancó' x 0
+  'EADDRINUSE'     x 8
+  'WA ready'       x 59
+
+--- ultima actividad WA ---
+0|maria-pa | 2026-05-19 08:27:18: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-19 08:29:34: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-05-20 14:59:03: [WA acciones/Doris Capurro] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
+0|maria-pa | 2026-05-20 23:03:34: [WA acciones/Diego] FALLARON: upsert_contacto: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
+0|maria-pa | 2026-05-23 20:11:08: [WA acciones/Diego] FALLARON: quitar_pendiente: quitar_pendiente: no encontré el pendiente (94)
+
+########## RESTART ##########
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1991296  │ 2D     │ 0    │ online    │ 0%       │ 69.5mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 2448577  │ 0s     │ 5    │ online    │ 0%       │ 11.9mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+restart lanzado — esperando 40s para que reconecte WhatsApp...
+
+########## DESPUES ##########
+2026-05-24T07:12:43-03:00
+
+--- pm2 list ---
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1991296  │ 2D     │ 0    │ online    │ 0%       │ 69.2mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 2448577  │ 40s    │ 5    │ online    │ 0%       │ 146.1mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+--- listeners en :4501 (debe haber exactamente 1) ---
+(nada escuchando en 4501)
+
+--- log del arranque nuevo (ultimas 55 lineas) ---
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-24 06:02:07: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-24 06:02:07: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-24 06:02:07: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-24 06:02:07: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-24 07:01:10: [meeting-prep/Hernan Fulco] + id=272 Lautaro está de Vacaciones @ 2026-05-24T11:45:00.000Z
+0|maria-pa | 2026-05-24 07:01:10: [meeting-prep/Hernan Fulco] + id=273 Cristian está de vacaciones @ 2026-05-24T11:45:00.000Z
+0|maria-pa | 2026-05-24 07:12:03: 
+0|maria-pa | 2026-05-24 07:12:03: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-24 07:12:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-24 07:12:05: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-24 07:12:05:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-24 07:12:05:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
+0|maria-pa | 2026-05-24 07:12:05:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-24 07:12:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-24 07:12:05: ✓ whisper OK
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-24 07:12:08: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:12:09: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▄▄▄▄ █ █ ▄▄ ▀▄▀▀ █▄ ▄█ █▄▄▄ ▄▀ ▄██▀█▄▀▀ ▄  ▀▄ ██ ▄▄▄▄▄ █
+0|maria-pa | 2026-05-24 07:12:09: █ █   █ █ █▄ ▀▀▄█▀▄▄▄▄█▀██▀█▄▀██▀█▀▄▄██▀▄ ▄▀▄▄ ▄ ██ █   █ █
+0|maria-pa | 2026-05-24 07:12:09: █ █▄▄▄█ █▀▀  ▄▀▄▀█ █▀██▄▀   ▄▄▄   ▄█  █ █  ▄▀▀▄▀▄██ █▄▄▄█ █
+0|maria-pa | 2026-05-24 07:12:09: █▄▄▄▄▄▄▄█▄█ █▄█▄▀ ▀ ▀ ▀▄▀▄█ █▄█ ▀▄█▄█ ▀ ▀▄█▄▀▄█ █ █▄▄▄▄▄▄▄█
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▀█ ▄▄▀▀ █▄▄▀  █▄▄▄▀▄█ ▀█ ▄▄  ▄ ▄█▀▄▄▀ █▀ ▀  ▄  █▀▄█▄  ▄█
+0|maria-pa | 2026-05-24 07:12:09: █▄▀▄▀█▄▄ █▀▀▀▄▄ ▄▀▄█▀▀▀█▀█ █ ▀▄▀▀▀ ██▀█▀█ ▄▄ ▀█▀▄███▀▄▄▄█▀█
+0|maria-pa | 2026-05-24 07:12:09: █  █▀  ▄▀█   █▀▀▄▄▀ ▀▀▄▄▄▀▄ ▄▀▀█ ▄ ▄█ █  █  █▄ ▄ ▀█▀▀▀▀ ███
+0|maria-pa | 2026-05-24 07:12:09: ███▀▀█▀▄▄█ ██▀█ ▄▀█▀   ▄ ▀ █ ▀▄▀▀▀  ▄█▄  ▀▄█▀█▀█  ██  ▄█ ██
+0|maria-pa | 2026-05-24 07:12:09: ██ ▄▀█▀▄▀▄▄█▀▄█ ▀█   ▀ █▄▀  ▄ █ ▀ ▄█  █ ▄▀▀▀▀ ▀█▄▀▄▀▄█ ▀█▄█
+0|maria-pa | 2026-05-24 07:12:09: ██▀█▀ █▄▄  ▄ ▀▀█ ▄ █▄▀▄ ▀█ ▄█▀█▄▀▀▀█▀▀▀▄▄▀▀▄▀ █▄█▄▀ ▄▀▄▄▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ▀ ▀ ▄▄▀██  █▄ ▀▀  ▀ ▀▀▀▄█▄ ▀▀▀▄▄ █  ▀▀▄▀▀▀▀ ▀█▄▀█▀▄▀▀▄█▄█
+0|maria-pa | 2026-05-24 07:12:09: ██ ▀▄▀ ▄▀▀██    ▄██▄▄█▄█▄ ▀ ▄█▀▄█▄▄▄▄▀  █▄▄█ ▀ ▄▀▀▀██▄█▄▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ▀▀▀ █▄▀▄▀▄▄▀▄▄▀▄▀▄ ▀ █  ▄ ▄█▀▀▀███▄▄█ ▄█▀▀▀ ▀▄  ▄▀▀██ ▀██
+0|maria-pa | 2026-05-24 07:12:09: █  █▀ ▄▄▄ █▀   ▀▄ ▀  ▀▄ █   ▄▄▄  ▄█▀▄▀▄▄▄█  █▀█ ▄ ▄▄▄  █ ▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ██▀ █▄█ ▀█▄▀█ ▀█▄▀▄▀▀█▀▀▄ █▄█ ▀▄▀▄ ▄█ █▀▀▀▀  ▄▄ █▄█  ▀ ▄█
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▄█▄ ▄  █▄█▄▄▀ ▀██▄█▄ █ ▀▄ ▄ ▄ ▄▄▄█▀▀▄ ▀█▄▄▀  ▀ ▄▄  ██▄██
+0|maria-pa | 2026-05-24 07:12:09: █▀ ▄▀  ▄█  ▀  ▄█▄▄█▄▄▀ ▀▀  ▀▀▄▀ ▀ ▄█ ▄█ ▄█▀▀█▄ █▀ ▀▄▀██▀█▄█
+0|maria-pa | 2026-05-24 07:12:09: ██▀█ █▀▄▄▀▄█▀█▀▄ ▀▀█▀█▄▀█▄▄▀▀▄▄██ ▄▀▀ █▄███▄▄▄ ▀▄▄▄▀▀███▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ █▀▀▀▀▄ ▄ ▄ ██▀▄█▄ ▄▄▄█▄ ▀ ▄█▄  ▄▄█▄ █▀▄█▀ █▄▀▄██▄█▀▄█ ▀▄█
+0|maria-pa | 2026-05-24 07:12:09: █▄█ █ █▄▄█▀ ▀█▀▄▀ ██▀ █ ▀██▄▀ ██▀█▀▀▄▄▄█▀▄▀▄▀ █  ▀ ██▄█▄▄▄█
+0|maria-pa | 2026-05-24 07:12:09: █▀▄ ▄██▄█▀ ▄▄▀ ▄▀█▄▄▀▀▄█▀▀ ▄█▄█▄▄ ▄█  ▄ ▄▀ ▀▀▄▄▄▀▀▀█▀█▀▀▄▄█
+0|maria-pa | 2026-05-24 07:12:09: ███▀▀▄█▄▄█▀  █▄▄▄▀▄█ ▀▀████▀▀▀▀▀█▀▄   █ ▀█▀▄▀▀██▄▄▄█▀███ ██
+0|maria-pa | 2026-05-24 07:12:09: ███ ▄ ▄▄ █▀ ▀ ▄▄▄▄▀ █ ▄▄▀▀▀█▄▄▄ █ ▀▄  ▄▀ ▀▄ █▄▀█▀ ▄  ▄▄▀ ▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ▀ ▀▀▄▄ ▀▀ ▀ ▄ ▀█▄ █▄  ▄▄▀▄▀▀▄▀█ ██▀▀█▄ ▄█▄▄ █▄▀▀ ▀█ █▄▄▀█
+0|maria-pa | 2026-05-24 07:12:09: ███████▄█▀▀▀█▀█▀▄▄ ▄█▀ █▀▀  ▄▄▄ █▄██ ▄█▀ ▀█▀█▄▀██ ▄▄▄ ▄▄ ▄█
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▄▄▄▄ █▀▀█▄▀ ▀▄▀▀▄██ ▄▀ █ █▄█ ███▀██ ▄▀▄▀▄█  ▀▀ █▄█  ▄ ██
+0|maria-pa | 2026-05-24 07:12:09: █ █   █ █▄   ██▀▀▀█▄▀ ▀▀▀▄▀▄ ▄ ▄█▄▀█ ▄█▀▄█▄▀█  ▄▄   ▄ ▀█▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ █▄▄▄█ █▀██▀▀▄█▄█▄ ▄██▄▄ ▀ █ ▄ ████▄██ ▀▄█▄▄▀▄ ▀▀ ▄█ █████
+0|maria-pa | 2026-05-24 07:12:09: █▄▄▄▄▄▄▄█▄██▄█▄▄▄▄▄▄▄▄▄████▄█▄█▄███▄▄▄▄█▄█▄▄█▄███▄█▄█████▄█
+0|maria-pa | 2026-05-24 07:12:09: 
+
+
+########## FIN ##########
+
+# exit=0

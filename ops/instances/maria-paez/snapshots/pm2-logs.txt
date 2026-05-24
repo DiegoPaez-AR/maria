@@ -1,200 +1,200 @@
-0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:03:32: [unhandledRejection] ReferenceError: _lastIncoming is not defined
-0|maria-pa | 2026-05-18 09:03:32:     at _disparar (/root/secretaria/whatsapp-handler.js:445:19)
-0|maria-pa | 2026-05-18 09:03:32:     at Timeout._onTimeout (/root/secretaria/whatsapp-handler.js:431:30)
-0|maria-pa | 2026-05-18 09:03:32:     at listOnTimeout (node:internal/timers:569:17)
-0|maria-pa | 2026-05-18 09:03:32:     at process.processTimers (node:internal/timers:512:7)
-0|maria-pa | 2026-05-18 09:11:51: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
-0|maria-pa | 2026-05-18 09:11:51:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
-0|maria-pa | 2026-05-18 09:11:51:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-0|maria-pa | 2026-05-18 09:11:51:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
-0|maria-pa | 2026-05-18 09:11:51:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
-0|maria-pa | 2026-05-18 09:11:51:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
-0|maria-pa | 2026-05-18 09:12:53: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: providerDet is not defined
-0|maria-pa | 2026-05-18 09:12:53:     at construirPrompt (/root/secretaria/prompt-builder.js:484:24)
-0|maria-pa | 2026-05-18 09:12:53:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-0|maria-pa | 2026-05-18 09:12:53:     at async _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:585:18)
-0|maria-pa | 2026-05-18 09:12:53:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:558:5)
-0|maria-pa | 2026-05-18 09:12:53:     at async _disparar (/root/secretaria/whatsapp-handler.js:453:5)
-0|maria-pa | 2026-05-18 09:26:06: [upsertContacto] descarto whatsapp=@lid para "Sergio Moreno Castro" (no es estable)
-0|maria-pa | 2026-05-18 09:33:06: [claude-client] idle timeout 90000ms sin output — SIGKILL (prompt=65888c, stdout=0c)
-0|maria-pa | 2026-05-18 09:33:19: [WA/Diego] Claude falló: Idle timeout 90000ms invocando claude (sin output por ese tiempo; prompt=65888c, stdout=1094c)
-0|maria-pa | 2026-05-18 11:54:24: [upsertContacto] descarto whatsapp=@lid para "Ezequiel Honda Briones" (no es estable)
-0|maria-pa | 2026-05-18 12:59:52: [upsertContacto] descarto whatsapp=@lid para "Ezequiel Honda Briones" (no es estable)
-0|maria-pa | 2026-05-18 16:17:21: [upsertContacto] descarto whatsapp=@lid para "Ariel Quiroga" (no es estable)
-0|maria-pa | 2026-05-19 01:15:04: [executor] acción #0 (crear_evento) falló: conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 2026-05-29T14:00:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 01:15:04: [WA acciones/Diego] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "Avance Semanal con DP" 2026-05-29T10:30:00-03:00 → 2026-05-29T11:30:00-03:00 | "Almuerzo Andy Alex" 2026-05-29T13:00:00-03:00 → 2026-05-29T14:00:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 01:17:47: [executor] acción #0 (crear_evento) falló: conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 01:17:47: [WA acciones/Diego] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "SND - Presentacion de resultados del mes" 2026-05-27T10:00:00-03:00 → 2026-05-27T12:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-19 08:21:24: [executor] acción #2 (enviar_wa) falló: No pude mandar WA a 5491143092046@c.us: No LID for user
-0|maria-pa | 2026-05-19 08:21:24: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-19 08:21:24: [WA acciones/Diego] FALLARON: enviar_wa: No pude mandar WA a 5491143092046@c.us: No LID for user
-0|maria-pa | 2026-05-19 08:21:24: s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
-0|maria-pa | 2026-05-19 08:25:27: [upsertContacto] descarto whatsapp=@lid para "Diego Teubal" (no es estable)
-0|maria-pa | 2026-05-19 08:25:27: [executor] acción #1 (enviar_wa) falló: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:25:27: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:27:18: [upsertContacto] descarto whatsapp=@lid para "Diego Teubal" (no es estable)
-0|maria-pa | 2026-05-19 08:27:18: [executor] acción #1 (enviar_wa) falló: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:27:18: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:29:34: [upsertContacto] descarto whatsapp=@lid para "Diego Teubal" (no es estable)
-0|maria-pa | 2026-05-19 08:29:34: [executor] acción #1 (enviar_wa) falló: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 08:29:34: [WA acciones/Diego] FALLARON: enviar_wa: enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-05-19 14:08:02: [internal-api/send-wa] error: No LID for user
-0|maria-pa | 2026-05-19 14:08:02: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 14:36:04: [internal-api/send-wa] error: No LID for user
-0|maria-pa | 2026-05-19 14:36:04: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] getNumberId returned null para 5491999999998@c.us — intento envío igual
-0|maria-pa | 2026-05-19 15:06:02: [internal-api/send-wa] error: Error: No LID for user
-0|maria-pa | 2026-05-19 15:06:02: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:06:02:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
-0|maria-pa | 2026-05-19 15:06:02:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-05-19 15:06:02:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-05-19 15:06:02:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-05-19 15:06:02:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-05-19 15:06:02:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
-0|maria-pa | 2026-05-19 15:06:02:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
-0|maria-pa | 2026-05-19 15:06:02:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
-0|maria-pa | 2026-05-19 15:06:02:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
-0|maria-pa | 2026-05-19 15:06:02:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
-0|maria-pa | 2026-05-19 15:06:02:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
-0|maria-pa | 2026-05-19 15:06:02:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
-0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] getNumberId returned null para 5491999999997@c.us — intento envío igual
-0|maria-pa | 2026-05-19 15:09:08: [internal-api/send-wa] error: Error: No LID for user
-0|maria-pa | 2026-05-19 15:09:08: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:09:08:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
-0|maria-pa | 2026-05-19 15:09:08:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-05-19 15:09:08:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-05-19 15:09:08:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-05-19 15:09:08:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-05-19 15:09:08:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
-0|maria-pa | 2026-05-19 15:09:08:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
-0|maria-pa | 2026-05-19 15:09:08:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
-0|maria-pa | 2026-05-19 15:09:08:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
-0|maria-pa | 2026-05-19 15:09:08:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
-0|maria-pa | 2026-05-19 15:09:08:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
-0|maria-pa | 2026-05-19 15:09:08:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
-0|maria-pa | 2026-05-19 15:25:07: [internal-api/send-wa] getNumberId returned null para 5491999999996@c.us — intento envío igual
-0|maria-pa | 2026-05-19 15:25:07: [internal-api/send-wa] error: Error: No LID for user
-0|maria-pa | 2026-05-19 15:25:07: s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:79:180)
-0|maria-pa | 2026-05-19 15:25:07:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:391:56)
-0|maria-pa | 2026-05-19 15:25:07:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-05-19 15:25:07:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-05-19 15:25:07:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-05-19 15:25:07:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-05-19 15:25:07:     at async Client.sendMessage (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1533:25)
-0|maria-pa | 2026-05-19 15:25:07:     at async Server.<anonymous> (/root/secretaria/internal-api.js:65:11)
-0|maria-pa | 2026-05-19 15:25:07:     at i (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:348)
-0|maria-pa | 2026-05-19 15:25:07:     at l (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:108:124)
-0|maria-pa | 2026-05-19 15:25:07:     at <anonymous> (https://static.whatsapp.net/rsrc.php/v4i-ns4/yY/l/es_LA-j/utLDpdk5Y9G.js:701:1844)
-0|maria-pa | 2026-05-19 15:25:07:     at h (https://static.whatsapp.net/rsrc.php/v4imZH4/yN/l/es_LA-j/hD6GqK3rmshWl_HC4ZDPfub-MxVu95W2fPA1BdOjBgL_YzPZyqbijq5dy3XPb_GmPtP57rj2pOsUA8KxaBxOcyGslBpH1XPJkRwuq9FkDpMJeoA9hBnz9XaVOURa40AERo6gSeYxP9GMTMdY6UvnLkdBOZB_y7lp8jdArvIvEYCGzVLkNy6xs7ScrJqo8sigf-A6rNkaRqK96DSxEBy_TXTq1rWqb9M0SjTZJVUvVkbn_TAOXeQbCijhx3jFf7CPV9CIArPTz_ZBD9Me3-nxNGX-VsWd9AahCoULWngV7muqwDQMF4ASTe72tSm5fxu.js:1414:1489)
-0|maria-pa | 2026-05-19 15:25:07:     at s (https://static.whatsapp.net/rsrc.php/v4/yh/r/K-0MOPqlrJ9.js:78:179)
-0|maria-pa | 2026-05-20 14:02:26: [upsertContacto] descarto whatsapp=@lid para "Esteban Mallea Gil" (no es estable)
-0|maria-pa | 2026-05-20 14:59:03: [executor] acción #0 (crear_evento) falló: conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-20 14:59:03: [WA acciones/Doris Capurro] FALLARON: crear_evento: conflicto con evento(s) ya agendado(s): "Romi - Vacaciones" 2026-05-18T00:00:00-03:00 → 2026-05-22T23:30:00-03:00. Si el usuario confirma pisar, reemití con "forzar": true.
-0|maria-pa | 2026-05-20 17:00:51: [upsertContacto] descarto whatsapp=@lid para "Guillermo Bagnato" (no es estable)
-0|maria-pa | 2026-05-20 17:14:52: [upsertContacto] descarto whatsapp=@lid para "Facundo Martin Diaz" (no es estable)
-0|maria-pa | 2026-05-20 18:21:04: [upsertContacto] descarto whatsapp=@lid para "Dario Fainguersch" (no es estable)
-0|maria-pa | 2026-05-20 19:36:31: [upsertContacto] descarto whatsapp=@lid para "Esteban Mallea Gil" (no es estable)
-0|maria-pa | 2026-05-20 23:03:34: [executor] acción #0 (upsert_contacto) falló: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
-0|maria-pa | 2026-05-20 23:03:34: [WA acciones/Diego] FALLARON: upsert_contacto: validar_wa: el número "5491152189302" no aparece en WhatsApp (probé también 541152189302). IMPORTANTE: pedile al owner que te envíe la TARJETA DE CONTACTO (vCard) de la persona — eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat ("+54 9 11 1234-5678") puede no funcionar si esa persona no está en cache de WhatsApp todavía. Si insiste, verificá el código de país: Argentina=+54 (con o sin "9" móvil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, España=+34, México=+52, EEUU=+1.
-0|maria-pa | 2026-05-21 18:19:17: [claude-client] idle timeout 240000ms sin output — SIGKILL (prompt=71978c, stdout=0c)
-0|maria-pa | 2026-05-21 18:20:55: [WA/Diego] Claude falló: Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=71978c, stdout=392c)
-0|maria-pa | 2026-05-23 20:11:08: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (94)
-0|maria-pa | 2026-05-23 20:11:08: [WA acciones/Diego] FALLARON: quitar_pendiente: quitar_pendiente: no encontré el pendiente (94)
-0|maria-pa | 2026-05-24 06:02:07: Error: listen EADDRINUSE: address already in use 127.0.0.1:4501
-0|maria-pa | 2026-05-24 06:02:07:     at Server.setupListenHandle [as _listen2] (node:net:1811:16)
-0|maria-pa | 2026-05-24 06:02:07:     at listenInCluster (node:net:1859:12)
-0|maria-pa | 2026-05-24 06:02:07:     at doListen (node:net:2008:7)
-0|maria-pa | 2026-05-24 06:02:07:     at process.processTicksAndRejections (node:internal/process/task_queues:83:21) {
-0|maria-pa | 2026-05-24 06:02:07:   code: 'EADDRINUSE',
-0|maria-pa | 2026-05-24 06:02:07:   errno: -98,
-0|maria-pa | 2026-05-24 06:02:07:   syscall: 'listen',
-0|maria-pa | 2026-05-24 06:02:07:   address: '127.0.0.1',
-0|maria-pa | 2026-05-24 06:02:07:   port: 4501
-0|maria-pa | 2026-05-24 06:02:07: }
-0|maria-pa | 2026-05-24 06:02:07: [uncaughtException] Error: listen EADDRINUSE: address already in use 127.0.0.1:4501
-0|maria-pa | 2026-05-24 06:02:07:     at Server.setupListenHandle [as _listen2] (node:net:1811:16)
-0|maria-pa | 2026-05-24 06:02:07:     at listenInCluster (node:net:1859:12)
-0|maria-pa | 2026-05-24 06:02:07:     at doListen (node:net:2008:7)
-0|maria-pa | 2026-05-24 06:02:07:     at process.processTicksAndRejections (node:internal/process/task_queues:83:21) {
-0|maria-pa | 2026-05-24 06:02:07:   code: 'EADDRINUSE',
-0|maria-pa | 2026-05-24 06:02:07:   errno: -98,
-0|maria-pa | 2026-05-24 06:02:07:   syscall: 'listen',
-0|maria-pa | 2026-05-24 06:02:07:   address: '127.0.0.1',
-0|maria-pa | 2026-05-24 06:02:07:   port: 4501
-0|maria-pa | 2026-05-24 06:02:07: }
-0|maria-pa | 2026-05-24 06:02:07: Error: listen EADDRINUSE: address already in use 127.0.0.1:4501
-0|maria-pa | 2026-05-24 06:02:07:     at Server.setupListenHandle [as _listen2] (node:net:1811:16)
-0|maria-pa | 2026-05-24 06:02:07:     at listenInCluster (node:net:1859:12)
-0|maria-pa | 2026-05-24 06:02:07:     at doListen (node:net:2008:7)
-0|maria-pa | 2026-05-24 06:02:07:     at processTicksAndRejections (node:internal/process/task_queues:83:21)
-0|maria-pa | 2026-05-24 06:02:07:     at runNextTicks (node:internal/process/task_queues:64:3)
-0|maria-pa | 2026-05-24 06:02:07:     at process.processImmediate (node:internal/timers:447:9) {
-0|maria-pa | 2026-05-24 06:02:07:   code: 'EADDRINUSE',
-0|maria-pa | 2026-05-24 06:02:07:   errno: -98,
-0|maria-pa | 2026-05-24 06:02:07:   syscall: 'listen',
-0|maria-pa | 2026-05-24 06:02:07:   address: '127.0.0.1',
-0|maria-pa | 2026-05-24 06:02:07:   port: 4501
-0|maria-pa | 2026-05-24 06:02:07: }
-0|maria-pa | 2026-05-24 06:02:07: [uncaughtException] Error: listen EADDRINUSE: address already in use 127.0.0.1:4501
-0|maria-pa | 2026-05-24 06:02:07:     at Server.setupListenHandle [as _listen2] (node:net:1811:16)
-0|maria-pa | 2026-05-24 06:02:07:     at listenInCluster (node:net:1859:12)
-0|maria-pa | 2026-05-24 06:02:07:     at doListen (node:net:2008:7)
-0|maria-pa | 2026-05-24 06:02:07:     at processTicksAndRejections (node:internal/process/task_queues:83:21)
-0|maria-pa | 2026-05-24 06:02:07:     at runNextTicks (node:internal/process/task_queues:64:3)
-0|maria-pa | 2026-05-24 06:02:07:     at process.processImmediate (node:internal/timers:447:9) {
-0|maria-pa | 2026-05-24 06:02:07:   code: 'EADDRINUSE',
-0|maria-pa | 2026-05-24 06:02:07:   errno: -98,
-0|maria-pa | 2026-05-24 06:02:07:   syscall: 'listen',
-0|maria-pa | 2026-05-24 06:02:07:   address: '127.0.0.1',
-0|maria-pa | 2026-05-24 06:02:07:   port: 4501
-0|maria-pa | 2026-05-24 06:02:07: }
-0|maria-pa | 2026-05-24 07:03:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:03:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:03:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:04:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:04:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:04:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:05:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:05:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:05:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:06:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:06:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:06:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:06:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:06:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:06:10: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:07:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:07:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:07:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:07:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:07:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:07:10: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:08:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:08:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:08:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:08:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:08:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:08:10: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:08: [morning-brief/Fernando Boero] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:08: [morning-brief/Fernando Boero] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:10: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:09:11: [morning-brief/Fernando Boero] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:08: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:08: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:08: [morning-brief/Fernando Boero] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:09: [morning-brief/Fernando Boero] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:10: [morning-brief/Hernan Fulco] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:10: [morning-brief/Natali Funez] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
-0|maria-pa | 2026-05-24 07:10:11: [morning-brief/Fernando Boero] enviar falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+0|maria-pa | 2026-05-23 00:11:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-23 00:11:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-23 00:11:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-23 00:11:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-23 00:11:09: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-23 00:11:09: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-23 00:11:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-23 00:11:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-05-23 04:00:09: [morning-brief/Diego] ✓ enviado a 34342575317160@lid
+0|maria-pa | 2026-05-23 07:00:09: [morning-brief/Hernan Fulco] ✓ enviado a 137456250806423@lid
+0|maria-pa | 2026-05-23 07:00:10: [morning-brief/Natali Funez] ✓ enviado a 232637088149596@lid
+0|maria-pa | 2026-05-23 07:00:10: [morning-brief/Fernando Boero] ✓ enviado a 5491166903856@c.us
+0|maria-pa | 2026-05-23 07:00:11: [morning-brief/Doris Capurro] ✓ enviado a 105171031949561@lid
+0|maria-pa | 2026-05-23 07:00:11: [morning-brief/Nicolas Kosinski] ✓ enviado a 227143674011812@lid
+0|maria-pa | 2026-05-23 07:00:11: [morning-brief/Walter Vera] ✓ enviado a 5491138433288@c.us
+0|maria-pa | 2026-05-23 07:00:12: [morning-brief/Cristian Ruiz] ✓ enviado a 5491126406612@c.us
+0|maria-pa | 2026-05-23 07:00:12: [morning-brief/Sebastian Ameijeira] ✓ enviado a 5491163004389@c.us
+0|maria-pa | 2026-05-23 07:00:12: [morning-brief/Rubén Ward] ✓ enviado a 5491154024727@c.us
+0|maria-pa | 2026-05-23 07:00:13: [morning-brief/Enrique Sosa] ✓ enviado a 59899643028@c.us
+0|maria-pa | 2026-05-23 07:00:13: [morning-brief/Santiago Capurro] ✓ enviado a 134076010885285@lid
+0|maria-pa | 2026-05-23 07:00:13: [morning-brief/Facundo Diaz] ✓ enviado a 76429043695623@lid
+0|maria-pa | 2026-05-23 07:00:14: [morning-brief/Guillermo Bagnato] ✓ enviado a 114207659921663@lid
+0|maria-pa | 2026-05-23 07:01:09: [meeting-prep/Hernan Fulco] + id=263 Lautaro está de Vacaciones @ 2026-05-23T11:45:00.000Z
+0|maria-pa | 2026-05-23 07:01:09: [meeting-prep/Hernan Fulco] + id=264 Cristian está de vacaciones @ 2026-05-23T11:45:00.000Z
+0|maria-pa | 2026-05-23 07:01:10: [meeting-prep/Doris Capurro] + id=265 leandro @ 2026-05-23T11:45:00.000Z
+0|maria-pa | 2026-05-23 08:45:09: [programados] 3 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-23 08:45:09: [programados] ✓ id=263 (whatsapp/137456250806423@lid) [meeting_prep:2:333qr3igt5su72km6pjvsp321i_20260523T120000Z]
+0|maria-pa | 2026-05-23 08:45:09: [programados] ✓ id=264 (whatsapp/137456250806423@lid) [meeting_prep:2:4dmnrichpnc2rjd9njlkfecsc4_20260523T120000Z]
+0|maria-pa | 2026-05-23 08:45:09: [programados] ✓ id=265 (whatsapp/105171031949561@lid) [meeting_prep:6:5vskisuojufiournrqsrcid8qt]
+0|maria-pa | 2026-05-23 10:31:09: [meeting-prep/Hernan Fulco] + id=266 Mito caballito - gris. 10k @ 2026-05-23T15:15:00.000Z
+0|maria-pa | 2026-05-23 10:50:56: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
+0|maria-pa | 2026-05-23 10:50:57: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-23 10:51:00: [WA audio→texto] ¿Tienes el teléfono de Fabio Bosscheto?
+0|maria-pa | 2026-05-23 10:51:10: [WA ←] Diego (5491132317896@c.us) 🎤: ¿Tienes el teléfono de Fabio Bosscheto?
+0|maria-pa | 2026-05-23 10:51:47: [WA →3ro] Diego/Diego: Sí, lo tengo. Fabio Boschetto: +54 9 11 5218-9302 (WA) | fabio.boschetto@vrainz.com
+0|maria-pa | 2026-05-23 10:52:57: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-23 10:53:01: [WA audio→texto] mandale un mensaje el lunes a las 8 y media de la mañana preguntándoles si
+0|maria-pa | 2026-05-23 10:53:01:  pero medic tiene cuenta en dólares en el banco
+0|maria-pa | 2026-05-23 10:53:11: [WA ←] Diego (5491132317896@c.us) 🎤: mandale un mensaje el lunes a las 8 y media de la mañana preguntándoles si
+0|maria-pa | 2026-05-23 10:53:11:  pero medic tiene cuenta en dólares en el banco
+0|maria-pa | 2026-05-23 10:53:15: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-23 10:53:18: [WA audio→texto] Perdón, el lúneo, el martes ocho y media.
+0|maria-pa | 2026-05-23 10:53:53: [WA →3ro] ABORTADO Diego: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-23 10:53:53: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-23 10:54:03: [WA ←] Diego (5491132317896@c.us) 🎤: Perdón, el lúneo, el martes ocho y media.
+0|maria-pa | 2026-05-23 10:54:38: [WA →3ro] Diego/Diego: Corregido, te lo mando el *martes 26/05* a las 8:30.
+0|maria-pa | 2026-05-23 10:54:38: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 11:33:12: [WA lid-resolve] 232185965629610@lid -> 5491167859758@c.us
+0|maria-pa | 2026-05-23 11:33:23: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=20 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=54, Fernando Boero=13, Santiago Bignone=37, Doris Capurro=58, Nicolas Kosinski=60, Walter Vera=11, Cristian Ruiz=11, Sebastian Ameijeira=8, Rubén Ward=10, Enrique Sosa=20, Santiago Capurro=3, Facundo Diaz=3, Guillermo Bagnato=3} remitente=5491167859758@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-23 11:33:37: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Es Ezequiel de Honda Briones, vendedor que cotizó la HR-V EXL con el Subaru de Diego como parte de pago; la gestión es de Diego (id=1) y fue coordinada por Maria entre el 18/05 y el 21/05.
+0|maria-pa | 2026-05-23 11:34:06: [WA →usr] Diego (34342575317160@lid): Te escribió Eze de Honda Briones preguntando si evaluaste la propuesta de la HR-V EXL. ¿Qué le cuento? ¿Siguen en carrera o ya cerraste con otro?
+0|maria-pa | 2026-05-23 11:34:06: [WA →3ro] Diego/eze: Hola Ezequiel! Estoy bien, gracias. Lo consulto con Diego y te confirmo enseguida.
+0|maria-pa | 2026-05-23 11:34:06: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-23 11:34:06: [unknown-flow/wa] tercero_de_usuario: 5491167859758@c.us (eze) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 11:35:34: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=22 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=54, Fernando Boero=13, Santiago Bignone=37, Doris Capurro=58, Nicolas Kosinski=60, Walter Vera=11, Cristian Ruiz=11, Sebastian Ameijeira=8, Rubén Ward=10, Enrique Sosa=20, Santiago Capurro=3, Facundo Diaz=3, Guillermo Bagnato=3} remitente=5491167859758@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-23 11:35:58: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ezequiel de Honda Briones lleva interactuando con Maria desde el 18/05 en el marco de una cotización de HR-V EXL y tasación del Subaru de Diego (id=1); Maria lo gestiona por pedido de Diego y acaba de notificarle a Diego sobre esta misma consulta en su historial.
+0|maria-pa | 2026-05-23 11:36:15: [unknown-flow/wa] tercero_de_usuario: 5491167859758@c.us (eze) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 11:46:10: [meeting-prep/Hernan Fulco] + id=269 Mito devoto negro 16,8mm @ 2026-05-23T16:30:00.000Z
+0|maria-pa | 2026-05-23 12:15:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-23 12:15:09: [programados] ✓ id=266 (whatsapp/137456250806423@lid) [meeting_prep:2:_6t14cea560qj4ba58ko4cb9k61248b9o61146ba574r3ghho61330d9k64]
+0|maria-pa | 2026-05-23 13:01:10: [meeting-prep/Hernan Fulco] + id=270 Mito Zárate rojo 12,7usd @ 2026-05-23T17:45:00.000Z
+0|maria-pa | 2026-05-23 13:01:25: [WA ←] Diego (5491132317896@c.us): Decile que no cerré con nadie y que puse mi auto en venta. Que cuando lo venda lo llamo
+0|maria-pa | 2026-05-23 13:01:44: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 13:22:33: [WA] transcribiendo audio…
+0|maria-pa | 2026-05-23 13:22:47: [WA audio→texto] como estas maría, todavía, en disculpe, me metan repondo recién ahora.
+0|maria-pa | 2026-05-23 13:22:47:  Dale, dale, es perfecto, que me llame, no tengo problema.
+0|maria-pa | 2026-05-23 13:22:47:  Ni bien venda al Subaru que m
+0|maria-pa | 2026-05-23 13:22:58: [unknown-flow/whatsapp] LLM pre-pass inputs: hist_wa=24 hist_mail=0 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=54, Fernando Boero=13, Santiago Bignone=37, Doris Capurro=58, Nicolas Kosinski=60, Walter Vera=11, Cristian Ruiz=11, Sebastian Ameijeira=8, Rubén Ward=10, Enrique Sosa=20, Santiago Capurro=3, Facundo Diaz=3, Guillermo Bagnato=3} remitente=5491167859758@c.us contactos_ambiguos=0
+0|maria-pa | 2026-05-23 13:23:14: [unknown-flow/whatsapp] LLM resolucion: tercero_de_usuario usuario_id=1 · Ezequiel de Honda Briones — tercero en gestión activa de Diego (owner): la negociación por la HR-V EXL y tasación del Subaru Legacy viene siendo manejada por Maria a pedido de Diego desde el 18/05, con intercambios directos en el bucket de Diego y en el historial con este remitente.
+0|maria-pa | 2026-05-23 13:23:35: [WA →3ro] Diego/eze: Perfecto, Ezequiel! Le paso a Diego que cuando venda el Subaru te llama y le pasás un número de contado. Buen finde!
+0|maria-pa | 2026-05-23 13:23:35: [unknown-flow/wa] tercero_de_usuario: 5491167859758@c.us (eze) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 13:30:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-23 13:30:09: [programados] ✓ id=269 (whatsapp/137456250806423@lid) [meeting_prep:2:_6csjcdpl6coj6b9h8gr34b9k60o48ba184qk8b9j74p48h2288o42ha38o]
+0|maria-pa | 2026-05-23 14:01:10: [meeting-prep/Hernan Fulco] + id=271 Sote - Tigre. Gris. 9,5usd @ 2026-05-23T18:45:00.000Z
+0|maria-pa | 2026-05-23 14:45:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-23 14:45:09: [programados] ✓ id=270 (whatsapp/137456250806423@lid) [meeting_prep:2:_64o3adq6752j8b9h75132b9k60s3iba28cpk6b9j60p3cdpl8p0j8e9n8c]
+0|maria-pa | 2026-05-23 15:45:09: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-05-23 15:45:09: [programados] ✓ id=271 (whatsapp/137456250806423@lid) [meeting_prep:2:_6h1k2d9g6os34ba16gq4cb9k85344ba18h23iba488o3ah1h850k6di560]
+0|maria-pa | 2026-05-23 19:41:09: [recordatorios/Diego/manual] ping → 34342575317160@lid (8)
+0|maria-pa | 2026-05-23 20:04:02: 📒 [WA vcard/Diego] Trocca → 5491124821381@c.us (privado)
+0|maria-pa | 2026-05-23 20:04:38: [WA ←] Diego (5491132317896@c.us): Me podrás reservar para mañana a las 21 para 2 personas
+0|maria-pa | 2026-05-23 20:05:47: [WA →3ro] Diego/Diego: Ya les escribo ahora mismo para reservar mañana *domingo 24/05* a las 21 para 2. Te aviso cuando confirmen.
+0|maria-pa | 2026-05-23 20:05:47: [WA lid-resolve] 271146285056015@lid -> 5491124821381@c.us
+0|maria-pa | 2026-05-23 20:05:47: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:06:00: [unknown-flow/wa] match en contactos: 5491124821381@c.us = "Trocca" de Diego (id=1)
+0|maria-pa | 2026-05-23 20:06:38: [WA →usr] Diego (34342575317160@lid): Diego, me llegó el auto-reply de Trocca y tiene info importante: los *domingos abren de 12:30 a 16:00*, no a las 21. Así que mañana a las 21 no van a poder. ¿Lo
+0|maria-pa | 2026-05-23 20:06:38: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:06:38: [unknown-flow/wa] tercero_de_usuario: 5491124821381@c.us (Trocca) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 20:08:02: [WA ←] Diego (5491132317896@c.us): Pregúntale por las dudas ya que el lunes es feriado y capaz mañana abren a la noche
+0|maria-pa | 2026-05-23 20:08:05: [unknown-flow/wa] match en contactos: 5491124821381@c.us = "Trocca" de Diego (id=1)
+0|maria-pa | 2026-05-23 20:08:44: [WA →3ro] ABORTADO Diego: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-23 20:08:44: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-23 20:08:52: [WA →usr] ABORTADO Diego (34342575317160@lid): llegó msg nuevo durante procesamiento — el próximo lote responde
+0|maria-pa | 2026-05-23 20:08:52: [WA →3ro] ABORTADO Trocca: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-23 20:08:52: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:08:52: [unknown-flow/wa] tercero_de_usuario: 5491124821381@c.us (Trocca) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 20:08:54: [WA ←] Diego (5491132317896@c.us): Sino, reserva al mediodía a las 13
+0|maria-pa | 2026-05-23 20:09:02: [unknown-flow/wa] match en contactos: 5491124821381@c.us = "Trocca" de Diego (id=1)
+0|maria-pa | 2026-05-23 20:09:36: [WA →3ro] Diego/Trocca: Perfecto, entendido! Entonces, ¿podrían reservar para mañana *domingo 24/05 a las 13 hs* para *2 personas* a nombre de Diego Páez? Muchas gracias!
+0|maria-pa | 2026-05-23 20:09:36: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:09:36: [unknown-flow/wa] tercero_de_usuario: 5491124821381@c.us (Trocca) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 20:11:08: [WA →usr] Diego (34342575317160@lid): Perfecto. Si Trocca dice que no tienen cena el domingo, te reservo el mediodía a las 13. Estoy esperando que me confirmen.
+0|maria-pa | 2026-05-23 20:11:08: [WA acciones/Diego] 1/2 ejecutadas
+0|maria-pa | 2026-05-23 20:11:15: [unknown-flow/wa] match en contactos: 5491124821381@c.us = "Trocca" de Diego (id=1)
+0|maria-pa | 2026-05-23 20:12:30: [WA →usr] Diego (34342575317160@lid): Diego, Trocca confirmó que el domingo solo abren al mediodía (sin cena). El tema es que para reservar me mandan a hacerlo por su web (trocca.meitre.com) — no lo
+0|maria-pa | 2026-05-23 20:12:30: [WA →3ro] Diego/Trocca: Perfecto, muchas gracias!
+0|maria-pa | 2026-05-23 20:12:30: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:12:30: [unknown-flow/wa] tercero_de_usuario: 5491124821381@c.us (Trocca) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 20:13:41: [unknown-flow/wa] match en contactos: 5491124821381@c.us = "Trocca" de Diego (id=1)
+0|maria-pa | 2026-05-23 20:13:50: [WA ←] Diego (5491132317896@c.us): Intenta y avísame
+0|maria-pa | 2026-05-23 20:14:00: [unknown-flow/wa] tercero_de_usuario: 5491124821381@c.us (Trocca) → contexto de Diego (id=1)
+0|maria-pa | 2026-05-23 20:15:49: [WA →3ro] Diego/Diego: Diego, intenté entrar a la web de Trocca pero su sistema de reservas corre todo en JavaScript — no puedo operarlo desde mi lado sin un navegador real. Vas a ten
+0|maria-pa | 2026-05-23 20:34:10: [WA ←] Diego (5491132317896@c.us): Ok, gracias
+0|maria-pa | 2026-05-24 00:11:31: [memoria-curada] Diego × Trocca: nota actualizada (9 eventos nuevos, 1579 chars)
+0|maria-pa | 2026-05-24 00:11:31: [memoria-curada] tick: 1/173 contactos curados
+0|maria-pa | 2026-05-24 04:00:10: [morning-brief/Diego] ✓ enviado a 34342575317160@lid
+0|maria-pa | 2026-05-24 06:02:07: [WA authenticated]
+0|maria-pa | 2026-05-24 06:02:07: [WA authenticated]
+0|maria-pa | 2026-05-24 06:02:07: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-24 06:02:07: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-24 06:02:07: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-24 06:02:07: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-24 06:02:07: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-24 06:02:07: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-24 06:02:07: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-24 06:02:07: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-24 06:02:07: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-24 06:02:07: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-24 06:02:07: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-24 06:02:07: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-24 06:02:07: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-24 07:01:10: [meeting-prep/Hernan Fulco] + id=272 Lautaro está de Vacaciones @ 2026-05-24T11:45:00.000Z
+0|maria-pa | 2026-05-24 07:01:10: [meeting-prep/Hernan Fulco] + id=273 Cristian está de vacaciones @ 2026-05-24T11:45:00.000Z
+0|maria-pa | 2026-05-24 07:12:03: 
+0|maria-pa | 2026-05-24 07:12:03: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-24 07:12:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-24 07:12:05: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-24 07:12:05:   Owner:      Diego (id=1)
+0|maria-pa | 2026-05-24 07:12:05:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
+0|maria-pa | 2026-05-24 07:12:05:   Gmail poll: cada 300s
+0|maria-pa | 2026-05-24 07:12:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-05-24 07:12:05: ✓ whisper OK
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-24 07:12:08: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:12:09: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▄▄▄▄ █ █ ▄▄ ▀▄▀▀ █▄ ▄█ █▄▄▄ ▄▀ ▄██▀█▄▀▀ ▄  ▀▄ ██ ▄▄▄▄▄ █
+0|maria-pa | 2026-05-24 07:12:09: █ █   █ █ █▄ ▀▀▄█▀▄▄▄▄█▀██▀█▄▀██▀█▀▄▄██▀▄ ▄▀▄▄ ▄ ██ █   █ █
+0|maria-pa | 2026-05-24 07:12:09: █ █▄▄▄█ █▀▀  ▄▀▄▀█ █▀██▄▀   ▄▄▄   ▄█  █ █  ▄▀▀▄▀▄██ █▄▄▄█ █
+0|maria-pa | 2026-05-24 07:12:09: █▄▄▄▄▄▄▄█▄█ █▄█▄▀ ▀ ▀ ▀▄▀▄█ █▄█ ▀▄█▄█ ▀ ▀▄█▄▀▄█ █ █▄▄▄▄▄▄▄█
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▀█ ▄▄▀▀ █▄▄▀  █▄▄▄▀▄█ ▀█ ▄▄  ▄ ▄█▀▄▄▀ █▀ ▀  ▄  █▀▄█▄  ▄█
+0|maria-pa | 2026-05-24 07:12:09: █▄▀▄▀█▄▄ █▀▀▀▄▄ ▄▀▄█▀▀▀█▀█ █ ▀▄▀▀▀ ██▀█▀█ ▄▄ ▀█▀▄███▀▄▄▄█▀█
+0|maria-pa | 2026-05-24 07:12:09: █  █▀  ▄▀█   █▀▀▄▄▀ ▀▀▄▄▄▀▄ ▄▀▀█ ▄ ▄█ █  █  █▄ ▄ ▀█▀▀▀▀ ███
+0|maria-pa | 2026-05-24 07:12:09: ███▀▀█▀▄▄█ ██▀█ ▄▀█▀   ▄ ▀ █ ▀▄▀▀▀  ▄█▄  ▀▄█▀█▀█  ██  ▄█ ██
+0|maria-pa | 2026-05-24 07:12:09: ██ ▄▀█▀▄▀▄▄█▀▄█ ▀█   ▀ █▄▀  ▄ █ ▀ ▄█  █ ▄▀▀▀▀ ▀█▄▀▄▀▄█ ▀█▄█
+0|maria-pa | 2026-05-24 07:12:09: ██▀█▀ █▄▄  ▄ ▀▀█ ▄ █▄▀▄ ▀█ ▄█▀█▄▀▀▀█▀▀▀▄▄▀▀▄▀ █▄█▄▀ ▄▀▄▄▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ▀ ▀ ▄▄▀██  █▄ ▀▀  ▀ ▀▀▀▄█▄ ▀▀▀▄▄ █  ▀▀▄▀▀▀▀ ▀█▄▀█▀▄▀▀▄█▄█
+0|maria-pa | 2026-05-24 07:12:09: ██ ▀▄▀ ▄▀▀██    ▄██▄▄█▄█▄ ▀ ▄█▀▄█▄▄▄▄▀  █▄▄█ ▀ ▄▀▀▀██▄█▄▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ▀▀▀ █▄▀▄▀▄▄▀▄▄▀▄▀▄ ▀ █  ▄ ▄█▀▀▀███▄▄█ ▄█▀▀▀ ▀▄  ▄▀▀██ ▀██
+0|maria-pa | 2026-05-24 07:12:09: █  █▀ ▄▄▄ █▀   ▀▄ ▀  ▀▄ █   ▄▄▄  ▄█▀▄▀▄▄▄█  █▀█ ▄ ▄▄▄  █ ▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ██▀ █▄█ ▀█▄▀█ ▀█▄▀▄▀▀█▀▀▄ █▄█ ▀▄▀▄ ▄█ █▀▀▀▀  ▄▄ █▄█  ▀ ▄█
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▄█▄ ▄  █▄█▄▄▀ ▀██▄█▄ █ ▀▄ ▄ ▄ ▄▄▄█▀▀▄ ▀█▄▄▀  ▀ ▄▄  ██▄██
+0|maria-pa | 2026-05-24 07:12:09: █▀ ▄▀  ▄█  ▀  ▄█▄▄█▄▄▀ ▀▀  ▀▀▄▀ ▀ ▄█ ▄█ ▄█▀▀█▄ █▀ ▀▄▀██▀█▄█
+0|maria-pa | 2026-05-24 07:12:09: ██▀█ █▀▄▄▀▄█▀█▀▄ ▀▀█▀█▄▀█▄▄▀▀▄▄██ ▄▀▀ █▄███▄▄▄ ▀▄▄▄▀▀███▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ █▀▀▀▀▄ ▄ ▄ ██▀▄█▄ ▄▄▄█▄ ▀ ▄█▄  ▄▄█▄ █▀▄█▀ █▄▀▄██▄█▀▄█ ▀▄█
+0|maria-pa | 2026-05-24 07:12:09: █▄█ █ █▄▄█▀ ▀█▀▄▀ ██▀ █ ▀██▄▀ ██▀█▀▀▄▄▄█▀▄▀▄▀ █  ▀ ██▄█▄▄▄█
+0|maria-pa | 2026-05-24 07:12:09: █▀▄ ▄██▄█▀ ▄▄▀ ▄▀█▄▄▀▀▄█▀▀ ▄█▄█▄▄ ▄█  ▄ ▄▀ ▀▀▄▄▄▀▀▀█▀█▀▀▄▄█
+0|maria-pa | 2026-05-24 07:12:09: ███▀▀▄█▄▄█▀  █▄▄▄▀▄█ ▀▀████▀▀▀▀▀█▀▄   █ ▀█▀▄▀▀██▄▄▄█▀███ ██
+0|maria-pa | 2026-05-24 07:12:09: ███ ▄ ▄▄ █▀ ▀ ▄▄▄▄▀ █ ▄▄▀▀▀█▄▄▄ █ ▀▄  ▄▀ ▀▄ █▄▀█▀ ▄  ▄▄▀ ▀█
+0|maria-pa | 2026-05-24 07:12:09: █ ▀ ▀▀▄▄ ▀▀ ▀ ▄ ▀█▄ █▄  ▄▄▀▄▀▀▄▀█ ██▀▀█▄ ▄█▄▄ █▄▀▀ ▀█ █▄▄▀█
+0|maria-pa | 2026-05-24 07:12:09: ███████▄█▀▀▀█▀█▀▄▄ ▄█▀ █▀▀  ▄▄▄ █▄██ ▄█▀ ▀█▀█▄▀██ ▄▄▄ ▄▄ ▄█
+0|maria-pa | 2026-05-24 07:12:09: █ ▄▄▄▄▄ █▀▀█▄▀ ▀▄▀▀▄██ ▄▀ █ █▄█ ███▀██ ▄▀▄▀▄█  ▀▀ █▄█  ▄ ██
+0|maria-pa | 2026-05-24 07:12:09: █ █   █ █▄   ██▀▀▀█▄▀ ▀▀▀▄▀▄ ▄ ▄█▄▀█ ▄█▀▄█▄▀█  ▄▄   ▄ ▀█▀▀█
+0|maria-pa | 2026-05-24 07:12:09: █ █▄▄▄█ █▀██▀▀▄█▄█▄ ▄██▄▄ ▀ █ ▄ ████▄██ ▀▄█▄▄▀▄ ▀▀ ▄█ █████
+0|maria-pa | 2026-05-24 07:12:09: █▄▄▄▄▄▄▄█▄██▄█▄▄▄▄▄▄▄▄▄████▄█▄█▄███▄▄▄▄█▄█▄▄█▄███▄█▄█████▄█
+0|maria-pa | 2026-05-24 07:12:09: 
 
