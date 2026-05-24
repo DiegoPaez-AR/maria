@@ -1,0 +1,113 @@
+# ejecutado: 2026-05-24T07:16:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Tras el restart, maria-paez quedó pidiendo QR. Chequeo: estado del proceso,
+#   # si está estable en QR o crash-looping, y si la sesión WA sigue en disco.
+#   set +e
+#   cd /root/secretaria 2>/dev/null
+#   echo "fecha: $(date -Is)"
+#   echo
+#   echo "--- pm2 list ---"
+#   pm2 list 2>/dev/null
+#   echo
+#   echo "--- ultimas lineas relevantes de WA ---"
+#   pm2 logs maria-paez --lines 600 --nostream 2>/dev/null \
+#     | grep -E '\[WA |authenticated|ready|\[WA qr\]|loading|internal-api|SIGINT|iniciando|EADDRINUSE|disconnect' \
+#     | grep -v '[▄█▀]' | tail -30
+#   echo
+#   echo "--- :4501 ---"
+#   ss -ltnp 2>/dev/null | grep ':4501' || echo "(nada en 4501 — WA no llegó a ready)"
+#   echo
+#   SD=/root/secretaria/state/maria-paez/.wwebjs_auth/session
+#   echo "--- session dir: $SD ---"
+#   if [ -d "$SD" ]; then
+#     du -sh "$SD" 2>/dev/null
+#     echo "contenido Default/:"
+#     ls -la "$SD/Default" 2>/dev/null | head -30
+#   else
+#     echo "(NO existe el directorio de sesión)"
+#   fi
+
+# ───── output ─────
+fecha: 2026-05-24T07:16:01-03:00
+
+--- pm2 list ---
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1991296  │ 2D     │ 0    │ online    │ 0%       │ 69.4mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 2448577  │ 3m     │ 5    │ online    │ 0%       │ 153.4mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+--- ultimas lineas relevantes de WA ---
+0|maria-pa | 2026-05-23 20:08:52: [WA →3ro] ABORTADO Trocca: llegó msg nuevo durante procesamiento
+0|maria-pa | 2026-05-23 20:08:52: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:08:54: [WA ←] Diego (5491132317896@c.us): Sino, reserva al mediodía a las 13
+0|maria-pa | 2026-05-23 20:09:36: [WA →3ro] Diego/Trocca: Perfecto, entendido! Entonces, ¿podrían reservar para mañana *domingo 24/05 a las 13 hs* para *2 personas* a nombre de Diego Páez? Muchas gracias!
+0|maria-pa | 2026-05-23 20:09:36: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:11:08: [WA →usr] Diego (34342575317160@lid): Perfecto. Si Trocca dice que no tienen cena el domingo, te reservo el mediodía a las 13. Estoy esperando que me confirmen.
+0|maria-pa | 2026-05-23 20:11:08: [WA acciones/Diego] 1/2 ejecutadas
+0|maria-pa | 2026-05-23 20:12:30: [WA →usr] Diego (34342575317160@lid): Diego, Trocca confirmó que el domingo solo abren al mediodía (sin cena). El tema es que para reservar me mandan a hacerlo por su web (trocca.meitre.com) — no lo
+0|maria-pa | 2026-05-23 20:12:30: [WA →3ro] Diego/Trocca: Perfecto, muchas gracias!
+0|maria-pa | 2026-05-23 20:12:30: [WA acciones/Diego] 2/2 ejecutadas
+0|maria-pa | 2026-05-23 20:13:50: [WA ←] Diego (5491132317896@c.us): Intenta y avísame
+0|maria-pa | 2026-05-23 20:15:49: [WA →3ro] Diego/Diego: Diego, intenté entrar a la web de Trocca pero su sistema de reservas corre todo en JavaScript — no puedo operarlo desde mi lado sin un navegador real. Vas a ten
+0|maria-pa | 2026-05-23 20:34:10: [WA ←] Diego (5491132317896@c.us): Ok, gracias
+0|maria-pa | 2026-05-24 06:02:07: [WA authenticated]
+0|maria-pa | 2026-05-24 06:02:07: [WA authenticated]
+0|maria-pa | 2026-05-24 06:02:07: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-24 06:02:07: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-24 07:12:03: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-24 07:12:05: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-05-24 07:12:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-24 07:12:08: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:13:08: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:13:28: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:13:29: [WA alert] email enviado a diego@paez.is (motivo: sesión EXPIRADA — 3 QRs en 120s. Restartear NO sirve, hace falta scan manual del QR. Corré: pm2 logs maria-paez --lines 60 y escaneá desde WhatsApp → Dispositivos vinculados.)
+0|maria-pa | 2026-05-24 07:13:48: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:14:08: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:14:28: [WA qr] escaneá este QR:
+0|maria-pa | 2026-05-24 07:15:39: [WA qr] escaneá este QR:
+
+--- :4501 ---
+(nada en 4501 — WA no llegó a ready)
+
+--- session dir: /root/secretaria/state/maria-paez/.wwebjs_auth/session ---
+669M	/root/secretaria/state/maria-paez/.wwebjs_auth/session
+contenido Default/:
+total 5132
+drwx------+ 35 root root    4096 May 24 07:14 .
+drwxr-xr-x+ 31 root root    4096 May 24 07:13 ..
+-rw-------+  1 root root   77824 May  8 04:19 Account Web Data
+-rw-------+  1 root root       0 May  8 04:19 Account Web Data-journal
+-rw-------+  1 root root   53248 May  8 04:19 Affiliation Database
+-rw-------+  1 root root       0 May  8 04:19 Affiliation Database-journal
+drwx------+  2 root root    4096 May 24 07:12 AutofillAiModelCache
+drwx------+  2 root root    4096 May 24 07:12 AutofillStrikeDatabase
+drwx------+  3 root root    4096 May 24 07:12 blob_storage
+-rw-------   1 root root       4 May 24 07:12 BookmarkMergedSurfaceOrdering
+drwx------+  2 root root    4096 May 24 07:12 BudgetDatabase
+drwx------+  4 root root    4096 May  8 04:19 Cache
+drwx------+  2 root root    4096 May 24 07:12 chrome_cart_db
+drwx------+  2 root root    4096 May 24 07:12 ClientCertificates
+drwx------+  4 root root    4096 May  8 04:19 Code Cache
+drwx------+  2 root root    4096 May 24 07:12 commerce_subscription_db
+-rw-------+  1 root root   20480 May 24 07:13 Cookies
+-rw-------+  1 root root       0 May 24 07:13 Cookies-journal
+drwx------+  2 root root    4096 May  8 04:19 DawnGraphiteCache
+drwx------+  2 root root    4096 May  8 04:19 DawnWebGPUCache
+-rw-------+  1 root root   36864 May 20 16:33 DIPS
+-rw-------+  1 root root 4124152 May 24 07:15 DIPS-wal
+drwx------+  2 root root    4096 May 24 07:12 discount_infos_db
+drwx------+  2 root root    4096 May 24 07:12 discounts_db
+drwx------+  2 root root    4096 May  8 04:19 Extension Rules
+drwx------+  2 root root    4096 May  8 04:19 Extension Scripts
+drwx------+  2 root root    4096 May 24 07:12 Extension State
+-rw-------+  1 root root   28672 May 24 07:12 Favicons
+-rw-------+  1 root root       0 May 24 07:12 Favicons-journal
+
+# exit=0
