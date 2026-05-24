@@ -258,6 +258,11 @@ section.reveal.visible { opacity: 1; transform: translateY(0); }
 }
 .faq[open] summary::after { transform: rotate(45deg); }
 .faq p { margin-top: 12px; color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
+.faq ul.faq-list { margin: 12px 0 0; padding-left: 20px; }
+.faq ul.faq-list li { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; margin-bottom: 8px; }
+.faq ul.faq-list li:last-child { margin-bottom: 0; }
+.faq ul.faq-list li strong { color: var(--text); font-weight: 600; }
+.faq p a, .faq ul.faq-list li a { color: var(--primary); }
 
 /* ─── Final CTA ────────────────────────────────── */
 .final-cta {
