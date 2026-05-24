@@ -178,10 +178,22 @@ function crearClienteWA({ onReady } = {}) {
     // Dejamos que pm2 levante el proceso — auto-recuperación.
     setTimeout(() => process.exit(1), 500);
   });
+  // whatsapp-web.js re-emite 'ready' en cada reconexión / recarga del
+  // contexto de la página de WA Web, no solo en el boot inicial. onReady
+  // arranca TODOS los loops + internal-api.listen(), así que correrlo de
+  // nuevo duplica loops (doble dispatch de programados, doble poll de
+  // Gmail...) y revienta con EADDRINUSE en :4501. Guarda de idempotencia:
+  // onReady corre una sola vez por proceso.
+  let _onReadyYaCorrio = false;
   client.on('ready', () => {
     console.log('✅ [WA ready] Maria conectada');
     clearTimeout(_readyTimeout);
     clearTimeout(_suicideTimeout);
+    if (_onReadyYaCorrio) {
+      console.log('[WA ready] re-emitido (reconexión) — loops ya activos, no re-inicializo');
+      return;
+    }
+    _onReadyYaCorrio = true;
     if (typeof onReady === 'function') onReady(client);
   });
 
