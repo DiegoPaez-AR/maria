@@ -28,6 +28,21 @@
 // - sin client (e.g. ejecutado desde gmail-handler sin sesión WA): error
 //   explícito — no permitimos guardar wa sin verificar.
 
+// Dado un wid `<digitos>@lid`, intenta conseguir el `<digitos>@c.us` del mismo
+// contacto via Contact.id._serialized. WA Web mantiene este mapping cuando el
+// contacto está en cache. Si no se puede, devuelve null y el caller decide.
+async function _lidAcUs(lid, client) {
+  if (!client) return null;
+  try {
+    const c = await client.getContactById(lid);
+    const ser = c && c.id && c.id._serialized;
+    if (ser && /@c\.us$/.test(ser)) return ser;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 async function normalizarWaCus(input, client) {
   if (input == null) return null;
   if (typeof input !== 'string') {
@@ -36,9 +51,13 @@ async function normalizarWaCus(input, client) {
   const trimmed = input.trim();
   if (!trimmed) return null;
 
-  // Si ya es un @lid bien formado, asumir válido — el runtime lo capturó
-  // del msg.from cuando el usuario escribió desde un dispositivo vinculado.
-  if (/^\d+@lid$/.test(trimmed)) return trimmed;
+  // Si ya es un @lid bien formado, intentar resolver a @c.us (más estable).
+  // Si no se puede, devolver el @lid igual — el runtime ya lo capturó del
+  // msg.from cuando el usuario escribió desde un dispositivo vinculado.
+  if (/^\d+@lid$/.test(trimmed)) {
+    const cus = await _lidAcUs(trimmed, client);
+    return cus || trimmed;
+  }
 
   if (!client) {
     throw new Error(
@@ -79,6 +98,19 @@ async function normalizarWaCus(input, client) {
     } catch (err) {
       lastErr = err;
     }
+  }
+
+  // Si el lookup devolvió un @lid, intentar resolver a @c.us. Es más estable
+  // y el sanitizer downstream en memory.upsertContacto descarta @lid.
+  if (wid && wid._serialized && /@lid$/.test(wid._serialized)) {
+    const cus = await _lidAcUs(wid._serialized, client);
+    if (cus) {
+      return cus;
+    }
+    throw new Error(
+      `validar_wa: ${digitos} resuelve al LID ${wid._serialized} y no se pudo obtener el c.us correspondiente. ` +
+      `Posible WA Business o cuenta legacy sin mapping estable. Pedile al owner que envíe la vCard del contacto.`
+    );
   }
 
   if (!wid || !wid._serialized) {
