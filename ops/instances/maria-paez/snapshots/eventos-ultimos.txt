@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                               cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  --------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7103  2026-05-26 18:40:07  sistema   interno                                                  acción ejecutada: enviar_wa                                                                                                                                                                             
+
+7102  2026-05-26 18:40:07  whatsapp  saliente   134076010885285@lid                           Santi, ya le escribí a Pablo para coordinar el almuerzo de mañana. En cuanto me confirme te aviso.                                                                                                      
+
+7101  2026-05-26 18:40:07  whatsapp  saliente   134076010885285@lid                           Santi, ya le escribí a Pablo para coordinar el almuerzo de mañana. En cuanto me confirme te aviso.                                                                                                      
+
+7100  2026-05-26 18:40:07  sistema   interno                                                  acción ejecutada: enviar_wa                                                                                                                                                                             
+
+7099  2026-05-26 18:40:07  whatsapp  saliente   5491152570020@c.us                            Hola Pablo, soy Maria Paez, secretaria de Santi Capurro. Santi quería juntarse a almorzar con vos mañana miércoles 27/05. ¿Tenés disponibilidad y algún horario que te quede mejor?                     
+
+7098  2026-05-26 18:40:06  whatsapp  saliente   5491132317896@c.us                            Lo retomo ahora.                                                                                                                                                                                        
+
+7097  2026-05-26 18:40:06  sistema   interno                                                  claude_call whatsapp: 73039ms prompt=71996c raw=739c                                                                                                                                                    
+
 7096  2026-05-26 18:38:53  whatsapp  entrante   5491132317896@c.us                            retomá lo de Santi                                                                                                                                                                                      
 
 7095  2026-05-26 18:36:01  sistema   interno                                                  claude_call memoria-curada: 22070ms prompt=4088c raw=2297c                                                                                                                                              
@@ -206,17 +220,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 7004  2026-05-26 14:29:09  gmail     entrante   Santiago Capurro <santiago@capurro.com.ar>    Santiago Capurro ha compartido un calendario\n\nSantiago Capurro                                                                                                                                        
                                                                                               <santiago@capurro.com.ar> te ha invitado a puede cambiar y gestionar el uso                                                                                                                             
                                                                                               compartido en el calendario "Santiago Capurro".\n\nAc                                                                                                                                                   
-
-7003  2026-05-26 14:28:38  whatsapp  entrante   5491132317896@c.us                            https://calendar.google.com/calendar/u/0/r/eventedit/M2F1MDAzY2JvOHRmdXEwcDg1NnB0Ym1wcXMgZGllZ29AcGFlei5pcw                                                                                             
-
-7002  2026-05-26 14:26:16  whatsapp  saliente   5491132317896@c.us                            Tenés razón, sí tengo acceso. Lo que pasa es que la vista de agenda que cargo tiene una ventana de 7 días (hasta el 2/06), y el 8 de junio queda fuera. Cuando busco el evento por nombre tampoco lo enc
-
-7001  2026-05-26 14:26:16  sistema   interno                                                  claude_call whatsapp: 48920ms prompt=74865c raw=872c                                                                                                                                                    
-
-7000  2026-05-26 14:26:12  sistema   interno                                                  acción FALLÓ: set_calendar_acceso — Faltan campos requeridos: usuarioId                                                                                                                                 
-
-6999  2026-05-26 14:26:12  whatsapp  saliente   5491166010010@c.us                            ¡Perfecto Santi! Lo verifico de mi lado y te confirmo.                                                                                                                                                  
-
-6998  2026-05-26 14:26:12  sistema   interno                                                  claude_call whatsapp: 57069ms prompt=76211c raw=635c                                                                                                                                                    
-
-6997  2026-05-26 14:25:27  sistema   interno                                                  claude_call whatsapp: 39804ms prompt=74336c raw=502c                                                                                                                                                    
