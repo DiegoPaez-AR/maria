@@ -1359,6 +1359,9 @@ const qProgramadoPorRazonDesde = db.prepare(`
 `);
 const updProgramadoEnviado   = db.prepare(`UPDATE programados SET enviado = 1 WHERE id = ?`);
 const updProgramadoCancelado = db.prepare(`UPDATE programados SET enviado = -1 WHERE id = ?`);
+const updProgramadoPausado   = db.prepare(`UPDATE programados SET enviado = -2 WHERE id = ?`);
+const updProgramadoMetadata  = db.prepare(`UPDATE programados SET metadata_json = ? WHERE id = ?`);
+const qProgramadoPorId       = db.prepare(`SELECT * FROM programados WHERE id = ?`);
 
 function programarMensaje({ usuarioId, cuando, canal, destino, asunto = null, texto, razon = null, metadata = null }) {
   if (!usuarioId) throw new Error('programarMensaje: usuarioId requerido');
@@ -1390,6 +1393,24 @@ function existeProgramadoFuturo(razon, desde = new Date()) {
 }
 function marcarProgramadoEnviado(id) { updProgramadoEnviado.run(id); }
 function cancelarProgramado(id)      { updProgramadoCancelado.run(id); }
+function pausarProgramado(id)        { updProgramadoPausado.run(id); }
+
+// Mergea `patch` con el metadata_json actual del programado y persiste.
+// Devuelve el nuevo metadata como objeto. Si el id no existe, tira.
+function actualizarMetadataProgramado(id, patch) {
+  const row = qProgramadoPorId.get(id);
+  if (!row) throw new Error(`actualizarMetadataProgramado: id=${id} no existe`);
+  let cur = {};
+  try { cur = row.metadata_json ? JSON.parse(row.metadata_json) : {}; } catch { cur = {}; }
+  const merged = { ...cur, ...patch };
+  updProgramadoMetadata.run(JSON.stringify(merged), id);
+  return merged;
+}
+
+function obtenerProgramado(id) {
+  const r = qProgramadoPorId.get(id);
+  return r ? hidratar(r) : null;
+}
 
 // ─── Hechos ──────────────────────────────────────────────────────────────
 
@@ -1505,6 +1526,9 @@ module.exports = {
   proximosProgramados,
   existeProgramadoFuturo,
   marcarProgramadoEnviado,
+  pausarProgramado,
+  actualizarMetadataProgramado,
+  obtenerProgramado,
   cancelarProgramado,
   // hechos
   recordarHecho,
