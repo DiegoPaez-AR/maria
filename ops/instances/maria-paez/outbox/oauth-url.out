@@ -1,0 +1,20 @@
+# ejecutado: 2026-05-26T09:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Genera la URL OAuth de Google para reautorizar Maria.
+#   # El cron-master.sh ya carga el env del .conf antes de invocar este script,
+#   # así que GOOGLE_CRED_PATH / GOOGLE_TOKEN_PATH / MARIA_VAULT_KEY están seteados.
+#   set -euo pipefail
+#   cd /root/secretaria
+#   echo "─── auth-gmail.js url ───"
+#   node auth-gmail.js url
+#   echo "─── fin ───"
+
+# ───── output ─────
+─── auth-gmail.js url ───
+https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fgmail.modify%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&response_type=code&client_id=905317715451-rf38oafefftou68kbtsu06cte1c1rkpi.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost
+─── fin ───
+
+# exit=0
