@@ -1,0 +1,24 @@
+# ejecutado: 2026-05-26T15:21:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   PORT="${ASISTENTE_INTERNAL_PORT:-4501}"
+#   SECRET="${ASISTENTE_INTERNAL_SECRET:-}"
+#   HDR=()
+#   if [ -n "$SECRET" ]; then HDR=(-H "X-Intensa-Secret: $SECRET"); fi
+#   
+#   echo "── POST /reload-usuarios ──"
+#   curl -sS -X POST -H "Content-Type: application/json" "${HDR[@]}" \
+#     -d '{}' \
+#     "http://127.0.0.1:${PORT}/reload-usuarios" | python3 -m json.tool
+
+# ───── output ─────
+── POST /reload-usuarios ──
+{
+    "ok": true,
+    "usuarios": 15
+}
+
+# exit=0
