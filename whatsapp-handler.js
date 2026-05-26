@@ -538,24 +538,32 @@ async function _disparar(client, from) {
   // y aborta los sendMessage de respuesta (las acciones se ejecutan
   // igual, son idempotentes). Ver fix 2026-05-17 abort send.
   const startTs = _lastIncoming.get(from) || Date.now();
+  const outFlags = {};
   try {
-    await _despacharGrupo(client, from, items, startTs);
+    await _despacharGrupo(client, from, items, startTs, outFlags);
   } catch (err) {
     console.error(`[WA debounce] error despachando grupo de ${from}:`, err);
   } finally {
     _enProceso.delete(from);
-    // Si llegaron mensajes durante el despacho, encolarlos ahora. Esto
-    // dispara un nuevo timer de _DEBOUNCE_MS, dando ventana para que se
-    // agrupen otros mensajes que estén por caer.
-    const pend = _colaPendiente.get(from);
-    if (pend && pend.length) {
+    let pend = _colaPendiente.get(from) || [];
+    // Si el lote actual se abortó (entró msg nuevo, no se mandó la respuesta),
+    // re-encolar sus items al INICIO del próximo lote para que Maria los
+    // retome junto con los nuevos. Limpiamos attachmentPath: el archivo /tmp
+    // ya fue consumido/borrado y el cuerpo (texto/transcripción) ya está en
+    // el item.
+    if (outFlags.abortado && items.length) {
+      const itemsAbortados = items.map(i => ({ ...i, attachmentPath: null }));
+      pend = [...itemsAbortados, ...pend];
+      console.log(`[WA debounce] thread abortado de ${from} — re-encolando ${itemsAbortados.length} item(s) con ${pend.length - itemsAbortados.length} pendientes`);
+    }
+    if (pend.length) {
       _colaPendiente.delete(from);
       for (const item of pend) _encolar(client, from, item);
     }
   }
 }
 
-async function _despacharGrupo(client, from, items, startTs) {
+async function _despacharGrupo(client, from, items, startTs, outFlags = {}) {
   if (!items.length) return;
   const principal = items[0];
   const cuerpoCombinado  = items.map(i => i.cuerpo).filter(Boolean).join('\n');
@@ -772,6 +780,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   // 1) Mandar al usuario atendido (si hay texto y destino).
   if (respUsr.trim() && destinoUsuario) {
     if (_hayMsgNuevoDesdeStart()) {
+      outFlags.abortado = true;
       console.log(`[WA →usr] ABORTADO ${usuario.nombre} (${destinoUsuario}): llegó msg nuevo durante procesamiento — el próximo lote responde`);
     } else
     try {
@@ -793,6 +802,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   //    chat que el usuario — evitamos doble mensaje en flujo normal).
   if (respRem.trim() && destinoRemitente && !remitenteEsUsuario) {
     if (_hayMsgNuevoDesdeStart()) {
+      outFlags.abortado = true;
       console.log(`[WA →3ro] ABORTADO ${entrada.nombre || destinoRemitente}: llegó msg nuevo durante procesamiento`);
     } else
     try {
@@ -813,6 +823,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // en vez de respuesta_a_usuario. Para no perder el mensaje, lo mandamos
     // al usuario (que es el remitente).
     if (_hayMsgNuevoDesdeStart()) {
+      outFlags.abortado = true;
       console.log(`[WA →usr/fb] ABORTADO ${usuario.nombre}: llegó msg nuevo durante procesamiento`);
     } else
     try {
