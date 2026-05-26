@@ -2,6 +2,7 @@
 // Lo consume el servicio `intensa-api` para:
 //   POST /send-wa        { to, body }                 → manda WhatsApp
 //   POST /send-email     { to, subject, html, text }  → manda email vía Gmail
+//   POST /validate-wa     { wa }                          → corre normalizarWaCus contra el client vivo de WA
 //   POST /reload-usuarios                              → re-lee la tabla usuarios (cache invalidate)
 //   GET  /health                                       → healthcheck
 //
@@ -73,6 +74,19 @@ function start({ waClient } = {}) {
         } catch (err) {
           console.error('[internal-api/send-wa] error:', err.stack || err.message);
           return send(502, { error: 'wa_send_failed', detail: err.message });
+        }
+      }
+
+      if (req.url === '/validate-wa') {
+        const { wa } = body;
+        if (!wa) return send(400, { error: 'bad_body', need: 'wa' });
+        if (!waClient) return send(503, { error: 'wa_not_ready' });
+        const { normalizarWaCus } = require('./wa-validate');
+        try {
+          const resolved = await normalizarWaCus(wa, waClient);
+          return send(200, { ok: true, input: wa, resolved });
+        } catch (err) {
+          return send(200, { ok: false, input: wa, error: err.message });
         }
       }
 
