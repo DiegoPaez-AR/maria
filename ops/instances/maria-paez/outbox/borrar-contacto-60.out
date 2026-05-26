@@ -1,0 +1,47 @@
+# ejecutado: 2026-05-26T17:20:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── ANTES — Santi en libreta de Diego ──"
+#   sqlite3 -header "$DB" "SELECT id, nombre, whatsapp, email FROM contactos WHERE usuario_id=1 AND (nombre LIKE '%Capurro%' OR nombre LIKE '%Santi%');"
+#   
+#   echo
+#   echo "── DELETE id=60 ──"
+#   sqlite3 "$DB" "DELETE FROM contactos WHERE id=60;"
+#   
+#   echo
+#   echo "── DESPUÉS ──"
+#   sqlite3 -header "$DB" "SELECT id, nombre, whatsapp, email FROM contactos WHERE usuario_id=1 AND (nombre LIKE '%Capurro%' OR nombre LIKE '%Santi%');"
+
+# ───── output ─────
+── ANTES — Santi en libreta de Diego ──
+id|nombre|whatsapp|email
+48|Doris Capurro|105171031949561@lid|doris@capurro.com.ar
+90|Lucas Capurro|13059858123@c.us|Lucas@capurro.com.ar
+174|Pablo Capurro|5491152570020@c.us|pablo@capurro.com.ar
+60|Santi Capurro|134076010885285@lid|
+98|Santiago Bignone|5491134274828@c.us|santiagocbignone@gmail.com
+58|Santiago Capurro|5491166010010@c.us|santiago@capurro.com.ar
+135|Santiago Lopez Alfaro|5491131790509@c.us|slopeza@delphosinv.com
+18|Santiago Paez|5491164393520@c.us|santiago@paez.is
+214|Santiago Rodriguez|5491148557535@c.us|santijrodriguez@gmail.com
+
+── DELETE id=60 ──
+
+── DESPUÉS ──
+id|nombre|whatsapp|email
+48|Doris Capurro|105171031949561@lid|doris@capurro.com.ar
+90|Lucas Capurro|13059858123@c.us|Lucas@capurro.com.ar
+174|Pablo Capurro|5491152570020@c.us|pablo@capurro.com.ar
+98|Santiago Bignone|5491134274828@c.us|santiagocbignone@gmail.com
+58|Santiago Capurro|5491166010010@c.us|santiago@capurro.com.ar
+135|Santiago Lopez Alfaro|5491131790509@c.us|slopeza@delphosinv.com
+18|Santiago Paez|5491164393520@c.us|santiago@paez.is
+214|Santiago Rodriguez|5491148557535@c.us|santijrodriguez@gmail.com
+
+# exit=0
