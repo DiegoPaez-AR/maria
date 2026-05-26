@@ -1,20 +1,3 @@
-0|maria-pa | 2026-05-26 09:36:47: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=3 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=32, Fernando Boero=13, Santiago Bignone=35, Doris Capurro=60, Nicolas Kosinski=60, Walter Vera=13, Cristian Ruiz=13, Sebastian Ameijeira=10, Rubén Ward=12, Enrique Sosa=22, Santiago Capurro=5, Facundo Diaz=5, Guillermo Bagnato=5} remitente=The Google Workspace Team <workspace-noreply@google.com> contactos_ambiguos=0
-0|maria-pa | 2026-05-26 09:37:05: [unknown-flow/gmail] LLM resolucion: desconocido · Es un email automático de Google Workspace notificando la creación de una cuenta en intensa.io; no matchea ningún usuario activo ni hay evidencia en ningún historial de que algún usuario pidiera gestionar algo relacionado con este dominio o esta cuenta.
-0|maria-pa | 2026-05-26 09:37:05: [unknown-flow/gmail] primer contacto de The Google Workspace Team <workspace-noreply@google.com> (FSM)
-0|maria-pa | 2026-05-26 09:43:40: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
-0|maria-pa | 2026-05-26 09:44:01: [WA ←] Diego (5491132317896@c.us) [2 msgs agrupados]: el numero fe fabio es: +5493492580906. Cambialo
-0|maria-pa | 2026-05-26 09:44:01: pasame mi agenda del dia de hoy
-0|maria-pa | 2026-05-26 09:44:50: [WA →3ro] Diego/Diego: Listo, cambié el número de Fabio Boschetto a +54 9 3492 580906.
-0|maria-pa | 2026-05-26 09:44:50: 
-0|maria-pa | 2026-05-26 09:44:50: Para la agenda de hoy tuve un problema para leer tu calendar — no me cargó bien. Estoy viendo c
-0|maria-pa | 2026-05-26 09:44:50: [WA acciones/Diego] 1/1 ejecutadas
-0|maria-pa | 2026-05-26 09:45:13: [programados] 1 mensaje(s) debidos, despachando…
-0|maria-pa | 2026-05-26 09:45:20: [programados] ✓ id=294 (whatsapp/137456250806423@lid) [meeting_prep:2:5fkkqtl5ms5stvjci0vjp49bmj_20260526T130000Z]
-0|maria-pa | 2026-05-26 09:46:21: [WA ←] Diego (5491132317896@c.us): pasame toda mi losya de contactos con numero, email y comple
-0|maria-pa | 2026-05-26 10:06:04: 
-0|maria-pa | 2026-05-26 10:06:04: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-26 10:06:06: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:06:06: ▸ Maria Paez [maria-paez] iniciando…
 0|maria-pa | 2026-05-26 10:06:06:   Owner:      Diego (id=1)
 0|maria-pa | 2026-05-26 10:06:06:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
 0|maria-pa | 2026-05-26 10:06:06:   Gmail poll: cada 300s
@@ -197,4 +180,21 @@
 0|maria-pa | 2026-05-26 10:54:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
 0|maria-pa | 2026-05-26 10:54:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
 0|maria-pa | 2026-05-26 10:54:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-05-26 10:54:08: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-05-26 10:54:09: [WA authenticated]
+0|maria-pa | 2026-05-26 10:54:09: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-05-26 10:54:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-05-26 10:54:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-05-26 10:54:09: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-05-26 10:54:09: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-05-26 10:54:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-05-26 10:54:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
 
