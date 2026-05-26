@@ -27,7 +27,7 @@ const CRED_PATH  = process.env.GOOGLE_CRED_PATH  || path.join(__dirname, 'creden
 // Multi-usuario: ya no hay un calendarId "default". Cada usuario tiene el
 // suyo (columna usuarios.calendar_id). Todas las ops de Calendar reciben el
 // calendarId explícito del usuario que está siendo servido.
-const TIMEZONE = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
+const TIMEZONE = process.env.ASISTENTE_TZ || process.env.MARIA_TZ;
 
 // Calendario de cumpleaños. Si está seteado por env, ese gana. Si no,
 // lo auto-descubrimos buscando en `listarCalendarios` uno cuyo summary
@@ -35,10 +35,16 @@ const TIMEZONE = process.env.MARIA_TZ || 'America/Argentina/Buenos_Aires';
 const CUMPLES_CAL_ID_ENV = process.env.MARIA_CUMPLES_CAL_ID || null;
 let _cumplesCalIdCache = CUMPLES_CAL_ID_ENV;
 
-// Firma del From: en los emails salientes. Maria manda desde SU cuenta
-// (maria.paez.secre@gmail.com) pero con display name "Maria Paez".
-const FROM_NAME  = process.env.MARIA_FROM_NAME  || 'Maria Paez';
-const FROM_EMAIL = process.env.MARIA_FROM_EMAIL || 'maria.paez.secre@gmail.com';
+// Firma del From: en los emails salientes. Maria manda desde su propia
+// cuenta (env ASISTENTE_FROM_EMAIL del .conf de la instancia) con display
+// name (ASISTENTE_FROM_NAME, o ASISTENTE_NOMBRE como fallback). MARIA_FROM_*
+// quedan como compat retro por si alguna instancia legacy todavía las usa.
+const FROM_NAME  = process.env.ASISTENTE_FROM_NAME  || process.env.ASISTENTE_NOMBRE  || process.env.MARIA_FROM_NAME;
+const FROM_EMAIL = process.env.ASISTENTE_FROM_EMAIL || process.env.MARIA_FROM_EMAIL;
+
+if (!FROM_EMAIL) throw new Error('[google.js] ASISTENTE_FROM_EMAIL no seteado en el .conf de la instancia');
+if (!FROM_NAME)  throw new Error('[google.js] ASISTENTE_FROM_NAME o ASISTENTE_NOMBRE no seteado en el .conf de la instancia');
+if (!TIMEZONE)   throw new Error('[google.js] ASISTENTE_TZ no seteado en el .conf de la instancia');
 
 // MIME RFC 2047 encoded-word para headers no-ASCII. Si el valor es ASCII lo
 // devuelve tal cual; si tiene acentos/tildes lo encodea en base64 UTF-8.

@@ -1,6 +1,6 @@
 // gmail-handler.js — poll de Gmail para emails no leídos (multi-user)
 //
-// Maria tiene UN gmail (maria.paez.secre@gmail.com). Todos los usuarios le
+// Maria tiene UN gmail (el seteado en ASISTENTE_FROM_EMAIL del .conf). Todos los usuarios le
 // escriben al mismo inbox. Por cada email nuevo:
 //   0) resolver al usuario por el header From:
 //      - si matchea → pipeline normal (usuario = él).
