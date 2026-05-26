@@ -207,7 +207,21 @@ async function _buscarSlotsComunes(a, ctx) {
 
 async function _crearEvento(a, ctx) {
   _requerir(a, ['summary', 'start', 'end']);
-  const u = ctx.usuario;
+
+  // para_usuario_id (snake) / para_usuarioId (camel): cuando el evento se
+  // crea PARA otro usuario (típico: owner agendando para un asistido), el
+  // executor usa el tier del beneficiario para decidir el calendarId. Solo
+  // el owner puede dirigir un evento a otro usuario.
+  const targetId = a.para_usuario_id ?? a.para_usuarioId ?? null;
+  let u = ctx.usuario;
+  if (targetId != null && targetId !== ctx.usuario.id) {
+    if (!usuarios.esOwner(ctx.usuario.id)) {
+      throw new Error('crear_evento: solo el owner puede crear eventos para otro usuario (para_usuario_id)');
+    }
+    const t = usuarios.obtener(targetId);
+    if (!t) throw new Error(`crear_evento: para_usuario_id=${targetId} no existe`);
+    u = t;
+  }
   const tier = usuarios.tier(u);
   const provider = await providers.forUser(u);
 

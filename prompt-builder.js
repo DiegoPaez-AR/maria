@@ -668,8 +668,9 @@ LEGACY: Si por alguna razón devolvés solo \`"respuesta": "..."\`, el sistema l
 
 Tipos de acción disponibles:
 
-  { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false }
+  { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false, "para_usuario_id": 3 }
       // El executor decide automáticamente en qué calendar crearlo según el tier (ver [ACCESO A SU CALENDAR]). En tier 0/1 también suma al usuario como attendee automáticamente — no hace falta que lo pongas explícito en attendees.
+      // para_usuario_id (opcional, solo owner): cuando el evento es PARA otro usuario (no para el del flow actual). Ej: el owner pide "agendá un almuerzo entre Santi y Pablo" — emitís para_usuario_id=<id de Santi> para que el evento vaya al calendar de Santi (si tiene write) en lugar del calendar del owner. Si no se especifica, el evento va al calendar del usuario del flow.
   { "tipo": "modificar_evento", "id": "<id>", "summary": "...", "start": "...", "end": "...", "attendees": ["email1@...", "email2@..."], "forzar": false, "calendarId": "opcional override" }
       // attendees (opcional): emails que querés AGREGAR como invitados. Se mergea con los existentes (no los reemplaza). Google manda invitación automática a los nuevos.
       // En tier 1, solo podés modificar eventos cuyo organizer sea vos (Maria). Si el evento es del calendar del usuario y lo creó él, te va a fallar con un error claro y le decís al usuario que tiene que cambiarlo él.
