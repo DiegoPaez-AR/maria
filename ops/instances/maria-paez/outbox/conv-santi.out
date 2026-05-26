@@ -1,0 +1,70 @@
+# ejecutado: 2026-05-26T15:20:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── conversación Maria ↔ Santi Capurro hoy ──"
+#   echo "(matches: usuario_id=13, o de/destino contiene su LID o c.us)"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, canal, direccion, usuario_id, substr(coalesce(de,''),1,30) as de, substr(cuerpo,1,400) as cuerpo
+#     FROM eventos
+#     WHERE date(timestamp,'localtime')='2026-05-26'
+#       AND (
+#         usuario_id=13
+#         OR de='134076010885285@lid' OR de='5491166010010@c.us'
+#         OR (canal='whatsapp' AND nombre LIKE '%Santi%Capurro%')
+#         OR (metadata_json LIKE '%134076010885285%')
+#         OR (metadata_json LIKE '%5491166010010%')
+#       )
+#     ORDER BY timestamp ASC;
+#   "
+
+# ───── output ─────
+── conversación Maria ↔ Santi Capurro hoy ──
+(matches: usuario_id=13, o de/destino contiene su LID o c.us)
+6752|2026-05-26 07:00:14|whatsapp|saliente|13|134076010885285@lid|☀️ *Buen día, Santiago Capurro.* martes 26 de mayo.
+
+*📅 Agenda del día*
+(sin eventos hoy)
+6946|2026-05-26 11:04:52|sistema|interno|1||acción ejecutada: enviar_wa
+6945|2026-05-26 11:04:52|whatsapp|saliente|1|5491166010010@c.us|Hola Santiago! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Google Calendar en el escritorio
+2️⃣ Hacé clic en los tres puntitos del calendario que querés compartir → "Configuración y uso compartido"
+3️⃣ En "Compa
+6996|2026-05-26 11:25:14|whatsapp|entrante|1|5491166010010@c.us|listo! lo hice
+6999|2026-05-26 11:26:12|whatsapp|saliente|1|5491166010010@c.us|¡Perfecto Santi! Lo verifico de mi lado y te confirmo.
+7004|2026-05-26 11:29:09|gmail|entrante|13|Santiago Capurro <santiago@cap|Santiago Capurro ha compartido un calendario\n\nSantiago Capurro  
+<santiago@capurro.com.ar> te ha invitado a puede cambiar y gestionar el uso  
+compartido en el calendario "Santiago Capurro".\n\nAcepta la invitación  
+para unirte a este calendario compartido. Puedes ocultar o quitar el  
+calendario cuando quieras.\n\nPara unirte al calendario compartido, haz  
+clic en  
+https://calendar.goo
+7006|2026-05-26 11:30:25|sistema|interno|13||razonamiento Gmail 19e64ac8e72cfef1 (Santiago Capurro): Invitación de Google Calendar recibida. Registro provider=google y confirmo aceptación al usuario por el mismo canal.
+7005|2026-05-26 11:30:25|sistema|interno|13||claude_call gmail: 76206ms prompt=40883c raw=860c
+7009|2026-05-26 11:30:27|sistema|interno|13||acción ejecutada: recordar_hecho
+7008|2026-05-26 11:30:27|sistema|interno|13||acción ejecutada: responder_email
+7007|2026-05-26 11:30:27|gmail|saliente|13||Hola Santiago,
+
+Recibí la invitación. La acepto ahora y así ya puedo ver tu agenda directamente.
+
+Maria Paez
+Email: maria.paez@intensa.io
+
+THIS MESSAGE IS CONFIDENTIAL. It may also contain information that is privileged or otherwise legally exempt from disclosure. If you have received it by mistake please let us know by e-mail immediately and delete it from your system; should also not copy the me
+7057|2026-05-26 14:23:14|whatsapp|entrante|1|5491166010010@c.us|hola Maria, me podes coordinar un almuerzo con Pablo Capurro. Idealmente para mañana. tenes su contacto?
+7059|2026-05-26 14:24:11|whatsapp|saliente|1|34342575317160@lid|Santi Capurro me pide que le coordine un almuerzo con Pablo Capurro para mañana. ¿Vos también vas, o es solo entre ellos dos? Y si tenés preferencia de horario para proponerle, decime.
+7061|2026-05-26 14:24:12|sistema|interno|1||acción ejecutada: agregar_pendiente
+7060|2026-05-26 14:24:12|whatsapp|saliente|1|5491166010010@c.us|Sí, tengo su contacto. Lo consulto con Diego y te confirmo horarios enseguida.
+7062|2026-05-26 14:24:43|whatsapp|entrante|1|5491166010010@c.us|Sin diego. solo yo y pablo!
+7065|2026-05-26 14:25:16|whatsapp|saliente|1|5491166010010@c.us|Perfecto, lo consulto y te confirmo enseguida.
+7064|2026-05-26 14:25:16|whatsapp|saliente|1|34342575317160@lid|Santi confirmó que es sin vos — solo él y Pablo. ¿Qué horario le propongo para mañana?
+
+# exit=0
