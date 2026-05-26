@@ -1,0 +1,40 @@
+#!/bin/bash
+# Agrega CLAUDE_TIMEOUT_MS=600000 (10 min) al .conf de maria-paez y reloadea.
+# Idle timeout queda en su default (240000ms = 4 min).
+set -euo pipefail
+
+CONF=/root/secretaria/config/instances/maria-paez.conf
+STAMP=$(date +%Y%m%dT%H%M%S)
+
+echo "── backup .conf ──"
+cp -p "$CONF" "$CONF.bak.$STAMP"
+
+echo "── set CLAUDE_TIMEOUT_MS=600000 ──"
+if grep -qE '^CLAUDE_TIMEOUT_MS=' "$CONF"; then
+  sed -i 's|^CLAUDE_TIMEOUT_MS=.*|CLAUDE_TIMEOUT_MS=600000|' "$CONF"
+else
+  # Agregar al final del .conf con header
+  cat >> "$CONF" <<'TXT'
+
+# ─── Claude CLI timeouts ─────────────────────────────────────────────────
+# Cap global del claude_call. Antes era default 480000 (8 min); subimos a
+# 10 min para queries pesadas (multi-user updates, etc). El idle timeout
+# sigue en su default (240000ms = 4 min sin output → kill).
+CLAUDE_TIMEOUT_MS=600000
+TXT
+fi
+
+echo "── valor efectivo en .conf ──"
+grep -E '^CLAUDE_' "$CONF" || echo "(ninguno)"
+
+echo
+echo "── pm2 reload ──"
+cd /root/secretaria
+pm2 reload ecosystem.config.js --only maria-paez --update-env
+sleep 3
+pm2 list | grep -E "name|maria-paez" || true
+
+echo
+echo "── verificar que el proceso vivo tiene CLAUDE_TIMEOUT_MS=600000 ──"
+pm2 env maria-paez 2>/dev/null | grep -E "CLAUDE_TIMEOUT_MS|CLAUDE_IDLE_TIMEOUT_MS|ASISTENTE_SLUG" || \
+  pm2 show maria-paez | grep -E "CLAUDE_"
