@@ -1,0 +1,43 @@
+# ejecutado: 2026-05-26T10:39:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── contacto Fabio (id=210) — estado actual ──"
+#   sqlite3 -header -column "$DB" "SELECT id, nombre, whatsapp, datetime(actualizado,'localtime') as actualizado FROM contactos WHERE id=210;"
+#   
+#   echo
+#   echo "── últimos eventos del usuario_id=1 (Diego) — buscando upsert_contacto reciente ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT datetime(timestamp,'localtime') as ts, canal, direccion, substr(cuerpo,1,180) as cuerpo
+#     FROM eventos
+#     WHERE usuario_id=1
+#       AND datetime(timestamp,'localtime') >= '2026-05-26 10:30'
+#     ORDER BY timestamp DESC
+#     LIMIT 15;
+#   "
+
+# ───── output ─────
+── contacto Fabio (id=210) — estado actual ──
+id   nombre           whatsapp            actualizado        
+---  ---------------  ------------------  -------------------
+210  Fabio Boschetto  5493492580906@c.us  2026-05-26 10:38:26
+
+── últimos eventos del usuario_id=1 (Diego) — buscando upsert_contacto reciente ──
+2026-05-26 10:38:42|whatsapp|entrante|y dame mi agenda de hoy
+2026-05-26 10:38:26|sistema|interno|claude_call whatsapp: 35274ms prompt=73875c raw=556c
+2026-05-26 10:38:26|whatsapp|saliente|Listo, ya cambié el número de Fabio Boschetto a +54 9 3492 580906.
+2026-05-26 10:38:26|sistema|interno|acción ejecutada: upsert_contacto
+2026-05-26 10:37:50|whatsapp|entrante|no
+2026-05-26 10:37:50|whatsapp|entrante|el numero fe fabio es: +5493492580906. Cambialo
+2026-05-26 10:37:14|sistema|interno|claude_call whatsapp: 34729ms prompt=74033c raw=339c
+2026-05-26 10:37:14|whatsapp|saliente|Acá estoy, todo bien. ¿Querés que te mande la lista de contactos ahora?
+2026-05-26 10:36:39|whatsapp|entrante|1 2 3 probando
+2026-05-26 10:34:08|sistema|interno|Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)
+2026-05-26 10:31:08|sistema|interno|Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)
+
+# exit=0
