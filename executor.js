@@ -874,6 +874,9 @@ function _requerir(obj, campos) {
 // y le avisa a Maria — el LLM emite la acción con usuarioId=ctx.usuario.id
 // para autodetectar el accessRole real).
 async function _setCalendarAcceso(a, ctx) {
+  // Acepta usuario_id (snake) como alias de usuarioId — el LLM tiende a emitir
+  // snake_case (consistente con resto de campos en el prompt).
+  if (a.usuarioId == null && a.usuario_id != null) a.usuarioId = a.usuario_id;
   _requerir(a, ['usuarioId']);
   if (!usuarios.esOwner(ctx.usuario.id) && a.usuarioId !== ctx.usuario.id) {
     throw new Error('set_calendar_acceso: solo el owner o el propio usuario pueden setear este campo');
