@@ -340,16 +340,38 @@ async function obtenerEvento({ id, calendarId }) {
   }
 }
 
-async function modificarEvento({ id, summary, descripcion, ubicacion, start, end, calendarId }) {
+async function modificarEvento({ id, summary, descripcion, ubicacion, start, end, attendees, calendarId }) {
   if (!calendarId) throw new Error('modificarEvento: calendarId requerido');
   const auth = await autenticar();
+  const cal = _cal(auth);
   const body = {};
   if (summary     !== undefined) body.summary     = summary;
   if (descripcion !== undefined) body.description = descripcion;
   if (ubicacion   !== undefined) body.location    = ubicacion;
   if (start       !== undefined) body.start       = _formatearFecha(start);
   if (end         !== undefined) body.end         = _formatearFecha(end);
-  const r = await _cal(auth).events.patch({ calendarId, eventId: id, requestBody: body });
+
+  // attendees: semántica de MERGE — agrega los emails que no estén ya en la
+  // lista actual. NO reemplaza ni borra los existentes. Si se agrega al menos
+  // un attendee nuevo, sendUpdates='all' para que Google mande invitación.
+  let sendUpdates;
+  if (Array.isArray(attendees) && attendees.length) {
+    const existing = await cal.events.get({ calendarId, eventId: id });
+    const prev = existing.data.attendees || [];
+    const prevEmails = new Set(prev.map(a => (a.email || '').toLowerCase()).filter(Boolean));
+    const nuevosEmails = attendees
+      .map(e => (typeof e === 'string' ? e : e?.email) || '')
+      .map(e => e.trim())
+      .filter(e => e && !prevEmails.has(e.toLowerCase()));
+    if (nuevosEmails.length) {
+      body.attendees = [...prev, ...nuevosEmails.map(email => ({ email }))];
+      sendUpdates = 'all';
+    }
+  }
+
+  const patchOpts = { calendarId, eventId: id, requestBody: body };
+  if (sendUpdates) patchOpts.sendUpdates = sendUpdates;
+  const r = await cal.events.patch(patchOpts);
   return _normalizarEvento(r.data);
 }
 

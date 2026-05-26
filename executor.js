@@ -305,6 +305,7 @@ async function _modificarEvento(a, ctx) {
     ubicacion: a.ubicacion,
     start: a.start,
     end: a.end,
+    attendees: a.attendees,
     calendarId,
   });
   mem.log({
