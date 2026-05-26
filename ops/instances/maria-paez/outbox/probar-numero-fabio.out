@@ -1,0 +1,47 @@
+# ejecutado: 2026-05-26T10:25:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   PORT="${ASISTENTE_INTERNAL_PORT:-4501}"
+#   SECRET="${ASISTENTE_INTERNAL_SECRET:-}"
+#   HDR=()
+#   if [ -n "$SECRET" ]; then HDR=(-H "X-Intensa-Secret: $SECRET"); fi
+#   
+#   echo "── PORT=$PORT, secret set: $([ -n "$SECRET" ] && echo si || echo no) ──"
+#   
+#   for NUM in "5493492580906" "543492580906" "5491152189302"; do
+#     echo
+#     echo "── ${NUM} ──"
+#     curl -sS -X POST -H "Content-Type: application/json" "${HDR[@]}" \
+#       -d "{\"wa\":\"${NUM}\"}" \
+#       "http://127.0.0.1:${PORT}/validate-wa" | python3 -m json.tool 2>/dev/null || echo "(parse falló)"
+#   done
+
+# ───── output ─────
+── PORT=4501, secret set: si ──
+
+── 5493492580906 ──
+{
+    "ok": true,
+    "input": "5493492580906",
+    "resolved": "102649869373553@lid"
+}
+
+── 543492580906 ──
+{
+    "ok": true,
+    "input": "543492580906",
+    "resolved": "102649869373553@lid"
+}
+
+── 5491152189302 ──
+{
+    "ok": false,
+    "input": "5491152189302",
+    "error": "validar_wa: el n\u00famero \"5491152189302\" no aparece en WhatsApp (prob\u00e9 tambi\u00e9n 541152189302). IMPORTANTE: pedile al owner que te env\u00ede la TARJETA DE CONTACTO (vCard) de la persona \u2014 eso garantiza que WhatsApp resuelva al user con el LID correcto. Dictado por chat (\"+54 9 11 1234-5678\") puede no funcionar si esa persona no est\u00e1 en cache de WhatsApp todav\u00eda. Si insiste, verific\u00e1 el c\u00f3digo de pa\u00eds: Argentina=+54 (con o sin \"9\" m\u00f3vil), Uruguay=+598, Paraguay=+595, Brasil=+55, Chile=+56, Espa\u00f1a=+34, M\u00e9xico=+52, EEUU=+1."
+}
+
+# exit=0
