@@ -27,6 +27,7 @@ const { transcribirAudio } = require('./transcribir');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
 const { ejecutarAcciones } = require('./executor');
+const waSend = require('./wa-send');
 
 const CHROME_BIN = process.env.CHROME_BIN || '/usr/bin/google-chrome';
 
@@ -728,8 +729,22 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
       cuerpo: `Claude falló en WA (${usuario.nombre}): ${err.message}`,
       metadata: { from: entrada.de, messageId: entrada.messageId },
     });
-    // Silencio: NO mandamos "Maria tuvo un problema" — el usuario prefiere silencio
-    // a ruido. Si pasa seguido, se ve en los logs.
+    // Para timeouts (consulta se colgó), avisar al user — quedó esperando una
+    // respuesta que no va a llegar y los próximos mensajes podrían encolarse
+    // mal. Para otros errores transitorios mantenemos silencio (el usuario
+    // prefiere silencio a ruido, y el próximo mensaje suele re-procesar bien).
+    const esTimeout = /Timeout global|Idle timeout/.test(err.message);
+    if (esTimeout && entrada.de) {
+      try {
+        await waSend.enviarWADirecto(
+          client,
+          entrada.de,
+          'Se me colgó procesando lo último que me mandaste — la consulta tardó demasiado y se canceló. Si querés repetilo, mejor cortado en pedazos más chicos.',
+        );
+      } catch (e2) {
+        console.warn(`[WA/${usuario.nombre}] no pude avisar timeout:`, e2.message);
+      }
+    }
     return;
   }
 
