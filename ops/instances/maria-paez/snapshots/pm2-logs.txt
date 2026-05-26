@@ -1,200 +1,200 @@
-0|maria-pa | 2026-05-26 10:06:11: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-05-26 10:06:11: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-05-26 10:06:11: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-05-26 10:06:11: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-05-26 10:06:11: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-05-26 10:06:11: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-05-26 10:06:11: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-05-26 10:06:11: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-05-26 10:06:11: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-05-26 10:06:11: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-05-26 10:06:12: [GMAIL poll] 3 email(s) nuevo(s)
-0|maria-pa | 2026-05-26 10:06:12: [GMAIL ←] Google Workspace Alerts <google-workspace-alerts-noreply@google.com> | "Alerta: Cambio de contraseña de superadministrador maria.paez@intensa.io"
-0|maria-pa | 2026-05-26 10:06:12: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=1 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=32, Fernando Boero=13, Santiago Bignone=35, Doris Capurro=60, Nicolas Kosinski=60, Walter Vera=13, Cristian Ruiz=13, Sebastian Ameijeira=10, Rubén Ward=12, Enrique Sosa=22, Santiago Capurro=5, Facundo Diaz=5, Guillermo Bagnato=5} remitente=Google Workspace Alerts <google-workspace-alerts-noreply@google.com> contactos_ambiguos=0
-0|maria-pa | 2026-05-26 10:06:49: [unknown-flow/gmail] LLM resolucion: desconocido · Es una notificación automática del sistema Google Workspace Alerts sobre la cuenta maria.paez@intensa.io; no es una persona, ningún usuario pidió gestionar estas alertas, y los emails similares de Google Workspace previos tampoco pudieron ser atribuidos a ningún usuario.
-0|maria-pa | 2026-05-26 10:06:50: [unknown-flow/gmail] primer contacto de Google Workspace Alerts <google-workspace-alerts-noreply@google.com> (FSM)
-0|maria-pa | 2026-05-26 10:06:50: [GMAIL ←] Equipo de Gmail <mail-noreply@google.com> | "Descárgate la aplicación oficial de Gmail para móviles"
-0|maria-pa | 2026-05-26 10:06:50: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=2 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=32, Fernando Boero=13, Santiago Bignone=35, Doris Capurro=60, Nicolas Kosinski=60, Walter Vera=13, Cristian Ruiz=13, Sebastian Ameijeira=10, Rubén Ward=12, Enrique Sosa=22, Santiago Capurro=5, Facundo Diaz=5, Guillermo Bagnato=5} remitente=Equipo de Gmail <mail-noreply@google.com> contactos_ambiguos=0
-0|maria-pa | 2026-05-26 10:07:02: [unknown-flow/gmail] LLM resolucion: desconocido · mail-noreply@google.com es un remitente automático de Google (notificación de servicio), no corresponde a ningún usuario activo ni a una gestión pedida por algún usuario.
-0|maria-pa | 2026-05-26 10:07:03: [unknown-flow/gmail] primer contacto de Equipo de Gmail <mail-noreply@google.com> (FSM)
-0|maria-pa | 2026-05-26 10:07:03: [GMAIL ←] Equipo de Gmail <mail-noreply@google.com> | "Consejos para utilizar tu nueva bandeja de entrada"
-0|maria-pa | 2026-05-26 10:07:51: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
-0|maria-pa | 2026-05-26 10:08:01: [WA ←] Diego (5491132317896@c.us): y la lista de contactos quete pedi?
-0|maria-pa | 2026-05-26 10:23:03: 
-0|maria-pa | 2026-05-26 10:23:03: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-26 10:23:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:23:05: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-05-26 10:23:05:   Owner:      Diego (id=1)
-0|maria-pa | 2026-05-26 10:23:05:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
-0|maria-pa | 2026-05-26 10:23:05:   Gmail poll: cada 300s
-0|maria-pa | 2026-05-26 10:23:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:23:05: ✓ whisper OK
-0|maria-pa | 2026-05-26 10:23:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-05-26 10:23:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-05-26 10:23:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-05-26 10:23:08: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-05-26 10:23:09: [WA authenticated]
-0|maria-pa | 2026-05-26 10:23:09: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-05-26 10:23:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-05-26 10:23:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-05-26 10:23:09: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-05-26 10:23:09: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-05-26 10:23:09: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-05-26 10:23:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-05-26 10:23:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-05-26 10:31:02: 
-0|maria-pa | 2026-05-26 10:31:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-26 10:31:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:31:04: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-05-26 10:31:04:   Owner:      Diego (id=1)
-0|maria-pa | 2026-05-26 10:31:04:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
-0|maria-pa | 2026-05-26 10:31:04:   Gmail poll: cada 300s
-0|maria-pa | 2026-05-26 10:31:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:31:04: ✓ whisper OK
-0|maria-pa | 2026-05-26 10:31:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-05-26 10:31:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-05-26 10:31:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-05-26 10:31:08: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-05-26 10:31:08: [WA authenticated]
-0|maria-pa | 2026-05-26 10:31:08: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-05-26 10:31:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-05-26 10:31:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-05-26 10:31:08: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-05-26 10:31:08: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-05-26 10:31:08: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-05-26 10:31:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-05-26 10:31:08: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-05-26 10:34:02: 
-0|maria-pa | 2026-05-26 10:34:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-26 10:34:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:34:04: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-05-26 10:34:04:   Owner:      Diego (id=1)
-0|maria-pa | 2026-05-26 10:34:04:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
-0|maria-pa | 2026-05-26 10:34:04:   Gmail poll: cada 300s
-0|maria-pa | 2026-05-26 10:34:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:34:04: ✓ whisper OK
-0|maria-pa | 2026-05-26 10:34:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-05-26 10:34:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-05-26 10:34:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-05-26 10:34:08: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-05-26 10:34:08: [WA authenticated]
-0|maria-pa | 2026-05-26 10:34:08: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-05-26 10:34:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-05-26 10:34:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-05-26 10:34:08: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-05-26 10:34:08: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-05-26 10:34:08: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-05-26 10:34:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-05-26 10:34:08: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-05-26 10:36:29: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
-0|maria-pa | 2026-05-26 10:36:39: [WA ←] Diego (5491132317896@c.us): 1 2 3 probando
-0|maria-pa | 2026-05-26 10:37:14: [WA →3ro] Diego/Diego: Acá estoy, todo bien. ¿Querés que te mande la lista de contactos ahora?
-0|maria-pa | 2026-05-26 10:37:50: [WA ←] Diego (5491132317896@c.us) [2 msgs agrupados]: no
-0|maria-pa | 2026-05-26 10:37:50: el numero fe fabio es: +5493492580906. Cambialo
-0|maria-pa | 2026-05-26 10:38:26: [WA →3ro] Diego/Diego: Listo, ya cambié el número de Fabio Boschetto a +54 9 3492 580906.
-0|maria-pa | 2026-05-26 10:38:26: [WA acciones/Diego] 1/1 ejecutadas
-0|maria-pa | 2026-05-26 10:38:42: [WA ←] Diego (5491132317896@c.us): y dame mi agenda de hoy
-0|maria-pa | 2026-05-26 10:39:19: [WA →3ro] Diego/Diego: Tu agenda de hoy, martes 26/05:
-0|maria-pa | 2026-05-26 10:39:19: 
-0|maria-pa | 2026-05-26 10:39:19: 🧘 *8:00 - 12:00* Yoga (en curso)
-0|maria-pa | 2026-05-26 10:39:19: 🍽️ *13:00 - 15:00* Almuerzo con Darío Fainguersch — Oficinas de Darío [Meet]
-0|maria-pa | 2026-05-26 10:39:19: 🔒 *15:30 - 17:
-0|maria-pa | 2026-05-26 10:39:47: [WA ←] Diego (5491132317896@c.us): perfecto
-0|maria-pa | 2026-05-26 10:40:28: [WA ←] Diego (5491132317896@c.us): hace un rato te cambie el mail por uno mas corporativo, es maria.paez@intensa.io
-0|maria-pa | 2026-05-26 10:41:34: [WA →3ro] Diego/Diego: Perfecto, anotado. Ya lo tengo registrado — de ahora en más todo lo que mando por mail sale desde maria.paez@intensa.io.
-0|maria-pa | 2026-05-26 10:42:26: [WA ←] Diego (5491132317896@c.us): y como consecuencia te desconectaste de todos los calendars de los usuarios, por lo que te diria que les mandes un mensaje a todos para contarles esto, pasarles
-0|maria-pa | 2026-05-26 10:53:02: 
-0|maria-pa | 2026-05-26 10:53:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-26 10:53:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:53:05: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-05-26 10:53:05:   Owner:      Diego (id=1)
-0|maria-pa | 2026-05-26 10:53:05:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
-0|maria-pa | 2026-05-26 10:53:05:   Gmail poll: cada 300s
-0|maria-pa | 2026-05-26 10:53:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:53:05: ✓ whisper OK
-0|maria-pa | 2026-05-26 10:53:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-05-26 10:53:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-05-26 10:53:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-05-26 10:53:08: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-05-26 10:53:09: [WA authenticated]
-0|maria-pa | 2026-05-26 10:53:09: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-05-26 10:53:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-05-26 10:53:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-05-26 10:53:09: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-05-26 10:53:09: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-05-26 10:53:09: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-05-26 10:53:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-05-26 10:53:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-05-26 10:54:02: 
-0|maria-pa | 2026-05-26 10:54:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-05-26 10:54:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:54:04: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-05-26 10:54:04:   Owner:      Diego (id=1)
-0|maria-pa | 2026-05-26 10:54:04:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
-0|maria-pa | 2026-05-26 10:54:04:   Gmail poll: cada 300s
-0|maria-pa | 2026-05-26 10:54:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-05-26 10:54:04: ✓ whisper OK
-0|maria-pa | 2026-05-26 10:54:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-05-26 10:54:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-05-26 10:54:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-05-26 10:54:08: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-05-26 10:54:09: [WA authenticated]
-0|maria-pa | 2026-05-26 10:54:09: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-05-26 10:54:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-05-26 10:54:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-05-26 10:54:09: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-05-26 10:54:09: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-05-26 10:54:09: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-05-26 10:54:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-05-26 10:54:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-05-26 10:58:47: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
-0|maria-pa | 2026-05-26 10:58:58: [WA ←] Diego (5491132317896@c.us): y como consecuencia del cambio de mail, te desconectaste de todos los calendars de los usuarios, por lo que te diria que les mandes un mensaje a todos para cont
-0|maria-pa | 2026-05-26 11:00:23: [WA →3ro] Diego/Diego: Dale, les mando el mensaje ahora. De los usuarios activos, tenían el calendar conectado Hernán Fulco, Santiago Bignone y Doris Capurro — a los tres les explico 
-0|maria-pa | 2026-05-26 11:00:45: [WA acciones/Diego] 3/3 ejecutadas
-0|maria-pa | 2026-05-26 11:01:27: [WA ←] Diego (5491132317896@c.us): y al resto tambien, para que tengan tu mail nuevo e invitalos a conectar el calendario
-0|maria-pa | 2026-05-26 11:02:57: 📒 [WA vcard/Diego] Ignacio Garcia → 447957877939@c.us (privado)
-0|maria-pa | 2026-05-26 11:04:01: [WA →3ro] Diego/Diego: Dale, les mando ahora a los 8 que tengo por WA: Natali, Fernando, Cristian, Sebastián, Rubén, Enrique, Santiago Capurro y Guillermo. A Facundo Díaz le escribo p
-0|maria-pa | 2026-05-26 11:04:09: [meeting-prep/Diego] + id=295 Almuerzo Diego / Darío Fainguersch @ 2026-05-26T15:45:00.000Z
-0|maria-pa | 2026-05-26 11:05:00: [WA acciones/Diego] 9/9 ejecutadas
-0|maria-pa | 2026-05-26 11:05:26: [WA lid-resolve] 194592100110498@lid -> 5491163004389@c.us
-0|maria-pa | 2026-05-26 11:05:30: 📒 [WA vcard/Diego] Facundo Martin Diaz → 14242831584@c.us (privado)
-0|maria-pa | 2026-05-26 11:05:36: [WA ←] Sebastian Ameijeira (5491163004389@c.us): Hola! Gracias!! Ahora lo hago así lo dejo configurado.
-0|maria-pa | 2026-05-26 11:05:57: [WA ←] Diego (5491132317896@c.us): aca va el de facundo diaz, actualizalo con el telefono
-0|maria-pa | 2026-05-26 11:06:48: [WA →3ro] Diego/Diego: Listo, actualicé a Facundo con el teléfono. Si querés que también le escriba por WA para lo del calendar (además del mail que ya le mandé), avisame.
-0|maria-pa | 2026-05-26 11:06:48: [WA acciones/Diego] 1/1 ejecutadas
+0|maria-pa | 2026-05-26 08:37:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:37:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:38:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:38:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:39:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:39:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:40:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:40:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:41:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:41:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:42:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:42:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:43:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:43:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:44:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:44:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:45:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:45:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:46:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:46:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:47:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:47:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:48:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:48:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:49:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:49:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:50:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:50:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:51:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:51:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:52:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:52:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:53:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:53:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:54:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:54:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:55:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:55:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:56:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:56:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:57:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:57:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:58:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:58:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 08:59:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 08:59:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:00:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:00:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:01:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:01:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:02:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:02:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:03:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:03:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:04:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:04:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:05:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:05:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:06:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:06:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:07:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:07:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:08:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:08:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:09:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:09:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:10:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:10:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:11:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:11:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:12:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:12:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:13:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:13:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:14:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:14:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:15:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:15:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:16:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:16:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:17:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:17:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:18:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:18:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:19:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:19:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:20:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:20:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:21:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:21:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:22:10: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:22:10: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:23:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:23:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:24:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:24:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:25:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:25:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:26:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:26:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:27:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:27:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:28:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:28:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:29:09: [programados] ✗ id=268 falló: No LID for user
+0|maria-pa | 2026-05-26 09:29:09: s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+0|maria-pa | 2026-05-26 09:36:14: [meeting-prep/Hernan Fulco] listar cal falló: Not Found
+0|maria-pa | 2026-05-26 09:36:15: [meeting-prep/Doris Capurro] listar cal falló: Not Found
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:13: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:41:14: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:44:50: [upsertContacto] descarto whatsapp=@lid para "Fabio Boschetto" (no es estable)
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:13: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:14: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:14: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:46:14: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:50:21: [claude-client] idle timeout 240000ms sin output — SIGKILL (prompt=72330c, stdout=0c)
+0|maria-pa | 2026-05-26 09:51:13: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:13: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:14: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:14: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:51:14: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:55:40: [WA/Diego] Claude falló: Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=72330c, stdout=10381c)
+0|maria-pa | 2026-05-26 09:56:13: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:13: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:14: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:14: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:14: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:14: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:14: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 09:56:14: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:01:13: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-05-26 10:12:01: [claude-client] idle timeout 240000ms sin output — SIGKILL (prompt=74357c, stdout=0c)
+0|maria-pa | 2026-05-26 10:46:26: [claude-client] idle timeout 240000ms sin output — SIGKILL (prompt=74516c, stdout=0c)
+0|maria-pa | 2026-05-26 10:46:37: [WA/Diego] Claude falló: Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=74516c, stdout=9474c)
+0|maria-pa | 2026-05-26 11:07:59: [WA/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+0|maria-pa | 2026-05-26 11:07:59: ```json
+0|maria-pa | 2026-05-26 11:07:59: {
+0|maria-pa | 2026-05-26 11:07:59:   "respuesta_a_usuario": "",
+0|maria-pa | 2026-05-26 11:07:59:   "respuesta_a_remitente": "",
+0|maria-pa | 2026-05-26 11:07:59:   "acciones": [
+0|maria-pa | 2026-05-26 11:07:59:     {
+0|maria-pa | 2026-05-26 11:07:59:       "tipo": "enviar_wa",
+0|maria-pa | 2026-05-26 11:07:59:       "a": "14242831584@c.us",
+0|maria-pa | 2026-05-26 11:07:59:       "texto": "Hola Facundo! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*. Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda.\n\nLos pasos son simples:\n1️⃣ Abrí Google Calendar en el escritorio\n2️⃣ Hacé clic en los tres puntitos junto al calenda
 
