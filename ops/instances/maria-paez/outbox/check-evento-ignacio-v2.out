@@ -1,0 +1,30 @@
+# ejecutado: 2026-05-26T12:37:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   node -e "
+#   const g = require('./google');
+#   (async () => {
+#     const ev = await g.obtenerEvento({
+#       calendarId: 'diego@paez.is',
+#       id: '3au003cbo8tfuq0p856ptbmpqs',
+#     });
+#     console.log('summary  :', ev.summary);
+#     console.log('start    :', ev.start);
+#     console.log('end      :', ev.end);
+#     console.log('attendees:', JSON.stringify(ev.attendees || [], null, 2));
+#     console.log('updated  :', ev.updated);
+#   })().catch(e => { console.error('ERR:', e.message); process.exit(1); });
+#   "
+
+# ───── output ─────
+summary  : Almuerzo en El Pimiento Verde Lagasca
+start    : 2026-06-08T08:30:00-03:00
+end      : 2026-06-08T10:30:00-03:00
+attendees: []
+updated  : undefined
+
+# exit=0
