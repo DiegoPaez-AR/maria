@@ -1,5 +1,26 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                               cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  --------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7011  2026-05-26 14:31:02  whatsapp  saliente   34342575317160@lid                            Listo, con el link encontré el evento. Le mando la invitación a Ignacio por email con los detalles del almuerzo del lunes 8/6 a las 13:30 en El Pimiento Verde Lagasca.                                 
+
+7010  2026-05-26 14:31:02  sistema   interno                                                  claude_call whatsapp: 143176ms prompt=73982c raw=1399c                                                                                                                                                  
+
+7009  2026-05-26 14:30:27  sistema   interno                                                  acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+7008  2026-05-26 14:30:27  sistema   interno                                                  acción ejecutada: responder_email                                                                                                                                                                       
+
+7007  2026-05-26 14:30:27  gmail     saliente                                                 Hola Santiago,                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                      
+                                                                                              Recibí la invitación. La acepto ahora y así ya puedo ver tu agenda directamente.                                                                                                                        
+                                                                                                                                                                                                                                                                                                      
+                                                                                              Maria Paez                                                                                                                                                                                              
+                                                                                              Email: maria.paez@intensa.io                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                      
+                                                                                              THIS MESSAGE IS CONFIDENTIAL. It may also contain information                                                                                                                                           
+
+7006  2026-05-26 14:30:25  sistema   interno                                                  razonamiento Gmail 19e64ac8e72cfef1 (Santiago Capurro): Invitación de Google Calendar recibida. Registro provider=google y confirmo aceptación al usuario por el mismo canal.                           
+
+7005  2026-05-26 14:30:25  sistema   interno                                                  claude_call gmail: 76206ms prompt=40883c raw=860c                                                                                                                                                       
+
 7004  2026-05-26 14:29:09  gmail     entrante   Santiago Capurro <santiago@capurro.com.ar>    Santiago Capurro ha compartido un calendario\n\nSantiago Capurro                                                                                                                                        
                                                                                               <santiago@capurro.com.ar> te ha invitado a puede cambiar y gestionar el uso                                                                                                                             
                                                                                               compartido en el calendario "Santiago Capurro".\n\nAc                                                                                                                                                   
@@ -246,17 +267,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                               Para volver a conecta                                                                                                                                                                                   
 
 6912  2026-05-26 14:00:23  whatsapp  saliente   5491132317896@c.us                            Dale, les mando el mensaje ahora. De los usuarios activos, tenían el calendar conectado Hernán Fulco, Santiago Bignone y Doris Capurro — a los tres les explico el cambio de mail, les paso los pasos pa
-
-6911  2026-05-26 14:00:16  sistema   interno                                                  claude_call whatsapp: 77989ms prompt=73876c raw=3160c                                                                                                                                                   
-
-6910  2026-05-26 13:58:58  whatsapp  entrante   5491132317896@c.us                            y como consecuencia del cambio de mail, te desconectaste de todos los calendars de los usuarios, por lo que te diria que les mandes un mensaje a todos para contarles esto, pasarles tu nuevio mail y pe
-
-6909  2026-05-26 13:54:09  sistema   interno                                                  Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)                                                                                                       
-
-6908  2026-05-26 13:54:02  sistema   interno                                                  shutdown por SIGINT                                                                                                                                                                                     
-
-6907  2026-05-26 13:53:09  sistema   interno                                                  Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)                                                                                                       
-
-6906  2026-05-26 13:53:02  sistema   interno                                                  shutdown por SIGINT                                                                                                                                                                                     
-
-6905  2026-05-26 13:46:37  sistema   interno                                                  Claude falló en WA (Diego): Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=74516c, stdout=9474c)                                                                             
