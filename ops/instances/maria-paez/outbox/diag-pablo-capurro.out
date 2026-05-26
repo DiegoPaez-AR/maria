@@ -1,0 +1,64 @@
+# ejecutado: 2026-05-26T16:58:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── contactos con nombre Pablo / Capurro o whatsapp 5491152570020 ──"
+#   sqlite3 -header "$DB" "
+#     SELECT c.id, c.usuario_id, u.nombre as libreta_de, c.nombre, c.whatsapp, c.email, c.visibilidad
+#     FROM contactos c
+#     LEFT JOIN usuarios u ON u.id = c.usuario_id
+#     WHERE c.nombre LIKE '%Pablo%' OR c.whatsapp LIKE '%5491152570020%' OR c.whatsapp LIKE '%5257%0020%' OR c.nombre LIKE '%Capurro%'
+#     ORDER BY c.usuario_id, c.nombre;
+#   "
+#   
+#   echo
+#   echo "── pendientes recientes del usuario_id=13 (Santi) con mención a Pablo ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, estado, datetime(creado,'localtime') as creado, dueno, disparador, substr(desc,1,200) as desc
+#     FROM pendientes
+#     WHERE usuario_id=13
+#       AND (desc LIKE '%Pablo%' OR desc LIKE '%almuerzo%' OR desc LIKE '%5257%')
+#     ORDER BY id DESC LIMIT 5;
+#   "
+#   
+#   echo
+#   echo "── últimos sends de Maria a 5491152570020 (los del chat con Pablo) ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT datetime(timestamp,'localtime') as ts, direccion, usuario_id, substr(cuerpo,1,180) as cuerpo
+#     FROM eventos
+#     WHERE canal='whatsapp'
+#       AND (de='5491152570020@c.us' OR coalesce(metadata_json,'') LIKE '%5491152570020%')
+#     ORDER BY timestamp ASC;
+#   "
+
+# ───── output ─────
+── contactos con nombre Pablo / Capurro o whatsapp 5491152570020 ──
+id|usuario_id|libreta_de|nombre|whatsapp|email|visibilidad
+48|1|Diego|Doris Capurro|105171031949561@lid|doris@capurro.com.ar|privada
+90|1|Diego|Lucas Capurro|13059858123@c.us|Lucas@capurro.com.ar|privada
+169|1|Diego|Pablo Bisceglia|5491149823388@c.us|pablo.bisceglia@sondeos.com.ar|privada
+174|1|Diego|Pablo Capurro|5491152570020@c.us|pablo@capurro.com.ar|privada
+142|1|Diego|Pablo Casal|5491154025172@c.us|Pjcasal@gmail.com|privada
+136|1|Diego|Pablo Mariani|54959899911905@c.us|pmariani@gmail.com|privada
+77|1|Diego|Pablo Petrillo|5491124577217@c.us|pablo.petrillo@luftlatam.com|privada
+117|1|Diego|Pablo Santa Cruz|||privada
+60|1|Diego|Santi Capurro|134076010885285@lid||privada
+58|1|Diego|Santiago Capurro|5491166010010@c.us|santiago@capurro.com.ar|privada
+
+── pendientes recientes del usuario_id=13 (Santi) con mención a Pablo ──
+
+── últimos sends de Maria a 5491152570020 (los del chat con Pablo) ──
+2026-05-26 15:40:07|saliente|1|Hola Pablo, soy Maria Paez, secretaria de Santi Capurro. Santi quería juntarse a almorzar con vos mañana miércoles 27/05. ¿Tenés disponibilidad y algún horario que te quede mejor?
+2026-05-26 15:42:03|entrante|1|De Diego o de Santi sos secretaria?
+2026-05-26 15:42:33|entrante|1|Mañana sí puedo almorzar
+Horario 13 hs
+2026-05-26 15:43:54|saliente|1|Perfecto Pablo, le aviso a Santi ahora. Y sí, trabajo con varios — en este caso te escribí de parte de él.
+2026-05-26 15:46:13|entrante|1|Me agendás?
+2026-05-26 15:47:15|saliente|1|Dale, te mando el invite ahora para el almuerzo de mañana 27/05 a las 13hs con Santi.
+
+# exit=0
