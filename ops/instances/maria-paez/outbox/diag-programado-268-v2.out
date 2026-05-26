@@ -1,0 +1,80 @@
+# ejecutado: 2026-05-26T10:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── schema programados ──"
+#   sqlite3 "$DB" ".schema programados"
+#   
+#   echo
+#   echo "── row del id=268 (raw) ──"
+#   sqlite3 -header "$DB" "SELECT * FROM programados WHERE id=268;"
+#   
+#   echo
+#   echo "── schema contactos ──"
+#   sqlite3 "$DB" ".schema contactos"
+#   
+#   echo
+#   echo "── contacto Fabio ──"
+#   sqlite3 -header "$DB" "SELECT * FROM contactos WHERE nombre LIKE '%abio%';"
+#   
+#   echo
+#   echo "── total programados (último por id) ──"
+#   sqlite3 -header -column "$DB" "SELECT MAX(id) as max_id, COUNT(*) as total FROM programados;"
+
+# ───── output ─────
+── schema programados ──
+CREATE TABLE programados (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  creado        DATETIME DEFAULT CURRENT_TIMESTAMP,
+  cuando        TEXT NOT NULL,                  -- ISO UTC
+  canal         TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail')),
+  destino       TEXT NOT NULL,
+  asunto        TEXT,
+  texto         TEXT NOT NULL,
+  enviado       INTEGER NOT NULL DEFAULT 0,     -- 0=pendiente, 1=enviado, -1=cancelado
+  razon         TEXT,                            -- p.ej. 'morning_brief', 'meeting_prep', 'usuario'
+  metadata_json TEXT
+, usuario_id INTEGER REFERENCES usuarios(id));
+CREATE INDEX idx_prog_cuando ON programados(cuando, enviado);
+CREATE INDEX idx_prog_razon  ON programados(razon, enviado);
+CREATE INDEX idx_prog_usuario        ON programados(usuario_id, enviado);
+
+── row del id=268 (raw) ──
+id|creado|cuando|canal|destino|asunto|texto|enviado|razon|metadata_json|usuario_id
+268|2026-05-23 13:54:38|2026-05-26T11:30:00.000Z|whatsapp|5491152189302@c.us||Hola Fabio! Te consulto: ¿Pero Medic tiene cuenta en dólares en el banco? Gracias.|-1|usuario||1
+
+── schema contactos ──
+CREATE TABLE IF NOT EXISTS "contactos" (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        visibilidad TEXT NOT NULL DEFAULT 'privada' CHECK (visibilidad IN ('privada','publica')),
+        cumple      TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+CREATE INDEX idx_contactos_whatsapp    ON contactos(whatsapp);
+CREATE INDEX idx_contactos_email       ON contactos(email);
+CREATE INDEX idx_contactos_usuario     ON contactos(usuario_id, nombre);
+CREATE INDEX idx_contactos_visibilidad ON contactos(visibilidad, nombre);
+CREATE UNIQUE INDEX uniq_contactos_priv ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada';
+CREATE UNIQUE INDEX uniq_contactos_pub  ON contactos(nombre)             WHERE visibilidad = 'publica';
+
+── contacto Fabio ──
+id|usuario_id|nombre|whatsapp|email|notas|visibilidad|cumple|creado|actualizado
+210|1|Fabio Boschetto|5491152189302@c.us|fabio.boschetto@vrainz.com|cumple: --08-01|privada|--08-01|2026-05-10 22:41:01|2026-05-26 12:44:50
+
+── total programados (último por id) ──
+max_id  total
+------  -----
+294     294  
+
+# exit=0
