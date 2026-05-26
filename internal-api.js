@@ -77,6 +77,41 @@ function start({ waClient } = {}) {
         }
       }
 
+      if (req.url === '/lid-info') {
+        // Temporal — diagnóstico para diseñar la conversión LID → c.us en wa-validate.
+        const { lid } = body;
+        if (!lid) return send(400, { error: 'bad_body', need: 'lid' });
+        if (!waClient) return send(503, { error: 'wa_not_ready' });
+        try {
+          const contact = await waClient.getContactById(lid);
+          // Extraemos propiedades que podrían contener el número original.
+          const dump = {
+            id: contact?.id,
+            number: contact?.number,
+            pushname: contact?.pushname,
+            name: contact?.name,
+            shortName: contact?.shortName,
+            type: contact?.type,
+            isBusiness: contact?.isBusiness,
+            isWAContact: contact?.isWAContact,
+            isMyContact: contact?.isMyContact,
+            isUser: contact?.isUser,
+          };
+          // Intento extra: ¿getNumberId del propio LID devuelve un @c.us?
+          let getNumberIdResult = null;
+          try {
+            const numStr = (contact?.number || lid.replace(/@.*/, ''));
+            const r = await waClient.getNumberId(numStr);
+            getNumberIdResult = r ? { _serialized: r._serialized, user: r.user, server: r.server } : null;
+          } catch (e) {
+            getNumberIdResult = { error: e.message };
+          }
+          return send(200, { ok: true, lid, contact: dump, getNumberIdReverse: getNumberIdResult });
+        } catch (err) {
+          return send(200, { ok: false, lid, error: err.message });
+        }
+      }
+
       if (req.url === '/validate-wa') {
         const { wa } = body;
         if (!wa) return send(400, { error: 'bad_body', need: 'wa' });
