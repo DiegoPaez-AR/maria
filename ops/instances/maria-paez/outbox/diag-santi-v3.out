@@ -1,0 +1,79 @@
+# ejecutado: 2026-05-26T12:52:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── gmail entrantes hoy con remitente Santiago/capurro ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, usuario_id, de, substr(coalesce(asunto,''),1,80) as asunto, substr(cuerpo,1,150) as cuerpo
+#     FROM eventos
+#     WHERE canal='gmail' AND direccion='entrante'
+#       AND date(timestamp,'localtime')='2026-05-26'
+#       AND (de LIKE '%capurro%' OR de LIKE '%santiago%' OR cuerpo LIKE '%santiago capurro%' OR cuerpo LIKE '%Santiago Capurro%')
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── WA entrantes hoy donde el cuerpo menciona calendar/compart/cambi/listo ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, usuario_id, de, nombre, substr(cuerpo,1,200) as cuerpo
+#     FROM eventos
+#     WHERE canal='whatsapp' AND direccion='entrante'
+#       AND date(timestamp,'localtime')='2026-05-26'
+#       AND datetime(timestamp,'localtime') >= '2026-05-26 11:00'
+#       AND (cuerpo LIKE '%calendar%' OR cuerpo LIKE '%compart%' OR cuerpo LIKE '%cambié%' OR cuerpo LIKE '%cambie%' OR cuerpo LIKE '%listo%' OR cuerpo LIKE '%agenda%')
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── TODOS los WA entrantes con usuario_id=13 (santiago capurro) hoy ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, de, substr(cuerpo,1,200) as cuerpo
+#     FROM eventos
+#     WHERE canal='whatsapp' AND direccion='entrante'
+#       AND usuario_id=13
+#       AND date(timestamp,'localtime')='2026-05-26';
+#   "
+#   
+#   echo
+#   echo "── últimos 20 eventos gmail entrantes hoy (para no perder nada) ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, usuario_id, substr(de,1,60) as de, substr(coalesce(asunto,''),1,80) as asunto
+#     FROM eventos
+#     WHERE canal='gmail' AND direccion='entrante'
+#       AND date(timestamp,'localtime')='2026-05-26'
+#     ORDER BY timestamp DESC LIMIT 20;
+#   "
+
+# ───── output ─────
+── gmail entrantes hoy con remitente Santiago/capurro ──
+7004|2026-05-26 11:29:09|13|Santiago Capurro <santiago@capurro.com.ar>|Acepta tu invitación para unirte al calendario compartido "Santiago Capurro"|Santiago Capurro ha compartido un calendario\n\nSantiago Capurro  
+<santiago@capurro.com.ar> te ha invitado a puede cambiar y gestionar el uso  
+com
+
+── WA entrantes hoy donde el cuerpo menciona calendar/compart/cambi/listo ──
+6922|2026-05-26 11:01:27|1|5491132317896@c.us|Diego|y al resto tambien, para que tengan tu mail nuevo e invitalos a conectar el calendario
+6961|2026-05-26 11:09:13|1|5491132317896@c.us|Diego|mandale un mensaje a Ignacio Garcia (en español) avisandole que ya esta confirmada la reserva para el Lunes 8 de junio a las 1330, y sumalo a la reunion que ya debe estar agendada en mi calendar, la d
+6967|2026-05-26 11:15:23|10|5491163004389@c.us|Sebastian Ameijeira|Listo! Ahí te debería haber llegado el invite.
+6977|2026-05-26 11:18:42|10|5491163004389@c.us|Sebastian Ameijeira|Lo único que no pude hacer, es la parte de "Hacer cambios y administrar uso compartido" me aparecen las opciones pero solo puedo seleccionar "Ver solo libre/ocupado (ocultar detalles)
+6995|2026-05-26 11:24:47|1|5491132317896@c.us|Diego|si tenes acceso a mi calendar, me mandaste hace un rato los eventos que tenia en el dia
+6996|2026-05-26 11:25:14|1|5491166010010@c.us|Santi Capurro|listo! lo hice
+7003|2026-05-26 11:28:38|1|5491132317896@c.us|Diego|https://calendar.google.com/calendar/u/0/r/eventedit/M2F1MDAzY2JvOHRmdXEwcDg1NnB0Ym1wcXMgZGllZ29AcGFlei5pcw
+7034|2026-05-26 12:18:50|1|5491132317896@c.us|Diego|pero me mandaste mail? no lo sumaste al evento de mi calendario?
+
+── TODOS los WA entrantes con usuario_id=13 (santiago capurro) hoy ──
+
+── últimos 20 eventos gmail entrantes hoy (para no perder nada) ──
+7029|2026-05-26 11:44:09|10|Sebastian Ameijeira <sameijeira@froneus.com>|Acepta tu invitación para unirte al calendario compartido "Sebastian Ameijeira"
+7004|2026-05-26 11:29:09|13|Santiago Capurro <santiago@capurro.com.ar>|Acepta tu invitación para unirte al calendario compartido "Santiago Capurro"
+6980|2026-05-26 11:19:09|10|Sebastian Ameijeira <sameijeira@froneus.com>|Acepta tu invitación para unirte al calendario compartido "Sebastian Ameijeira"
+6878|2026-05-26 10:07:03|1|Equipo de Gmail <mail-noreply@google.com>|Descárgate la aplicación oficial de Gmail para móviles
+6875|2026-05-26 10:06:50|1|Google Workspace Alerts <google-workspace-alerts-noreply@goo|Alerta: Cambio de contraseña de superadministrador maria.paez@intensa.io
+6861|2026-05-26 09:37:05|1|The Google Workspace Team <workspace-noreply@google.com>|Tienes una nueva cuenta de Google de intensa.io
+6856|2026-05-26 09:36:29|1|Google Notifications <notify-noreply@google.com>|Google Cloud Organization is now available for your domain
+
+# exit=0
