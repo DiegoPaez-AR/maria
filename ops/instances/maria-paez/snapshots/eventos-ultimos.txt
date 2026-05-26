@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                               cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  --------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7062  2026-05-26 17:24:43  whatsapp  entrante   5491166010010@c.us                            Sin diego. solo yo y pablo!                                                                                                                                                                             
+
+7061  2026-05-26 17:24:12  sistema   interno                                                  acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+7060  2026-05-26 17:24:12  whatsapp  saliente   5491166010010@c.us                            Sí, tengo su contacto. Lo consulto con Diego y te confirmo horarios enseguida.                                                                                                                          
+
+7059  2026-05-26 17:24:11  whatsapp  saliente   34342575317160@lid                            Santi Capurro me pide que le coordine un almuerzo con Pablo Capurro para mañana. ¿Vos también vas, o es solo entre ellos dos? Y si tenés preferencia de horario para proponerle, decime.                
+
+7058  2026-05-26 17:24:11  sistema   interno                                                  claude_call whatsapp: 56668ms prompt=74540c raw=1039c                                                                                                                                                   
+
 7057  2026-05-26 17:23:14  whatsapp  entrante   5491166010010@c.us                            hola Maria, me podes coordinar un almuerzo con Pablo Capurro. Idealmente para mañana. tenes su contacto?                                                                                                
 
 7056  2026-05-26 16:32:12  sistema   interno                                                  meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
@@ -215,21 +225,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 6964  2026-05-26 14:12:15  whatsapp  saliente   34342575317160@lid                            Le mandé el mensaje a Ignacio confirmándole la reserva del lunes 8/6 a las 13:30 y le pedí el email para la invitación. Busqué en tu calendar y no encontré el evento para ese día — ¿me decís cómo figu
 
 6963  2026-05-26 14:12:15  sistema   interno                                                  claude_call whatsapp: 79374ms prompt=76368c raw=998c                                                                                                                                                    
-
-6962  2026-05-26 14:10:55  sistema   interno                                                  claude_call whatsapp: 102396ms prompt=75847c raw=671c                                                                                                                                                   
-
-6961  2026-05-26 14:09:13  whatsapp  entrante   5491132317896@c.us                            mandale un mensaje a Ignacio Garcia (en español) avisandole que ya esta confirmada la reserva para el Lunes 8 de junio a las 1330, y sumalo a la reunion que ya debe estar agendada en mi calendar, la d
-
-6960  2026-05-26 14:07:59  sistema   interno                                                  Claude falló en WA (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                                                          
-                                                                                              ```json                                                                                                                                                                                                 
-                                                                                              {                                                                                                                                                                                                       
-                                                                                                "respuesta_a_usuario": "",                                                                                                                                                                            
-                                                                                                "respuesta_a_remitente": "",                                                                                                                                                                          
-                                                                                                "acciones": [                                                                                                                                                                                         
-                                                                                                  {                                                                                                                                                                                                   
-                                                                                                    "tipo": "enviar_wa",                                                                                                                                                                              
-                                                                                                                                                                                                                                                                                                      
-
-6959  2026-05-26 14:07:58  sistema   interno                                                  claude_call whatsapp: 45635ms prompt=75067c raw=1002c                                                                                                                                                   
-
-6958  2026-05-26 14:07:12  whatsapp  entrante   5491132317896@c.us                            dale                                                                                                                                                                                                    
