@@ -1,0 +1,25 @@
+# ejecutado: 2026-05-26T15:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   PORT="${ASISTENTE_INTERNAL_PORT:-4501}"
+#   SECRET="${ASISTENTE_INTERNAL_SECRET:-}"
+#   HDR=()
+#   if [ -n "$SECRET" ]; then HDR=(-H "X-Intensa-Secret: $SECRET"); fi
+#   
+#   # Re-aplica el mismo wa_cus a Santi via endpoint nuevo (idempotente).
+#   # Esto fuerza que el proceso pm2 ejecute el UPDATE en su misma conexión SQLite,
+#   # evitando el WAL stale read.
+#   echo "── POST /update-usuario { id:13, wa_cus:'5491166010010@c.us' } ──"
+#   curl -sS -X POST -H "Content-Type: application/json" "${HDR[@]}" \
+#     -d '{"id":13,"wa_cus":"5491166010010@c.us"}' \
+#     "http://127.0.0.1:${PORT}/update-usuario" | python3 -m json.tool
+
+# ───── output ─────
+── POST /update-usuario { id:13, wa_cus:'5491166010010@c.us' } ──
+curl: (7) Failed to connect to 127.0.0.1 port 4501 after 0 ms: Couldn't connect to server
+Expecting value: line 1 column 1 (char 0)
+
+# exit=0
