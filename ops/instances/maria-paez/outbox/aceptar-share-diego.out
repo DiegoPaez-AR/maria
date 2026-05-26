@@ -1,0 +1,48 @@
+# ejecutado: 2026-05-26T09:48:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Acepta el share del calendar de Diego (diego@paez.is) en el calendarList
+#   # de la cuenta nueva de Maria (maria.paez@intensa.io). Necesario porque entre
+#   # dos Workspaces distintos el share no se auto-añade al calendarList — hay
+#   # que aceptarlo explícitamente (clickear "Add this calendar" o, como hacemos
+#   # acá, vía API con calendarList.insert).
+#   set -euo pipefail
+#   cd /root/secretaria
+#   
+#   node -e "
+#   const g = require('./google');
+#   (async () => {
+#     console.log('── aceptarCalendarShare(diego@paez.is) ──');
+#     const r = await g.aceptarCalendarShare('diego@paez.is');
+#     console.log(JSON.stringify(r, null, 2));
+#   
+#     console.log('');
+#     console.log('── listarCalendarios (post-accept) ──');
+#     const cals = await g.listarCalendarios();
+#     console.log('n=' + cals.length);
+#     for (const c of cals) {
+#       const star = c.primary ? '★' : ' ';
+#       console.log(' ' + star + ' ' + c.id + '  (' + c.accessRole + ')  — ' + (c.summary || ''));
+#     }
+#   })().catch(e => { console.error('ERR:', e.message, e.stack); process.exit(1); });
+#   "
+
+# ───── output ─────
+── aceptarCalendarShare(diego@paez.is) ──
+{
+  "ok": false,
+  "error": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project."
+}
+
+── listarCalendarios (post-accept) ──
+ERR: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. Error: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+    at Gaxios._request (/root/secretaria/node_modules/gaxios/build/cjs/src/gaxios.js:155:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async OAuth2Client.requestAsync (/root/secretaria/node_modules/google-auth-library/build/src/auth/oauth2client.js:463:20)
+    at async createAPIRequestAsync (/root/secretaria/node_modules/googleapis-common/build/src/apirequest.js:308:25)
+    at async Object.listarCalendarios (/root/secretaria/google.js:165:13)
+    at async [eval]:10:16
+
+# exit=0
