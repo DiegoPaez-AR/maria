@@ -3,6 +3,7 @@
 //   POST /send-wa        { to, body }                 → manda WhatsApp
 //   POST /send-email     { to, subject, html, text }  → manda email vía Gmail
 //   POST /validate-wa     { wa }                          → corre normalizarWaCus contra el client vivo de WA
+//   POST /update-usuario  { id, ...campos }                  → mutación de usuarios desde el proceso vivo (evita WAL stale reads)
 //   POST /reload-usuarios                              → re-lee la tabla usuarios (cache invalidate)
 //   GET  /health                                       → healthcheck
 //
@@ -141,6 +142,27 @@ function start({ waClient } = {}) {
         } catch (err) {
           console.error('[internal-api/send-email] error:', err.stack || err.message);
           return send(502, { error: 'email_send_failed', detail: err.message });
+        }
+      }
+
+      if (req.url === '/update-usuario') {
+        const { id, ...patch } = body;
+        if (!id) return send(400, { error: 'bad_body', need: 'id + fields' });
+        // Si viene wa_cus y tenemos waClient, validar antes de persistir.
+        if (patch.wa_cus && waClient) {
+          try {
+            const waValidate = require('./wa-validate');
+            patch.wa_cus = await waValidate.normalizarWaCus(patch.wa_cus, waClient);
+          } catch (e) {
+            return send(400, { error: 'wa_validate_failed', detail: e.message });
+          }
+        }
+        try {
+          const u = usuarios.actualizar(id, patch);
+          return send(200, { ok: true, id: u.id, nombre: u.nombre, campos_actualizados: Object.keys(patch) });
+        } catch (err) {
+          console.error('[internal-api/update-usuario] error:', err.message);
+          return send(400, { error: 'update_failed', detail: err.message });
         }
       }
 
