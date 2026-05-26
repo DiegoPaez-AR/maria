@@ -1,0 +1,62 @@
+# ejecutado: 2026-05-26T10:50:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   
+#   echo "── 1. pm2 list ──"
+#   pm2 list 2>&1 | head -20
+#   
+#   echo
+#   echo "── 2. procesos claude colgados ──"
+#   ps -eo pid,etime,cmd | grep -E "claude" | grep -v grep | head -10
+#   
+#   echo
+#   echo "── 3. claude CLI ping mínimo (timeout 60s) ──"
+#   timeout 60 claude -p "Devolveme literal la palabra PONG, nada más" 2>&1 | head -20
+#   echo "exit: $?"
+#   
+#   echo
+#   echo "── 4. claude /status ──"
+#   timeout 30 claude /status 2>&1 | head -20
+#   
+#   echo
+#   echo "── 5. últimos 5 eventos del usuario_id=1 post-10:40 ──"
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT datetime(timestamp,'localtime') as ts, canal, direccion, substr(cuerpo,1,200) as cuerpo
+#     FROM eventos
+#     WHERE usuario_id=1 AND datetime(timestamp,'localtime') >= '2026-05-26 10:40'
+#     ORDER BY timestamp DESC LIMIT 15;
+#   "
+
+# ───── output ─────
+── 1. pm2 list ──
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 1991296  │ 4D     │ 0    │ online    │ 0%       │ 70.3mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 3077262  │ 15m    │ 91   │ online    │ 0%       │ 168.5mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+── 2. procesos claude colgados ──
+3081126       00:00 bash ops/instances/maria-paez/inbox/diag-claude-down.sh
+
+── 3. claude CLI ping mínimo (timeout 60s) ──
+PONG
+exit: 0
+
+── 4. claude /status ──
+Unknown command: /status
+
+── 5. últimos 5 eventos del usuario_id=1 post-10:40 ──
+2026-05-26 10:46:37|sistema|interno|claude_call whatsapp: 250206ms prompt=74516c raw=9474c ERROR=Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=74516c
+2026-05-26 10:46:37|sistema|interno|Claude falló en WA (Diego): Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=74516c, stdout=9474c)
+2026-05-26 10:42:26|whatsapp|entrante|y como consecuencia te desconectaste de todos los calendars de los usuarios, por lo que te diria que les mandes un mensaje a todos para contarles esto, pasarles tu nuevio mail y pedirles y explicarles
+2026-05-26 10:41:34|whatsapp|saliente|Perfecto, anotado. Ya lo tengo registrado — de ahora en más todo lo que mando por mail sale desde maria.paez@intensa.io.
+2026-05-26 10:41:27|sistema|interno|claude_call whatsapp: 58609ms prompt=73917c raw=353c
+2026-05-26 10:40:28|whatsapp|entrante|hace un rato te cambie el mail por uno mas corporativo, es maria.paez@intensa.io
+
+# exit=0
