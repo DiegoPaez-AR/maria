@@ -1,0 +1,146 @@
+# ejecutado: 2026-05-26T11:12:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── eventos del usuario_id=1 desde las 11:00 (todo, entrante+saliente+interno) ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT datetime(timestamp,'localtime') as ts, canal, direccion, substr(cuerpo,1,250) as cuerpo
+#     FROM eventos
+#     WHERE usuario_id=1 AND datetime(timestamp,'localtime') >= '2026-05-26 11:00'
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── usuarios activos: ¿quiénes tienen calendar configurado vs no? ──"
+#   sqlite3 -header -column "$DB" "
+#     SELECT id, nombre, calendar_id, calendar_acceso, wa_lid, wa_cus
+#     FROM usuarios
+#     WHERE activo=1
+#     ORDER BY id;
+#   " 2>/dev/null || sqlite3 -header -column "$DB" "
+#     SELECT id, nombre, calendar_id, wa_cus
+#     FROM usuarios
+#     ORDER BY id;
+#   "
+
+# ───── output ─────
+── eventos del usuario_id=1 desde las 11:00 (todo, entrante+saliente+interno) ──
+2026-05-26 11:00:16|sistema|interno|claude_call whatsapp: 77989ms prompt=73876c raw=3160c
+2026-05-26 11:00:23|whatsapp|saliente|Dale, les mando el mensaje ahora. De los usuarios activos, tenían el calendar conectado Hernán Fulco, Santiago Bignone y Doris Capurro — a los tres les explico el cambio de mail, les paso los pasos para volver a compartir y les aclaro que *maria.paez
+2026-05-26 11:00:30|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:00:30|whatsapp|saliente|Hola Hernán! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google c
+2026-05-26 11:00:38|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:00:38|whatsapp|saliente|Hola Santiago! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google
+2026-05-26 11:00:45|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:00:45|whatsapp|saliente|Hola Doris! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google co
+2026-05-26 11:01:27|whatsapp|entrante|y al resto tambien, para que tengan tu mail nuevo e invitalos a conectar el calendario
+2026-05-26 11:02:57|sistema|interno|contacto vcard (privado): Ignacio Garcia → 447957877939@c.us
+2026-05-26 11:04:01|whatsapp|saliente|Dale, les mando ahora a los 8 que tengo por WA: Natali, Fernando, Cristian, Sebastián, Rubén, Enrique, Santiago Capurro y Guillermo. A Facundo Díaz le escribo por mail (no tengo su WA). De Nicolás Kosinski y Walter Vera no tengo ningún dato de contac
+2026-05-26 11:04:01|sistema|interno|claude_call whatsapp: 154183ms prompt=73740c raw=7470c
+2026-05-26 11:04:09|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:09|whatsapp|saliente|Hola Natali! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Goog
+2026-05-26 11:04:16|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:16|whatsapp|saliente|Hola Fernando! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Go
+2026-05-26 11:04:23|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:23|whatsapp|saliente|Hola Cristian! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Go
+2026-05-26 11:04:30|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:30|whatsapp|saliente|Hola Sebastián! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí G
+2026-05-26 11:04:38|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:38|whatsapp|saliente|Hola Rubén! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Googl
+2026-05-26 11:04:45|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:45|whatsapp|saliente|Hola Enrique! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Goo
+2026-05-26 11:04:52|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:52|whatsapp|saliente|Hola Santiago! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí Go
+2026-05-26 11:04:59|sistema|interno|acción ejecutada: enviar_wa
+2026-05-26 11:04:59|whatsapp|saliente|Hola Guillermo! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son simples:
+
+1️⃣ Abrí G
+2026-05-26 11:05:00|sistema|interno|acción ejecutada: enviar_email
+2026-05-26 11:05:00|gmail|saliente|Hola Facundo,
+
+Quería contarte que cambié mi dirección de email: de ahora en más soy maria.paez@intensa.io.
+
+Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda. Los pasos son:
+
+1. Abrí Google Calend
+2026-05-26 11:05:30|sistema|interno|contacto vcard (privado): Facundo Martin Diaz → 14242831584@c.us
+2026-05-26 11:05:57|whatsapp|entrante|aca va el de facundo diaz, actualizalo con el telefono
+2026-05-26 11:06:48|sistema|interno|acción ejecutada: upsert_contacto
+2026-05-26 11:06:48|whatsapp|saliente|Listo, actualicé a Facundo con el teléfono. Si querés que también le escriba por WA para lo del calendar (además del mail que ya le mandé), avisame.
+2026-05-26 11:06:48|sistema|interno|claude_call whatsapp: 50671ms prompt=75159c raw=662c
+2026-05-26 11:07:12|whatsapp|entrante|dale
+2026-05-26 11:07:58|sistema|interno|claude_call whatsapp: 45635ms prompt=75067c raw=1002c
+2026-05-26 11:07:59|sistema|interno|Claude falló en WA (Diego): No se pudo extraer JSON de la respuesta de Claude:
+```json
+{
+  "respuesta_a_usuario": "",
+  "respuesta_a_remitente": "",
+  "acciones": [
+    {
+      "tipo": "enviar_wa",
+      "a": "14242831584@c.us",
+      "texto": "Hola 
+2026-05-26 11:09:13|whatsapp|entrante|mandale un mensaje a Ignacio Garcia (en español) avisandole que ya esta confirmada la reserva para el Lunes 8 de junio a las 1330, y sumalo a la reunion que ya debe estar agendada en mi calendar, la deberias ver 8 30 ya que es en madrid (diferencia h
+2026-05-26 11:10:55|sistema|interno|claude_call whatsapp: 102396ms prompt=75847c raw=671c
+
+── usuarios activos: ¿quiénes tienen calendar configurado vs no? ──
+id  nombre               calendar_id                     calendar_acceso  wa_lid               wa_cus            
+--  -------------------  ------------------------------  ---------------  -------------------  ------------------
+1   Diego                diego@paez.is                   write            34342575317160@lid   541132317896@c.us 
+2   Hernan Fulco         hernan.fulco@sondeosglobal.com  none             137456250806423@lid  5491126829596@c.us
+3   Natali Funez                                         none             232637088149596@lid  5491150105262@c.us
+4   Fernando Boero                                       none                                  5491166903856@c.us
+5   Santiago Bignone     santiagocbignone@gmail.com      none                                  5491134274828@c.us
+6   Doris Capurro        doris@capurro.com.ar            none             105171031949561@lid  5491144471264@c.us
+7   Nicolas Kosinski                                     none             227143674011812@lid  5491150080522@c.us
+8   Walter Vera                                          none                                  5491138433288@c.us
+9   Cristian Ruiz                                        none                                  5491126406612@c.us
+10  Sebastian Ameijeira                                  none                                  5491163004389@c.us
+11  Rubén Ward                                           none                                  5491154024727@c.us
+12  Enrique Sosa                                         none                                  59899643028@c.us  
+13  Santiago Capurro                                     none             134076010885285@lid                    
+14  Facundo Diaz                                         none             76429043695623@lid                     
+15  Guillermo Bagnato                                    none             114207659921663@lid                    
+
+# exit=0
