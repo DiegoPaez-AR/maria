@@ -1,0 +1,388 @@
+# ejecutado: 2026-05-26T10:18:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── schema notas_contacto ──"
+#   sqlite3 "$DB" ".schema notas_contacto"
+#   
+#   echo
+#   echo "── eventos del usuario_id=1 hoy entre 09:00-10:00 (whatsapp/interno/sistema) ──"
+#   sqlite3 -header -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, canal, direccion, substr(cuerpo,1,150) as cuerpo, substr(coalesce(metadata_json,''),1,120) as meta
+#     FROM eventos
+#     WHERE usuario_id=1
+#       AND datetime(timestamp,'localtime') >= '2026-05-26 09:00'
+#       AND datetime(timestamp,'localtime') <  '2026-05-26 10:00'
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── eventos con 'Fabio' o '3492580906' (hoy) ──"
+#   sqlite3 -header -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, canal, direccion, usuario_id, substr(cuerpo,1,200) as cuerpo
+#     FROM eventos
+#     WHERE date(timestamp,'localtime') = '2026-05-26'
+#       AND (cuerpo LIKE '%Fabio%' OR cuerpo LIKE '%3492580906%' OR cuerpo LIKE '%5491152189302%' OR cuerpo LIKE '%cancelar%' OR cuerpo LIKE '%268%' OR coalesce(metadata_json,'') LIKE '%fabio%')
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── notas del contacto Fabio (id=210) ──"
+#   sqlite3 -header -separator '|' "$DB" "SELECT * FROM notas_contacto WHERE contacto_id=210 ORDER BY id DESC LIMIT 10;" 2>/dev/null || echo "(schema diferente, fallback)"
+#   
+#   echo
+#   echo "── pre-09:23 — buscar el cancel del 268 ──"
+#   sqlite3 -header -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, canal, direccion, usuario_id, substr(cuerpo,1,250) as cuerpo
+#     FROM eventos
+#     WHERE date(timestamp,'localtime') = '2026-05-26'
+#       AND datetime(timestamp,'localtime') < '2026-05-26 09:30'
+#       AND (cuerpo LIKE '%268%' OR cuerpo LIKE '%cancelar%' OR cuerpo LIKE '%Fabio%')
+#     ORDER BY timestamp ASC
+#     LIMIT 30;
+#   "
+
+# ───── output ─────
+── schema notas_contacto ──
+CREATE TABLE notas_contacto (
+  id                          INTEGER PRIMARY KEY AUTOINCREMENT,
+  usuario_id                  INTEGER NOT NULL REFERENCES usuarios(id),
+  contacto_id                 INTEGER NOT NULL REFERENCES contactos(id),
+  nota                        TEXT NOT NULL,
+  eventos_sintetizados_hasta  INTEGER NOT NULL DEFAULT 0,
+  creado                      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  actualizado                 DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (usuario_id, contacto_id)
+);
+CREATE INDEX idx_notas_contacto_user ON notas_contacto(usuario_id);
+
+── eventos del usuario_id=1 hoy entre 09:00-10:00 (whatsapp/interno/sistema) ──
+id|ts|canal|direccion|cuerpo|meta
+6797|2026-05-26 09:00:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6799|2026-05-26 09:01:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6800|2026-05-26 09:02:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6801|2026-05-26 09:03:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6802|2026-05-26 09:04:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6803|2026-05-26 09:05:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6804|2026-05-26 09:06:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6805|2026-05-26 09:07:04|whatsapp|entrante|alguna novedad de la reuion con Diego Poguetti?|{"messageId":"false_34342575317160@lid_3EB097F7A97A8AA5B0C971","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6806|2026-05-26 09:07:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6808|2026-05-26 09:07:40|whatsapp|saliente|Todavía sin novedades — estoy esperando que Analía Frangi confirme la nueva fecha. En cuanto la tenga, te aviso y lo agendo.|{"razonamiento":"Diego pregunta por la reunión con Poguetti. La tarea id:88 está abierta esperando que Analía Frangi con
+6807|2026-05-26 09:07:40|sistema|interno|claude_call whatsapp: 35447ms prompt=72871c raw=445c|{"tipo":"claude_call","canal":"whatsapp","ms":35447,"prompt_chars":72871,"raw_chars":445,"error_msg":null}
+6809|2026-05-26 09:08:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6810|2026-05-26 09:08:24|whatsapp|entrante|escribile para preguntar|{"messageId":"false_34342575317160@lid_3EB02918A9A51E520B03FD","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6814|2026-05-26 09:09:01|sistema|interno|acción ejecutada: enviar_wa|{"accion":{"tipo":"enviar_wa","a":"5491161673400@c.us","texto":"Hola Analía! Soy María Páez, secretaria de Diego. Te esc
+6813|2026-05-26 09:09:01|whatsapp|saliente|Hola Analía! Soy María Páez, secretaria de Diego. Te escribo para preguntarte si ya tenés una fecha disponible para la reunión entre Diego y Diego Pog|{"destinoOriginal":"5491161673400@c.us","destinoFinal":"5491161673400@c.us","tag":"enviar_wa"}
+6812|2026-05-26 09:09:01|whatsapp|saliente|Le escribo ahora.|{"razonamiento":"Diego pide escribirle a Analía Frangi para preguntar por la fecha de la reunión con Poguetti. Tengo su 
+6811|2026-05-26 09:09:01|sistema|interno|claude_call whatsapp: 36356ms prompt=72795c raw=536c|{"tipo":"claude_call","canal":"whatsapp","ms":36356,"prompt_chars":72795,"raw_chars":536,"error_msg":null}
+6815|2026-05-26 09:09:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6816|2026-05-26 09:10:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6817|2026-05-26 09:11:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6818|2026-05-26 09:12:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6819|2026-05-26 09:13:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6820|2026-05-26 09:14:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6821|2026-05-26 09:15:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6822|2026-05-26 09:16:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6823|2026-05-26 09:17:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6824|2026-05-26 09:18:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6825|2026-05-26 09:19:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6826|2026-05-26 09:20:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6827|2026-05-26 09:21:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6829|2026-05-26 09:22:09|sistema|interno|Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)|
+6830|2026-05-26 09:22:10|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6831|2026-05-26 09:23:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6832|2026-05-26 09:24:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6833|2026-05-26 09:25:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6834|2026-05-26 09:26:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6835|2026-05-26 09:27:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6836|2026-05-26 09:28:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6837|2026-05-26 09:28:47|whatsapp|entrante|cancela la tarea de mandar el mensaje a fabio|{"messageId":"false_34342575317160@lid_3EB0711EB2E296F16E30A8","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6838|2026-05-26 09:29:09|sistema|interno|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)|{"programadoId":268,"canal":"whatsapp","destino":"5491152189302@c.us","razon":"usuario"}
+6840|2026-05-26 09:29:13|sistema|interno|acción ejecutada: cancelar_programado|{"accion":{"tipo":"cancelar_programado","id":268},"resultado":{"id":268,"cancelado":true},"canalOrigen":"whatsapp"}
+6839|2026-05-26 09:29:13|sistema|interno|claude_call whatsapp: 24925ms prompt=72913c raw=283c|{"tipo":"claude_call","canal":"whatsapp","ms":24925,"prompt_chars":72913,"raw_chars":283,"error_msg":null}
+6841|2026-05-26 09:29:23|whatsapp|entrante|y pasame los datos de contacto de fabio|{"messageId":"false_34342575317160@lid_3EB040F7913FDDD798D5C0","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6842|2026-05-26 09:29:44|sistema|interno|claude_call whatsapp: 20721ms prompt=72581c raw=295c|{"tipo":"claude_call","canal":"whatsapp","ms":20721,"prompt_chars":72581,"raw_chars":295,"error_msg":null}
+6843|2026-05-26 09:29:51|whatsapp|saliente|Fabio Boschetto
+WA: +54 9 11 5218-9302
+Email: fabio.boschetto@vrainz.com|{"razonamiento":"Diego pide los datos de Fabio — es Fabio Boschetto en la libreta. Respondo directo con nombre, WA y ema
+6845|2026-05-26 09:34:03|whatsapp|entrante|es el unico fabio que tenes en la agenda de contactos?|{"messageId":"false_34342575317160@lid_3EB07615A689F956E78C8A","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6846|2026-05-26 09:34:29|sistema|interno|claude_call whatsapp: 25691ms prompt=72453c raw=253c|{"tipo":"claude_call","canal":"whatsapp","ms":25691,"prompt_chars":72453,"raw_chars":253,"error_msg":null}
+6847|2026-05-26 09:34:30|whatsapp|saliente|Sí, Fabio Boschetto es el único Fabio que tengo en tu agenda.|{"razonamiento":"Diego pregunta si hay más Fabios en su libreta. Solo aparece Fabio Boschetto.","inReplyTo":"false_34342
+6850|2026-05-26 09:36:13|sistema|interno|calendar_acceso autodetectado: write → none|{"antes":"write","despues":"none","fuente":"calendar-watch"}
+6849|2026-05-26 09:36:13|sistema|interno|Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)|
+6853|2026-05-26 09:36:15|sistema|interno|auto-accept calendar share: diego@paez.is → write (role=writer)|{"calendarId":"diego@paez.is","role":"writer","tier":"write","fuente":"gmail-auto-accept","yaEstaba":false}
+6856|2026-05-26 09:36:29|gmail|entrante|Google
+
+
+
+
+
+We are happy to announce that the Cloud Organization is now available for  
+your domain!
+
+The Cloud Organization allows Google Cl|{"tipo":"unknown_first","messageId":"19e615af73eacf26"}
+6855|2026-05-26 09:36:29|sistema|interno|unknown-flow/gmail LLM: desconocido · Es un email automático del sistema de Google Cloud Platform (notify-noreply@google.com), no una persona real; no|{"tipo":"unknown_llm_trace","canal":"gmail","from":"Google Notifications <notify-noreply@google.com>","hist_wa_total":0,
+6857|2026-05-26 09:36:38|whatsapp|saliente|❌ Cerré el thread de email con El equipo de Google Workspace <workspace-noreply@google.com> — no pude identificar para quién.
+
+Asunto: "Te damos la bi|{"tipo":"unknown_flow_aviso"}
+6858|2026-05-26 09:36:46|whatsapp|saliente|❌ Cerré el thread de email con El equipo de Google Workspace <workspace@google.com> — no pude identificar para quién.
+
+Asunto: "Hemos recibido tus dat|{"tipo":"unknown_flow_aviso"}
+6861|2026-05-26 09:37:05|gmail|entrante|From: "The Google Workspace Team" [workspace-noreply@google.com]
+Subject:  Tienes una nueva cuenta de Google de intensa.io
+
+Te damos la bienvenida |{"tipo":"unknown_first","messageId":"19e610fce88447b2"}
+6860|2026-05-26 09:37:05|sistema|interno|unknown-flow/gmail LLM: desconocido · Es un email automático de Google Workspace notificando la creación de una cuenta en intensa.io; no matchea ningú|{"tipo":"unknown_llm_trace","canal":"gmail","from":"The Google Workspace Team <workspace-noreply@google.com>","hist_wa_t
+6863|2026-05-26 09:44:01|whatsapp|entrante|pasame mi agenda del dia de hoy|{"messageId":"false_34342575317160@lid_3EB0AC5AFF076C81BD39CA","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6862|2026-05-26 09:44:01|whatsapp|entrante|el numero fe fabio es: +5493492580906. Cambialo|{"messageId":"false_34342575317160@lid_3EB005435D841E2344A5EB","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6866|2026-05-26 09:44:50|sistema|interno|acción ejecutada: upsert_contacto|{"accion":{"tipo":"upsert_contacto","nombre":"Fabio Boschetto","whatsapp":"5493492580906@c.us","email":"fabio.boschetto@
+6865|2026-05-26 09:44:50|whatsapp|saliente|Listo, cambié el número de Fabio Boschetto a +54 9 3492 580906.
+
+Para la agenda de hoy tuve un problema para leer tu calendar — no me cargó bien. Esto|{"razonamiento":"Diego pide actualizar número de Fabio (nuevo: 5493492580906@c.us) y ver agenda. Ejecuto upsert_contacto
+6864|2026-05-26 09:44:50|sistema|interno|claude_call whatsapp: 49209ms prompt=72233c raw=742c|{"tipo":"claude_call","canal":"whatsapp","ms":49209,"prompt_chars":72233,"raw_chars":742,"error_msg":null}
+6868|2026-05-26 09:46:21|whatsapp|entrante|pasame toda mi losya de contactos con numero, email y comple|{"messageId":"false_34342575317160@lid_3EB0CA54510555477C7A33","esAudio":false,"pushname":"Diego Paez","fromLid":"343425
+6870|2026-05-26 09:55:40|sistema|interno|Claude falló en WA (Diego): Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=72330c, stdout=10381c)|{"from":"5491132317896@c.us","messageId":"false_34342575317160@lid_3EB0CA54510555477C7A33"}
+6869|2026-05-26 09:55:40|sistema|interno|claude_call whatsapp: 558805ms prompt=72330c raw=10381c ERROR=Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=72330c|{"tipo":"claude_call","canal":"whatsapp","ms":558805,"prompt_chars":72330,"raw_chars":10381,"error_msg":"Idle timeout 24
+
+── eventos con 'Fabio' o '3492580906' (hoy) ──
+id|ts|canal|direccion|usuario_id|cuerpo
+6762|2026-05-26 08:30:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6763|2026-05-26 08:31:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6764|2026-05-26 08:32:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6765|2026-05-26 08:33:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6766|2026-05-26 08:34:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6767|2026-05-26 08:35:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6768|2026-05-26 08:36:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6769|2026-05-26 08:37:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6770|2026-05-26 08:38:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6771|2026-05-26 08:39:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6772|2026-05-26 08:40:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6773|2026-05-26 08:41:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6774|2026-05-26 08:42:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6775|2026-05-26 08:43:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6776|2026-05-26 08:44:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6777|2026-05-26 08:45:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6783|2026-05-26 08:46:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6784|2026-05-26 08:47:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6785|2026-05-26 08:48:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6786|2026-05-26 08:49:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6787|2026-05-26 08:50:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6788|2026-05-26 08:51:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6789|2026-05-26 08:52:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6790|2026-05-26 08:53:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6791|2026-05-26 08:54:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6792|2026-05-26 08:55:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6793|2026-05-26 08:56:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6794|2026-05-26 08:57:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6795|2026-05-26 08:58:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6796|2026-05-26 08:59:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6797|2026-05-26 09:00:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6799|2026-05-26 09:01:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6800|2026-05-26 09:02:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6801|2026-05-26 09:03:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6802|2026-05-26 09:04:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6803|2026-05-26 09:05:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6804|2026-05-26 09:06:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6806|2026-05-26 09:07:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6809|2026-05-26 09:08:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6815|2026-05-26 09:09:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6816|2026-05-26 09:10:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6817|2026-05-26 09:11:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6818|2026-05-26 09:12:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6819|2026-05-26 09:13:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6820|2026-05-26 09:14:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6821|2026-05-26 09:15:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6822|2026-05-26 09:16:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6823|2026-05-26 09:17:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6824|2026-05-26 09:18:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6825|2026-05-26 09:19:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6826|2026-05-26 09:20:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6827|2026-05-26 09:21:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6830|2026-05-26 09:22:10|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6831|2026-05-26 09:23:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6832|2026-05-26 09:24:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6833|2026-05-26 09:25:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6834|2026-05-26 09:26:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6835|2026-05-26 09:27:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6836|2026-05-26 09:28:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6837|2026-05-26 09:28:47|whatsapp|entrante|1|cancela la tarea de mandar el mensaje a fabio
+6838|2026-05-26 09:29:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6840|2026-05-26 09:29:13|sistema|interno|1|acción ejecutada: cancelar_programado
+6841|2026-05-26 09:29:23|whatsapp|entrante|1|y pasame los datos de contacto de fabio
+6843|2026-05-26 09:29:51|whatsapp|saliente|1|Fabio Boschetto
+WA: +54 9 11 5218-9302
+Email: fabio.boschetto@vrainz.com
+6845|2026-05-26 09:34:03|whatsapp|entrante|1|es el unico fabio que tenes en la agenda de contactos?
+6847|2026-05-26 09:34:30|whatsapp|saliente|1|Sí, Fabio Boschetto es el único Fabio que tengo en tu agenda.
+6862|2026-05-26 09:44:01|whatsapp|entrante|1|el numero fe fabio es: +5493492580906. Cambialo
+6866|2026-05-26 09:44:50|sistema|interno|1|acción ejecutada: upsert_contacto
+6865|2026-05-26 09:44:50|whatsapp|saliente|1|Listo, cambié el número de Fabio Boschetto a +54 9 3492 580906.
+
+Para la agenda de hoy tuve un problema para leer tu calendar — no me cargó bien. Estoy viendo cómo resolverlo, por ahora revisala direc
+6878|2026-05-26 10:07:03|gmail|entrante|1|Descárgate la aplicación oficial de Gmail para móviles
+[image: Gmail]
+
+Descárgate la aplicación oficial de Gmail para móviles
+Las mejores funciones de Correo de intensa.io solo están disponibles e
+
+── notas del contacto Fabio (id=210) ──
+
+── pre-09:23 — buscar el cancel del 268 ──
+id|ts|canal|direccion|usuario_id|cuerpo
+6762|2026-05-26 08:30:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6763|2026-05-26 08:31:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6764|2026-05-26 08:32:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6765|2026-05-26 08:33:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6766|2026-05-26 08:34:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6767|2026-05-26 08:35:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6768|2026-05-26 08:36:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6769|2026-05-26 08:37:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6770|2026-05-26 08:38:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6771|2026-05-26 08:39:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6772|2026-05-26 08:40:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6773|2026-05-26 08:41:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6774|2026-05-26 08:42:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6775|2026-05-26 08:43:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6776|2026-05-26 08:44:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6777|2026-05-26 08:45:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6783|2026-05-26 08:46:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6784|2026-05-26 08:47:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6785|2026-05-26 08:48:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6786|2026-05-26 08:49:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6787|2026-05-26 08:50:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6788|2026-05-26 08:51:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6789|2026-05-26 08:52:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6790|2026-05-26 08:53:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6791|2026-05-26 08:54:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6792|2026-05-26 08:55:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6793|2026-05-26 08:56:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6794|2026-05-26 08:57:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6795|2026-05-26 08:58:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+6796|2026-05-26 08:59:09|sistema|interno|1|programado id=268 falló: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/ym/r/t_lX-67hSLT.js:79:180)
+
+# exit=0
