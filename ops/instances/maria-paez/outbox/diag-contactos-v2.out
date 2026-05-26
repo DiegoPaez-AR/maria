@@ -1,0 +1,39 @@
+# ejecutado: 2026-05-26T11:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "=== usuarios target ==="
+#   sqlite3 -header "$DB" "SELECT id, nombre, wa_lid, wa_cus, email FROM usuarios WHERE nombre IN ('Walter Vera','Nicolas Kosinski','Facundo Diaz');"
+#   
+#   echo
+#   echo "=== contactos relacionados (cualquier libreta) ==="
+#   sqlite3 -header "$DB" "
+#     SELECT c.id, c.usuario_id, u.nombre as libreta_de, c.nombre, c.whatsapp, c.email, c.visibilidad
+#     FROM contactos c
+#     LEFT JOIN usuarios u ON u.id = c.usuario_id
+#     WHERE c.nombre LIKE '%Walter%' OR c.nombre LIKE '%Vera%'
+#        OR c.nombre LIKE '%Kosinski%' OR c.nombre LIKE '%Nicolas K%' OR c.nombre LIKE '%Nicolás K%'
+#        OR c.nombre LIKE '%Facundo%' OR c.nombre LIKE '%Martin Diaz%'
+#     ORDER BY c.usuario_id, c.nombre;
+#   "
+
+# ───── output ─────
+=== usuarios target ===
+id|nombre|wa_lid|wa_cus|email
+14|Facundo Diaz|76429043695623@lid||f@thequantumalliance.com
+7|Nicolas Kosinski|227143674011812@lid|5491150080522@c.us|nkosinski@froneus.com
+8|Walter Vera||5491138433288@c.us|wvera@froneus.com
+
+=== contactos relacionados (cualquier libreta) ===
+id|usuario_id|libreta_de|nombre|whatsapp|email|visibilidad
+206|1|Diego|Carlos Rivera|5491141446735@c.us|crivera@millscapitalgroup.com|privada
+93|1|Diego|Facundo Diaz||f@q99.ai|privada
+276|1|Diego|Facundo Martin Diaz|14242831584@c.us|f@thequantumalliance.com|privada
+86|2|Hernan Fulco|Nicolás Kosinski|5491150080522@c.us|nkosinski@froneus.com|privada
+87|2|Hernan Fulco|Walter Vera|5491138433288@c.us|wvera@froneus.com|privada
+
+# exit=0
