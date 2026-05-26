@@ -1,0 +1,57 @@
+# ejecutado: 2026-05-26T11:03:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── mensajes salientes WA del bot en últimos 10 min ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT datetime(timestamp,'localtime') as ts, de, substr(cuerpo,1,250) as cuerpo
+#     FROM eventos
+#     WHERE canal='whatsapp' AND direccion='saliente'
+#       AND datetime(timestamp,'localtime') >= '2026-05-26 11:00'
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── acciones ejecutadas en últimos 10 min ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT datetime(timestamp,'localtime') as ts, substr(cuerpo,1,80) as cuerpo, substr(coalesce(metadata_json,''),1,250) as meta
+#     FROM eventos
+#     WHERE canal='sistema' AND direccion='interno'
+#       AND datetime(timestamp,'localtime') >= '2026-05-26 11:00'
+#       AND cuerpo LIKE 'acción%'
+#     ORDER BY timestamp ASC;
+#   "
+
+# ───── output ─────
+── mensajes salientes WA del bot en últimos 10 min ──
+2026-05-26 11:00:23|5491132317896@c.us|Dale, les mando el mensaje ahora. De los usuarios activos, tenían el calendar conectado Hernán Fulco, Santiago Bignone y Doris Capurro — a los tres les explico el cambio de mail, les paso los pasos para volver a compartir y les aclaro que *maria.paez
+2026-05-26 11:00:30|137456250806423@lid|Hola Hernán! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google c
+2026-05-26 11:00:30|137456250806423@lid|Hola Hernán! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google c
+2026-05-26 11:00:38|5491134274828@c.us|Hola Santiago! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google
+2026-05-26 11:00:38|5491134274828@c.us|Hola Santiago! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google
+2026-05-26 11:00:45|105171031949561@lid|Hola Doris! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google co
+2026-05-26 11:00:45|105171031949561@lid|Hola Doris! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.
+
+Para volver a conectarnos, ¿podés compartirme tu calendario de Google co
+
+── acciones ejecutadas en últimos 10 min ──
+2026-05-26 11:00:30|acción ejecutada: enviar_wa|{"accion":{"tipo":"enviar_wa","a":"5491126829596@c.us","texto":"Hola Hernán! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.\n\nPara 
+2026-05-26 11:00:38|acción ejecutada: enviar_wa|{"accion":{"tipo":"enviar_wa","a":"5491134274828@c.us","texto":"Hola Santiago! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.\n\nPar
+2026-05-26 11:00:45|acción ejecutada: enviar_wa|{"accion":{"tipo":"enviar_wa","a":"105171031949561@lid","texto":"Hola Doris! Te cuento que mi dirección de email cambió: ahora es *maria.paez@intensa.io*. Como consecuencia de ese cambio, lamentablemente perdí el acceso a tu Google Calendar.\n\nPara 
+
+# exit=0
