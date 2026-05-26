@@ -1,0 +1,66 @@
+# ejecutado: 2026-05-26T12:50:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   DB="$MARIA_DB"
+#   
+#   echo "── entradas desde el LID de Santi Capurro (134076010885285) ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, canal, direccion, usuario_id, substr(cuerpo,1,250) as cuerpo
+#     FROM eventos
+#     WHERE (de='134076010885285@lid' OR de LIKE '%134076010885285%')
+#       AND date(timestamp,'localtime')='2026-05-26'
+#     ORDER BY timestamp ASC;
+#   "
+#   
+#   echo
+#   echo "── últimos 30 eventos del 26-05 post-11:00 (todos los usuarios, para encontrar fallos) ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, canal, direccion, usuario_id, substr(cuerpo,1,200) as cuerpo
+#     FROM eventos
+#     WHERE date(timestamp,'localtime')='2026-05-26'
+#       AND datetime(timestamp,'localtime') >= '2026-05-26 12:30'
+#       AND (cuerpo LIKE '%Capurro%' OR cuerpo LIKE '%capurro%' OR cuerpo LIKE '%Santiago%' OR cuerpo LIKE '%santi%' OR cuerpo LIKE '%134076010885285%')
+#     ORDER BY timestamp ASC
+#     LIMIT 50;
+#   "
+#   
+#   echo
+#   echo "── últimos claude_call fallidos hoy ──"
+#   sqlite3 -separator '|' "$DB" "
+#     SELECT id, datetime(timestamp,'localtime') as ts, usuario_id, substr(cuerpo,1,250) as cuerpo
+#     FROM eventos
+#     WHERE date(timestamp,'localtime')='2026-05-26'
+#       AND (cuerpo LIKE '%Claude falló%' OR cuerpo LIKE '%ERROR=%')
+#     ORDER BY timestamp DESC LIMIT 20;
+#   "
+
+# ───── output ─────
+── entradas desde el LID de Santi Capurro (134076010885285) ──
+6752|2026-05-26 07:00:14|whatsapp|saliente|13|☀️ *Buen día, Santiago Capurro.* martes 26 de mayo.
+
+*📅 Agenda del día*
+(sin eventos hoy)
+
+── últimos 30 eventos del 26-05 post-11:00 (todos los usuarios, para encontrar fallos) ──
+
+── últimos claude_call fallidos hoy ──
+6960|2026-05-26 11:07:59|1|Claude falló en WA (Diego): No se pudo extraer JSON de la respuesta de Claude:
+```json
+{
+  "respuesta_a_usuario": "",
+  "respuesta_a_remitente": "",
+  "acciones": [
+    {
+      "tipo": "enviar_wa",
+      "a": "14242831584@c.us",
+      "texto": "Hola 
+6904|2026-05-26 10:46:37|1|claude_call whatsapp: 250206ms prompt=74516c raw=9474c ERROR=Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=74516c
+6905|2026-05-26 10:46:37|1|Claude falló en WA (Diego): Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=74516c, stdout=9474c)
+6869|2026-05-26 09:55:40|1|claude_call whatsapp: 558805ms prompt=72330c raw=10381c ERROR=Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=72330c
+6870|2026-05-26 09:55:40|1|Claude falló en WA (Diego): Idle timeout 240000ms invocando claude (sin output por ese tiempo; prompt=72330c, stdout=10381c)
+
+# exit=0
