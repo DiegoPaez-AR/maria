@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                     cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ----------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7366  2026-05-28 21:12:45  whatsapp  entrante   59899643028@c.us                    Envíame recordatorios 10 min antes                                                                                                                                                                      
+
+7365  2026-05-28 21:12:19  sistema   interno                                        acción ejecutada: crear_evento                                                                                                                                                                          
+
+7364  2026-05-28 21:12:19  calendar  saliente                                       creado: Llamada a Perú (2026-05-29T12:00:00-03:00 → 2026-05-29T13:00:00-03:00) [en calendar de Maria]                                                                                                   
+
+7363  2026-05-28 21:12:18  whatsapp  saliente   59899643028@c.us                    ¡Dale! Te agendo *Llamada a Perú* para mañana *viernes 29 de mayo* a las 12:00 hs.                                                                                                                      
+
+7362  2026-05-28 21:12:18  sistema   interno                                        claude_call whatsapp: 7554ms prompt=42875c raw=476c                                                                                                                                                     
+
+7361  2026-05-28 21:12:11  whatsapp  entrante   59899643028@c.us                    Agéndame 12 hs llamada a Perú 12 hs mañana. Agéndala                                                                                                                                                    
+
 7360  2026-05-28 21:11:04  sistema   interno                                        acción ejecutada: crear_evento                                                                                                                                                                          
 
 7359  2026-05-28 21:11:04  calendar  saliente                                       creado: Llamada a Movistar UY (2026-05-29T16:00:00-03:00 → 2026-05-29T17:00:00-03:00) [en calendar de Maria]                                                                                            
@@ -194,17 +206,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 7268  2026-05-28 17:33:27  calendar  saliente                                       creado: Reunión Diego Páez / Diego Poguetti (2026-06-04T12:00:00-03:00 → 2026-06-04T13:00:00-03:00) · Meet: https://meet.google.com/uxs-ykst-yzm                                                        
 
 7267  2026-05-28 17:33:26  sistema   interno                                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-7266  2026-05-28 17:33:26  whatsapp  saliente   5491161673400@c.us                  ¡Genial Analía! Confirmado para el *jueves 4 de junio a las 12 hs* en sus oficinas. ¿Me podés pasar la dirección exacta para avisarles a los asistentes? ¡Muchas gracias!                               
-
-7265  2026-05-28 17:33:26  whatsapp  saliente   34342575317160@lid                  Dale — le confirmo a Analía para el 4/6 a las 12 hs y le pido la dirección. Ya les mando WA a Pablo Casal y a Nicolás Jordan con los datos, y te lo agendo.                                             
-
-7264  2026-05-28 17:33:26  sistema   interno                                        claude_call whatsapp: 148301ms prompt=74164c raw=2597c                                                                                                                                                  
-
-7263  2026-05-28 17:30:57  whatsapp  entrante   5491132317896@c.us                  Perfecto. Bueno, confirmale. Entonces, la reunión analía para el jueves cuatro de junio a las 12.                                                                                                       
-                                                                                     Pedile la dirección y avisales por favor a Pablo Casal y a Nicolás Jordán.                                                                                                                             
-                                                                                     Pasale por WhatsApp los d                                                                                                                                                                              
-
-7262  2026-05-28 17:30:22  sistema   interno                                        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-7261  2026-05-28 17:27:13  whatsapp  saliente   5491132317896@c.us                  Sí, tengo a Pablo Casal. WA: +54 9 11 5402-5172, mail: Pjcasal@gmail.com.                                                                                                                               
