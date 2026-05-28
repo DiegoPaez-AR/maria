@@ -1,0 +1,50 @@
+# ejecutado: 2026-05-28T16:16:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Cerrar pendiente #100 (pausar brief Rubén Ward) — ya cumplido (brief_activo=0).
+#   # El intento previo falló: usó estado='hecho' (inválido) y columna 'actualizado' (inexistente).
+#   # Estados válidos: abierto/cerrado/cancelado. Cierre correcto con estado='cerrado' + cerrado=CURRENT_TIMESTAMP.
+#   set -uo pipefail
+#   cf=/root/secretaria/config/instances/maria-paez.conf
+#   set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   
+#   echo "=== antes ==="
+#   sqlite3 -header -column "$DB" "SELECT id, estado, cerrado, desc FROM pendientes WHERE id=100;"
+#   
+#   sqlite3 "$DB" "UPDATE pendientes SET estado='cerrado', cerrado=CURRENT_TIMESTAMP WHERE id=100;"
+#   
+#   echo
+#   echo "=== despues ==="
+#   sqlite3 -header -column "$DB" "SELECT id, estado, cerrado, desc FROM pendientes WHERE id=100;"
+#   
+#   echo
+#   echo "=== pendientes que siguen abiertos ==="
+#   sqlite3 -header -column "$DB" "SELECT id, date(creado) AS creado, dueno, desc FROM pendientes WHERE estado='abierto' ORDER BY id;"
+
+# ───── output ─────
+=== antes ===
+id   estado   cerrado  desc                                                                                            
+---  -------  -------  ------------------------------------------------------------------------------------------------
+100  abierto           Pausar el brief matutino de Rubén Ward (usuario #11) — Diego indicó que no quiere recibirlo más.
+
+=== despues ===
+id   estado   cerrado              desc                                                                                            
+---  -------  -------------------  ------------------------------------------------------------------------------------------------
+100  cerrado  2026-05-28 19:16:01  Pausar el brief matutino de Rubén Ward (usuario #11) — Diego indicó que no quiere recibirlo más.
+
+=== pendientes que siguen abiertos ===
+id  creado      dueno    desc                           
+--  ----------  -------  -------------------------------
+2   2026-04-20  usuario  Pedir presupuesto DC Iplan     
+3   2026-04-20  usuario  Pedir presupuesto DC Telecentro
+4   2026-04-20  usuario  Pedir presupuesto DC Claro     
+5   2026-04-20  usuario  iProt Seguridad                
+6   2026-04-20  usuario  Espejo Subaru                  
+37  2026-05-06  usuario  DDJJ 2025                      
+57  2026-05-12  usuario  Turno de pasaporte             
+90  2026-05-22  usuario  Bono Walter y Nico             
+
+# exit=0
