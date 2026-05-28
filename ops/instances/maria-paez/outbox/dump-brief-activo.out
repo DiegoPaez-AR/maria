@@ -1,0 +1,48 @@
+# ejecutado: 2026-05-28T15:40:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   DB="$MARIA_DB"
+#   echo "── usuarios: estado de brief ──"
+#   echo "(brief_activo: 1/NULL = recibe brief · 0 = pausado)"
+#   echo
+#   sqlite3 -header -column "$DB" "
+#     SELECT id,
+#            nombre,
+#            rol,
+#            activo,
+#            COALESCE(brief_activo, '(null)') AS brief_activo,
+#            brief_hora || ':' || brief_minuto AS hora,
+#            tz,
+#            CASE WHEN activo=0 THEN 'usuario inactivo'
+#                 WHEN brief_activo=0 THEN 'BRIEF PAUSADO'
+#                 ELSE 'brief ON' END AS estado_brief
+#     FROM usuarios
+#     ORDER BY id;
+#   "
+
+# ───── output ─────
+── usuarios: estado de brief ──
+(brief_activo: 1/NULL = recibe brief · 0 = pausado)
+
+id  nombre               rol      activo  brief_activo  hora   tz                              estado_brief 
+--  -------------------  -------  ------  ------------  -----  ------------------------------  -------------
+1   Diego                owner    1       1             04:00  America/Argentina/Buenos_Aires  brief ON     
+2   Hernan Fulco         usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+3   Natali Funez         usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+4   Fernando Boero       usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+5   Santiago Bignone     usuario  1       0             07:00  America/Argentina/Buenos_Aires  BRIEF PAUSADO
+6   Doris Capurro        usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+7   Nicolas Kosinski     usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+8   Walter Vera          usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+9   Cristian Ruiz        usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+10  Sebastian Ameijeira  usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+11  Rubén Ward           usuario  1       0             07:00  America/Argentina/Buenos_Aires  BRIEF PAUSADO
+12  Enrique Sosa         usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+13  Santiago Capurro     usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+14  Facundo Diaz         usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+15  Guillermo Bagnato    usuario  1       1             07:00  America/Argentina/Buenos_Aires  brief ON     
+
+# exit=0
