@@ -1,0 +1,84 @@
+# ejecutado: 2026-05-29T12:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf
+#   set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   
+#   echo "=== calendar_acceso de Hernan (user 2) AHORA ==="
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,calendar_id,calendar_provider,calendar_acceso FROM usuarios WHERE id=2;"
+#   
+#   echo ""
+#   echo "=== conv con Hernan ultima hora (ART) ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, direccion, COALESCE(json_extract(metadata_json,'\$.slot'),'') slot, replace(substr(COALESCE(cuerpo,''),1,180),char(10),' / ') t FROM eventos WHERE canal='whatsapp' AND de LIKE '%26829596%' AND timestamp >= '2026-05-29 14:00:00' ORDER BY timestamp;"
+#   
+#   echo ""
+#   echo "=== eventos sistema/interno de user 2 ultima hora (set_calendar_acceso etc) ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, canal, replace(substr(COALESCE(cuerpo,''),1,160),char(10),' / ') t FROM eventos WHERE usuario_id=2 AND canal IN ('sistema','calendar') AND timestamp >= '2026-05-29 13:30:00' ORDER BY timestamp;"
+#   
+#   echo ""
+#   echo "=== logs pm2: share/calendar/Hernan/error ultimas lineas ==="
+#   tail -120 /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "share|calendarList|set_calendar|acceso|hernan|sondeos|aceptar|invitación|compart" | tail -15
+#   
+#   echo ""
+#   echo "=== READ-ONLY: el calendar de Hernan ya esta en el calendarList de Maria? ==="
+#   node -e "
+#   const g=require('./google');
+#   (async()=>{
+#     try {
+#       const cals = await g.listarCalendarios();
+#       const hit = cals.find(c => (c.id||'').toLowerCase().includes('hernan') || (c.id||'').toLowerCase().includes('sondeos'));
+#       console.log('total cals en calendarList:', cals.length);
+#       console.log('calendar de Hernan presente?:', hit ? (hit.id+' role='+hit.accessRole) : 'NO esta');
+#       const acc = await g.chequearAccesoCalendar('hernan.fulco@sondeosglobal.com');
+#       console.log('chequearAccesoCalendar(hernan.fulco@sondeosglobal.com) ->', acc);
+#     } catch(e){ console.log('ERR:', e.message); }
+#   })();
+#   "
+
+# ───── output ─────
+=== calendar_acceso de Hernan (user 2) AHORA ===
+id  nombre        calendar_id                     calendar_provider  calendar_acceso
+--  ------------  ------------------------------  -----------------  ---------------
+2   Hernan Fulco  hernan.fulco@sondeosglobal.com  google             none           
+
+=== conv con Hernan ultima hora (ART) ===
+2026-05-29 11:57:02|entrante||listo, ya hice el cambio
+
+=== eventos sistema/interno de user 2 ultima hora (set_calendar_acceso etc) ===
+2026-05-29 11:27:33|sistema|claude_call memoria-curada: 30685ms prompt=1918c raw=1943c
+2026-05-29 11:57:17|sistema|claude_call whatsapp: 15347ms prompt=49523c raw=363c
+2026-05-29 11:57:18|sistema|acción ejecutada: set_calendar_acceso
+2026-05-29 11:57:18|sistema|calendar_acceso seteado a "none" (autodetectado)
+2026-05-29 11:58:26|sistema|razonamiento Gmail 19e743cc387ad9e2 (Hernan Fulco): Llegó la notificación de compartir calendar de Hernán a maria.paez@intensa.io (confirmado por el ctok del li
+2026-05-29 11:58:26|sistema|claude_call gmail: 76396ms prompt=50488c raw=496c
+2026-05-29 11:58:27|sistema|acción ejecutada: set_calendar_acceso
+2026-05-29 11:58:27|sistema|calendar_acceso seteado a "none" (autodetectado)
+
+=== logs pm2: share/calendar/Hernan/error ultimas lineas ===
+2026-05-29 10:04:56: [WA →usr] Hernan Fulco (137456250806423@lid): Exacto, Hernán. Compartilo con maria.paez.secre@gmail.com y podés quitar el de intensa.io sin problema. Avisame cuando esté listo y lo confirmo de mi lado.
+2026-05-29 10:06:40: [WA ←] Hernan Fulco (5491126829596@c.us): listo, confirmame si ahroa está ok
+2026-05-29 10:06:49: [WA →usr] Hernan Fulco (137456250806423@lid): Perfecto, chequeo ahora.
+2026-05-29 10:06:49: [executor] set_calendar_acceso/Hernan Fulco: none (autodetect)
+2026-05-29 10:06:49: [WA acciones/Hernan Fulco] 1/1 ejecutadas
+2026-05-29 11:26:05:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
+2026-05-29 11:27:33: [memoria-curada] Hernan Fulco × María Páez (sec. Diego): nota actualizada (5 eventos nuevos, 1942 chars)
+2026-05-29 11:42:04:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
+2026-05-29 11:57:02: [WA ←] Hernan Fulco (5491126829596@c.us): listo, ya hice el cambio
+2026-05-29 11:57:09: [GMAIL ←] Hernan Fulco <hernan.fulco@sondeosglobal.com> | "Acepta tu invitación para unirte al calendario compartido "Hernan Fulco""
+2026-05-29 11:57:18: [WA →usr] Hernan Fulco (137456250806423@lid): Chequeo ahora mismo.
+2026-05-29 11:57:18: [executor] set_calendar_acceso/Hernan Fulco: none (autodetect)
+2026-05-29 11:57:18: [WA acciones/Hernan Fulco] 1/1 ejecutadas
+2026-05-29 11:58:27: [executor] set_calendar_acceso/Hernan Fulco: none (autodetect)
+2026-05-29 11:58:27: [GMAIL acciones/Hernan Fulco] 1/1 ejecutadas
+
+=== READ-ONLY: el calendar de Hernan ya esta en el calendarList de Maria? ===
+total cals en calendarList: 4
+calendar de Hernan presente?: NO esta
+chequearAccesoCalendar(hernan.fulco@sondeosglobal.com) -> none
+
+# exit=0
