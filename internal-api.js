@@ -47,7 +47,7 @@ function start({ waClient } = {}) {
       const body = await readJson(req);
 
       if (req.url === '/send-wa') {
-        const { to, body: text } = body;
+        const { to, body: text, usuarioId = null, nombre = null } = body;
         if (!to || !text) return send(400, { error: 'bad_body', need: 'to + body' });
         if (!waClient) return send(503, { error: 'wa_not_ready' });
         // Normalizar destino: si no tiene @c.us, agregarlo
@@ -66,9 +66,9 @@ function start({ waClient } = {}) {
           }
           await waClient.sendMessage(resolvedDest, text);
           mem.log({
-            usuarioId: null,
+            usuarioId,
             canal: 'whatsapp', direccion: 'saliente',
-            para: resolvedDest, cuerpo: text,
+            de: resolvedDest, nombre, cuerpo: text,
             metadata: { tipo: 'internal-api/send-wa' },
           });
           return send(200, { ok: true, sent_to: resolvedDest });
