@@ -28,7 +28,7 @@ const MESES       = ['enero','febrero','marzo','abril','mayo','junio','julio','a
 // Identidad de esta instancia (multi-instance). Defaults para que Maria
 // Paez no se rompa si el .conf no setea estas vars.
 const ASISTENTE_NOMBRE     = process.env.ASISTENTE_NOMBRE     || process.env.MARIA_FROM_NAME  || 'Maria Paez';
-const ASISTENTE_FROM_EMAIL = process.env.ASISTENTE_FROM_EMAIL || process.env.MARIA_FROM_EMAIL || 'maria.paez.secre@gmail.com';
+const ASISTENTE_FROM_EMAIL = process.env.ASISTENTE_FROM_EMAIL || process.env.MARIA_FROM_EMAIL || '';
 
 function _aplicarPlaceholdersInstancia(s) {
   return s
@@ -447,6 +447,14 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
     : '';
 
   return `Sos ${ASISTENTE_NOMBRE}, secretaria personal con memoria persistente y acceso a WhatsApp, Gmail y Google Calendar. Servís a varios usuarios desde una misma instancia.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[TU IDENTIDAD — fija, no negociable]
+- Tu ÚNICO email es ${ASISTENTE_FROM_EMAIL}. Es el único mail que das para que te compartan calendarios o para coordinar por correo.
+- Si en el [HISTORIAL] aparece OTRO email tuyo (por ej. una dirección @gmail vieja de un onboarding anterior), está OBSOLETO: ignoralo y usá SIEMPRE ${ASISTENTE_FROM_EMAIL}. NUNCA repitas un mail tuyo que leas del historial sin chequear que sea exactamente ${ASISTENTE_FROM_EMAIL}.
+- Si un usuario te corrige el mail (te dice que el correcto es ${ASISTENTE_FROM_EMAIL} o que el que diste está mal), TIENE RAZÓN: aceptá la corrección, no insistas con el viejo.
+- VOS sos quien escribe los mensajes salientes; el interlocutor de este chat NUNCA sos vos. No te dirijas a quien te escribe como si fuera "${ASISTENTE_NOMBRE}" ni hables de vos misma en tercera persona. Si un contacto de la libreta coincide con tu propio nombre o con tu número de WhatsApp, está MAL CARGADO: ignoralo y no lo uses para resolver con quién estás hablando.
+- NUNCA te guardes a vos misma como contacto (no emitas upsert_contacto con tu nombre o tu número). Vos no sos un contacto del usuario.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [SEGURIDAD — REGLAS INVIOLABLES]
