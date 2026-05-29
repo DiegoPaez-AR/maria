@@ -1,0 +1,66 @@
+# ejecutado: 2026-05-29T11:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf
+#   set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   
+#   echo "=== estado de calendar de Hernan (user 2) ==="
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,email,calendar_id,calendar_provider,calendar_acceso FROM usuarios WHERE id=2;" 2>&1
+#   
+#   echo ""
+#   echo "=== TODOS los contactos que sean 'Maria'/'María'/self de la asistente (posible polucion) ==="
+#   sqlite3 -header -column "$DB" "SELECT id,usuario_id,nombre,whatsapp,visibilidad FROM contactos WHERE nombre LIKE '%Mar_a P%' OR nombre LIKE '%sec. Diego%' OR whatsapp LIKE '%79043441%' OR nombre LIKE '%secretaria%';" 2>&1
+#   
+#   echo ""
+#   echo "=== que le pidio Diego esta mañana (su chat, hora ART) ==="
+#   sqlite3 "$DB" "
+#   SELECT datetime(timestamp,'-3 hours') art, direccion,
+#          replace(substr(COALESCE(cuerpo,''),1,150),char(10),' / ') texto
+#   FROM eventos
+#   WHERE canal='whatsapp' AND usuario_id=1 AND timestamp >= '2026-05-29 11:00:00'
+#   ORDER BY timestamp LIMIT 30;
+#   " 2>&1
+#   
+#   echo ""
+#   echo "=== contexto: mensajes del chat de Hernan hoy MAÑANA temprano (antes de 9:50) ==="
+#   sqlite3 "$DB" "
+#   SELECT datetime(timestamp,'-3 hours') art, direccion, COALESCE(nombre,'') q,
+#          replace(substr(COALESCE(cuerpo,''),1,160),char(10),' / ') texto
+#   FROM eventos
+#   WHERE canal='whatsapp' AND de LIKE '%26829596%' AND timestamp >= '2026-05-29 11:30:00' AND timestamp < '2026-05-29 13:00:00'
+#   ORDER BY timestamp LIMIT 20;
+#   " 2>&1
+
+# ───── output ─────
+=== estado de calendar de Hernan (user 2) ===
+id  nombre        email                           calendar_id                     calendar_provider  calendar_acceso
+--  ------------  ------------------------------  ------------------------------  -----------------  ---------------
+2   Hernan Fulco  hernan.fulco@sondeosglobal.com  hernan.fulco@sondeosglobal.com  google             none           
+
+=== TODOS los contactos que sean 'Maria'/'María'/self de la asistente (posible polucion) ===
+id   usuario_id  nombre                   whatsapp            visibilidad
+---  ----------  -----------------------  ------------------  -----------
+296  2           María Páez (sec. Diego)  5491126829596@c.us  privada    
+
+=== que le pidio Diego esta mañana (su chat, hora ART) ===
+2026-05-29 09:33:00|entrante|Ni siquiera un hora, media hora de tiempo a la reunión.
+2026-05-29 09:33:00|entrante|María podrá solo analizar una reunión con Javier Guevara que te acaba de /  pasarle contacto y con Arnan Fulco que ya tenés el contacto para la semana q
+2026-05-29 09:34:18|saliente|Tengo a los dos. ¿Qué días u horarios te quedan bien la semana que viene para los 30 minutos? Con eso les escribo.
+2026-05-29 09:36:20|entrante|Los que tenga libres la semana que viene en mi agenda, salvo lunes por la mañana
+2026-05-29 09:37:50|saliente|Hola Hernán, soy María Páez, secretaria de Diego. Quiero coordinar una reunión de 30 minutos entre Diego, vos y Javier Guevara para la semana que vien
+2026-05-29 09:37:50|saliente|Hola Javier, soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una reunión de media hora entre Diego, vos y Hernán Fulco para la sem
+2026-05-29 09:37:50|saliente|Perfecto, les escribo ahora a los dos con las opciones.
+2026-05-29 09:42:25|entrante|miercoles 3/6 a la 10
+2026-05-29 09:42:51|saliente|Perfecto Javier, anotado el miércoles 3/6 a las 10. Estoy esperando que Hernán confirme y te aviso enseguida.
+2026-05-29 09:45:02|saliente|⏰ *En 15min*: IONQ (10:00 a. m.)
+2026-05-29 10:15:09|saliente|⏰ *En 15min*: Avance Semanal con DP (10:30 a. m.) / Con: diego@paez.is, wvera@froneus.com
+
+=== contexto: mensajes del chat de Hernan hoy MAÑANA temprano (antes de 9:50) ===
+2026-05-29 09:50:19|entrante|Hernan Fulco|El míercoles estaría ok
+
+# exit=0
