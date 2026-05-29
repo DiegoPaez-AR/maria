@@ -1,0 +1,75 @@
+# ejecutado: 2026-05-29T16:10:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf; set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   echo "=== conv Hernan (user 2) ultimas 30, hora ART ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, direccion, COALESCE(json_extract(metadata_json,'\$.slot'),json_extract(metadata_json,'\$.tipo'),'') m, replace(substr(COALESCE(cuerpo,''),1,200),char(10),' / ') t FROM eventos WHERE usuario_id=2 AND canal='whatsapp' AND timestamp >= '2026-05-29 14:30:00' ORDER BY timestamp;"
+#   echo ""
+#   echo "=== eventos sistema/interno de user 2 recientes (set_calendar_acceso, claude_call, errores) ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, replace(substr(COALESCE(cuerpo,''),1,140),char(10),' / ') t FROM eventos WHERE usuario_id=2 AND canal='sistema' AND timestamp >= '2026-05-29 15:00:00' ORDER BY timestamp;"
+#   echo ""
+#   echo "=== pm2 logs: lineas con Hernan / set_calendar / share / error (ultimas 40) ==="
+#   tail -200 /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "hernan|26829596|137456250806423|set_calendar|share|acceso|error|loop" | tail -25
+#   echo ""
+#   echo "=== estado calendar Hernan AHORA ==="
+#   sqlite3 -header -column "$DB" "SELECT id,calendar_id,calendar_acceso FROM usuarios WHERE id=2;"
+
+# ───── output ─────
+=== conv Hernan (user 2) ultimas 30, hora ART ===
+2026-05-29 11:57:02|entrante||listo, ya hice el cambio
+2026-05-29 11:57:18|saliente|respuesta_a_usuario|Chequeo ahora mismo.
+2026-05-29 12:31:02|saliente|internal-api/send-wa|Hernán, ya quedó: tengo acceso a tu calendar. Perdoná la vuelta con el mail de antes. Cualquier cosa que necesites coordinar, escribime.
+2026-05-29 15:42:54|saliente||Hernán, te escribí antes con tres opciones para la reunión con Diego y Javier. Javier ya confirmó el miércoles 3 de junio a las 10. ¿Ese horario te viene bien a vos también?
+2026-05-29 15:43:20|entrante||sí, perfecto
+2026-05-29 15:44:44|saliente|respuesta_a_usuario|Hernán, igual te aviso: el miércoles 03/06 a las 10 ya tenés el *Sondeos Sales Team Call* (de 10 a 11 hs). ¿Igual confirmamos el meeting con Diego y Javier a esa hora, o les proponemos otro horario?
+2026-05-29 15:45:17|saliente||⏰ *En 15min*: Preplanning MC (04:00 p. m.) / Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeos.com.ar, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgl
+2026-05-29 15:45:38|entrante||confirmá igual la reunión para el miércoles a las 10
+2026-05-29 15:46:13|saliente|respuesta_a_usuario|Listo, le confirmo a María y te agendo la reunión para el mié 03/06 a las 10. Vas a tener el Sondeos Sales Team Call a la misma hora — ya lo sabés.
+2026-05-29 15:46:14|saliente||Hola María! Hernán confirma el miércoles 03/06 a las 10:00. Podés agendarlo.
+
+=== eventos sistema/interno de user 2 recientes (set_calendar_acceso, claude_call, errores) ===
+2026-05-29 15:44:43|claude_call whatsapp: 82989ms prompt=49852c raw=1000c
+2026-05-29 15:44:44|acción ejecutada: agregar_pendiente
+2026-05-29 15:46:13|claude_call whatsapp: 34848ms prompt=50318c raw=842c
+2026-05-29 15:46:14|acción ejecutada: quitar_pendiente
+2026-05-29 15:46:14|acción ejecutada: enviar_wa
+2026-05-29 15:46:14|acción ejecutada: crear_evento
+
+=== pm2 logs: lineas con Hernan / set_calendar / share / error (ultimas 40) ===
+2026-05-29 11:42:08: ▸ arrancando loop de recordatorios (cada 30min)
+2026-05-29 11:56:52: [WA lid-resolve] 137456250806423@lid -> 5491126829596@c.us
+2026-05-29 11:57:02: [WA ←] Hernan Fulco (5491126829596@c.us): listo, ya hice el cambio
+2026-05-29 11:57:09: [GMAIL ←] Hernan Fulco <hernan.fulco@sondeosglobal.com> | "Acepta tu invitación para unirte al calendario compartido "Hernan Fulco""
+2026-05-29 11:57:18: [WA →usr] Hernan Fulco (137456250806423@lid): Chequeo ahora mismo.
+2026-05-29 11:57:18: [executor] set_calendar_acceso/Hernan Fulco: none (autodetect)
+2026-05-29 11:57:18: [WA acciones/Hernan Fulco] 1/1 ejecutadas
+2026-05-29 11:58:27: [executor] set_calendar_acceso/Hernan Fulco: none (autodetect)
+2026-05-29 11:58:27: [GMAIL acciones/Hernan Fulco] 1/1 ejecutadas
+2026-05-29 12:24:04:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
+2026-05-29 12:24:09: ▸ arrancando loop de recordatorios (cada 30min)
+2026-05-29 12:29:05:   Usuarios:   15 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato
+2026-05-29 12:29:09: ▸ arrancando loop de recordatorios (cada 30min)
+2026-05-29 14:04:10: [meeting-prep/Hernan Fulco] + id=339 Preplanning MC @ 2026-05-29T18:45:00.000Z
+2026-05-29 15:04:10: [meeting-prep/Hernan Fulco] + id=341 Preplanning CMP @ 2026-05-29T19:45:00.000Z
+2026-05-29 15:41:18:  Vos entieras, supongo que tenés acceso a su agenda.
+2026-05-29 15:41:28:  Vos entieras, supongo que tenés acceso a su agenda.
+2026-05-29 15:43:10: [WA lid-resolve] 137456250806423@lid -> 5491126829596@c.us
+2026-05-29 15:43:20: [WA ←] Hernan Fulco (5491126829596@c.us): sí, perfecto
+2026-05-29 15:44:44: [WA →usr] Hernan Fulco (137456250806423@lid): Hernán, igual te aviso: el miércoles 03/06 a las 10 ya tenés el *Sondeos Sales Team Call* (de 10 a 11 hs). ¿Igual confirmamos el meeting con Diego y Javier a es
+2026-05-29 15:44:44: [WA acciones/Hernan Fulco] 1/1 ejecutadas
+2026-05-29 15:45:17: [programados] ✓ id=339 (whatsapp/137456250806423@lid) [meeting_prep:2:1pucrrgec7rm9b6omd4eise8vv_20260529T190000Z]
+2026-05-29 15:45:38: [WA ←] Hernan Fulco (5491126829596@c.us): confirmá igual la reunión para el miércoles a las 10
+2026-05-29 15:46:13: [WA →usr] Hernan Fulco (137456250806423@lid): Listo, le confirmo a María y te agendo la reunión para el mié 03/06 a las 10. Vas a tener el Sondeos Sales Team Call a la misma hora — ya lo sabés.
+2026-05-29 15:46:14: [WA acciones/Hernan Fulco] 3/3 ejecutadas
+
+=== estado calendar Hernan AHORA ===
+id  calendar_id                     calendar_acceso
+--  ------------------------------  ---------------
+2   hernan.fulco@sondeosglobal.com  write          
+
+# exit=0
