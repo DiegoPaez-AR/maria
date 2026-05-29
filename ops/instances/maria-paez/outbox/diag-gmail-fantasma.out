@@ -1,0 +1,85 @@
+# ejecutado: 2026-05-29T11:33:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diag: de donde sale maria.paez.secre@gmail.com + conversacion con Hernan (2682-9596).
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf
+#   
+#   echo "=== .conf: vars de identidad/email (sin secretos) ==="
+#   grep -nE "ASISTENTE_FROM_EMAIL|MARIA_FROM_EMAIL|ASISTENTE_NOMBRE|ASISTENTE_EMAIL|FROM_EMAIL" "$cf" 2>&1 || echo "no hay match en .conf"
+#   
+#   echo ""
+#   echo "=== env VIVO del proceso pm2 (lo que realmente usa el runtime) ==="
+#   pm2 jlist 2>/dev/null | node -e '
+#   let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+#     const a=JSON.parse(s); const m=a.find(x=>x.name==="maria-paez");
+#     if(!m){console.log("no maria-paez");return;}
+#     const e=m.pm2_env||{};
+#     for(const k of ["ASISTENTE_FROM_EMAIL","MARIA_FROM_EMAIL","ASISTENTE_NOMBRE","ASISTENTE_EMAIL"])
+#       console.log(k+" = "+(e[k]===undefined?"(no seteado)":e[k]));
+#   });'
+#   
+#   echo ""
+#   set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   echo "=== quien es el contacto 2682-9596? (usuarios + contactos) ==="
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,rol,wa_cus,email FROM usuarios WHERE wa_cus LIKE '%26829596%' OR nombre LIKE '%Fulco%' OR nombre LIKE '%Hern%';" 2>&1
+#   echo "--- contactos ---"
+#   sqlite3 -header -column "$DB" "SELECT id,usuario_id,nombre,whatsapp,COALESCE(email,'') FROM contactos WHERE whatsapp LIKE '%26829596%';" 2>&1
+#   
+#   echo ""
+#   echo "=== conversacion con 2682-9596 (hora ART) ==="
+#   sqlite3 "$DB" "
+#   SELECT datetime(timestamp,'-3 hours') art, direccion, COALESCE(nombre,'') q,
+#          COALESCE(json_extract(metadata_json,'\$.slot'),'') slot,
+#          replace(COALESCE(cuerpo,''),char(10),' / ') texto
+#   FROM eventos
+#   WHERE canal='whatsapp' AND de LIKE '%26829596%'
+#   ORDER BY timestamp DESC LIMIT 25;
+#   " 2>&1
+#   
+#   echo ""
+#   echo "=== hechos/estado que mencionen gmail o secre ==="
+#   sqlite3 -header -column "$DB" "SELECT usuario_id,clave,substr(valor,1,80) FROM hechos WHERE valor LIKE '%gmail%' OR valor LIKE '%secre%' OR clave LIKE '%mail%';" 2>&1 | head -20
+
+# ───── output ─────
+=== .conf: vars de identidad/email (sin secretos) ===
+6:ASISTENTE_NOMBRE="Maria Paez"
+8:ASISTENTE_FROM_EMAIL=maria.paez@intensa.io
+
+=== env VIVO del proceso pm2 (lo que realmente usa el runtime) ===
+ASISTENTE_FROM_EMAIL = maria.paez@intensa.io
+MARIA_FROM_EMAIL = (no seteado)
+ASISTENTE_NOMBRE = Maria Paez
+ASISTENTE_EMAIL = (no seteado)
+
+=== quien es el contacto 2682-9596? (usuarios + contactos) ===
+id  nombre        rol      wa_cus              email                         
+--  ------------  -------  ------------------  ------------------------------
+2   Hernan Fulco  usuario  5491126829596@c.us  hernan.fulco@sondeosglobal.com
+--- contactos ---
+id   usuario_id  nombre                   whatsapp            COALESCE(email,'')            
+---  ----------  -----------------------  ------------------  ------------------------------
+75   1           Hernan Fulco             5491126829596@c.us  hernan.fulco@sondeosglobal.com
+296  2           María Páez (sec. Diego)  5491126829596@c.us                                
+
+=== conversacion con 2682-9596 (hora ART) ===
+2026-05-29 10:06:40|entrante|Hernan Fulco||listo, confirmame si ahroa está ok
+2026-05-29 10:04:33|entrante|Hernan Fulco||me habías pasado otro mail que era maria.paez@intensa.io. Dejo de compartir el calendario a este y te lo comparto al gmail?
+2026-05-29 10:01:49|entrante|Hernan Fulco||Maria. Tenés acceso a mi calendario?
+2026-05-29 09:50:19|entrante|Hernan Fulco||El míercoles estaría ok
+2026-04-23 15:13:33|saliente|Hernan Fulco||No es estrictamente necesario, pero ayuda mucho. Si tenés los datos guardados en mi libreta, puedo escribirle directamente a quien sea sin preguntarte el teléfono o mail cada vez. Si no, simplemente me los pasás en el momento y listo. ¿Querés ir cargando algunos contactos clave?
+2026-04-23 15:10:30|saliente|||Hernán, ya vi tu calendario — quedó todo configurado. A partir de ahora podemos empezar a trabajar juntos. Cualquier cosa que necesites organizarte, escribime por acá.
+2026-04-23 13:39:48|saliente|||Hola Hernán! Gracias por escribir. Para compartir el calendario conmigo hacés lo siguiente: /  / 1. Entrá a Google Calendar desde la web (calendar.google.com) / 2. En el panel izquierdo, buscá el calendario que querés compartir y hacé clic en los tres puntitos ⋮ / 3. Seleccioná *Configuración y uso compartido* / 4. Bajá hasta *Compartir con personas específicas* y hacé clic en *+ Agregar personas* / 5. Ingresá mi mail: *maria.paez.secre@gmail.com* / 6. En los permisos elegí *Hacer cambios y administrar uso compartido* / 7. Guardá /  / Cuando lo hagas me llega una notificación y te confirmo que quedó todo listo. 🙌
+2026-04-23 12:27:37|saliente|||Hola Hernán, soy Maria Paez, secretaria personal de Diego. A partir de ahora también voy a estar trabajando para vos — cualquier cosa que necesités organizarte, escribime por acá. /  / Para poder manejar tu agenda necesito que compartas tu Google Calendar conmigo en modo *Hacer cambios y administrar*. Mi mail es maria.paez.secre@gmail.com y mi WhatsApp es +54 9 11 7904-3441. /  / ¡Saludos!
+
+=== hechos/estado que mencionen gmail o secre ===
+usuario_id  clave                        substr(valor,1,80)                                                              
+----------  ---------------------------  --------------------------------------------------------------------------------
+1           email_faltante_para_invites  Cuando no tengo el email de alguien para invitarlo a una reunión, tengo dos opci
+3           calendar_id                  natali.funez23@gmail.com                                                        
+
+# exit=0
