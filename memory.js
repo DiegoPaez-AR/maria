@@ -652,10 +652,10 @@ function desdeHoras(usuarioId, horas) {
   return qDesdeHorasUsuario.all(usuarioId, `-${Number(horas)} hours`).map(hidratar);
 }
 
-function contextoCrossCanal(usuarioId, { desdeHoras: horas = 24, max = 50 } = {}) {
+function contextoCrossCanal(usuarioId, { desdeHoras: horas = 24, max = 50, tz = null } = {}) {
   const evs = desdeHoras(usuarioId, horas).slice(-max);
   if (!evs.length) return '(sin actividad reciente)';
-  return evs.map(formatearParaPrompt).join('\n');
+  return evs.map(e => formatearParaPrompt(e, tz)).join('\n');
 }
 
 // Búsqueda en el historial de eventos del usuario. Matchea por substring
@@ -842,8 +842,38 @@ function eventosConContactoDesde({ usuarioId, contacto, desdeEventId = 0, max = 
   return filas.map(hidratar);
 }
 
-function formatearParaPrompt(e) {
-  const ts = e.timestamp;
+// ── Helper: convierte un timestamp (Date | epoch ms | ISO | "YYYY-MM-DD HH:MM:SS"
+// almacenado en UTC por SQLite) a "YYYY-MM-DD HH:MM" en la zona del usuario.
+// Sin esto, el historial que ve el LLM viene en UTC y termina razonando/
+// respondiendo horas en UTC (incidente Poch, 2026-05-28). Default AR.
+function _tsLocal(tsLike, tz) {
+  try {
+    if (tsLike === null || tsLike === undefined || tsLike === '') return '????-??-?? ??:??';
+    let d;
+    if (tsLike instanceof Date) d = tsLike;
+    else if (typeof tsLike === 'number') d = new Date(tsLike);
+    else {
+      let s = String(tsLike).trim();
+      // SQLite "YYYY-MM-DD HH:MM:SS" sin zona → es UTC
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(s)) s = s.replace(' ', 'T') + 'Z';
+      // ISO sin zona explícita → asumir UTC
+      else if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(s) && !/[Zz]|[+-]\d{2}:?\d{2}$/.test(s)) s = s + 'Z';
+      d = new Date(s);
+    }
+    if (isNaN(d.getTime())) return String(tsLike).slice(0, 16).replace('T', ' ');
+    const z = tz || 'America/Argentina/Buenos_Aires';
+    // sv-SE produce "YYYY-MM-DD HH:MM" en 24h
+    return new Intl.DateTimeFormat('sv-SE', {
+      timeZone: z, year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    }).format(d).replace(',', '');
+  } catch {
+    return String(tsLike).slice(0, 16).replace('T', ' ');
+  }
+}
+
+function formatearParaPrompt(e, tz) {
+  const ts = _tsLocal(e.timestamp, tz);
   const flecha = e.direccion === 'entrante' ? '→' : (e.direccion === 'saliente' ? '←' : '·');
   const quien = e.nombre || e.de || '?';
   const cuerpo = (e.cuerpo || '').replace(/\s+/g, ' ').slice(0, 300);

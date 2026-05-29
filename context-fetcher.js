@@ -11,6 +11,37 @@
 
 const MS_DIA = 24 * 3600 * 1000;
 
+// ── Helper: convierte un timestamp (Date | epoch ms | ISO | "YYYY-MM-DD HH:MM:SS"
+// almacenado en UTC por SQLite) a "YYYY-MM-DD HH:MM" en la zona del usuario.
+// Sin esto, el historial que ve el LLM viene en UTC y termina razonando/
+// respondiendo horas en UTC (incidente Poch, 2026-05-28). Default AR.
+function _tsLocal(tsLike, tz) {
+  try {
+    if (tsLike === null || tsLike === undefined || tsLike === '') return '????-??-?? ??:??';
+    let d;
+    if (tsLike instanceof Date) d = tsLike;
+    else if (typeof tsLike === 'number') d = new Date(tsLike);
+    else {
+      let s = String(tsLike).trim();
+      // SQLite "YYYY-MM-DD HH:MM:SS" sin zona → es UTC
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(s)) s = s.replace(' ', 'T') + 'Z';
+      // ISO sin zona explícita → asumir UTC
+      else if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(s) && !/[Zz]|[+-]\d{2}:?\d{2}$/.test(s)) s = s + 'Z';
+      d = new Date(s);
+    }
+    if (isNaN(d.getTime())) return String(tsLike).slice(0, 16).replace('T', ' ');
+    const z = tz || 'America/Argentina/Buenos_Aires';
+    // sv-SE produce "YYYY-MM-DD HH:MM" en 24h
+    return new Intl.DateTimeFormat('sv-SE', {
+      timeZone: z, year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: false,
+    }).format(d).replace(',', '');
+  } catch {
+    return String(tsLike).slice(0, 16).replace('T', ' ');
+  }
+}
+
+
 /**
  * Historial de WhatsApp con `from`. Lee el chat de WA Web y filtra por fecha.
  *
@@ -21,7 +52,7 @@ const MS_DIA = 24 * 3600 * 1000;
  *
  * Devuelve { ok: boolean, lineas: string[], total: number, error?: string }.
  */
-async function historialWA(waClient, from, { dias = 14, max = 200, chat = null } = {}) {
+async function historialWA(waClient, from, { dias = 14, max = 200, chat = null, tz = null } = {}) {
   if (!waClient || (!from && !chat)) return { ok: false, lineas: [], total: 0, error: 'waClient/from faltantes' };
   const desde = Date.now() - dias * MS_DIA;
   try {
@@ -34,17 +65,16 @@ async function historialWA(waClient, from, { dias = 14, max = 200, chat = null }
         return tsMs >= desde;
       })
       .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-    const lineas = filtrados.map(_formatearWA).filter(Boolean);
+    const lineas = filtrados.map(m => _formatearWA(m, tz)).filter(Boolean);
     return { ok: true, lineas, total: filtrados.length };
   } catch (err) {
     return { ok: false, lineas: [], total: 0, error: err.message.split('\n')[0] };
   }
 }
 
-function _formatearWA(m) {
+function _formatearWA(m, tz) {
   try {
-    const ts = m.timestamp ? new Date(m.timestamp * 1000) : null;
-    const fecha = ts ? `${ts.toISOString().slice(0, 16).replace('T', ' ')}` : '????-??-?? ??:??';
+    const fecha = _tsLocal(m.timestamp ? m.timestamp * 1000 : null, tz);
     const dir = m.fromMe ? '← Maria' : '→ remitente';
     let texto = '';
     if (m.body) texto = String(m.body).replace(/\s+/g, ' ').trim();
@@ -69,23 +99,23 @@ function _formatearWA(m) {
  *
  * Devuelve { ok, lineas, total, error? }.
  */
-async function historialEmail(g, email, { dias = 14, max = 50 } = {}) {
+async function historialEmail(g, email, { dias = 14, max = 50, tz = null } = {}) {
   if (!g || !email) return { ok: false, lineas: [], total: 0, error: 'g/email faltantes' };
   const m = String(email).match(/<([^>]+)>/);
   const plano = (m ? m[1] : String(email)).trim().toLowerCase();
   if (!plano || !plano.includes('@')) return { ok: true, lineas: [], total: 0 };
   try {
     const mensajes = await g.buscarMensajesCon(plano, { dias, max });
-    const lineas = (mensajes || []).map(_formatearEmail).filter(Boolean);
+    const lineas = (mensajes || []).map(e => _formatearEmail(e, tz)).filter(Boolean);
     return { ok: true, lineas, total: mensajes.length };
   } catch (err) {
     return { ok: false, lineas: [], total: 0, error: err.message.split('\n')[0] };
   }
 }
 
-function _formatearEmail(e) {
+function _formatearEmail(e, tz) {
   try {
-    const fecha = (e.fecha || '').slice(0, 16).replace('T', ' ');
+    const fecha = _tsLocal(e.fecha, tz);
     const dir = e.saliente ? '← Maria' : '→ remitente';
     const asunto = (e.asunto || '(sin asunto)').replace(/\s+/g, ' ').slice(0, 120);
     const snippet = (e.snippet || '').replace(/\s+/g, ' ').slice(0, 200);
@@ -125,7 +155,7 @@ function historialUsuarioConMaria(mem, usuario, { dias = 14, max = 80 } = {}) {
       LIMIT ?
     `).all(usuario.id, desde, max);
     const lineas = filas.reverse().map(f => {
-      const ts = String(f.timestamp).slice(0, 16).replace('T', ' ');
+      const ts = _tsLocal(f.timestamp, usuario.tz);
       const dir = f.direccion === 'entrante' ? `→ ${usuario.nombre}` : (f.direccion === 'saliente' ? '← Maria' : '· sistema');
       const t = (f.cuerpo || '').replace(/\s+/g, ' ').slice(0, 260);
       return `[${dir}] ${ts} · ${t}`;

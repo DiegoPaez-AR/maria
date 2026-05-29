@@ -63,7 +63,7 @@ function seccionFechaHora(tz) {
       aviso = ` ⚠️ Estás procesando un mensaje de madrugada (00-06hs locales). La gente típicamente considera "hoy" al día previo hasta dormir. Si el usuario dice "mañana", probablemente se refiere al PRÓXIMO amanecer (que es el día calendario actual más tarde), NO al día calendario siguiente. Si tenés dudas, preguntale antes de programar.`;
     }
   } catch {}
-  return `Ahora: ${str} (zona ${tz}). ISO: ${ahora.toISOString()}.${aviso}`;
+  return `Ahora: ${str} (zona ${tz}). [ISO de referencia interna, en UTC: ${ahora.toISOString()} — NUNCA le muestres horas en UTC al usuario; hablale SIEMPRE en su hora local (${tz})].${aviso}`;
 }
 
 async function seccionAgenda(usuario, { dias = 7 } = {}) {
@@ -101,7 +101,7 @@ function _formatearFechaEvento(e, tz) {
 }
 
 function seccionHistorial(usuario, { horas = 48, max = 50 } = {}) {
-  return mem.contextoCrossCanal(usuario.id, { desdeHoras: horas, max });
+  return mem.contextoCrossCanal(usuario.id, { desdeHoras: horas, max, tz: usuario.tz });
 }
 
 function seccionPendientes(usuario, { dueno = null, disparador = null, vacioMsg = '(sin pendientes)' } = {}) {
@@ -736,6 +736,8 @@ Reglas:
 - Si ${usuario.nombre} te responde a una consulta abierta: ejecutá lo que dijo Y emití un quitar_pendiente con el id. Para saber a quién escribir:
     · Si el pendiente tiene "destino:", usalo.
     · Si no, buscá en [LIBRETA] por nombre.
+- CERRÁ EL LOOP CON TERCEROS — no dejes confirmaciones colgadas: cada vez que le digas a un tercero "lo consulto y te confirmo" y le preguntes a ${usuario.nombre} si dar el OK, emití en ESE MISMO turno agregar_pendiente (dueno="usuario", disparador="respuesta_usuario", desc="confirmarle a <tercero> <qué>", meta con de/remitente/canal_origen). Sin ese pendiente, cuando ${usuario.nombre} te conteste no vas a tener con qué cerrar el loop y la confirmación al tercero nunca sale.
+- "SÍ"/"DALE"/"OK" NO ES SIEMPRE ACK VACÍO: antes de tratar un mensaje corto de ${usuario.nombre} como ack sin acción (regla de RESPUESTA VACÍA), fijate si hay un pendiente abierto con disparador="respuesta_usuario" o una pregunta tuya sin responder en el [HISTORIAL]. Si la hay, ese "sí/dale/ok" ES la respuesta: ejecutá la acción gateada (típicamente enviar_wa al tercero con la confirmación) Y emití quitar_pendiente con su id. Solo es ack vacío si NO hay NADA esperando la decisión de ${usuario.nombre}.
 - Tareas (dueno=usuario, disparador=manual): cerralas SOLO con "listo/hecho/ya/completé/terminé" explícito sobre esa tarea.
 - POSTERGAR un pendiente: si ${usuario.nombre} pide "esperá", "recordame a las X", "dejame hasta la tarde", "no me molestes con eso hasta...", EMITÍ posponer_pendiente con id y hasta. NO te limites a responder "dale" — el loop de recordatorios no lee el chat, solo la tabla. Si no posponés explícitamente, te va a volver a pinguear en pocas horas.
 - MATRIZ de pendientes — cada agregar_pendiente requiere dueno + disparador. Elegí los DOS pensando: ¿quién ejecuta?, ¿qué dispara la acción?

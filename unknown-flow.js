@@ -245,10 +245,10 @@ async function _resolverConLLM({ canal, cuerpo, from, senderEmail, pushname, asu
 
   // Fetch historias en paralelo (best-effort, cada una captura sus errores).
   const promHistWA    = (canal === 'whatsapp' && waClient && from)
-    ? ctxFetcher.historialWA(waClient, from, { dias: 14, max: 200, chat })
+    ? ctxFetcher.historialWA(waClient, from, { dias: 14, max: 200, chat, tz: owner.tz })
     : Promise.resolve({ ok: true, lineas: [], total: 0 });
   const promHistMail  = senderEmail
-    ? ctxFetcher.historialEmail(_google(), senderEmail, { dias: 14, max: 50 })
+    ? ctxFetcher.historialEmail(_google(), senderEmail, { dias: 14, max: 50, tz: owner.tz })
     : Promise.resolve({ ok: true, lineas: [], total: 0 });
   // Historiales de todos los usuarios activos (no solo owner). Clave para
   // detectar terceros ligados a gestiones de usuarios que no sean owner.
