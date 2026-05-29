@@ -1,0 +1,117 @@
+# ejecutado: 2026-05-29T08:28:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Dump conversacion de anoche (2026-05-28) — Diego <-> Maria y Maria <-> Poch Burgers.
+#   # Objetivo: reconstruir el incidente Poch (loop de confirmacion no cerrado + tz UTC).
+#   set -uo pipefail
+#   cf=/root/secretaria/config/instances/maria-paez.conf
+#   set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   
+#   echo "=== Contacto Poch ==="
+#   sqlite3 -header -column "$DB" "SELECT id, usuario_id, nombre, wa, COALESCE(email,'') FROM contactos WHERE nombre LIKE '%Poch%' OR wa LIKE '%37646922%';" 2>&1
+#   
+#   echo ""
+#   echo "=== Conversacion COMPLETA 2026-05-28 (desde 22:00 UTC = 19:00 ART) hasta ahora ==="
+#   echo "    (hora mostrada en ART; jid 1132317896=Diego owner, 137646922=Poch)"
+#   echo ""
+#   sqlite3 "$DB" "
+#   SELECT datetime(timestamp,'-3 hours') AS art,
+#          direccion,
+#          CASE
+#            WHEN de LIKE '%1132317896%' THEN 'Diego'
+#            WHEN de LIKE '%37646922%'   THEN 'POCH'
+#            WHEN de LIKE '%34342575317160%' THEN 'Diego(lid)'
+#            ELSE COALESCE(nombre, de) END AS quien,
+#          COALESCE(json_extract(metadata_json,'\$.slot'),'') AS slot,
+#          replace(COALESCE(cuerpo,''), char(10), ' / ') AS texto
+#   FROM eventos
+#   WHERE canal='whatsapp'
+#     AND timestamp >= '2026-05-28 22:00:00'
+#     AND (de LIKE '%1132317896%' OR de LIKE '%37646922%' OR de LIKE '%34342575317160%')
+#   ORDER BY timestamp;
+#   " 2>&1
+#   
+#   echo ""
+#   echo "=== Acciones/envios salientes hacia POCH (137646922) en la noche ==="
+#   sqlite3 -header -column "$DB" "
+#   SELECT datetime(timestamp,'-3 hours') AS art, direccion, substr(COALESCE(cuerpo,''),1,120) AS texto
+#   FROM eventos
+#   WHERE de LIKE '%37646922%'
+#   ORDER BY timestamp DESC LIMIT 20;
+#   " 2>&1
+#   
+#   echo ""
+#   echo "=== Tareas/pendientes creados que mencionen Poch o hamburguesas ==="
+#   sqlite3 -header -column "$DB" "SELECT id, estado, date(creado) c, dueno, desc FROM pendientes WHERE desc LIKE '%Poch%' OR desc LIKE '%hambur%' OR desc LIKE '%pedido%';" 2>&1
+
+# ───── output ─────
+=== Contacto Poch ===
+Error: in prepare, no such column: wa
+  SELECT id, usuario_id, nombre, wa, COALESCE(email,'') FROM contactos WHERE nom
+                   error here ---^
+
+=== Conversacion COMPLETA 2026-05-28 (desde 22:00 UTC = 19:00 ART) hasta ahora ===
+    (hora mostrada en ART; jid 1132317896=Diego owner, 137646922=Poch)
+
+2026-05-28 20:21:59|entrante|Diego||hola, podras pedir en poch 6 hamburguesas: / 1 Mexican con doble carne y papas / 1 Hamburguesa con queso simple con Aros / 1 Hamburguesa con queso simple con papas / 1 Hamburguesa sola (pan y carne) simple con papas / 1 Qatar simple con mozzarella / 1 Deliburguer simple con aros /  / que te digan en cuanto paso y voy, pago alla
+2026-05-28 20:22:38|entrante|Diego||Serían 7 en total
+2026-05-28 20:22:38|entrante|Diego||Suma una Qatar más simple con aros
+2026-05-28 20:24:10|saliente|POCH||Hola! Actualización del pedido — quedaría así, 7 hamburguesas en total: /  / 1 Mexican con doble carne y papas / 1 Hamburguesa con queso simple con Aros / 1 Hamburguesa con queso simple con papas / 1 Hamburguesa sola (pan y carne) simple con papas / 1 Qatar simple con mozzarella / 1 Deliburguer simple con aros / 1 Qatar simple con aros /  / ¿Me pueden decir el total y en cuánto tiempo estarían listas? Gracias!
+2026-05-28 20:24:10|saliente|Diego|respuesta_a_remitente|Anotado, le actualizo el pedido con esa Qatar extra. Te aviso cuando confirmen el total y el tiempo.
+2026-05-28 20:32:48|entrante|Diego||Alguna novedad?
+2026-05-28 20:33:16|saliente|Diego|respuesta_a_remitente|Todavía no me contestaron de Poch. En cuanto me digan algo te aviso.
+2026-05-28 20:38:29|entrante|Diego||Les preguntas pf
+2026-05-28 20:38:48|entrante|POCH||Buenassssssssss, como va? tengo 1hs de demora!(30min para venir a retirar) dame el ok y marchamos el pedido
+2026-05-28 20:38:56|saliente|POCH||Hola! ¿Tienen alguna novedad sobre el pedido que les mandé? ¿En cuánto tiempo estaría listo y cuál sería el total?
+2026-05-28 20:38:56|saliente|Diego|respuesta_a_remitente|Ya les pregunto.
+2026-05-28 20:39:09|saliente|POCH|respuesta_a_remitente|Lo consulto con Diego y te confirmo en un momento!
+2026-05-28 20:39:09|saliente|Diego(lid)|respuesta_a_usuario|Poch dice que tienen 1 hora de demora (30 min para que vayas a retirar). ¿Doy el ok para que arranquen?
+2026-05-28 20:53:42|entrante|Diego||Si
+2026-05-28 20:54:22|entrante|Diego||Gracias
+2026-05-28 21:15:40|entrante|Diego||Ya pasaron los 30 minutos? O te dijeron ellos algún horario?
+2026-05-28 21:16:55|saliente|Diego|respuesta_a_remitente|Los 30 minutos desde que Poch mandó el mensaje (23:38) ya pasaron — habrían sido las 00:08. Desde que diste el ok (23:53) serían las 00:23, o sea en unos minutos. No me dieron un horario exacto ni me escribieron de vuelta. Ya podés ir yendo.
+2026-05-28 21:19:24|entrante|Diego||María, hablame en orario, acá hay Buenos Aires, no sé en qué orario me está sabrando. /  Estoy en -3.
+2026-05-28 21:21:00|saliente|Diego|respuesta_a_remitente|Perdón, te pasé los horarios en UTC sin querer. En Buenos Aires: Poch escribió a las 20:38, los 30 minutos habrían vencido a las 21:08 (ya pasaron). Desde que diste el ok (20:53) serían las 21:23 — o sea, ya estás en tiempo. Podés ir.
+2026-05-28 21:21:26|entrante|Diego||el mensaje o no les lleron el mensaje, puedes ver algo a los tiles o no
+2026-05-28 21:22:20|saliente|Diego(lid)|respuesta_a_usuario|No tengo acceso a los ticks de WhatsApp — no puedo ver si el mensaje fue entregado o leído. Lo que sí puedo decirte es que Poch estuvo respondiendo antes sin problema, así que la comunicación funcionaba. Si querés confirmar, lo más rápido es que lo chequeés vos en el chat.
+2026-05-28 21:25:11|entrante|Diego||Puede ser que le dijiste que le confirmabas y nunca les confirmaste?
+2026-05-28 21:26:28|saliente|Diego|respuesta_a_remitente|Sí, tenés razón. Cuando dijiste 'sí' parece que no les mandé la confirmación a Poch — me quedé sin cerrar ese loop. Fue un error mío, lo lamento. Ya es pasada la medianoche así que no les escribo ahora, pero si querés que mañana temprano les avise algo, me decís.
+2026-05-28 21:30:18|entrante|Diego||Yo ya estoy acá y ya lo resolví. Pero no es pasada la medianoche. Tatúate en el brazo que estoy en Buenos Aires
+2026-05-28 21:31:03|saliente|Diego|respuesta_a_remitente|Entendido, me alegra que lo hayas podido resolver vos. Y tenés razón — otra vez me confundí con la hora. Buenos Aires siempre, tatuado.
+2026-05-28 21:34:24|entrante|Diego||Si, lo resolví, tengo que esperar acá……. / Pero tatuate tambien, que si decís que vas a confirmar tenes que hacerlo, capaz deberías anotarlo como pendiente
+2026-05-28 21:35:15|saliente|Diego|respuesta_a_remitente|Sí, tenés razón. Cada vez que quede en confirmarle algo a alguien me lo dejo anotado como tarea mía — así no se me escapa el loop de cierre.
+2026-05-28 21:45:09|saliente|Diego(lid)||Recordatorio — tenés 8 tareas abiertas 📝 /  / 1. Pedir presupuesto DC Iplan — 921h / 2. Pedir presupuesto DC Telecentro — 921h / 3. Pedir presupuesto DC Claro — 921h / 4. iProt Seguridad — 921h / 5. Espejo Subaru — 921h / 6. DDJJ 2025 — 549h / 7. Turno de pasaporte — 395h / 8. Bono Walter y Nico — 151h /  / Cuando termines alguna decime "listo <nombre>" y la saco.
+2026-05-29 04:00:10|saliente|Diego(lid)||☀️ *Buen día, Diego.* viernes 29 de mayo. /  / *📅 Agenda del día* / • 10:00 a. m. — IONQ / • 10:30 a. m. — Avance Semanal con DP / • 01:00 p. m. — Almuerzo Andy Alex /  / *Cumpleaños hoy* / 🎂 Nicolás Sgroi /  / *📝 Pendientes* / 1. Pedir presupuesto DC Iplan / 2. Pedir presupuesto DC Telecentro / 3. Pedir presupuesto DC Claro / 4. iProt Seguridad / 5. Espejo Subaru / 6. DDJJ 2025 / 7. Turno de pasaporte / 8. Bono Walter y Nico
+
+=== Acciones/envios salientes hacia POCH (137646922) en la noche ===
+art                  direccion  texto                                                                                                             
+-------------------  ---------  ------------------------------------------------------------------------------------------------------------------
+2026-05-28 20:39:09  saliente   Lo consulto con Diego y te confirmo en un momento!                                                                
+
+2026-05-28 20:38:56  saliente   Hola! ¿Tienen alguna novedad sobre el pedido que les mandé? ¿En cuánto tiempo estaría listo y cuál sería el total?
+
+2026-05-28 20:38:48  entrante   Buenassssssssss, como va? tengo 1hs de demora!(30min para venir a retirar) dame el ok y marchamos el pedido       
+
+2026-05-28 20:24:10  saliente   Hola! Actualización del pedido — quedaría así, 7 hamburguesas en total:                                           
+                                                                                                                                                  
+                                1 Mexican con doble carne y papas                                                                                 
+                                1 Hamburguesa                                                                                                     
+
+2026-05-19 20:11:59  saliente   Hola! Quisiera hacer un pedido para retirar:                                                                      
+                                - 1 Mexican con doble carne y papas                                                                               
+                                - 2 Hamburguesas con queso simples con                                                                            
+
+2026-05-12 20:14:21  saliente   Hola! Quería hacer un pedido para retirar:                                                                        
+                                                                                                                                                  
+                                1 hamburguesa Mexican con papas                                                                                   
+                                1 hamburguesa Qatar simple con aros de cebol                                                                      
+
+=== Tareas/pendientes creados que mencionen Poch o hamburguesas ===
+id  estado   c           dueno    desc                                                        
+--  -------  ----------  -------  ------------------------------------------------------------
+58  cerrado  2026-05-12  usuario  Confirmarle a Natali el horario de retiro del pedido en Poch
+
+# exit=0
