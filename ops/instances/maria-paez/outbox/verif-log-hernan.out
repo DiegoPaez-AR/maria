@@ -1,0 +1,21 @@
+# ejecutado: 2026-05-29T12:33:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf; set -a; . "$cf"; set +a
+#   echo "=== ultimas salientes a Hernan (usuario_id=2) ==="
+#   sqlite3 -header -column "$MARIA_DB" "SELECT datetime(timestamp,'-3 hours') art, direccion, de, COALESCE(json_extract(metadata_json,'\$.tipo'),'') tipo, substr(cuerpo,1,55) FROM eventos WHERE usuario_id=2 AND canal='whatsapp' ORDER BY id DESC LIMIT 4;"
+
+# ───── output ─────
+=== ultimas salientes a Hernan (usuario_id=2) ===
+art                  direccion  de                   tipo                  substr(cuerpo,1,55)                                    
+-------------------  ---------  -------------------  --------------------  -------------------------------------------------------
+2026-05-29 12:31:02  saliente   137456250806423@lid  internal-api/send-wa  Hernán, ya quedó: tengo acceso a tu calendar. Perdoná l
+2026-05-29 11:57:18  saliente   137456250806423@lid                        Chequeo ahora mismo.                                   
+2026-05-29 11:57:02  entrante   5491126829596@c.us                         listo, ya hice el cambio                               
+2026-05-29 10:06:49  saliente   137456250806423@lid                        Perfecto, chequeo ahora.                               
+
+# exit=0
