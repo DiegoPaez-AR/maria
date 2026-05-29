@@ -1,0 +1,52 @@
+# ejecutado: 2026-05-29T16:17:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Borra los mensajes SALIENTES de Maria dirigidos a la "María" fantasma en el
+#   # bucket de Hernan (user 2). Estos mensajes (errores de hoy) contaminan el
+#   # historial y Maria los re-replica. Los inbound legitimos de Hernan saludando
+#   # "Hola María" NO se tocan (direccion='entrante').
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf; set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   W="usuario_id=2 AND direccion='saliente' AND (cuerpo LIKE 'Hola Mar_a!%' OR cuerpo LIKE 'Le confirmo a Mar_a %' OR cuerpo LIKE 'Listo, le confirmo a Mar_a %')"
+#   
+#   echo "=== ANTES — filas que voy a borrar ==="
+#   sqlite3 -header -column "$DB" "SELECT id, datetime(timestamp,'-3 hours') art, substr(cuerpo,1,70) FROM eventos WHERE $W ORDER BY id;"
+#   N=$(sqlite3 "$DB" "SELECT COUNT(*) FROM eventos WHERE $W;")
+#   echo "total a borrar: $N"
+#   
+#   sqlite3 "$DB" "DELETE FROM eventos WHERE $W;"
+#   
+#   echo ""
+#   echo "=== DESPUES — quedan salientes a 'María'? (deberia 0) ==="
+#   sqlite3 "$DB" "SELECT COUNT(*) AS quedan FROM eventos WHERE $W;"
+#   echo ""
+#   echo "=== sanity: ultimos mensajes del hilo Hernan (debe quedar coherente) ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, direccion, substr(cuerpo,1,55) FROM eventos WHERE usuario_id=2 AND canal='whatsapp' ORDER BY id DESC LIMIT 6;"
+
+# ───── output ─────
+=== ANTES — filas que voy a borrar ===
+id    art                  substr(cuerpo,1,70)                                                   
+----  -------------------  ----------------------------------------------------------------------
+7472  2026-05-29 09:51:52  Le confirmo a María el miércoles 03/06 a las 10:00. Ella se encarga de
+7474  2026-05-29 09:51:52  Hola María! El miércoles 03/06 a las 10:00 le viene bien a Hernán. Pod
+7558  2026-05-29 15:46:13  Listo, le confirmo a María y te agendo la reunión para el mié 03/06 a 
+7561  2026-05-29 15:46:14  Hola María! Hernán confirma el miércoles 03/06 a las 10:00. Podés agen
+total a borrar: 4
+
+=== DESPUES — quedan salientes a 'María'? (deberia 0) ===
+0
+
+=== sanity: ultimos mensajes del hilo Hernan (debe quedar coherente) ===
+2026-05-29 15:45:38|entrante|confirmá igual la reunión para el miércoles a las 10
+2026-05-29 15:45:17|saliente|⏰ *En 15min*: Preplanning MC (04:00 p. m.)
+Con: cristia
+2026-05-29 15:44:44|saliente|Hernán, igual te aviso: el miércoles 03/06 a las 10 ya 
+2026-05-29 15:43:20|entrante|sí, perfecto
+2026-05-29 15:42:54|saliente|Hernán, te escribí antes con tres opciones para la reun
+2026-05-29 12:31:02|saliente|Hernán, ya quedó: tengo acceso a tu calendar. Perdoná l
+
+# exit=0

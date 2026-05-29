@@ -1,5 +1,7 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7577  2026-05-29 19:17:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
+
 7576  2026-05-29 19:14:33  sistema   interno                                                   claude_call whatsapp: 14271ms prompt=78808c raw=211c                                                                                                                                                    
 
 7575  2026-05-29 19:14:19  whatsapp  entrante   5491132317896@c.us                             si, gracias                                                                                                                                                                                             
@@ -32,13 +34,9 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 
 7562  2026-05-29 18:46:14  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
 
-7561  2026-05-29 18:46:14  whatsapp  saliente   137456250806423@lid                            Hola María! Hernán confirma el miércoles 03/06 a las 10:00. Podés agendarlo.                                                                                                                            
-
 7560  2026-05-29 18:46:14  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
 
 7559  2026-05-29 18:46:14  calendar  saliente                                                  creado: Reunión Diego / Javier Guevara / Hernán (2026-06-03T10:00:00-03:00 → 2026-06-03T10:30:00-03:00) · Meet: https://meet.google.com/meb-ddvz-tts                                                    
-
-7558  2026-05-29 18:46:13  whatsapp  saliente   137456250806423@lid                            Listo, le confirmo a María y te agendo la reunión para el mié 03/06 a las 10. Vas a tener el Sondeos Sales Team Call a la misma hora — ya lo sabés.                                                     
 
 7557  2026-05-29 18:46:13  sistema   interno                                                   claude_call whatsapp: 34848ms prompt=50318c raw=842c                                                                                                                                                    
 
@@ -236,3 +234,5 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 7478  2026-05-29 13:02:03  sistema   interno                                                   claude_call whatsapp: 13434ms prompt=46469c raw=610c                                                                                                                                                    
 
 7477  2026-05-29 13:01:49  whatsapp  entrante   5491126829596@c.us                             Maria. Tenés acceso a mi calendario?                                                                                                                                                                    
+
+7476  2026-05-29 13:00:07  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
