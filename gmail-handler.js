@@ -50,10 +50,10 @@ function _marcarProcesado(id) {
 async function _intentarAceptarShareCalendar(email, messageId) {
   const asunto = email.asunto || '';
   const cuerpo = email.cuerpo || email.snippet || '';
-  const esShareAccept = /shared a calendar|invited you to see all event details|invited you to make changes|Accept the invite to join this shared calendar/i.test(cuerpo)
-    || /Accept your invitation to join shared calendar|shared calendar/i.test(asunto);
-  const esAccessUpdate = /Calendar access updated|updated your access to the shared calendar/i.test(cuerpo)
-    || /Calendar access updated/i.test(asunto);
+  const esShareAccept = /shared a calendar|invited you to see all event details|invited you to make changes|Accept the invite to join this shared calendar|comparti\u00f3 un calendario|te invit\u00f3 a ver|te invit\u00f3 a hacer cambios|invitaci\u00f3n para unirte al calendario compartido|Acepta la invitaci\u00f3n para unirte a este calendario compartido/i.test(cuerpo)
+    || /Accept your invitation to join shared calendar|shared calendar|Acepta tu invitaci\u00f3n para unirte al calendario compartido|calendario compartido|comparti\u00f3 un calendario/i.test(asunto);
+  const esAccessUpdate = /Calendar access updated|updated your access to the shared calendar|Acceso al calendario actualizado|actualiz\u00f3 tu acceso al calendario/i.test(cuerpo)
+    || /Calendar access updated|Acceso al calendario actualizado/i.test(asunto);
   if (!esShareAccept && !esAccessUpdate) return false;
 
   // Extraer calendar_id: el email del From: ES el id del calendar primario.

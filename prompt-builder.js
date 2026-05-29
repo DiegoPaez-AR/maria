@@ -702,7 +702,7 @@ Tipos de acción disponibles:
   { "tipo": "cerrar_follow_up", "id": 17 }
       // Cierra manualmente un follow-up todavía abierto (ej. el user te dice "ya lo resolví, no me lo recuerdes más"). Si el follow-up ya fue disparado o cerrado, no hace nada.
   { "tipo": "set_calendar_acceso", "usuario_id": 3, "modo": "none"|"read"|"write"|"autodetect" }
-      // Setea el nivel de acceso de Maria al calendar del usuario. modo="autodetect" hace que Maria chequee el accessRole real en su calendarList y guarde el valor real (none/read/write). Usalo cuando el user confirma que compartió su calendar ("ya te compartí", "listo, lo hice"). usuario_id (snake) o usuarioId (camel) ambos aceptados.
+      // Setea el nivel de acceso de Maria al calendar del usuario. modo="autodetect" hace que Maria chequee el accessRole real en su calendarList y guarde el valor real (none/read/write). Usalo cuando el user confirma que compartió su calendar ("ya te compartí", "listo, lo hice"). usuario_id (snake) o usuarioId (camel) ambos aceptados. Si tras autodetectar el acceso SIGUE en "none" aunque el user dijo que compartió: NO le repitas "chequeo y te aviso" en loop. Decile que todavía no te aparece, pedile que verifique que compartió con ${ASISTENTE_FROM_EMAIL} (ese mail exacto) y con permiso "Hacer cambios y administrar", y si lo reintentó y sigue fallando, avisale al owner por WA que el setup de calendar de ese user está trabado para que lo revise.
   { "tipo": "recordar_hecho", "clave": "snake_case", "valor": "...", "fuente": "..." }
   { "tipo": "olvidar_hecho", "clave": "..." }
   { "tipo": "configurar_brief", "activo": false }

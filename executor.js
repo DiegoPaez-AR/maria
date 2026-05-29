@@ -906,7 +906,22 @@ async function _setCalendarAcceso(a, ctx) {
       modoFinal = 'none';
     } else {
       const provider = await providers.forUser(u);
-      detectado = await provider.chequearAccesoCalendar(u.calendar_id);
+      // Self-heal: un calendar compartido desde otro Workspace (o cuyo mail de
+      // invitacion no reconocio el auto-accept de Gmail) NO entra solo al
+      // calendarList de Maria, asi que chequearAccesoCalendar daria 'none'
+      // para siempre. Si el provider sabe aceptar shares, lo intentamos aca:
+      // inserta el calendar en la lista de Maria y devuelve el accessRole.
+      if (typeof provider.aceptarCalendarShare === 'function') {
+        try {
+          const acc = await provider.aceptarCalendarShare(u.calendar_id);
+          if (acc && acc.ok && acc.accessRole) {
+            const role = acc.accessRole;
+            detectado = (role === 'writer' || role === 'owner') ? 'write'
+                      : (role === 'reader' || role === 'freeBusyReader') ? 'read' : 'none';
+          }
+        } catch (e) { console.warn(`[executor] aceptarCalendarShare best-effort fallo: ${e.message}`); }
+      }
+      if (detectado == null) detectado = await provider.chequearAccesoCalendar(u.calendar_id);
       modoFinal = detectado;
     }
   }
