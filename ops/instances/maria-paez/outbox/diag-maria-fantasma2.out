@@ -1,0 +1,58 @@
+# ejecutado: 2026-05-29T16:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf; set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   
+#   echo "=== metadata del evento 'Hola María!' (a donde fue?) ==="
+#   sqlite3 "$DB" "SELECT id, datetime(timestamp,'-3 hours') art, usuario_id, direccion, de, nombre, metadata_json FROM eventos WHERE cuerpo LIKE 'Hola Mar_a! Hern%' ORDER BY id DESC LIMIT 3;"
+#   
+#   echo ""
+#   echo "=== RE-AUDITORIA: cualquier contacto/usuario 'Maria' o numero 79043441 ==="
+#   echo "-- usuarios --"
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,wa_cus,email FROM usuarios WHERE nombre LIKE '%Mar_a%' OR wa_cus LIKE '%79043441%';"
+#   echo "-- contactos (todas las libretas) --"
+#   sqlite3 -header -column "$DB" "SELECT id,usuario_id,nombre,whatsapp,visibilidad FROM contactos WHERE nombre LIKE '%Mar_a P%' OR nombre LIKE '%secretaria%' OR nombre LIKE '%sec. Diego%' OR whatsapp LIKE '%79043441%';"
+#   
+#   echo ""
+#   echo "=== cuantas veces aparece 'Hola María' o 'le confirmo a María' en el historial de Hernan (contaminacion) ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, substr(cuerpo,1,80) FROM eventos WHERE usuario_id=2 AND (cuerpo LIKE '%Hola Mar_a%' OR cuerpo LIKE '%confirmo a Mar_a%' OR cuerpo LIKE '%a Mar_a el%' OR cuerpo LIKE '%María%') ORDER BY timestamp;"
+#   
+#   echo ""
+#   echo "=== evento creado 15:46 (crear_evento) — que quedo? ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, substr(cuerpo,1,120) FROM eventos WHERE usuario_id=2 AND canal='calendar' AND timestamp >= '2026-05-29 18:00:00' ORDER BY timestamp DESC LIMIT 5;"
+
+# ───── output ─────
+=== metadata del evento 'Hola María!' (a donde fue?) ===
+7561|2026-05-29 15:46:14|2|saliente|137456250806423@lid||{"destinoOriginal":"137456250806423@lid","destinoFinal":"137456250806423@lid","tag":"enviar_wa"}
+
+=== RE-AUDITORIA: cualquier contacto/usuario 'Maria' o numero 79043441 ===
+-- usuarios --
+-- contactos (todas las libretas) --
+
+=== cuantas veces aparece 'Hola María' o 'le confirmo a María' en el historial de Hernan (contaminacion) ===
+2026-04-29 16:56:18|Hola María cómo andas ?
+2026-04-30 20:14:37|Hola Maria como andas?
+
+Por favor sumar a Sebastian a la capacitación.
+
+same
+2026-04-30 20:19:37|Muchas gracias María.
+
+Feliz día mañana y buen finde.
+
+[image: Froneus Logo]
+2026-05-29 09:37:50|Hola Hernán, soy María Páez, secretaria de Diego. Quiero coordinar una reunión d
+2026-05-29 09:51:52|Hola María! El miércoles 03/06 a las 10:00 le viene bien a Hernán. Podés agendar
+2026-05-29 09:51:52|Le confirmo a María el miércoles 03/06 a las 10:00. Ella se encarga de mandar la
+2026-05-29 15:46:13|Listo, le confirmo a María y te agendo la reunión para el mié 03/06 a las 10. Va
+2026-05-29 15:46:14|Hola María! Hernán confirma el miércoles 03/06 a las 10:00. Podés agendarlo.
+
+=== evento creado 15:46 (crear_evento) — que quedo? ===
+2026-05-29 15:46:14|creado: Reunión Diego / Javier Guevara / Hernán (2026-06-03T10:00:00-03:00 → 2026-06-03T10:30:00-03:00) · Meet: https://
+
+# exit=0
