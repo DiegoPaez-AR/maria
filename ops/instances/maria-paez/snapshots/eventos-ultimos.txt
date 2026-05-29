@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7563  2026-05-29 18:46:14  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+7562  2026-05-29 18:46:14  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
+
+7561  2026-05-29 18:46:14  whatsapp  saliente   137456250806423@lid                            Hola María! Hernán confirma el miércoles 03/06 a las 10:00. Podés agendarlo.                                                                                                                            
+
+7560  2026-05-29 18:46:14  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
+
+7559  2026-05-29 18:46:14  calendar  saliente                                                  creado: Reunión Diego / Javier Guevara / Hernán (2026-06-03T10:00:00-03:00 → 2026-06-03T10:30:00-03:00) · Meet: https://meet.google.com/meb-ddvz-tts                                                    
+
+7558  2026-05-29 18:46:13  whatsapp  saliente   137456250806423@lid                            Listo, le confirmo a María y te agendo la reunión para el mié 03/06 a las 10. Vas a tener el Sondeos Sales Team Call a la misma hora — ya lo sabés.                                                     
+
+7557  2026-05-29 18:46:13  sistema   interno                                                   claude_call whatsapp: 34848ms prompt=50318c raw=842c                                                                                                                                                    
+
 7556  2026-05-29 18:45:38  whatsapp  entrante   5491126829596@c.us                             confirmá igual la reunión para el miércoles a las 10                                                                                                                                                    
 
 7555  2026-05-29 18:45:24  whatsapp  saliente   59899643028@c.us                               ⏰ *En 15min*: Llamada a Movistar UY (04:00 p. m.)                                                                                                                                                       
@@ -220,27 +234,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
 7465  2026-05-29 12:42:25  whatsapp  entrante   5491165572001@c.us                             miercoles 3/6 a la 10                                                                                                                                                                                   
 
 7464  2026-05-29 12:37:50  sistema   interno                                                   acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-7463  2026-05-29 12:37:50  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
-
-7462  2026-05-29 12:37:50  whatsapp  saliente   137456250806423@lid                            Hola Hernán, soy María Páez, secretaria de Diego. Quiero coordinar una reunión de 30 minutos entre Diego, vos y Javier Guevara para la semana que viene.                                                
-                                                                                                                                                                                                                                                                                                       
-                                                                                               ¿Alguno de estos horarios te viene bien?                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                       
-                                                                                               • Ma                                                                                                                                                                                                    
-
-7461  2026-05-29 12:37:50  whatsapp  saliente   137456250806423@lid                            Hola Hernán, soy María Páez, secretaria de Diego. Quiero coordinar una reunión de 30 minutos entre Diego, vos y Javier Guevara para la semana que viene.                                                
-                                                                                                                                                                                                                                                                                                       
-                                                                                               ¿Alguno de estos horarios te viene bien?                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                       
-                                                                                               • Ma                                                                                                                                                                                                    
-
-7460  2026-05-29 12:37:50  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
-
-7459  2026-05-29 12:37:50  whatsapp  saliente   5491165572001@c.us                             Hola Javier, soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una reunión de media hora entre Diego, vos y Hernán Fulco para la semana que viene.                                    
-                                                                                                                                                                                                                                                                                                       
-                                                                                               ¿Alguno de estos horarios te viene                                                                                                                                                                      
-
-7458  2026-05-29 12:37:50  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-7457  2026-05-29 12:37:50  whatsapp  saliente   5491132317896@c.us                             Perfecto, les escribo ahora a los dos con las opciones.                                                                                                                                                 
