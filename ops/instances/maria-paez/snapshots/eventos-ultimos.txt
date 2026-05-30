@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                
 ----  -------------------  --------  ---------  -------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7651  2026-05-30 17:43:42  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                   
+
+7650  2026-05-30 17:43:42  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                           
+
+7649  2026-05-30 17:43:42  whatsapp  saliente   5491130215648@c.us   Hola! Soy Maria Paez, secretaria de Diego Paez. ¿Tienen disponibilidad para esta noche a las 21:00 para 5 personas? Muchas gracias.                                                                   
+
+7648  2026-05-30 17:43:42  whatsapp  saliente   5491132317896@c.us   Lo gestiono con Nika ahora, te confirmo cuando respondan.                                                                                                                                             
+
+7647  2026-05-30 17:43:42  sistema   interno                         claude_call whatsapp: 36470ms prompt=79749c raw=972c                                                                                                                                                  
+
+7646  2026-05-30 17:43:05  whatsapp  entrante   5491132317896@c.us   María podrá reservar en Nica hoy a las 9 para 5 personas, gracias.                                                                                                                                    
+
 7645  2026-05-30 13:35:10  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                     
 
 7644  2026-05-30 13:35:10  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                      
@@ -284,18 +296,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 7551  2026-05-29 18:44:43  sistema   interno                         claude_call whatsapp: 82989ms prompt=49852c raw=1000c                                                                                                                                                 
 
 7550  2026-05-29 18:43:20  whatsapp  entrante   5491126829596@c.us   sí, perfecto                                                                                                                                                                                          
-
-7549  2026-05-29 18:42:54  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                           
-
-7548  2026-05-29 18:42:54  whatsapp  saliente   137456250806423@lid  Hernán, te escribí antes con tres opciones para la reunión con Diego y Javier. Javier ya confirmó el miércoles 3 de junio a las 10. ¿Ese horario te viene bien a vos también?                         
-
-7547  2026-05-29 18:42:54  whatsapp  saliente   137456250806423@lid  Hernán, te escribí antes con tres opciones para la reunión con Diego y Javier. Javier ya confirmó el miércoles 3 de junio a las 10. ¿Ese horario te viene bien a vos también?                         
-
-7546  2026-05-29 18:42:54  whatsapp  saliente   5491132317896@c.us   Entendido, le escribo ahora.                                                                                                                                                                          
-
-7545  2026-05-29 18:42:54  sistema   interno                         claude_call whatsapp: 84946ms prompt=78959c raw=633c                                                                                                                                                  
-
-7544  2026-05-29 18:41:28  whatsapp  entrante   5491132317896@c.us   Hernán, por lo que me dijo, te contestó que mirez en la agenda de él.                                                                                                                                 
-                                                                      Vos entieras, supongo que tenés acceso a su agenda.                                                                                                                                                  
-                                                                      Chequen los mensajes que tuviste, y vuelta con él a la barra,                                                                                                                                        
-                                                                      porque me dij                                                                                                                                                                                        
