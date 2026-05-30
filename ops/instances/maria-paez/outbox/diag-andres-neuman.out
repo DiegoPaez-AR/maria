@@ -1,0 +1,72 @@
+# ejecutado: 2026-05-30T19:34:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf; set -a; . "$cf"; set +a
+#   DB="$MARIA_DB"
+#   
+#   echo "=== usuarios Andres Neuman (duplicados? cuando creados?) ==="
+#   sqlite3 -header -column "$DB" "SELECT id,nombre,rol,activo,wa_cus,email,creado,brief_activo,brief_hora FROM usuarios WHERE nombre LIKE '%Neuman%' OR nombre LIKE '%Andr%';"
+#   
+#   echo ""
+#   echo "=== eventos sistema de crear_usuario / alta recientes (ult 2 dias) ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, usuario_id, replace(substr(COALESCE(cuerpo,''),1,120),char(10),' / ') t FROM eventos WHERE canal='sistema' AND (cuerpo LIKE '%crear_usuario%' OR cuerpo LIKE '%Neuman%' OR cuerpo LIKE '%alta%') AND timestamp >= '2026-05-28 00:00:00' ORDER BY timestamp;"
+#   
+#   echo ""
+#   echo "=== que le pidio Diego (owner, user 1) sobre Andres — ult 2 dias ==="
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, direccion, replace(substr(COALESCE(cuerpo,''),1,160),char(10),' / ') t FROM eventos WHERE usuario_id=1 AND canal='whatsapp' AND (cuerpo LIKE '%Neuman%' OR cuerpo LIKE '%Andr%') AND timestamp >= '2026-05-28 00:00:00' ORDER BY timestamp;"
+#   
+#   echo ""
+#   echo "=== brief 7am a Andres? (buscar morning-brief en su bucket) ==="
+#   AID=$(sqlite3 "$DB" "SELECT id FROM usuarios WHERE nombre LIKE '%Neuman%' ORDER BY id LIMIT 1;")
+#   echo "Andres user_id=$AID"
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'-3 hours') art, direccion, substr(COALESCE(cuerpo,''),1,80) FROM eventos WHERE usuario_id='$AID' AND canal='whatsapp' ORDER BY timestamp;"
+
+# ───── output ─────
+=== usuarios Andres Neuman (duplicados? cuando creados?) ===
+id  nombre          rol      activo  wa_cus              email              creado               brief_activo  brief_hora
+--  --------------  -------  ------  ------------------  -----------------  -------------------  ------------  ----------
+16  Andres Neumann  usuario  1       5491164719969@c.us  andres@nomada.com  2026-05-29 16:58:43  1             07        
+
+=== eventos sistema de crear_usuario / alta recientes (ult 2 dias) ===
+2026-05-29 13:57:25|1|contacto vcard (privado): Andres Neumann → 5491164719969@c.us
+2026-05-29 13:58:43|1|acción ejecutada: crear_usuario
+
+=== que le pidio Diego (owner, user 1) sobre Andres — ult 2 dias ===
+2026-05-29 13:57:45|entrante|María Escribile un mensaje a Andrés presentándote obviamente y contáles, bueno, /  qué es lo que hace, qué cosas hace como asistente, qué podrías hacer para él, a
+2026-05-29 13:58:50|saliente|¡Hola Andrés! Soy Maria Paez, secretaria personal. Te escribo porque me pidieron que te dé una mano con la coordinación de tu agenda y comunicaciones del día a 
+2026-05-29 15:17:37|saliente|Claro, ya chequeo tu agenda esa semana. Dos cosas rápidas antes de escribirle: el audio no quedó del todo claro — ¿es Andrés Neumann? Y ¿cuánto dura la reunión 
+2026-05-29 15:29:23|entrante|Andrés, Neumann es el último contacto que te pasé hace un radito, hace una dos horas y /  idealmente al muerto dos horas de tres a quince
+2026-05-29 15:31:55|saliente|Hola Andrés, quiero coordinar una reunión de 2 horas entre vos y Diego para la semana del 8 de junio. ¿Alguno de estos horarios te viene bien? / • Mar 09/06 a las
+2026-05-29 15:31:55|saliente|La de Javier y Hernán todavía no: Javier confirmó el mié 3/6 a las 10, pero Hernán no contestó todavía. Cuando los dos me confirmen lo agendo y te aviso. /  / Para 
+2026-05-30 10:31:09|entrante|María, quiero que empiezas a trabajar para Andrés, ¿no?, ¿no?, ¿qué lo que sabe ser contacto? /  Sí, osribile, presentate, explica cómo lo tiene que saber para tr
+2026-05-30 10:32:36|saliente|Dale, le mando el mensaje de bienvenida a Andrés ahora.
+2026-05-30 10:32:43|saliente|¡Hola Andrés! Soy Maria Paez, secretaria personal. Te escribo porque me pidieron que te dé una mano con la coordinación de tu agenda y comunicaciones del día a 
+2026-05-30 14:49:36|entrante|No, el Andrés de Oma, con Andrés de Oma.
+2026-05-30 14:50:45|saliente|¡Ahí está! Sí, le propuse a Andrés Neumann slots para la semana del 8/6: mar 9/6, mié 10/6 y jue 11/6, todos a las 15:00. Todavía no me confirmó — en cuanto res
+2026-05-30 14:53:34|saliente|*Tus pendientes:* /  / 1. iProt Seguridad (desde el 20/04) / 2. Espejo Subaru (desde el 20/04) / 3. DDJJ 2025 (desde el 06/05) / 4. Bono Walter y Nico (desde el 22/05) /  / *
+
+=== brief 7am a Andres? (buscar morning-brief en su bucket) ===
+Andres user_id=16
+2026-05-29 13:58:50|saliente|¡Hola Andrés! Soy Maria Paez, secretaria personal. Te escribo porque me pidieron
+2026-05-29 15:31:55|saliente|Hola Andrés, quiero coordinar una reunión de 2 horas entre vos y Diego para la s
+2026-05-29 19:38:27|entrante|María, como estás, hablé con Emiliano para armar la reunión y quedamos que la re
+2026-05-29 19:38:49|saliente|Anotado, te escribo el *lunes 01/06* para que me confirmes el horario y lo agend
+2026-05-30 07:00:15|saliente|☀️ *Buen día, Andres Neumann.* sábado 30 de mayo.
+
+*📅 Agenda del día*
+(sin event
+2026-05-30 10:32:43|saliente|¡Hola Andrés! Soy Maria Paez, secretaria personal. Te escribo porque me pidieron
+2026-05-30 10:34:44|entrante|Gracias,
+
+Mi email es andres@nomada.com
+
+Es un email de google. Uso todas sus he
+2026-05-30 10:35:10|saliente|Perfecto, Andres. Anotado tu email: andres@nomada.com 👍
+
+Para poder gestionar tu
+
+# exit=0
