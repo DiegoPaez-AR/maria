@@ -1,0 +1,43 @@
+# ejecutado: 2026-05-30T20:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf; set -a; . "$cf"; set +a
+#   node -e "
+#   const g=require('./google');
+#   (async()=>{
+#     await g.autenticar();
+#     const { google } = require('googleapis');
+#     // reusar el auth interno via un mensaje list directo
+#     // buscamos rebotes / mailer-daemon de los ultimos 4 dias
+#     const auth = await g.autenticar();
+#     const gmail = google.gmail({version:'v1', auth});
+#     for (const q of ['from:mailer-daemon newer_than:4d','subject:(Delivery Status OR no se pudo entregar OR Undelivered OR failure) newer_than:4d','to:diego@paez.is subject:Reporte newer_than:4d in:sent']) {
+#       try {
+#         const r = await gmail.users.messages.list({userId:'me', q, maxResults:5});
+#         const n = (r.data.messages||[]).length;
+#         console.log('── q:', q, '→', n, 'msgs');
+#         for (const m of (r.data.messages||[])) {
+#           const full = await gmail.users.messages.get({userId:'me', id:m.id, format:'metadata', metadataHeaders:['From','To','Subject','Date']});
+#           const h = Object.fromEntries((full.data.payload.headers||[]).map(x=>[x.name,x.value]));
+#           console.log('   •', h.Date, '|', h.From, '→', h.To, '|', h.Subject);
+#         }
+#       } catch(e){ console.log('   ERR en q=',q,':',e.message); }
+#     }
+#   })().catch(e=>{console.error('ERR:',e.message);});
+#   "
+
+# ───── output ─────
+── q: from:mailer-daemon newer_than:4d → 0 msgs
+── q: subject:(Delivery Status OR no se pudo entregar OR Undelivered OR failure) newer_than:4d → 0 msgs
+── q: to:diego@paez.is subject:Reporte newer_than:4d in:sent → 5 msgs
+   • Sat, 30 May 2026 16:12:05 -0700 | Maria Paez <maria.paez@intensa.io> → diego@paez.is | 📊 Reporte diario VPS Maria — 30/05/2026
+   • Sat, 30 May 2026 05:00:05 -0400 | Maria Paez <maria.paez@intensa.io> → diego@paez.is | 📊 Reporte diario VPS Maria — 30/05/2026
+   • Fri, 29 May 2026 05:00:05 -0400 | Maria Paez <maria.paez@intensa.io> → diego@paez.is | 📊 Reporte diario VPS Maria — 29/05/2026
+   • Thu, 28 May 2026 02:00:04 -0700 | Maria Paez <maria.paez@intensa.io> → diego@paez.is | 📊 Reporte diario VPS Maria — 28/05/2026
+   • Wed, 27 May 2026 02:00:05 -0700 | Maria Paez <maria.paez@intensa.io> → diego@paez.is | 📊 Reporte diario VPS Maria — 27/05/2026
+
+# exit=0
