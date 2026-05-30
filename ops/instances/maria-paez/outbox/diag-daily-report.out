@@ -1,0 +1,104 @@
+# ejecutado: 2026-05-30T20:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   cd /root/secretaria
+#   cf=config/instances/maria-paez.conf
+#   
+#   echo "=== crontab del root (lineas daily-report) ==="
+#   crontab -l 2>/dev/null | grep -iE "daily|report|secretaria" || echo "(no hay crontab o sin match)"
+#   
+#   echo ""
+#   echo "=== .conf: OWNER_EMAIL / ASISTENTE_FROM_EMAIL / VAULT (presencia) ==="
+#   grep -nE "OWNER_EMAIL|ASISTENTE_FROM_EMAIL|MARIA_VAULT_KEY|OWNER_NOMBRE|DIEGO_EMAIL" "$cf" | sed -E 's/(VAULT_KEY=).*/\1<oculto>/' 
+#   
+#   echo ""
+#   echo "=== log del cron daily-report si existe ==="
+#   for f in /root/secretaria/ops/.daily-report.log /root/secretaria/.daily-report.log /var/log/maria-daily-report.log; do
+#     [ -f "$f" ] && { echo "-- $f (tail) --"; tail -20 "$f"; }
+#   done
+#   
+#   echo ""
+#   echo "=== CORRER daily-report.js (real, manda si puede) — captura error ==="
+#   /usr/bin/node daily-report.js 2>&1 | tail -40
+
+# ───── output ─────
+=== crontab del root (lineas daily-report) ===
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+0 6 * * * cd /root/secretaria && /usr/bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+0 4 * * * /root/secretaria/ops/scripts/borrar-cancelled.sh >> /root/secretaria/ops/.borrar-cancelled.log 2>&1
+
+=== .conf: OWNER_EMAIL / ASISTENTE_FROM_EMAIL / VAULT (presencia) ===
+8:ASISTENTE_FROM_EMAIL=maria.paez@intensa.io
+12:OWNER_NOMBRE=Diego
+13:OWNER_EMAIL=diego@paez.is
+37:MARIA_VAULT_KEY=<oculto>
+
+=== log del cron daily-report si existe ===
+-- /root/secretaria/ops/.daily-report.log (tail) --
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Nicolas Kosinski: 0 abiertos (+0 -0)
+  Walter Vera: 0 abiertos (+0 -0)
+  Cristian Ruiz: 0 abiertos (+0 -0)
+  Sebastian Ameijeira: 0 abiertos (+0 -0)
+  Rubén Ward: 0 abiertos (+0 -0)
+  Enrique Sosa: 0 abiertos (+0 -0)
+  Santiago Capurro: 0 abiertos (+0 -0)
+  Facundo Diaz: 0 abiertos (+0 -0)
+  Guillermo Bagnato: 0 abiertos (+0 -0)
+  Andres Neumann: 0 abiertos (+0 -0)
+  Diego [owner]: 9 abiertos (+3 -2)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 13065 bytes
+
+✓ enviado a diego@paez.is
+
+=== CORRER daily-report.js (real, manda si puede) — captura error ===
+📊 Reporte diario VPS Maria — 30/05/2026
+
+Instancias activas: 1
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 318813 · uptime 32m · 166.9 MB · 0% CPU
+Proceso: 1 deploys · 0 crashes (restarts lifetime: 6)
+WhatsApp: 16↓ / 36↑ (7 audios)
+Gmail:    0↓ / 0↑
+Calendar: 0 creados · 0 modificados · 0 borrados
+Latencia Claude 24h (20 llamadas):
+   · whatsapp: p50 32.0s · p95 86.1s · máx 109.7s  (17)
+   · memoria-curada: p50 24.0s · p95 24.0s · máx 63.3s  (3)
+   🔴 11 llamada(s) >30s · 4 >60s
+Programados en cola: 4
+WA reconexiones (change_state): 1
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Nicolas Kosinski: 0 abiertos (+0 -0)
+  Walter Vera: 0 abiertos (+0 -0)
+  Cristian Ruiz: 0 abiertos (+0 -0)
+  Sebastian Ameijeira: 0 abiertos (+0 -0)
+  Rubén Ward: 0 abiertos (+0 -0)
+  Enrique Sosa: 0 abiertos (+0 -0)
+  Santiago Capurro: 0 abiertos (+0 -0)
+  Facundo Diaz: 0 abiertos (+0 -0)
+  Guillermo Bagnato: 0 abiertos (+0 -0)
+  Andres Neumann: 0 abiertos (+0 -0)
+  Diego [owner]: 6 abiertos (+2 -5)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 12528 bytes
+
+✓ enviado a diego@paez.is
+
+# exit=0
