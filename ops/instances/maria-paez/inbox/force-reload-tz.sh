@@ -1,7 +1,0 @@
-#!/bin/bash
-echo "== reload =="
-pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -2
-sleep 6
-pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{JSON.parse(s).forEach(p=>p.name==="maria-paez"&&console.log("maria-paez status="+p.pm2_env.status,"restarts="+p.pm2_env.restart_time,"uptime="+new Date(p.pm2_env.pm_uptime).toISOString()));}catch(e){console.log("parse fail")}})'
-echo "== sanity: executor carga ok =="
-cd /root/secretaria && node -e 'require("./executor"); console.log("executor require OK")' 2>&1 | tail -3
