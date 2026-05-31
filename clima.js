@@ -51,6 +51,7 @@ async function geocodificar(ciudad) {
     lon: hit.longitude,
     nombre: hit.name,
     pais: hit.country_code || hit.country || null,
+    tz: hit.timezone || null,
   };
 }
 

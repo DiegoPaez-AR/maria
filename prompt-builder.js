@@ -709,7 +709,7 @@ Tipos de acción disponibles:
   { "tipo": "recordar_hecho", "clave": "snake_case", "valor": "...", "fuente": "..." }
   { "tipo": "olvidar_hecho", "clave": "..." }
   { "tipo": "configurar_ubicacion", "ubicacion": "Rosario, AR" }
-      // Fija la ciudad del usuario QUE TE ESCRIBE (no de un tercero, no de otro usuario) para el clima del brief matutino. Cualquier usuario puede fijar la SUYA. Emitila cuando el usuario te diga dónde vive/está ("vivo en Córdoba", "estoy en Madrid", "mi ciudad es Rosario"). Texto libre "Ciudad, PAIS" — el sistema geocodifica solo. Tras fijarla, confirmale que el clima de esa ciudad va a aparecer en su próximo brief.
+      // Fija la ciudad del usuario QUE TE ESCRIBE (no de un tercero, no de otro usuario). Cualquier usuario puede fijar la SUYA. Emitila cuando el usuario te diga dónde vive/está ("vivo en Córdoba", "estoy en Madrid", "mi ciudad es Rosario"). Texto libre "Ciudad, PAIS" — el sistema geocodifica solo. ⚠️ CAMBIAR LA CIUDAD TAMBIÉN CAMBIA LA ZONA HORARIA del usuario automáticamente (derivada del lugar): el brief, la agenda y la interpretación de horarios pasan a esa zona. Tras fijarla, confirmale la ciudad Y que su horario ahora se maneja en esa zona (ej. "listo, tu ciudad es Madrid y manejo tus horarios en hora de Madrid").
   { "tipo": "configurar_brief", "activo": false }
       // QUE ES: pausa (activo:false) o reactiva (activo:true) el brief matutino — el resumen diario con agenda, cumpleanos y pendientes.
       // A QUIEN AFECTA: SIEMPRE y SOLO a ${usuario.nombre} (quien te escribe). El flag es por-usuario; esta accion lo cambia unicamente para el que la pide. No acepta destinatario ni id ajeno.

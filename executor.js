@@ -12,6 +12,7 @@
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
+const clima = require('./clima');
 const seguridad = require('./seguridad');
 const waSend = require('./wa-send');
 const providers = require('./providers');
@@ -695,6 +696,19 @@ function _setCumpleContacto(a, ctx) {
 
 // ─── Acciones del owner ──────────────────────────────────────────────────
 
+// Geocodifica una ciudad ("Ciudad, PAIS") y devuelve { lat, lon, tz } o null.
+// No lanza: si el geocoder falla o no hay match, devolvemos null y el caller
+// sigue sin coords/tz derivada.
+async function _geoDeUbicacion(ubic) {
+  if (!ubic || !String(ubic).trim()) return null;
+  try {
+    return await clima.geocodificar(ubic);
+  } catch (err) {
+    console.warn(`[executor] geocode de "${ubic}" falló: ${err.message}`);
+    return null;
+  }
+}
+
 async function _crearUsuario(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('crear_usuario: solo el owner puede crear usuarios');
@@ -710,17 +724,25 @@ async function _crearUsuario(a, ctx) {
   if (a.wa_cus) {
     waCusNorm = await waValidate.normalizarWaCus(a.wa_cus, ctx.waClient);
   }
+  // Si dieron ciudad y NO tz explícita, derivamos la tz del lugar (geocoder).
+  let _tz = a.tz || null;
+  let _geo = null;
+  if (a.ubicacion) {
+    _geo = await _geoDeUbicacion(a.ubicacion);
+    if (_geo && _geo.tz && !a.tz) _tz = _geo.tz;
+  }
   const u = usuarios.crear({
     nombre: a.nombre,
     wa_lid: a.wa_lid || null,
     wa_cus: waCusNorm,
     email: a.email || null,
     calendar_id: a.calendar_id || null,
-    tz: a.tz || null,
+    tz: _tz,
     brief_hora: a.brief_hora || null,
     brief_minuto: a.brief_minuto || null,
     ubicacion: a.ubicacion || null,
   });
+  if (_geo) usuarios.setUbicacionCoords(u.id, _geo.lat, _geo.lon);
   // Marcar el morning-brief de hoy como "ya enviado" para que no se
   // dispare antes que el mensaje de bienvenida cuando el alta cae dentro
   // de la ventana del brief (07-11h por default). El primer brief real va
@@ -751,12 +773,20 @@ function _configurarBrief(a, ctx) {
 // Self-service: cada usuario fija SU propia ubicacion (ciudad) para el clima
 // del brief. Opera sobre ctx.usuario, sin owner-check ni id ajeno. Cambiar la
 // ubicacion limpia el cache lat/lon (se re-geocodifica en la proxima corrida).
-function _configurarUbicacion(a, ctx) {
+async function _configurarUbicacion(a, ctx) {
   const ubic = (a.ubicacion != null && String(a.ubicacion).trim()) ? String(a.ubicacion).trim() : null;
   if (!ubic) throw new Error('configurar_ubicacion: falta la ciudad (campo ubicacion)');
-  const u = usuarios.actualizar(ctx.usuario.id, { ubicacion: ubic });
-  console.log(`[executor] ubicacion fijada para ${ctx.usuario.nombre} (id=${ctx.usuario.id}): ${u.ubicacion}`);
-  return { usuario: ctx.usuario.nombre, ubicacion: u.ubicacion };
+  // Geocodificamos para derivar la zona horaria (y cachear lat/lon). Cambiar la
+  // ciudad mueve también la tz del usuario: brief, agenda y horarios pasan a esa
+  // zona. (usuarios.actualizar resetea lat/lon al cambiar ubicacion; por eso el
+  // setUbicacionCoords va DESPUÉS.)
+  const geo = await _geoDeUbicacion(ubic);
+  const patch = { ubicacion: ubic };
+  if (geo && geo.tz) patch.tz = geo.tz;
+  const u = usuarios.actualizar(ctx.usuario.id, patch);
+  if (geo) usuarios.setUbicacionCoords(ctx.usuario.id, geo.lat, geo.lon);
+  console.log(`[executor] ubicacion fijada para ${ctx.usuario.nombre} (id=${ctx.usuario.id}): ${u.ubicacion} (tz=${u.tz})`);
+  return { usuario: ctx.usuario.nombre, ubicacion: u.ubicacion, tz: u.tz };
 }
 
 async function _actualizarUsuario(a, ctx) {
@@ -773,7 +803,15 @@ async function _actualizarUsuario(a, ctx) {
   if (patch.wa_cus) {
     patch.wa_cus = await waValidate.normalizarWaCus(patch.wa_cus, ctx.waClient);
   }
+  // Si cambia la ubicacion, derivar tz del lugar (salvo que pasen tz explícita)
+  // y cachear lat/lon (después del actualizar, que resetea coords).
+  let _geoU = null;
+  if (patch.ubicacion) {
+    _geoU = await _geoDeUbicacion(patch.ubicacion);
+    if (_geoU && _geoU.tz && patch.tz === undefined) patch.tz = _geoU.tz;
+  }
   const u = usuarios.actualizar(a.id, patch);
+  if (_geoU) usuarios.setUbicacionCoords(a.id, _geoU.lat, _geoU.lon);
   console.log(`[executor] usuario actualizado: id=${u.id} nombre=${u.nombre} campos=${Object.keys(patch).join(',')}`);
   return { id: u.id, nombre: u.nombre, actualizado: true, campos: Object.keys(patch) };
 }
