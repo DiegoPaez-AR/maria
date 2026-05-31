@@ -1,0 +1,25 @@
+# ejecutado: 2026-05-31T11:31:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/_veriftz.js <<'JS'
+#   (async () => {
+#     try {
+#       const clima = require('/root/secretaria/clima');
+#       for (const c of ['Madrid, ES', 'Rosario, AR', 'Buenos Aires, AR', 'Tokyo, JP']) {
+#         const g = await clima.geocodificar(c);
+#         console.log(c, '->', g ? `lat=${g.lat} lon=${g.lon} tz=${g.tz}` : 'null');
+#       }
+#     } catch (e) { console.log('ERR', e.message); }
+#   })();
+#   JS
+#   cd /root/secretaria && node /tmp/_veriftz.js
+
+# ───── output ─────
+Madrid, ES -> lat=40.4165 lon=-3.70256 tz=Europe/Madrid
+Rosario, AR -> lat=-32.94682 lon=-60.63932 tz=America/Argentina/Cordoba
+Buenos Aires, AR -> lat=-34.61315 lon=-58.37723 tz=America/Argentina/Buenos_Aires
+Tokyo, JP -> lat=35.6895 lon=139.69171 tz=Asia/Tokyo
+
+# exit=0
