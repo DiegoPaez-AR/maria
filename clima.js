@@ -27,13 +27,25 @@ async function _fetchJson(url) {
 // Ciudad (texto libre) → { lat, lon, nombre, pais } usando el geocoder de
 // Open-Meteo. Devuelve null si no hay match.
 async function geocodificar(ciudad) {
-  const q = String(ciudad || '').trim();
-  if (!q) return null;
+  const full = String(ciudad || '').trim();
+  if (!full) return null;
+  // El geocoder de Open-Meteo busca por NOMBRE de lugar: "Ciudad, PAIS"
+  // devuelve 0 resultados. Mandamos solo la primera parte (la ciudad) y, si
+  // el texto traía un pais ("Cordoba, AR"), lo usamos para desambiguar entre
+  // homonimos (ej. Cordoba AR vs Cordoba ES).
+  const parts = full.split(',').map(x => x.trim()).filter(Boolean);
+  const name = parts[0] || full;
+  const paisHint = parts.length > 1 ? parts[parts.length - 1].toUpperCase() : null;
   const url = `https://geocoding-api.open-meteo.com/v1/search`
-            + `?name=${encodeURIComponent(q)}&count=1&language=es&format=json`;
+            + `?name=${encodeURIComponent(name)}&count=10&language=es&format=json`;
   const data = await _fetchJson(url);
-  const hit = data && Array.isArray(data.results) && data.results[0];
-  if (!hit) return null;
+  const results = (data && Array.isArray(data.results)) ? data.results : [];
+  if (!results.length) return null;
+  let hit = results[0];
+  if (paisHint) {
+    const m = results.find(r => String(r.country_code || '').toUpperCase() === paisHint);
+    if (m) hit = m;
+  }
   return {
     lat: hit.latitude,
     lon: hit.longitude,
