@@ -74,6 +74,7 @@ async function ejecutarUna(accion, ctx) {
     case 'recordar_hecho':     return _recordarHecho(accion, ctx);
     case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
     case 'configurar_brief':  return _configurarBrief(accion, ctx);
+    case 'configurar_ubicacion': return _configurarUbicacion(accion, ctx);
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
     case 'actualizar_usuario': return _actualizarUsuario(accion, ctx);
     case 'borrar_usuario':     return _borrarUsuario(accion, ctx);
@@ -718,6 +719,7 @@ async function _crearUsuario(a, ctx) {
     tz: a.tz || null,
     brief_hora: a.brief_hora || null,
     brief_minuto: a.brief_minuto || null,
+    ubicacion: a.ubicacion || null,
   });
   // Marcar el morning-brief de hoy como "ya enviado" para que no se
   // dispare antes que el mensaje de bienvenida cuando el alta cae dentro
@@ -746,13 +748,24 @@ function _configurarBrief(a, ctx) {
   return { usuario: ctx.usuario.nombre, brief_activo: activo ? 1 : 0 };
 }
 
+// Self-service: cada usuario fija SU propia ubicacion (ciudad) para el clima
+// del brief. Opera sobre ctx.usuario, sin owner-check ni id ajeno. Cambiar la
+// ubicacion limpia el cache lat/lon (se re-geocodifica en la proxima corrida).
+function _configurarUbicacion(a, ctx) {
+  const ubic = (a.ubicacion != null && String(a.ubicacion).trim()) ? String(a.ubicacion).trim() : null;
+  if (!ubic) throw new Error('configurar_ubicacion: falta la ciudad (campo ubicacion)');
+  const u = usuarios.actualizar(ctx.usuario.id, { ubicacion: ubic });
+  console.log(`[executor] ubicacion fijada para ${ctx.usuario.nombre} (id=${ctx.usuario.id}): ${u.ubicacion}`);
+  return { usuario: ctx.usuario.nombre, ubicacion: u.ubicacion };
+}
+
 async function _actualizarUsuario(a, ctx) {
   if (!usuarios.esOwner(ctx.usuario.id)) {
     throw new Error('actualizar_usuario: solo el owner puede actualizar usuarios');
   }
   _requerir(a, ['id']);
   const patch = {};
-  for (const k of ['nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto']) {
+  for (const k of ['nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto', 'ubicacion']) {
     if (a[k] !== undefined) patch[k] = a[k];
   }
   if (!Object.keys(patch).length) throw new Error('actualizar_usuario: no hay campos para cambiar');

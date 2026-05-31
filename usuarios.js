@@ -22,8 +22,8 @@ const qPorEmail      = db.prepare(`SELECT * FROM usuarios WHERE email = ? COLLAT
 const qOwner         = db.prepare(`SELECT * FROM usuarios WHERE rol = 'owner' AND activo = 1 LIMIT 1`);
 
 const insertUsuario = db.prepare(`
-  INSERT INTO usuarios (nombre, wa_lid, wa_cus, email, calendar_id, rol, tz, brief_hora, brief_minuto, activo)
-  VALUES (@nombre, @wa_lid, @wa_cus, @email, @calendar_id, @rol, @tz, @brief_hora, @brief_minuto, 1)
+  INSERT INTO usuarios (nombre, wa_lid, wa_cus, email, calendar_id, rol, tz, brief_hora, brief_minuto, ubicacion, activo)
+  VALUES (@nombre, @wa_lid, @wa_cus, @email, @calendar_id, @rol, @tz, @brief_hora, @brief_minuto, @ubicacion, 1)
 `);
 const updateUsuarioWaLid = db.prepare(`
   UPDATE usuarios SET wa_lid = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
@@ -33,6 +33,9 @@ const updateUsuarioActivo = db.prepare(`
 `);
 const updateBriefActivo = db.prepare(`
   UPDATE usuarios SET brief_activo = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
+`);
+const updateUbicacionCoords = db.prepare(`
+  UPDATE usuarios SET lat = ?, lon = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
 `);
 
 // ─── Listado / búsqueda ──────────────────────────────────────────────────
@@ -182,7 +185,7 @@ function _normalizarWaIds({ wa_lid, wa_cus }) {
   return { wa_lid: lid, wa_cus: cus };
 }
 
-function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null }) {
+function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null, ubicacion = null }) {
   if (!nombre) throw new Error('crear usuario: nombre requerido');
 
   // Normalizar
@@ -207,6 +210,7 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
     tz: tz || 'America/Argentina/Buenos_Aires',
     brief_hora: brief_hora || '07',
     brief_minuto: brief_minuto || '00',
+    ubicacion: (ubicacion && String(ubicacion).trim()) ? String(ubicacion).trim() : null,
   });
   return obtener(info.lastInsertRowid);
 }
@@ -221,7 +225,7 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
 // helpers específicos).
 
 const CAMPOS_ACTUALIZABLES = new Set([
-  'nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto',
+  'nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto', 'ubicacion',
 ]);
 
 function actualizar(id, patch = {}) {
@@ -237,6 +241,13 @@ function actualizar(id, patch = {}) {
   if (cambios.nombre !== undefined) cambios.nombre = String(cambios.nombre).trim();
   if (cambios.email  !== undefined && cambios.email != null) cambios.email = String(cambios.email).trim().toLowerCase();
   if (cambios.calendar_id !== undefined && cambios.calendar_id != null) cambios.calendar_id = String(cambios.calendar_id).trim().toLowerCase();
+  // Si cambia la ubicacion: normalizar y limpiar el cache lat/lon (se vuelve a
+  // geocodificar en la proxima corrida del brief contra la ciudad nueva).
+  if (cambios.ubicacion !== undefined) {
+    cambios.ubicacion = (cambios.ubicacion && String(cambios.ubicacion).trim()) ? String(cambios.ubicacion).trim() : null;
+    cambios.lat = null;
+    cambios.lon = null;
+  }
   // Normalizar wa_lid / wa_cus juntos: si el caller pasa "X@lid" como
   // wa_cus por error, _normalizarWaIds lo deriva al slot correcto.
   if (cambios.wa_lid !== undefined || cambios.wa_cus !== undefined) {
@@ -349,6 +360,15 @@ function setBriefActivo(usuarioId, activo) {
   return obtener(usuarioId);
 }
 
+// Cachea el lat/lon geocodificado de la ubicacion del usuario. Lo llama el
+// morning-brief tras resolver la ciudad con Open-Meteo, para no geocodificar
+// en cada corrida. No valida — confia en el geocoder.
+function setUbicacionCoords(usuarioId, lat, lon) {
+  if (!usuarioId) return null;
+  updateUbicacionCoords.run(lat == null ? null : lat, lon == null ? null : lon, usuarioId);
+  return obtener(usuarioId);
+}
+
 module.exports = {
   listarActivos,
   listarTodos,
@@ -365,6 +385,7 @@ module.exports = {
   tier,
   setearCalendarAcceso,
   setBriefActivo,
+  setUbicacionCoords,
   cantidadActivos,
   maxUsuarios,
   puedeCrearMas,

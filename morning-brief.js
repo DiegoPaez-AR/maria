@@ -15,6 +15,7 @@ const g   = require('./google');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
 const providers = require('./providers');
+const clima = require('./clima');
 
 const BRIEF_VENTANA_H = Number(process.env.BRIEF_VENTANA_H || 4);
 const ESTADO_KEY      = 'morning_brief_ultimo_dia';
@@ -111,15 +112,48 @@ function _pendientesLista(usuario) {
   return ps.map((p, i) => `${i+1}. ${p.desc}`).join('\n');
 }
 
+// Linea de clima para el brief. Usa lat/lon cacheados; si no los hay pero el
+// usuario tiene ubicacion en texto, geocodifica una vez y la persiste. Si no
+// hay ubicacion, devuelve null y el brief omite la seccion (sin romper nada).
+async function _climaHoy(usuario) {
+  let lat = usuario.lat;
+  let lon = usuario.lon;
+  if ((lat == null || lon == null) && usuario.ubicacion) {
+    try {
+      const geo = await clima.geocodificar(usuario.ubicacion);
+      if (geo) {
+        lat = geo.lat; lon = geo.lon;
+        usuarios.setUbicacionCoords(usuario.id, lat, lon);
+      }
+    } catch (err) {
+      console.warn(`[morning-brief/${usuario.nombre}] geocoding fallo:`, err.message);
+    }
+  }
+  if (lat == null || lon == null) return null;
+  try {
+    const pr = await clima.pronosticoHoy(lat, lon, usuario.tz);
+    if (!pr || (pr.min == null && pr.max == null)) return null;
+    let linea = `${pr.emoji} ${pr.desc}`;
+    if (pr.min != null && pr.max != null) linea += `, min ${pr.min}° / max ${pr.max}°`;
+    else if (pr.max != null) linea += `, max ${pr.max}°`;
+    if (pr.probLluvia != null && pr.probLluvia >= 30) linea += ` · ${pr.probLluvia}% prob. de lluvia`;
+    return linea;
+  } catch (err) {
+    console.warn(`[morning-brief/${usuario.nombre}] clima fallo:`, err.message);
+    return null;
+  }
+}
+
 async function componerBrief(usuario) {
   const t = horaMinEnTz(usuario.tz);
   const dowIdx = new Date(Date.UTC(t.year, t.mes - 1, t.dia)).getUTCDay();
   const fecha  = `${DIAS_SEMANA[dowIdx]} ${t.dia} de ${MESES[t.mes - 1]}`;
 
-  const [agenda, cumples] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario)]);
+  const [agenda, cumples, climaLinea] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario), _climaHoy(usuario)]);
   const pendientes = _pendientesLista(usuario);
 
   let out = `☀️ *Buen día, ${usuario.nombre}.* ${fecha}.\n\n`;
+  if (climaLinea) out += `*🌡️ Clima${usuario.ubicacion ? ' en ' + usuario.ubicacion : ''}*\n${climaLinea}\n\n`;
   out += `*📅 Agenda del día*\n${agenda}\n`;
   if (cumples)   out += `\n*Cumpleaños hoy*\n${cumples}\n`;
   if (pendientes) out += `\n*📝 Pendientes*\n${pendientes}\n`;

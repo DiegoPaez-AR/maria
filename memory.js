@@ -329,6 +329,26 @@ function _migrarUsuariosBriefActivo() {
 }
 _migrarUsuariosBriefActivo();
 
+// ubicacion / lat / lon: para la sección de clima del morning-brief.
+//   - ubicacion: ciudad en texto libre (ej. "Rosario, AR"). NULL = sin clima.
+//   - lat/lon: cache del geocoding de la ciudad (Open-Meteo). Se rellenan en
+//     la primera corrida del brief y se limpian cuando cambia la ubicacion.
+// Backfill: usuarios existentes → "Buenos Aires, AR" (default elegido). Los
+// usuarios NUEVOS arrancan en NULL: Maria les pregunta la ciudad en el alta.
+function _migrarUsuariosUbicacion() {
+  let cambios = false;
+  if (!_tieneColumna('usuarios', 'ubicacion')) {
+    db.exec(`ALTER TABLE usuarios ADD COLUMN ubicacion TEXT`);
+    const r = db.prepare(`UPDATE usuarios SET ubicacion = 'Buenos Aires, AR' WHERE ubicacion IS NULL`).run();
+    console.log(`[memory] migracion: usuarios.ubicacion agregado (backfill Buenos Aires en ${r.changes} usuarios)`);
+    cambios = true;
+  }
+  if (!_tieneColumna('usuarios', 'lat')) { db.exec(`ALTER TABLE usuarios ADD COLUMN lat REAL`); cambios = true; }
+  if (!_tieneColumna('usuarios', 'lon')) { db.exec(`ALTER TABLE usuarios ADD COLUMN lon REAL`); cambios = true; }
+  if (cambios) console.log('[memory] migracion: usuarios.ubicacion/lat/lon listos');
+}
+_migrarUsuariosUbicacion();
+
 // Índices que dependen de usuario_id (los creamos acá porque en el exec inicial
 // la columna podía no existir todavía en DBs viejos).
 db.exec(`
