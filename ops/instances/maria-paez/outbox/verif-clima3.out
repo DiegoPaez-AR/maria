@@ -1,0 +1,53 @@
+# ejecutado: 2026-05-31T11:08:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/_verif3.js <<'JS'
+#   (async () => {
+#     try {
+#       const mem = require('/root/secretaria/memory');
+#       const dist = mem.db.prepare('SELECT ubicacion, COUNT(*) n FROM usuarios GROUP BY ubicacion').all();
+#       console.log('ubicaciones:', JSON.stringify(dist));
+#       const clima = require('/root/secretaria/clima');
+#       const g = await clima.geocodificar('Buenos Aires, AR');
+#       console.log('geo BA,AR:', JSON.stringify(g));
+#       if (g) {
+#         const pr = await clima.pronosticoHoy(g.lat, g.lon, 'America/Argentina/Buenos_Aires');
+#         console.log('pronostico:', JSON.stringify(pr));
+#       }
+#       const usuarios = require('/root/secretaria/usuarios');
+#       const mb = require('/root/secretaria/morning-brief');
+#       const d = usuarios.resolverPorNombre('Diego') || usuarios.listarActivos()[0];
+#       console.log('--- BRIEF ' + d.nombre + ' ---');
+#       console.log(await mb.componerBrief(d));
+#       console.log('--- FIN ---');
+#     } catch (e) { console.log('ERR', e.message); }
+#   })();
+#   JS
+#   cd /root/secretaria && node /tmp/_verif3.js
+
+# ───── output ─────
+ubicaciones: [{"ubicacion":"Buenos Aires, AR","n":16}]
+geo BA,AR: {"lat":-34.61315,"lon":-58.37723,"nombre":"Buenos Aires","pais":"AR"}
+pronostico: {"emoji":"☁️","desc":"nublado","max":15,"min":6,"probLluvia":0}
+--- BRIEF Diego ---
+☀️ *Buen día, Diego.* domingo 31 de mayo.
+
+*🌡️ Clima en Buenos Aires, AR*
+☁️ nublado, min 6° / max 15°
+
+*📅 Agenda del día*
+(sin eventos hoy)
+
+*Cumpleaños hoy*
+🎂 Julieta Picasso
+
+*📝 Pendientes*
+1. iProt Seguridad
+2. Espejo Subaru
+3. DDJJ 2025
+4. Bono Walter y Nico
+--- FIN ---
+
+# exit=0
