@@ -1,0 +1,57 @@
+# ejecutado: 2026-05-31T11:07:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== fecha =="; date
+#   echo "== forzar reload del codigo nuevo =="
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -3 || echo "reload fallo"
+#   sleep 6
+#   echo "== pm2 estado post-reload =="
+#   pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{JSON.parse(s).forEach(p=>p.name==="maria-paez"&&console.log(p.name,"status="+p.pm2_env.status,"restarts="+p.pm2_env.restart_time,"uptime="+new Date(p.pm2_env.pm_uptime).toISOString()));}catch(e){console.log("parse fail")}})'
+#   echo "== schema + clima + brief (via node/better-sqlite3) =="
+#   node -e '
+#   (async()=>{
+#     try{
+#       const mem=require("./memory");
+#       const cols=mem.db.prepare("PRAGMA table_info(usuarios)").all().map(c=>c.name).filter(n=>["ubicacion","lat","lon"].includes(n));
+#       console.log("cols nuevas:",cols.join(",")||"(ninguna!)");
+#       const dist=mem.db.prepare("SELECT COALESCE(ubicacion,\"(null)\") u, COUNT(*) n FROM usuarios GROUP BY u").all();
+#       console.log("ubicaciones:",JSON.stringify(dist));
+#       const clima=require("./clima");
+#       const g=await clima.geocodificar("Buenos Aires, AR");
+#       console.log("geo BA,AR:",JSON.stringify(g));
+#       if(g){const pr=await clima.pronosticoHoy(g.lat,g.lon,"America/Argentina/Buenos_Aires");console.log("pronostico:",JSON.stringify(pr));}
+#       const usuarios=require("./usuarios");
+#       const mb=require("./morning-brief");
+#       const d=usuarios.resolverPorNombre("Diego")||usuarios.listarActivos()[0];
+#       console.log("---BRIEF "+d.nombre+" (ubic="+d.ubicacion+")---");
+#       console.log(await mb.componerBrief(d));
+#       console.log("---FIN---");
+#     }catch(e){console.log("ERR",e.message,e.stack);}
+#   })();
+#   '
+
+# ───── output ─────
+== fecha ==
+Sun May 31 11:07:02 AM -03 2026
+== forzar reload del codigo nuevo ==
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+== pm2 estado post-reload ==
+maria-paez status=online restarts=8 uptime=2026-05-31T14:07:03.182Z
+== schema + clima + brief (via node/better-sqlite3) ==
+cols nuevas: ubicacion,lat,lon
+ERR no such column: "(null)" - should this be a string literal in single-quotes? SqliteError: no such column: "(null)" - should this be a string literal in single-quotes?
+    at Database.prepare (/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at [eval]:7:23
+    at [eval]:20:3
+    at Script.runInThisContext (node:vm:122:12)
+    at Object.runInThisContext (node:vm:298:38)
+    at node:internal/process/execution:82:21
+    at [eval]-wrapper:6:24
+    at runScript (node:internal/process/execution:81:62)
+    at evalScript (node:internal/process/execution:103:10)
+    at node:internal/main/eval_string:30:3
+
+# exit=0
