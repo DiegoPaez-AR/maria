@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7843  2026-06-01 20:39:34  sistema   interno                         acción ejecutada: enviar_email                                                                                                                                                                          
+
+7842  2026-06-01 20:39:34  gmail     saliente                        Hola Andres,                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                             
+                                                                     Te paso los datos de la audiencia agendada:                                                                                                                                                             
+                                                                                                                                                                                                                                                                             
+                                                                     Previo, y en virtud de lo dispuesto por los arts. 34 y 36 CPCCN y a los fines previstos en el art. 80 LO, se señala la audiencia para el día                                                            
+
+7841  2026-06-01 20:39:34  whatsapp  saliente   5491164719969@c.us   Te mando el email ahora con los datos de la audiencia.                                                                                                                                                  
+
+7840  2026-06-01 20:39:34  sistema   interno                         claude_call whatsapp: 27776ms prompt=50028c raw=1461c                                                                                                                                                   
+
+7839  2026-06-01 20:39:06  whatsapp  entrante   5491164719969@c.us   Con el invite                                                                                                                                                                                           
+
+7838  2026-06-01 20:39:06  whatsapp  entrante   5491164719969@c.us   Si, mándame esto por email a mi                                                                                                                                                                         
+
 7837  2026-06-01 20:38:37  whatsapp  saliente   5491164719969@c.us   Sí, mando emails sin problema. ¿Necesitás que le escriba a alguien?                                                                                                                                     
 
 7836  2026-06-01 20:38:37  sistema   interno                         claude_call whatsapp: 7204ms prompt=49696c raw=275c                                                                                                                                                     
@@ -304,15 +320,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 7745  2026-05-31 16:48:04  whatsapp  saliente   134076010885285@lid  Santi, Alejandro Reich me acaba de escribir bastante molesto por la cancelación. Me dijo que "esto es una vergüenza" y me pidió que te transmita que "no pueden continuar así". Te lo paso por si querés
 
 7744  2026-05-31 16:48:03  sistema   interno                         claude_call whatsapp: 24716ms prompt=56470c raw=653c                                                                                                                                                    
-
-7743  2026-05-31 16:47:38  whatsapp  entrante   5491167170276@c.us   Envíale un WhatsApp a Santiago diciéndole que no podemos continuar así                                                                                                                                  
-
-7742  2026-05-31 16:47:28  sistema   interno                         claude_call whatsapp: 16137ms prompt=56358c raw=772c                                                                                                                                                    
-
-7741  2026-05-31 16:47:11  whatsapp  entrante   5491167170276@c.us   Pero esto es una vergüenza                                                                                                                                                                              
-
-7740  2026-05-31 16:16:34  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-7739  2026-05-31 16:16:34  whatsapp  saliente   5491167170276@c.us   Hola Alejandro, te escribo para avisarte que la reunión de mañana lunes 1° de junio a las 10 la tenemos que cancelar. Disculpá el inconveniente. En algún momento de esta semana te volvemos a contactar
-
-7738  2026-05-31 16:16:34  sistema   interno                         acción ejecutada: borrar_evento                                                                                                                                                                         
