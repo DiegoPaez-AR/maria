@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                          
 ----  -------------------  --------  ---------  -------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8058  2026-06-03 16:50:00  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                  
+
+8057  2026-06-03 16:50:00  calendar  saliente                        creado: Dentista (2026-06-10T13:00:00-03:00 → 2026-06-10T14:00:00-03:00) [en calendar de Maria]                                                                                                 
+
+8056  2026-06-03 16:50:00  whatsapp  saliente   59899643028@c.us     Dale, te agendo el dentista para el *miércoles 10 de junio* a las 13 hs.                                                                                                                        
+
+8055  2026-06-03 16:50:00  sistema   interno                         claude_call whatsapp: 17663ms prompt=46554c raw=514c                                                                                                                                            
+
+8054  2026-06-03 16:49:42  whatsapp  entrante   59899643028@c.us     Agéndame dentista miércoles 10 a las 13 hs                                                                                                                                                      
+
 8053  2026-06-03 16:32:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                             
 
 8052  2026-06-03 16:02:16  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                             
@@ -307,17 +317,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 7960  2026-06-02 19:00:48  whatsapp  entrante   5491126406612@c.us   los proximos 6 meses                                                                                                                                                                            
 
 7959  2026-06-02 19:00:38  sistema   interno                         claude_call whatsapp: 18090ms prompt=48420c raw=418c                                                                                                                                            
-
-7958  2026-06-02 19:00:20  whatsapp  entrante   5491126406612@c.us   Por correo está bien, así se guarda automaticamente en el crm                                                                                                                                   
-
-7957  2026-06-02 18:59:17  whatsapp  saliente   5491126406612@c.us   ¡Perfecto, entendido! Tengo claro el perfil — cobranzas, omnicanalidad, voz, CX, atención al cliente, financieras/bancarias, salud y seguridad, en distintos puntos del país.                   
-                                                                                                                                                                                                                                                                     
-                                                                     Antes de armar el sheets,                                                                                                                                                                       
-
-7956  2026-06-02 18:59:17  sistema   interno                         claude_call whatsapp: 56253ms prompt=48427c raw=860c                                                                                                                                            
-
-7955  2026-06-02 18:58:21  whatsapp  entrante   5491126406612@c.us   Los eventos pueden ser Grandes, chicos, masivos, pagos, con entrada gratis, etc.                                                                                                                
-                                                                     Pueden realizarse en la provincia de bs as, el interior, ejemplo Tandil, Bahía blanca, capital federal, etc.                                                                                    
-                                                                     Provincia                                                                                                                                                                                       
-
-7954  2026-06-02 18:51:31  whatsapp  saliente   5491126406612@c.us   Dale, mandamelas cuando quieras.                                                                                                                                                                
