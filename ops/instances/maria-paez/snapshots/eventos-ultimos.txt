@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8163  2026-06-04 12:26:25  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+8162  2026-06-04 12:26:25  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+8161  2026-06-04 12:26:25  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8160  2026-06-04 12:26:25  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+
+8159  2026-06-04 12:26:25  calendar  saliente                        modificado: Reunión Diego / José Valdes (2026-06-10T10:00:00-03:00 → 2026-06-10T11:00:00-03:00)                                                                                                         
+
+8158  2026-06-04 12:26:23  whatsapp  saliente   34669015190@c.us     ¡Claro, José! Te mando la invitación de calendario ahora mismo. Y el miércoles a las 14:30 (Madrid) te aviso por acá para que no se te pase.                                                            
+
+8157  2026-06-04 12:26:23  whatsapp  saliente   34342575317160@lid   Ojo: el evento lo había creado a las 9hs en vez de las 10hs BsAs como habían acordado. Lo corregí a 10:00-11:00 (BsAs) / 15:00-16:00 (Madrid), le mandé la invitación al jtvf1991@gmail.com y le program
+
+8156  2026-06-04 12:26:15  sistema   interno                         claude_call whatsapp: 140608ms prompt=83178c raw=1555c                                                                                                                                                  
+
 8155  2026-06-04 12:23:54  whatsapp  entrante   34669015190@c.us     si me pudieras hacer un friendly reminder el miércoles te lo agradezco, que no le suelo prestar mucha atención a google calendar                                                                        
 
 8154  2026-06-04 12:23:44  sistema   interno                         claude_call whatsapp: 20754ms prompt=83015c raw=839c                                                                                                                                                    
@@ -307,22 +323,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8064  2026-06-03 17:45:19  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: RE: Datacenter Telecentro -IonQ (03:00 p. m.) @Reunión de Microsoft Teams                                                                                                                 
                                                                      Con: diego@paez.is, g@thequantumalliance.com, gcatalano@telecentro.net.ar, hcuevas@telecentro.net.ar                                                                                                    
                                                                      Estimados,                                                                                                                                                                                              
-
-8063  2026-06-03 17:32:16  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8062  2026-06-03 17:15:27  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Richi + Andres + Santi (02:30 p. m.)                                                                                                                                                      
-                                                                     Con: ricardo@pumayna.com, santiago@capurro.com.ar, andres@pumayna.com                                                                                                                                   
-
-8061  2026-06-03 17:15:19  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.)                                                                                                                                            
-                                                                     Con: hernan.fulco@sondeosglobal.com, lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com                                                                                             
-                                                                     Buenas, dejo este slot como rec                                                                                                                                                                         
-
-8060  2026-06-03 17:02:18  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8059  2026-06-03 16:57:16  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8058  2026-06-03 16:50:00  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-8057  2026-06-03 16:50:00  calendar  saliente                        creado: Dentista (2026-06-10T13:00:00-03:00 → 2026-06-10T14:00:00-03:00) [en calendar de Maria]                                                                                                         
-
-8056  2026-06-03 16:50:00  whatsapp  saliente   59899643028@c.us     Dale, te agendo el dentista para el *miércoles 10 de junio* a las 13 hs.                                                                                                                                
