@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8278  2026-06-04 17:36:45  whatsapp  entrante   59899643028@c.us     Por favor, agendame ergo, metría, mañana, viernes, diez, treinta. Gracias.                                                                                                                              
+
+8277  2026-06-04 17:36:04  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+8276  2026-06-04 17:36:04  whatsapp  saliente   59899643028@c.us     Sin drama, queda 15 minutos antes.                                                                                                                                                                      
+
+8275  2026-06-04 17:36:04  sistema   interno                         claude_call whatsapp: 10946ms prompt=47514c raw=387c                                                                                                                                                    
+
 8274  2026-06-04 17:35:53  whatsapp  entrante   59899643028@c.us     Perdón 15 min antes                                                                                                                                                                                     
 
 8273  2026-06-04 17:05:59  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
@@ -204,13 +212,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8180  2026-06-04 13:54:10  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
 
 8179  2026-06-04 13:54:10  whatsapp  saliente   33686760817@c.us     Bonjour ! Je vous contacte de la part de Diego. Nous souhaiterions louer trois scooters traditionnels (non électriques) à Nice, à partir d'aujourd'hui jeudi 4 juin jusqu'au lundi 8 juin matin. Seriez-
-
-8178  2026-06-04 13:54:10  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-8177  2026-06-04 13:54:10  whatsapp  saliente   34342575317160@lid   Le escribo ahora al local en Niza.                                                                                                                                                                      
-
-8176  2026-06-04 13:54:10  sistema   interno                         claude_call whatsapp: 35082ms prompt=84104c raw=928c                                                                                                                                                    
-
-8175  2026-06-04 13:53:34  whatsapp  entrante   5491132317896@c.us   María, este es el teléfono de un local de alquiler de motos en Nisa.                                                                                                                                    
-                                                                      Les podrás escribir en francés para ver si nos pueden alquiler tres escúteres                                                                                                                          
-                                                                      tradicionales, no eléctricos. Desde hoy hasta el lu                                                                                                                                                    
