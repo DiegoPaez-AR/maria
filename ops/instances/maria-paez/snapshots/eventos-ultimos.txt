@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8152  2026-06-04 12:20:38  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+8151  2026-06-04 12:20:38  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8150  2026-06-04 12:20:38  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+8149  2026-06-04 12:20:38  calendar  saliente                        creado: Reunión Diego / José Valdes (2026-06-10T09:00:00-03:00 → 2026-06-10T10:00:00-03:00) · Meet: https://meet.google.com/nvz-jace-jsg                                                                
+
+8148  2026-06-04 12:20:37  whatsapp  saliente   34669015190@c.us     ¡Genial, José! Quedamos el *miércoles 10 de junio de 15:00 a 16:00hs (Madrid)*. Te mando la invitación de calendario — ¿me pasás tu email?                                                              
+
+8147  2026-06-04 12:20:37  whatsapp  saliente   34342575317160@lid   Quedó: José confirmó el miércoles 10 de 9 a 10hs (15 a 16hs Madrid). Lo agendo ahora con Meet. Le pido su email para la invitación.                                                                     
+
+8146  2026-06-04 12:20:37  sistema   interno                         claude_call whatsapp: 36439ms prompt=83566c raw=1304c                                                                                                                                                   
+
 8145  2026-06-04 12:20:00  whatsapp  entrante   34669015190@c.us     * 10:00 a 11:00hs (Buenos Aires) / 15:00 a 16:00hs (Madrid)                                                                                                                                             
                                                                       esta está bien, no te preocupes                                                                                                                                                                        
 
@@ -311,18 +325,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8054  2026-06-03 16:49:42  whatsapp  entrante   59899643028@c.us     Agéndame dentista miércoles 10 a las 13 hs                                                                                                                                                              
 
 8053  2026-06-03 16:32:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8052  2026-06-03 16:02:16  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8051  2026-06-03 15:50:12  whatsapp  saliente   59899643028@c.us     ⏰ Recordatorio: en 10 minutos tenés *Dentista* (13:00 hs).                                                                                                                                              
-
-8050  2026-06-03 15:45:19  whatsapp  saliente   59899643028@c.us     ⏰ *En 15min*: Dentista (01:00 p. m.)                                                                                                                                                                    
-                                                                     Con: enrique.sosa@globalnetmobile.com                                                                                                                                                                   
-
-8049  2026-06-03 15:32:16  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8048  2026-06-03 15:00:12  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: EO  (12:15 p. m.)                                                                                                                                                                         
-
-8047  2026-06-03 14:41:41  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-8046  2026-06-03 14:41:41  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
