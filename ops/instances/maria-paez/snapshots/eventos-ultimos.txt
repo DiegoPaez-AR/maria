@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8188  2026-06-04 13:58:55  sistema   interno                         claude_call whatsapp: 18402ms prompt=85096c raw=292c                                                                                                                                                    
+
+8187  2026-06-04 13:58:36  whatsapp  entrante   33688061362@c.us     Merci d’avoir contacté Biketrip ! Dites-nous en quoi nous pouvons vous aider? Nous reviendrons vers vous dans les meilleurs délais!                                                                     
+                                                                                                                                                                                                                                                                             
+                                                                     Thank for your request! Please let us know how we can help you, we                                                                                                                                      
+
+8186  2026-06-04 13:58:19  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+8185  2026-06-04 13:58:19  whatsapp  saliente   33688061362@c.us     Bonjour ! Je vous contacte de la part de Diego. Nous souhaiterions louer trois scooters traditionnels (non électriques) à Nice, à partir d'aujourd'hui jeudi 4 juin jusqu'au lundi 8 juin matin. Seriez-
+
+8184  2026-06-04 13:58:19  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+8183  2026-06-04 13:58:19  whatsapp  saliente   5491132317896@c.us   Le escribo ahora.                                                                                                                                                                                       
+
+8182  2026-06-04 13:58:19  sistema   interno                         claude_call whatsapp: 33646ms prompt=84152c raw=857c                                                                                                                                                    
+
 8181  2026-06-04 13:57:45  whatsapp  entrante   5491132317896@c.us   pregunta en este otro tambien: +33688061362                                                                                                                                                             
 
 8180  2026-06-04 13:54:10  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
@@ -285,28 +301,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8090  2026-06-04 08:06:31  whatsapp  entrante   5491132317896@c.us   Pedirle su Mail para agendarse la a el también                                                                                                                                                          
 
 8089  2026-06-04 08:06:31  whatsapp  entrante   5491132317896@c.us   Escribirle a José para organizar una meet de una hora para la semana que viene, en cualquier hueco en mi agenda. Tene en cuenta que José está en Madrid (diferencia horaria?                            
-
-8088  2026-06-04 08:04:16  sistema   interno                         contacto vcard (privado): Jose Valdes → 34669015190@c.us                                                                                                                                                
-
-8087  2026-06-04 07:04:00  whatsapp  saliente   5491132317896@c.us   Para eso estoy. Si necesitás algo más, me avisás.                                                                                                                                                       
-
-8086  2026-06-04 07:04:00  sistema   interno                         claude_call whatsapp: 96874ms prompt=83374c raw=262c                                                                                                                                                    
-
-8085  2026-06-04 07:02:22  whatsapp  entrante   5491132317896@c.us   Hola María, todo bien, me cuesta averiguar eso.                                                                                                                                                         
-
-8084  2026-06-04 07:02:07  whatsapp  saliente   5491132317896@c.us   Nissa (Niza) está linda hoy ☀️                                                                                                                                                                          
-                                                                                                                                                                                                                                                                             
-                                                                     Ahora mismo: *22°C*, nubes y claros, humedad 63%, viento del este suave (6–15 km/h).                                                                                                                    
-                                                                                                                                                                                                                                                                             
-                                                                     Pronóstico del día: máx *23°* / mín *17°*. Viento se intensifica por la tarde (has                                                                                                                      
-
-8083  2026-06-04 07:02:07  sistema   interno                         claude_call whatsapp: 152940ms prompt=83299c raw=523c                                                                                                                                                   
-
-8082  2026-06-04 07:00:24  whatsapp  saliente   34342575317160@lid   ☀️ *Buen día, Diego.* jueves 4 de junio.                                                                                                                                                                
-                                                                                                                                                                                                                                                                             
-                                                                     *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
-                                                                     🌦️ llovizna leve, min 14° / max 16°                                                                                                                                                                     
-                                                                                                                                                                                                                                                                             
-                                                                     *📅 Agenda del día*                                                                                                                                                                                      
-                                                                     • 08:00 a. m. — Yoga                                                                                                                                                                                    
-                                                                     • 12:00 p. m. — Reunión Diego Páez / Diego Poguett                                                                                                                                                      
