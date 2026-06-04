@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8282  2026-06-04 17:37:48  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+8281  2026-06-04 17:37:48  calendar  saliente                        creado: Ergometría (2026-06-05T10:30:00-03:00 → 2026-06-05T11:30:00-03:00) [en calendar de Maria]                                                                                                       
+
+8280  2026-06-04 17:37:48  whatsapp  saliente   59899643028@c.us     Dale, te agendo la *Ergometría* para el *viernes 5 de junio* a las 10:30.                                                                                                                               
+                                                                                                                                                                                                                                                                             
+                                                                     Fijate que ya tengo un recordatorio programado para una Ergometría a las 10:00 ese mismo día — ¿lo cancelo, o son dos turnos                                                                            
+
+8279  2026-06-04 17:37:48  sistema   interno                         claude_call whatsapp: 62541ms prompt=47918c raw=772c                                                                                                                                                    
+
 8278  2026-06-04 17:36:45  whatsapp  entrante   59899643028@c.us     Por favor, agendame ergo, metría, mañana, viernes, diez, treinta. Gracias.                                                                                                                              
 
 8277  2026-06-04 17:36:04  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
@@ -204,11 +214,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8184  2026-06-04 13:58:19  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 8183  2026-06-04 13:58:19  whatsapp  saliente   5491132317896@c.us   Le escribo ahora.                                                                                                                                                                                       
-
-8182  2026-06-04 13:58:19  sistema   interno                         claude_call whatsapp: 33646ms prompt=84152c raw=857c                                                                                                                                                    
-
-8181  2026-06-04 13:57:45  whatsapp  entrante   5491132317896@c.us   pregunta en este otro tambien: +33688061362                                                                                                                                                             
-
-8180  2026-06-04 13:54:10  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-8179  2026-06-04 13:54:10  whatsapp  saliente   33686760817@c.us     Bonjour ! Je vous contacte de la part de Diego. Nous souhaiterions louer trois scooters traditionnels (non électriques) à Nice, à partir d'aujourd'hui jeudi 4 juin jusqu'au lundi 8 juin matin. Seriez-
