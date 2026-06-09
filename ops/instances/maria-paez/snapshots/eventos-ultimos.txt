@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8655  2026-06-09 22:44:18  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8654  2026-06-09 22:44:18  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
+
+8653  2026-06-09 22:44:18  calendar  saliente                       creado: Reunión Diego / Máximo Maderbuen (2026-06-15T11:00:00-03:00 → 2026-06-15T12:00:00-03:00) · Meet: https://meet.google.com/atw-ynbs-wrs                                                           
+
+8652  2026-06-09 22:44:17  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+8651  2026-06-09 22:44:16  whatsapp  saliente   5491176176620@c.us  ¡Perfecto, Máximo! Queda anotado el *lunes 15/06 a las 11hs* (una hora). Te mando ahora la invitación al calendario a maximoj@indesamdeltagroup.com. ¡Hasta el lunes!                                   
+
+8650  2026-06-09 22:44:09  whatsapp  saliente   34342575317160@lid  Máximo confirmó el lunes 15/06 a las 11hs y me pasó su email. Le agendo la reunión y le mando la invitación.                                                                                            
+
+8649  2026-06-09 22:44:09  sistema   interno                        claude_call whatsapp: 35222ms prompt=84456c raw=1148c                                                                                                                                                   
+
 8648  2026-06-09 22:43:33  whatsapp  entrante   5491176176620@c.us  maximoj@indesamdeltagroup.com                                                                                                                                                                           
 
 8647  2026-06-09 22:43:23  sistema   interno                        claude_call whatsapp: 46910ms prompt=84707c raw=1334c                                                                                                                                                   
@@ -204,17 +218,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 8557  2026-06-09 21:10:52  sistema   interno                        claude_call whatsapp: 57060ms prompt=83486c raw=524c                                                                                                                                                    
 
 8556  2026-06-09 21:09:54  whatsapp  entrante   5493364340748@c.us  Jueves 👍🏻                                                                                                                                                                                               
-
-8555  2026-06-09 21:08:47  whatsapp  saliente   5493364687956@c.us  Sí, yo le consulto. Cuando me confirme te aviso y cerramos.                                                                                                                                             
-
-8554  2026-06-09 21:08:47  sistema   interno                        claude_call whatsapp: 19121ms prompt=83388c raw=357c                                                                                                                                                    
-
-8553  2026-06-09 21:08:28  whatsapp  entrante   5493364687956@c.us  A Fabio le consultas vos?                                                                                                                                                                               
-
-8552  2026-06-09 21:08:17  sistema   interno                        claude_call whatsapp: 25033ms prompt=83405c raw=598c                                                                                                                                                    
-
-8551  2026-06-09 21:07:52  whatsapp  entrante   5493364687956@c.us  Alejandro y yo podemos jueves 17:00 hs.                                                                                                                                                                 
-
-8550  2026-06-09 21:06:27  whatsapp  saliente   5493364687956@c.us  Perfecto, te espero. Cuando tengas los tres confirmados me avisás y cerramos el horario.                                                                                                                
-
-8549  2026-06-09 21:06:27  sistema   interno                        claude_call whatsapp: 12882ms prompt=83380c raw=386c                                                                                                                                                    
