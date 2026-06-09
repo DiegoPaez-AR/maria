@@ -105,11 +105,22 @@ async function _cumplesHoy(usuario) {
 }
 
 function _pendientesLista(usuario) {
-  // Solo los que son del usuario; las tareas propias de Maria (dueno='maria') no
-  // van en el brief, las gestiona ella sola.
+  // Solo los que son del usuario. Las tareas propias de Maria (dueno='maria')
+  // van aparte, en _gestionandoLista.
   const ps = mem.listarPendientes(usuario.id).filter(p => (p.dueno || 'usuario') === 'usuario');
   if (!ps.length) return null;
   return ps.map((p, i) => `${i+1}. ${p.desc}`).join('\n');
+}
+
+function _gestionandoLista(usuario) {
+  // Tareas propias de Maria para este usuario (dueno='maria'): lo que ella está
+  // gestionando o esperando en su nombre (incluye los trigger_externo a la
+  // espera de un tercero). Se listan en el brief para darle visibilidad —
+  // antes quedaban invisibles. Texto crudo del desc (el brief lo arma código,
+  // no el LLM).
+  const ps = mem.listarPendientes(usuario.id).filter(p => (p.dueno || 'usuario') === 'maria');
+  if (!ps.length) return null;
+  return ps.map(p => `- ${p.desc}`).join('\n');
 }
 
 // Linea de clima para el brief. Usa lat/lon cacheados; si no los hay pero el
@@ -151,12 +162,14 @@ async function componerBrief(usuario) {
 
   const [agenda, cumples, climaLinea] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario), _climaHoy(usuario)]);
   const pendientes = _pendientesLista(usuario);
+  const gestionando = _gestionandoLista(usuario);
 
   let out = `☀️ *Buen día, ${usuario.nombre}.* ${fecha}.\n\n`;
   if (climaLinea) out += `*🌡️ Clima${usuario.ubicacion ? ' en ' + usuario.ubicacion : ''}*\n${climaLinea}\n\n`;
   out += `*📅 Agenda del día*\n${agenda}\n`;
   if (cumples)   out += `\n*Cumpleaños hoy*\n${cumples}\n`;
   if (pendientes) out += `\n*📝 Pendientes*\n${pendientes}\n`;
+  if (gestionando) out += `\n*🔄 Gestionando para vos*\n${gestionando}\n`;
   return out.trim();
 }
 

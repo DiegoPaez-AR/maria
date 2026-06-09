@@ -502,8 +502,46 @@ function _agregarPendiente(a, ctx) {
   _requerir(a, ['desc', 'dueno', 'disparador']);
   // dueno/disparador van en la raíz de la acción. El resto de meta queda libre.
   const meta = { ...(a.meta || {}), dueno: a.dueno, disparador: a.disparador };
+
+  // Red de seguridad automática: si Maria crea un pendiente trigger_externo
+  // esperando la respuesta de un TERCERO (meta.esperando_de), le enganchamos
+  // un follow_up. Si el tercero no responde antes del vencimiento, el loop de
+  // follow-ups le avisa al usuario. Determinístico: no depende de que el LLM
+  // se acuerde de emitir crear_follow_up aparte (que es justo lo que falla).
+  let followUp = null;
+  if (a.dueno === 'maria' && a.disparador === 'trigger_externo' && a.meta && a.meta.esperando_de) {
+    const canal = a.meta.esperando_canal === 'gmail' ? 'gmail' : 'whatsapp';
+    const _v = seguridad.validarDestinatario({
+      usuario: ctx.usuario,
+      canal: canal === 'whatsapp' ? 'wa' : 'email',
+      destino: a.meta.esperando_de,
+    });
+    if (_v.ok) {
+      let dias = Number(a.meta.vence_en_dias);
+      if (!Number.isFinite(dias) || dias < 0 || dias > 365) dias = 2; // default 2 días
+      const vence = new Date(Date.now() + dias * 24 * 3600 * 1000);
+      const venceISO = vence.toISOString().replace('T', ' ').slice(0, 19);
+      try {
+        const fuId = mem.crearFollowUp({
+          usuarioId: ctx.usuario.id,
+          descripcion: a.desc,
+          esperandoDe: a.meta.esperando_de,
+          esperandoCanal: canal,
+          venceEn: venceISO,
+          metadata: { origen: 'auto_pendiente' },
+        });
+        meta.follow_up_id = fuId;
+        followUp = { id: fuId, vence_en: venceISO, esperando_de: a.meta.esperando_de };
+      } catch (err) {
+        console.warn(`[agregar_pendiente] auto follow_up falló: ${err.message}`);
+      }
+    } else {
+      console.warn(`[agregar_pendiente] no creo follow_up auto (${a.meta.esperando_de}): ${_v.motivo}`);
+    }
+  }
+
   const id = mem.agregarPendiente(ctx.usuario.id, a.desc, meta);
-  return { id, desc: a.desc, dueno: a.dueno, disparador: a.disparador, agregado: true };
+  return { id, desc: a.desc, dueno: a.dueno, disparador: a.disparador, agregado: true, follow_up: followUp };
 }
 
 function _posponerPendiente(a, ctx) {
