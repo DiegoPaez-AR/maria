@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8645  2026-06-09 22:40:36  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+8644  2026-06-09 22:40:36  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+8643  2026-06-09 22:40:36  whatsapp  saliente   5491176176620@c.us  ¡Hola Máximo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar una reunión entre Diego y vos la semana que viene. ¿Te queda bien el *lunes 15/06 a las 11hs* (una hora)? Y si me 
+
+8642  2026-06-09 22:40:36  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8641  2026-06-09 22:40:36  whatsapp  saliente   34342575317160@lid  Dale, le propongo el lunes a las 11.                                                                                                                                                                    
+
+8640  2026-06-09 22:40:35  sistema   interno                        claude_call whatsapp: 37372ms prompt=84649c raw=1260c                                                                                                                                                   
+
 8639  2026-06-09 22:39:58  whatsapp  entrante   5491132317896@c.us  proponele igual el lunes a las 11                                                                                                                                                                       
 
 8638  2026-06-09 22:36:23  whatsapp  saliente   34342575317160@lid  El lunes a las 11 no te queda bien — tenés el Seguimiento comercial de 10:45 a 11:30, y justo después el Seguimiento con Nico a las 12. En el lunes tenés libre antes de las 10:45 (tipo 9 o 10hs) o a p
@@ -205,21 +217,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 8547  2026-06-09 21:00:51  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 8546  2026-06-09 21:00:51  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-8545  2026-06-09 21:00:51  whatsapp  saliente   5493364687956@c.us  ¡Hola Bruno! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Fabio Boschetto y Alejandro Becerra.                                    
-                                                                                                                                                                                                                                                                            
-                                                                    Diego propuso los siguientes horar                                                                                                                                                                      
-
-8544  2026-06-09 21:00:51  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-8543  2026-06-09 21:00:51  whatsapp  saliente   5493364340748@c.us  ¡Hola Alejandro! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Fabio Boschetto y Bruno Compa.                                      
-                                                                                                                                                                                                                                                                            
-                                                                    Diego propuso los siguientes horario                                                                                                                                                                    
-
-8542  2026-06-09 21:00:50  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-8541  2026-06-09 21:00:50  whatsapp  saliente   5493492580906@c.us  ¡Hola Fabio! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Alejandro Becerra y Bruno Compa.                                        
-                                                                                                                                                                                                                                                                            
-                                                                    Diego propuso los siguientes horarios                                                                                                                                                                   
-
-8540  2026-06-09 21:00:50  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
