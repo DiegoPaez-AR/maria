@@ -1,231 +1,231 @@
-id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
-----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-8623  2026-06-09 21:59:57  whatsapp  saliente   34342575317160@lid   Confirmado: Pablo eligió el miércoles 17/06 de 13 a 15hs. Te agendo el almuerzo y le mando la invitación con su email pvizzotti@gmail.com.                                                              
+id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
+----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8628  2026-06-09 22:00:06  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-8622  2026-06-09 21:59:50  sistema   interno                         claude_call whatsapp: 33027ms prompt=84467c raw=1006c                                                                                                                                                   
+8627  2026-06-09 22:00:06  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
 
-8621  2026-06-09 21:59:16  whatsapp  entrante   5491158091738@c.us   pvizzotti@gmail.com                                                                                                                                                                                     
-                                                                     Miércoles 17/6                                                                                                                                                                                          
+8626  2026-06-09 22:00:06  calendar  saliente                       creado: Almuerzo Diego / Pablo Vizzotti (2026-06-17T13:00:00-03:00 → 2026-06-17T15:00:00-03:00)                                                                                                         
 
-8620  2026-06-09 21:58:59  sistema   interno                         claude_call whatsapp: 16812ms prompt=84521c raw=346c                                                                                                                                                    
+8625  2026-06-09 22:00:05  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                       
 
-8619  2026-06-09 21:58:41  whatsapp  entrante   5491158091738@c.us   Genial                                                                                                                                                                                                  
+8624  2026-06-09 22:00:04  whatsapp  saliente   5491158091738@c.us  ¡Perfecto, Pablo! Queda anotado el *miércoles 17/06 de 13 a 15hs*. Te mando ahora la invitación al calendario a pvizzotti@gmail.com. ¡Que lo disfruten!                                                 
 
-8618  2026-06-09 21:49:32  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+8623  2026-06-09 21:59:57  whatsapp  saliente   34342575317160@lid  Confirmado: Pablo eligió el miércoles 17/06 de 13 a 15hs. Te agendo el almuerzo y le mando la invitación con su email pvizzotti@gmail.com.                                                              
 
-8617  2026-06-09 21:49:32  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8622  2026-06-09 21:59:50  sistema   interno                        claude_call whatsapp: 33027ms prompt=84467c raw=1006c                                                                                                                                                   
 
-8616  2026-06-09 21:49:32  whatsapp  saliente   5491158091738@c.us   ¡Hola Pablo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar un almuerzo de Diego con vos la semana que viene, de 13 a 15hs.                                                    
-                                                                                                                                                                                                                                                                             
-                                                                     Los días disponibles son:                                                                                                                                                                               
-                                                                                                                                                                                                                                                                             
-                                                                     📅 Lunes 15/06                                                                                                                                                                                           
-                                                                     📅 Martes                                                                                                                                                                                                
+8621  2026-06-09 21:59:16  whatsapp  entrante   5491158091738@c.us  pvizzotti@gmail.com                                                                                                                                                                                     
+                                                                    Miércoles 17/6                                                                                                                                                                                          
 
-8615  2026-06-09 21:49:32  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+8620  2026-06-09 21:58:59  sistema   interno                        claude_call whatsapp: 16812ms prompt=84521c raw=346c                                                                                                                                                    
 
-8614  2026-06-09 21:49:32  whatsapp  saliente   34342575317160@lid   Dale, le propongo los cinco días.                                                                                                                                                                       
+8619  2026-06-09 21:58:41  whatsapp  entrante   5491158091738@c.us  Genial                                                                                                                                                                                                  
 
-8613  2026-06-09 21:49:32  sistema   interno                         claude_call whatsapp: 61428ms prompt=84424c raw=1353c                                                                                                                                                   
+8618  2026-06-09 21:49:32  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-8612  2026-06-09 21:48:30  whatsapp  entrante   5491132317896@c.us   todos esos                                                                                                                                                                                              
+8617  2026-06-09 21:49:32  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8611  2026-06-09 21:39:05  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+8616  2026-06-09 21:49:32  whatsapp  saliente   5491158091738@c.us  ¡Hola Pablo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar un almuerzo de Diego con vos la semana que viene, de 13 a 15hs.                                                    
+                                                                                                                                                                                                                                                                            
+                                                                    Los días disponibles son:                                                                                                                                                                               
+                                                                                                                                                                                                                                                                            
+                                                                    📅 Lunes 15/06                                                                                                                                                                                           
+                                                                    📅 Martes                                                                                                                                                                                                
 
-8610  2026-06-09 21:39:05  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+8615  2026-06-09 21:49:32  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-8609  2026-06-09 21:39:05  whatsapp  saliente   5491132317896@c.us   Perfecto, te coordino el almuerzo con Pablo Vizzotti la semana que viene de 13 a 15hs.                                                                                                                  
-                                                                                                                                                                                                                                                                             
-                                                                     Para ese horario estás libre el *lunes 15, martes 16, miércoles 17, jueves 18 y viernes 19*. ¿Qué día preferís q                                                                                        
+8614  2026-06-09 21:49:32  whatsapp  saliente   34342575317160@lid  Dale, le propongo los cinco días.                                                                                                                                                                       
 
-8608  2026-06-09 21:39:05  sistema   interno                         claude_call whatsapp: 172731ms prompt=84952c raw=1526c                                                                                                                                                  
+8613  2026-06-09 21:49:32  sistema   interno                        claude_call whatsapp: 61428ms prompt=84424c raw=1353c                                                                                                                                                   
 
-8607  2026-06-09 21:38:26  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+8612  2026-06-09 21:48:30  whatsapp  entrante   5491132317896@c.us  todos esos                                                                                                                                                                                              
 
-8606  2026-06-09 21:38:26  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+8611  2026-06-09 21:39:05  sistema   interno                        acción ejecutada: recordar_hecho                                                                                                                                                                        
 
-8605  2026-06-09 21:38:26  calendar  saliente                        modificado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00)                                                                                      
+8610  2026-06-09 21:39:05  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-8604  2026-06-09 21:38:24  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+8609  2026-06-09 21:39:05  whatsapp  saliente   5491132317896@c.us  Perfecto, te coordino el almuerzo con Pablo Vizzotti la semana que viene de 13 a 15hs.                                                                                                                  
+                                                                                                                                                                                                                                                                            
+                                                                    Para ese horario estás libre el *lunes 15, martes 16, miércoles 17, jueves 18 y viernes 19*. ¿Qué día preferís q                                                                                        
 
-8603  2026-06-09 21:38:24  whatsapp  saliente   5493364687956@c.us   ¡Perfecto! Ya tengo el tuyo (brunocompa@southernsilica.com) — te mando la invitación para el jueves 11/06 a las 17:00. El de Alejandro ya lo tenía cargado, así que está incluido también.              
+8608  2026-06-09 21:39:05  sistema   interno                        claude_call whatsapp: 172731ms prompt=84952c raw=1526c                                                                                                                                                  
 
-8602  2026-06-09 21:38:17  sistema   interno                         claude_call whatsapp: 64777ms prompt=87059c raw=1078c                                                                                                                                                   
+8607  2026-06-09 21:38:26  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-8601  2026-06-09 21:37:12  whatsapp  entrante   5493364687956@c.us   el de alejandro te envio tambien                                                                                                                                                                        
+8606  2026-06-09 21:38:26  sistema   interno                        acción ejecutada: modificar_evento                                                                                                                                                                      
 
-8600  2026-06-09 21:37:02  sistema   interno                         claude_call whatsapp: 46004ms prompt=87132c raw=915c                                                                                                                                                    
+8605  2026-06-09 21:38:26  calendar  saliente                       modificado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00)                                                                                      
 
-8599  2026-06-09 21:36:15  whatsapp  entrante   5493364687956@c.us   brunocompa@southernsilica.com                                                                                                                                                                           
-                                                                     navieradelparana@gmail.com                                                                                                                                                                              
+8604  2026-06-09 21:38:24  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                       
 
-8598  2026-06-09 21:36:12  whatsapp  entrante   5491132317896@c.us   María Realizamo, por favor, un almuerzo para la semana que viene de una a tres y media o de una                                                                                                         
-                                                                      tres mejor con Pablo Visote. El tiempo hace el contacto. Y siempre que no tengas el email del                                                                                                          
-                                                                      contacto                                                                                                                                                                                               
+8603  2026-06-09 21:38:24  whatsapp  saliente   5493364687956@c.us  ¡Perfecto! Ya tengo el tuyo (brunocompa@southernsilica.com) — te mando la invitación para el jueves 11/06 a las 17:00. El de Alejandro ya lo tenía cargado, así que está incluido también.              
 
-8597  2026-06-09 21:35:18  sistema   interno                         contacto vcard (privado): Pablo Vizzotti → 5491158091738@c.us                                                                                                                                           
+8602  2026-06-09 21:38:17  sistema   interno                        claude_call whatsapp: 64777ms prompt=87059c raw=1078c                                                                                                                                                   
 
-8596  2026-06-09 21:25:04  whatsapp  saliente   5491132317896@c.us   Acá está tu lista completa:                                                                                                                                                                             
-                                                                                                                                                                                                                                                                             
-                                                                     (sin nombre) — +5491161310664                                                                                                                                                                           
-                                                                     1. Adrián Duek — +5491144396371                                                                                                                                                                         
-                                                                     2. Agustina Acevedo — WA (lid)                                                                                                                                                                          
-                                                                     3. Alejandro Becerra — +5493364340748                                                                                                                                                                   
-                                                                     4. Alfonso Amat — +5491148133819                                                                                                                                                                        
-                                                                     5. Ana                                                                                                                                                                                                  
+8601  2026-06-09 21:37:12  whatsapp  entrante   5493364687956@c.us  el de alejandro te envio tambien                                                                                                                                                                        
 
-8595  2026-06-09 21:24:57  sistema   interno                         claude_call whatsapp: 176522ms prompt=84334c raw=6611c                                                                                                                                                  
+8600  2026-06-09 21:37:02  sistema   interno                        claude_call whatsapp: 46004ms prompt=87132c raw=915c                                                                                                                                                    
 
-8594  2026-06-09 21:22:51  sistema   interno                         claude_call memoria-curada: 20879ms prompt=1939c raw=1848c                                                                                                                                              
+8599  2026-06-09 21:36:15  whatsapp  entrante   5493364687956@c.us  brunocompa@southernsilica.com                                                                                                                                                                           
+                                                                    navieradelparana@gmail.com                                                                                                                                                                              
 
-8593  2026-06-09 21:22:30  sistema   interno                         claude_call memoria-curada: 26570ms prompt=2099c raw=2156c                                                                                                                                              
+8598  2026-06-09 21:36:12  whatsapp  entrante   5491132317896@c.us  María Realizamo, por favor, un almuerzo para la semana que viene de una a tres y media o de una                                                                                                         
+                                                                     tres mejor con Pablo Visote. El tiempo hace el contacto. Y siempre que no tengas el email del                                                                                                          
+                                                                     contacto                                                                                                                                                                                               
 
-8592  2026-06-09 21:22:04  sistema   interno                         claude_call memoria-curada: 23940ms prompt=1994c raw=1977c                                                                                                                                              
+8597  2026-06-09 21:35:18  sistema   interno                        contacto vcard (privado): Pablo Vizzotti → 5491158091738@c.us                                                                                                                                           
 
-8591  2026-06-09 21:22:00  whatsapp  entrante   5491132317896@c.us   me mostras mi lista completa de contactos pf                                                                                                                                                            
+8596  2026-06-09 21:25:04  whatsapp  saliente   5491132317896@c.us  Acá está tu lista completa:                                                                                                                                                                             
+                                                                                                                                                                                                                                                                            
+                                                                    (sin nombre) — +5491161310664                                                                                                                                                                           
+                                                                    1. Adrián Duek — +5491144396371                                                                                                                                                                         
+                                                                    2. Agustina Acevedo — WA (lid)                                                                                                                                                                          
+                                                                    3. Alejandro Becerra — +5493364340748                                                                                                                                                                   
+                                                                    4. Alfonso Amat — +5491148133819                                                                                                                                                                        
+                                                                    5. Ana                                                                                                                                                                                                  
 
-8590  2026-06-09 21:21:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+8595  2026-06-09 21:24:57  sistema   interno                        claude_call whatsapp: 176522ms prompt=84334c raw=6611c                                                                                                                                                  
 
-8589  2026-06-09 21:21:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+8594  2026-06-09 21:22:51  sistema   interno                        claude_call memoria-curada: 20879ms prompt=1939c raw=1848c                                                                                                                                              
 
-8588  2026-06-09 21:20:57  sistema   interno                         claude_call whatsapp: 14435ms prompt=83798c raw=217c                                                                                                                                                    
+8593  2026-06-09 21:22:30  sistema   interno                        claude_call memoria-curada: 26570ms prompt=2099c raw=2156c                                                                                                                                              
 
-8587  2026-06-09 21:20:43  whatsapp  entrante   5493364340748@c.us   Muchas Gracias!!                                                                                                                                                                                        
+8592  2026-06-09 21:22:04  sistema   interno                        claude_call memoria-curada: 23940ms prompt=1994c raw=1977c                                                                                                                                              
 
-8586  2026-06-09 21:19:36  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+8591  2026-06-09 21:22:00  whatsapp  entrante   5491132317896@c.us  me mostras mi lista completa de contactos pf                                                                                                                                                            
 
-8585  2026-06-09 21:19:36  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+8590  2026-06-09 21:21:10  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-8584  2026-06-09 21:19:36  calendar  saliente                        modificado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00)                                                                                      
+8589  2026-06-09 21:21:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-8583  2026-06-09 21:19:35  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+8588  2026-06-09 21:20:57  sistema   interno                        claude_call whatsapp: 14435ms prompt=83798c raw=217c                                                                                                                                                    
 
-8582  2026-06-09 21:19:35  whatsapp  saliente   5493364340748@c.us   ¡Perfecto! Te mando ahora la invitación de calendario para la videollamada del jueves 11/06 a las 17:00.                                                                                                
+8587  2026-06-09 21:20:43  whatsapp  entrante   5493364340748@c.us  Muchas Gracias!!                                                                                                                                                                                        
 
-8581  2026-06-09 21:19:35  sistema   interno                         claude_call whatsapp: 33730ms prompt=84423c raw=765c                                                                                                                                                    
+8586  2026-06-09 21:19:36  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-8580  2026-06-09 21:19:01  whatsapp  entrante   5493364340748@c.us   navieradelparana@gmail.com                                                                                                                                                                              
+8585  2026-06-09 21:19:36  sistema   interno                        acción ejecutada: modificar_evento                                                                                                                                                                      
 
-8579  2026-06-09 21:17:04  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8584  2026-06-09 21:19:36  calendar  saliente                       modificado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00)                                                                                      
 
-8578  2026-06-09 21:17:04  whatsapp  saliente   5491140495070@c.us   Hola Leandro! Te escribo para recordarte que quedamos en que me ibas a pasar tus opciones de disponibilidad para juntarte con Diego. Cuando puedas, mandame los días y horarios que te vienen bien así c
+8583  2026-06-09 21:19:35  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                       
 
-8577  2026-06-09 21:17:04  whatsapp  saliente   34342575317160@lid   Dale, le mando un recordatorio ahora.                                                                                                                                                                   
+8582  2026-06-09 21:19:35  whatsapp  saliente   5493364340748@c.us  ¡Perfecto! Te mando ahora la invitación de calendario para la videollamada del jueves 11/06 a las 17:00.                                                                                                
 
-8576  2026-06-09 21:17:04  sistema   interno                         claude_call whatsapp: 29855ms prompt=84097c raw=563c                                                                                                                                                    
+8581  2026-06-09 21:19:35  sistema   interno                        claude_call whatsapp: 33730ms prompt=84423c raw=765c                                                                                                                                                    
 
-8575  2026-06-09 21:16:34  whatsapp  entrante   5491132317896@c.us   otro tema, le podes recordar a Leandro Groisman de que te pase opciones para la reu conmigo                                                                                                             
+8580  2026-06-09 21:19:01  whatsapp  entrante   5493364340748@c.us  navieradelparana@gmail.com                                                                                                                                                                              
 
-8574  2026-06-09 21:15:11  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+8579  2026-06-09 21:17:04  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8573  2026-06-09 21:15:11  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+8578  2026-06-09 21:17:04  whatsapp  saliente   5491140495070@c.us  Hola Leandro! Te escribo para recordarte que quedamos en que me ibas a pasar tus opciones de disponibilidad para juntarte con Diego. Cuando puedas, mandame los días y horarios que te vienen bien así c
 
-8572  2026-06-09 21:15:11  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8577  2026-06-09 21:17:04  whatsapp  saliente   34342575317160@lid  Dale, le mando un recordatorio ahora.                                                                                                                                                                   
 
-8571  2026-06-09 21:15:11  whatsapp  saliente   5493364687956@c.us   Hola Bruno! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?                                                                        
+8576  2026-06-09 21:17:04  sistema   interno                        claude_call whatsapp: 29855ms prompt=84097c raw=563c                                                                                                                                                    
 
-8570  2026-06-09 21:15:11  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8575  2026-06-09 21:16:34  whatsapp  entrante   5491132317896@c.us  otro tema, le podes recordar a Leandro Groisman de que te pase opciones para la reu conmigo                                                                                                             
 
-8569  2026-06-09 21:15:11  whatsapp  saliente   5493364340748@c.us   Hola Alejandro! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?                                                                    
+8574  2026-06-09 21:15:11  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-8568  2026-06-09 21:15:11  sistema   interno                         claude_call whatsapp: 58662ms prompt=83304c raw=1621c                                                                                                                                                   
+8573  2026-06-09 21:15:11  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-8567  2026-06-09 21:14:12  whatsapp  entrante   5491132317896@c.us   pediselos asi les mandas la invitacion                                                                                                                                                                  
+8572  2026-06-09 21:15:11  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8566  2026-06-09 21:13:13  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+8571  2026-06-09 21:15:11  whatsapp  saliente   5493364687956@c.us  Hola Bruno! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?                                                                        
 
-8565  2026-06-09 21:13:13  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+8570  2026-06-09 21:15:11  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8564  2026-06-09 21:13:13  calendar  saliente                        creado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00) · Meet: https://meet.google.com/skp-jvmn-mek                                             
+8569  2026-06-09 21:15:11  whatsapp  saliente   5493364340748@c.us  Hola Alejandro! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?                                                                    
 
-8563  2026-06-09 21:13:12  whatsapp  saliente   5493492580906@c.us   Perfecto Fabio, quedamos para el jueves 11/06 a las 17:00. Te mando ya la invitación de calendario. ¡Nos vemos!                                                                                         
+8568  2026-06-09 21:15:11  sistema   interno                        claude_call whatsapp: 58662ms prompt=83304c raw=1621c                                                                                                                                                   
 
-8562  2026-06-09 21:13:11  whatsapp  saliente   34342575317160@lid   ¡Quedó confirmada la call con Fabio, Alejandro y Bruno! El jueves 11/06 a las 17:00 te la agendo con Meet. Alejandro y Bruno no tienen email en mi libreta, así que la invitación de calendario le llega
+8567  2026-06-09 21:14:12  whatsapp  entrante   5491132317896@c.us  pediselos asi les mandas la invitacion                                                                                                                                                                  
 
-8561  2026-06-09 21:13:11  sistema   interno                         claude_call whatsapp: 32269ms prompt=83486c raw=926c                                                                                                                                                    
+8566  2026-06-09 21:13:13  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-8560  2026-06-09 21:12:39  whatsapp  entrante   5493492580906@c.us   Si, perfecto jueves a las 17                                                                                                                                                                            
+8565  2026-06-09 21:13:13  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
 
-8559  2026-06-09 21:10:52  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8564  2026-06-09 21:13:13  calendar  saliente                       creado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00) · Meet: https://meet.google.com/skp-jvmn-mek                                             
 
-8558  2026-06-09 21:10:52  whatsapp  saliente   5493492580906@c.us   Hola Fabio! Te cuento que Bruno y Alejandro ya confirmaron el jueves 11/06 a las 17:00. ¿Vos podés a ese horario? Así cerramos.                                                                         
+8563  2026-06-09 21:13:12  whatsapp  saliente   5493492580906@c.us  Perfecto Fabio, quedamos para el jueves 11/06 a las 17:00. Te mando ya la invitación de calendario. ¡Nos vemos!                                                                                         
 
-8557  2026-06-09 21:10:52  sistema   interno                         claude_call whatsapp: 57060ms prompt=83486c raw=524c                                                                                                                                                    
+8562  2026-06-09 21:13:11  whatsapp  saliente   34342575317160@lid  ¡Quedó confirmada la call con Fabio, Alejandro y Bruno! El jueves 11/06 a las 17:00 te la agendo con Meet. Alejandro y Bruno no tienen email en mi libreta, así que la invitación de calendario le llega
 
-8556  2026-06-09 21:09:54  whatsapp  entrante   5493364340748@c.us   Jueves 👍🏻                                                                                                                                                                                               
+8561  2026-06-09 21:13:11  sistema   interno                        claude_call whatsapp: 32269ms prompt=83486c raw=926c                                                                                                                                                    
 
-8555  2026-06-09 21:08:47  whatsapp  saliente   5493364687956@c.us   Sí, yo le consulto. Cuando me confirme te aviso y cerramos.                                                                                                                                             
+8560  2026-06-09 21:12:39  whatsapp  entrante   5493492580906@c.us  Si, perfecto jueves a las 17                                                                                                                                                                            
 
-8554  2026-06-09 21:08:47  sistema   interno                         claude_call whatsapp: 19121ms prompt=83388c raw=357c                                                                                                                                                    
+8559  2026-06-09 21:10:52  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8553  2026-06-09 21:08:28  whatsapp  entrante   5493364687956@c.us   A Fabio le consultas vos?                                                                                                                                                                               
+8558  2026-06-09 21:10:52  whatsapp  saliente   5493492580906@c.us  Hola Fabio! Te cuento que Bruno y Alejandro ya confirmaron el jueves 11/06 a las 17:00. ¿Vos podés a ese horario? Así cerramos.                                                                         
 
-8552  2026-06-09 21:08:17  sistema   interno                         claude_call whatsapp: 25033ms prompt=83405c raw=598c                                                                                                                                                    
+8557  2026-06-09 21:10:52  sistema   interno                        claude_call whatsapp: 57060ms prompt=83486c raw=524c                                                                                                                                                    
 
-8551  2026-06-09 21:07:52  whatsapp  entrante   5493364687956@c.us   Alejandro y yo podemos jueves 17:00 hs.                                                                                                                                                                 
+8556  2026-06-09 21:09:54  whatsapp  entrante   5493364340748@c.us  Jueves 👍🏻                                                                                                                                                                                               
 
-8550  2026-06-09 21:06:27  whatsapp  saliente   5493364687956@c.us   Perfecto, te espero. Cuando tengas los tres confirmados me avisás y cerramos el horario.                                                                                                                
+8555  2026-06-09 21:08:47  whatsapp  saliente   5493364687956@c.us  Sí, yo le consulto. Cuando me confirme te aviso y cerramos.                                                                                                                                             
 
-8549  2026-06-09 21:06:27  sistema   interno                         claude_call whatsapp: 12882ms prompt=83380c raw=386c                                                                                                                                                    
+8554  2026-06-09 21:08:47  sistema   interno                        claude_call whatsapp: 19121ms prompt=83388c raw=357c                                                                                                                                                    
 
-8548  2026-06-09 21:06:13  whatsapp  entrante   5493364687956@c.us   Hola. Ya te confirmo que horario puede Alejandro también y te aviso                                                                                                                                     
+8553  2026-06-09 21:08:28  whatsapp  entrante   5493364687956@c.us  A Fabio le consultas vos?                                                                                                                                                                               
 
-8547  2026-06-09 21:00:51  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+8552  2026-06-09 21:08:17  sistema   interno                        claude_call whatsapp: 25033ms prompt=83405c raw=598c                                                                                                                                                    
 
-8546  2026-06-09 21:00:51  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8551  2026-06-09 21:07:52  whatsapp  entrante   5493364687956@c.us  Alejandro y yo podemos jueves 17:00 hs.                                                                                                                                                                 
 
-8545  2026-06-09 21:00:51  whatsapp  saliente   5493364687956@c.us   ¡Hola Bruno! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Fabio Boschetto y Alejandro Becerra.                                    
-                                                                                                                                                                                                                                                                             
-                                                                     Diego propuso los siguientes horar                                                                                                                                                                      
+8550  2026-06-09 21:06:27  whatsapp  saliente   5493364687956@c.us  Perfecto, te espero. Cuando tengas los tres confirmados me avisás y cerramos el horario.                                                                                                                
 
-8544  2026-06-09 21:00:51  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8549  2026-06-09 21:06:27  sistema   interno                        claude_call whatsapp: 12882ms prompt=83380c raw=386c                                                                                                                                                    
 
-8543  2026-06-09 21:00:51  whatsapp  saliente   5493364340748@c.us   ¡Hola Alejandro! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Fabio Boschetto y Bruno Compa.                                      
-                                                                                                                                                                                                                                                                             
-                                                                     Diego propuso los siguientes horario                                                                                                                                                                    
+8548  2026-06-09 21:06:13  whatsapp  entrante   5493364687956@c.us  Hola. Ya te confirmo que horario puede Alejandro también y te aviso                                                                                                                                     
 
-8542  2026-06-09 21:00:50  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+8547  2026-06-09 21:00:51  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-8541  2026-06-09 21:00:50  whatsapp  saliente   5493492580906@c.us   ¡Hola Fabio! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Alejandro Becerra y Bruno Compa.                                        
-                                                                                                                                                                                                                                                                             
-                                                                     Diego propuso los siguientes horarios                                                                                                                                                                   
+8546  2026-06-09 21:00:51  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8540  2026-06-09 21:00:50  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+8545  2026-06-09 21:00:51  whatsapp  saliente   5493364687956@c.us  ¡Hola Bruno! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Fabio Boschetto y Alejandro Becerra.                                    
+                                                                                                                                                                                                                                                                            
+                                                                    Diego propuso los siguientes horar                                                                                                                                                                      
 
-8539  2026-06-09 21:00:50  calendar  saliente                        creado: Almuerzo con Dario (2026-06-10T13:00:00-03:00 → 2026-06-10T15:30:00-03:00)                                                                                                                      
+8544  2026-06-09 21:00:51  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8538  2026-06-09 21:00:49  whatsapp  saliente   5491132317896@c.us   Dale, te agendo el almuerzo con Dario mañana de 13 a 15:30 y les escribo ahora a Fabio, Alejandro y Bruno con los slots.                                                                                
+8543  2026-06-09 21:00:51  whatsapp  saliente   5493364340748@c.us  ¡Hola Alejandro! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Fabio Boschetto y Bruno Compa.                                      
+                                                                                                                                                                                                                                                                            
+                                                                    Diego propuso los siguientes horario                                                                                                                                                                    
 
-8537  2026-06-09 21:00:49  sistema   interno                         claude_call whatsapp: 137557ms prompt=82750c raw=2433c                                                                                                                                                  
+8542  2026-06-09 21:00:50  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-8536  2026-06-09 20:58:31  whatsapp  entrante   5491132317896@c.us   manana de 13 a 1530 poneme Almuerzo con dario, ofreceles de 9 a 10 el miercoles.                                                                                                                        
-                                                                     jueves a las 17 o 18                                                                                                                                                                                    
-                                                                     viernes de las 12 en adelante                                                                                                                                                                           
+8541  2026-06-09 21:00:50  whatsapp  saliente   5493492580906@c.us  ¡Hola Fabio! Soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una videollamada de una hora entre vos, Diego, Alejandro Becerra y Bruno Compa.                                        
+                                                                                                                                                                                                                                                                            
+                                                                    Diego propuso los siguientes horarios                                                                                                                                                                   
 
-8535  2026-06-09 20:56:01  whatsapp  saliente   34342575317160@lid   Perfecto, la armo. Antes de escribirles, ¿qué horarios querés ofrecerles? Mirando tu agenda esta semana tenés libre:                                                                                    
-                                                                                                                                                                                                                                                                             
-                                                                     • *Mié 10/06*: 13:00-15:30                                                                                                                                                                              
-                                                                     • *Jue 11/06*: desde las 13:00                                                                                                                                                                          
-                                                                     • *Vie 12/06*: antes de                                                                                                                                                                                 
+8540  2026-06-09 21:00:50  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
 
-8534  2026-06-09 20:56:01  sistema   interno                         claude_call whatsapp: 42415ms prompt=82411c raw=699c                                                                                                                                                    
+8539  2026-06-09 21:00:50  calendar  saliente                       creado: Almuerzo con Dario (2026-06-10T13:00:00-03:00 → 2026-06-10T15:30:00-03:00)                                                                                                                      
 
-8533  2026-06-09 20:55:18  whatsapp  entrante   5491132317896@c.us   ahi esta, seriamos fabio, alejandro, bruno y yo. una meet de una hora idealmente esta semana, sino la prox                                                                                              
+8538  2026-06-09 21:00:49  whatsapp  saliente   5491132317896@c.us  Dale, te agendo el almuerzo con Dario mañana de 13 a 15:30 y les escribo ahora a Fabio, Alejandro y Bruno con los slots.                                                                                
 
-8532  2026-06-09 20:54:32  whatsapp  saliente   5491132317896@c.us   Dale, pasámelos y organizo la reu entre los 4.                                                                                                                                                          
+8537  2026-06-09 21:00:49  sistema   interno                        claude_call whatsapp: 137557ms prompt=82750c raw=2433c                                                                                                                                                  
 
-8531  2026-06-09 20:54:32  sistema   interno                         claude_call whatsapp: 39272ms prompt=82193c raw=321c                                                                                                                                                    
+8536  2026-06-09 20:58:31  whatsapp  entrante   5491132317896@c.us  manana de 13 a 1530 poneme Almuerzo con dario, ofreceles de 9 a 10 el miercoles.                                                                                                                        
+                                                                    jueves a las 17 o 18                                                                                                                                                                                    
+                                                                    viernes de las 12 en adelante                                                                                                                                                                           
 
-8530  2026-06-09 20:54:13  sistema   interno                         contacto vcard (privado): Bruno Compa → 5493364687956@c.us                                                                                                                                              
+8535  2026-06-09 20:56:01  whatsapp  saliente   34342575317160@lid  Perfecto, la armo. Antes de escribirles, ¿qué horarios querés ofrecerles? Mirando tu agenda esta semana tenés libre:                                                                                    
+                                                                                                                                                                                                                                                                            
+                                                                    • *Mié 10/06*: 13:00-15:30                                                                                                                                                                              
+                                                                    • *Jue 11/06*: desde las 13:00                                                                                                                                                                          
+                                                                    • *Vie 12/06*: antes de                                                                                                                                                                                 
 
-8529  2026-06-09 20:53:59  sistema   interno                         contacto vcard (privado): Alejandro Becerra → 5493364340748@c.us                                                                                                                                        
+8534  2026-06-09 20:56:01  sistema   interno                        claude_call whatsapp: 42415ms prompt=82411c raw=699c                                                                                                                                                    
 
-8528  2026-06-09 20:53:53  whatsapp  entrante   5491132317896@c.us   ese, y te paso otros dos para organizar una reu entre los 4                                                                                                                                             
+8533  2026-06-09 20:55:18  whatsapp  entrante   5491132317896@c.us  ahi esta, seriamos fabio, alejandro, bruno y yo. una meet de una hora idealmente esta semana, sino la prox                                                                                              
 
-8527  2026-06-09 20:53:03  whatsapp  saliente   34342575317160@lid   Sí, tengo a Fabio Boschetto: WA +54 9 3492 580906, email fabio.boschetto@vrainz.com.                                                                                                                    
+8532  2026-06-09 20:54:32  whatsapp  saliente   5491132317896@c.us  Dale, pasámelos y organizo la reu entre los 4.                                                                                                                                                          
 
-8526  2026-06-09 20:52:56  sistema   interno                         claude_call whatsapp: 9682ms prompt=82365c raw=278c                                                                                                                                                     
+8531  2026-06-09 20:54:32  sistema   interno                        claude_call whatsapp: 39272ms prompt=82193c raw=321c                                                                                                                                                    
 
-8525  2026-06-09 20:52:45  whatsapp  entrante   5491132317896@c.us   tenes el contacto de fabio?                                                                                                                                                                             
+8530  2026-06-09 20:54:13  sistema   interno                        contacto vcard (privado): Bruno Compa → 5493364687956@c.us                                                                                                                                              
 
-8524  2026-06-09 18:30:03  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Aeropuerto (03:45 p. m.)                                                                                                                                                                  
+8529  2026-06-09 20:53:59  sistema   interno                        contacto vcard (privado): Alejandro Becerra → 5493364340748@c.us                                                                                                                                        
