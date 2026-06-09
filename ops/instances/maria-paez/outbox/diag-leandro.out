@@ -1,0 +1,44 @@
+# ejecutado: 2026-06-09T18:41:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "=== DB: $DB ==="
+#   ls -la "$DB" 2>&1
+#   echo "=== TABLAS ==="
+#   sqlite3 "$DB" ".tables"
+#   echo "=== PENDIENTE 111 (full) ==="
+#   sqlite3 -header "$DB" "SELECT * FROM pendientes WHERE id=111;"
+#   echo "=== EVENTOS mencionando Leandro/Groisman ==="
+#   sqlite3 "$DB" "SELECT id, creado, tipo, substr(detalle,1,400) FROM eventos WHERE detalle LIKE '%eandro%' OR detalle LIKE '%roisman%' ORDER BY id;"
+#   echo "=== Buscar tabla de emails/mensajes ==="
+#   sqlite3 "$DB" ".schema" | grep -iE "CREATE TABLE" 
+
+# ───── output ─────
+=== DB: /root/secretaria/state/maria-paez/db/maria.sqlite ===
+-rw-r--r--+ 1 root root 5488640 Jun  9 18:21 /root/secretaria/state/maria-paez/db/maria.sqlite
+=== TABLAS ===
+contactos       estado_usuario  follow_ups      notas_contacto  programados   
+estado          eventos         hechos          pendientes      usuarios      
+=== PENDIENTE 111 (full) ===
+id|creado|desc|estado|cerrado|ultimo_recordatorio|remitente|canal_origen|destino_wa|destino_email|email_message_id|meta_json|usuario_id|dueno|disparador|recordar_desde
+111|2026-06-01 14:53:30|Cuando Leandro Groisman confirme disponibilidad (semana del 8/6), consultarle a Diego qué horario prefiere y crear el evento presencial (en oficina de Leandro o en Carlos Pellegrini 1521 piso 8). Si no puede presencial, crear con Meet.|abierto|||Leandro Groisman|whatsapp|5491140495070@c.us||||1|maria|trigger_externo|
+=== EVENTOS mencionando Leandro/Groisman ===
+Error: in prepare, no such column: creado
+  SELECT id, creado, tipo, substr(detalle,1,400) FROM eventos WHERE detalle LIKE
+             ^--- error here
+=== Buscar tabla de emails/mensajes ===
+CREATE TABLE eventos (
+CREATE TABLE sqlite_sequence(name,seq);
+CREATE TABLE estado (
+CREATE TABLE programados (
+CREATE TABLE pendientes (
+CREATE TABLE usuarios (
+CREATE TABLE estado_usuario (
+CREATE TABLE IF NOT EXISTS "hechos" (
+CREATE TABLE IF NOT EXISTS "contactos" (
+CREATE TABLE follow_ups (
+CREATE TABLE notas_contacto (
+
+# exit=0
