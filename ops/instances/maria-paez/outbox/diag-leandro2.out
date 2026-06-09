@@ -1,0 +1,74 @@
+# ejecutado: 2026-06-09T18:43:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "=== HILO eventos con Leandro (wid 5491140495070 o nombre) ==="
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, canal, direccion, COALESCE(de,'') AS de, substr(COALESCE(cuerpo,''),1,160) AS cuerpo FROM eventos WHERE de LIKE '%5491140495070%' OR cuerpo LIKE '%eandro%' OR cuerpo LIKE '%roisman%' ORDER BY timestamp;"
+#   echo
+#   echo "=== ¿algún ENTRANTE de Leandro? (direccion entrante, de=su wid) ==="
+#   sqlite3 -header -column "$DB" "SELECT id, timestamp, canal, substr(COALESCE(cuerpo,''),1,160) AS cuerpo FROM eventos WHERE de LIKE '%5491140495070%' AND direccion='entrante' ORDER BY timestamp;"
+#   echo
+#   echo "=== follow_ups esperando a Leandro ==="
+#   sqlite3 -header -column "$DB" "SELECT id, creado, descripcion, esperando_de, vence_en, estado FROM follow_ups WHERE esperando_de LIKE '%5491140495070%' ORDER BY id;"
+#   echo
+#   echo "=== pm2 restarts (confirmar deploy de mi fix) ==="
+#   cat /root/secretaria/ops/instances/maria-paez/snapshots/pm2-status.tsv
+
+# ───── output ─────
+=== HILO eventos con Leandro (wid 5491140495070 o nombre) ===
+id    timestamp            canal     direccion  de                   cuerpo                                                                                                                                                          
+----  -------------------  --------  ---------  -------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+6365  2026-05-23 10:00:11  whatsapp  saliente   105171031949561@lid  ☀️ *Buen día, Doris Capurro.* sábado 23 de mayo.                                                                                                                
+                                                                                                                                                                                                                                     
+                                                                     *📅 Agenda del día*                                                                                                                                              
+                                                                     • todo el día — Betina Semenzato                                                                                                                                
+                                                                     • todo el día — Betu Semenzato                                                                                                                                  
+                                                                     • 09:00 a. m. — leandro @go                                                                                                                                     
+
+6378  2026-05-23 11:45:09  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: leandro (09:00 a. m.) @gorriti 5737                                                                                                               
+
+7814  2026-06-01 14:51:39  sistema   interno                         contacto vcard (privado): Leandro Groisman → 5491140495070@c.us                                                                                                 
+
+7815  2026-06-01 14:52:24  whatsapp  entrante   5491132317896@c.us   María le podrá ser una reunión con Leandro Groizman la semana que viene.                                                                                        
+                                                                      Si puede ser presencial mejor que el defina donde se en su oficina o en la mía en Beli                                                                         
+
+7818  2026-06-01 14:53:30  whatsapp  saliente   5491140495070@c.us   Hola Leandro, soy María Páez, secretaria de Diego Páez. Te escribo para coordinar una reunión entre vos y Diego la semana que viene (8 al 12 de junio). La prefe
+
+7817  2026-06-01 14:53:30  whatsapp  saliente   5491132317896@c.us   Le escribo a Leandro ahora para pedirle disponibilidad. Cuando me confirme opciones te consulto cuál te viene mejor.                                            
+
+8361  2026-06-06 19:36:31  whatsapp  saliente   5491132317896@c.us   Tengo tres cosas abiertas esperando respuesta de terceros:                                                                                                      
+                                                                                                                                                                                                                                     
+                                                                     1. *Andrés Neumann* — le propuse mar 9/6, mié 10/6 y jue 11/6 a las 15:00 para la reunión de 2 horas                                                            
+
+8372  2026-06-06 19:50:01  whatsapp  saliente   5491132317896@c.us   *Tus tareas abiertas:*                                                                                                                                          
+                                                                     1. iProt Seguridad                                                                                                                                              
+                                                                     2. Espejo Subaru                                                                                                                                                
+                                                                     3. DDJJ 2025                                                                                                                                                    
+                                                                     4. Mail IONQ a Guille                                                                                                                                           
+                                                                                                                                                                                                                                     
+                                                                     *Mis pendientes propios:*                                                                                                                                       
+                                                                     1. Esperar que Leandro Groisman confirm                                                                                                                         
+
+8502  2026-06-09 13:10:29  whatsapp  saliente   5491132317896@c.us   Todavía no quedó fecha con Leandro Groisman. Estoy esperando que él me confirme su disponibilidad para esta semana. En cuanto responda te consulto qué horario p
+
+8575  2026-06-09 21:16:34  whatsapp  entrante   5491132317896@c.us   otro tema, le podes recordar a Leandro Groisman de que te pase opciones para la reu conmigo                                                                     
+
+8578  2026-06-09 21:17:04  whatsapp  saliente   5491140495070@c.us   Hola Leandro! Te escribo para recordarte que quedamos en que me ibas a pasar tus opciones de disponibilidad para juntarte con Diego. Cuando puedas, mandame los 
+
+8596  2026-06-09 21:25:04  whatsapp  saliente   5491132317896@c.us   Acá está tu lista completa:                                                                                                                                     
+                                                                                                                                                                                                                                     
+                                                                     (sin nombre) — +5491161310664                                                                                                                                   
+                                                                     1. Adrián Duek — +5491144396371                                                                                                                                 
+                                                                     2. Agustina Acevedo — WA (lid)                                                                                                                                  
+                                                                     3. Alejandro Becerra — +5493364340748                                                                                                                           
+
+=== ¿algún ENTRANTE de Leandro? (direccion entrante, de=su wid) ===
+
+=== follow_ups esperando a Leandro ===
+
+=== pm2 restarts (confirmar deploy de mi fix) ===
+maria-paez	pid=3559428	status=online	restarts=1	uptime_ms=1781040062913
+
+# exit=0
