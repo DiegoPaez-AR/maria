@@ -34,6 +34,8 @@ const { iniciarFollowUps } = require('./follow-ups');
 const internalApi = require('./internal-api');
 const { iniciarMemoriaCurada } = require('./memoria-curada');
 const { iniciarMariaWorker } = require('./maria-worker');
+const { iniciarCumpleAvisos } = require('./cumple-avisos');
+const { iniciarResumenSemanal } = require('./resumen-semanal');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
@@ -44,6 +46,8 @@ const CALENDAR_WATCH_MS = Number(process.env.CALENDAR_WATCH_MS || 8 * 60 * 60_00
 const FOLLOW_UPS_MS   = Number(process.env.FOLLOW_UPS_MS   || 5 * 60_000);
 const MEMORIA_CURADA_MS = Number(process.env.MEMORIA_CURADA_MS || 24 * 60 * 60_000);
 const MARIA_WORKER_MS = Number(process.env.MARIA_WORKER_MS || 30 * 60_000);
+const CUMPLE_AVISOS_MS = Number(process.env.CUMPLE_AVISOS_MS || 15 * 60_000);
+const RESUMEN_SEMANAL_MS = Number(process.env.RESUMEN_SEMANAL_MS || 15 * 60_000);
 
 let gmailInterval = null;
 let recordatoriosInterval = null;
@@ -55,6 +59,8 @@ let followUpsInterval = null;
 let internalApiServer = null;
 let memoriaCuradaInterval = null;
 let mariaWorkerInterval = null;
+let cumpleAvisosInterval = null;
+let resumenSemanalInterval = null;
 let waClient = null;
 
 async function main() {
@@ -140,6 +146,16 @@ async function main() {
         waClient: client, intervaloMs: MARIA_WORKER_MS,
       });
 
+      console.log('▸ arrancando cumple-avisos (noche anterior, tz usuario)');
+      cumpleAvisosInterval = iniciarCumpleAvisos({
+        waClient: client, intervaloMs: CUMPLE_AVISOS_MS,
+      });
+
+      console.log('▸ arrancando resumen-semanal (domingos, tz usuario)');
+      resumenSemanalInterval = iniciarResumenSemanal({
+        waClient: client, intervaloMs: RESUMEN_SEMANAL_MS,
+      });
+
       mem.log({
         usuarioId: owner?.id || null,
         canal: 'sistema', direccion: 'interno',
@@ -168,6 +184,8 @@ function shutdown(sig) {
   if (followUpsInterval) clearInterval(followUpsInterval);
   if (memoriaCuradaInterval) clearInterval(memoriaCuradaInterval);
   if (mariaWorkerInterval) clearInterval(mariaWorkerInterval);
+  if (cumpleAvisosInterval) clearInterval(cumpleAvisosInterval);
+  if (resumenSemanalInterval) clearInterval(resumenSemanalInterval);
   const done = () => process.exit(0);
   if (waClient) {
     waClient.destroy().then(done).catch(done);

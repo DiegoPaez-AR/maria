@@ -30,6 +30,25 @@ function _componerTexto(e, usuario) {
   const asistentes = (e.attendees || []).filter(a => a).slice(0, 6).join(', ');
   let txt = `⏰ *En ${MINUTOS_ANTES}min*: ${e.summary} (${hm})${lugar}`;
   if (asistentes) txt += `\nCon: ${asistentes}`;
+  // Contexto de los asistentes (2026-06-10): si el attendee está en la libreta
+  // del usuario, anexar 1 línea de su nota curada (memoria de largo plazo) o,
+  // si no hay, las notas de libreta. Máx 2 asistentes para no inflar el aviso.
+  try {
+    let agregadas = 0;
+    for (const em of (e.attendees || []).filter(Boolean)) {
+      if (agregadas >= 2) break;
+      const c = mem.buscarContacto({ usuarioId: usuario.id, email: String(em).trim().toLowerCase() });
+      if (!c) continue;
+      const nota = mem.getNotaContacto(usuario.id, c.id);
+      const fuente = (nota && nota.nota) ? nota.nota : (c.notas || null);
+      if (!fuente) continue;
+      const plano = String(fuente).replace(/\s+/g, ' ').trim();
+      txt += `\n👤 ${c.nombre}: ${plano.slice(0, 160)}${plano.length > 160 ? '…' : ''}`;
+      agregadas++;
+    }
+  } catch (err) {
+    console.warn(`[meeting-prep] notas de asistentes falló:`, err.message);
+  }
   if (e.descripcion) {
     const desc = e.descripcion.replace(/\s+/g, ' ').slice(0, 200);
     txt += `\n${desc}`;

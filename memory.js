@@ -1225,6 +1225,44 @@ function marcarRecordatorioPendiente(id, ts = new Date().toISOString()) {
   marcarRecordatorioStmt.run(ts, id);
 }
 
+// ── Stats de la semana (para resumen-semanal.js, 2026-06-10) ──────────────
+const qStatsMensajes = db.prepare(`
+  SELECT canal, direccion, COUNT(*) AS n FROM eventos
+  WHERE usuario_id = ? AND timestamp >= datetime('now', '-7 days')
+    AND canal IN ('whatsapp', 'gmail')
+  GROUP BY canal, direccion
+`);
+const qStatsEventosCal = db.prepare(`
+  SELECT COUNT(*) AS n FROM eventos
+  WHERE usuario_id = ? AND canal = 'calendar' AND direccion = 'saliente'
+    AND timestamp >= datetime('now', '-7 days') AND cuerpo LIKE 'creado:%'
+`);
+const qStatsPendCerrados = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id = ? AND estado = 'cerrado' AND cerrado >= datetime('now', '-7 days')`);
+const qStatsPendNuevos   = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id = ? AND creado >= datetime('now', '-7 days')`);
+const qStatsPendAbiertos = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id = ? AND estado = 'abierto'`);
+const qStatsFollowUps = db.prepare(`
+  SELECT estado, COUNT(*) AS n FROM follow_ups
+  WHERE usuario_id = ? AND (cerrado_en >= datetime('now', '-7 days') OR disparado_en >= datetime('now', '-7 days'))
+  GROUP BY estado
+`);
+function statsSemana(usuarioId) {
+  if (!usuarioId) throw new Error('statsSemana: usuarioId requerido');
+  const s = { waIn: 0, waOut: 0, mailIn: 0, mailOut: 0, eventosCreados: 0, pendCerrados: 0, pendNuevos: 0, pendAbiertos: 0, fuCerrados: 0, fuDisparados: 0 };
+  for (const r of qStatsMensajes.all(usuarioId)) {
+    if (r.canal === 'whatsapp') { if (r.direccion === 'entrante') s.waIn = r.n; else if (r.direccion === 'saliente') s.waOut = r.n; }
+    if (r.canal === 'gmail')    { if (r.direccion === 'entrante') s.mailIn = r.n; else if (r.direccion === 'saliente') s.mailOut = r.n; }
+  }
+  s.eventosCreados = qStatsEventosCal.get(usuarioId)?.n || 0;
+  s.pendCerrados   = qStatsPendCerrados.get(usuarioId)?.n || 0;
+  s.pendNuevos     = qStatsPendNuevos.get(usuarioId)?.n || 0;
+  s.pendAbiertos   = qStatsPendAbiertos.get(usuarioId)?.n || 0;
+  for (const r of qStatsFollowUps.all(usuarioId)) {
+    if (r.estado === 'cerrado') s.fuCerrados = r.n;
+    if (r.estado === 'disparado') s.fuDisparados = r.n;
+  }
+  return s;
+}
+
 // ── Tareas propias de Maria (para maria-worker.js, 2026-06-10) ────────────
 const qPendientesMariaManual = db.prepare(`
   SELECT * FROM pendientes
@@ -1726,6 +1764,7 @@ module.exports = {
   posponerPendiente,
   pendientesMariaManual,
   actualizarMetaPendiente,
+  statsSemana,
   // contactos
   upsertContacto,
   buscarContacto,
