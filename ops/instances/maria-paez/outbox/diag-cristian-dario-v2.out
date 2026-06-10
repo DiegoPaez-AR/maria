@@ -1,0 +1,161 @@
+# ejecutado: 2026-06-10T12:23:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # inbox: diagnostico v2 (columna correcta: "desc")
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   python3 - "$DB" <<'PYEOF'
+#   import sqlite3, sys
+#   db = sqlite3.connect(sys.argv[1])
+#   db.row_factory = sqlite3.Row
+#   
+#   print("== 1. pendientes de Cristian Ruiz (id=9, no cerrados) ==")
+#   for p in db.execute('SELECT id, dueno, disparador, "desc", estado, creado, recordar_desde, ultimo_recordatorio, meta_json FROM pendientes WHERE usuario_id=9 AND estado=\'abierto\''):
+#       print(dict(p)); print("---")
+#   
+#   print("\n== follow-ups de Cristian (abiertos/disparados) ==")
+#   for f in db.execute("SELECT id, descripcion, esperando_de, esperando_canal, vence_en, estado, creado FROM follow_ups WHERE usuario_id=9 AND estado IN ('abierto','disparado')"):
+#       print(dict(f))
+#   
+#   print("\n== ultimos 15 eventos del bucket de Cristian ==")
+#   for e in db.execute("SELECT id, timestamp, canal, direccion, de, substr(cuerpo,1,180) AS cuerpo FROM eventos WHERE usuario_id=9 ORDER BY id DESC LIMIT 15"):
+#       print(dict(e)); print("---")
+#   
+#   print("\n== 2. eventos con 'dario' (ultimas 96h) ==")
+#   for e in db.execute("""SELECT id, timestamp, usuario_id, canal, direccion, de, substr(cuerpo,1,300) AS cuerpo, substr(metadata_json,1,400) AS meta
+#                          FROM eventos
+#                          WHERE (cuerpo LIKE '%dario%' COLLATE NOCASE OR metadata_json LIKE '%dario%' COLLATE NOCASE OR nombre LIKE '%dario%' COLLATE NOCASE)
+#                            AND timestamp >= datetime('now','-96 hours') ORDER BY id"""):
+#       print(dict(e)); print("---")
+#   
+#   print("\n== acciones calendar (ultimas 96h) ==")
+#   for e in db.execute("""SELECT id, timestamp, usuario_id, substr(cuerpo,1,250) AS cuerpo, substr(metadata_json,1,500) AS meta
+#                          FROM eventos WHERE canal='calendar' AND timestamp >= datetime('now','-96 hours') ORDER BY id"""):
+#       print(dict(e)); print("---")
+#   
+#   print("\n== contactos 'dario' ==")
+#   for c in db.execute("SELECT id, usuario_id, nombre, whatsapp, email, visibilidad FROM contactos WHERE nombre LIKE '%dario%' COLLATE NOCASE"):
+#       print(dict(c))
+#   PYEOF
+
+# ───── output ─────
+== 1. pendientes de Cristian Ruiz (id=9, no cerrados) ==
+{'id': 117, 'dueno': 'maria', 'disparador': 'manual', 'desc': 'Cambiar horario del brief matutino de Cristian Ruiz de 07:00 a 09:15', 'estado': 'abierto', 'creado': '2026-06-02 19:05:06', 'recordar_desde': None, 'ultimo_recordatorio': None, 'meta_json': None}
+---
+{'id': 118, 'dueno': 'maria', 'disparador': 'manual', 'desc': 'Investigar y enviar por email (cruiz@froneus.com) listado de eventos para networking en Argentina — próximos 6 meses (junio-noviembre 2026). Perfil: cobranzas, omnicanalidad, voz, CX, atención al cliente, banca/financiero, salud, seguridad. Ubicaciones: CABA, Provincia BA, Tandil, Bahía Blanca, San Luis, Tucumán, Corrientes, Bariloche.', 'estado': 'abierto', 'creado': '2026-06-02 19:05:06', 'recordar_desde': None, 'ultimo_recordatorio': None, 'meta_json': None}
+---
+
+== follow-ups de Cristian (abiertos/disparados) ==
+
+== ultimos 15 eventos del bucket de Cristian ==
+{'id': 8704, 'timestamp': '2026-06-10 10:00:44', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* miércoles 10 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌦️ llovizna leve, min 11° / max 14° · 35% prob. de lluvia\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8478, 'timestamp': '2026-06-09 10:01:06', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* martes 9 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n☁️ nublado, min 7° / max 14°\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8412, 'timestamp': '2026-06-08 10:00:46', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* lunes 8 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌧️ lluvia, min 11° / max 13° · 100% prob. de lluvia\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8384, 'timestamp': '2026-06-07 10:00:45', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* domingo 7 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌦️ llovizna leve, min 13° / max 16° · 67% prob. de lluvia\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8344, 'timestamp': '2026-06-06 10:00:43', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* sábado 6 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n☁️ nublado, min 13° / max 17°\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8301, 'timestamp': '2026-06-05 10:00:50', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* viernes 5 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌦️ llovizna, min 13° / max 16° · 34% prob. de lluvia\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8111, 'timestamp': '2026-06-04 10:00:51', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* jueves 4 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n☁️ nublado, min 14° / max 16°\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 8003, 'timestamp': '2026-06-03 10:00:44', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': '☀️ *Buen día, Cristian Ruiz.* miércoles 3 de junio.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌦️ llovizna leve, min 13° / max 16°\n\n*📅 Agenda del día*\n(sin eventos hoy)'}
+---
+{'id': 7966, 'timestamp': '2026-06-02 19:05:06', 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: agregar_pendiente'}
+---
+{'id': 7965, 'timestamp': '2026-06-02 19:05:06', 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: agregar_pendiente'}
+---
+{'id': 7964, 'timestamp': '2026-06-02 19:05:06', 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491126406612@c.us', 'cuerpo': 'Claro, el brief lo paso a las 9:15 — no es instantáneo, lo configuro de mi lado y te aviso cuando quede. Y me pongo con el armado del listado de eventos; cuando esté listo te lo ma'}
+---
+{'id': 7963, 'timestamp': '2026-06-02 19:05:06', 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'claude_call whatsapp: 186773ms prompt=48470c raw=1176c'}
+---
+{'id': 7962, 'timestamp': '2026-06-02 19:01:59', 'canal': 'whatsapp', 'direccion': 'entrante', 'de': '5491126406612@c.us', 'cuerpo': 'Por otro lado, podrías enviarme estos mensajes tipo 9 y cuarto?'}
+---
+{'id': 7961, 'timestamp': '2026-06-02 19:01:49', 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'claude_call whatsapp: 61773ms prompt=48517c raw=903c'}
+---
+{'id': 7960, 'timestamp': '2026-06-02 19:00:48', 'canal': 'whatsapp', 'direccion': 'entrante', 'de': '5491126406612@c.us', 'cuerpo': 'los proximos 6 meses'}
+---
+
+== 2. eventos con 'dario' (ultimas 96h) ==
+{'id': 8536, 'timestamp': '2026-06-09 20:58:31', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'entrante', 'de': '5491132317896@c.us', 'cuerpo': 'manana de 13 a 1530 poneme Almuerzo con dario, ofreceles de 9 a 10 el miercoles.\njueves a las 17 o 18\nviernes de las 12 en adelante', 'meta': '{"messageId":"false_34342575317160@lid_3EB0904761181B8EF82A96","esAudio":false,"pushname":"Diego Paez","fromLid":"34342575317160@lid"}'}
+---
+{'id': 8538, 'timestamp': '2026-06-09 21:00:49', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491132317896@c.us', 'cuerpo': 'Dale, te agendo el almuerzo con Dario mañana de 13 a 15:30 y les escribo ahora a Fabio, Alejandro y Bruno con los slots.', 'meta': '{"razonamiento":"Crear almuerzo con Dario mañana 13-15:30 (slot libre, sin conflicto), y escribir a los 3 contactos para coordinar meet de 1h con los slots que indicó Diego.","inReplyTo":"false_34342575317160@lid_3EB0904761181B8EF82A96","slot":"respuesta_a_remitente","tercero":true}'}
+---
+{'id': 8539, 'timestamp': '2026-06-09 21:00:50', 'usuario_id': 1, 'canal': 'calendar', 'direccion': 'saliente', 'de': None, 'cuerpo': 'creado: Almuerzo con Dario (2026-06-10T13:00:00-03:00 → 2026-06-10T15:30:00-03:00)', 'meta': '{"eventoId":"r4ouhnq20i6vvrcspdbmab8rac","link":"https://www.google.com/calendar/event?eid=cjRvdWhucTIwaTZ2dnJjc3BkYm1hYjhyYWMgZGllZ29AcGFlei5pcw","meetLink":null,"calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8540, 'timestamp': '2026-06-09 21:00:50', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: crear_evento', 'meta': '{"accion":{"tipo":"crear_evento","summary":"Almuerzo con Dario","start":"2026-06-10T13:00:00-03:00","end":"2026-06-10T15:30:00-03:00","attendees":["dfainguersch@dragonesvc.com"],"meet":false,"forzar":false},"resultado":{"id":"r4ouhnq20i6vvrcspdbmab8rac","summary":"Almuerzo con Dario","link":"https://www.google.com/calendar/event?eid=cjRvdWhucTIwaTZ2dnJjc3BkYm1hYjhyYWMgZGllZ29AcGFlei5pcw","meetLink'}
+---
+{'id': 8562, 'timestamp': '2026-06-09 21:13:11', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '34342575317160@lid', 'cuerpo': '¡Quedó confirmada la call con Fabio, Alejandro y Bruno! El jueves 11/06 a las 17:00 te la agendo con Meet. Alejandro y Bruno no tienen email en mi libreta, así que la invitación de calendario le llega solo a Fabio por ahora.', 'meta': '{"razonamiento":"Fabio confirma jueves 17hs, completando las 3 confirmaciones. Creo el evento con Meet, aviso a Diego, y cierro el pendiente 132.","inReplyTo":"false_102649869373553@lid_ACC85D2DCE68B75AA34ACF151CDB55E6","slot":"respuesta_a_usuario"}'}
+---
+{'id': 8563, 'timestamp': '2026-06-09 21:13:12', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5493492580906@c.us', 'cuerpo': 'Perfecto Fabio, quedamos para el jueves 11/06 a las 17:00. Te mando ya la invitación de calendario. ¡Nos vemos!', 'meta': '{"razonamiento":"Fabio confirma jueves 17hs, completando las 3 confirmaciones. Creo el evento con Meet, aviso a Diego, y cierro el pendiente 132.","inReplyTo":"false_102649869373553@lid_ACC85D2DCE68B75AA34ACF151CDB55E6","slot":"respuesta_a_remitente","tercero":true}'}
+---
+{'id': 8569, 'timestamp': '2026-06-09 21:15:11', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5493364340748@c.us', 'cuerpo': 'Hola Alejandro! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?', 'meta': '{"destinoOriginal":"5493364340748@c.us","destinoFinal":"5493364340748@c.us","tag":"enviar_wa"}'}
+---
+{'id': 8570, 'timestamp': '2026-06-09 21:15:11', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: enviar_wa', 'meta': '{"accion":{"tipo":"enviar_wa","a":"5493364340748@c.us","texto":"Hola Alejandro! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?"},"resultado":{"a":"5493364340748@c.us","enviado":true},"canalOrigen":"whatsapp"}'}
+---
+{'id': 8571, 'timestamp': '2026-06-09 21:15:11', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5493364687956@c.us', 'cuerpo': 'Hola Bruno! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?', 'meta': '{"destinoOriginal":"5493364687956@c.us","destinoFinal":"5493364687956@c.us","tag":"enviar_wa"}'}
+---
+{'id': 8572, 'timestamp': '2026-06-09 21:15:11', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: enviar_wa', 'meta': '{"accion":{"tipo":"enviar_wa","a":"5493364687956@c.us","texto":"Hola Bruno! Para mandarte la invitación de calendario de la videollamada del jueves 11/06 a las 17:00, ¿me podés pasar tu email?"},"resultado":{"a":"5493364687956@c.us","enviado":true},"canalOrigen":"whatsapp"}'}
+---
+{'id': 8573, 'timestamp': '2026-06-09 21:15:11', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: agregar_pendiente', 'meta': '{"accion":{"tipo":"agregar_pendiente","desc":"Cuando Alejandro Becerra mande su email, agregarlo como invitado al evento Videollamada Diego / Fabio / Alejandro / Bruno (jue 11/06 17:00, id: l1uljba53v9dslf058v7of128o) y mandarle la invitación de calendario.","dueno":"maria","disparador":"trigger_externo","meta":{"remitente":"Alejandro Becerra","canal_origen":"whatsapp","de":"5493364340748@c.us"}},'}
+---
+{'id': 8574, 'timestamp': '2026-06-09 21:15:11', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: agregar_pendiente', 'meta': '{"accion":{"tipo":"agregar_pendiente","desc":"Cuando Bruno Compa mande su email, agregarlo como invitado al evento Videollamada Diego / Fabio / Alejandro / Bruno (jue 11/06 17:00, id: l1uljba53v9dslf058v7of128o) y mandarle la invitación de calendario.","dueno":"maria","disparador":"trigger_externo","meta":{"remitente":"Bruno Compa","canal_origen":"whatsapp","de":"5493364687956@c.us"}},"resultado":'}
+---
+{'id': 8582, 'timestamp': '2026-06-09 21:19:35', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5493364340748@c.us', 'cuerpo': '¡Perfecto! Te mando ahora la invitación de calendario para la videollamada del jueves 11/06 a las 17:00.', 'meta': '{"razonamiento":"Alejandro mandó su email — trigger del pendiente 133. Lo agrego al evento y le llega la invitación de Google. No aviso a Diego (paso mecánico ya decidido, sin decisión nueva).","inReplyTo":"false_96460804751592@lid_ACBC4EE684D07D0B9ECECC397E31836A","slot":"respuesta_a_remitente","tercero":true}'}
+---
+{'id': 8586, 'timestamp': '2026-06-09 21:19:36', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: quitar_pendiente', 'meta': '{"accion":{"tipo":"quitar_pendiente","id":133},"resultado":{"id":133,"desc":"Cuando Alejandro Becerra mande su email, agregarlo como invitado al evento Videollamada Diego / Fabio / Alejandro / Bruno (jue 11/06 17:00, id: l1uljba53v9dslf058v7of128o) y mandarle la invitación de calendario.","cerrado":true},"canalOrigen":"whatsapp"}'}
+---
+{'id': 8596, 'timestamp': '2026-06-09 21:25:04', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491132317896@c.us', 'cuerpo': 'Acá está tu lista completa:\n\n(sin nombre) — +5491161310664\n1. Adrián Duek — +5491144396371\n2. Agustina Acevedo — WA (lid)\n3. Alejandro Becerra — +5493364340748\n4. Alfonso Amat — +5491148133819\n5. Ana Carina — WA (lid)\n6. Ana Gianini — +5491168579234\n7. Ana Vainman — +5491140759467\n8. Analia Frangi —', 'meta': '{"razonamiento":"Diego pidió su lista completa de contactos privados. La extraigo directamente de [LIBRETA DE CONTACTOS DE DIEGO] y la devuelvo formateada para WhatsApp.","inReplyTo":"false_34342575317160@lid_3EB0A5F753965588EF4456","slot":"respuesta_a_remitente","tercero":true}'}
+---
+{'id': 8598, 'timestamp': '2026-06-09 21:36:12', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'entrante', 'de': '5491132317896@c.us', 'cuerpo': 'María Realizamo, por favor, un almuerzo para la semana que viene de una a tres y media o de una\n tres mejor con Pablo Visote. El tiempo hace el contacto. Y siempre que no tengas el email del\n contacto para agendar, veiselo para poder mandarle la en su calendario. Gracias.', 'meta': '{"messageId":"false_34342575317160@lid_3A75C56A4EAE19D8661D","esAudio":true,"pushname":"Diego Paez","fromLid":"34342575317160@lid"}'}
+---
+{'id': 8607, 'timestamp': '2026-06-09 21:38:26', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: quitar_pendiente', 'meta': '{"accion":{"tipo":"quitar_pendiente","id":134},"resultado":{"id":134,"desc":"Cuando Bruno Compa mande su email, agregarlo como invitado al evento Videollamada Diego / Fabio / Alejandro / Bruno (jue 11/06 17:00, id: l1uljba53v9dslf058v7of128o) y mandarle la invitación de calendario.","cerrado":true},"canalOrigen":"whatsapp"}'}
+---
+{'id': 8609, 'timestamp': '2026-06-09 21:39:05', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491132317896@c.us', 'cuerpo': 'Perfecto, te coordino el almuerzo con Pablo Vizzotti la semana que viene de 13 a 15hs.\n\nPara ese horario estás libre el *lunes 15, martes 16, miércoles 17, jueves 18 y viernes 19*. ¿Qué día preferís que le proponga?\n\nY sí, cuando le escriba le pido el email para mandarle la invitación de calendario.', 'meta': '{"razonamiento":"Diego pide coordinar almuerzo con Pablo Vizzotti semana del 15/06 de 13-15hs. Por regla coordinacion_reuniones_consultar_horarios_primero consulto el día antes de contactar a Pablo. Agenda libre en ese rango los 5 días de esa semana. Pablo está en libreta solo con WA, sin email. Agrego pendiente para actuar cuando Diego confirme el día. Actualizo hecho sobre email faltante según i'}
+---
+{'id': 8610, 'timestamp': '2026-06-09 21:39:05', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: agregar_pendiente', 'meta': '{"accion":{"tipo":"agregar_pendiente","desc":"Coordinar almuerzo Diego-Pablo Vizzotti semana del 15/06, de 13 a 15hs. Cuando Diego confirme el día, escribirle a Pablo (WA: 5491158091738@c.us) para consultar disponibilidad y pedirle el email para la invitación de calendario.","dueno":"usuario","disparador":"respuesta_usuario","meta":{"remitente":"Diego","canal_origen":"whatsapp"}},"resultado":{"id"'}
+---
+{'id': 8615, 'timestamp': '2026-06-09 21:49:32', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: quitar_pendiente', 'meta': '{"accion":{"tipo":"quitar_pendiente","id":135},"resultado":{"id":135,"desc":"Coordinar almuerzo Diego-Pablo Vizzotti semana del 15/06, de 13 a 15hs. Cuando Diego confirme el día, escribirle a Pablo (WA: 5491158091738@c.us) para consultar disponibilidad y pedirle el email para la invitación de calendario.","cerrado":true},"canalOrigen":"whatsapp"}'}
+---
+{'id': 8616, 'timestamp': '2026-06-09 21:49:32', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491158091738@c.us', 'cuerpo': '¡Hola Pablo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar un almuerzo de Diego con vos la semana que viene, de 13 a 15hs.\n\nLos días disponibles son:\n\n📅 Lunes 15/06\n📅 Martes 16/06\n📅 Miércoles 17/06\n📅 Jueves 18/06\n📅 Viernes 19/06\n\n¿Alguno te queda bien? Y si me pasás tu emai', 'meta': '{"destinoOriginal":"5491158091738@c.us","destinoFinal":"5491158091738@c.us","tag":"enviar_wa"}'}
+---
+{'id': 8617, 'timestamp': '2026-06-09 21:49:32', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: enviar_wa', 'meta': '{"accion":{"tipo":"enviar_wa","a":"5491158091738@c.us","texto":"¡Hola Pablo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar un almuerzo de Diego con vos la semana que viene, de 13 a 15hs.\\n\\nLos días disponibles son:\\n\\n📅 Lunes 15/06\\n📅 Martes 16/06\\n📅 Miércoles 17/06\\n📅 Jueves 18/06\\n📅 Viernes 19/06\\n\\n¿Alguno te queda bien? Y si me pasás tu email te mando la invitación d'}
+---
+{'id': 8624, 'timestamp': '2026-06-09 22:00:04', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491158091738@c.us', 'cuerpo': '¡Perfecto, Pablo! Queda anotado el *miércoles 17/06 de 13 a 15hs*. Te mando ahora la invitación al calendario a pvizzotti@gmail.com. ¡Que lo disfruten!', 'meta': '{"razonamiento":"Pablo confirmó email y día. Creo el evento, actualizo su contacto con el email, cierro el pendiente e informo a Diego.","inReplyTo":"false_221388535275600@lid_3A2BE3E6489556815D23","slot":"respuesta_a_remitente","tercero":true}'}
+---
+{'id': 8643, 'timestamp': '2026-06-09 22:40:36', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491176176620@c.us', 'cuerpo': '¡Hola Máximo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar una reunión entre Diego y vos la semana que viene. ¿Te queda bien el *lunes 15/06 a las 11hs* (una hora)? Y si me pasás tu email, te mando la invitación al calendario. ¡Gracias!', 'meta': '{"destinoOriginal":"5491176176620@c.us","destinoFinal":"5491176176620@c.us","tag":"enviar_wa"}'}
+---
+{'id': 8644, 'timestamp': '2026-06-09 22:40:36', 'usuario_id': 1, 'canal': 'sistema', 'direccion': 'interno', 'de': None, 'cuerpo': 'acción ejecutada: enviar_wa', 'meta': '{"accion":{"tipo":"enviar_wa","a":"5491176176620@c.us","texto":"¡Hola Máximo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar una reunión entre Diego y vos la semana que viene. ¿Te queda bien el *lunes 15/06 a las 11hs* (una hora)? Y si me pasás tu email, te mando la invitación al calendario. ¡Gracias!"},"resultado":{"a":"5491176176620@c.us","enviado":true},"canalOrigen":"w'}
+---
+{'id': 8651, 'timestamp': '2026-06-09 22:44:16', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '5491176176620@c.us', 'cuerpo': '¡Perfecto, Máximo! Queda anotado el *lunes 15/06 a las 11hs* (una hora). Te mando ahora la invitación al calendario a maximoj@indesamdeltagroup.com. ¡Hasta el lunes!', 'meta': '{"razonamiento":"Máximo pasó su email; ya había confirmado disponibilidad en el mensaje anterior. Diego había pedido proceder igual pese al solapamiento con el Seguimiento comercial, así que forzar=true. Quito el pendiente 138 y aviso a Diego con resultado concreto.","inReplyTo":"false_43306776035464@lid_3A3A62A087453C34140C","slot":"respuesta_a_remitente","tercero":true}'}
+---
+{'id': 8696, 'timestamp': '2026-06-10 07:00:10', 'usuario_id': 1, 'canal': 'whatsapp', 'direccion': 'saliente', 'de': '34342575317160@lid', 'cuerpo': '☀️ *Buen día, Diego.* miércoles 10 de junio.\n\n*📅 Agenda del día*\n• 10:00 a.\xa0m. — Reunión Diego / José Valdes\n• 11:00 a.\xa0m. — Reu Lank - Dragones\n• 01:00 p.\xa0m. — Almuerzo con Dario\n• 03:30 p.\xa0m. — Personal\n\n*📝 Pendientes*\n1. iProt Seguridad\n2. Espejo Subaru\n3. DDJJ 2025\n4. Mail IONQ a Guille\n5. Prese', 'meta': '{"tipo":"morning_brief","destinoFinal":"34342575317160@lid","tag":"morning-brief/Diego"}'}
+---
+
+== acciones calendar (ultimas 96h) ==
+{'id': 8514, 'timestamp': '2026-06-09 14:40:03', 'usuario_id': 12, 'cuerpo': 'creado: Audio con Entel Chile (2026-06-09T15:00:00-03:00 → 2026-06-09T16:00:00-03:00) · Meet: https://meet.google.com/dcv-nsyf-djz [en calendar de Maria]', 'meta': '{"eventoId":"d71rsbmjce4t2d3al434fs7krc","link":"https://www.google.com/calendar/event?eid=ZDcxcnNibWpjZTR0MmQzYWw0MzRmczdrcmMgbWFyaWEucGFlekBpbnRlbnNhLmlv","meetLink":"https://meet.google.com/dcv-nsyf-djz","calendarId":"maria.paez@intensa.io","tier":"tier_0"}'}
+---
+{'id': 8539, 'timestamp': '2026-06-09 21:00:50', 'usuario_id': 1, 'cuerpo': 'creado: Almuerzo con Dario (2026-06-10T13:00:00-03:00 → 2026-06-10T15:30:00-03:00)', 'meta': '{"eventoId":"r4ouhnq20i6vvrcspdbmab8rac","link":"https://www.google.com/calendar/event?eid=cjRvdWhucTIwaTZ2dnJjc3BkYm1hYjhyYWMgZGllZ29AcGFlei5pcw","meetLink":null,"calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8564, 'timestamp': '2026-06-09 21:13:13', 'usuario_id': 1, 'cuerpo': 'creado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00) · Meet: https://meet.google.com/skp-jvmn-mek', 'meta': '{"eventoId":"l1uljba53v9dslf058v7of128o","link":"https://www.google.com/calendar/event?eid=bDF1bGpiYTUzdjlkc2xmMDU4djdvZjEyOG8gZGllZ29AcGFlei5pcw","meetLink":"https://meet.google.com/skp-jvmn-mek","calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8584, 'timestamp': '2026-06-09 21:19:36', 'usuario_id': 1, 'cuerpo': 'modificado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00)', 'meta': '{"eventoId":"l1uljba53v9dslf058v7of128o","calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8605, 'timestamp': '2026-06-09 21:38:26', 'usuario_id': 1, 'cuerpo': 'modificado: Videollamada Diego / Fabio / Alejandro / Bruno (2026-06-11T17:00:00-03:00 → 2026-06-11T18:00:00-03:00)', 'meta': '{"eventoId":"l1uljba53v9dslf058v7of128o","calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8626, 'timestamp': '2026-06-09 22:00:06', 'usuario_id': 1, 'cuerpo': 'creado: Almuerzo Diego / Pablo Vizzotti (2026-06-17T13:00:00-03:00 → 2026-06-17T15:00:00-03:00)', 'meta': '{"eventoId":"mjklkk79dhpavp4p7o9kqn6o2s","link":"https://www.google.com/calendar/event?eid=bWprbGtrNzlkaHBhdnA0cDdvOWtxbjZvMnMgZGllZ29AcGFlei5pcw","meetLink":null,"calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8653, 'timestamp': '2026-06-09 22:44:18', 'usuario_id': 1, 'cuerpo': 'creado: Reunión Diego / Máximo Maderbuen (2026-06-15T11:00:00-03:00 → 2026-06-15T12:00:00-03:00) · Meet: https://meet.google.com/atw-ynbs-wrs', 'meta': '{"eventoId":"lj6elbmfama80572skc8224rlc","link":"https://www.google.com/calendar/event?eid=bGo2ZWxibWZhbWE4MDU3MnNrYzgyMjRybGMgZGllZ29AcGFlei5pcw","meetLink":"https://meet.google.com/atw-ynbs-wrs","calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+{'id': 8738, 'timestamp': '2026-06-10 12:18:10', 'usuario_id': 1, 'cuerpo': 'creado: Almuerzo Diego / Matías Israel (2026-06-18T13:00:00-03:00 → 2026-06-18T15:00:00-03:00) · Meet: https://meet.google.com/oct-ubzg-smp', 'meta': '{"eventoId":"0eapck5qmpm3i3j2ls1n00imco","link":"https://www.google.com/calendar/event?eid=MGVhcGNrNXFtcG0zaTNqMmxzMW4wMGltY28gZGllZ29AcGFlei5pcw","meetLink":"https://meet.google.com/oct-ubzg-smp","calendarId":"diego@paez.is","tier":"tier_2"}'}
+---
+
+== contactos 'dario' ==
+{'id': 204, 'usuario_id': 1, 'nombre': 'Dario Fainguersch', 'whatsapp': '5491151571000@c.us', 'email': 'dfainguersch@dragonesvc.com', 'visibilidad': 'privada'}
+
+# exit=0
