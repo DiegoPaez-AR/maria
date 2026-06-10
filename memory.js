@@ -620,11 +620,22 @@ const qExisteEmailEntrante = db.prepare(`
     AND metadata_json LIKE ?
   LIMIT 1
 `);
-function existeEmailEntrante(messageId) {
+const qExisteEmailEntranteUsuario = db.prepare(`
+  SELECT 1 FROM eventos
+  WHERE canal = 'gmail' AND direccion = 'entrante'
+    AND (usuario_id = ? OR usuario_id IS NULL)
+    AND metadata_json LIKE ?
+  LIMIT 1
+`);
+// usuarioId opcional: si viene, el match se limita al bucket de ese usuario
+// (+ entrantes sin bucket). Evita que un usuario responda un thread que
+// recibió OTRO usuario. null = alcance global (owner / callers legacy).
+function existeEmailEntrante(messageId, usuarioId = null) {
   if (!messageId) return false;
   // Defensa contra LIKE-injection (muy improbable, pero por las dudas).
   if (/[%_\\]/.test(messageId)) return false;
   const pat = `%"messageId":"${messageId}"%`;
+  if (usuarioId != null) return !!qExisteEmailEntranteUsuario.get(usuarioId, pat);
   return !!qExisteEmailEntrante.get(pat);
 }
 
@@ -772,11 +783,20 @@ function followUpsVencidos() {
 function followUpsAbiertos(usuarioId) {
   return qFollowUpsAbiertosUsuario.all(usuarioId).map(hidratar);
 }
-function setFollowUpEstado(id, estado) {
+const qFollowUpPorId = db.prepare(`SELECT id, usuario_id FROM follow_ups WHERE id = ?`);
+// usuarioId opcional: si viene, solo opera sobre follow-ups de ese usuario
+// (ids secuenciales y adivinables — aislamiento multi-user, fix 2026-06-09).
+// Devuelve true si aplicó, false si el id no existe o es de otro usuario.
+function setFollowUpEstado(id, estado, usuarioId = null) {
   if (!['abierto', 'disparado', 'cerrado', 'cancelado'].includes(estado)) {
     throw new Error(`setFollowUpEstado: estado inválido "${estado}"`);
   }
+  if (usuarioId != null) {
+    const row = qFollowUpPorId.get(id);
+    if (!row || row.usuario_id !== usuarioId) return false;
+  }
   updateFollowUpEstado.run(estado, estado, estado, id);
+  return true;
 }
 
 /**
@@ -784,15 +804,42 @@ function setFollowUpEstado(id, estado) {
  * de `desde` (timestamp ISO o Date)? Usado por el loop de follow-ups para
  * decidir si cerrar o disparar.
  */
-const qEntranteDespuesDe = db.prepare(`
-  SELECT 1 FROM eventos
+const qEntrantesDeDesde = db.prepare(`
+  SELECT DISTINCT de FROM eventos
   WHERE usuario_id = ? AND canal = ? AND direccion = 'entrante'
-    AND de = ? AND timestamp >= ?
-  LIMIT 1
+    AND timestamp >= ? AND de IS NOT NULL
+  LIMIT 500
 `);
+// Fix 2026-06-09: antes comparaba `de = ?` exacto, que casi nunca matcheaba:
+// en gmail `de` es el header crudo ("Juan Pérez <juan@x.com>") y esperandoDe
+// el email pelado; en WA `de` suele ser @lid y esperandoDe @c.us (o variante
+// con/sin 9 móvil AR). El loop de follow-ups concluía "no respondió" aunque
+// el tercero hubiera contestado. Ahora: gmail → containment case-insensitive
+// del email; WA → match exacto o flexible por dígitos (_matchNumeroFlex).
+// Limitación conocida: si `de` es un @lid cuyos dígitos no se relacionan con
+// el número, el match por dígitos no alcanza (igual que eventosConContactoDesde).
 function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
   const desdeStr = desde instanceof Date ? desde.toISOString().replace('T',' ').slice(0,19) : String(desde);
-  return !!qEntranteDespuesDe.get(usuarioId, esperandoCanal, esperandoDe, desdeStr);
+  const esperado = String(esperandoDe || '').trim();
+  if (!esperado) return false;
+  const rows = qEntrantesDeDesde.all(usuarioId, esperandoCanal, desdeStr);
+  if (esperandoCanal === 'gmail') {
+    const m = esperado.toLowerCase().match(/<([^>]+)>/);
+    const emailEsp = (m ? m[1] : esperado.toLowerCase()).trim();
+    if (!emailEsp) return false;
+    return rows.some(r => String(r.de || '').toLowerCase().includes(emailEsp));
+  }
+  // 9-móvil AR: "54 9 11 XXXXXXXX" vs "54 11 XXXXXXXX" no matchean por
+  // sufijo (el 9 va en el medio) — comparar últimos 10 dígitos (área+número).
+  const _ult10 = (x) => {
+    const d = String(x || '').replace(/\D+/g, '');
+    return d.length >= 10 ? d.slice(-10) : null;
+  };
+  return rows.some(r => {
+    if (r.de === esperado || _matchNumeroFlex(r.de, esperado)) return true;
+    const a = _ult10(r.de), b = _ult10(esperado);
+    return !!(a && b && a === b);
+  });
 }
 
 // ─── Memoria curada: notas por (usuario × contacto) ───────────────────────
@@ -1410,6 +1457,11 @@ const qProgramadoPorRazonDesde = db.prepare(`
 const updProgramadoEnviado   = db.prepare(`UPDATE programados SET enviado = 1 WHERE id = ?`);
 const updProgramadoCancelado = db.prepare(`UPDATE programados SET enviado = -1 WHERE id = ?`);
 const updProgramadoPausado   = db.prepare(`UPDATE programados SET enviado = -2 WHERE id = ?`);
+// Claim atómico "en vuelo" (enviado=2): evita doble despacho con ticks
+// solapados — fix 2026-06-09. Ver programados.js.
+const updProgramadoClaim     = db.prepare(`UPDATE programados SET enviado = 2 WHERE id = ? AND enviado = 0`);
+const updProgramadoUnclaim   = db.prepare(`UPDATE programados SET enviado = 0 WHERE id = ? AND enviado = 2`);
+const updProgramadosResetEnVuelo = db.prepare(`UPDATE programados SET enviado = 0 WHERE enviado = 2`);
 const updProgramadoMetadata  = db.prepare(`UPDATE programados SET metadata_json = ? WHERE id = ?`);
 const qProgramadoPorId       = db.prepare(`SELECT * FROM programados WHERE id = ?`);
 
@@ -1442,8 +1494,25 @@ function existeProgramadoFuturo(razon, desde = new Date()) {
   return !!qProgramadoPorRazonDesde.get(razon, iso);
 }
 function marcarProgramadoEnviado(id) { updProgramadoEnviado.run(id); }
-function cancelarProgramado(id)      { updProgramadoCancelado.run(id); }
+// usuarioId opcional: si viene, solo cancela programados de ese usuario
+// (aislamiento multi-user, fix 2026-06-09). null = global (owner/loops).
+// Devuelve true si canceló, false si el id no existe o es de otro usuario.
+function cancelarProgramado(id, usuarioId = null) {
+  if (usuarioId != null) {
+    const row = qProgramadoPorId.get(id);
+    if (!row || row.usuario_id !== usuarioId) return false;
+  }
+  updProgramadoCancelado.run(id);
+  return true;
+}
 function pausarProgramado(id)        { updProgramadoPausado.run(id); }
+// true = lo reclamó este caller (estaba en 0, ahora 2). false = ya estaba
+// reclamado/enviado/cancelado — NO despachar.
+function claimProgramado(id)         { return updProgramadoClaim.run(id).changes === 1; }
+// Devuelve el programado al estado pendiente solo si seguía "en vuelo".
+function liberarProgramado(id)       { updProgramadoUnclaim.run(id); }
+// Recovery al arranque: claims huérfanos de un proceso que murió mid-envío.
+function resetProgramadosEnVuelo()   { return updProgramadosResetEnVuelo.run().changes; }
 
 // Mergea `patch` con el metadata_json actual del programado y persiste.
 // Devuelve el nuevo metadata como objeto. Si el id no existe, tira.
@@ -1577,6 +1646,9 @@ module.exports = {
   existeProgramadoFuturo,
   marcarProgramadoEnviado,
   pausarProgramado,
+  claimProgramado,
+  liberarProgramado,
+  resetProgramadosEnVuelo,
   actualizarMetadataProgramado,
   obtenerProgramado,
   cancelarProgramado,

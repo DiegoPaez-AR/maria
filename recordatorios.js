@@ -49,7 +49,14 @@ const BUCKETS = {
 
 function _horasDesde(isoTs) {
   if (!isoTs) return Infinity;
-  const t = new Date(isoTs).getTime();
+  // SQLite guarda CURRENT_TIMESTAMP como "YYYY-MM-DD HH:MM:SS" en UTC sin
+  // zona; new Date() lo parsearía como hora LOCAL (TZ=ART) corriendo todo
+  // 3 horas (umbrales y edad mostrada). Normalizamos a UTC explícito —
+  // mismo criterio que memory._tsLocal. Fix 2026-06-09.
+  let s = String(isoTs).trim();
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(s)) s = s.replace(' ', 'T') + 'Z';
+  else if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(s) && !/[Zz]|[+-]\d{2}:?\d{2}$/.test(s)) s = s + 'Z';
+  const t = new Date(s).getTime();
   if (isNaN(t)) return Infinity;
   return (Date.now() - t) / 3_600_000;
 }

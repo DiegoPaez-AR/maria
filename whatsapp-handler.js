@@ -535,8 +535,10 @@ async function _disparar(client, from) {
   _enProceso.set(from, true);
   // Snapshot del ts del último entrante. Si llega un mensaje nuevo
   // durante el procesamiento, _hayMsgNuevoDesdeStart() lo detecta
-  // y aborta los sendMessage de respuesta (las acciones se ejecutan
-  // igual, son idempotentes). Ver fix 2026-05-17 abort send.
+  // y aborta los sendMessage de respuesta Y las acciones del turno —
+  // los items se re-encolan y el próximo lote (que ya incluye los
+  // mensajes nuevos) re-genera respuesta y acciones coherentes.
+  // Ver fix 2026-05-17 abort send + fix 2026-06-09 outFlags/acciones.
   const startTs = _lastIncoming.get(from) || Date.now();
   const outFlags = {};
   try {
@@ -597,7 +599,7 @@ async function _despacharGrupo(client, from, items, startTs, outFlags = {}) {
     }
     mem.log({
       usuarioId: usuario.id, canal: 'whatsapp', direccion: 'entrante',
-      de: from, nombre: pushname, cuerpo,
+      de: from, nombre: pushname, cuerpo: cuerpoCombinado,
       metadata: { tipo: 'inactivo_ignorado', messageId },
     });
     console.log(`[wa-handler] usuario ${usuario.nombre} inactivo — entrante registrado, sin procesar`);
@@ -639,6 +641,7 @@ async function _despacharGrupo(client, from, items, startTs, outFlags = {}) {
             msgOriginal,
             startTs,
             from,
+            outFlags,
           });
         },
       });
@@ -696,6 +699,7 @@ async function _despacharGrupo(client, from, items, startTs, outFlags = {}) {
       msgOriginal,
       startTs,
       from,
+      outFlags,
     });
   } finally {
     for (const p of attachmentPaths) { try { fs.unlinkSync(p); } catch {} }
@@ -707,7 +711,7 @@ async function _despacharGrupo(client, from, items, startTs, outFlags = {}) {
  * acciones. Se invoca tanto para mensajes de usuarios conocidos como para
  * mensajes reencaminados desde unknown-flow.
  */
-async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, startTs = null, from = null }) {
+async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, startTs = null, from = null, outFlags = {} }) {
   const prompt = await construirPrompt({
     usuario,
     canal: 'whatsapp',
@@ -770,7 +774,8 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   // Helper: chequea si llegó mensaje nuevo del mismo `from` durante el
   // procesamiento. Si sí, abortar este envío — el próximo lote (que ya
   // incluirá los mensajes nuevos) va a generar una respuesta coherente.
-  // Las acciones ya se ejecutaron — son idempotentes por diseño.
+  // Las acciones del turno también se saltean (NO son idempotentes:
+  // crear_evento/enviar_wa/enviar_email duplicarían al re-procesar).
   function _hayMsgNuevoDesdeStart() {
     if (!startTs || !from) return false;
     const last = _lastIncoming.get(from);
@@ -841,7 +846,11 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     }
   }
 
-  if (acciones.length) {
+  if (acciones.length && outFlags.abortado) {
+    // Lote abortado: los items se re-encolan y el próximo lote re-genera
+    // las acciones. Ejecutarlas acá Y al re-procesar = doble evento/envío.
+    console.log(`[WA acciones/${usuario.nombre}] SALTEADAS ${acciones.length} acción(es) — lote abortado, se re-procesan con el próximo lote`);
+  } else if (acciones.length) {
     const resultados = await ejecutarAcciones(acciones, {
       usuario,
       waClient: client,

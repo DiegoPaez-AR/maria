@@ -10,6 +10,7 @@
 // Autenticación: header X-Intensa-Secret debe matchear ASISTENTE_INTERNAL_SECRET del .conf.
 
 const http = require('http');
+const crypto = require('crypto');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
@@ -24,7 +25,11 @@ function start({ waClient } = {}) {
     return null;
   }
   if (!SECRET) {
-    console.warn('[internal-api] ASISTENTE_INTERNAL_SECRET vacío — sirviendo sin auth (NO USAR EN PROD)');
+    // Antes: warn y servía sin auth → /send-wa y /send-email quedaban
+    // abiertos a cualquier proceso local. Fix 2026-06-09: sin secret NO
+    // arranca (puerto seteado = intención de usarlo en prod).
+    console.error('[internal-api] ASISTENTE_INTERNAL_PORT seteado pero ASISTENTE_INTERNAL_SECRET vacío — internal-api NO arranca. Configurá el secret en el .conf.');
+    return null;
   }
 
   const server = http.createServer(async (req, res) => {
@@ -34,7 +39,7 @@ function start({ waClient } = {}) {
     };
 
     try {
-      if (SECRET && req.headers['x-intensa-secret'] !== SECRET) {
+      if (!_secretOk(req.headers['x-intensa-secret'])) {
         return send(401, { error: 'unauthorized' });
       }
 
@@ -183,6 +188,15 @@ function start({ waClient } = {}) {
   });
 
   return server;
+}
+
+// Comparación en tiempo constante (el !== cortocircuita por largo/prefijo).
+function _secretOk(header) {
+  if (typeof header !== 'string' || !header || !SECRET) return false;
+  const a = Buffer.from(header);
+  const b = Buffer.from(SECRET);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
 }
 
 function readJson(req) {

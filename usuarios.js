@@ -226,6 +226,10 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
 
 const CAMPOS_ACTUALIZABLES = new Set([
   'nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto', 'ubicacion',
+  // Multi-provider calendar (F2/F3): sin estos tres, configurar_caldav /
+  // configurar_microsoft y la rotación del refresh_token de MS se descartan
+  // en silencio (fix 2026-06-09).
+  'calendar_provider', 'calendar_auth_json', 'calendar_acceso',
 ]);
 
 function actualizar(id, patch = {}) {

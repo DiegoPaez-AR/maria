@@ -373,8 +373,20 @@ async function _responderEmail(a, ctx) {
   // recibimos. Previene que un LLM jailbroken o un caller malicioso invente un
   // messageId y mande a un thread arbitrario.
   if (process.env.SEC_RESPONDER_EMAIL_STRICT !== 'false') {
-    if (!mem.existeEmailEntrante(a.messageId)) {
+    // Scope por usuario: que un usuario no pueda responder un thread que
+    // recibió OTRO usuario (los buckets de gmail entrante son por usuario).
+    // El owner mantiene alcance global.
+    const scope = usuarios.esOwner(ctx.usuario.id) ? null : ctx.usuario.id;
+    if (!mem.existeEmailEntrante(a.messageId, scope)) {
       throw new Error(`responder_email: messageId "${a.messageId}" no corresponde a ningún email recibido. Si querés mandar un email NUEVO, usá enviar_email.`);
+    }
+  }
+  // Capa 3 también para el override de cc (mismo criterio que enviar_email).
+  if (a.cc) {
+    const ccs = Array.isArray(a.cc) ? a.cc : [a.cc];
+    for (const t of ccs) {
+      const v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'email', destino: t });
+      if (!v.ok) throw new Error(`responder_email: cc inválido — ${v.motivo}.`);
     }
   }
   const r = await g.responderEmail(a.messageId, a.texto, {
@@ -403,8 +415,13 @@ async function _responderEmail(a, ctx) {
 async function _enviarEmail(a, ctx) {
   _requerir(a, ['to', 'asunto', 'texto']);
   // Validar destinatarios contra libreta visible / usuarios activos.
-  const tos = Array.isArray(a.to) ? a.to : [a.to];
-  for (const t of tos) {
+  // TODOS los campos de destino: cc/bcc/replyTo sin validar eran un canal
+  // de exfiltración (to legítimo + bcc del atacante) — fix 2026-06-09.
+  const tos  = Array.isArray(a.to)  ? a.to  : [a.to];
+  const ccs  = a.cc  ? (Array.isArray(a.cc)  ? a.cc  : [a.cc])  : [];
+  const bccs = a.bcc ? (Array.isArray(a.bcc) ? a.bcc : [a.bcc]) : [];
+  const replyTos = a.replyTo ? [a.replyTo] : [];
+  for (const t of [...tos, ...ccs, ...bccs, ...replyTos]) {
     const v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'email', destino: t });
     if (!v.ok) throw new Error(`enviar_email: ${v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
   }
@@ -613,7 +630,10 @@ function _programarMensaje(a, ctx) {
 
 function _cancelarProgramado(a, ctx) {
   _requerir(a, ['id']);
-  mem.cancelarProgramado(a.id);
+  // Scope por usuario (los ids son secuenciales y adivinables). Owner: global.
+  const scope = usuarios.esOwner(ctx.usuario.id) ? null : ctx.usuario.id;
+  const ok = mem.cancelarProgramado(a.id, scope);
+  if (!ok) throw new Error(`cancelar_programado: id=${a.id} no existe o no es un programado de ${ctx.usuario.nombre}.`);
   return { id: a.id, cancelado: true };
 }
 
@@ -654,7 +674,10 @@ function _crearFollowUp(a, ctx) {
 
 function _cerrarFollowUp(a, ctx) {
   _requerir(a, ['id']);
-  mem.setFollowUpEstado(a.id, 'cerrado');
+  // Scope por usuario (ids secuenciales). Owner: global.
+  const scope = usuarios.esOwner(ctx.usuario.id) ? null : ctx.usuario.id;
+  const ok = mem.setFollowUpEstado(a.id, 'cerrado', scope);
+  if (!ok) throw new Error(`cerrar_follow_up: id=${a.id} no existe o no es un follow-up de ${ctx.usuario.nombre}.`);
   return { id: a.id, cerrado: true };
 }
 
