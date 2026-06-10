@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8743  2026-06-10 12:39:38  sistema   interno                         claude_call whatsapp: 9134ms prompt=69902c raw=5503c in=3t(cache_read=0 new=34800) out=238t ttfb=1774ms api=9316ms turnos=1 $0.1586                                                                     
+
+8742  2026-06-10 12:39:29  whatsapp  entrante   34669015190@c.us     Gracias 🙂                                                                                                                                                                                               
+
 8741  2026-06-10 12:30:17  whatsapp  saliente   34669015190@c.us     ¡Hola José! Recordatorio: en 30 minutos tenés la reunión con Diego. El link de Meet es: https://meet.google.com/nvz-jace-jsg                                                                            
 
 8740  2026-06-10 12:18:10  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -315,7 +319,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8645  2026-06-09 22:40:36  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 8644  2026-06-09 22:40:36  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-8643  2026-06-09 22:40:36  whatsapp  saliente   5491176176620@c.us   ¡Hola Máximo! Soy Maria Paez, secretaria personal de Diego. Te escribo para coordinar una reunión entre Diego y vos la semana que viene. ¿Te queda bien el *lunes 15/06 a las 11hs* (una hora)? Y si me 
-
-8642  2026-06-09 22:40:36  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
