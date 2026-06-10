@@ -148,7 +148,15 @@ function invocarClaude(prompt, {
 } = {}) {
   const _t0 = Date.now();
   return new Promise((resolve, reject) => {
+    // stream-json (2026-06-09): la CLI emite eventos JSON por línea a medida
+    // que avanza. Nos da: (a) output incremental → el idle-timeout deja de
+    // depender de que el call entero termine; (b) TTFB real medible; (c) el
+    // evento final type=result trae usage (tokens in/out, cache hits),
+    // duration_api_ms y total_cost_usd → van al audit log para diagnosticar
+    // latencia/costo. Killswitch: CLAUDE_STREAM_JSON=0 vuelve a texto plano.
+    const STREAM_JSON = process.env.CLAUDE_STREAM_JSON !== '0';
     const args = ['-p'];
+    if (STREAM_JSON) args.push('--output-format', 'stream-json', '--verbose');
     // --allowedTools/--disallowedTools en formato repeated (un flag por tool).
     // Es la forma más segura: la sintaxis "A B" en una sola string puede ser
     // interpretada como un único nombre de tool y dejar TODAS las demás
@@ -200,6 +208,7 @@ function invocarClaude(prompt, {
 
     const p = spawn(cmd, finalArgs, { stdio: ['pipe', 'pipe', 'pipe'] });
     let stdout = '', stderr = '';
+    let _ttfbMs = null; // primer byte de stdout (≈ spawn CLI + queue + procesamiento de input)
 
     // Dos timers: global (cap absoluto) e idle (sin bytes por X). El idle se
     // resetea en cada chunk recibido — si Claude está streamiando output
@@ -224,8 +233,30 @@ function invocarClaude(prompt, {
     }
     _resetIdle();
 
-    p.stdout.on('data', d => { stdout += d.toString(); _resetIdle(); });
+    p.stdout.on('data', d => {
+      if (_ttfbMs === null) _ttfbMs = Date.now() - _t0;
+      stdout += d.toString();
+      _resetIdle();
+    });
     p.stderr.on('data', d => { stderr += d.toString(); _resetIdle(); });
+
+    // Parsea el stream-json: una línea JSON por evento; nos interesa el
+    // último evento type=result (texto final + métricas). Devuelve null si
+    // el output no es stream-json parseable (fallback a texto plano).
+    function _parseStreamJson(out) {
+      let result = null;
+      for (const line of out.split('\n')) {
+        const s = line.trim();
+        if (!s || s[0] !== '{') continue;
+        try {
+          const obj = JSON.parse(s);
+          if (obj && obj.type === 'result') result = obj;
+        } catch {}
+      }
+      return result;
+    }
+
+    let _metrics = null; // se completa en close si hubo evento result
 
     function _audit(error_msg) {
       if (!audit) return;
@@ -238,6 +269,7 @@ function invocarClaude(prompt, {
           prompt_chars: prompt.length,
           raw_chars: stdout.length,
           error_msg: error_msg || null,
+          metrics: _metrics || (_ttfbMs != null ? { ttfb_ms: _ttfbMs } : null),
         });
       } catch (e) {
         console.warn('[claude-client] audit falló:', e.message);
@@ -265,6 +297,33 @@ function invocarClaude(prompt, {
         const msg = `claude exit ${code}: ${stderr.trim().slice(0,200)}`;
         _audit(msg);
         return reject(new Error(msg));
+      }
+      // stream-json: extraer el texto final + métricas del evento result.
+      if (STREAM_JSON) {
+        const r = _parseStreamJson(stdout);
+        if (r) {
+          const u = r.usage || {};
+          _metrics = {
+            tokens_in: u.input_tokens ?? null,
+            tokens_out: u.output_tokens ?? null,
+            cache_read: u.cache_read_input_tokens ?? null,
+            cache_creation: u.cache_creation_input_tokens ?? null,
+            ttfb_ms: _ttfbMs,
+            api_ms: r.duration_api_ms ?? null,
+            cost_usd: r.total_cost_usd ?? null,
+            num_turns: r.num_turns ?? null,
+          };
+          if (r.is_error) {
+            const msg = `claude result error (${r.subtype || '?'}): ${String(r.result || '').slice(0, 200)}`;
+            _audit(msg);
+            return reject(new Error(msg));
+          }
+          _audit(null);
+          return resolve(String(r.result ?? ''));
+        }
+        // Sin evento result parseable → fallback: tratar stdout como texto
+        // (cubre CLIs viejas que ignoren el flag o output inesperado).
+        console.warn('[claude-client] stream-json sin evento result — fallback a stdout crudo');
       }
       _audit(null);
       resolve(stdout);
@@ -418,6 +477,23 @@ async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
           seccionesResultado.push(`${header}\n${lineas.join('\n')}`);
         }
         console.log(`[claude-client] consulta buscar_en_historial("${c.query}") → ${filas.length} resultados`);
+      } else if (c.tipo === 'buscar_contacto') {
+        const matches = mem.buscarContactosVisibles(usuarioId, c.query, { max: 10 });
+        const header = `[CONSULTA: buscar_contacto query="${c.query}" → ${matches.length} match(es)]`;
+        if (!matches.length) {
+          seccionesResultado.push(`${header}\n(sin matches en la libreta — el contacto NO está cargado; pedile el dato al usuario o sugerí upsert_contacto)`);
+        } else {
+          const lineas = matches.map(m => {
+            const campos = [m.nombre];
+            if (m.whatsapp) campos.push(`WA: ${m.whatsapp}`);
+            if (m.email)    campos.push(`email: ${m.email}`);
+            if (m.cumple)   campos.push(`cumple: ${m.cumple}`);
+            if (m.notas)    campos.push(`(${m.notas})`);
+            return '- ' + campos.join(' | ');
+          });
+          seccionesResultado.push(`${header}\n${lineas.join('\n')}`);
+        }
+        console.log(`[claude-client] consulta buscar_contacto("${c.query}") → ${matches.length} matches`);
       } else {
         seccionesResultado.push(`[CONSULTA: tipo desconocido "${c.tipo}" — ignorada]`);
         console.warn(`[claude-client] tipo de consulta desconocido: ${c.tipo}`);

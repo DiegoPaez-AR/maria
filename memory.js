@@ -591,11 +591,17 @@ function log(evt) {
 // Audit log de cada invocación a Claude. Va como evento sistema con
 // metadata.tipo='claude_call' para poder filtrar después con
 // `WHERE metadata_json LIKE '%claude_call%'` o un view dedicado.
-function logClaudeCall({ usuarioId = null, canal = null, ms = null, prompt_chars = null, raw_chars = null, error_msg = null } = {}) {
+function logClaudeCall({ usuarioId = null, canal = null, ms = null, prompt_chars = null, raw_chars = null, error_msg = null, metrics = null } = {}) {
+  // metrics (opcional, viene del --output-format stream-json de la CLI):
+  // { tokens_in, tokens_out, cache_read, cache_creation, ttfb_ms, api_ms, cost_usd, num_turns }
+  const m = metrics || {};
+  const extra = (m.tokens_in != null || m.tokens_out != null)
+    ? ` in=${m.tokens_in ?? '?'}t(cache_read=${m.cache_read ?? 0} new=${m.cache_creation ?? 0}) out=${m.tokens_out ?? '?'}t ttfb=${m.ttfb_ms ?? '?'}ms api=${m.api_ms ?? '?'}ms turnos=${m.num_turns ?? '?'}${m.cost_usd != null ? ` $${Number(m.cost_usd).toFixed(4)}` : ''}`
+    : '';
   return log({
     usuarioId, canal: 'sistema', direccion: 'interno',
-    cuerpo: `claude_call ${canal || '?'}: ${ms}ms prompt=${prompt_chars}c raw=${raw_chars}c${error_msg ? ' ERROR=' + error_msg.slice(0,80) : ''}`,
-    metadata: { tipo: 'claude_call', canal, ms, prompt_chars, raw_chars, error_msg },
+    cuerpo: `claude_call ${canal || '?'}: ${ms}ms prompt=${prompt_chars}c raw=${raw_chars}c${extra}${error_msg ? ' ERROR=' + error_msg.slice(0,80) : ''}`,
+    metadata: { tipo: 'claude_call', canal, ms, prompt_chars, raw_chars, error_msg, ...m },
   });
 }
 
@@ -687,6 +693,45 @@ function contextoCrossCanal(usuarioId, { desdeHoras: horas = 24, max = 50, tz = 
   const evs = desdeHoras(usuarioId, horas).slice(-max);
   if (!evs.length) return '(sin actividad reciente)';
   return evs.map(e => formatearParaPrompt(e, tz)).join('\n');
+}
+
+// ── Contexto COMPACTO (2026-06-09, para bajar latencia/costo del prompt) ──
+// En vez de toda la ventana de 24-48h, manda solo: los últimos N mensajes de
+// WhatsApp + el/los último(s) email(s) + las últimas acciones ejecutadas
+// (sistema/calendar, para que Maria sepa qué ya hizo y no lo repita), todo
+// con tope de antigüedad maxHoras. El LLM recupera contexto más viejo on
+// demand vía la consulta buscar_en_historial.
+// Excluye SIEMPRE los eventos claude_call y security: son telemetría, puro
+// ruido de prompt.
+const qUltimosCanalUsuario = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+  FROM eventos
+  WHERE usuario_id = ? AND canal = ? AND timestamp >= datetime('now', ?)
+  ORDER BY id DESC LIMIT ?
+`);
+const qUltimasAccionesUsuario = db.prepare(`
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+  FROM eventos
+  WHERE usuario_id = ? AND canal IN ('sistema', 'calendar')
+    AND timestamp >= datetime('now', ?)
+    AND (metadata_json IS NULL OR (
+      metadata_json NOT LIKE '%"tipo":"claude_call"%'
+      AND metadata_json NOT LIKE '%"tipo":"security"%'
+    ))
+  ORDER BY id DESC LIMIT ?
+`);
+function contextoCompacto(usuarioId, { waMax = 5, gmailMax = 1, accionesMax = 3, maxHoras = 72, tz = null } = {}) {
+  const ventana = `-${Number(maxHoras)} hours`;
+  const evs = [
+    ...qUltimosCanalUsuario.all(usuarioId, 'whatsapp', ventana, waMax),
+    ...qUltimosCanalUsuario.all(usuarioId, 'gmail', ventana, gmailMax),
+    ...(accionesMax > 0 ? qUltimasAccionesUsuario.all(usuarioId, ventana, accionesMax) : []),
+  ];
+  const porId = new Map();
+  for (const e of evs) porId.set(e.id, e);
+  const orden = [...porId.values()].sort((a, b) => a.id - b.id).map(hidratar);
+  if (!orden.length) return '(sin actividad reciente)';
+  return orden.map(e => formatearParaPrompt(e, tz)).join('\n');
 }
 
 // Búsqueda en el historial de eventos del usuario. Matchea por substring
@@ -1281,6 +1326,32 @@ function buscarContacto({ usuarioId, nombre, whatsapp, email, incluirPublica = t
   return priv || pub || null; // privada gana
 }
 
+// Búsqueda fuzzy sobre la libreta VISIBLE de un usuario (privados + públicos).
+// Para la consulta `buscar_contacto` del LLM (libreta compacta 2026-06-09):
+// matchea substring case-insensitive en nombre, email (si query trae @) o
+// por dígitos del teléfono (si query trae ≥6 dígitos). Devuelve hasta `max`.
+const _normBusqueda = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+function buscarContactosVisibles(usuarioId, query, { max = 10 } = {}) {
+  if (!usuarioId || !query) return [];
+  const q = _normBusqueda(query).trim();
+  if (!q) return [];
+  const dig = q.replace(/\D+/g, '');
+  const out = [];
+  for (const c of todosLosContactos(usuarioId)) {
+    const nombre = _normBusqueda(c.nombre);
+    const email  = String(c.email || '').toLowerCase();
+    const waDig  = _soloDigitos(c.whatsapp);
+    const match = nombre.includes(q)
+      || (q.includes('@') && email && email.includes(q))
+      || (dig.length >= 6 && waDig && waDig.includes(dig));
+    if (match) {
+      out.push(c);
+      if (out.length >= max) break;
+    }
+  }
+  return out;
+}
+
 // Lista TODO lo visible para un usuario: sus privados + públicos de cualquiera.
 function todosLosContactos(usuarioId) {
   if (!usuarioId) throw new Error('todosLosContactos: usuarioId requerido');
@@ -1600,6 +1671,7 @@ module.exports = {
   porContacto,
   desdeHoras,
   contextoCrossCanal,
+  contextoCompacto,
   buscarEnHistorial,
   formatearParaPrompt,
   // follow-ups
@@ -1631,6 +1703,7 @@ module.exports = {
   // contactos
   upsertContacto,
   buscarContacto,
+  buscarContactosVisibles,
   buscarContactoCrossUsuario,
   todosLosContactos,
   contactosPrivados,

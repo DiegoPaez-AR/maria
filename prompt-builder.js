@@ -100,7 +100,28 @@ function _formatearFechaEvento(e, tz) {
   return `${DIAS_SEMANA[d.getDay()].slice(0,3)} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} ${rango}`;
 }
 
+// Modo COMPACTO (default desde 2026-06-09, para latencia/costo): últimos N
+// mensajes WA + último(s) email(s) + últimas acciones ejecutadas, tope 72h.
+// El contexto viejo se recupera on demand con buscar_en_historial.
+// Killswitch / tuning sin deploy via env de la instancia:
+//   MARIA_HISTORIAL_COMPACTO=0  → vuelve a la ventana completa de 48h
+//   MARIA_HISTORIAL_WA_MAX / GMAIL_MAX / ACCIONES_MAX / MAX_HORAS
+const HISTORIAL_COMPACTO = process.env.MARIA_HISTORIAL_COMPACTO !== '0';
+const _envInt = (k, def) => {
+  const v = parseInt(process.env[k], 10);
+  return Number.isFinite(v) ? v : def;
+};
+
 function seccionHistorial(usuario, { horas = 48, max = 50 } = {}) {
+  if (HISTORIAL_COMPACTO) {
+    return mem.contextoCompacto(usuario.id, {
+      waMax:       _envInt('MARIA_HISTORIAL_WA_MAX', 5),
+      gmailMax:    _envInt('MARIA_HISTORIAL_GMAIL_MAX', 1),
+      accionesMax: _envInt('MARIA_HISTORIAL_ACCIONES_MAX', 3),
+      maxHoras:    _envInt('MARIA_HISTORIAL_MAX_HORAS', 72),
+      tz: usuario.tz,
+    });
+  }
   return mem.contextoCrossCanal(usuario.id, { desdeHoras: horas, max, tz: usuario.tz });
 }
 
@@ -134,15 +155,80 @@ function _formatearContacto(c) {
   return '- ' + campos.join(' | ');
 }
 
-function seccionLibreta(usuario) {
+// Libreta COMPACTA (2026-06-09, latencia/costo): privados completos; públicos
+// solo los relevantes al turno (remitente + mencionados en mensaje/historial),
+// cap MARIA_LIBRETA_PUB_MAX (default 20). El resto se resuelve on demand con
+// la consulta buscar_contacto. La seguridad NO depende de esto:
+// validarDestinatario valida contra la DB, no contra el prompt.
+// Killswitch: MARIA_LIBRETA_COMPACTA=0 → libreta completa como antes.
+const LIBRETA_COMPACTA = process.env.MARIA_LIBRETA_COMPACTA !== '0';
+
+// lowercase + sin tildes/diacríticos ("Hernán" ↔ "hernan") — la gente escribe
+// los nombres con y sin acento indistintamente.
+function _normTexto(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function _contactoRelevante(c, textoLower, textoDigits) {
+  const nombre = _normTexto(c.nombre).trim();
+  if (nombre) {
+    if (textoLower.includes(nombre)) return true;
+    const primero = nombre.split(/\s+/)[0];
+    if (primero.length >= 3 && textoLower.includes(primero)) return true;
+  }
+  const email = String(c.email || '').toLowerCase();
+  if (email && textoLower.includes(email)) return true;
+  // remitente / números citados: últimos 8 dígitos del WA del contacto
+  const waDig = String(c.whatsapp || '').replace(/\D+/g, '');
+  if (waDig.length >= 8 && textoDigits.includes(waDig.slice(-8))) return true;
+  return false;
+}
+
+// Regla adaptativa (escala a libretas de miles): si la lista entra en el cap,
+// va COMPLETA (lista chica = costo despreciable y cero roundtrips); si lo
+// supera, van solo los relevantes al turno y el resto se resuelve on demand
+// con buscar_contacto.
+function _libretaFiltrada(lista, cap, textoLower, textoDigits) {
+  if (lista.length <= cap) return { incluidos: lista, omitidos: 0, filtrada: false };
+  const incluidos = [];
+  for (const c of lista) {
+    if (incluidos.length >= cap) break;
+    if (_contactoRelevante(c, textoLower, textoDigits)) incluidos.push(c);
+  }
+  return { incluidos, omitidos: lista.length - incluidos.length, filtrada: true };
+}
+
+function seccionLibreta(usuario, { entrada = null, historialTxt = '' } = {}) {
   const priv = mem.contactosPrivados(usuario.id);
   const pub  = mem.contactosPublicos();
   const partes = [];
-  partes.push('PRIVADOS (solo vos los ves):');
-  partes.push(priv.length ? priv.map(_formatearContacto).join('\n') : '(vacía)');
+  if (!LIBRETA_COMPACTA) {
+    partes.push('PRIVADOS (solo vos los ves):');
+    partes.push(priv.length ? priv.map(_formatearContacto).join('\n') : '(vacía)');
+    partes.push('');
+    partes.push('PÚBLICOS (compartidos entre todos los usuarios):');
+    partes.push(pub.length ? pub.map(_formatearContacto).join('\n') : '(vacía)');
+    return partes.join('\n');
+  }
+  const texto = `${entrada?.cuerpo || ''}\n${entrada?.de || ''}\n${entrada?.nombre || ''}\n${entrada?.email || ''}\n${historialTxt}`;
+  const textoLower  = _normTexto(texto);
+  const textoDigits = texto.replace(/\D+/g, '');
+  const capPriv = _envInt('MARIA_LIBRETA_PRIV_MAX', 20);
+  const capPub  = _envInt('MARIA_LIBRETA_PUB_MAX', 20);
+  const fp = _libretaFiltrada(priv, capPriv, textoLower, textoDigits);
+  const fq = _libretaFiltrada(pub,  capPub,  textoLower, textoDigits);
+
+  partes.push(`PRIVADOS (solo vos los ves)${fp.filtrada ? ' — SOLO LOS RELEVANTES A ESTE TURNO' : ''}:`);
+  partes.push(fp.incluidos.length ? fp.incluidos.map(_formatearContacto).join('\n') : (priv.length ? '(ninguno parece relevante a este turno)' : '(vacía)'));
+  if (fp.omitidos > 0) partes.push(`(+${fp.omitidos} privado(s) más no listados)`);
   partes.push('');
-  partes.push('PÚBLICOS (compartidos entre todos los usuarios):');
-  partes.push(pub.length ? pub.map(_formatearContacto).join('\n') : '(vacía)');
+  partes.push(`PÚBLICOS (compartidos entre todos los usuarios)${fq.filtrada ? ' — SOLO LOS RELEVANTES A ESTE TURNO' : ''}:`);
+  partes.push(fq.incluidos.length ? fq.incluidos.map(_formatearContacto).join('\n') : (pub.length ? '(ninguno parece relevante a este turno)' : '(vacía)'));
+  if (fq.omitidos > 0) partes.push(`(+${fq.omitidos} público(s) más no listados)`);
+  if (fp.omitidos > 0 || fq.omitidos > 0) {
+    partes.push('');
+    partes.push('⚠ Esta libreta está RECORTADA a lo relevante del turno. Si necesitás resolver un nombre/teléfono/email que no ves acá, emití la consulta buscar_contacto ANTES de decir que no conocés a la persona o de pedirle el dato al usuario.');
+  }
   return partes.join('\n');
 }
 
@@ -393,7 +479,7 @@ async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, d
   const tareasMaria   = seccionPendientes(usuario, { dueno: 'maria',                                    vacioMsg: '(sin tareas mías abiertas)' });
   const hechos        = seccionHechos(usuario);
   const programados   = seccionProgramados(usuario, { max: 10 });
-  const libreta       = seccionLibreta(usuario);
+  const libreta       = seccionLibreta(usuario, { entrada, historialTxt: historial });
   const cumples       = seccionCumples(usuario);
   const ultimoVCard   = seccionUltimoVCard(usuario);
   const providerDet   = seccionProviderDetectado(usuario);
@@ -505,7 +591,7 @@ ${fecha}
 ${agenda}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[HISTORIAL CROSS-CANAL DE ${usuario.nombre.toUpperCase()} — últimas ${horasHistorial}hs]
+[HISTORIAL CROSS-CANAL DE ${usuario.nombre.toUpperCase()} — ${HISTORIAL_COMPACTO ? 'SOLO LO MÁS RECIENTE (últimos mensajes, máx 72h) — si necesitás algo más viejo, usá la consulta buscar_en_historial' : `últimas ${horasHistorial}hs`}]
 (→ entrante, ← saliente, · interno; WA=WhatsApp, GMAIL, CAL=Calendar, SIS=Sistema)
 ${historial}
 
@@ -661,8 +747,10 @@ IMPORTANTE: Tu respuesta TIENE que ser un único objeto JSON válido, sin texto 
 }
 
 Consultas disponibles (campo \`consultas\` del schema):
+  { "tipo": "buscar_contacto", "query": "nombre (o parte), email o teléfono" }
+      // Busca en la libreta COMPLETA visible para ${usuario.nombre} (sus privados + todos los públicos). La [LIBRETA] del prompt muestra SOLO los contactos relevantes a este turno — si el usuario menciona a alguien que no ves ahí ("mandale a Raúl", "el teléfono de la contadora"), emití esta consulta ANTES de responder que no tenés el contacto o de pedirle el número. Devuelve nombre, WA, email y notas de los matches.
   { "tipo": "buscar_en_historial", "query": "texto a buscar", "canal": "whatsapp"|"gmail"|"calendar"|null, "dias": 30, "max": 20 }
-      // Busca en el historial completo de ${usuario.nombre} cualquier mensaje/evento que matchee la query (case-insensitive, substring en cuerpo+nombre+de+asunto). Útil cuando el usuario pregunta cosas como "¿cuándo le escribí a X?", "¿qué quedamos sobre Y?", "buscame el mensaje donde Z me pasó las fechas". Si ya tenés la respuesta en [HISTORIAL CROSS-CANAL] (últimas 48h) NO hace falta — usá consultas SOLO cuando el dato puede estar más viejo que esa ventana. dias default 30, max default 20 (cap 100). canal opcional para filtrar.
+      // Busca en el historial completo de ${usuario.nombre} cualquier mensaje/evento que matchee la query (case-insensitive, substring en cuerpo+nombre+de+asunto). Útil cuando el usuario pregunta cosas como "¿cuándo le escribí a X?", "¿qué quedamos sobre Y?", "buscame el mensaje donde Z me pasó las fechas". Si ya tenés la respuesta en [HISTORIAL CROSS-CANAL] NO hace falta. OJO: ese historial muestra SOLO los últimos mensajes — si el usuario referencia algo que no ves ahí (una conversación de ayer, un mail de la semana pasada, "lo que quedamos con X"), emití buscar_en_historial ANTES de responder que no sabés. dias default 30, max default 20 (cap 100). canal opcional para filtrar.
 
 Cómo usar consultas:
 - Si el mensaje del usuario sugiere que necesitás info histórica que NO ves en [HISTORIAL CROSS-CANAL], emití consultas en este turno y dejá las respuestas vacías. El sistema ejecuta las consultas y te vuelve a llamar con los resultados.
