@@ -1,0 +1,73 @@
+# ejecutado: 2026-06-10T08:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # inbox: instala backup semanal + healthcheck cada 5min, y corre el primer
+#   # backup AHORA para que haya algo que bajar.
+#   # IMPORTANTE: no imprime secretos (el outbox se commitea a git).
+#   
+#   set -u
+#   cd /root/secretaria || exit 1
+#   
+#   echo "── 1. permisos de los scripts"
+#   chmod +x ops/scripts/backup-weekly.sh ops/scripts/healthcheck-notify.sh
+#   
+#   echo "── 2. crontab (idempotente)"
+#   ( crontab -l 2>/dev/null | grep -v 'backup-weekly.sh' | grep -v 'healthcheck-notify.sh' ; \
+#     echo '0 3 * * 0 cd /root/secretaria && bash ops/scripts/backup-weekly.sh >> /var/log/maria-backup.log 2>&1' ; \
+#     echo '*/5 * * * * cd /root/secretaria && bash ops/scripts/healthcheck-notify.sh >> /var/log/maria-healthcheck.log 2>&1' ) | crontab -
+#   crontab -l | grep -E 'backup-weekly|healthcheck-notify'
+#   
+#   echo "── 3. dependencias"
+#   for bin in python3 openssl rsync curl; do
+#     command -v "$bin" >/dev/null && echo "OK $bin" || echo "FALTA $bin"
+#   done
+#   
+#   echo "── 4. primer backup (puede tardar)"
+#   bash ops/scripts/backup-weekly.sh
+#   echo "exit backup: $?"
+#   
+#   echo "── 5. healthcheck en seco (solo overall por instancia)"
+#   shopt -s nullglob
+#   for cf in config/instances/*.conf; do
+#     slug=$(basename "$cf" .conf)
+#     ASISTENTE_SLUG=$slug bash ops/healthcheck.sh 2>/dev/null | python3 -c '
+#   import json, sys
+#   try:
+#       d = json.load(sys.stdin)
+#       checks = {k: v.get("ok") for k, v in d.get("checks", {}).items()}
+#       print(d.get("instance"), "overall_ok=", d.get("overall_ok"), checks)
+#   except Exception as e:
+#       print("healthcheck sin JSON:", e)
+#   '
+#   done
+#   
+#   echo "── listo. Recordatorio: copiar /root/secretaria/.backup-pass FUERA del VPS (no se imprime aca a proposito)."
+
+# ───── output ─────
+── 1. permisos de los scripts
+── 2. crontab (idempotente)
+0 3 * * 0 cd /root/secretaria && bash ops/scripts/backup-weekly.sh >> /var/log/maria-backup.log 2>&1
+*/5 * * * * cd /root/secretaria && bash ops/scripts/healthcheck-notify.sh >> /var/log/maria-healthcheck.log 2>&1
+── 3. dependencias
+OK python3
+OK openssl
+OK rsync
+OK curl
+── 4. primer backup (puede tardar)
+[backup] passphrase nueva generada en /root/secretaria/.backup-pass — guardala FUERA del VPS
+[backup] 20260610-0842 — armando backup multi-instancia
+[backup] maria-paez: DB 5.4M
+[backup] cifrado: 1.1M sha256=4a7acd3f9f3f3a0b7062e4145c384fb452b767ea5765daa84cac112f400f5dbe
+remote: 
+remote: Create a pull request for 'backups' on GitHub by visiting:        
+remote:      https://github.com/DiegoPaez-AR/maria/pull/new/backups        
+remote: 
+[backup] OK — pusheado a branch backups (1.1M)
+exit backup: 0
+── 5. healthcheck en seco (solo overall por instancia)
+maria-paez overall_ok= True {'pm2_online': True, 'snapshot_recent': True, 'db_writable': True, 'google_oauth': True, 'vault': True}
+── listo. Recordatorio: copiar /root/secretaria/.backup-pass FUERA del VPS (no se imprime aca a proposito).
+
+# exit=0
