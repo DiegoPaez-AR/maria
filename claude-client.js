@@ -141,12 +141,27 @@ const DISALLOWED_TOOLS = (process.env.CLAUDE_DISALLOWED_TOOLS ?? 'Bash,Edit,Writ
  * memory.logClaudeCall un evento sistema con tiempo, sizes y error si hubo.
  * Si no se pasa, no loguea (back-compat).
  */
+// El prompt puede ser:
+//   - string (legacy): va entero por stdin
+//   - { system, user } (split 2026-06-10): `system` va por --append-system-prompt
+//     (bloque estático → entra al prefijo cacheable de la API; en ráfagas y en
+//     el segundo turno de consultas se relee de cache en vez de re-procesarse),
+//     `user` va por stdin (lo dinámico del turno).
+function _partesPrompt(prompt) {
+  if (prompt && typeof prompt === 'object' && (prompt.system || prompt.user)) {
+    return { system: prompt.system || null, user: String(prompt.user || '') };
+  }
+  return { system: null, user: String(prompt ?? '') };
+}
+
 function invocarClaude(prompt, {
   timeoutMs = parseInt(process.env.CLAUDE_TIMEOUT_MS, 10) || 480000,        // 8 min global cap
   idleTimeoutMs = parseInt(process.env.CLAUDE_IDLE_TIMEOUT_MS, 10) || 90000, // 90s sin output → kill
   extraArgs = [], audit = null,
 } = {}) {
   const _t0 = Date.now();
+  const { system: systemTxt, user: userTxt } = _partesPrompt(prompt);
+  const totalChars = (systemTxt ? systemTxt.length : 0) + userTxt.length;
   return new Promise((resolve, reject) => {
     // stream-json (2026-06-09): la CLI emite eventos JSON por línea a medida
     // que avanza. Nos da: (a) output incremental → el idle-timeout deja de
@@ -157,6 +172,7 @@ function invocarClaude(prompt, {
     const STREAM_JSON = process.env.CLAUDE_STREAM_JSON !== '0';
     const args = ['-p'];
     if (STREAM_JSON) args.push('--output-format', 'stream-json', '--verbose');
+    if (systemTxt) args.push('--append-system-prompt', systemTxt);
     // --allowedTools/--disallowedTools en formato repeated (un flag por tool).
     // Es la forma más segura: la sintaxis "A B" en una sola string puede ser
     // interpretada como un único nombre de tool y dejar TODAS las demás
@@ -187,7 +203,7 @@ function invocarClaude(prompt, {
     // ─── Sandbox via bwrap si está disponible ────────────────────────────
     let cmd, finalArgs;
     if (BWRAP_BIN) {
-      const attachments = _detectarAttachments(prompt);
+      const attachments = _detectarAttachments(systemTxt ? systemTxt + '\n' + userTxt : userTxt);
       const extraBinds = [];
       // Bind-mountear el mcp-config para que claude pueda leerlo adentro.
       if (mcpCfgAbs) extraBinds.push({ src: mcpCfgAbs, dst: mcpCfgAbs, ro: true });
@@ -227,7 +243,7 @@ function invocarClaude(prompt, {
       idleTo = setTimeout(() => {
         if (killedByTimer) return;
         killedByTimer = 'idle';
-        console.warn(`[claude-client] idle timeout ${idleTimeoutMs}ms sin output — SIGKILL (prompt=${prompt.length}c, stdout=${stdout.length}c)`);
+        console.warn(`[claude-client] idle timeout ${idleTimeoutMs}ms sin output — SIGKILL (prompt=${totalChars}c, stdout=${stdout.length}c)`);
         try { p.kill('SIGKILL'); } catch {}
       }, idleTimeoutMs);
     }
@@ -266,7 +282,7 @@ function invocarClaude(prompt, {
           usuarioId: audit.usuarioId || null,
           canal: audit.canal || null,
           ms: Date.now() - _t0,
-          prompt_chars: prompt.length,
+          prompt_chars: totalChars,
           raw_chars: stdout.length,
           error_msg: error_msg || null,
           metrics: _metrics || (_ttfbMs != null ? { ttfb_ms: _ttfbMs } : null),
@@ -284,12 +300,12 @@ function invocarClaude(prompt, {
     p.on('close', code => {
       _cleanup();
       if (killedByTimer === 'global') {
-        const msg = `Timeout global ${timeoutMs}ms invocando claude (prompt=${prompt.length}c)`;
+        const msg = `Timeout global ${timeoutMs}ms invocando claude (prompt=${totalChars}c)`;
         _audit(msg);
         return reject(new Error(msg));
       }
       if (killedByTimer === 'idle') {
-        const msg = `Idle timeout ${idleTimeoutMs}ms invocando claude (sin output por ese tiempo; prompt=${prompt.length}c, stdout=${stdout.length}c)`;
+        const msg = `Idle timeout ${idleTimeoutMs}ms invocando claude (sin output por ese tiempo; prompt=${totalChars}c, stdout=${stdout.length}c)`;
         _audit(msg);
         return reject(new Error(msg));
       }
@@ -329,7 +345,7 @@ function invocarClaude(prompt, {
       resolve(stdout);
     });
 
-    p.stdin.write(prompt);
+    p.stdin.write(userTxt);
     p.stdin.end();
   });
 }
@@ -504,9 +520,9 @@ async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
     }
   }
 
-  // Segundo turno: original + resultados
-  const prompt2 = prompt
-    + '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+  // Segundo turno: original + resultados. Si el prompt es split {system,user},
+  // el sufijo va en `user` y el system queda IDÉNTICO → cache hit en la API.
+  const sufijo = '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
     + '[RESULTADOS DE TUS CONSULTAS]\n'
     + 'Las consultas que pediste en el turno anterior devolvieron:\n\n'
     + seccionesResultado.join('\n\n')
@@ -514,6 +530,9 @@ async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
     + 'Con esta información, ahora generá la respuesta final al usuario. '
     + 'NO incluyas `consultas` en este turno (ya fueron ejecutadas). '
     + 'Razoná con los resultados y emití respuesta_a_usuario / respuesta_a_remitente / acciones según corresponda.';
+  const prompt2 = (prompt && typeof prompt === 'object' && (prompt.system || prompt.user))
+    ? { system: prompt.system, user: (prompt.user || '') + sufijo }
+    : prompt + sufijo;
 
   const r2 = await invocarClaudeJSON(prompt2, opts);
   return { raw: r2.raw, json: r2.json, primerTurno: r1.json, consultas };
