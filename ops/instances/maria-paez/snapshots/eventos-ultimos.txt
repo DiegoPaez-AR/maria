@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8680  2026-06-10 01:13:08  sistema   interno                        unhandledRejection: Protocol error (Runtime.callFunctionOn): Execution context was destroyed.                                                                                                           
+
+8679  2026-06-10 01:13:03  sistema   interno                        WA disconnected: LOGOUT — saliendo para que pm2 reinicie                                                                                                                                                
+
 8678  2026-06-09 23:21:54  whatsapp  saliente   34342575317160@lid  Perdoná, me equivoqué. Cuando Poch mandó el monto lo tomé como señal de que el pedido estaba listo para retirar, pero en realidad nunca me lo confirmaron explícitamente — habían dicho 30 minutos y des
 
 8677  2026-06-09 23:21:54  sistema   interno                        claude_call whatsapp: 61256ms prompt=84308c raw=715c                                                                                                                                                    
@@ -229,7 +233,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 8582  2026-06-09 21:19:35  whatsapp  saliente   5493364340748@c.us  ¡Perfecto! Te mando ahora la invitación de calendario para la videollamada del jueves 11/06 a las 17:00.                                                                                                
 
 8581  2026-06-09 21:19:35  sistema   interno                        claude_call whatsapp: 33730ms prompt=84423c raw=765c                                                                                                                                                    
-
-8580  2026-06-09 21:19:01  whatsapp  entrante   5493364340748@c.us  navieradelparana@gmail.com                                                                                                                                                                              
-
-8579  2026-06-09 21:17:04  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
