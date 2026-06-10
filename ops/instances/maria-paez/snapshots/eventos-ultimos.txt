@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8725  2026-06-10 12:07:34  whatsapp  saliente   34342575317160@lid   Todavía no, estoy esperando que Matías confirme. Le propuse la semana del 8/6 para el almuerzo (13-15hs) y sigo sin respuesta de su parte.                                                              
+
+8724  2026-06-10 12:07:34  sistema   interno                         claude_call whatsapp: 41807ms prompt=68005c raw=15488c in=3t(cache_read=0 new=34298) out=1965t ttfb=1734ms api=41486ms turnos=1 $0.1821                                                                 
+
 8723  2026-06-10 12:06:52  whatsapp  entrante   5491132317896@c.us   agendamos finalmente co mati?                                                                                                                                                                           
 
 8722  2026-06-10 12:02:15  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
@@ -308,7 +312,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8627  2026-06-09 22:00:06  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
 
 8626  2026-06-09 22:00:06  calendar  saliente                        creado: Almuerzo Diego / Pablo Vizzotti (2026-06-17T13:00:00-03:00 → 2026-06-17T15:00:00-03:00)                                                                                                         
-
-8625  2026-06-09 22:00:05  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-8624  2026-06-09 22:00:04  whatsapp  saliente   5491158091738@c.us   ¡Perfecto, Pablo! Queda anotado el *miércoles 17/06 de 13 a 15hs*. Te mando ahora la invitación al calendario a pvizzotti@gmail.com. ¡Que lo disfruten!                                                 
