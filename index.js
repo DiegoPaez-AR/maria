@@ -33,6 +33,7 @@ const { iniciarCalendarWatch } = require('./calendar-watch');
 const { iniciarFollowUps } = require('./follow-ups');
 const internalApi = require('./internal-api');
 const { iniciarMemoriaCurada } = require('./memoria-curada');
+const { iniciarMariaWorker } = require('./maria-worker');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
@@ -42,6 +43,7 @@ const MEETING_PREP_MS = Number(process.env.MEETING_PREP_MS || 5 * 60_000);
 const CALENDAR_WATCH_MS = Number(process.env.CALENDAR_WATCH_MS || 8 * 60 * 60_000);
 const FOLLOW_UPS_MS   = Number(process.env.FOLLOW_UPS_MS   || 5 * 60_000);
 const MEMORIA_CURADA_MS = Number(process.env.MEMORIA_CURADA_MS || 24 * 60 * 60_000);
+const MARIA_WORKER_MS = Number(process.env.MARIA_WORKER_MS || 30 * 60_000);
 
 let gmailInterval = null;
 let recordatoriosInterval = null;
@@ -52,6 +54,7 @@ let calendarWatchInterval = null;
 let followUpsInterval = null;
 let internalApiServer = null;
 let memoriaCuradaInterval = null;
+let mariaWorkerInterval = null;
 let waClient = null;
 
 async function main() {
@@ -132,6 +135,11 @@ async function main() {
         intervaloMs: MEMORIA_CURADA_MS,
       });
 
+      console.log(`▸ arrancando maria-worker (cada ${MARIA_WORKER_MS/60_000}min, tareas dueno=maria)`);
+      mariaWorkerInterval = iniciarMariaWorker({
+        waClient: client, intervaloMs: MARIA_WORKER_MS,
+      });
+
       mem.log({
         usuarioId: owner?.id || null,
         canal: 'sistema', direccion: 'interno',
@@ -157,6 +165,9 @@ function shutdown(sig) {
   if (briefInterval) clearInterval(briefInterval);
   if (meetingPrepInterval) clearInterval(meetingPrepInterval);
   if (calendarWatchInterval) clearInterval(calendarWatchInterval);
+  if (followUpsInterval) clearInterval(followUpsInterval);
+  if (memoriaCuradaInterval) clearInterval(memoriaCuradaInterval);
+  if (mariaWorkerInterval) clearInterval(mariaWorkerInterval);
   const done = () => process.exit(0);
   if (waClient) {
     waClient.destroy().then(done).catch(done);

@@ -1225,6 +1225,30 @@ function marcarRecordatorioPendiente(id, ts = new Date().toISOString()) {
   marcarRecordatorioStmt.run(ts, id);
 }
 
+// ── Tareas propias de Maria (para maria-worker.js, 2026-06-10) ────────────
+const qPendientesMariaManual = db.prepare(`
+  SELECT * FROM pendientes
+  WHERE dueno = 'maria' AND disparador = 'manual' AND estado = 'abierto'
+    AND (recordar_desde IS NULL OR recordar_desde <= datetime('now'))
+  ORDER BY creado ASC
+`);
+function pendientesMariaManual() {
+  return qPendientesMariaManual.all().map(_rehidratarPendiente);
+}
+
+// Mergea `patch` sobre el meta_json del pendiente (igual que
+// actualizarMetadataProgramado). Devuelve el meta resultante.
+const updPendienteMetaStmt = db.prepare(`UPDATE pendientes SET meta_json = ? WHERE id = ?`);
+function actualizarMetaPendiente(id, patch) {
+  const row = qPendientePorId.get(id);
+  if (!row) throw new Error(`actualizarMetaPendiente: id=${id} no existe`);
+  let cur = {};
+  try { cur = row.meta_json ? JSON.parse(row.meta_json) : {}; } catch { cur = {}; }
+  const merged = { ...cur, ...patch };
+  updPendienteMetaStmt.run(JSON.stringify(merged), id);
+  return merged;
+}
+
 // Migración legacy: blob JSON en estado.pendientes → tabla. Muy antigua, queda
 // como red de seguridad por si algún DB intermedio aún tiene rastros.
 function _migrarPendientesBlob() {
@@ -1700,6 +1724,8 @@ module.exports = {
   quitarPendiente,
   marcarRecordatorioPendiente,
   posponerPendiente,
+  pendientesMariaManual,
+  actualizarMetaPendiente,
   // contactos
   upsertContacto,
   buscarContacto,
