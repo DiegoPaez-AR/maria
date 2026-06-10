@@ -1,0 +1,43 @@
+#!/bin/bash
+# inbox: diagnostico (1) pendientes de Cristian Ruiz, (2) incidente evento Dario
+set -u
+DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+python3 - "$DB" <<'PYEOF'
+import json, sqlite3, sys
+db = sqlite3.connect(sys.argv[1])
+db.row_factory = sqlite3.Row
+
+print("== 1. usuario Cristian Ruiz ==")
+us = db.execute("SELECT id, nombre, rol, activo FROM usuarios WHERE nombre LIKE '%ristian%'").fetchall()
+for u in us: print(dict(u))
+uid = us[0]["id"] if us else None
+
+if uid:
+    print("\n== pendientes de ese usuario (todos los no-cerrados) ==")
+    for p in db.execute("SELECT id, dueno, disparador, descripcion, estado, creado, recordar_desde, meta_json FROM pendientes WHERE usuario_id=? AND estado NOT IN ('cerrado','cancelado')", (uid,)):
+        print(dict(p))
+    print("\n== follow-ups abiertos de ese usuario ==")
+    for f in db.execute("SELECT id, descripcion, esperando_de, esperando_canal, vence_en, estado, creado FROM follow_ups WHERE usuario_id=? AND estado IN ('abierto','disparado')", (uid,)):
+        print(dict(f))
+    print("\n== ultimos 12 eventos del bucket de ese usuario ==")
+    for e in db.execute("SELECT id, timestamp, canal, direccion, de, substr(cuerpo,1,200) AS cuerpo FROM eventos WHERE usuario_id=? ORDER BY id DESC LIMIT 12", (uid,)):
+        print(dict(e))
+
+print("\n== 2. eventos con 'dario' (ultimas 96h, cualquier usuario) ==")
+for e in db.execute("""SELECT id, timestamp, usuario_id, canal, direccion, de, substr(cuerpo,1,300) AS cuerpo, substr(metadata_json,1,400) AS meta
+                       FROM eventos
+                       WHERE (cuerpo LIKE '%dario%' COLLATE NOCASE OR metadata_json LIKE '%dario%' COLLATE NOCASE OR nombre LIKE '%dario%' COLLATE NOCASE)
+                         AND timestamp >= datetime('now','-96 hours') ORDER BY id"""):
+    print(dict(e))
+    print("---")
+
+print("\n== acciones de calendar (ultimas 96h) ==")
+for e in db.execute("""SELECT id, timestamp, usuario_id, substr(cuerpo,1,250) AS cuerpo, substr(metadata_json,1,400) AS meta
+                       FROM eventos WHERE canal='calendar' AND timestamp >= datetime('now','-96 hours') ORDER BY id"""):
+    print(dict(e))
+    print("---")
+
+print("\n== contactos 'dario' (todas las visibilidades) ==")
+for c in db.execute("SELECT id, usuario_id, nombre, whatsapp, email, visibilidad FROM contactos WHERE nombre LIKE '%dario%' COLLATE NOCASE"):
+    print(dict(c))
+PYEOF
