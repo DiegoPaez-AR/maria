@@ -1,0 +1,59 @@
+# ejecutado: 2026-06-10T09:27:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # inbox: diagnostico reboot pendiente + resiliencia de pm2 ante reboot.
+#   set -u
+#   echo "── reboot requerido?"
+#   if [ -f /var/run/reboot-required ]; then
+#     cat /var/run/reboot-required
+#     cat /var/run/reboot-required.pkgs 2>/dev/null
+#   else
+#     echo "no hay /var/run/reboot-required"
+#   fi
+#   echo "── uptime y kernel"
+#   uptime
+#   uname -r
+#   echo "── pm2 startup configurado?"
+#   systemctl is-enabled pm2-root 2>&1 || echo "pm2-root systemd unit NO habilitada"
+#   systemctl is-active pm2-root 2>&1 || true
+#   echo "── dump de pm2 (resurrect list)"
+#   if [ -f /root/.pm2/dump.pm2 ]; then
+#     python3 -c "
+#   import json
+#   d = json.load(open('/root/.pm2/dump.pm2'))
+#   print('procesos en dump:', [p.get('name') for p in d])
+#   " 2>&1
+#     echo "dump mtime: $(stat -c %y /root/.pm2/dump.pm2)"
+#   else
+#     echo "NO existe /root/.pm2/dump.pm2 — pm2 save nunca corrido"
+#   fi
+#   echo "── crontab actual (lineas maria)"
+#   crontab -l | grep -E 'cron-master|backup|healthcheck'
+
+# ───── output ─────
+── reboot requerido?
+*** System restart required ***
+linux-image-6.8.0-111-generic
+linux-base
+linux-image-6.8.0-117-generic
+linux-base
+linux-image-6.8.0-124-generic
+linux-base
+── uptime y kernel
+ 09:27:01 up 53 days, 14:32,  1 user,  load average: 0.01, 0.07, 0.07
+6.8.0-110-generic
+── pm2 startup configurado?
+enabled
+active
+── dump de pm2 (resurrect list)
+procesos en dump: ['maria-paez', 'intensa-api']
+dump mtime: 2026-05-22 12:22:12.763038832 -0300
+── crontab actual (lineas maria)
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/vendedora && bash ops/cron-master.sh >> /root/vendedora/ops/.cron.log 2>&1
+0 3 * * 0 cd /root/secretaria && bash ops/scripts/backup-weekly.sh >> /var/log/maria-backup.log 2>&1
+*/5 * * * * cd /root/secretaria && bash ops/scripts/healthcheck-notify.sh >> /var/log/maria-healthcheck.log 2>&1
+
+# exit=0
