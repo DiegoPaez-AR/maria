@@ -311,8 +311,13 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     // resumimos la conversación de la CLI (--resume) y mandamos solo el turno
     // compacto; la API relee reglas + contexto previo del prompt cache.
     // Requiere prompt split {system,user}.
+    // Turnos de TERCEROS van sessionless (incidente 2026-06-11): no mezclar
+    // interlocutores en la historia lineal de la sesión del usuario.
+    const _esTurnoDeUsuario = !!entrada.de && !!usuario.email
+      && String(entrada.de).toLowerCase().includes(String(usuario.email).toLowerCase());
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
-      && prompt && typeof prompt === 'object' && !!prompt.system;
+      && prompt && typeof prompt === 'object' && !!prompt.system
+      && _esTurnoDeUsuario;
     const auditGmail = { usuarioId: usuario.id, canal: 'gmail' };
     let json;
     if (!SESIONES_ON) {

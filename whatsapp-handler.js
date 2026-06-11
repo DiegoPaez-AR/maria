@@ -729,8 +729,16 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // historial queda cacheado en la API y solo pagamos el delta del turno.
     // Requiere prompt split {system,user} (con MARIA_SYSTEM_SPLIT=0 no hay
     // system separado que hashear ni cachear → flujo clásico).
+    // Turnos de TERCEROS van SIEMPRE sessionless (incidente 2026-06-11):
+    // meter el mensaje de un tercero en la sesión del usuario mezcla
+    // interlocutores en una historia lineal y Maria pierde el hilo de con
+    // quién habla. El tercero corre con prompt completo; su intercambio
+    // entra a la sesión del usuario vía [NOVEDADES] en el próximo turno.
+    const _esTurnoDeUsuario = !!entrada.de
+      && (entrada.de === usuario.wa_lid || entrada.de === usuario.wa_cus);
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
-      && prompt && typeof prompt === 'object' && !!prompt.system;
+      && prompt && typeof prompt === 'object' && !!prompt.system
+      && _esTurnoDeUsuario;
     const auditWA = { usuarioId: usuario.id, canal: 'whatsapp' };
     let json;
     if (!SESIONES_ON) {

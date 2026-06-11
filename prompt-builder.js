@@ -925,15 +925,25 @@ async function construirTurnoSesion({ usuario, canal, entrada }) {
   if (!usuario || !usuario.id) throw new Error('construirTurnoSesion: usuario requerido');
   const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
 
-  const agenda      = await seccionAgenda(usuario, { dias: 1 });
+  // Incidente 2026-06-11 (fechas corridas + falsa memoria de acciones):
+  //  - agenda de 7 días (no 1): "la semana que viene el martes" necesita la
+  //    semana A LA VISTA para anclar fechas — con 1 día Maria computaba corrido.
+  //  - NOVEDADES: lo que pasó FUERA de esta sesión desde el último turno —
+  //    turnos de terceros (corren sessionless), envíos de loops y sobre todo
+  //    los RESULTADOS de las acciones del turno anterior. Sin esto, la sesión
+  //    contiene "le mando ahora" como historia pero no el "acción FALLÓ" → el
+  //    modelo cree que hizo cosas que fallaron.
+  const agenda      = await seccionAgenda(usuario, { dias: 7 });
   const fecha       = seccionFechaHora(tz);
+  const novedades   = seccionHistorial(usuario);
   const consultas   = seccionPendientes(usuario, { dueno: 'usuario', disparador: 'respuesta_usuario', vacioMsg: '(sin consultas abiertas)' });
   const tareas      = seccionPendientes(usuario, { dueno: 'usuario', disparador: 'manual',            vacioMsg: '(sin tareas activas)' });
   const tareasMaria = seccionPendientes(usuario, { dueno: 'maria',                                    vacioMsg: '(sin tareas mías abiertas)' });
   const programados = seccionProgramados(usuario, { max: 10 });
-  // historialTxt vacío a propósito: la relevancia de la libreta se decide
-  // solo por el mensaje/remitente de ESTE turno (la sesión ya vio el resto).
-  const libreta     = seccionLibreta(usuario, { entrada, historialTxt: '' });
+  // La relevancia de la libreta mira también las novedades: si el mensaje
+  // dice "mandaselas a él" y el nombre solo aparece en el intercambio
+  // reciente, el contacto tiene que entrar igual al prompt.
+  const libreta     = seccionLibreta(usuario, { entrada, historialTxt: novedades });
   const contacto    = seccionContacto(usuario, {
     de: entrada.de,
     nombre: entrada.nombre,
@@ -944,12 +954,18 @@ async function construirTurnoSesion({ usuario, canal, entrada }) {
   const remitenteNombre = entrada.nombre || entrada.de || entrada.email || 'el remitente';
 
   return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[FECHA Y HORA]
+[FECHA Y HORA — ACTUAL, AHORA]
 ${fecha}
+⚠ Calculá toda fecha relativa ("mañana", "el martes", "la semana que viene") DESDE ESTA fecha. Las fechas que aparezcan en turnos anteriores de nuestra conversación pueden estar VIEJAS — no las reutilices sin recalcular contra [AGENDA].
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[AGENDA DE ${usuario.nombre.toUpperCase()} — HOY]
+[AGENDA DE ${usuario.nombre.toUpperCase()} — próximos 7 días]
 ${agenda}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[NOVEDADES — LO QUE PASÓ FUERA DE ESTA CONVERSACIÓN DESDE TU ÚLTIMO TURNO]
+(→ entrante, ← saliente, · interno. Incluye mensajes de terceros, envíos automáticos y el RESULTADO de tus acciones del turno anterior. ⚠ Si acá ves "acción FALLÓ", esa acción NO se ejecutó aunque vos hayas dicho que la hacías — NO asumas que algo salió si no lo ves confirmado.)
+${novedades}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [CONSULTAS ABIERTAS DE ${usuario.nombre.toUpperCase()} — dueno=usuario · disparador=respuesta_usuario]
