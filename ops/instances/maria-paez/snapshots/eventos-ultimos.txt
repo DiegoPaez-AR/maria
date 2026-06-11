@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8890  2026-06-11 17:54:49  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+8889  2026-06-11 17:54:49  whatsapp  saliente   34342575317160@lid   ¿Confirmo que el audio es: coordinar con Gustavo Rossi una reunión de una hora para la semana que viene?                                                                                                
+                                                                                                                                                                                                                                                                             
+                                                                     Si es eso, ¿qué horarios le querés proponer?                                                                                                                                                            
+
+8888  2026-06-11 17:54:49  sistema   interno                         claude_call whatsapp: 58707ms prompt=68900c raw=23331c in=18t(cache_read=34478 new=36867) out=3043t ttfb=1833ms api=58039ms turnos=2 $0.2033                                                            
+
 8887  2026-06-11 17:53:50  whatsapp  entrante   5491132317896@c.us   María Lecridiza, ha gustado para armar, coordinar con él una mit para la semana que viene de una hora, gracias.                                                                                         
 
 8886  2026-06-11 17:53:23  sistema   interno                         contacto vcard (privado): Gustavo Rossi → 5491164935767@c.us                                                                                                                                            
@@ -278,9 +286,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8792  2026-06-10 16:34:13  whatsapp  entrante   5491132317896@c.us   todo bien?                                                                                                                                                                                              
 
 8791  2026-06-10 16:34:13  whatsapp  entrante   5491132317896@c.us   hola                                                                                                                                                                                                    
-
-8790  2026-06-10 16:31:05  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8789  2026-06-10 16:26:00  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-8788  2026-06-10 16:25:34  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
