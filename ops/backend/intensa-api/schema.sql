@@ -61,7 +61,8 @@ CREATE INDEX IF NOT EXISTS idx_clientes_estado     ON clientes(estado);
 CREATE INDEX IF NOT EXISTS idx_clientes_instancia  ON clientes(instancia_slug, estado);
 CREATE INDEX IF NOT EXISTS idx_clientes_cancelado  ON clientes(cancelado_en) WHERE estado='cancelled';
 
--- Signup pendientes. TTL 10min. Códigos de 6 dígitos numéricos.
+-- Signup pendientes. TTL 10min (se extiende a 30min al verificar ambos códigos).
+-- Códigos de 6 dígitos numéricos.
 CREATE TABLE IF NOT EXISTS signup_pending (
   id                INTEGER PRIMARY KEY AUTOINCREMENT,
   nombre            TEXT NOT NULL,
@@ -80,7 +81,7 @@ CREATE TABLE IF NOT EXISTS signup_pending (
   token_emitido_en  DATETIME,
   -- TTL
   creado            DATETIME DEFAULT CURRENT_TIMESTAMP,
-  expira_en         DATETIME NOT NULL,             -- creado + 10min
+  expira_en         DATETIME NOT NULL,             -- creado + 10min; al emitirse el signup_token se extiende a +30min
   -- Aceptación de Términos y Condiciones (obligatorio)
   terminos_aceptados_en DATETIME
 );

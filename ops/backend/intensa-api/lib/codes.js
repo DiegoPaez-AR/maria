@@ -143,7 +143,10 @@ function verificarSignup({ signup_id, email_code, wa_code }) {
     let token = row.signup_token;
     if (!token) {
       token = crypto.randomBytes(32).toString('hex');
-      c.prepare(`UPDATE signup_pending SET signup_token=?, token_emitido_en=datetime('now') WHERE id=?`)
+      // Al emitir el token extendemos el TTL a ahora+30min: el checkout de LS
+      // tarda más que los 10min originales del pending (schema.sql ya prometía
+      // 30min post-verificación; recién acá se cumple).
+      c.prepare(`UPDATE signup_pending SET signup_token=?, token_emitido_en=datetime('now'), expira_en=datetime('now', '+30 minutes') WHERE id=?`)
         .run(token, signup_id);
     }
     return { ok: true, email_verified: true, wa_verified: true, signup_token: token };

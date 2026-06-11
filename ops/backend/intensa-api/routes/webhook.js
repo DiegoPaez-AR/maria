@@ -141,43 +141,136 @@ async function _onSubscriptionCreated(evt, signupToken) {
   const provider = sinCalendar ? 'google' : pending.calendar_provider;
   const acceso = sinCalendar ? 'none' : 'write';
 
+  const waCus = `${pending.wa}@c.us`;
   const idb = new Database(`/root/secretaria/state/${instance.slug}/db/maria.sqlite`);
   let usuarioId;
+  let debeBienvenida = true;
   try {
-    const r = idb.prepare(`
-      INSERT INTO usuarios (nombre, email, wa_cus, calendar_id, calendar_provider, calendar_acceso, rol, tz, activo, bienvenida_enviada, lemon_customer_id, lemon_subscription_id)
-      VALUES (?, ?, ?, ?, ?, ?, 'usuario', 'America/Argentina/Buenos_Aires', 1, 0, ?, ?)
-    `).run(
-      pending.nombre,
-      pending.email,
-      `${pending.wa}@c.us`,
-      sinCalendar ? null : pending.email,   // calendar_id null si no tiene calendar
-      provider,
-      acceso,
-      customerId,
-      subscriptionId,
-    );
-    usuarioId = r.lastInsertRowid;
+    // Idempotencia: los UNIQUE de `usuarios` (nombre, email, wa_cus) son globales
+    // e incluyen filas con activo=0 — un retry del webhook o un ex-cliente que
+    // vuelve no puede ir derecho al INSERT.
+    const yaUsuario = idb.prepare(`SELECT id, activo, bienvenida_enviada FROM usuarios WHERE email=? OR wa_cus=? LIMIT 1`)
+      .get(pending.email, waCus);
+
+    // Si el nombre lo tiene OTRO usuario (nombre es UNIQUE), desambiguamos con
+    // los últimos 4 dígitos del wa.
+    let nombreFinal = pending.nombre;
+    const duenoNombre = idb.prepare(`SELECT id FROM usuarios WHERE nombre=? LIMIT 1`).get(pending.nombre);
+    if (duenoNombre && (!yaUsuario || duenoNombre.id !== yaUsuario.id)) {
+      nombreFinal = `${pending.nombre} ${String(pending.wa).slice(-4)}`;
+    }
+
+    if (yaUsuario && yaUsuario.activo) {
+      // Ya existía ACTIVO con este email/wa (retry del webhook) → reusamos.
+      usuarioId = yaUsuario.id;
+      debeBienvenida = !yaUsuario.bienvenida_enviada;
+      console.log(`[webhook] usuario ya existía activo en ${instance.slug} (id=${usuarioId}), reuso sin insertar`);
+    } else if (yaUsuario) {
+      // Existía INACTIVO (ex-cliente que vuelve) → reactivamos y refrescamos datos.
+      idb.prepare(`
+        UPDATE usuarios SET activo=1, bienvenida_enviada=0, nombre=?, email=?, wa_cus=?,
+          calendar_id=?, calendar_provider=?, calendar_acceso=?,
+          lemon_customer_id=?, lemon_subscription_id=?
+        WHERE id=?
+      `).run(
+        nombreFinal, pending.email, waCus,
+        sinCalendar ? null : pending.email, provider, acceso,
+        customerId, subscriptionId, yaUsuario.id,
+      );
+      usuarioId = yaUsuario.id;
+      console.log(`[webhook] usuario reactivado en ${instance.slug} (id=${usuarioId})`);
+    } else {
+      try {
+        const r = idb.prepare(`
+          INSERT INTO usuarios (nombre, email, wa_cus, calendar_id, calendar_provider, calendar_acceso, rol, tz, activo, bienvenida_enviada, lemon_customer_id, lemon_subscription_id)
+          VALUES (?, ?, ?, ?, ?, ?, 'usuario', 'America/Argentina/Buenos_Aires', 1, 0, ?, ?)
+        `).run(
+          nombreFinal,
+          pending.email,
+          waCus,
+          sinCalendar ? null : pending.email,   // calendar_id null si no tiene calendar
+          provider,
+          acceso,
+          customerId,
+          subscriptionId,
+        );
+        usuarioId = r.lastInsertRowid;
+      } catch (insErr) {
+        // Constraint inesperado (carrera u otro UNIQUE): re-buscamos por email/wa
+        // y reusamos si apareció, así el flujo no queda a medias y un retry cierra bien.
+        const otra = idb.prepare(`SELECT id FROM usuarios WHERE email=? OR wa_cus=? LIMIT 1`).get(pending.email, waCus);
+        if (!otra) throw insErr;
+        idb.prepare(`UPDATE usuarios SET activo=1 WHERE id=?`).run(otra.id);
+        usuarioId = otra.id;
+        console.warn(`[webhook] INSERT usuario chocó (${insErr.message}) — reuso id=${usuarioId}`);
+      }
+    }
   } finally {
     idb.close();
   }
 
-  // Crear cliente en control
-  c.prepare(`
-    INSERT INTO clientes (
-      nombre, email, wa, calendar_provider, instancia_slug, instancia_usuario_id, estado,
-      lemon_customer_id, lemon_subscription_id, lemon_customer_portal,
-      ultimo_cobro_en, proximo_cobro_en, ultimo_evento, ultimo_evento_en,
-      terminos_aceptados_en, terminos_version
-    ) VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?)
-  `).run(
-    pending.nombre, pending.email, pending.wa, pending.calendar_provider,
-    instance.slug, usuarioId, customerId, subscriptionId, attrs.urls?.customer_portal || null,
-    attrs.created_at, attrs.renews_at, 'subscription_created',
-    pending.terminos_aceptados_en || new Date().toISOString(), 'v1-2026-05-19',
-  );
+  // Crear/actualizar cliente en control (upsert-style: email/wa/subscription_id
+  // son UNIQUE, un INSERT ciego revienta ante retry o ex-cliente que vuelve).
+  const cliExist = c.prepare(`SELECT id, estado FROM clientes WHERE email=? OR wa=? LIMIT 1`).get(pending.email, pending.wa);
+  const clienteYaActivo = !!(cliExist && cliExist.estado === 'active');
+  if (cliExist) {
+    // Existía (inactive/cancelled, o active si es retry del mismo evento) →
+    // lo dejamos activo y refrescamos ids de LS, instancia y demás campos.
+    c.prepare(`
+      UPDATE clientes SET
+        nombre=?, email=?, wa=?, calendar_provider=?, instancia_slug=?, instancia_usuario_id=?,
+        estado='active', lemon_customer_id=?, lemon_subscription_id=?, lemon_customer_portal=?,
+        ultimo_cobro_en=?, proximo_cobro_en=?, ultimo_evento='subscription_created', ultimo_evento_en=datetime('now'),
+        inactivado_en=NULL, cancelado_en=NULL,
+        terminos_aceptados_en=?, terminos_version=?, actualizado=datetime('now')
+      WHERE id=?
+    `).run(
+      pending.nombre, pending.email, pending.wa, pending.calendar_provider,
+      instance.slug, usuarioId, customerId, subscriptionId, attrs.urls?.customer_portal || null,
+      attrs.created_at, attrs.renews_at,
+      pending.terminos_aceptados_en || new Date().toISOString(), 'v1-2026-05-19',
+      cliExist.id,
+    );
+    console.log(`[webhook] cliente existente (id=${cliExist.id}, estado=${cliExist.estado}) → active`);
+  } else {
+    c.prepare(`
+      INSERT INTO clientes (
+        nombre, email, wa, calendar_provider, instancia_slug, instancia_usuario_id, estado,
+        lemon_customer_id, lemon_subscription_id, lemon_customer_portal,
+        ultimo_cobro_en, proximo_cobro_en, ultimo_evento, ultimo_evento_en,
+        terminos_aceptados_en, terminos_version
+      ) VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?)
+    `).run(
+      pending.nombre, pending.email, pending.wa, pending.calendar_provider,
+      instance.slug, usuarioId, customerId, subscriptionId, attrs.urls?.customer_portal || null,
+      attrs.created_at, attrs.renews_at, 'subscription_created',
+      pending.terminos_aceptados_en || new Date().toISOString(), 'v1-2026-05-19',
+    );
+  }
 
-  instances.incrementarUsuarios(instance.slug);
+  // Solo sumamos cupo si el cliente NO estaba ya activo (retry no doble-cuenta).
+  if (!clienteYaActivo) instances.incrementarUsuarios(instance.slug);
+
+  // Bienvenida al que pagó: best-effort, sale por el internal-api de la
+  // instancia ASIGNADA. Si falla, loggeamos y NO rompemos el alta
+  // (bienvenida_enviada queda en 0 para reintentar después).
+  if (debeBienvenida) {
+    const asistente = instance.asistente || 'Maria'; // instances hoy no tiene nombre de asistente propio → default
+    const msg = `¡Hola ${pending.nombre}! Soy ${asistente}, tu nueva secretaria personal. Tu alta quedó confirmada ✅\n\nYa podés escribirme por acá para lo que necesites: agendar reuniones, recordatorios, coordinar con terceros, transcribir audios y más.\n\nPara arrancar: ¿qué calendario usás? (Google / Outlook / iCloud / otro) Así te paso los pasos para conectarlo y empiezo a cuidarte la agenda.`;
+    try {
+      await mariaRpc.sendWa(instance, { to: pending.wa, body: msg });
+      const idb2 = new Database(`/root/secretaria/state/${instance.slug}/db/maria.sqlite`);
+      try {
+        idb2.prepare(`UPDATE usuarios SET bienvenida_enviada=1 WHERE id=?`).run(usuarioId);
+      } finally {
+        idb2.close();
+      }
+      console.log(`[webhook] bienvenida enviada a ${pending.wa} via ${instance.slug}`);
+    } catch (waErr) {
+      console.error(`[webhook] bienvenida a ${pending.wa} falló (queda bienvenida_enviada=0): ${waErr.message}`);
+    }
+  }
+
   c.prepare(`DELETE FROM signup_pending WHERE id=?`).run(pending.id);
 
   console.log(`[webhook] CLIENTE CREADO: ${pending.email} → ${instance.slug}/usuario_id=${usuarioId}`);
