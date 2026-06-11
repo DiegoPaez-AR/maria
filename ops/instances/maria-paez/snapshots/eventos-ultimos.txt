@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8866  2026-06-11 13:02:44  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+8865  2026-06-11 13:02:44  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8864  2026-06-11 13:02:44  whatsapp  saliente   5491140495070@c.us   Buenas! Todo bien, sin problema. Lo consulto con Diego y te confirmo enseguida.                                                                                                                         
+
+8863  2026-06-11 13:02:43  whatsapp  saliente   34342575317160@lid   Te escribe Leandro Groisman — propone el *jueves 18/06 a las 11am*. Fijate que ese día tenés Yoga hasta las 12, así que hay superposición. ¿Querés que le confirme igual (si el yoga lo dejás), busco ot
+
+8862  2026-06-11 13:02:43  sistema   interno                         claude_call whatsapp: 45430ms prompt=68389c raw=16195c in=10t(cache_read=0 new=34335) out=2119t ttfb=1778ms api=44856ms turnos=1 $0.1695                                                                
+
+8861  2026-06-11 13:02:42  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
+
 8860  2026-06-11 13:01:57  whatsapp  entrante   5491140495070@c.us   Buenas, como va?                                                                                                                                                                                        
                                                                      disculpa la demora                                                                                                                                                                                      
                                                                      Jueves 18 11am esta OK?                                                                                                                                                                                 
@@ -264,18 +276,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8768  2026-06-10 15:52:23  sistema   interno                         claude_call maria-worker: 194842ms prompt=50422c raw=190535c in=3943t(cache_read=448733 new=49940) out=5824t ttfb=1718ms api=268452ms turnos=26 $1.0263                                                 
 
 8767  2026-06-10 15:47:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-8766  2026-06-10 15:47:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-8765  2026-06-10 15:45:31  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Pumayna + Flatiron (01:00 p. m.)                                                                                                                                                          
-                                                                     Con: pablo.petrillo@luftlatam.com, santiago@capurro.com.ar, rt@flatironrealtycapital.com, st@flatironrealtycapital.com                                                                                  
-
-8764  2026-06-10 15:45:24  whatsapp  saliente   59899643028@c.us     ⏰ *En 15min*: Dentista (01:00 p. m.)                                                                                                                                                                    
-                                                                     Con: enrique.sosa@globalnetmobile.com                                                                                                                                                                   
-
-8763  2026-06-10 15:45:16  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Almuerzo con Dario (01:00 p. m.)                                                                                                                                                          
-                                                                     Con: dfainguersch@dragonesvc.com                                                                                                                                                                        
-
-8762  2026-06-10 15:33:14  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8761  2026-06-10 15:23:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
