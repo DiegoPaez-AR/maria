@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8956  2026-06-11 22:27:49  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+8955  2026-06-11 22:27:49  whatsapp  saliente   34342575317160@lid   Listo, te agrego la tarea: mandarte el arradiche de Claro.                                                                                                                                              
+
+8954  2026-06-11 22:27:49  sistema   interno                         claude_call whatsapp: 23659ms prompt=69590c raw=10033c in=10t(cache_read=0 new=34767) out=1036t ttfb=1817ms api=22848ms turnos=1 $0.1552                                                                
+
+8953  2026-06-11 22:27:25  whatsapp  entrante   5491132317896@c.us   agregame una tarea mandarme el arradiche de claro                                                                                                                                                       
+
 8952  2026-06-11 22:15:26  whatsapp  saliente   34342575317160@lid   Diego, no te entendí bien el audio — la transcripción me quedó medio cortada: "haría una tarea mandarme y la radich declaro". ¿Me repetís qué necesitás?                                                
 
 8951  2026-06-11 22:15:26  sistema   interno                         claude_call whatsapp: 24846ms prompt=69781c raw=10242c in=10t(cache_read=0 new=34860) out=1018t ttfb=3201ms api=22516ms turnos=1 $0.1554                                                                
@@ -260,12 +268,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                                                                                                                                                                                                                              
                                                                      *📅 Agenda del día*                                                                                                                                                                                      
                                                                      (sin eventos hoy)                                                                                                                                                                                       
-
-8856  2026-06-11 12:02:41  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8855  2026-06-11 12:00:43  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: MC Daily (09:15 a. m.)                                                                                                                                                                    
-                                                                     Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgloba                                     
-
-8854  2026-06-11 11:45:51  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Spine (09:00 a. m.)                                                                                                                                                                       
-
-8853  2026-06-11 11:45:51  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: dra. rosario collado...  (09:00 a. m.)                                                                                                                                                    
