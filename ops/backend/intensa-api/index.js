@@ -8,8 +8,9 @@
 //   POST /cuenta/login     → pide código por email o WA (passwordless)
 //   POST /cuenta/verify    → valida código, devuelve session cookie
 //   GET  /cuenta/me        → datos del cliente logueado
-//   POST /cuenta/update    → cambiar email o WA (requiere segundo código)
-//   POST /cuenta/cancel    → cancela suscripción (requiere segundo código)
+//   POST /cuenta/reauth-code → manda OTP fresco para confirmar operación sensible
+//   POST /cuenta/update    → cambiar email o WA (requiere OTP fresco)
+//   POST /cuenta/cancel    → cancela suscripción (requiere OTP fresco)
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -63,6 +64,8 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     error: err.code || 'internal_error',
     message: err.message,
+    // motivo: detalle opcional (ej. otp_required → 'faltante' | 'vencido' | 'invalido')
+    ...(err.motivo ? { motivo: err.motivo } : {}),
   });
 });
 

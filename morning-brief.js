@@ -201,7 +201,7 @@ async function enviarBrief(waClient, usuario) {
 async function tickUsuario(waClient, usuario) {
   if (Number(usuario.brief_activo) === 0) return; // usuario pauso su brief (configurar_brief)
   const tz        = usuario.tz || 'America/Argentina/Buenos_Aires';
-  const briefHora   = usuario.brief_hora   || '04';
+  const briefHora   = usuario.brief_hora   || '07'; // unificado a 07 (2026-06-11; schema y crear() ya decían 07/04 inconsistentes)
   const briefMinuto = usuario.brief_minuto || '00';
   const t = horaMinEnTz(tz);
 

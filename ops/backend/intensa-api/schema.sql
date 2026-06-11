@@ -99,11 +99,14 @@ CREATE TABLE IF NOT EXISTS portal_sessions (
 );
 CREATE INDEX IF NOT EXISTS idx_portal_expira ON portal_sessions(expira_en);
 
--- Códigos OTP para portal (login passwordless). Distintos a signup_pending.
+-- Códigos OTP para portal (login passwordless + re-confirmación). Distintos a signup_pending.
+-- proposito: 'login' (entrar al portal) o 'reauth' (confirmar operación sensible:
+-- /cuenta/update y /cuenta/cancel exigen un OTP fresco emitido vía /cuenta/reauth-code).
 CREATE TABLE IF NOT EXISTS portal_otp (
   id                INTEGER PRIMARY KEY AUTOINCREMENT,
   cliente_id        INTEGER NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
   canal             TEXT NOT NULL CHECK(canal IN ('email','wa')),
+  proposito         TEXT NOT NULL DEFAULT 'login' CHECK(proposito IN ('login','reauth')),
   code              TEXT NOT NULL,                -- 6 dígitos
   intentos          INTEGER NOT NULL DEFAULT 0,
   usado             INTEGER NOT NULL DEFAULT 0,

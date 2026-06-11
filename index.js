@@ -36,6 +36,7 @@ const { iniciarMemoriaCurada } = require('./memoria-curada');
 const { iniciarMariaWorker } = require('./maria-worker');
 const { iniciarCumpleAvisos } = require('./cumple-avisos');
 const { iniciarResumenSemanal } = require('./resumen-semanal');
+const { iniciarPodaEventos } = require('./poda-eventos');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
@@ -61,6 +62,7 @@ let memoriaCuradaInterval = null;
 let mariaWorkerInterval = null;
 let cumpleAvisosInterval = null;
 let resumenSemanalInterval = null;
+let podaEventosInterval = null;
 let waClient = null;
 
 async function main() {
@@ -156,6 +158,9 @@ async function main() {
         waClient: client, intervaloMs: RESUMEN_SEMANAL_MS,
       });
 
+      console.log('▸ arrancando poda-eventos (diario)');
+      podaEventosInterval = iniciarPodaEventos({});
+
       mem.log({
         usuarioId: owner?.id || null,
         canal: 'sistema', direccion: 'interno',
@@ -186,6 +191,7 @@ function shutdown(sig) {
   if (mariaWorkerInterval) clearInterval(mariaWorkerInterval);
   if (cumpleAvisosInterval) clearInterval(cumpleAvisosInterval);
   if (resumenSemanalInterval) clearInterval(resumenSemanalInterval);
+  if (podaEventosInterval) clearInterval(podaEventosInterval);
   const done = () => process.exit(0);
   if (waClient) {
     waClient.destroy().then(done).catch(done);

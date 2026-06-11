@@ -92,7 +92,17 @@ async function _tickUsuario(usuario) {
     if (cuandoAlerta.getTime() <= ahora) continue;
 
     const razon = _razonPara(usuario, e.id);
-    if (mem.existeProgramadoFuturo(razon)) continue;
+    // Reagendar si el evento se movió (2026-06-11): si ya hay una alerta
+    // programada para este evento pero con OTRO horario, cancelarla y
+    // recrear — antes la alerta salía a la hora vieja, a veces después
+    // de empezada la reunión.
+    const progExistente = mem.programadoFuturoPorRazon(razon);
+    if (progExistente) {
+      const delta = Math.abs(new Date(progExistente.cuando).getTime() - cuandoAlerta.getTime());
+      if (delta < 60_000) continue; // misma hora → nada que hacer
+      mem.cancelarProgramado(progExistente.id);
+      console.log(`[meeting-prep/${usuario.nombre}] evento ${e.summary} se movió — reagendando alerta (era ${progExistente.cuando})`);
+    }
 
     try {
       const id = mem.programarMensaje({

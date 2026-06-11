@@ -30,6 +30,7 @@
 
 const vault = require('../vault');
 const googleProvider = require('./google');
+const { conReintentos } = require('../net-retry');
 
 const MS_CLIENT_ID    = process.env.MS_CLIENT_ID    || null;
 const MS_TENANT       = process.env.MS_TENANT       || 'common';
@@ -158,31 +159,51 @@ function _persistirCreds(usuarioId, creds) {
   usuarios.actualizar(usuarioId, { calendar_auth_json: blob });
 }
 
+// Refreshes en vuelo por usuario.id. Microsoft ROTA el refresh_token en cada
+// uso (el viejo se invalida al emitir el nuevo): si dos operaciones
+// concurrentes del mismo usuario refrescan en paralelo, una persiste un
+// token ya invalidado y el usuario queda con creds rotas. Cacheamos la
+// Promise del refresh en curso para que la segunda espere la misma en vez
+// de iniciar otro.
+const _refreshEnVuelo = new Map();
+
 /**
  * Devuelve un access_token válido para el usuario, refrescando si hace falta.
  * Persiste el nuevo refresh_token y actualiza el cache en memoria.
  */
 async function _getAccessToken(usuario) {
   const cached = _tokenCache.get(usuario.id);
-  const ahora = Date.now();
-  if (cached && cached.expires_at > ahora + 60_000) {
+  if (cached && cached.expires_at > Date.now() + 60_000) {
     return cached.access_token;
   }
-  const creds = _credenciales(usuario);
-  if (!creds.refresh_token) {
-    throw new Error(`microsoft: usuario ${usuario.nombre} no tiene refresh_token — re-correr configurar_microsoft`);
+  // Si ya hay un refresh en curso para este usuario, esperamos ese mismo.
+  const enVuelo = _refreshEnVuelo.get(usuario.id);
+  if (enVuelo) return enVuelo;
+
+  const refresh = (async () => {
+    const creds = _credenciales(usuario);
+    if (!creds.refresh_token) {
+      throw new Error(`microsoft: usuario ${usuario.nombre} no tiene refresh_token — re-correr configurar_microsoft`);
+    }
+    const tk = await refrescarAccessToken(creds.refresh_token);
+    const nuevoCreds = {
+      ...creds,
+      refresh_token: tk.refresh_token || creds.refresh_token, // MS rota el refresh
+      access_token: tk.access_token,
+      expires_at: Date.now() + (tk.expires_in || 3600) * 1000,
+      scope: tk.scope || creds.scope,
+    };
+    _persistirCreds(usuario.id, nuevoCreds);
+    _tokenCache.set(usuario.id, nuevoCreds);
+    return tk.access_token;
+  })();
+
+  _refreshEnVuelo.set(usuario.id, refresh);
+  try {
+    return await refresh;
+  } finally {
+    _refreshEnVuelo.delete(usuario.id);
   }
-  const tk = await refrescarAccessToken(creds.refresh_token);
-  const nuevoCreds = {
-    ...creds,
-    refresh_token: tk.refresh_token || creds.refresh_token, // MS rota el refresh
-    access_token: tk.access_token,
-    expires_at: ahora + (tk.expires_in || 3600) * 1000,
-    scope: tk.scope || creds.scope,
-  };
-  _persistirCreds(usuario.id, nuevoCreds);
-  _tokenCache.set(usuario.id, nuevoCreds);
-  return tk.access_token;
 }
 
 async function _graphFetch(usuario, pathOrUrl, opts = {}) {
@@ -193,11 +214,20 @@ async function _graphFetch(usuario, pathOrUrl, opts = {}) {
     'Content-Type': 'application/json',
     ...(opts.headers || {}),
   };
-  const res = await fetch(url, { ...opts, headers });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`microsoft.graph ${opts.method || 'GET'} ${pathOrUrl}: ${res.status} — ${txt.slice(0, 400)}`);
-  }
+  // Reintentos ante errores transitorios de Graph (429/5xx). Acá tenemos el
+  // res directo, así que armamos el error con status + headers para que
+  // conReintentos pueda detectar el código y respetar Retry-After.
+  const res = await conReintentos(async () => {
+    const r = await fetch(url, { ...opts, headers });
+    if (!r.ok) {
+      const txt = await r.text();
+      const err = new Error(`microsoft.graph ${opts.method || 'GET'} ${pathOrUrl}: ${r.status} — ${txt.slice(0, 400)}`);
+      err.status = r.status;
+      err.response = { status: r.status, headers: r.headers };
+      throw err;
+    }
+    return r;
+  }, { tag: `graph ${opts.method || 'GET'} ${pathOrUrl}` });
   if (res.status === 204) return null;
   return res.json();
 }

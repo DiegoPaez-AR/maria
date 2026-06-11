@@ -16,6 +16,16 @@ const qTodos         = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 ORDER
 const qTodosIncl     = db.prepare(`SELECT * FROM usuarios ORDER BY id ASC`);
 const qPorId         = db.prepare(`SELECT * FROM usuarios WHERE id = ?`);
 const qPorNombre     = db.prepare(`SELECT * FROM usuarios WHERE nombre = ? COLLATE NOCASE AND activo = 1`);
+// Match de identidad contra usuarios DESACTIVADOS (para reactivación en crear()).
+const qInactivoMatch = db.prepare(`
+  SELECT * FROM usuarios WHERE activo = 0 AND (
+    (@cus IS NOT NULL AND wa_cus = @cus) OR
+    (@lid IS NOT NULL AND wa_lid = @lid) OR
+    (@email IS NOT NULL AND email = @email) OR
+    nombre = @nombre COLLATE NOCASE
+  ) LIMIT 1
+`);
+const reactivarStmt = db.prepare(`UPDATE usuarios SET activo = 1 WHERE id = ?`);
 const qPorWaLid      = db.prepare(`SELECT * FROM usuarios WHERE wa_lid = ? AND activo = 1`);
 const qPorWaCus      = db.prepare(`SELECT * FROM usuarios WHERE wa_cus = ? AND activo = 1`);
 const qPorEmail      = db.prepare(`SELECT * FROM usuarios WHERE email = ? COLLATE NOCASE AND activo = 1`);
@@ -194,6 +204,30 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
   const emailN = email ? email.trim().toLowerCase() : null;
   const calN   = calendar_id ? String(calendar_id).trim().toLowerCase() : null;
 
+  // Reactivación (2026-06-11): si la identidad matchea un usuario DESACTIVADO,
+  // lo reactivamos con su historial intacto en vez de explotar con
+  // SQLITE_CONSTRAINT (los UNIQUE de la tabla son globales, los prechecks de
+  // abajo solo miran activo=1). El caller ve `reactivado: true` en el retorno.
+  const inactivo = qInactivoMatch.get({ cus: cusN, lid: lidN, email: emailN, nombre: nombreN });
+  if (inactivo) {
+    reactivarStmt.run(inactivo.id);
+    const patch = {};
+    if (nombreN) patch.nombre = nombreN;
+    if (lidN) patch.wa_lid = lidN;
+    if (cusN) patch.wa_cus = cusN;
+    if (emailN) patch.email = emailN;
+    if (calN) patch.calendar_id = calN;
+    if (tz) patch.tz = tz;
+    if (brief_hora) patch.brief_hora = brief_hora;
+    if (brief_minuto) patch.brief_minuto = brief_minuto;
+    if (ubicacion && String(ubicacion).trim()) patch.ubicacion = String(ubicacion).trim();
+    if (Object.keys(patch).length) actualizar(inactivo.id, patch);
+    const u = obtener(inactivo.id);
+    u.reactivado = true;
+    console.log(`[usuarios] reactivado ${u.nombre} (id=${u.id}) — estaba dado de baja, vuelve con su historial`);
+    return u;
+  }
+
   // Chequear duplicados antes de INSERT (mejor error)
   if (qPorNombre.get(nombreN))         throw new Error(`ya existe un usuario con ese nombre: ${nombreN}`);
   if (lidN && qPorWaLid.get(lidN))     throw new Error(`ya existe un usuario con ese WhatsApp LID: ${lidN}`);
@@ -298,6 +332,17 @@ function desactivar(usuarioId) {
   if (!u) throw new Error(`usuario id=${usuarioId} no existe`);
   if (u.rol === 'owner') throw new Error('no se puede borrar al owner');
   updateUsuarioActivo.run(0, usuarioId);
+  // 2026-06-11: sus envíos diferidos y follow-ups no deben salir igual
+  // (antes los programados de un desactivado se despachaban lo mismo).
+  try {
+    const mem = require('./memory'); // lazy: evita ciclo de require
+    const r = mem.cancelarPendientesDeUsuario(usuarioId);
+    if (r.programados || r.followUps) {
+      console.log(`[usuarios] desactivado ${u.nombre}: cancelados ${r.programados} programado(s) y ${r.followUps} follow-up(s)`);
+    }
+  } catch (e) {
+    console.warn(`[usuarios] desactivar ${u.nombre}: no pude cancelar pendientes:`, e.message);
+  }
   return u;
 }
 

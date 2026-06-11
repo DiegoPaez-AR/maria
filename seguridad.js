@@ -69,13 +69,20 @@ function verificarRateLimit({ usuarioId }) {
 // Solo deja dígitos para comparar números (whatsapp con/sin formato).
 function _soloDigitos(x) { return String(x || '').replace(/\D+/g, ''); }
 
-// Devuelve true si dos números matchean (last-N digits, mínimo 8 — cubre
-// con/sin código país, con/sin 9 de Argentina).
+// Devuelve true si dos números matchean. Endurecido 2026-06-11: el match por
+// sufijo exige que el número MÁS CORTO tenga ≥10 dígitos (área+abonado AR
+// completo) y que la diferencia de largo sea ≤3 (un prefijo de país, no medio
+// número). Antes, con mínimo 8, un destino corto que fuera sufijo de un
+// contacto pasaba la validación.
 function _wasapMatch(a, b) {
   const da = _soloDigitos(a);
   const db = _soloDigitos(b);
-  if (!da || !db || da.length < 8 || db.length < 8) return false;
-  return da === db || da.endsWith(db) || db.endsWith(da);
+  if (!da || !db) return false;
+  if (da === db) return true;
+  const corto = Math.min(da.length, db.length);
+  if (corto < 10) return false;
+  if (Math.abs(da.length - db.length) > 3) return false;
+  return da.endsWith(db) || db.endsWith(da);
 }
 
 /**
@@ -88,8 +95,19 @@ function _wasapMatch(a, b) {
  *
  * Bypass: env SEC_DESTINATARIO_STRICT=false desactiva la validación (siempre ok).
  */
+let _avisoStrictOff = false;
 function validarDestinatario({ usuario, canal, destino }) {
   if (process.env.SEC_DESTINATARIO_STRICT === 'false') {
+    // Telemetría (2026-06-11): strict-off es SOLO para debug. Si una instancia
+    // quedó así en prod, que grite una vez por proceso en logs + eventos.
+    if (!_avisoStrictOff) {
+      _avisoStrictOff = true;
+      console.warn('[seguridad] ⚠⚠ SEC_DESTINATARIO_STRICT=false — validación de destinatarios DESACTIVADA. Esto es solo para debug, NO dejar en prod.');
+      try {
+        const mem = require('./memory');
+        mem.logSecurityEvent({ motivo: 'SEC_DESTINATARIO_STRICT=false activo (validación de destinos apagada)', body: '' });
+      } catch {}
+    }
     return { ok: true, motivo: 'strict-mode off (env)' };
   }
   if (!destino) return { ok: false, motivo: 'destino vacío' };

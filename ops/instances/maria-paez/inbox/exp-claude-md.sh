@@ -1,0 +1,56 @@
+#!/bin/bash
+# inbox: EXPERIMENTO — ¿el contenido de CLAUDE.md entra en la zona cacheable
+# de la CLI entre invocaciones -p separadas? Si sí, podemos mover el bloque
+# estático del prompt de Maria ahí y ganar cache_read cross-llamada.
+#
+# Método: en /root/secretaria (dir ya trusteado por la CLI) se crea un
+# CLAUDE.md temporal de ~15k chars con una palabra canario. Dos corridas de
+# `claude -p` consecutivas; si run2 muestra cache_read >> run1 (y >> el
+# baseline de ~6k del system propio de la CLI), el contenido cachea.
+# Control: dos corridas en un dir sin CLAUDE.md.
+# Al final se BORRA el CLAUDE.md (no debe quedar en el repo).
+set -u
+cd /root/secretaria || exit 1
+
+[ -f CLAUDE.md ] && { echo "ABORT: ya existe un CLAUDE.md real en /root/secretaria"; exit 1; }
+
+python3 - <<'PYEOF'
+lines = ["# Instrucciones del proyecto (TEST TEMPORAL — borrar)",
+         "La palabra canario de este proyecto es: PAPAGAYO-AZUL.", ""]
+filler = "Esta es una linea de relleno para inflar el contexto del proyecto y medir el caching de prefijo de la API. "
+for i in range(140):
+    lines.append(f"Regla {i}: {filler}{i}")
+open("CLAUDE.md", "w").write("\n".join(lines))
+print("CLAUDE.md generado:", len("\n".join(lines)), "chars")
+PYEOF
+
+run() {
+  local label="$1"; local prompt="$2"
+  claude -p "$prompt" --output-format json --allowedTools "" 2>/dev/null | python3 -c "
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    u = d.get('usage', {})
+    print('$label| result:', str(d.get('result',''))[:60].replace(chr(10),' '))
+    print('$label| in:', u.get('input_tokens'), 'cache_read:', u.get('cache_read_input_tokens'), 'cache_creation:', u.get('cache_creation_input_tokens'), 'ms:', d.get('duration_ms'))
+except Exception as e:
+    print('$label| parse error:', e)
+"
+}
+
+echo "== CON CLAUDE.md =="
+run "cmd-run1" "¿Cuál es la palabra canario de este proyecto? Respondé SOLO la palabra."
+sleep 8
+run "cmd-run2" "Repetí la palabra canario del proyecto, solo la palabra."
+
+rm -f /root/secretaria/CLAUDE.md
+echo "CLAUDE.md borrado"
+
+echo "== CONTROL sin CLAUDE.md (mismo dir) =="
+run "ctl-run1" "Respondé solo: hola"
+sleep 8
+run "ctl-run2" "Respondé solo: chau"
+
+echo "== interpretación =="
+echo "Si cmd-run1 dice PAPAGAYO-AZUL → la CLI carga CLAUDE.md en modo -p."
+echo "Si cmd-run2 cache_read >> ctl-run2 cache_read → el contenido CACHEA entre llamadas → vale la pena migrar el bloque estático."

@@ -15,6 +15,7 @@ const fs = require('fs');
 const path = require('path');
 const { google } = require('googleapis');
 const vault = require('./vault');
+const { conReintentos } = require('./net-retry');
 
 const SCOPES = [
   'https://www.googleapis.com/auth/gmail.modify',
@@ -506,16 +507,17 @@ function linkCrearEventoPrellenado({ summary, descripcion = '', start, end, ubic
  */
 async function listarEmailsNoLeidos({ max = 20 } = {}) {
   const auth = await autenticar();
-  const list = await _gmail(auth).users.messages.list({
+  // Path de alto volumen (poll): reintentos ante 429/5xx transitorios de Gmail.
+  const list = await conReintentos(() => _gmail(auth).users.messages.list({
     userId: 'me',
     q: 'is:unread in:inbox',
     maxResults: max,
-  });
+  }), { tag: 'gmail.messages.list' });
   const ids = (list.data.messages || []).map(m => m.id);
   const emails = [];
   for (const id of ids) {
-    const m = await _gmail(auth).users.messages.get({ userId: 'me', id, format: 'metadata',
-      metadataHeaders: ['From', 'To', 'Subject', 'Date'] });
+    const m = await conReintentos(() => _gmail(auth).users.messages.get({ userId: 'me', id, format: 'metadata',
+      metadataHeaders: ['From', 'To', 'Subject', 'Date'] }), { tag: 'gmail.messages.get' });
     const headers = Object.fromEntries((m.data.payload?.headers || []).map(h => [h.name, h.value]));
     emails.push({
       id,
@@ -535,7 +537,10 @@ async function listarEmailsNoLeidos({ max = 20 } = {}) {
  */
 async function leerEmail(messageId) {
   const auth = await autenticar();
-  const m = await _gmail(auth).users.messages.get({ userId: 'me', id: messageId, format: 'full' });
+  const m = await conReintentos(
+    () => _gmail(auth).users.messages.get({ userId: 'me', id: messageId, format: 'full' }),
+    { tag: 'gmail.messages.get' }
+  );
   const headers = Object.fromEntries((m.data.payload?.headers || []).map(h => [h.name, h.value]));
   const cuerpo = _extraerTextoPlano(m.data.payload);
   const adjuntos = _extraerAdjuntosMeta(m.data.payload);
@@ -734,10 +739,10 @@ async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
   const raw = Buffer.from(headers.join('\r\n') + body).toString('base64')
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-  const r = await _gmail(auth).users.messages.send({
+  const r = await conReintentos(() => _gmail(auth).users.messages.send({
     userId: 'me',
     requestBody: { raw },
-  });
+  }), { tag: 'gmail.messages.send' });
   return { id: r.data.id, threadId: r.data.threadId };
 }
 

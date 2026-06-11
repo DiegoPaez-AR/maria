@@ -3,8 +3,9 @@
 //   POST /cuenta/verify  { canal, identificador, code }             → setea cookie de sesión
 //   POST /cuenta/logout                                              → borra cookie
 //   GET  /cuenta/me                                                  → datos del cliente
-//   POST /cuenta/update  { nuevo_email? nuevo_wa? code }             → confirma con código y actualiza
-//   POST /cuenta/cancel  { code }                                    → confirma con código y cancela LS
+//   POST /cuenta/reauth-code { canal? }   → manda OTP fresco para confirmar operación sensible
+//   POST /cuenta/update  { nuevo_email? nuevo_wa? otp }              → exige OTP fresco y actualiza
+//   POST /cuenta/cancel  { otp }                                     → exige OTP fresco y cancela LS
 
 const express = require('express');
 const crypto = require('crypto');
@@ -66,7 +67,7 @@ router.post('/login', async (req, res, next) => {
 
     const code = _genCode();
     const expira = new Date(Date.now() + OTP_TTL_MIN * 60_000).toISOString();
-    c.prepare(`INSERT INTO portal_otp (cliente_id, canal, code, expira_en) VALUES (?, ?, ?, ?)`)
+    c.prepare(`INSERT INTO portal_otp (cliente_id, canal, proposito, code, expira_en) VALUES (?, ?, 'login', ?, ?)`)
       .run(cliente.id, canal, code, expira);
 
     // Enviar código por el canal pedido vía Maria signup_bot
@@ -106,10 +107,10 @@ router.post('/verify', async (req, res, next) => {
     }
     if (!cliente) throw _err('not_found', 'Credenciales inválidas', 401);
 
-    // Buscar el OTP más reciente válido
+    // Buscar el OTP más reciente válido (solo de login — los de reauth no sirven para entrar)
     const otp = c.prepare(`
       SELECT * FROM portal_otp
-      WHERE cliente_id=? AND canal=? AND usado=0 AND expira_en > datetime('now')
+      WHERE cliente_id=? AND canal=? AND proposito='login' AND usado=0 AND expira_en > datetime('now')
       ORDER BY id DESC LIMIT 1
     `).get(cliente.id, canal);
     if (!otp) throw _err('no_otp', 'No hay código activo o expiró', 401);
@@ -172,14 +173,95 @@ router.get('/me', _requireSession, (req, res) => {
   });
 });
 
-router.post('/update', _requireSession, async (req, res, next) => {
+// ── Re-confirmación con OTP fresco para operaciones sensibles ────────────────
+// La sesión sola no alcanza para /update y /cancel: si la cookie se filtra,
+// el atacante igual necesita acceso al email/WA del cliente. El flujo es:
+//   1. POST /reauth-code  → manda un código nuevo al canal elegido
+//   2. POST /update|/cancel con { otp } → se valida y se quema (un solo uso)
+
+const REAUTH_COOLDOWN_SEG = 60; // no re-enviar si ya mandamos uno hace <60s
+
+router.post('/reauth-code', _requireSession, async (req, res, next) => {
   try {
-    const { nuevo_email, nuevo_wa, code } = req.body || {};
-    // Requerir un nuevo código (re-confirmación) que el cliente recibe al iniciar el cambio.
-    // Por simplicidad y para no inflar: validar con el mismo OTP que ya usó si pasó <2min.
-    // (Una versión más segura sería pedir un OTP fresh; lo dejamos como roadmap.)
+    const canal = (req.body || {}).canal || 'email';
+    if (!['email','wa'].includes(canal)) throw _err('bad_canal', 'Canal inválido');
+    const cli = req.cliente;
+    const c = db.control();
+
+    // Rate-limit básico: si ya emitimos un código de reauth hace <60s, no spamear.
+    const reciente = c.prepare(`
+      SELECT id FROM portal_otp
+      WHERE cliente_id=? AND proposito='reauth' AND usado=0
+        AND expira_en > datetime('now')
+        AND creado > datetime('now', '-' || ? || ' seconds')
+      ORDER BY id DESC LIMIT 1
+    `).get(cli.id, REAUTH_COOLDOWN_SEG);
+    if (reciente) return res.json({ ok: true, message: 'Ya te enviamos un código. Revisá tu bandeja.' });
+
+    // Invalidar códigos de reauth anteriores: solo el último emitido vale.
+    c.prepare(`UPDATE portal_otp SET usado=1 WHERE cliente_id=? AND proposito='reauth' AND usado=0`).run(cli.id);
+
+    const code = _genCode();
+    const expira = new Date(Date.now() + OTP_TTL_MIN * 60_000).toISOString();
+    c.prepare(`INSERT INTO portal_otp (cliente_id, canal, proposito, code, expira_en) VALUES (?, ?, 'reauth', ?, ?)`)
+      .run(cli.id, canal, code, expira);
+
+    // Enviar por el mismo mecanismo que el login (Maria signup_bot)
+    const bot = instances.signupBot();
+    if (!bot) throw _err('no_signup_bot', 'No hay instancia signup_bot configurada', 503);
+    if (canal === 'email') {
+      mariaRpc.sendEmail(bot, {
+        to: cli.email,
+        subject: 'Tu código para confirmar cambios en tu cuenta de María',
+        html: `<p>Hola ${cli.nombre},</p><p>Tu código para confirmar la operación es: <b style="font-size:24px;letter-spacing:6px">${code}</b></p><p>Vence en 10 minutos. Si no estás haciendo cambios en tu cuenta, ignorá este mensaje.</p>`,
+      }).catch(e => console.error('[cuenta/reauth-code] sendEmail:', e.message));
+    } else {
+      mariaRpc.sendWa(bot, {
+        to: cli.wa,
+        body: `Hola ${cli.nombre}, soy María. Tu código para confirmar la operación en tu cuenta es:\n\n*${code}*\n\nVence en 10 minutos. Si no estás haciendo cambios, ignorá este mensaje.`,
+      }).catch(e => console.error('[cuenta/reauth-code] sendWa:', e.message));
+    }
+
+    res.json({ ok: true, message: 'Te enviamos un código para confirmar.' });
+  } catch (err) { next(err); }
+});
+
+// Middleware: exige body.otp validado contra el último código de reauth vigente.
+// Sin otp / vencido / incorrecto → 401 { error: 'otp_required', motivo }.
+// El código es de un solo uso: se quema acá, antes de ejecutar la operación.
+function _requireOtpFresco(req, res, next) {
+  const otp = String((req.body || {}).otp ?? '').trim();
+  if (!otp) {
+    const e = _err('otp_required', 'Falta el código de confirmación', 401);
+    e.motivo = 'faltante';
+    return next(e);
+  }
+  const c = db.control();
+  const row = c.prepare(`
+    SELECT * FROM portal_otp
+    WHERE cliente_id=? AND proposito='reauth' AND usado=0 AND expira_en > datetime('now')
+    ORDER BY id DESC LIMIT 1
+  `).get(req.cliente.id);
+  if (!row) {
+    const e = _err('otp_required', 'No hay código activo o expiró. Pedí uno nuevo.', 401);
+    e.motivo = 'vencido';
+    return next(e);
+  }
+  if (row.intentos >= MAX_INTENTOS) return next(_err('max_intentos', 'Demasiados intentos', 429));
+  if (row.code !== otp) {
+    c.prepare(`UPDATE portal_otp SET intentos=intentos+1 WHERE id=?`).run(row.id);
+    const e = _err('otp_required', 'Código incorrecto', 401);
+    e.motivo = 'invalido';
+    return next(e);
+  }
+  c.prepare(`UPDATE portal_otp SET usado=1 WHERE id=?`).run(row.id);
+  next();
+}
+
+router.post('/update', _requireSession, _requireOtpFresco, async (req, res, next) => {
+  try {
+    const { nuevo_email, nuevo_wa } = req.body || {};
     if (!nuevo_email && !nuevo_wa) throw _err('bad_body', 'Pasá nuevo_email o nuevo_wa');
-    // TODO: validar code con un nuevo OTP. Por ahora aceptamos cambio sin code adicional dentro de la sesión.
     const c = db.control();
     const sets = [];
     const vals = [];
@@ -212,7 +294,7 @@ router.post('/update', _requireSession, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-router.post('/cancel', _requireSession, async (req, res, next) => {
+router.post('/cancel', _requireSession, _requireOtpFresco, async (req, res, next) => {
   try {
     // Llamar a LS API para cancelar la suscripción
     const apiKey = process.env.LEMON_API_KEY;

@@ -39,8 +39,16 @@ const TR = {
     'cambiar.lbl-wa': 'Nuevo WhatsApp (con código de país)',
     'cambiar.cta': 'Guardar',
     'cambiar.volver': 'Volver',
+    'reauth.h1': 'Confirmá con un código.',
+    'reauth.sub-email': 'Por seguridad te mandamos un código de 6 dígitos a tu email.',
+    'reauth.sub-wa': 'Por seguridad te mandamos un código de 6 dígitos a tu WhatsApp.',
+    'reauth.lbl-code': 'Código',
+    'reauth.cta': 'Confirmar',
+    'reauth.reenviar': 'Reenviar código',
+    'reauth.volver': 'Volver sin confirmar',
     'confirm.cancel': '¿Confirmás que querés cancelar la suscripción? No vas a recibir más cobros y vas a perder acceso a María.',
     'msg.code_sent': 'Si el dato es correcto, te enviamos un código.',
+    'msg.otp_reenviado': 'Te mandamos un código nuevo.',
     'msg.changes_saved': 'Cambios guardados.',
     'msg.cancelled': 'Tu suscripción quedó cancelada. No vas a recibir más cobros.',
     'err.generic': 'Algo falló. Probá de nuevo.',
@@ -49,6 +57,9 @@ const TR = {
     'err.session_expired': 'Tu sesión expiró. Volvé a entrar.',
     'err.no_otp': 'No hay un código activo. Pedí uno nuevo.',
     'err.max_intentos': 'Demasiados intentos. Esperá unos minutos.',
+    'err.otp_faltante': 'Te falta el código. Ingresalo o pedí uno nuevo.',
+    'err.otp_vencido': 'El código venció. Pedí uno nuevo con "Reenviar código".',
+    'err.otp_invalido': 'Código incorrecto. Probá de nuevo.',
   },
   en: {
     'title': 'Your account — María',
@@ -84,8 +95,16 @@ const TR = {
     'cambiar.lbl-wa': 'New WhatsApp (with country code)',
     'cambiar.cta': 'Save',
     'cambiar.volver': 'Back',
+    'reauth.h1': 'Confirm with a code.',
+    'reauth.sub-email': 'For security, we sent a 6-digit code to your email.',
+    'reauth.sub-wa': 'For security, we sent a 6-digit code to your WhatsApp.',
+    'reauth.lbl-code': 'Code',
+    'reauth.cta': 'Confirm',
+    'reauth.reenviar': 'Resend code',
+    'reauth.volver': 'Go back without confirming',
     'confirm.cancel': 'Confirm cancellation? You will not be charged again and will lose access to María.',
     'msg.code_sent': 'If the data is correct, we sent you a code.',
+    'msg.otp_reenviado': 'We sent you a new code.',
     'msg.changes_saved': 'Changes saved.',
     'msg.cancelled': 'Your subscription has been cancelled. No further charges.',
     'err.generic': 'Something failed. Try again.',
@@ -94,6 +113,9 @@ const TR = {
     'err.session_expired': 'Session expired. Sign in again.',
     'err.no_otp': 'No active code. Request a new one.',
     'err.max_intentos': 'Too many attempts. Wait a few minutes.',
+    'err.otp_faltante': 'Code missing. Enter it or request a new one.',
+    'err.otp_vencido': 'The code expired. Request a new one with "Resend code".',
+    'err.otp_invalido': 'Wrong code. Try again.',
   },
 };
 let lang = (navigator.language || 'es').startsWith('en') ? 'en' : 'es';
@@ -211,6 +233,107 @@ document.getElementById('link-logout').addEventListener('click', async e => {
 document.getElementById('btn-cambiar').addEventListener('click', () => showStep('cambiar'));
 document.getElementById('link-volver-me').addEventListener('click', e => { e.preventDefault(); showStep('me'); });
 
+// ---- Reauth OTP (código fresco exigido por /update y /cancel) ----
+let reauthAccion = null;       // { path, body, volverA, erroresId, onOk }
+let reauthCooldownHasta = 0;   // timestamp ms hasta el que no se puede reenviar
+let reauthTimer = null;
+
+function actualizarLinkReenviar() {
+  const link = document.getElementById('link-reenviar-otp');
+  const restan = Math.ceil((reauthCooldownHasta - Date.now()) / 1000);
+  if (restan > 0) {
+    link.textContent = `${t('reauth.reenviar')} (${restan}s)`;
+    link.style.opacity = '0.5';
+    link.style.cursor = 'default';
+  } else {
+    link.textContent = t('reauth.reenviar');
+    link.style.opacity = '';
+    link.style.cursor = '';
+    if (reauthTimer) { clearInterval(reauthTimer); reauthTimer = null; }
+  }
+}
+
+function iniciarCooldown() {
+  reauthCooldownHasta = Date.now() + 60000;
+  actualizarLinkReenviar();
+  if (!reauthTimer) reauthTimer = setInterval(actualizarLinkReenviar, 1000);
+}
+
+async function pedirReauthCode() {
+  const r = await api('/reauth-code', { canal });
+  if (r.status === 401) {
+    reauthAccion = null;
+    showStep('login');
+    showError('errors-login', t('err.session_expired'));
+    return false;
+  }
+  if (r.ok) iniciarCooldown();
+  return r.ok;
+}
+
+async function iniciarReauth(accion) {
+  reauthAccion = accion;
+  document.getElementById('form-reauth').reset();
+  clearError('errors-reauth');
+  const sub = document.getElementById('reauth-sub');
+  sub.dataset.i18n = canal === 'wa' ? 'reauth.sub-wa' : 'reauth.sub-email';
+  sub.textContent = t(sub.dataset.i18n);
+  const ok = await pedirReauthCode();
+  if (ok) {
+    showStep('reauth');
+  } else if (reauthAccion) {
+    reauthAccion = null;
+    if (accion.erroresId) showError(accion.erroresId, t('err.generic'));
+    else alert(t('err.generic'));
+  }
+}
+
+document.getElementById('form-reauth').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!reauthAccion) { showStep('me'); return; }
+  clearError('errors-reauth');
+  const btn = document.getElementById('btn-reauth');
+  btn.disabled = true;
+  const otp = (new FormData(e.target).get('otp') || '').trim();
+  const r = await api(reauthAccion.path, { ...reauthAccion.body, otp });
+  btn.disabled = false;
+  if (r.ok) {
+    const fin = reauthAccion;
+    reauthAccion = null;
+    await fin.onOk(r);
+    return;
+  }
+  if (r.status === 401 && r.body.error === 'otp_required') {
+    if (r.body.motivo === 'vencido') showError('errors-reauth', t('err.otp_vencido'));
+    else if (r.body.motivo === 'faltante') showError('errors-reauth', t('err.otp_faltante'));
+    else showError('errors-reauth', t('err.otp_invalido'));
+  } else if (r.status === 429 || r.body.error === 'max_intentos') {
+    showError('errors-reauth', t('err.max_intentos'));
+  } else if (r.status === 401) {
+    reauthAccion = null;
+    showStep('login');
+    showError('errors-login', t('err.session_expired'));
+  } else {
+    showError('errors-reauth', t(`err.${r.body.error || 'generic'}`));
+  }
+});
+
+document.getElementById('link-reenviar-otp').addEventListener('click', async (e) => {
+  e.preventDefault();
+  if (Date.now() < reauthCooldownHasta) return; // cooldown 60s
+  clearError('errors-reauth');
+  const ok = await pedirReauthCode();
+  if (ok) showError('errors-reauth', t('msg.otp_reenviado'), true);
+  else if (reauthAccion) showError('errors-reauth', t('err.generic'));
+});
+
+document.getElementById('link-reauth-volver').addEventListener('click', (e) => {
+  e.preventDefault();
+  const volverA = (reauthAccion && reauthAccion.volverA) || 'me';
+  reauthAccion = null;
+  showStep(volverA);
+});
+
 document.getElementById('form-cambiar').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearError('errors-cambiar');
@@ -218,25 +341,39 @@ document.getElementById('form-cambiar').addEventListener('submit', async (e) => 
   const body = {};
   if (fd.get('nuevo_email')) body.nuevo_email = fd.get('nuevo_email').trim();
   if (fd.get('nuevo_wa')) body.nuevo_wa = fd.get('nuevo_wa').trim();
-  const r = await api('/update', body);
-  if (r.ok) {
-    showError('errors-cambiar', t('msg.changes_saved'), true);
-    await cargarMe();
-    setTimeout(() => showStep('me'), 1500);
-  } else {
-    showError('errors-cambiar', t(`err.${r.body.error || 'generic'}`));
-  }
+  const btn = document.getElementById('btn-cambiar-submit');
+  btn.disabled = true;
+  await iniciarReauth({
+    path: '/update',
+    body,
+    volverA: 'cambiar',
+    erroresId: 'errors-cambiar',
+    onOk: async () => {
+      await cargarMe();
+      showStep('cambiar');
+      showError('errors-cambiar', t('msg.changes_saved'), true);
+      setTimeout(() => showStep('me'), 1500);
+    },
+  });
+  btn.disabled = false;
 });
 
 document.getElementById('btn-cancelar').addEventListener('click', async () => {
   if (!confirm(t('confirm.cancel'))) return;
-  const r = await api('/cancel');
-  if (r.ok) {
-    alert(t('msg.cancelled'));
-    await cargarMe();
-  } else {
-    alert(t(`err.${r.body.error || 'generic'}`));
-  }
+  const btn = document.getElementById('btn-cancelar');
+  btn.disabled = true;
+  await iniciarReauth({
+    path: '/cancel',
+    body: {},
+    volverA: 'me',
+    erroresId: null,
+    onOk: async () => {
+      alert(t('msg.cancelled'));
+      await cargarMe();
+      showStep('me');
+    },
+  });
+  btn.disabled = false;
 });
 
 document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));

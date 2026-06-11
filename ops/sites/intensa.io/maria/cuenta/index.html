@@ -140,6 +140,24 @@
       </form>
     </section>
 
+    <!-- REAUTH OTP (código fresco para update/cancel) -->
+    <section id="step-reauth" class="step reveal">
+      <h1 data-i18n-html="reauth.h1">Confirmá con un código.</h1>
+      <p class="step-sub" id="reauth-sub" data-i18n="reauth.sub-email">Por seguridad te mandamos un código de 6 dígitos a tu email.</p>
+      <form id="form-reauth" novalidate>
+        <label>
+          <span data-i18n="reauth.lbl-code">Código</span>
+          <input type="text" name="otp" required inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" placeholder="123456">
+        </label>
+        <div class="errors" id="errors-reauth" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary" id="btn-reauth">
+          <span data-i18n="reauth.cta">Confirmar</span> <span class="arrow">→</span>
+        </button>
+        <p class="step-link"><a href="#" id="link-reenviar-otp">Reenviar código</a></p>
+        <p class="step-link"><a href="#" id="link-reauth-volver" data-i18n="reauth.volver">Volver sin confirmar</a></p>
+      </form>
+    </section>
+
   </div>
 </main>
 

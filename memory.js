@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   calendar_id  TEXT,
   rol          TEXT NOT NULL DEFAULT 'usuario' CHECK(rol IN ('owner','usuario')),
   tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
-  brief_hora   TEXT DEFAULT '04',
+  brief_hora   TEXT DEFAULT '07',
   brief_minuto TEXT DEFAULT '00',
   activo       INTEGER NOT NULL DEFAULT 1,
   creado       DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -1225,6 +1225,50 @@ function marcarRecordatorioPendiente(id, ts = new Date().toISOString()) {
   marcarRecordatorioStmt.run(ts, id);
 }
 
+// ── Poda de eventos (para poda-eventos.js, 2026-06-11) ────────────────────
+// La tabla eventos crece sin límite (cada mensaje + cada claude_call + logs).
+// Política acordada con Diego: telemetría (claude_call) >60 días se BORRA;
+// el resto de lo viejo (>18 meses, ya sintetizado por memoria-curada hace
+// rato) se MUEVE a eventos_archivo (recuperable, fuera del hot path).
+db.exec(`
+  CREATE TABLE IF NOT EXISTS eventos_archivo (
+    id INTEGER PRIMARY KEY,
+    timestamp DATETIME, usuario_id INTEGER, canal TEXT, direccion TEXT,
+    de TEXT, nombre TEXT, asunto TEXT, cuerpo TEXT, tipo_original TEXT,
+    metadata_json TEXT, archivado DATETIME DEFAULT CURRENT_TIMESTAMP
+  );
+`);
+const delTelemetriaVieja = db.prepare(`
+  DELETE FROM eventos WHERE id IN (
+    SELECT id FROM eventos
+    WHERE canal = 'sistema' AND timestamp < datetime('now', ?)
+      AND metadata_json LIKE '%"tipo":"claude_call"%'
+    LIMIT ?
+  )
+`);
+const insArchivoViejos = db.prepare(`
+  INSERT INTO eventos_archivo (id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json)
+  SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
+  FROM eventos WHERE timestamp < datetime('now', ?)
+  ORDER BY id LIMIT ?
+`);
+const delArchivados = db.prepare(`
+  DELETE FROM eventos WHERE id IN (SELECT id FROM eventos_archivo)
+    AND timestamp < datetime('now', ?)
+`);
+function podarEventos({ telemetriaDias = 60, archivoDias = 540, batch = 5000 } = {}) {
+  const vTele = `-${Number(telemetriaDias)} days`;
+  const vArch = `-${Number(archivoDias)} days`;
+  const borrados = delTelemetriaVieja.run(vTele, batch).changes;
+  const archivar = db.transaction(() => {
+    const ins = insArchivoViejos.run(vArch, batch).changes;
+    delArchivados.run(vArch);
+    return ins;
+  });
+  const archivados = archivar();
+  return { telemetriaBorrada: borrados, archivados };
+}
+
 // ── Stats de la semana (para resumen-semanal.js, 2026-06-10) ──────────────
 const qStatsMensajes = db.prepare(`
   SELECT canal, direccion, COUNT(*) AS n FROM eventos
@@ -1584,8 +1628,10 @@ const qProgramadosDebidos = db.prepare(`
 const qProgramadosProximosUsuario = db.prepare(`
   SELECT * FROM programados WHERE usuario_id = ? AND enviado = 0 ORDER BY cuando ASC LIMIT ?
 `);
+// Fix 2026-06-11: filtra enviado=0 — antes un programado CANCELADO futuro
+// con la misma razón bloqueaba recrear la alerta (bug meeting-prep).
 const qProgramadoPorRazonDesde = db.prepare(`
-  SELECT * FROM programados WHERE razon = ? AND cuando >= ? ORDER BY cuando ASC LIMIT 1
+  SELECT * FROM programados WHERE razon = ? AND cuando >= ? AND enviado = 0 ORDER BY cuando ASC LIMIT 1
 `);
 const updProgramadoEnviado   = db.prepare(`UPDATE programados SET enviado = 1 WHERE id = ?`);
 const updProgramadoCancelado = db.prepare(`UPDATE programados SET enviado = -1 WHERE id = ?`);
@@ -1625,6 +1671,21 @@ function proximosProgramados(usuarioId, { max = 10 } = {}) {
 function existeProgramadoFuturo(razon, desde = new Date()) {
   const iso = desde instanceof Date ? desde.toISOString() : new Date(desde).toISOString();
   return !!qProgramadoPorRazonDesde.get(razon, iso);
+}
+// Como existeProgramadoFuturo pero devuelve el row (para comparar `cuando`
+// y reagendar si el evento se movió — meeting-prep 2026-06-11).
+function programadoFuturoPorRazon(razon, desde = new Date()) {
+  const iso = desde instanceof Date ? desde.toISOString() : new Date(desde).toISOString();
+  const r = qProgramadoPorRazonDesde.get(razon, iso);
+  return r ? hidratar(r) : null;
+}
+// Al desactivar un usuario: sus envíos diferidos y follow-ups no deben salir.
+const updCancelarProgramadosUsuario = db.prepare(`UPDATE programados SET enviado = -1 WHERE usuario_id = ? AND enviado = 0`);
+const updCancelarFollowUpsUsuario   = db.prepare(`UPDATE follow_ups SET estado = 'cancelado', cerrado_en = CURRENT_TIMESTAMP WHERE usuario_id = ? AND estado IN ('abierto','disparado')`);
+function cancelarPendientesDeUsuario(usuarioId) {
+  const progs = updCancelarProgramadosUsuario.run(usuarioId).changes;
+  const fus   = updCancelarFollowUpsUsuario.run(usuarioId).changes;
+  return { programados: progs, followUps: fus };
 }
 function marcarProgramadoEnviado(id) { updProgramadoEnviado.run(id); }
 // usuarioId opcional: si viene, solo cancela programados de ese usuario
@@ -1765,6 +1826,9 @@ module.exports = {
   pendientesMariaManual,
   actualizarMetaPendiente,
   statsSemana,
+  podarEventos,
+  programadoFuturoPorRazon,
+  cancelarPendientesDeUsuario,
   // contactos
   upsertContacto,
   buscarContacto,
