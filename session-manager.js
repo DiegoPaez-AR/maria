@@ -81,9 +81,17 @@ function lockUsuario(usuarioId, fn) {
   return cur;
 }
 
-/** Hash corto del system prompt — detecta deploys que cambian las reglas. */
+// Versión del FORMATO de turno compacto. Bumpearla fuerza rotación de todas
+// las sesiones vivas en el próximo turno — necesario cuando cambia qué
+// mandamos por turno (ej. incidente 2026-06-11: sesiones armadas sin
+// [NOVEDADES] quedaron con historia contaminada de falsas confirmaciones).
+const VERSION_FORMATO_TURNO = '2';
+
+/** Hash corto del system prompt + versión de formato — detecta deploys. */
 function promptHashDe(systemTxt) {
-  return crypto.createHash('sha256').update(String(systemTxt || ''), 'utf8').digest('hex').slice(0, 16);
+  return crypto.createHash('sha256')
+    .update(VERSION_FORMATO_TURNO + '\n' + String(systemTxt || ''), 'utf8')
+    .digest('hex').slice(0, 16);
 }
 
 module.exports = {
