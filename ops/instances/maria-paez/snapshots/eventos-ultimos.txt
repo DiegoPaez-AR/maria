@@ -1,5 +1,9 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8813  2026-06-11 00:08:00  sistema   interno                         claude_call whatsapp: 12182ms prompt=69276c raw=6817c in=10t(cache_read=6272 new=28083) out=379t ttfb=1714ms api=11420ms turnos=1 $0.1219                                                               
+
+8812  2026-06-11 00:07:48  whatsapp  entrante   5491137646922@c.us   Buenas buenas!! Como va?                                                                                                                                                                                
+
 8811  2026-06-11 00:06:41  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
 
 8810  2026-06-11 00:06:41  whatsapp  saliente   5491137646922@c.us   Hola! Les aviso que están llegando en 5 minutos. Gracias!                                                                                                                                               
@@ -231,7 +235,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8715  2026-06-10 11:35:22  whatsapp  entrante   5491132317896@c.us   guardame el numero de Anafe Restaurante +5491162244129                                                                                                                                                  
 
 8714  2026-06-10 11:02:14  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8713  2026-06-10 10:45:10  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Gimnasio (08:00 a. m.)                                                                                                                                                                    
-
-8712  2026-06-10 10:32:14  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
