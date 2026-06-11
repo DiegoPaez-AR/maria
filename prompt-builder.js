@@ -911,6 +911,81 @@ Devolvé SOLO el JSON, nada más.`;
   return { system, user };
 }
 
+// ─── Turno compacto para sesiones persistentes (MARIA_SESIONES=1) ────────
+//
+// Cuando la conversación con la CLI ya existe (`--resume`), las reglas
+// estáticas + el contexto inicial completo viven en la HISTORIA de la sesión
+// y la API los relee de cache. Acá va SOLO lo que cambia turno a turno:
+// fecha, agenda de hoy, pendientes, programados, libreta relevante, quién
+// escribe y el mensaje. NO va el [HISTORIAL CROSS-CANAL]: la conversación
+// misma ES el historial (lo más viejo se recupera con buscar_en_historial).
+// Reusa las funciones sección* de arriba — misma data, mismo formato que el
+// prompt completo, así el modelo reconoce las secciones de turnos previos.
+async function construirTurnoSesion({ usuario, canal, entrada }) {
+  if (!usuario || !usuario.id) throw new Error('construirTurnoSesion: usuario requerido');
+  const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
+
+  const agenda      = await seccionAgenda(usuario, { dias: 1 });
+  const fecha       = seccionFechaHora(tz);
+  const consultas   = seccionPendientes(usuario, { dueno: 'usuario', disparador: 'respuesta_usuario', vacioMsg: '(sin consultas abiertas)' });
+  const tareas      = seccionPendientes(usuario, { dueno: 'usuario', disparador: 'manual',            vacioMsg: '(sin tareas activas)' });
+  const tareasMaria = seccionPendientes(usuario, { dueno: 'maria',                                    vacioMsg: '(sin tareas mías abiertas)' });
+  const programados = seccionProgramados(usuario, { max: 10 });
+  // historialTxt vacío a propósito: la relevancia de la libreta se decide
+  // solo por el mensaje/remitente de ESTE turno (la sesión ya vio el resto).
+  const libreta     = seccionLibreta(usuario, { entrada, historialTxt: '' });
+  const contacto    = seccionContacto(usuario, {
+    de: entrada.de,
+    nombre: entrada.nombre,
+    email: entrada.email || (canal === 'gmail' ? entrada.de : null),
+  });
+  const mensaje   = seccionMensajeEntrante({ canal, entrada, usuario });
+  const esTercero = !_remitenteEsUsuarioAtendido({ canal, entrada, usuario });
+  const remitenteNombre = entrada.nombre || entrada.de || entrada.email || 'el remitente';
+
+  return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[FECHA Y HORA]
+${fecha}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[AGENDA DE ${usuario.nombre.toUpperCase()} — HOY]
+${agenda}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[CONSULTAS ABIERTAS DE ${usuario.nombre.toUpperCase()} — dueno=usuario · disparador=respuesta_usuario]
+${consultas}
+
+[TAREAS DE ${usuario.nombre.toUpperCase()} — dueno=usuario · disparador=manual]
+${tareas}
+
+[TAREAS PROPIAS DE MARIA — dueno=maria]
+${tareasMaria}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[MENSAJES PROGRAMADOS — cola de envíos diferidos de ${usuario.nombre}]
+${programados}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[LIBRETA DE CONTACTOS DE ${usuario.nombre.toUpperCase()} — relevante a este turno]
+${libreta}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[CONTACTO QUE TE ESCRIBE AHORA]
+${contacto}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[MENSAJE ENTRANTE]
+${mensaje}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[NOTA DE ESTE TURNO]
+${esTercero
+  ? `El remitente de ESTE turno es ${remitenteNombre} — un TERCERO, NO ${usuario.nombre}. respuesta_a_remitente le llega a ${remitenteNombre}; respuesta_a_usuario le llega a ${usuario.nombre}. Aplicá las reglas de TURNO DE TERCERO del schema.`
+  : `El remitente de ESTE turno es ${usuario.nombre}, el usuario atendido (NO es un turno de tercero). Usá UN solo slot de respuesta — no dupliques el texto en los dos.`}
+
+Respondé con el único objeto JSON del schema de [TU TAREA] que tenés en tus instrucciones. El contexto viejo está en nuestra conversación; si te falta algo anterior usá buscar_en_historial.`;
+}
+
 // ─── Prompt especial para remitente desconocido ──────────────────────────
 //
 // Cuando alguien escribe a Maria y no matchea con ningún usuario activo,
@@ -967,6 +1042,7 @@ Devolvé SOLO el JSON.`;
 
 module.exports = {
   construirPrompt,
+  construirTurnoSesion,
   construirPromptDesconocido,
   // exportados para test
   seccionInstrucciones,

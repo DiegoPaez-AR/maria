@@ -22,8 +22,9 @@ const g   = require('./google');
 const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
 const unknownFlow = require('./unknown-flow');
-const { construirPrompt } = require('./prompt-builder');
+const { construirPrompt, construirTurnoSesion } = require('./prompt-builder');
 const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
+const sesiones = require('./session-manager');
 const { ejecutarAcciones } = require('./executor');
 const providers = require('./providers');
 
@@ -305,7 +306,53 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   let acciones = [];
   let razonamiento = null;
   try {
-    const { json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: { usuarioId: usuario.id, canal: 'gmail' } });
+    // ─── Sesiones persistentes (MARIA_SESIONES=1, default APAGADO) ───────
+    // Mismo flujo que whatsapp-handler._procesarComoUsuario: con sesión viva
+    // resumimos la conversación de la CLI (--resume) y mandamos solo el turno
+    // compacto; la API relee reglas + contexto previo del prompt cache.
+    // Requiere prompt split {system,user}.
+    const SESIONES_ON = process.env.MARIA_SESIONES === '1'
+      && prompt && typeof prompt === 'object' && !!prompt.system;
+    const auditGmail = { usuarioId: usuario.id, canal: 'gmail' };
+    let json;
+    if (!SESIONES_ON) {
+      ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditGmail, sesion: 'off' }));
+    } else {
+      // Mutex por usuario: WA y Gmail comparten la misma sesión del usuario —
+      // dos turnos concurrentes no pueden resumirla en paralelo (fork de historia).
+      json = await sesiones.lockUsuario(usuario.id, async () => {
+        const hash = sesiones.promptHashDe(prompt.system);
+        let ses = sesiones.getSesion(usuario.id);
+        if (ses && sesiones.debeRotar(ses, hash)) {
+          console.log(`[GMAIL sesion/${usuario.nombre}] rotando sesión (turnos=${ses.turnos}, creada=${ses.creada})`);
+          sesiones.resetSesion(usuario.id);
+          ses = null;
+        }
+        const turnoInicial = async () => {
+          const r = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditGmail, sesion: 'nueva', sesionTurno: 1 });
+          if (r.sessionId) {
+            sesiones.guardarSesion(usuario.id, { id: r.sessionId, turnos: 1, creada: new Date().toISOString(), promptHash: hash });
+          }
+          return r.json;
+        };
+        if (!ses) return await turnoInicial();
+        const turno = await construirTurnoSesion({ usuario, canal: 'gmail', entrada });
+        try {
+          const r = await invocarClaudeJSONConConsultas(turno, { usuario }, {
+            audit: auditGmail, resumeId: ses.id, sesion: 'resume', sesionTurno: ses.turnos + 1,
+          });
+          // Cada --resume devuelve un session_id nuevo — persistimos ese.
+          sesiones.guardarSesion(usuario.id, { ...ses, id: r.sessionId || ses.id, turnos: ses.turnos + 1 });
+          return r.json;
+        } catch (err) {
+          if (err.codigo !== 'RESUME_FALLIDO') throw err;
+          // Sesión muerta: rotamos y caemos UNA vez al turno inicial completo.
+          console.warn(`[GMAIL sesion/${usuario.nombre}] resume falló (${err.message}) — roto sesión y reintento con prompt completo`);
+          sesiones.resetSesion(usuario.id);
+          return await turnoInicial();
+        }
+      });
+    }
     respUsr      = (json.respuesta_a_usuario   || '').toString();
     respRem      = (json.respuesta_a_remitente || '').toString();
     // Compat: si solo viene `respuesta` legacy, en Gmail se trata como

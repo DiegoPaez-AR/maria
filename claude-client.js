@@ -154,13 +154,32 @@ function _partesPrompt(prompt) {
   return { system: null, user: String(prompt ?? '') };
 }
 
-function invocarClaude(prompt, {
+// Núcleo del wrapper. Resuelve { texto, sessionId } — sessionId es el
+// session_id del evento result de stream-json (null si no hubo). Los
+// exports públicos lo envuelven: invocarClaude sigue resolviendo string
+// (back-compat con memoria-curada y cualquier caller legacy).
+//
+// Sesiones persistentes (2026-06-11, prompt caching cross-llamada):
+//   opts.resumeId  → agrega `--resume <id>` y NO manda --append-system-prompt
+//                    (las reglas ya viven en la historia de la sesión).
+//                    Si el resume falla, el error sale con codigo='RESUME_FALLIDO'
+//                    para que el caller rote la sesión (NUNCA reintentamos acá).
+//   opts.sesion / opts.sesionTurno → solo logging: van al metrics del audit
+//                    como sesion ('nueva'|'resume'|'off') y sesion_turno.
+function _invocarClaudeCrudo(prompt, {
   timeoutMs = parseInt(process.env.CLAUDE_TIMEOUT_MS, 10) || 480000,        // 8 min global cap
   idleTimeoutMs = parseInt(process.env.CLAUDE_IDLE_TIMEOUT_MS, 10) || 90000, // 90s sin output → kill
   extraArgs = [], audit = null,
+  resumeId = null, sesion = null, sesionTurno = null,
 } = {}) {
   const _t0 = Date.now();
   const { system: systemTxt, user: userTxt } = _partesPrompt(prompt);
+  // Tag de sesión para el audit (validar por logs que cache_read crece).
+  const _sesMet = sesion ? { sesion, ...(sesionTurno != null ? { sesion_turno: sesionTurno } : {}) } : {};
+  // Error tipado: resume fallido → el caller resetea la sesión y cae al
+  // flujo de turno inicial. No distinguimos causa fina (session not found,
+  // exit raro, is_error): cualquier fallo de un --resume invalida la sesión.
+  const _errResume = (msg) => { const e = new Error(msg); e.codigo = 'RESUME_FALLIDO'; return e; };
   const totalChars = (systemTxt ? systemTxt.length : 0) + userTxt.length;
   return new Promise((resolve, reject) => {
     // stream-json (2026-06-09): la CLI emite eventos JSON por línea a medida
@@ -172,7 +191,13 @@ function invocarClaude(prompt, {
     const STREAM_JSON = process.env.CLAUDE_STREAM_JSON !== '0';
     const args = ['-p'];
     if (STREAM_JSON) args.push('--output-format', 'stream-json', '--verbose');
-    if (systemTxt) args.push('--append-system-prompt', systemTxt);
+    if (resumeId) {
+      // Resumimos una sesión existente: el system ya está en su historia —
+      // re-mandarlo lo duplicaría y rompería el prefijo cacheable.
+      args.push('--resume', resumeId);
+    } else if (systemTxt) {
+      args.push('--append-system-prompt', systemTxt);
+    }
     // --allowedTools/--disallowedTools en formato repeated (un flag por tool).
     // Es la forma más segura: la sintaxis "A B" en una sola string puede ser
     // interpretada como un único nombre de tool y dejar TODAS las demás
@@ -285,7 +310,9 @@ function invocarClaude(prompt, {
           prompt_chars: totalChars,
           raw_chars: stdout.length,
           error_msg: error_msg || null,
-          metrics: _metrics || (_ttfbMs != null ? { ttfb_ms: _ttfbMs } : null),
+          metrics: (_metrics || _ttfbMs != null || sesion)
+            ? { ...(_metrics || (_ttfbMs != null ? { ttfb_ms: _ttfbMs } : {})), ..._sesMet }
+            : null,
         });
       } catch (e) {
         console.warn('[claude-client] audit falló:', e.message);
@@ -312,7 +339,10 @@ function invocarClaude(prompt, {
       if (code !== 0) {
         const msg = `claude exit ${code}: ${stderr.trim().slice(0,200)}`;
         _audit(msg);
-        return reject(new Error(msg));
+        // Con --resume, un exit != 0 típico es "No conversation found with
+        // session ID ..." — la sesión murió/no existe. Tipamos para que el
+        // caller rote en vez de reintentar el resume.
+        return reject(resumeId ? _errResume(msg) : new Error(msg));
       }
       // stream-json: extraer el texto final + métricas del evento result.
       if (STREAM_JSON) {
@@ -332,22 +362,33 @@ function invocarClaude(prompt, {
           if (r.is_error) {
             const msg = `claude result error (${r.subtype || '?'}): ${String(r.result || '').slice(0, 200)}`;
             _audit(msg);
-            return reject(new Error(msg));
+            // En modo resume cualquier result con error invalida la sesión
+            // (incluye los "session not found") — tipado para que el caller rote.
+            return reject(resumeId ? _errResume(msg) : new Error(msg));
           }
           _audit(null);
-          return resolve(String(r.result ?? ''));
+          return resolve({ texto: String(r.result ?? ''), sessionId: r.session_id || null });
         }
         // Sin evento result parseable → fallback: tratar stdout como texto
         // (cubre CLIs viejas que ignoren el flag o output inesperado).
         console.warn('[claude-client] stream-json sin evento result — fallback a stdout crudo');
       }
       _audit(null);
-      resolve(stdout);
+      resolve({ texto: stdout, sessionId: null });
     });
 
     p.stdin.write(userTxt);
     p.stdin.end();
   });
+}
+
+// Export público back-compat: resuelve STRING como siempre (memoria-curada
+// y otros callers fuera de los handlers dependen de este contrato). Quien
+// necesite el sessionId usa invocarClaudeJSON / invocarClaudeJSONConConsultas,
+// que ahora lo devuelven como propiedad extra.
+async function invocarClaude(prompt, opts = {}) {
+  const { texto } = await _invocarClaudeCrudo(prompt, opts);
+  return texto;
 }
 
 /**
@@ -436,10 +477,13 @@ function extraerJSON(texto) {
 
 /**
  * Conveniencia: invoca + parsea JSON en una sola llamada.
+ * Devuelve { raw, json, sessionId } — sessionId del result de la CLI (o
+ * null). Propiedad ADITIVA: los callers que destructuran { json } o
+ * { json, raw } no se enteran.
  */
 async function invocarClaudeJSON(prompt, opts = {}) {
-  const out = await invocarClaude(prompt, opts);
-  return { raw: out, json: extraerJSON(out) };
+  const { texto, sessionId } = await _invocarClaudeCrudo(prompt, opts);
+  return { raw: texto, json: extraerJSON(texto), sessionId };
 }
 
 /**
@@ -522,7 +566,7 @@ async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
 
   // Segundo turno: original + resultados. Si el prompt es split {system,user},
   // el sufijo va en `user` y el system queda IDÉNTICO → cache hit en la API.
-  const sufijo = '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+  const cuerpoResultados = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'
     + '[RESULTADOS DE TUS CONSULTAS]\n'
     + 'Las consultas que pediste en el turno anterior devolvieron:\n\n'
     + seccionesResultado.join('\n\n')
@@ -530,12 +574,27 @@ async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
     + 'Con esta información, ahora generá la respuesta final al usuario. '
     + 'NO incluyas `consultas` en este turno (ya fueron ejecutadas). '
     + 'Razoná con los resultados y emití respuesta_a_usuario / respuesta_a_remitente / acciones según corresponda.';
-  const prompt2 = (prompt && typeof prompt === 'object' && (prompt.system || prompt.user))
-    ? { system: prompt.system, user: (prompt.user || '') + sufijo }
-    : prompt + sufijo;
 
-  const r2 = await invocarClaudeJSON(prompt2, opts);
-  return { raw: r2.raw, json: r2.json, primerTurno: r1.json, consultas };
+  // Modo sesión (2026-06-11): si el primer call dejó una sesión viva (el
+  // handler corre con MARIA_SESIONES=1, sea turno inicial o resume), el
+  // segundo call RESUME esa sesión y manda SOLO los resultados — el prompt
+  // del turno ya está en la historia, re-mandarlo sería pagar todo de nuevo.
+  const modoSesion = opts.sesion === 'nueva' || opts.sesion === 'resume' || !!opts.resumeId;
+  let prompt2, opts2;
+  if (modoSesion && r1.sessionId) {
+    prompt2 = cuerpoResultados;
+    opts2 = { ...opts, resumeId: r1.sessionId };
+  } else {
+    prompt2 = (prompt && typeof prompt === 'object' && (prompt.system || prompt.user))
+      ? { system: prompt.system, user: (prompt.user || '') + '\n\n' + cuerpoResultados }
+      : prompt + '\n\n' + cuerpoResultados;
+    opts2 = opts;
+  }
+
+  const r2 = await invocarClaudeJSON(prompt2, opts2);
+  // sessionId: el del ÚLTIMO call (cada --resume emite un session_id nuevo
+  // que es el que hay que persistir para el próximo turno).
+  return { raw: r2.raw, json: r2.json, sessionId: r2.sessionId || r1.sessionId, primerTurno: r1.json, consultas };
 }
 
 module.exports = {
