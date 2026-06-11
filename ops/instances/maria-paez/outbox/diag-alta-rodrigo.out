@@ -1,0 +1,77 @@
+# ejecutado: 2026-06-11T17:59:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   C=/root/secretaria/state/control/control.sqlite
+#   echo "== webhook_events (ultimos 5) =="
+#   sqlite3 -line "$C" "SELECT id,event_name,procesado,substr(error,1,200) AS error,recibido_en FROM webhook_events ORDER BY id DESC LIMIT 5;" 2>/dev/null || python3 -c "
+#   import sqlite3
+#   db=sqlite3.connect('$C'); db.row_factory=sqlite3.Row
+#   for r in db.execute(\"SELECT id,event_name,procesado,substr(COALESCE(error,''),1,250) e,recibido_en FROM webhook_events ORDER BY id DESC LIMIT 5\"): print(dict(r))
+#   print('== signup_pending ==')
+#   for r in db.execute(\"SELECT id,nombre,email,wa,signup_token IS NOT NULL tok,creado,expira_en FROM signup_pending\"): print(dict(r))
+#   print('== clientes rodrigo ==')
+#   for r in db.execute(\"SELECT id,nombre,email,wa,estado,instancia_slug FROM clientes WHERE nombre LIKE '%rodrigo%' COLLATE NOCASE OR email LIKE '%rodrigo%'\"): print(dict(r))
+#   "
+#   echo "== usuario en instancia =="
+#   python3 -c "
+#   import sqlite3
+#   db=sqlite3.connect('/root/secretaria/state/maria-paez/db/maria.sqlite')
+#   db.row_factory=sqlite3.Row
+#   for r in db.execute(\"SELECT id,nombre,email,wa_cus,activo,bienvenida_enviada FROM usuarios WHERE nombre LIKE '%rodrigo%' COLLATE NOCASE\"): print(dict(r))
+#   "
+#   echo "== logs intensa-api (40 lineas) =="
+#   pm2 logs intensa-api --lines 40 --nostream 2>/dev/null | grep -iE "error|webhook|signup|rodrigo|bienvenida" | tail -20
+
+# ───── output ─────
+== webhook_events (ultimos 5) ==
+         id = 10
+ event_name = subscription_updated
+  procesado = 1
+      error = 
+recibido_en = 2026-06-10 21:52:27
+
+         id = 9
+ event_name = subscription_payment_success
+  procesado = 1
+      error = 
+recibido_en = 2026-05-26 19:32:18
+
+         id = 8
+ event_name = subscription_updated
+  procesado = 1
+      error = 
+recibido_en = 2026-05-26 18:58:08
+
+         id = 7
+ event_name = subscription_updated
+  procesado = 1
+      error = 
+recibido_en = 2026-05-26 18:32:04
+
+         id = 6
+ event_name = subscription_updated
+  procesado = 1
+      error = 
+recibido_en = 2026-05-26 17:57:07
+== usuario en instancia ==
+== logs intensa-api (40 lineas) ==
+/root/.pm2/logs/intensa-api-error.log last 40 lines:
+1|intensa- | 2026-05-19 17:35:52: [ERROR] POST /cuenta/login: SqliteError: no such table: main.clientes_old
+1|intensa- | 2026-05-19 17:36:02: [codes] cleanup error: no such table: main.clientes_old
+1|intensa- | 2026-05-19 17:37:02:   'error-codes': [ 'invalid-input-response' ],
+1|intensa- | 2026-05-19 17:37:02: [ERROR] POST /cuenta/login: Error: Captcha inválido
+1|intensa- | 2026-05-19 17:37:02: [codes] cleanup error: no such table: main.clientes_old
+1|intensa- | 2026-05-19 17:38:02: [codes] cleanup error: no such table: main.clientes_old
+1|intensa- | 2026-05-19 17:39:01:   'error-codes': [ 'invalid-input-response' ],
+1|intensa- | 2026-05-19 17:39:01: [ERROR] POST /cuenta/login: Error: Captcha inválido
+1|intensa- | 2026-05-19 17:42:02: [ERROR] GET /cuenta/me: Error: No autenticado
+1|intensa- | 2026-06-11 17:55:29: [signup/verify] LEMON_PRODUCT_VARIANT_ID o LEMON_BUY_BASE no configurado — devolviendo URL de placeholder
+1|intensa- | 2026-06-10 18:52:27: [webhook] subscription_updated attrs.user_email=diego@paez.net signup_token=(none)
+1|intensa- | 2026-06-11 17:48:30: [2026-06-11T20:48:30.055Z] GET /webhook → 404 2ms
+1|intensa- | 2026-06-11 17:49:42: [codes] signup_pending id=10 email=juan.perez@gmail.com wa=16464256178
+1|intensa- | 2026-06-11 17:53:36: [codes] signup_pending id=11 email=rpc@sondeos.com.ar wa=5491157276026
+
+# exit=0
