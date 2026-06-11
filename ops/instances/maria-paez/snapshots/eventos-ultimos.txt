@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8901  2026-06-11 18:07:24  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+8900  2026-06-11 18:07:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+8899  2026-06-11 18:07:24  whatsapp  saliente   5491164935767@c.us   ¡Hola Gustavo! Soy María Páez, secretaria de Diego Páez. Te escribo porque queremos coordinar una reunión de una hora con vos para la semana que viene.                                                 
+                                                                                                                                                                                                                                                                             
+                                                                     ¿Alguno de estos horarios te queda bien?                                                                                                                                                                
+                                                                                                                                                                                                                                                                             
+                                                                     📅 Mar                                                                                                                                                                                                   
+
+8898  2026-06-11 18:07:24  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8897  2026-06-11 18:07:24  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo a Gustavo ahora con esas tres opciones.                                                                                                                                            
+
+8896  2026-06-11 18:07:24  sistema   interno                         claude_call whatsapp: 38947ms prompt=69524c raw=13940c in=10t(cache_read=0 new=34728) out=1856t ttfb=1884ms api=38745ms turnos=1 $0.1674                                                                
+
 8895  2026-06-11 18:06:45  whatsapp  entrante   5491132317896@c.us   martes a las 12                                                                                                                                                                                         
                                                                      jueves a las 17                                                                                                                                                                                         
                                                                      viernes a las 12                                                                                                                                                                                        
@@ -275,20 +291,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 8802  2026-06-10 18:45:07  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: Las 6 (04:00 p. m.) @https://meet.google.com/rmk-aher-qnb?authuser=0                                                                                                                      
                                                                      Con: claudiahilb@gmail.com, verahilb@gmail.com, marcelaineshuberman@gmail.com, doris@capurro.com.ar, norahilb@gmail.c                                                                                   
-
-8801  2026-06-10 18:15:00  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Personal (03:30 p. m.)                                                                                                                                                                    
-
-8800  2026-06-10 17:45:14  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Admin interna + Base deudas, temas societarios, varios (03:00 p. m.) @Working Ocampo, Ortiz de Ocampo 3302, C1425 CABA, Argentina                                                         
-                                                                     Con: romina.rios@ebuono.com.ar, santiago@capurro.com.ar,                                                                                                                                                
-
-8799  2026-06-10 17:45:07  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Análisis negocios IA (03:00 p. m.)                                                                                                                                                        
-                                                                     Con: alejandro.furgeri@sondeosglobal.com, alex.valdiviezo@sondeosglobal.com, alicia.marite@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristia                                                 
-
-8798  2026-06-10 17:31:05  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-8797  2026-06-10 17:15:14  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Richi + Andres + Santi (02:30 p. m.)                                                                                                                                                      
-                                                                     Con: ricardo@pumayna.com, santiago@capurro.com.ar, andres@pumayna.com                                                                                                                                   
-
-8796  2026-06-10 17:15:07  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.)                                                                                                                                            
-                                                                     Con: hernan.fulco@sondeosglobal.com, lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com                                                                                             
-                                                                     Buenas, dejo este slot como rec                                                                                                                                                                         
