@@ -1,0 +1,23 @@
+# ejecutado: 2026-06-11T14:50:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # inbox: reinicia intensa-api para tomar el OTP de /update /cancel (la
+#   # migracion de la columna proposito corre en init()).
+#   set -u
+#   pm2 restart intensa-api 2>&1 | tail -2
+#   sleep 3
+#   pm2 jlist | python3 -c "
+#   import json, sys
+#   for p in json.load(sys.stdin):
+#       if p.get('name') == 'intensa-api':
+#           print('intensa-api:', p.get('pm2_env', {}).get('status'))
+#   "
+
+# ───── output ─────
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 354693   │ 2m     │ 1    │ online    │ 0%       │ 161.6mb  │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+intensa-api: online
+
+# exit=0
