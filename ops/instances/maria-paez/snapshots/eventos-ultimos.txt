@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9001  2026-06-12 13:33:29  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9000  2026-06-12 13:33:29  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+8999  2026-06-12 13:33:29  whatsapp  saliente   5491131121057@c.us   Hola Nicolás, lo consulto con Diego y te confirmo cuál de los dos días le viene mejor. Te escribo a la brevedad.                                                                                        
+
+8998  2026-06-12 13:33:29  whatsapp  saliente   34342575317160@lid   Te escribió Nico Jordan para armar un almuerzo el lunes 15 o el martes 16 a las 13 hs, con Alejandro Senmartin de Aguas de Zarate. ¿Cuál de los dos días te viene mejor? (El lunes terminás el Seguimien
+
+8997  2026-06-12 13:33:29  sistema   interno                         claude_call whatsapp: 35380ms prompt=72324c raw=13803c in=10t(cache_read=0 new=35691) out=1684t ttfb=1762ms api=34396ms turnos=1 $0.1694                                                                
+
 8996  2026-06-12 13:32:53  whatsapp  entrante   5491131121057@c.us   Hola Maria el lunes o el martes podemos armar almuerzo a las 13 hs con Alejandro Senmartin de aguas de zarate                                                                                           
 
 8995  2026-06-12 13:30:17  whatsapp  saliente   34342575317160@lid   Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
@@ -346,17 +356,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8903  2026-06-11 18:12:42  sistema   interno                         claude_call whatsapp: 41381ms prompt=69834c raw=14085c in=10t(cache_read=0 new=34885) out=1956t ttfb=2665ms api=39749ms turnos=1 $0.1696                                                                
 
 8902  2026-06-11 18:12:00  whatsapp  entrante   5491164935767@c.us   Hola Maria, como estas? Puede ser que este corrido 1 dia? Tipo Martes yo lo tengo como 16, Jueves 18, viernes 19                                                                                        
-
-8901  2026-06-11 18:07:24  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-8900  2026-06-11 18:07:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-8899  2026-06-11 18:07:24  whatsapp  saliente   5491164935767@c.us   ¡Hola Gustavo! Soy María Páez, secretaria de Diego Páez. Te escribo porque queremos coordinar una reunión de una hora con vos para la semana que viene.                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     ¿Alguno de estos horarios te queda bien?                                                                                                                                                                
-                                                                                                                                                                                                                                                                             
-                                                                     📅 Mar                                                                                                                                                                                                   
-
-8898  2026-06-11 18:07:24  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-8897  2026-06-11 18:07:24  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo a Gustavo ahora con esas tres opciones.                                                                                                                                            
