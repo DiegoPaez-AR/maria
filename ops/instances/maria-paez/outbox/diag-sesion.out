@@ -1,0 +1,38 @@
+# ejecutado: 2026-06-12T20:07:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   python3 -c "
+#   import sqlite3
+#   db = sqlite3.connect('/root/secretaria/state/maria-paez/db/maria.sqlite')
+#   db.row_factory = sqlite3.Row
+#   print('== estado_usuario claves sesion ==')
+#   for r in db.execute(\"SELECT usuario_id, clave, substr(valor_json,1,120) v, actualizado FROM estado_usuario WHERE clave LIKE '%sesion%'\"):
+#       print(dict(r))
+#   print('== ultimos claude_call con metadata sesion ==')
+#   for r in db.execute(\"SELECT id, timestamp, substr(metadata_json,1,260) m FROM eventos WHERE metadata_json LIKE '%claude_call%' AND canal='sistema' ORDER BY id DESC LIMIT 4\"):
+#       print(dict(r))
+#   "
+#   echo "== env del proceso =="
+#   pm2 jlist | python3 -c "
+#   import json,sys
+#   for p in json.load(sys.stdin):
+#       if p.get('name')=='maria-paez':
+#           e=p.get('pm2_env',{}).get('env',{})
+#           print('MARIA_SESIONES:', e.get('MARIA_SESIONES','(NO SETEADA)'))
+#   "
+
+# ───── output ─────
+== estado_usuario claves sesion ==
+{'usuario_id': 1, 'clave': 'claude_sesion', 'v': '{"id":"d5df02eb-b714-42e1-bdc9-1c93b4d80da2","turnos":3,"creada":"2026-06-11T18:17:23.633Z","promptHash":"15599ba78a5c0c', 'actualizado': '2026-06-11 18:23:52'}
+== ultimos claude_call con metadata sesion ==
+{'id': 9070, 'timestamp': '2026-06-12 23:02:41', 'm': '{"tipo":"claude_call","canal":"whatsapp","ms":11571,"prompt_chars":67587,"raw_chars":6644,"error_msg":null,"tokens_in":10,"tokens_out":379,"cache_read":6271,"cache_creation":27765,"ttfb_ms":1836,"api_ms":10340,"cost_usd":0.12028105000000001,"num_turns":1,"sesi'}
+{'id': 9065, 'timestamp': '2026-06-12 23:02:16', 'm': '{"tipo":"claude_call","canal":"whatsapp","ms":17095,"prompt_chars":68474,"raw_chars":7694,"error_msg":null,"tokens_in":10,"tokens_out":743,"cache_read":6271,"cache_creation":28150,"ttfb_ms":1824,"api_ms":16538,"cost_usd":0.1275548,"num_turns":1,"sesion":"off"}'}
+{'id': 9062, 'timestamp': '2026-06-12 23:01:48', 'm': '{"tipo":"claude_call","canal":"whatsapp","ms":15016,"prompt_chars":68562,"raw_chars":7332,"error_msg":null,"tokens_in":10,"tokens_out":559,"cache_read":6271,"cache_creation":28184,"ttfb_ms":1749,"api_ms":13923,"cost_usd":0.12495130000000002,"num_turns":1,"sesi'}
+{'id': 9059, 'timestamp': '2026-06-12 23:01:03', 'm': '{"tipo":"claude_call","canal":"whatsapp","ms":20688,"prompt_chars":67340,"raw_chars":8957,"error_msg":null,"tokens_in":10,"tokens_out":910,"cache_read":6271,"cache_creation":27641,"ttfb_ms":1784,"api_ms":19845,"cost_usd":0.12765205,"num_turns":1,"sesion":"off"'}
+== env del proceso ==
+MARIA_SESIONES: 1
+
+# exit=0
