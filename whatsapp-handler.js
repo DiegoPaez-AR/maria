@@ -734,8 +734,10 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // interlocutores en una historia lineal y Maria pierde el hilo de con
     // quién habla. El tercero corre con prompt completo; su intercambio
     // entra a la sesión del usuario vía [NOVEDADES] en el próximo turno.
+    // resolverPorWa banca @lid/@c.us/9-movil — la comparacion literal de ayer
+    // daba false para el propio usuario (sesion:"off" siempre, bug 2026-06-12).
     const _esTurnoDeUsuario = !!entrada.de
-      && (entrada.de === usuario.wa_lid || entrada.de === usuario.wa_cus);
+      && usuarios.resolverPorWa(entrada.de)?.id === usuario.id;
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
       && prompt && typeof prompt === 'object' && !!prompt.system
       && _esTurnoDeUsuario;
