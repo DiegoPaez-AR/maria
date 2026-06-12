@@ -26,14 +26,18 @@ const _envInt = (k, def) => {
 
 /** Sesión guardada del usuario: { id, turnos, creada, promptHash } o null. */
 function getSesion(usuarioId) {
-  const v = mem.getEstadoUsuario(usuarioId, CLAVE_SESION);
-  // resetSesion guarda '' (no borra la fila) — lo tratamos como "sin sesión".
-  if (!v || typeof v !== 'object' || !v.id) return null;
-  return v;
+  const raw = mem.getEstadoUsuario(usuarioId, CLAVE_SESION);
+  // estado_usuario persiste STRINGS (bug 2026-06-12: esperar un objeto hacia
+  // que getSesion devolviera null SIEMPRE y cada turno fuera 'nueva').
+  if (!raw) return null;
+  try {
+    const v = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    return (v && v.id) ? v : null;
+  } catch { return null; }
 }
 
 function guardarSesion(usuarioId, { id, turnos, creada, promptHash }) {
-  mem.setEstadoUsuario(usuarioId, CLAVE_SESION, { id, turnos, creada, promptHash });
+  mem.setEstadoUsuario(usuarioId, CLAVE_SESION, JSON.stringify({ id, turnos, creada, promptHash }));
 }
 
 function resetSesion(usuarioId) {
