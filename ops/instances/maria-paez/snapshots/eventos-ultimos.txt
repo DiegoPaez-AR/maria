@@ -1,5 +1,7 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9012  2026-06-12 13:46:40  whatsapp  entrante   5491131121057@c.us   Almorzamos en mirasol el martes a las 13hs, no tengo el mail de alejandro                                                                                                                               
+
 9011  2026-06-12 13:45:53  sistema   interno                         claude_call whatsapp: 14982ms prompt=68041c raw=7181c in=10t(cache_read=6276 new=27960) out=473t ttfb=1854ms api=14879ms turnos=1 $0.1226                                                               
 
 9010  2026-06-12 13:45:37  whatsapp  entrante   5491132317896@c.us   Dale gracias                                                                                                                                                                                            
@@ -347,5 +349,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 8914  2026-06-11 18:22:17  sistema   interno                         acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
 
 8913  2026-06-11 18:22:17  whatsapp  saliente   34342575317160@lid   Dale, le mando las fechas corregidas ahora.                                                                                                                                                             
-
-8912  2026-06-11 18:22:17  sistema   interno                         claude_call whatsapp: 25548ms prompt=5181c raw=10085c in=10t(cache_read=0 new=24398) out=1148t ttfb=2036ms api=22925ms turnos=1 $0.1087                                                                 
