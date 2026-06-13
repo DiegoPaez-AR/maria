@@ -812,6 +812,12 @@ async function main() {
   console.log(texto);
   console.log('────── HTML LENGTH ──────', html.length, 'bytes\n');
 
+  // Volcado opcional del HTML a archivo (preview sin mandar mail).
+  if (process.env.DUMP_HTML) {
+    try { require('fs').writeFileSync(process.env.DUMP_HTML, html); console.log('HTML escrito en', process.env.DUMP_HTML); }
+    catch (e) { console.error('DUMP_HTML falló:', e.message); }
+  }
+
   if (DRY_RUN) {
     console.log('DRY_RUN=1 — no mando email');
     return;
