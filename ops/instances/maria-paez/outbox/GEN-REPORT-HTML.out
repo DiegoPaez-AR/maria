@@ -1,0 +1,16 @@
+# ejecutado: 2026-06-12T23:58:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   DUMP_HTML=/root/secretaria/ops/instances/maria-paez/outbox/daily-report-preview.html \
+#     DRY_RUN=1 /usr/bin/node daily-report.js > /dev/null 2>&1
+#   echo "exit=$?"
+#   ls -la /root/secretaria/ops/instances/maria-paez/outbox/daily-report-preview.html 2>&1
+
+# ───── output ─────
+exit=0
+-rw-r--r-- 1 root root 14723 Jun 12 23:58 /root/secretaria/ops/instances/maria-paez/outbox/daily-report-preview.html
+
+# exit=0
