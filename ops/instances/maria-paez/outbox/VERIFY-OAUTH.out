@@ -1,0 +1,62 @@
+# ejecutado: 2026-06-13T00:21:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -a; cf=/root/secretaria/config/instances/maria-paez.conf; . "$cf"; set +a
+#   echo "== healthcheck en vivo =="
+#   bash /root/secretaria/ops/healthcheck.sh 2>&1 | tail -20
+#   echo ""
+#   echo "== errores invalid_grant en los últimos minutos (pm2) =="
+#   pm2 logs maria-paez --lines 200 --nostream 2>/dev/null | grep -iE "invalid_grant|oauth|GMAIL|listar cal" | tail -15
+#   echo ""
+#   echo "== prueba directa: leer calendario del owner =="
+#   cd /root/secretaria && node -e '
+#   const g = require("./google");
+#   (async () => {
+#     try {
+#       const r = await g.listarEventos ? "tiene listarEventos" : "no";
+#       const cal = require("./google");
+#       const now = new Date().toISOString();
+#       const res = await cal.calendarClient ? "ok-client" : "?";
+#       console.log("google module cargó ok");
+#     } catch(e){ console.log("ERR", e.message); }
+#   })();
+#   ' 2>&1 | tail -5
+
+# ───── output ─────
+== healthcheck en vivo ==
+{
+  "ts": "2026-06-13T03:21:04Z",
+  "instance": "maria-paez",
+  "overall_ok": false,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":834824,"restarts":12} }
+    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":59} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":5712} }
+    ,"google_oauth": { "ok": false, "detail": {"ok":false,"error":"invalid_grant"} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+  }
+}
+
+== errores invalid_grant en los últimos minutos (pm2) ==
+0|maria-pa | 2026-06-13 00:20:26: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [calendar-watch/Doris Capurro] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [calendar-watch/Santiago Capurro] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:26: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Rubén Ward] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Enrique Sosa] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Santiago Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Facundo Diaz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Guillermo Bagnato] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:20:27: [meeting-prep/Andres Neumann] listar cal falló: invalid_grant
+
+== prueba directa: leer calendario del owner ==
+google module cargó ok
+
+# exit=0
