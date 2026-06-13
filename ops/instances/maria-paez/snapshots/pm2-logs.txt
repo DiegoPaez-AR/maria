@@ -1,200 +1,200 @@
-0|maria-pa | 2026-06-12 19:57:05: ✓ whisper OK
-0|maria-pa | 2026-06-12 19:57:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-06-12 19:57:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-06-12 19:57:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-06-12 19:57:10: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-06-12 19:57:10: [WA authenticated]
-0|maria-pa | 2026-06-12 19:57:10: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-06-12 19:57:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-06-12 19:57:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-06-12 19:57:10: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-06-12 19:57:10: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-06-12 19:57:10: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-06-12 19:57:10: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-06-12 19:57:10: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-06-12 19:57:10: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-06-12 19:57:10: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-06-12 19:57:10: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-06-12 19:58:08: [memoria-curada] Diego × Nicolas Jordan: nota actualizada (7 eventos nuevos, 2558 chars)
-0|maria-pa | 2026-06-12 19:58:08: [memoria-curada] tick: 1/187 contactos curados
-0|maria-pa | 2026-06-12 19:59:52: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
-0|maria-pa | 2026-06-12 20:00:02: [WA ←] Diego (5491132317896@c.us): hola maria, too bien hoy?
-0|maria-pa | 2026-06-12 20:00:15: [WA →usr] Diego (34342575317160@lid): ¡Hola Diego! Todo bien, arrancando el viernes a la noche con todo. ¿Vos cómo estás? ¿Necesitás algo?
-0|maria-pa | 2026-06-12 20:00:42: [WA ←] Diego (5491132317896@c.us): me pasas mis pendientes?
-0|maria-pa | 2026-06-12 20:01:03: [WA →usr] Diego (34342575317160@lid): Tus pendientes:
-0|maria-pa | 2026-06-12 20:01:03: 
-0|maria-pa | 2026-06-12 20:01:03: *Tus tareas:*
-0|maria-pa | 2026-06-12 20:01:03: 1. iProt Seguridad
-0|maria-pa | 2026-06-12 20:01:03: 2. DDJJ 2025
-0|maria-pa | 2026-06-12 20:01:03: 3. Presentaciones a Eliza
-0|maria-pa | 2026-06-12 20:01:03: 4. Llamar a Pablo Casal
-0|maria-pa | 2026-06-12 20:01:03: 5. Mandarle el arradiche de Claro
-0|maria-pa | 2026-06-12 20:01:03: 
-0|maria-pa | 2026-06-12 20:01:03: *Lo que esto
-0|maria-pa | 2026-06-12 20:01:33: [WA ←] Diego (5491132317896@c.us): el 5 ya esta hecho
-0|maria-pa | 2026-06-12 20:01:48: [WA →usr] ABORTADO Diego (34342575317160@lid): llegó msg nuevo durante procesamiento — el próximo lote responde
-0|maria-pa | 2026-06-12 20:01:48: [WA acciones/Diego] SALTEADAS 1 acción(es) — lote abortado, se re-procesan con el próximo lote
-0|maria-pa | 2026-06-12 20:01:48: [WA debounce] thread abortado de 5491132317896@c.us — re-encolando 1 item(s) con 1 pendientes
-0|maria-pa | 2026-06-12 20:01:58: [WA ←] Diego (5491132317896@c.us) [2 msgs agrupados]: el 5 ya esta hecho
-0|maria-pa | 2026-06-12 20:01:58: y el 4 tb
-0|maria-pa | 2026-06-12 20:02:16: [WA →usr] Diego (34342575317160@lid): Listo, cierro el 4 (Pablo Casal) y el 5 (arradiche de Claro).
-0|maria-pa | 2026-06-12 20:02:16: [WA acciones/Diego] 2/2 ejecutadas
-0|maria-pa | 2026-06-12 20:02:29: [WA ←] Diego (5491132317896@c.us): agregame uno: paar Aysa
-0|maria-pa | 2026-06-12 20:02:42: [WA →usr] Diego (34342575317160@lid): Listo, te agrego 'Aysa' a tu lista de pendientes.
-0|maria-pa | 2026-06-12 20:02:42: [WA acciones/Diego] 1/1 ejecutadas
-0|maria-pa | 2026-06-12 20:09:03: 
-0|maria-pa | 2026-06-12 20:09:03: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-06-12 20:09:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-12 20:09:05: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-06-12 20:09:05:   Owner:      Diego (id=1)
-0|maria-pa | 2026-06-12 20:09:05:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato, Andres Neumann
-0|maria-pa | 2026-06-12 20:09:05:   Gmail poll: cada 300s
-0|maria-pa | 2026-06-12 20:09:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-12 20:09:05: ✓ whisper OK
-0|maria-pa | 2026-06-12 20:09:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-06-12 20:09:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-06-12 20:09:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-06-12 20:09:09: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-06-12 20:09:09: [WA authenticated]
-0|maria-pa | 2026-06-12 20:09:09: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-06-12 20:09:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-06-12 20:09:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-06-12 20:09:09: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-06-12 20:09:09: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-06-12 20:09:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-06-12 20:09:09: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-06-12 20:09:09: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-06-12 20:09:09: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-06-12 20:09:09: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-06-12 20:09:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-06-12 20:11:07: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
-0|maria-pa | 2026-06-12 20:11:17: [WA ←] Diego (5491132317896@c.us): me pasas mis pendientes?
-0|maria-pa | 2026-06-12 20:11:18: [WA sesion/Diego] rotando sesión (turnos=3, creada=2026-06-11T18:17:23.633Z)
-0|maria-pa | 2026-06-12 20:11:39: [WA →usr] Diego (34342575317160@lid): Tus pendientes:
-0|maria-pa | 2026-06-12 20:11:39: 
-0|maria-pa | 2026-06-12 20:11:39: *Tus tareas:*
-0|maria-pa | 2026-06-12 20:11:39: 1️⃣ iProt Seguridad
-0|maria-pa | 2026-06-12 20:11:39: 2️⃣ DDJJ 2025
-0|maria-pa | 2026-06-12 20:11:39: 3️⃣ Presentaciones a Eliza
-0|maria-pa | 2026-06-12 20:11:39: 4️⃣ Aysa
-0|maria-pa | 2026-06-12 20:11:39: 
-0|maria-pa | 2026-06-12 20:11:39: *Lo que estoy gestionando yo:*
-0|maria-pa | 2026-06-12 20:11:39: ⏳ Esperando que Andrés Neum
-0|maria-pa | 2026-06-12 20:12:10: [WA ←] Diego (5491132317896@c.us): y mi agenda de manana
-0|maria-pa | 2026-06-12 20:12:18: [WA →usr] Diego (34342575317160@lid): Mañana (sáb 13/06) no tenés nada agendado. 📭
-0|maria-pa | 2026-06-12 20:13:15: [WA ←] Diego (5491132317896@c.us): y el domingo?
-0|maria-pa | 2026-06-12 20:13:23: [WA →usr] Diego (34342575317160@lid): El domingo (14/06) tampoco tenés nada. Fin de semana libre 🙌
-0|maria-pa | 2026-06-12 20:44:39: [WA change_state] OPENING
-0|maria-pa | 2026-06-12 20:44:39: [WA change_state] PAIRING
-0|maria-pa | 2026-06-12 20:44:39: [WA change_state] CONNECTED
-0|maria-pa | 2026-06-12 21:37:25: [WA change_state] OPENING
-0|maria-pa | 2026-06-12 21:37:26: [WA change_state] PAIRING
-0|maria-pa | 2026-06-12 21:37:26: [WA change_state] CONNECTED
-0|maria-pa | 2026-06-12 22:35:03: 
-0|maria-pa | 2026-06-12 22:35:03: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-06-12 22:35:06: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-12 22:35:06: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-06-12 22:35:06:   Owner:      Diego (id=1)
-0|maria-pa | 2026-06-12 22:35:06:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato, Andres Neumann
-0|maria-pa | 2026-06-12 22:35:06:   Gmail poll: cada 300s
-0|maria-pa | 2026-06-12 22:35:06: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-12 22:35:06: ✓ whisper OK
-0|maria-pa | 2026-06-12 22:35:06: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-06-12 22:35:06: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-06-12 22:35:06: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-06-12 22:35:10: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-06-12 22:35:10: [WA authenticated]
-0|maria-pa | 2026-06-12 22:35:10: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-06-12 22:35:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-06-12 22:35:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-06-12 22:35:10: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-06-12 22:35:10: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-06-12 22:35:10: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-06-12 22:35:10: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-06-12 22:35:10: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-06-12 22:35:10: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-06-12 22:35:10: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-06-12 22:35:10: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-06-12 22:45:48: [WA authenticated]
-0|maria-pa | 2026-06-12 22:45:48: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-06-12 22:45:48: [WA ready] re-emitido (reconexión) — loops ya activos, no re-inicializo
-0|maria-pa | 2026-06-12 22:53:02: 
-0|maria-pa | 2026-06-12 22:53:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-06-12 22:53:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-12 22:53:05: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-06-12 22:53:05:   Owner:      Diego (id=1)
-0|maria-pa | 2026-06-12 22:53:05:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato, Andres Neumann
-0|maria-pa | 2026-06-12 22:53:05:   Gmail poll: cada 300s
-0|maria-pa | 2026-06-12 22:53:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-12 22:53:05: ✓ whisper OK
-0|maria-pa | 2026-06-12 22:53:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-06-12 22:53:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-06-12 22:53:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-06-12 22:53:09: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-06-12 22:53:09: [WA authenticated]
-0|maria-pa | 2026-06-12 22:53:09: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-06-12 22:53:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-06-12 22:53:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-06-12 22:53:09: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-06-12 22:53:09: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-06-12 22:53:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-06-12 22:53:09: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-06-12 22:53:09: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-06-12 22:53:09: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-06-12 22:53:09: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-06-12 22:53:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-06-12 23:28:10: [GMAIL poll] 2 email(s) nuevo(s)
-0|maria-pa | 2026-06-12 23:28:10: [GMAIL ←] Google <no-reply@accounts.google.com> | "Alerta de seguridad"
-0|maria-pa | 2026-06-12 23:28:19: [GMAIL ←] Google <no-reply@accounts.google.com> | "Tu cuenta de Google se ha recuperado correctamente"
-0|maria-pa | 2026-06-12 23:28:19: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=3 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=13, Fernando Boero=13, Santiago Bignone=0, Doris Capurro=30, Nicolas Kosinski=13, Walter Vera=13, Cristian Ruiz=29, Sebastian Ameijeira=13, Rubén Ward=0, Enrique Sosa=34, Santiago Capurro=60, Facundo Diaz=13, Guillermo Bagnato=13, Andres Neumann=25} remitente=Google <no-reply@accounts.google.com> contactos_ambiguos=0
-0|maria-pa | 2026-06-12 23:28:31: [unknown-flow/gmail] LLM resolucion: desconocido · Es un email automático de Google (no-reply) sobre recuperación de cuenta de maria.paez@intensa.io; no corresponde a ningún usuario activo ni gestión identificable — ya se cerró un thread previo similar sin poder identificar al dueño.
-0|maria-pa | 2026-06-12 23:28:32: [unknown-flow/gmail] primer contacto de Google <no-reply@accounts.google.com> (FSM)
-0|maria-pa | 2026-06-12 23:33:10: [GMAIL poll] 1 email(s) nuevo(s)
-0|maria-pa | 2026-06-12 23:33:10: [GMAIL ←] Google <no-reply@accounts.google.com> | "Alerta de seguridad"
-0|maria-pa | 2026-06-12 23:58:02: 
-0|maria-pa | 2026-06-12 23:58:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-05-26 11:07:59:     {
+0|maria-pa | 2026-05-26 11:07:59:       "tipo": "enviar_wa",
+0|maria-pa | 2026-05-26 11:07:59:       "a": "14242831584@c.us",
+0|maria-pa | 2026-05-26 11:07:59:       "texto": "Hola Facundo! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*. Aprovecho para invitarte a conectar tu Google Calendar conmigo, así puedo ayudarte mejor con tu agenda.\n\nLos pasos son simples:\n1️⃣ Abrí Google Calendar en el escritorio\n2️⃣ Hacé clic en los tres puntitos junto al calenda
+0|maria-pa | 2026-05-26 11:26:12: [executor] acción #0 (set_calendar_acceso) falló: Faltan campos requeridos: usuarioId
+0|maria-pa | 2026-05-26 11:26:12: [WA acciones/Diego] FALLARON: set_calendar_acceso: Faltan campos requeridos: usuarioId
+0|maria-pa | 2026-05-28 08:45:11: [WA watchdog] frame muerto detectado en programados/313 — saliendo: Protocol error (Runtime.callFunctionOn): Promise was collected
+0|maria-pa | 2026-05-28 08:45:11: [programados] ✗ id=313 falló: Protocol error (Runtime.callFunctionOn): Promise was collected
+0|maria-pa | 2026-05-28 08:45:11: [programados] no pude persistir metadata de fallo para id=313: errorKey is not defined
+0|maria-pa | 2026-05-28 18:10:32: [WA debounce] error despachando grupo de 59899643028@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-05-28 18:10:32:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-05-28 18:10:32:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-05-28 18:10:32:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-05-28 20:22:26: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-05-28 20:22:26:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-05-28 20:22:26:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-05-28 20:22:26:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-05-28 20:54:12: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-05-28 20:54:12:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:805:7)
+0|maria-pa | 2026-05-28 20:54:12:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|maria-pa | 2026-05-28 20:54:12:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-05-28 20:54:12:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-05-30 14:52:52: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-05-30 14:52:52:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-05-30 14:52:52:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-05-30 14:52:52:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-05-31 00:32:17: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-05-31 13:47:28: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-02 11:24:22: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-02 11:38:51: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-02 15:47:24: [WA debounce] error despachando grupo de 5491126406612@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-06-02 15:47:24:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-06-02 15:47:24:     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+0|maria-pa | 2026-06-02 15:47:24:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-06-02 15:47:24:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-06-02 15:51:09: [WA debounce] error despachando grupo de 5491126406612@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-06-02 15:51:09:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-06-02 15:51:09:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-06-02 15:51:09:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-06-02 16:00:38: [WA debounce] error despachando grupo de 5491126406612@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-06-02 16:00:38:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-06-02 16:00:38:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-06-02 16:00:38:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-06-02 16:01:49: [WA debounce] error despachando grupo de 5491126406612@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-06-02 16:01:49:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:783:7)
+0|maria-pa | 2026-06-02 16:01:49:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-06-02 16:01:49:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-06-02 21:36:20: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-03 23:02:11: [WA watchdog] frame muerto detectado en recordatorios/Diego/manual — saliendo: Protocol error (Runtime.callFunctionOn): Promise was collected
+0|maria-pa | 2026-06-03 23:02:11: [recordatorios/Diego/manual] falló sendMessage: Protocol error (Runtime.callFunctionOn): Promise was collected
+0|maria-pa | 2026-06-04 07:21:46: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-04 09:23:44: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-04 11:21:46: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-04 11:23:48: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-04 12:07:58: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-08 10:48:38: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-09 18:08:17: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-09 18:37:02: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-09 18:58:59: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-09 19:34:33: [WA debounce] error despachando grupo de 5491132317896@c.us: ReferenceError: outFlags is not defined
+0|maria-pa | 2026-06-09 19:34:33:     at _procesarComoUsuario (/root/secretaria/whatsapp-handler.js:805:7)
+0|maria-pa | 2026-06-09 19:34:33:     at async _despacharGrupo (/root/secretaria/whatsapp-handler.js:684:5)
+0|maria-pa | 2026-06-09 19:34:33:     at async _disparar (/root/secretaria/whatsapp-handler.js:543:5)
+0|maria-pa | 2026-06-09 19:43:23: [unknown-flow/wa] reprocesar tercero falló: outFlags is not defined
+0|maria-pa | 2026-06-09 22:13:03: [WA disconnected] LOGOUT
+0|maria-pa | 2026-06-09 22:13:08: ProtocolError: Protocol error (Runtime.callFunctionOn): Execution context was destroyed.
+0|maria-pa | 2026-06-09 22:13:08:     at <instance_members_initializer> (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:103:14)
+0|maria-pa | 2026-06-09 22:13:08:     at new Callback (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:107:16)
+0|maria-pa | 2026-06-09 22:13:08:     at CallbackRegistry.create (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:25:26)
+0|maria-pa | 2026-06-09 22:13:08:     at Connection._rawSend (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/Connection.js:108:26)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpCDPSession.send (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/CdpSession.js:74:33)
+0|maria-pa | 2026-06-09 22:13:08:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:363:50)
+0|maria-pa | 2026-06-09 22:13:08:     at ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:36)
+0|maria-pa | 2026-06-09 22:13:08:     at IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:30)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:43)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpFrame.<anonymous> (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/util/decorators.js:109:27)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:43)
+0|maria-pa | 2026-06-09 22:13:08:     at Client.inject (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:146:55)
+0|maria-pa | 2026-06-09 22:13:08:     at async Client.initialize (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:493:9)
+0|maria-pa | 2026-06-09 22:13:08: [unhandledRejection] ProtocolError: Protocol error (Runtime.callFunctionOn): Execution context was destroyed.
+0|maria-pa | 2026-06-09 22:13:08:     at <instance_members_initializer> (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:103:14)
+0|maria-pa | 2026-06-09 22:13:08:     at new Callback (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:107:16)
+0|maria-pa | 2026-06-09 22:13:08:     at CallbackRegistry.create (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/common/CallbackRegistry.js:25:26)
+0|maria-pa | 2026-06-09 22:13:08:     at Connection._rawSend (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/Connection.js:108:26)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpCDPSession.send (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/CdpSession.js:74:33)
+0|maria-pa | 2026-06-09 22:13:08:     at #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:363:50)
+0|maria-pa | 2026-06-09 22:13:08:     at ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:36)
+0|maria-pa | 2026-06-09 22:13:08:     at IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:30)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:43)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpFrame.<anonymous> (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/util/decorators.js:109:27)
+0|maria-pa | 2026-06-09 22:13:08:     at CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:43)
+0|maria-pa | 2026-06-09 22:13:08:     at Client.inject (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:146:55)
+0|maria-pa | 2026-06-09 22:13:08:     at async Client.initialize (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:493:9)
+0|maria-pa | 2026-06-09 22:23:05: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+0|maria-pa | 2026-06-09 22:24:32: [WA] sesión expirada — 3 QRs en 120s
+0|maria-pa | 2026-06-09 22:34:28: [WA] sesión expirada — 3 QRs en 120s
+0|maria-pa | 2026-06-10 04:00:10: [morning-brief/Diego] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 04:00:08: [morning-brief/Diego] clima fallo: This operation was aborted
+0|maria-pa | 2026-06-11 07:00:44: [morning-brief/Hernan Fulco] clima fallo: This operation was aborted
+0|maria-pa | 2026-06-11 07:00:44: [morning-brief/Natali Funez] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:00:45: [morning-brief/Fernando Boero] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:00:53: [morning-brief/Doris Capurro] clima fallo: This operation was aborted
+0|maria-pa | 2026-06-11 07:01:00: [morning-brief/Nicolas Kosinski] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:01:01: [morning-brief/Walter Vera] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:01:01: [morning-brief/Sebastian Ameijeira] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:01:02: [morning-brief/Enrique Sosa] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:01:10: [morning-brief/Santiago Capurro] clima fallo: This operation was aborted
+0|maria-pa | 2026-06-11 07:01:17: [morning-brief/Facundo Diaz] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:01:18: [morning-brief/Guillermo Bagnato] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 07:01:18: [morning-brief/Andres Neumann] clima fallo: HTTP 502
+0|maria-pa | 2026-06-11 15:22:17: [executor] acción #0 (enviar_wa) falló: Faltan campos requeridos: a, texto
+0|maria-pa | 2026-06-11 15:22:17: [WA acciones/Diego] FALLARON: enviar_wa: Faltan campos requeridos: a, texto
+0|maria-pa | 2026-06-12 03:00:10: [WA watchdog] frame muerto detectado en recordatorios/Diego/respuesta_usuario — saliendo: Protocol error (Runtime.callFunctionOn): Promise was collected
+0|maria-pa | 2026-06-12 03:00:10: [recordatorios/Diego/respuesta_usuario] falló sendMessage: Protocol error (Runtime.callFunctionOn): Promise was collected
+0|maria-pa | 2026-06-12 23:38:09: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:09: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:09: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:09: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:09: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:38:10: [meeting-prep/Andres Neumann] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:09: [meeting-prep/Diego] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:09: [GMAIL] poll falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:09: [meeting-prep/Hernan Fulco] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:09: [meeting-prep/Natali Funez] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:09: [meeting-prep/Santiago Bignone] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Doris Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Nicolas Kosinski] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Walter Vera] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Cristian Ruiz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Sebastian Ameijeira] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Rubén Ward] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Enrique Sosa] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Santiago Capurro] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Facundo Diaz] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Guillermo Bagnato] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:43:10: [meeting-prep/Andres Neumann] listar cal falló: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.
+0|maria-pa | 2026-06-12 23:48:09: [GMAIL] poll falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:09: [meeting-prep/Diego] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:09: [meeting-prep/Hernan Fulco] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:09: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:09: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Rubén Ward] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Enrique Sosa] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Santiago Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Facundo Diaz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Guillermo Bagnato] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:48:10: [meeting-prep/Andres Neumann] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:09: [GMAIL] poll falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:09: [meeting-prep/Diego] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:09: [meeting-prep/Hernan Fulco] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:09: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Rubén Ward] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Enrique Sosa] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Santiago Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Facundo Diaz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Guillermo Bagnato] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:53:10: [meeting-prep/Andres Neumann] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:10: [GMAIL] poll falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:10: [calendar-watch/Diego] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:10: [meeting-prep/Diego] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:10: [calendar-watch/Hernan Fulco] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:10: [meeting-prep/Hernan Fulco] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [calendar-watch/Santiago Bignone] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [calendar-watch/Doris Capurro] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [calendar-watch/Santiago Capurro] chequeo falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Rubén Ward] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Enrique Sosa] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Santiago Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Facundo Diaz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Guillermo Bagnato] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-12 23:58:11: [meeting-prep/Andres Neumann] listar cal falló: invalid_grant
 
