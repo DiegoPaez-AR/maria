@@ -1,0 +1,23 @@
+# ejecutado: 2026-06-12T23:45:03-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== SPF (intensa.io TXT)"
+#   dig +short intensa.io TXT @8.8.8.8 2>&1
+#   echo "== DKIM (google._domainkey.intensa.io TXT)"
+#   dig +short google._domainkey.intensa.io TXT @8.8.8.8 2>&1
+#   echo "== DMARC"
+#   dig +short _dmarc.intensa.io TXT @8.8.8.8 2>&1
+
+# ───── output ─────
+== SPF (intensa.io TXT)
+"google-site-verification=B0LctmZdHgKm9FqfnySkjFRitCWhaICg1_uiQPt_obg"
+"google-site-verification=sctmL4m3awXrVx0XTn1qcwKjz-RFoxzqMtwvVBlu6o8"
+"v=spf1 include:_spf.google.com ~all"
+== DKIM (google._domainkey.intensa.io TXT)
+"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlJLhxFsbSOo7rsOHmLxtHE/WOHvPCWdBhrgqQiysAvPWMHmpanZfGXIDmkx+h5ORtVufXPj8h+jG0ZxE0Dx7k2R8TT3+dLrQNAx5ZqyhYuVPG//2iEBdDvBPiXx+K3wBnlOcQV09ECWRF2mVjJxMCF87Q9svLEKDaoo1ohoS+OwEOzozY9ygzOj7/78ubPbhX" "KUyj1ndGlBoNUhXpHcJAm0vchdkTCsMoF1X2nOcqM3KPhljGxqR0Mvq4Aoi1sBC+F1Efo0zFO8J2JOuFh9K0eaXdGT2BP35/pBv86saldf3IjDsa18EzgTixycT3KKp2eNlQ0Jkd8R4rRq4xY2EmwIDAQAB"
+== DMARC
+"v=DMARC1; p=quarantine; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net;"
+
+# exit=0
