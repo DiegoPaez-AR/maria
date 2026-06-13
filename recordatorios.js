@@ -112,12 +112,15 @@ async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waC
   const texto = _formatearTexto(disparador, candidatos);
 
   let destinoFinal;
+  let _diferido = false;
   try {
     const r = await waSend.enviarWAUsuario(waClient, usuario, texto, {
       tag: `recordatorios/${usuario.nombre}/${disparador}`,
       metadata: { tipo: 'recordatorio', disparador, cuantos: candidatos.length },
+      diferible: true, tz: usuario.tz,
     });
     destinoFinal = r.destinoFinal;
+    _diferido = !!r.diferido;
   } catch (err) {
     console.error(`[recordatorios/${usuario.nombre}/${disparador}] falló sendMessage:`, err.message);
     mem.log({
@@ -135,7 +138,8 @@ async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waC
   }
   mem.setEstadoUsuario(usuario.id, cfg.keyGlobal, ahora);
 
-  console.log(`[recordatorios/${usuario.nombre}/${disparador}] ping → ${destinoFinal} (${candidatos.length})`);
+  if (_diferido) console.log(`[recordatorios/${usuario.nombre}/${disparador}] en silencio → diferido (${candidatos.length})`);
+  else console.log(`[recordatorios/${usuario.nombre}/${disparador}] ping → ${destinoFinal} (${candidatos.length})`);
 
   return { enviado: true, cuantos: candidatos.length };
 }

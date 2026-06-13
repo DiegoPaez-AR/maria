@@ -59,6 +59,7 @@ async function tick(waClient) {
         await waSend.enviarWAUsuario(waClient, usuario, texto, {
           tag: `follow-ups/${usuario.nombre}`,
           metadata: { tipo: 'follow_up_disparado', followUpId: f.id, esperando_de: f.esperando_de },
+          diferible: true, tz: usuario.tz,
         });
         mem.setFollowUpEstado(f.id, 'disparado');
         console.log(`[follow-ups] #${f.id} disparado → ${usuario.nombre} (${f.esperando_de} no respondió)`);

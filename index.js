@@ -38,6 +38,7 @@ const { iniciarMariaWorker } = require('./maria-worker');
 const { iniciarCumpleAvisos } = require('./cumple-avisos');
 const { iniciarResumenSemanal } = require('./resumen-semanal');
 const { iniciarPodaEventos } = require('./poda-eventos');
+const { iniciarDiferidosDrainer } = require('./diferidos-drainer');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
@@ -50,6 +51,7 @@ const MEMORIA_CURADA_MS = Number(process.env.MEMORIA_CURADA_MS || 24 * 60 * 60_0
 const MARIA_WORKER_MS = Number(process.env.MARIA_WORKER_MS || 30 * 60_000);
 const CUMPLE_AVISOS_MS = Number(process.env.CUMPLE_AVISOS_MS || 15 * 60_000);
 const RESUMEN_SEMANAL_MS = Number(process.env.RESUMEN_SEMANAL_MS || 15 * 60_000);
+const DIFERIDOS_MS    = Number(process.env.DIFERIDOS_MS    || 5 * 60_000);
 
 let gmailInterval = null;
 let recordatoriosInterval = null;
@@ -64,6 +66,7 @@ let mariaWorkerInterval = null;
 let cumpleAvisosInterval = null;
 let resumenSemanalInterval = null;
 let podaEventosInterval = null;
+let diferidosInterval = null;
 let waClient = null;
 
 async function main() {
@@ -162,6 +165,11 @@ async function main() {
 
       console.log('▸ arrancando poda-eventos (diario)');
       podaEventosInterval = iniciarPodaEventos({});
+
+      console.log('▸ arrancando drainer de diferidos (horas de silencio)');
+      diferidosInterval = iniciarDiferidosDrainer({
+        waClient: client, intervaloMs: DIFERIDOS_MS,
+      });
 
       mem.log({
         usuarioId: owner?.id || null,

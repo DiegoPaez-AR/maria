@@ -11,6 +11,7 @@
 
 const mem = require('./memory');
 const usuarios = require('./usuarios');
+const silencio = require('./silencio');
 
 // Errores que sugieren "el wid no resolvió" — incluye el "t" minificado
 // que vimos en whatsapp-web.js cuando le pasás un LID con sufijo @c.us.
@@ -47,9 +48,25 @@ function resolverPorPersistencia(destinoCrudo) {
  *   logSaliente: default true. Pasar false si el caller loguea por su cuenta.
  */
 async function enviarWAUsuario(client, usuario, texto, opts = {}) {
-  const { tag = 'wa-send', metadata = null, logSaliente = true } = opts;
+  const { tag = 'wa-send', metadata = null, logSaliente = true, diferible = false, tz = null } = opts;
   if (!client) throw new Error(`${tag}: waClient requerido`);
   if (!usuario) throw new Error(`${tag}: usuario requerido`);
+
+  // Horas de silencio: si el envío es diferible y estamos en la franja del
+  // usuario (0-8 por defecto, su tz), lo encolamos en vez de mandarlo. El
+  // drainer lo larga a las 8 hora local. No se pierde. Default (diferible
+  // false) → comportamiento original sin cambios.
+  const _tzU = tz || usuario.tz || null;
+  if (diferible && silencio.enSilencio(_tzU)) {
+    const _id = mem.encolarWADiferido({
+      usuarioId: usuario.id,
+      destino: usuario.wa_lid || usuario.wa_cus || null,
+      texto, tz: _tzU, tag,
+      metadata: { ...(metadata || {}), diferidoDesde: new Date().toISOString() },
+    });
+    console.log(`[wa-send] ${tag}: en silencio (${_tzU}) → diferido #${_id} hasta las ${silencio.HASTA}h`);
+    return { destinoFinal: null, enviado: false, diferido: true, diferidoId: _id };
+  }
 
   // Orden de preferencia: @lid primero (formato moderno, no requiere
   // libreta), después @c.us como fallback.
@@ -99,9 +116,24 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
  *   usuarioId: para asociar el evento saliente a un usuario (opcional)
  */
 async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
-  const { tag = 'wa-send-directo', metadata = null, logSaliente = true, usuarioId = null } = opts;
+  const { tag = 'wa-send-directo', metadata = null, logSaliente = true, usuarioId = null, diferible = false, tz = null } = opts;
   if (!client) throw new Error(`${tag}: waClient requerido`);
   if (!destinoCrudo) throw new Error(`${tag}: destino vacío`);
+
+  // Horas de silencio (ver enviarWAUsuario). Si no nos pasaron tz, intentamos
+  // resolverla por el destino (si matchea un usuario activo).
+  if (diferible) {
+    let _tzD = tz;
+    if (!_tzD) { try { const _u = usuarios.resolverPorWa(destinoCrudo); if (_u) _tzD = _u.tz; } catch { /* noop */ } }
+    if (silencio.enSilencio(_tzD)) {
+      const _id = mem.encolarWADiferido({
+        usuarioId, destino: destinoCrudo, texto, tz: _tzD, tag,
+        metadata: { ...(metadata || {}), diferidoDesde: new Date().toISOString() },
+      });
+      console.log(`[wa-send] ${tag}: en silencio (${_tzD || 'tz?'}) → diferido #${_id} hasta las ${silencio.HASTA}h`);
+      return { destinoFinal: null, enviado: false, diferido: true, diferidoId: _id };
+    }
+  }
 
   const intento1 = resolverPorPersistencia(destinoCrudo);
   let destinoFinal = intento1;

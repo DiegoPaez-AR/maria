@@ -153,6 +153,19 @@ CREATE TABLE IF NOT EXISTS pendientes (
 CREATE INDEX IF NOT EXISTS idx_pendientes_estado   ON pendientes(estado, creado);
 CREATE INDEX IF NOT EXISTS idx_pendientes_remit    ON pendientes(remitente, estado);
 -- idx_pendientes_usuario se crea después de las migraciones (requiere columna usuario_id)
+
+CREATE TABLE IF NOT EXISTS wa_diferidos (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  creado        DATETIME DEFAULT CURRENT_TIMESTAMP,
+  usuario_id    INTEGER REFERENCES usuarios(id),
+  destino       TEXT NOT NULL,
+  texto         TEXT NOT NULL,
+  tz            TEXT,
+  tag           TEXT,
+  metadata_json TEXT,
+  enviado       INTEGER NOT NULL DEFAULT 0   -- 0=pendiente, 1=enviado, -1=descartado
+);
+CREATE INDEX IF NOT EXISTS idx_wa_diferidos_pend ON wa_diferidos(enviado, creado);
 `);
 
 // ─── Helpers de introspección ─────────────────────────────────────────────
@@ -1685,7 +1698,8 @@ const updCancelarFollowUpsUsuario   = db.prepare(`UPDATE follow_ups SET estado =
 function cancelarPendientesDeUsuario(usuarioId) {
   const progs = updCancelarProgramadosUsuario.run(usuarioId).changes;
   const fus   = updCancelarFollowUpsUsuario.run(usuarioId).changes;
-  return { programados: progs, followUps: fus };
+  const difs  = updDescartarDiferidosUsuario.run(usuarioId).changes;
+  return { programados: progs, followUps: fus, diferidos: difs };
 }
 function marcarProgramadoEnviado(id) { updProgramadoEnviado.run(id); }
 // usuarioId opcional: si viene, solo cancela programados de ese usuario
@@ -1781,6 +1795,32 @@ function importarDesdeContactosJson(usuarioId, rutaJson) {
 
 // ─── Exports ──────────────────────────────────────────────────────────────
 
+// ─── Envíos WA diferidos (horas de silencio — ver silencio.js / wa-send.js) ─
+const insertDiferido = db.prepare(`
+  INSERT INTO wa_diferidos (usuario_id, destino, texto, tz, tag, metadata_json)
+  VALUES (@usuario_id, @destino, @texto, @tz, @tag, @metadata_json)
+`);
+const qDiferidosPendientes  = db.prepare(`SELECT * FROM wa_diferidos WHERE enviado = 0 ORDER BY creado ASC`);
+const updDiferidoEnviado    = db.prepare(`UPDATE wa_diferidos SET enviado = 1 WHERE id = ?`);
+const updDiferidoDescartado = db.prepare(`UPDATE wa_diferidos SET enviado = -1 WHERE id = ?`);
+const updDescartarDiferidosUsuario = db.prepare(`UPDATE wa_diferidos SET enviado = -1 WHERE usuario_id = ? AND enviado = 0`);
+
+function encolarWADiferido({ usuarioId = null, destino, texto, tz = null, tag = null, metadata = null }) {
+  if (!destino || !texto) throw new Error('encolarWADiferido: faltan destino/texto');
+  const info = insertDiferido.run({
+    usuario_id: usuarioId,
+    destino, texto,
+    tz: tz || null,
+    tag: tag || null,
+    metadata_json: metadata ? JSON.stringify(metadata) : null,
+  });
+  return info.lastInsertRowid;
+}
+function diferidosPendientes() { return qDiferidosPendientes.all().map(hidratar); }
+function marcarDiferidoEnviado(id) { updDiferidoEnviado.run(id); }
+function marcarDiferidoDescartado(id) { updDiferidoDescartado.run(id); }
+
+
 module.exports = {
   db,
   OWNER_ID,           // id del owner bootstrapeado (usado en fallbacks)
@@ -1854,6 +1894,11 @@ module.exports = {
   actualizarMetadataProgramado,
   obtenerProgramado,
   cancelarProgramado,
+  // wa diferidos (horas de silencio)
+  encolarWADiferido,
+  diferidosPendientes,
+  marcarDiferidoEnviado,
+  marcarDiferidoDescartado,
   // hechos
   recordarHecho,
   olvidarHecho,

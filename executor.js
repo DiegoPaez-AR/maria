@@ -563,7 +563,13 @@ async function _enviarWA(a, ctx) {
       tag: 'enviar_wa',
       usuarioId: ctx.usuario.id,
       metadata: { destinoOriginal: a.a },
+      // Solo difiero las notificaciones que dispara un mail entrante de noche
+      // (canalOrigen='gmail'). Lo que el usuario pide en vivo (canalOrigen
+      // 'whatsapp') o el maria-worker (ya 08-22) sale siempre.
+      diferible: ctx.canalOrigen === 'gmail',
+      tz: ctx.usuario.tz,
     });
+    if (r.diferido) return { a: a.a, enviado: false, diferido: true };
     destinoFinal = r.destinoFinal;
   } catch (err) {
     throw new Error(`No pude mandar WA a ${a.a}: ${err.message}`);
