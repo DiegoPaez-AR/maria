@@ -18,6 +18,7 @@
 //
 // Override por env: CALENDAR_WATCH_MS (en ms).
 
+const loopGuard = require('./loop-guard');
 const usuarios = require('./usuarios');
 const g = require('./google');
 const mem = require('./memory');
@@ -29,8 +30,10 @@ async function tickUsuario(usuario) {
   try {
     const provider = await providers.forUser(usuario);
     detectado = await provider.chequearAccesoCalendar(usuario.calendar_id);
+    loopGuard.reportar('acceso_google', true);
   } catch (err) {
     console.warn(`[calendar-watch/${usuario.nombre}] chequeo falló: ${err.message}`);
+    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar('acceso_google', false, err);
     return null;
   }
   const actual = usuario.calendar_acceso || 'none';

@@ -15,6 +15,7 @@
 //
 // Tracking: set global `gmail:procesados` (inbox único, no por usuario).
 
+const loopGuard = require('./loop-guard');
 const fs = require('fs');
 const path = require('path');
 const mem = require('./memory');
@@ -473,8 +474,10 @@ async function pollOnce({ waClient, maxPorRonda = 5 } = {}) {
   let emails;
   try {
     emails = await g.listarEmailsNoLeidos({ max: 20 });
+    loopGuard.reportar('acceso_google', true);
   } catch (err) {
     console.error('[GMAIL] poll falló:', err.message);
+    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar('acceso_google', false, err);
     return;
   }
   if (!emails.length) return;

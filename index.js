@@ -29,6 +29,7 @@ const { iniciarRecordatorios } = require('./recordatorios');
 const { iniciarProgramados } = require('./programados');
 const { iniciarMorningBrief } = require('./morning-brief');
 const { iniciarMeetingPrep } = require('./meeting-prep');
+const loopGuard = require('./loop-guard');
 const { iniciarCalendarWatch } = require('./calendar-watch');
 const { iniciarFollowUps } = require('./follow-ups');
 const internalApi = require('./internal-api');
@@ -102,6 +103,7 @@ async function main() {
   // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
   waClient = crearClienteWA({
     onReady: (client) => {
+      loopGuard.setWaClient(client); // canal WA para avisos de loops caídos (sobrevive a OAuth down)
       console.log(`▸ arrancando poll de Gmail (cada ${GMAIL_POLL_MS/1000}s)`);
       gmailInterval = iniciarPoll({ waClient: client, intervaloMs: GMAIL_POLL_MS });
 

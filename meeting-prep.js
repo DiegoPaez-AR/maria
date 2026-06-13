@@ -8,6 +8,7 @@
 //
 // El dispatch lo hace programados.js. Acá solo agendamos.
 
+const loopGuard = require('./loop-guard');
 const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
@@ -70,8 +71,10 @@ async function _tickUsuario(usuario) {
       dias: Math.max(1, Math.ceil(VENTANA_HORAS / 24)),
       max: 30,
     });
+    loopGuard.reportar('acceso_google', true);
   } catch (err) {
     console.warn(`[meeting-prep/${usuario.nombre}] listar cal falló:`, err.message);
+    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar('acceso_google', false, err);
     return 0;
   }
   if (!eventos.length) return 0;
