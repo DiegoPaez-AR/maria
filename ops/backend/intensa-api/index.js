@@ -30,6 +30,9 @@ const PORT = Number(process.env.INTENSA_API_PORT || 4080);
 const HOST = process.env.INTENSA_API_HOST || '127.0.0.1';
 
 const app = express();
+// Detrás de NGINX: confiar en el primer proxy para leer la IP real del cliente
+// (x-forwarded-for) en rate-limit y turnstile. Solo 1 hop (NGINX local).
+app.set('trust proxy', 1);
 // Logger mínimo (antes de los parsers para no perder timing)
 app.use((req, res, next) => {
   const t = Date.now();
@@ -61,10 +64,15 @@ app.use((req, res) => res.status(404).json({ error: 'not_found', path: req.path 
 // Error handler
 app.use((err, req, res, next) => {
   console.error(`[ERROR] ${req.method} ${req.path}:`, err.stack || err);
-  res.status(err.status || 500).json({
-    error: err.code || 'internal_error',
+  const status = err.status || 500;
+  // En 5xx NO filtramos err.message al cliente (puede traer detalle interno:
+  // paths, SQL, etc.). Mensaje genérico; el detalle queda en el log de arriba.
+  if (status >= 500) {
+    return res.status(status).json({ error: 'internal_error', message: 'Error interno. Probá de nuevo en un momento.' });
+  }
+  res.status(status).json({
+    error: err.code || 'bad_request',
     message: err.message,
-    // motivo: detalle opcional (ej. otp_required → 'faltante' | 'vencido' | 'invalido')
     ...(err.motivo ? { motivo: err.motivo } : {}),
   });
 });

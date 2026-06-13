@@ -17,6 +17,7 @@ const TR = {
     'step1.cta': 'Continuar',
     'step1.lbl-terminos': 'Acepto los <a href="/maria/terminos/" target="_blank">Términos y Condiciones</a>.',
     'err.must_accept_terms': 'Tenés que aceptar los Términos y Condiciones para continuar.',
+    'err.captcha_required': 'Completá el captcha.',
     'step1.legal': 'Al continuar aceptás recibir mensajes de María por WhatsApp y email para validar tu identidad. No spam.',
     'step2.h1': 'Validá los dos códigos.',
     'step2.sub': 'Te mandamos uno a tu <em>email</em> y otro a tu <em>WhatsApp</em>. Ingresalos abajo. Vencen en 10 minutos.',
@@ -54,6 +55,7 @@ const TR = {
     'step1.cta': 'Continue',
     'step1.lbl-terminos': 'I accept the <a href="/maria/terminos/" target="_blank">Terms and Conditions</a>.',
     'err.must_accept_terms': 'You must accept the Terms and Conditions to continue.',
+    'err.captcha_required': 'Complete the captcha.',
     'step1.legal': 'By continuing you agree to receive messages from María via WhatsApp and email to verify your identity. No spam.',
     'step2.h1': 'Verify both codes.',
     'step2.sub': 'We sent one to your <em>email</em> and another to your <em>WhatsApp</em>. Enter both. They expire in 10 minutes.',
@@ -139,11 +141,16 @@ document.getElementById('form-datos').addEventListener('submit', async (e) => {
   if (!acepto) {
     showError('errors-step1', t('err.must_accept_terms')); btn.disabled = false; return;
   }
+  const token = turnstileToken();
+  if (turnstilePresente() && !token) {
+    showError('errors-step1', t('err.captcha_required')); btn.disabled = false; return;
+  }
   const data = {
     nombre: fd.get('nombre').trim(),
     email: fd.get('email').trim(),
     wa: fd.get('wa').trim(),
     acepto_terminos: true,
+    turnstile_token: token,
   };
   if (!data.nombre || data.nombre.length < 2) {
     showError('errors-step1', t('err.bad_nombre')); btn.disabled = false; return;
@@ -157,6 +164,7 @@ document.getElementById('form-datos').addEventListener('submit', async (e) => {
   }
 
   const r = await apiCall('/start', data);
+  resetTurnstile();
   btn.disabled = false;
   if (r.ok) {
     signupId = r.body.signup_id;
@@ -203,8 +211,11 @@ document.getElementById('link-reenviar').addEventListener('click', async (e) => 
     nombre: fd.get('nombre').trim(),
     email: fd.get('email').trim(),
     wa: fd.get('wa').trim().replace(/[\s+\-()]/g, ''),
+    acepto_terminos: true,
+    turnstile_token: turnstileToken(),
   };
   const r = await apiCall('/start', data);
+  resetTurnstile();
   if (r.ok) {
     showError('errors-step2', t('msg.reenviado'), true);
   } else {
@@ -223,5 +234,10 @@ document.getElementById('link-volver').addEventListener('click', (e) => {
 document.querySelectorAll('.lang-btn').forEach(b => {
   b.addEventListener('click', () => setLang(b.dataset.lang));
 });
+
+// ── Turnstile helpers ──
+function turnstilePresente() { return !!document.querySelector('.cf-turnstile'); }
+function turnstileToken() { return document.querySelector('[name="cf-turnstile-response"]')?.value || ''; }
+function resetTurnstile() { try { if (typeof turnstile !== 'undefined') turnstile.reset(); } catch {} }
 
 applyI18n();

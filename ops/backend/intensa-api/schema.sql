@@ -83,7 +83,9 @@ CREATE TABLE IF NOT EXISTS signup_pending (
   creado            DATETIME DEFAULT CURRENT_TIMESTAMP,
   expira_en         DATETIME NOT NULL,             -- creado + 10min; al emitirse el signup_token se extiende a +30min
   -- Aceptación de Términos y Condiciones (obligatorio)
-  terminos_aceptados_en DATETIME
+  terminos_aceptados_en DATETIME,
+  -- Último reenvío de códigos (throttle anti-spam del botón "Reenviar")
+  reenviado_en      DATETIME
 );
 CREATE INDEX IF NOT EXISTS idx_signup_expira ON signup_pending(expira_en);
 CREATE INDEX IF NOT EXISTS idx_signup_token  ON signup_pending(signup_token) WHERE signup_token IS NOT NULL;

@@ -45,8 +45,20 @@ function iniciarSignup({ nombre, email, wa, calendar_provider }) {
   // Existing pending → reutilizar (no spamear códigos nuevos).
   const exist = c.prepare(`SELECT * FROM signup_pending WHERE email=? OR wa=? ORDER BY id DESC LIMIT 1`).get(email, wa);
   if (exist) {
-    // si todavía válido y pertenece al mismo email+wa exacto, reutilizar.
+    // si todavía válido y pertenece al mismo email+wa exacto, REENVIAR los
+    // códigos existentes (no generar nuevos → no invalida los ya enviados).
+    // Antes (bug pre-2026-06-13) retornaba sin reenviar: el usuario que tocaba
+    // "Reenviar" no recibía nada pero la UI decía "reenviado".
     if (exist.email === email && exist.wa === wa) {
+      // Throttle anti-spam: máx 1 reenvío cada REENVIO_THROTTLE_S por signup.
+      const ultimoMs = exist.reenviado_en ? new Date(exist.reenviado_en + 'Z').getTime() : 0;
+      const throttleMs = Number(process.env.SIGNUP_REENVIO_THROTTLE_S || 60) * 1000;
+      if (Date.now() - ultimoMs >= throttleMs) {
+        c.prepare(`UPDATE signup_pending SET reenviado_en=datetime('now'), terminos_aceptados_en=datetime('now') WHERE id=?`).run(exist.id);
+        _enviarCodigos({ nombre: exist.nombre, email: exist.email, wa: exist.wa, email_code: exist.email_code, wa_code: exist.wa_code });
+      } else {
+        console.log(`[codes] reenvío throttleado para signup id=${exist.id} (esperá ${Math.ceil((throttleMs - (Date.now()-ultimoMs))/1000)}s)`);
+      }
       return { signup_id: exist.id, reutilizado: true };
     }
     // Otherwise, conflict: el email está usado con otro wa (o viceversa).
@@ -62,22 +74,8 @@ function iniciarSignup({ nombre, email, wa, calendar_provider }) {
     VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
   `).run(nombre, email, wa, calendar_provider || null, email_code, wa_code, expira);
 
-  // Enviar códigos vía Maria signup_bot. Best-effort; si falla el envío, devolvemos error.
-  const bot = instances.signupBot();
-  if (!bot) {
-    throw new Error('No hay instancia con signup_bot=1. Configurar al menos una Maria como signup_bot.');
-  }
-
-  const emailBody = _renderEmailVerificacion({ nombre, code: email_code });
-  const waBody = _renderWaVerificacion({ nombre, code: wa_code });
-
-  // Disparar en paralelo. Si UNO falla, marcamos parcial pero seguimos.
-  mariaRpc.sendEmail(bot, { to: email, subject: 'Tu código para suscribirte a María', html: emailBody })
-    .catch(err => console.error(`[codes] sendEmail failed:`, err.message));
-  mariaRpc.sendWa(bot, { to: wa, body: waBody })
-    .catch(err => console.error(`[codes] sendWa failed:`, err.message));
-
   console.log(`[codes] signup_pending id=${r.lastInsertRowid} email=${email} wa=${wa}`);
+  _enviarCodigos({ nombre, email, wa, email_code, wa_code });
   return { signup_id: r.lastInsertRowid, reutilizado: false };
 }
 
@@ -153,6 +151,20 @@ function verificarSignup({ signup_id, email_code, wa_code }) {
   }
 
   return { ok: false, email_verified: email_ok, wa_verified: wa_ok };
+}
+
+function _enviarCodigos({ nombre, email, wa, email_code, wa_code }) {
+  const bot = instances.signupBot();
+  if (!bot) {
+    throw new Error('No hay instancia con signup_bot=1. Configurar al menos una Maria como signup_bot.');
+  }
+  const emailBody = _renderEmailVerificacion({ nombre, code: email_code });
+  const waBody = _renderWaVerificacion({ nombre, code: wa_code });
+  // Best-effort en paralelo; si uno falla se loggea pero no rompe el flujo.
+  mariaRpc.sendEmail(bot, { to: email, subject: 'Tu código para suscribirte a María', html: emailBody })
+    .catch(err => console.error(`[codes] sendEmail failed:`, err.message));
+  mariaRpc.sendWa(bot, { to: wa, body: waBody })
+    .catch(err => console.error(`[codes] sendWa failed:`, err.message));
 }
 
 function _renderEmailVerificacion({ nombre, code }) {

@@ -27,6 +27,11 @@ function _migrarControl(db) {
     db.exec(`ALTER TABLE portal_otp ADD COLUMN proposito TEXT NOT NULL DEFAULT 'login'`);
     console.log(`[db] migración: portal_otp.proposito agregada`);
   }
+  const colsSignup = db.prepare(`PRAGMA table_info(signup_pending)`).all().map(c => c.name);
+  if (!colsSignup.includes('reenviado_en')) {
+    db.exec(`ALTER TABLE signup_pending ADD COLUMN reenviado_en DATETIME`);
+    console.log(`[db] migración: signup_pending.reenviado_en agregada`);
+  }
 }
 
 function init() {

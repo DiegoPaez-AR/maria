@@ -24,25 +24,8 @@ function _genCode() {
   let s = ''; while (s.length < 6) s += crypto.randomInt(0,10).toString(); return s;
 }
 
-async function _validateTurnstile(token, req) {
-  const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) {
-    console.warn('[cuenta] TURNSTILE_SECRET_KEY no configurado — saltando captcha en dev mode');
-    return true;
-  }
-  if (!token) throw _err('captcha_required', 'Captcha requerido');
-  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress;
-  const body = new URLSearchParams({ secret, response: token, remoteip: ip || '' });
-  const r = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-    method: 'POST', body,
-  });
-  const j = await r.json();
-  if (!j.success) {
-    console.warn('[cuenta] turnstile fail:', j);
-    throw _err('captcha_invalid', 'Captcha inválido');
-  }
-  return true;
-}
+const _turnstileLib = require('../lib/turnstile');
+async function _validateTurnstile(token, req) { return _turnstileLib.validar(token, req); }
 
 router.post('/login', async (req, res, next) => {
   try {

@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -55,6 +56,8 @@
           <input type="checkbox" name="acepto_terminos" required>
           <span data-i18n-html="step1.lbl-terminos">Acepto los <a href="/maria/terminos/" target="_blank">Términos y Condiciones</a>.</span>
         </label>
+
+        <div id="turnstile-container" class="cf-turnstile" data-sitekey="0x4AAAAAADSjZdSiOLo4gIGt" data-theme="light"></div>
 
         <div class="errors" id="errors-step1" aria-live="polite"></div>
 

@@ -5,6 +5,14 @@
 const express = require('express');
 const codes = require('../lib/codes');
 const db = require('../lib/db');
+const turnstile = require('../lib/turnstile');
+const ratelimit = require('../lib/ratelimit');
+
+// Límites del signup (manda email + WA a direcciones arbitrarias vía el
+// signup_bot real → vector de spam/abuso del número de WA y del dominio).
+const LIM_IP    = { max: Number(process.env.SIGNUP_LIM_IP || 5),    ventanaMs: 60 * 60_000 }; // 5/h por IP
+const LIM_ID    = { max: Number(process.env.SIGNUP_LIM_ID || 3),    ventanaMs: 60 * 60_000 }; // 3/h por email|wa
+const LIM_GLOBAL= { max: Number(process.env.SIGNUP_LIM_GLOBAL || 60), ventanaMs: 60 * 60_000 }; // 60/h total
 
 const router = express.Router();
 
@@ -38,7 +46,16 @@ function _err(code, message, status = 400) {
 
 router.post('/start', async (req, res, next) => {
   try {
+    // Captcha primero (barato de rechazar) y rate-limit antes de tocar nada.
+    await turnstile.validar(req.body && req.body.turnstile_token, req);
+    const ip = ratelimit.ipDe(req);
+    if (!ratelimit.permitir('signup_global', LIM_GLOBAL)) throw _err('rate_limited', 'Demasiadas solicitudes. Probá más tarde.', 429);
+    if (!ratelimit.permitir(`signup_ip:${ip}`, LIM_IP)) throw _err('rate_limited', 'Demasiados intentos desde tu conexión. Esperá un rato.', 429);
+
     const data = _validateStart(req.body);
+    if (!ratelimit.permitir(`signup_id:${data.email}`, LIM_ID) || !ratelimit.permitir(`signup_id:${data.wa}`, LIM_ID)) {
+      throw _err('rate_limited', 'Ya pediste varios códigos para estos datos. Esperá unos minutos.', 429);
+    }
     const r = codes.iniciarSignup(data);
     res.json({
       ok: true,
