@@ -1,0 +1,58 @@
+# ejecutado: 2026-06-13T00:23:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -a; cf=/root/secretaria/config/instances/maria-paez.conf; . "$cf"; set +a
+#   TDIR=/root/secretaria/state/maria-paez
+#   echo "== estado actual de los tokens =="
+#   ls -la "$TDIR"/token.json "$TDIR"/token.json.enc 2>&1
+#   echo ""
+#   # Validar que el token.json plano sea fresco (modificado en la última hora)
+#   if [ ! -f "$TDIR/token.json" ]; then
+#     echo "ABORT: no existe token.json plano — el reauth no escribió nada. Hay que rehacer el flow."
+#     exit 1
+#   fi
+#   AGE=$(( $(date +%s) - $(stat -c %Y "$TDIR/token.json") ))
+#   echo "token.json plano: ${AGE}s de antigüedad"
+#   if [ "$AGE" -gt 7200 ]; then
+#     echo "ABORT: token.json tiene más de 2h — no parece el del reauth de recién. No toco nada."
+#     exit 1
+#   fi
+#   STAMP=$(date +%Y-%m-%dT%H%M%S)
+#   if [ -f "$TDIR/token.json.enc" ]; then
+#     mv "$TDIR/token.json.enc" "$TDIR/token.json.enc.revoked.$STAMP"
+#     echo "movido .enc revocado → token.json.enc.revoked.$STAMP"
+#   fi
+#   echo ""
+#   echo "== reload para que google.js auto-migre el plano → .enc =="
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -5
+#   sleep 12
+#   echo ""
+#   echo "== ¿se regeneró el .enc? =="
+#   ls -la "$TDIR"/token.json.enc 2>&1
+#   echo ""
+#   echo "== healthcheck post-fix =="
+#   bash /root/secretaria/ops/healthcheck.sh 2>&1 | grep -A1 google_oauth
+
+# ───── output ─────
+== estado actual de los tokens ==
+-rw-r--r-- 1 root root 561 Jun 13 00:20 /root/secretaria/state/maria-paez/token.json
+-rw------- 1 root root 760 May 26 10:06 /root/secretaria/state/maria-paez/token.json.enc
+
+token.json plano: 174s de antigüedad
+movido .enc revocado → token.json.enc.revoked.2026-06-13T002301
+
+== reload para que google.js auto-migre el plano → .enc ==
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+
+== ¿se regeneró el .enc? ==
+-rw------- 1 root root 760 Jun 13 00:23 /root/secretaria/state/maria-paez/token.json.enc
+
+== healthcheck post-fix ==
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":6} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+
+# exit=0
