@@ -1,0 +1,56 @@
+# ejecutado: 2026-06-12T22:53:03-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Smoke test del daily-report con las secciones nuevas (no manda mail)
+#   cd /root/secretaria && DRY_RUN=1 /usr/bin/node daily-report.js 2>&1 | head -120
+
+# ───── output ─────
+Stats para maria-paez...
+
+────── PREVIEW (texto) ──────
+📊 Reporte diario VPS Maria — 12/06/2026
+
+Instancias activas: 1
+Gasto Claude total 24h: $2.46 USD
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 813429 · uptime 0m · 75.0 MB · 90% CPU
+Proceso: 4 deploys · 0 crashes (restarts lifetime: 10)
+WhatsApp: 17↓ / 51↑ (1 audios)
+Gmail:    0↓ / 0↑
+Calendar: 2 creados · 1 modificados · 0 borrados
+Latencia Claude 24h (18 llamadas):
+   · whatsapp: p50 19.5s · p95 115.5s · máx 119.1s  (16)
+   · memoria-curada: p50 20.3s · p95 20.3s · máx 27.3s  (2)
+   🔴 6 llamada(s) >30s · 2 >60s
+Programados en cola: 0
+💵 Gasto Claude 24h: $2.46 USD (18 llamadas)
+WA reconexiones (change_state): 4
+  Hernan Fulco: 0 abiertos (+0 -0)
+  Natali Funez: 0 abiertos (+0 -0)
+  Fernando Boero: 0 abiertos (+0 -0)
+  Santiago Bignone: 0 abiertos (+0 -0)
+  Doris Capurro: 0 abiertos (+0 -0)
+  Nicolas Kosinski: 0 abiertos (+0 -0)
+  Walter Vera: 0 abiertos (+0 -0)
+  Cristian Ruiz: 0 abiertos (+0 -0)
+  Sebastian Ameijeira: 0 abiertos (+0 -0)
+  Rubén Ward: 0 abiertos (+0 -0)
+  Enrique Sosa: 0 abiertos (+0 -0)
+  Santiago Capurro: 0 abiertos (+0 -0)
+  Facundo Diaz: 0 abiertos (+0 -0)
+  Guillermo Bagnato: 0 abiertos (+0 -0)
+  Andres Neumann: 0 abiertos (+0 -0)
+  Diego [owner]: 6 abiertos (+5 -7)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 12730 bytes
+
+DRY_RUN=1 — no mando email
+
+# exit=0
