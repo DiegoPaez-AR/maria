@@ -1,0 +1,61 @@
+# ejecutado: 2026-06-13T00:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -a; cf=/root/secretaria/config/instances/maria-paez.conf; . "$cf"; set +a
+#   echo "== HEALTHCHECK-ALERT.json =="
+#   cat /root/secretaria/ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json 2>&1 | head -40
+#   echo ""
+#   echo "== últimos errores google/oauth/invalid_grant en pm2 (60 líneas relevantes) =="
+#   pm2 logs maria-paez --lines 3000 --nostream 2>/dev/null | grep -iE "oauth|invalid_grant|token|google.*(error|fail|denied)|refresh" | tail -25
+#   echo ""
+#   echo "== ¿anda ahora? probe rápido de gmail/calendar (si hay healthcheck script) =="
+#   ls -la /root/secretaria/ops/*health* /root/secretaria/*health* 2>/dev/null
+
+# ───── output ─────
+== HEALTHCHECK-ALERT.json ==
+{
+  "ts": "2026-06-13T02:35:04Z",
+  "instance": "maria-paez",
+  "overall_ok": false,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":813429,"restarts":10} }
+    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":59} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":5712} }
+    ,"google_oauth": { "ok": false, "detail": {"ok":false,"error":"invalid_grant"} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+  }
+}
+
+== últimos errores google/oauth/invalid_grant en pm2 (60 líneas relevantes) ==
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Rubén Ward] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Enrique Sosa] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Santiago Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Facundo Diaz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Guillermo Bagnato] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:03:11: [meeting-prep/Andres Neumann] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [GMAIL] poll falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [meeting-prep/Diego] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [meeting-prep/Hernan Fulco] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [meeting-prep/Natali Funez] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [meeting-prep/Santiago Bignone] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [meeting-prep/Doris Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:10: [meeting-prep/Nicolas Kosinski] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Walter Vera] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Cristian Ruiz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Sebastian Ameijeira] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Rubén Ward] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Enrique Sosa] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Santiago Capurro] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Facundo Diaz] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Guillermo Bagnato] listar cal falló: invalid_grant
+0|maria-pa | 2026-06-13 00:08:11: [meeting-prep/Andres Neumann] listar cal falló: invalid_grant
+
+== ¿anda ahora? probe rápido de gmail/calendar (si hay healthcheck script) ==
+-rwxr-xr-x+ 1 root root 6335 May 17 15:41 /root/secretaria/ops/healthcheck.sh
+
+# exit=0
