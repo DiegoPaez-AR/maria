@@ -21,6 +21,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
+const moderacion = require('./moderacion');
 const unknownFlow = require('./unknown-flow');
 const { construirPrompt, construirTurnoSesion } = require('./prompt-builder');
 const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
@@ -295,6 +296,19 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     // NO bloqueamos — el LLM lo rechaza vía Capa 2.
   }
 
+  // ─── Moderación de contenido ENTRANTE (best-effort, no bloquea) ───────
+  moderacion.revisarEntrante(entrada.cuerpo).then((rm) => {
+    if (rm && rm.bloquear) {
+      mem.logSecurityEvent({
+        usuarioId: usuario?.id || null, canal: 'gmail',
+        motivo: `contenido_entrante (${rm.categoria}/${rm.severidad}): ${rm.motivo || ''}`,
+        body: (entrada.cuerpo || '').slice(0, 500),
+        extra: { from: entrada.de, asunto: entrada.asunto, tipo_mod: 'entrante_flag', categoria: rm.categoria, severidad: rm.severidad },
+      });
+      _avisoOwnerContenidoInboundMail({ categoria: rm.categoria, severidad: rm.severidad, motivo: rm.motivo, de: entrada.de, asunto: entrada.asunto });
+    }
+  }).catch(() => {});
+
   const prompt = await construirPrompt({
     usuario,
     canal: 'gmail',
@@ -493,6 +507,28 @@ function iniciarPoll({ waClient, intervaloMs = 300_000 } = {}) {
   };
   tick(); // arranque inmediato
   return setInterval(tick, intervaloMs);
+}
+
+// Aviso al owner por contenido entrante inapropiado por email (throttled).
+const _ultimoAvisoInboundMail = { ts: 0 };
+async function _avisoOwnerContenidoInboundMail({ categoria, severidad, motivo, de, asunto }) {
+  try {
+    const owner = require('./usuarios').obtenerOwner();
+    if (!owner?.email) return;
+    const ahora = Date.now();
+    const THR = Number(process.env.MARIA_MOD_AVISO_THROTTLE_MS || 5 * 60 * 1000);
+    if (ahora - _ultimoAvisoInboundMail.ts < THR) return;
+    _ultimoAvisoInboundMail.ts = ahora;
+    const g = require('./google');
+    const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
+    await g.enviarEmail({
+      to: owner.email,
+      asunto: `⚠️ ${ASISTENTE_NOMBRE}: contenido inapropiado entrante por email (${categoria})`,
+      texto: `Un email entrante trae contenido marcado como inapropiado.\n\nCategoría: ${categoria} (${severidad})\nMotivo: ${motivo || '-'}\nDe: ${de}\nAsunto: ${asunto || '(sin asunto)'}\n\nMaria no actúa sobre eso (regla #7). Aviso informativo.\n\n--\n${ASISTENTE_NOMBRE}`,
+    });
+  } catch (err) {
+    console.warn(`[moderacion inbound mail] no pude avisar al owner: ${err.message}`);
+  }
 }
 
 module.exports = { iniciarPoll, pollOnce, procesarUnEmail };

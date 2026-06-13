@@ -23,6 +23,7 @@ const mem = require('./memory');
 const usuarios = require('./usuarios');
 const unknownFlow = require('./unknown-flow');
 const seguridad = require('./seguridad');
+const moderacion = require('./moderacion');
 const { transcribirAudio } = require('./transcribir');
 const { construirPrompt, construirTurnoSesion } = require('./prompt-builder');
 const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
@@ -417,6 +418,23 @@ async function handleMessage(client, msg) {
     _mailOwnerInjection({ canal: 'whatsapp', motivo: motivoInj, body: item.cuerpo, from, pushname, usuarioId: _usrTmp?.id || null });
     // NO bloqueamos — el LLM va a rechazarlo via Capa 2.
   }
+
+  // ─── Moderación de contenido ENTRANTE (best-effort, no bloquea) ───────
+  // Pre-filtro de keywords adentro de revisarEntrante: solo clasifica los
+  // sospechosos. Fire-and-forget para no sumar latencia al pipeline. Si da
+  // positivo: log + aviso al owner. Que Maria no actúe sobre eso lo cubre la
+  // regla #7 del prompt.
+  moderacion.revisarEntrante(item.cuerpo).then((rm) => {
+    if (rm && rm.bloquear) {
+      mem.logSecurityEvent({
+        usuarioId: _usrTmp?.id || null, canal: 'whatsapp',
+        motivo: `contenido_entrante (${rm.categoria}/${rm.severidad}): ${rm.motivo || ''}`,
+        body: item.cuerpo,
+        extra: { from, pushname, tipo_mod: 'entrante_flag', categoria: rm.categoria, severidad: rm.severidad },
+      });
+      _avisoOwnerContenidoInbound({ canal: 'whatsapp', categoria: rm.categoria, severidad: rm.severidad, motivo: rm.motivo, remitente: pushname ? `${pushname} (${from})` : from });
+    }
+  }).catch(() => {});
 
   _encolar(client, from, item);
 }
@@ -1051,6 +1069,28 @@ async function _mailOwnerInjection({ canal, motivo, body, from, pushname, usuari
     });
   } catch (err) {
     console.warn(`[WA injection mail] no pude mandar al owner: ${err.message}`);
+  }
+}
+
+// Aviso al owner por contenido entrante inapropiado (throttled anti-flood).
+const _ultimoAvisoInbound = { ts: 0 };
+async function _avisoOwnerContenidoInbound({ canal, categoria, severidad, motivo, remitente }) {
+  try {
+    const owner = usuarios.obtenerOwner();
+    if (!owner?.email) return;
+    const ahora = Date.now();
+    const THR = Number(process.env.MARIA_MOD_AVISO_THROTTLE_MS || 5 * 60 * 1000);
+    if (ahora - _ultimoAvisoInbound.ts < THR) return;
+    _ultimoAvisoInbound.ts = ahora;
+    const g = require('./google');
+    const ASISTENTE_NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
+    await g.enviarEmail({
+      to: owner.email,
+      asunto: `⚠️ ${ASISTENTE_NOMBRE}: contenido inapropiado entrante (${categoria})`,
+      texto: `Un tercero mandó contenido marcado como inapropiado.\n\nCanal: ${canal}\nCategoría: ${categoria} (${severidad})\nMotivo: ${motivo || '-'}\nRemitente: ${remitente}\n\nMaria no actúa sobre eso (regla #7). Aviso informativo.\n\n--\n${ASISTENTE_NOMBRE}`,
+    });
+  } catch (err) {
+    console.warn(`[moderacion inbound mail] no pude avisar al owner: ${err.message}`);
   }
 }
 

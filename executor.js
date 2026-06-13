@@ -15,6 +15,55 @@ const usuarios = require('./usuarios');
 const clima = require('./clima');
 const seguridad = require('./seguridad');
 const waSend = require('./wa-send');
+const moderacion = require('./moderacion');
+
+// ─── Gate de moderación de contenido saliente (2026-06-13) ───────────────
+// Clasifica lo que Maria está por mandar a un tercero. Si es contenido
+// prohibido (sexual, amenaza, acoso/coacción, armas/ilícito): NO envía,
+// loggea evento de seguridad, avisa al owner (rate-limited) y tira error
+// para que el LLM le diga al usuario "No puedo enviar eso". FAIL-OPEN: si el
+// clasificador falla, deja pasar (la capa de prompt ya filtró lo peor).
+const _ultimoAvisoOwnerMod = { ts: 0 };
+const _AVISO_OWNER_MOD_MS = Number(process.env.MARIA_MOD_AVISO_THROTTLE_MS || 5 * 60 * 1000);
+
+async function _avisarOwnerModeracion(ctx, { categoria, severidad, motivo, destino, texto }) {
+  try {
+    const owner = usuarios.obtenerOwner();
+    if (!owner || !ctx.waClient) return;
+    const ahora = Date.now();
+    if (ahora - _ultimoAvisoOwnerMod.ts < _AVISO_OWNER_MOD_MS) return; // throttle anti-flood
+    _ultimoAvisoOwnerMod.ts = ahora;
+    const dest = owner.wa_lid || owner.wa_cus;
+    if (!dest) return;
+    const quien = ctx.usuario ? `${ctx.usuario.nombre}${usuarios.esOwner(ctx.usuario.id) ? ' (owner)' : ''}` : '?';
+    await waSend.enviarWADirecto(ctx.waClient, dest,
+      `🚫 Bloqueé un envío por contenido inapropiado.\n\n` +
+      `Usuario: ${quien}\nCategoría: ${categoria || '?'} (${severidad || '?'})\n` +
+      `Destino: ${destino || '?'}\nMotivo: ${motivo || '-'}\n\n` +
+      `Texto: "${String(texto || '').slice(0, 300)}"`,
+      { tag: 'moderacion_aviso', usuarioId: owner.id });
+  } catch (err) {
+    console.warn('[moderacion] aviso owner falló:', err.message);
+  }
+}
+
+async function _moderarSaliente(texto, a, ctx, accionTipo, destino) {
+  const r = await moderacion.revisarSaliente(texto);
+  if (r.bloquear) {
+    try {
+      mem.logSecurityEvent({
+        usuarioId: ctx.usuario ? ctx.usuario.id : null,
+        canal: accionTipo,
+        motivo: `contenido bloqueado (${r.categoria}/${r.severidad}): ${r.motivo || ''}`,
+        body: texto,
+        extra: { tipo_mod: 'saliente_bloqueado', categoria: r.categoria, severidad: r.severidad, destino },
+      });
+    } catch {}
+    await _avisarOwnerModeracion(ctx, { categoria: r.categoria, severidad: r.severidad, motivo: r.motivo, destino, texto });
+    throw new Error(`${accionTipo}: no puedo enviar ese contenido (política de moderación). Decile al usuario "No puedo enviar eso" sin más detalle.`);
+  }
+}
+
 const providers = require('./providers');
 const waValidate = require('./wa-validate');
 const vault = require('./vault');
@@ -68,7 +117,7 @@ async function ejecutarUna(accion, ctx) {
     case 'upsert_contacto':    return _upsertContacto(accion, ctx);
     case 'cambiar_visibilidad_contacto': return _cambiarVisibilidadContacto(accion, ctx);
     case 'set_cumple_contacto':          return _setCumpleContacto(accion, ctx);
-    case 'programar_mensaje':  return _programarMensaje(accion, ctx);
+    case 'programar_mensaje':  return await _programarMensaje(accion, ctx);
     case 'cancelar_programado':return _cancelarProgramado(accion, ctx);
     case 'crear_follow_up':    return _crearFollowUp(accion, ctx);
     case 'cerrar_follow_up':   return _cerrarFollowUp(accion, ctx);
@@ -389,6 +438,7 @@ async function _responderEmail(a, ctx) {
       if (!v.ok) throw new Error(`responder_email: cc inválido — ${v.motivo}.`);
     }
   }
+  await _moderarSaliente(a.texto, a, ctx, 'responder_email', a.messageId);
   const r = await g.responderEmail(a.messageId, a.texto, {
     replyAll: !!a.replyAll,
     cc: a.cc, // si viene undefined no overridea; si viene null lo limpia
@@ -425,6 +475,8 @@ async function _enviarEmail(a, ctx) {
     const v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'email', destino: t });
     if (!v.ok) throw new Error(`enviar_email: ${v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
   }
+
+  await _moderarSaliente(`${a.asunto || ''}\n${a.texto || ''}`, a, ctx, 'enviar_email', Array.isArray(a.to) ? a.to.join(',') : a.to);
   const r = await g.enviarEmail({
     to: a.to,
     asunto: a.asunto,
@@ -470,6 +522,10 @@ async function _reenviarWA(a, ctx) {
     throw new Error(`reenviar_wa: no encontré mensaje ${a.messageId}: ${err.message}`);
   }
   if (!original) throw new Error(`reenviar_wa: mensaje ${a.messageId} no existe (puede haber sido purgado)`);
+  // Best-effort: si el mensaje a reenviar tiene texto/caption, lo moderamos.
+  // (Media binaria sin texto no se clasifica acá.)
+  const _bodyFwd = (original && (original.body || original.caption)) ? String(original.body || original.caption) : '';
+  if (_bodyFwd.trim()) await _moderarSaliente(_bodyFwd, a, ctx, 'reenviar_wa', a.a);
   await original.forward(destino);
   mem.log({
     usuarioId: ctx.usuario.id,
@@ -498,6 +554,8 @@ async function _enviarWA(a, ctx) {
   // Validar destinatario contra libreta visible / usuarios activos.
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
   if (!_v.ok) throw new Error(`enviar_wa: ${_v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
+
+  await _moderarSaliente(a.texto, a, ctx, 'enviar_wa', a.a);
 
   let destinoFinal;
   try {
@@ -605,7 +663,7 @@ function _quitarPendiente(a, ctx) {
   return { id: cerrado.id, desc: cerrado.desc, cerrado: true };
 }
 
-function _programarMensaje(a, ctx) {
+async function _programarMensaje(a, ctx) {
   _requerir(a, ['cuando', 'canal', 'destino', 'texto']);
   if (!['whatsapp', 'gmail'].includes(a.canal)) {
     throw new Error(`programar_mensaje: canal inválido (${a.canal})`);
@@ -613,6 +671,7 @@ function _programarMensaje(a, ctx) {
   const _canalSec = a.canal === 'gmail' ? 'email' : 'wa';
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: _canalSec, destino: a.destino });
   if (!_v.ok) throw new Error(`programar_mensaje: ${_v.motivo}.`);
+  await _moderarSaliente(`${a.asunto || ''}\n${a.texto || ''}`, a, ctx, 'programar_mensaje', a.destino);
   let destino = a.destino;
   if (a.canal === 'whatsapp') destino = _resolverDestinoWA(destino);
   const id = mem.programarMensaje({
