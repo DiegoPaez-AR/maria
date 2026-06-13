@@ -1,0 +1,62 @@
+# ejecutado: 2026-06-13T00:08:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -a; cf=/root/secretaria/config/instances/maria-paez.conf; . "$cf"; set +a
+#   DB="${MARIA_DB}"
+#   echo "== WA salientes de Maria últimas 48h (hora | destinatario nombre | cuerpo) =="
+#   sqlite3 -separator ' | ' "$DB" "
+#   SELECT substr(timestamp,6,11),
+#     COALESCE(nombre, substr(de,1,18)),
+#     replace(substr(cuerpo,1,220),char(10),' ')
+#   FROM eventos
+#   WHERE canal='whatsapp' AND direccion='saliente'
+#     AND timestamp >= datetime('now','-48 hours')
+#     AND COALESCE(json_extract(metadata_json,'\$.tipo'),'') NOT IN ('unknown_flow_aviso')
+#   ORDER BY timestamp DESC LIMIT 40;"
+
+# ───── output ─────
+== WA salientes de Maria últimas 48h (hora | destinatario nombre | cuerpo) ==
+06-13 02:35 | 34342575317160@lid | ALERTA healthcheck maria-paez: fallaron: google_oauth. Detalle en ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json
+06-12 23:13 | Diego | El domingo (14/06) tampoco tenés nada. Fin de semana libre 🙌
+06-12 23:12 | Diego | Mañana (sáb 13/06) no tenés nada agendado. 📭
+06-12 23:11 | Diego | Tus pendientes:  *Tus tareas:* 1️⃣ iProt Seguridad 2️⃣ DDJJ 2025 3️⃣ Presentaciones a Eliza 4️⃣ Aysa  *Lo que estoy gestionando yo:* ⏳ Esperando que Andrés Neumann confirme disponibilidad para el almuerzo (semana del 8/6
+06-12 23:02 | Diego | Listo, te agrego 'Aysa' a tu lista de pendientes.
+06-12 23:02 | Diego | Listo, cierro el 4 (Pablo Casal) y el 5 (arradiche de Claro).
+06-12 23:01 | Diego | Tus pendientes:  *Tus tareas:* 1. iProt Seguridad 2. DDJJ 2025 3. Presentaciones a Eliza 4. Llamar a Pablo Casal 5. Mandarle el arradiche de Claro  *Lo que estoy gestionando yo:* - Esperando que Andrés Neumann confirme d
+06-12 23:00 | Diego | ¡Hola Diego! Todo bien, arrancando el viernes a la noche con todo. ¿Vos cómo estás? ¿Necesitás algo?
+06-12 19:45 | 137456250806423@li | ⏰ *En 15min*: Preplanning CMP (05:00 p. m.) Con: alejandro.furgeri@sondeos.com.ar, bogdan.bedyukh@sondeos.com.ar, cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, gustavo.garcia@sondeosglobal.com, hernan.
+06-12 19:42 | Diego | Listo, te la agendo de 10 a 11 el *viernes 19/06*. Cuando Leandro me confirme el mail y el lugar, le mando la invitación y actualizo el evento.
+06-12 19:40 | Diego | Perfecto, lo anoto para el *viernes 19/06 a las 10*. Una cosa antes de crearlo: a las 10:30 tenés el Avance Semanal con DP — si la reunión con Leandro es de una hora completa se superponen 30 minutos. ¿Cuánto calculás qu
+06-12 19:40 | 5491140495070@c.us | Hola Leandro, quedaron en verse con Diego el *viernes 19/06 a las 10*. ¿Me confirmás dónde se juntan? Y para mandarte la invitación de calendario, ¿me pasás tu email?
+06-12 19:15 | 134076010885285@li | ⏰ *En 15min*: Juana (04:30 p. m.)
+06-12 18:45 | 137456250806423@li | ⏰ *En 15min*: Preplanning MC (04:00 p. m.) Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeos.com.ar, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosglobal.com, hernan.ful
+06-12 17:45 | 134076010885285@li | ⏰ *En 15min*: MKT Pumayna (03:00 p. m.) Con: santiago@capurro.com.ar, pablo@capurro.com.ar, dscheerle@c2scs.com, lucas@capurro.com.ar
+06-12 17:00 | Diego | Te debo consulta sobre algo pendiente 👇  1. Confirmarle a Leandro Groisman el horario de la reunión con Diego (propuso jue 18/06 11am — hay conflicto con Yoga; pendiente respuesta de Diego con horario OK y modalidad pres
+06-12 15:45 | 134076010885285@li | ⏰ *En 15min*: Almuerzo SC PC (01:00 p. m.) Con: santiago@capurro.com.ar, pablo@capurro.com.ar
+06-12 13:49 | Diego | Nico me dijo que no hace falta mandarle nada a Alejandro — que lo deje. Cerré ese pendiente.
+06-12 13:49 | Nicolas Jordan | Jaja dale, entendido 🙌
+06-12 13:47 | Nicolas Jordan | Perfecto, anoto Mirasol a las 13 hs. El email de Alejandro voy a conseguirlo por otro lado para mandarle el invite del calendar.
+06-12 13:47 | Diego | El almuerzo del martes con Alejandro Senmartin queda en Mirasol a las 13 hs — le actualizo el lugar al evento. ¿Tenés el email de Alejandro? Lo necesito para mandarle la invitación del calendar.
+06-12 13:45 | Diego | Perfecto, le confirmo al Nico el martes 16/06 a las 13 hs y te agendo el almuerzo.
+06-12 13:45 | 5491131121057@c.us | Hola Nicolás, confirmado — el martes 16/06 a las 13 hs le viene bien a Diego para el almuerzo con Alejandro. ¿Tienen lugar en mente? Y si me pasás el email de Alejandro te mando la invitación del calendar.
+06-12 13:33 | Diego | Te escribió Nico Jordan para armar un almuerzo el lunes 15 o el martes 16 a las 13 hs, con Alejandro Senmartin de Aguas de Zarate. ¿Cuál de los dos días te viene mejor? (El lunes terminás el Seguimiento con Nico a las 13
+06-12 13:33 | Nicolas Jordan | Hola Nicolás, lo consulto con Diego y te confirmo cuál de los dos días le viene mejor. Te escribo a la brevedad.
+06-12 13:30 | Diego | Te debo consulta sobre algo pendiente 👇  1. Confirmarle a Leandro Groisman el horario de la reunión con Diego (propuso jue 18/06 11am — hay conflicto con Yoga; pendiente respuesta de Diego con horario OK y modalidad pres
+06-12 13:15 | 134076010885285@li | ⏰ *En 15min*: Catch up - Veleros  (10:30 a. m.) Con: pablo.petrillo@luftlatam.com, federico.caceres@4caminos.co, santiago@capurro.com.ar, ruy@hglending.com
+06-12 13:15 | 34342575317160@lid | ⏰ *En 15min*: Avance Semanal con DP (10:30 a. m.) Con: diego@paez.is, wvera@froneus.com 👤 Diego Paez: Soy yo mismo. Este contacto refleja mi propio perfil y mis patrones de uso de la secretaria virtual. Me comunico casi 
+06-12 12:30 | 137456250806423@li | ⏰ *En 15min*: Daily CMP (09:45 a. m.) Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello@sondeosglobal.com, 
+06-12 12:15 | Cristian Ruiz | ☀️ *Buen día, Cristian Ruiz.* viernes 12 de junio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, min 8° / max 15°  *📅 Agenda del día* (sin eventos hoy)
+06-12 12:00 | 137456250806423@li | ⏰ *En 15min*: MC Daily (09:15 a. m.) Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosglobal.com, hernan.fulco@
+06-12 11:45 | 137456250806423@li | ⏰ *En 15min*: Revisión preventa (09:00 a. m.) Con: damian.perez@sondeosglobal.com, hernan.fulco@sondeosglobal.com
+06-12 11:45 | 137456250806423@li | ⏰ *En 15min*: Lautaro está de vacaciones (09:00 a. m.)
+06-12 11:45 | 137456250806423@li | ⏰ *En 15min*: Hernan / Damián (Onboarding) (09:00 a. m.) Con: hernan.fulco@sondeosglobal.com, damian.perez@sondeosglobal.com
+06-12 10:45 | 134076010885285@li | ⏰ *En 15min*: Gimnasio (08:00 a. m.)
+06-12 10:00 | Facundo Diaz | ☀️ *Buen día, Facundo Diaz.* viernes 12 de junio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, min 8° / max 15°  *📅 Agenda del día* (sin eventos hoy)
+06-12 10:00 | Guillermo Bagnato | ☀️ *Buen día, Guillermo Bagnato.* viernes 12 de junio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, min 8° / max 15°  *📅 Agenda del día* (sin eventos hoy)
+06-12 10:00 | Andres Neumann | ☀️ *Buen día, Andres Neumann.* viernes 12 de junio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, min 8° / max 15°  *📅 Agenda del día* (sin eventos hoy)
+06-12 10:00 | Enrique Sosa | ☀️ *Buen día, Enrique Sosa.* viernes 12 de junio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, min 8° / max 15°  *📅 Agenda del día* (sin eventos hoy)
+06-12 10:00 | Santiago Capurro | ☀️ *Buen día, Santiago Capurro.* viernes 12 de junio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, min 8° / max 15°  *📅 Agenda del día* • 08:00 a. m. — Gimnasio • 10:30 a. m. — Catch up - Veleros  • 01:00 p. m. — Almuerzo
+
+# exit=0
