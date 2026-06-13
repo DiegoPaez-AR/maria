@@ -1,0 +1,30 @@
+# ejecutado: 2026-06-13T00:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -a; cf=/root/secretaria/config/instances/maria-paez.conf; . "$cf"; set +a
+#   DB="${MARIA_DB}"
+#   echo "== schema claude_sesion =="
+#   sqlite3 "$DB" ".schema claude_sesion"
+#   echo ""
+#   echo "== filas claude_sesion (id, usuario, turnos, creada, largo resumen) =="
+#   sqlite3 -separator ' | ' "$DB" "
+#   SELECT id, usuario_id, 
+#     COALESCE(json_array_length(turnos_json),'?') turnos,
+#     creada, length(COALESCE(resumen,'')) lr
+#   FROM claude_sesion ORDER BY id DESC LIMIT 10;" 2>&1
+#   echo ""
+#   echo "== contenido del/los resumen(es) más recientes =="
+#   sqlite3 "$DB" "SELECT '--- sesion '||id||' (u'||usuario_id||') ---'||char(10)||COALESCE(resumen,'(sin resumen)') FROM claude_sesion ORDER BY id DESC LIMIT 3;" 2>&1
+
+# ───── output ─────
+== schema claude_sesion ==
+
+== filas claude_sesion (id, usuario, turnos, creada, largo resumen) ==
+Error: in prepare, no such table: claude_sesion
+
+== contenido del/los resumen(es) más recientes ==
+Error: in prepare, no such table: claude_sesion
+
+# exit=0
