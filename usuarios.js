@@ -195,6 +195,31 @@ function _normalizarWaIds({ wa_lid, wa_cus }) {
   return { wa_lid: lid, wa_cus: cus };
 }
 
+// Anti-homónimos (2026-06-12): comparación de nombres normalizada
+// (case, acentos, espacios múltiples). El COLLATE NOCASE de qPorNombre no
+// alcanza: "Juan Pérez" vs "Juan Perez" pasaban como distintos, y el nombre
+// es la clave de ruteo del unknown-flow — dos usuarios activos homónimos
+// rompen el matcheo de terceros.
+function _nombreNorm(s) {
+  return String(s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Usuario ACTIVO cuyo nombre normalizado coincide (excluyendo `exceptoId`). */
+function _activoHomonimo(nombre, exceptoId = null) {
+  const n = _nombreNorm(nombre);
+  if (!n) return null;
+  for (const u of listarActivos()) {
+    if (exceptoId && u.id === exceptoId) continue;
+    if (_nombreNorm(u.nombre) === n) return u;
+  }
+  return null;
+}
+
 function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null, ubicacion = null }) {
   if (!nombre) throw new Error('crear usuario: nombre requerido');
 
@@ -203,6 +228,14 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
   const { wa_lid: lidN, wa_cus: cusN } = _normalizarWaIds({ wa_lid, wa_cus });
   const emailN = email ? email.trim().toLowerCase() : null;
   const calN   = calendar_id ? String(calendar_id).trim().toLowerCase() : null;
+
+  // Anti-homónimos: nunca dos usuarios ACTIVOS con el mismo nombre. Va ANTES
+  // de la reactivación para que reactivar un dado-de-baja tampoco pueda crear
+  // un duplicado de nombre con un activo.
+  const homonimo = _activoHomonimo(nombreN);
+  if (homonimo) {
+    throw new Error(`ya existe un usuario activo con ese nombre: "${homonimo.nombre}" (id=${homonimo.id}). No se permiten homónimos — usá un nombre que lo distinga (apellido, segundo nombre o apodo).`);
+  }
 
   // Reactivación (2026-06-11): si la identidad matchea un usuario DESACTIVADO,
   // lo reactivamos con su historial intacto en vez de explotar con
@@ -229,7 +262,6 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
   }
 
   // Chequear duplicados antes de INSERT (mejor error)
-  if (qPorNombre.get(nombreN))         throw new Error(`ya existe un usuario con ese nombre: ${nombreN}`);
   if (lidN && qPorWaLid.get(lidN))     throw new Error(`ya existe un usuario con ese WhatsApp LID: ${lidN}`);
   if (cusN && qPorWaCus.get(cusN))     throw new Error(`ya existe un usuario con ese WhatsApp: ${cusN}`);
   if (emailN && qPorEmail.get(emailN)) throw new Error(`ya existe un usuario con ese email: ${emailN}`);
@@ -299,8 +331,8 @@ function actualizar(id, patch = {}) {
 
   // Chequear conflictos de unicidad (en otro usuario distinto)
   if (cambios.nombre) {
-    const otro = qPorNombre.get(cambios.nombre);
-    if (otro && otro.id !== id) throw new Error(`ya existe otro usuario con ese nombre: ${cambios.nombre}`);
+    const otro = _activoHomonimo(cambios.nombre, id);
+    if (otro) throw new Error(`ya existe otro usuario activo con ese nombre: "${otro.nombre}" (id=${otro.id}). No se permiten homónimos — usá un nombre que lo distinga (apellido, segundo nombre o apodo).`);
   }
   if (cambios.wa_lid) {
     const otro = qPorWaLid.get(cambios.wa_lid);

@@ -131,21 +131,92 @@ function _norm(s) {
 /**
  * Dado el texto que mandó el desconocido (respuesta a "¿para quién es?"),
  * intentar identificar al usuario destinatario por nombre.
+ *
+ * Devuelve:
+ *   null                → ningún usuario matchea
+ *   { match: u }        → match único
+ *   { multiple: [u..] } → homónimos: 2+ usuarios matchean. NUNCA auto-rutear.
+ *
+ * `candidatos` (opcional) restringe la búsqueda a esos usuarios (ej. los de
+ * un match ambiguo de libreta o de una repregunta previa).
+ * Desempate por nombre completo: si exactamente UN usuario matchea por nombre
+ * COMPLETO, gana aunque otros matcheen por primer nombre ("Juan Pérez"
+ * desempata entre "Juan Pérez" y "Juan García").
  */
-function matchearUsuario(texto) {
+function matchearUsuario(texto, candidatos = null) {
   const t = _norm(texto);
   if (!t) return null;
-  const activos = usuarios.listarActivos();
+  const pool = (candidatos && candidatos.length) ? candidatos : usuarios.listarActivos();
+  const padded = ` ${t} `;
   const hits = [];
-  for (const u of activos) {
+  for (const u of pool) {
     const nombre   = _norm(u.nombre);
     const primero  = nombre.split(' ')[0];
-    const padded   = ` ${t} `;
     const hitsNombre  = nombre  && padded.includes(` ${nombre} `);
     const hitsPrimero = primero && padded.includes(` ${primero} `);
-    if (hitsNombre || hitsPrimero) hits.push(u);
+    if (hitsNombre || hitsPrimero) hits.push({ u, full: !!hitsNombre });
   }
-  if (hits.length === 1) return hits[0];
+  if (!hits.length) return null;
+  const fulls = hits.filter(h => h.full);
+  if (fulls.length === 1) return { match: fulls[0].u };
+  if (hits.length === 1) return { match: hits[0].u };
+  return { multiple: (fulls.length ? fulls : hits).map(h => h.u) };
+}
+
+// ─── Helpers de desambiguación (homónimos) ──────────────────────────────
+
+/**
+ * Si el remitente está en la libreta de EXACTAMENTE UNO de los candidatos,
+ * ese candidato gana. Usado como desempate silencioso antes de repreguntar.
+ */
+function _desempatarPorLibreta(candidatos, { from = null, cusReal = null, senderEmail = null }) {
+  const lookup = _lookupEnContactos({ from, senderEmail, cusReal });
+  if (!lookup) return null;
+  const hits = lookup.match ? [lookup.match] : (lookup.ambiguo || []);
+  const ids = new Set(candidatos.map(u => u.id));
+  const enCandidatos = hits.filter(h => ids.has(h.usuario.id));
+  const uniq = new Set(enCandidatos.map(h => h.usuario.id));
+  if (uniq.size === 1) return enCandidatos[0].usuario;
+  return null;
+}
+
+function _soloDigitos(s) { return String(s || '').replace(/\D+/g, ''); }
+
+/** ¿`esperandoDe` (wid o email de un follow_up/pendiente) es este remitente? */
+function _mismoRemitente(esperandoDe, { from = null, cusReal = null, senderEmail = null }) {
+  const e = String(esperandoDe || '').trim().toLowerCase();
+  if (!e) return false;
+  if (senderEmail && e === String(senderEmail).trim().toLowerCase()) return true;
+  const dE = _soloDigitos(e);
+  if (dE.length >= 8) {
+    for (const cand of [from, cusReal]) {
+      const dC = _soloDigitos(cand);
+      if (dC.length >= 8 && (dC.endsWith(dE) || dE.endsWith(dC))) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Evidencia dura (verificable en código, no opinión del LLM) de que `usuarioId`
+ * tiene una gestión activa esperando a ESTE remitente: follow_up abierto o
+ * pendiente de Maria con meta.esperando_de que matchee. Es el único caso en
+ * que un match ambiguo de libreta puede auto-rutear.
+ */
+function _evidenciaDuraDeGestion(usuarioId, remitente) {
+  try {
+    const fus = mem.followUpsAbiertos(usuarioId) || [];
+    if (fus.some(f => _mismoRemitente(f.esperando_de, remitente))) return 'follow_up abierto';
+  } catch (err) {
+    console.warn('[unknown-flow] _evidenciaDuraDeGestion follow_ups:', err.message);
+  }
+  try {
+    const pend = mem.listarPendientes(usuarioId) || [];
+    if (pend.some(p => p.dueno === 'maria' && p.meta && p.meta.esperando_de
+        && _mismoRemitente(p.meta.esperando_de, remitente))) return 'pendiente esperando_de';
+  } catch (err) {
+    console.warn('[unknown-flow] _evidenciaDuraDeGestion pendientes:', err.message);
+  }
   return null;
 }
 
@@ -352,6 +423,9 @@ Clasificá el remitente en UNA de estas cuatro opciones:
 
 Reglas:
 - Ante duda, elegí "desconocido". Es MUCHO mejor preguntar que asumir mal.
+- Si arriba hay sección de "matches ambiguos" de libreta: esa lista NO alcanza
+  por sí sola para "tercero_de_usuario". Necesitás evidencia INDEPENDIENTE en
+  los historiales. Si la única señal es la libreta ambigua, devolvé "desconocido".
 - NO inventes usuarios que no estén en la lista.
 - Diferenciá bien B vs C: B es un contacto puntual que responde sobre una
   gestión. C es alguien que el owner pidió agregar PERMANENTEMENTE como
@@ -450,7 +524,7 @@ async function handleWA({ client, msg, contact = null, cuerpo, from: fromArg = n
   // Si ya preguntamos "para quién va" (FSM legacy), seguimos el flujo viejo.
   const estadoFSM = leerEstado('whatsapp', from);
   if (estadoFSM) {
-    return await _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado: estadoFSM, reprocesarComoUsuario });
+    return await _handleWA_FSM_segunda({ client, from, pushname, cuerpo, cusReal, estado: estadoFSM, reprocesarComoUsuario });
   }
 
   // Pre-pass barato: ¿está `from` en la libreta de algún usuario? Si hay
@@ -492,6 +566,22 @@ async function handleWA({ client, msg, contact = null, cuerpo, from: fromArg = n
   if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
     const match = usuarios.obtener(llm.usuario_id);
     if (match && match.activo) {
+      // Candado homónimos (2026-06-12): si la libreta dio match AMBIGUO (mismo
+      // número en libretas de 2+ usuarios), el LLM solo puede desempatar con
+      // evidencia dura verificable en código: gestión activa (follow_up
+      // abierto o pendiente de Maria esperando a ESTE remitente) del usuario
+      // elegido. Sin eso → preguntar, nunca auto-rutear.
+      if (lookupContactos && lookupContactos.ambiguo) {
+        const evidencia = _evidenciaDuraDeGestion(match.id, { from, cusReal });
+        if (!evidencia) {
+          console.log(`[unknown-flow/wa] libreta ambigua y sin gestión activa verificable — no auto-ruteo a ${match.nombre}; pregunto`);
+          return await _handleWA_FSM_primera({
+            client, from, pushname, cuerpo, messageId, cusReal,
+            candidatos: lookupContactos.ambiguo.map(h => h.usuario.id),
+          });
+        }
+        console.log(`[unknown-flow/wa] libreta ambigua pero ${match.nombre} tiene ${evidencia} esperando a este remitente — ruteo`);
+      }
       return await _routearComoTerceroDeUsuario({
         client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
         via: 'llm',
@@ -508,8 +598,13 @@ async function handleWA({ client, msg, contact = null, cuerpo, from: fromArg = n
     });
   }
 
-  // desconocido (o LLM falló) → FSM legacy primera vez (preguntar).
-  return await _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId });
+  // desconocido (o LLM falló) → FSM legacy primera vez (preguntar). Si la
+  // libreta dio ambiguo, arrastramos los candidatos para que la segunda
+  // vuelta desempate solo entre ellos.
+  return await _handleWA_FSM_primera({
+    client, from, pushname, cuerpo, messageId, cusReal,
+    candidatos: lookupContactos && lookupContactos.ambiguo ? lookupContactos.ambiguo.map(h => h.usuario.id) : null,
+  });
 }
 
 async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', mediaInfo = null, reprocesarComoUsuario }) {
@@ -619,7 +714,7 @@ async function _abrirProspectoPendiente({ client, canal, from, pushname, cuerpo,
   return true;
 }
 
-async function _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId }) {
+async function _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId, cusReal = null, candidatos = null }) {
   const owner = _estadoOwner();
   const preguntaTxt = `¡Hola! Soy María, asistente personal. No te tengo registrado. ¿Para quién de las personas que asisto es este mensaje?`;
   try {
@@ -629,6 +724,9 @@ async function _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId
   }
   guardarEstado('whatsapp', from, {
     canal: 'whatsapp', original_body: cuerpo, messageId, pushname,
+    etapa: 'pregunta',
+    cusReal: cusReal || null,
+    candidatos: candidatos && candidatos.length ? candidatos : null,
     ts: new Date().toISOString(),
   });
   if (owner) {
@@ -646,8 +744,60 @@ async function _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId
   return true;
 }
 
-async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado, reprocesarComoUsuario }) {
-  const match = matchearUsuario(cuerpo);
+/**
+ * Cierre neutro + escalado al owner cuando no pudimos rutear con certeza.
+ * Al tercero NUNCA le exponemos la lista de usuarios; el owner sí ve los
+ * candidatos en el aviso y puede rutear a mano.
+ */
+async function _cerrarYEscalarWA({ client, from, pushname, cuerpo, estado, motivo }) {
+  try {
+    await client.sendMessage(from, `Gracias. Le hago llegar tu mensaje a quien corresponde.`);
+  } catch (err) {
+    console.error('[unknown-flow/wa] cierre neutro falló:', err.message);
+  }
+  await _notificarOwner(client,
+    `⚠️ No pude rutear con certeza un mensaje de *${pushname || from}* (${from}) por WA — ${motivo}.\n\n` +
+    `Mensaje original: "${(estado?.original_body || '').slice(0, 400)}"\n` +
+    `Última respuesta: "${(cuerpo || '').slice(0, 400)}"\n\n` +
+    `Le dije que le hago llegar el mensaje. Decime a quién va y se lo paso.`
+  );
+  limpiarEstado('whatsapp', from);
+  console.log(`[unknown-flow/wa] escalado a owner: ${from} — ${motivo}`);
+  return true;
+}
+
+async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, cusReal = null, estado, reprocesarComoUsuario }) {
+  const candidatosPrevios = (estado.candidatos || [])
+    .map(id => usuarios.obtener(id))
+    .filter(u => u && u.activo);
+  const res = matchearUsuario(cuerpo, candidatosPrevios.length ? candidatosPrevios : null);
+  let match = res && res.match ? res.match : null;
+
+  // Homónimos: match múltiple NUNCA auto-rutea. Desempate silencioso por
+  // libreta (¿el remitente está en la libreta de exactamente uno?); si no,
+  // UNA repregunta sin exponer la lista; si sigue ambiguo → owner.
+  if (!match && res && res.multiple) {
+    const porLibreta = _desempatarPorLibreta(res.multiple, { from, cusReal: cusReal || estado.cusReal || null });
+    if (porLibreta) {
+      match = porLibreta;
+      console.log(`[unknown-flow/wa] homónimos desempatados por libreta → ${match.nombre}`);
+    } else if (estado.etapa !== 'desambiguando') {
+      try {
+        await client.sendMessage(from, `¿Me confirmás nombre y apellido completos de la persona, así dirijo bien tu mensaje?`);
+      } catch (err) {
+        console.error('[unknown-flow/wa] repregunta falló:', err.message);
+      }
+      guardarEstado('whatsapp', from, { ...estado, etapa: 'desambiguando', candidatos: res.multiple.map(u => u.id) });
+      console.log(`[unknown-flow/wa] homónimos (${res.multiple.map(u => u.nombre).join(' / ')}) — repregunto sin exponer lista`);
+      return true;
+    } else {
+      return await _cerrarYEscalarWA({
+        client, from, pushname, cuerpo, estado,
+        motivo: `siguió ambiguo entre: ${res.multiple.map(u => u.nombre).join(', ')}`,
+      });
+    }
+  }
+
   if (match) {
     let capturadoLid = false;
     if (from && from.endsWith('@lid') && !match.wa_lid) {
@@ -676,6 +826,12 @@ async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, estado, r
     }
     console.log(`[unknown-flow/wa] FSM routeó ${from} → ${match.nombre}`);
     return true;
+  }
+  // Sin match. Si veníamos de una desambiguación (o sabíamos por libreta que
+  // el remitente es contacto de algún candidato), no mentimos con "no
+  // conozco" — escalamos al owner con cierre neutro.
+  if (estado.etapa === 'desambiguando' || (estado.candidatos && estado.candidatos.length)) {
+    return await _cerrarYEscalarWA({ client, from, pushname, cuerpo, estado, motivo: 'sin match tras preguntar' });
   }
   try {
     await client.sendMessage(from, `Perdón, no conozco a esa persona. Cierro acá.`);
@@ -803,6 +959,19 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
   if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
     const match = usuarios.obtener(llm.usuario_id);
     if (match && match.activo) {
+      // Candado homónimos (2026-06-12): igual que en WA — libreta ambigua solo
+      // auto-rutea con gestión activa verificable del usuario elegido.
+      if (lookupContactos && lookupContactos.ambiguo) {
+        const evidencia = _evidenciaDuraDeGestion(match.id, { senderEmail });
+        if (!evidencia) {
+          console.log(`[unknown-flow/gmail] libreta ambigua y sin gestión activa verificable — no auto-ruteo a ${match.nombre}; pregunto`);
+          return await _handleEmail_FSM_primera({
+            waClient, email, responderEmailFn,
+            candidatos: lookupContactos.ambiguo.map(h => h.usuario.id),
+          });
+        }
+        console.log(`[unknown-flow/gmail] libreta ambigua pero ${match.nombre} tiene ${evidencia} esperando a este remitente — ruteo`);
+      }
       // Log en bucket del usuario destinatario para que aparezca en su
       // historial cross-canal.
       mem.log({
@@ -841,11 +1010,15 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
     });
   }
 
-  // desconocido → FSM primera vez.
-  return await _handleEmail_FSM_primera({ waClient, email, responderEmailFn });
+  // desconocido → FSM primera vez. Si la libreta dio ambiguo, arrastramos
+  // los candidatos para que la segunda vuelta desempate solo entre ellos.
+  return await _handleEmail_FSM_primera({
+    waClient, email, responderEmailFn,
+    candidatos: lookupContactos && lookupContactos.ambiguo ? lookupContactos.ambiguo.map(h => h.usuario.id) : null,
+  });
 }
 
-async function _handleEmail_FSM_primera({ waClient, email, responderEmailFn }) {
+async function _handleEmail_FSM_primera({ waClient, email, responderEmailFn, candidatos = null }) {
   const owner = _estadoOwner();
   const remitenteId = email.de;
   const preguntaTxt = `Hola,
@@ -865,6 +1038,8 @@ María`;
     asunto: email.asunto,
     messageId: email.id,
     threadId: email.threadId,
+    etapa: 'pregunta',
+    candidatos: candidatos && candidatos.length ? candidatos : null,
     ts: new Date().toISOString(),
   });
   if (owner) {
@@ -882,9 +1057,60 @@ María`;
   return true;
 }
 
+/** Cierre neutro + escalado al owner (versión email). */
+async function _cerrarYEscalarEmail({ waClient, email, estado, responderEmailFn, motivo }) {
+  try {
+    await responderEmailFn(email.id, `Gracias. Le hago llegar tu mensaje a quien corresponde.\n\nSaludos,\nMaría`);
+  } catch (err) {
+    console.error('[unknown-flow/gmail] cierre neutro falló:', err.message);
+  }
+  const asuntoOrig = estado?.asunto || email.asunto || '(sin asunto)';
+  await _notificarOwner(waClient,
+    `⚠️ No pude rutear con certeza un email de ${email.de} — ${motivo}.\n\n` +
+    `Asunto: "${asuntoOrig}"\n` +
+    `Mensaje original: "${(estado?.original_body || '').slice(0, 400)}"\n` +
+    `Última respuesta: "${(email.cuerpo || email.snippet || '').slice(0, 400)}"\n\n` +
+    `Le dije que le hago llegar el mensaje. Decime a quién va y se lo paso.`
+  );
+  limpiarEstado('gmail', email.de);
+  console.log(`[unknown-flow/gmail] escalado a owner: ${email.de} — ${motivo}`);
+  return true;
+}
+
 async function _handleEmail_FSM_segunda({ waClient, email, estado, reprocesarComoUsuario, responderEmailFn }) {
   const remitenteId = email.de;
-  const match = matchearUsuario(email.cuerpo || email.snippet || '');
+  const _m = String(remitenteId || '').match(/<([^>]+)>/);
+  const senderEmail = (_m ? _m[1] : String(remitenteId || '')).trim().toLowerCase();
+  const respuesta = email.cuerpo || email.snippet || '';
+  const candidatosPrevios = (estado.candidatos || [])
+    .map(id => usuarios.obtener(id))
+    .filter(u => u && u.activo);
+  const res = matchearUsuario(respuesta, candidatosPrevios.length ? candidatosPrevios : null);
+  let match = res && res.match ? res.match : null;
+
+  // Homónimos: match múltiple NUNCA auto-rutea (mismo esquema que WA).
+  if (!match && res && res.multiple) {
+    const porLibreta = _desempatarPorLibreta(res.multiple, { senderEmail });
+    if (porLibreta) {
+      match = porLibreta;
+      console.log(`[unknown-flow/gmail] homónimos desempatados por libreta → ${match.nombre}`);
+    } else if (estado.etapa !== 'desambiguando') {
+      try {
+        await responderEmailFn(email.id, `Gracias. ¿Me confirmás nombre y apellido completos de la persona, así dirijo bien tu mensaje?\n\nSaludos,\nMaría`);
+      } catch (err) {
+        console.error('[unknown-flow/gmail] repregunta falló:', err.message);
+      }
+      guardarEstado('gmail', remitenteId, { ...estado, etapa: 'desambiguando', candidatos: res.multiple.map(u => u.id) });
+      console.log(`[unknown-flow/gmail] homónimos (${res.multiple.map(u => u.nombre).join(' / ')}) — repregunto sin exponer lista`);
+      return true;
+    } else {
+      return await _cerrarYEscalarEmail({
+        waClient, email, estado, responderEmailFn,
+        motivo: `siguió ambiguo entre: ${res.multiple.map(u => u.nombre).join(', ')}`,
+      });
+    }
+  }
+
   if (match) {
     // No ack-eamos ni avisamos — la respuesta del reprocesar se encarga.
     limpiarEstado('gmail', remitenteId);
@@ -907,6 +1133,11 @@ async function _handleEmail_FSM_segunda({ waClient, email, estado, reprocesarCom
     }
     console.log(`[unknown-flow/gmail] FSM routeó ${email.de} → ${match.nombre}`);
     return true;
+  }
+  // Sin match. Si veníamos de desambiguación o con candidatos de libreta,
+  // escalamos al owner con cierre neutro en vez de "no conozco".
+  if (estado.etapa === 'desambiguando' || (estado.candidatos && estado.candidatos.length)) {
+    return await _cerrarYEscalarEmail({ waClient, email, estado, responderEmailFn, motivo: 'sin match tras preguntar' });
   }
   try {
     await responderEmailFn(email.id, `Perdón, no conozco a esa persona. Cierro acá.\n\nSaludos,\nMaría`);
