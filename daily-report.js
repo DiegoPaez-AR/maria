@@ -84,6 +84,8 @@ function statsInstancia(env) {
                 wa_reconexiones: 0, anomalias: [] },
     latencia: null,     // { total, contextos:[{ctx,n,p50,p95,max}], lentas30, lentas60 }
     programados: null,  // { pendientes, atrasados }
+    gasto: null,        // { total_usd, calls, con_costo }
+    no_ruteado: null,   // { desconocidos:[{hhmm,canal,de,nombre,snippet}], avisos:[{hhmm,snippet}], rebotes:[{hhmm,de,asunto}], prospectos }
     seguridad: {
       // Cada item: { hhmm, jid, nombre, mensaje, is_owner } cuando aplica.
       security_audit: [],        // [security] o [audit] explícitos
@@ -314,6 +316,69 @@ function statsInstancia(env) {
       `).get(_nowIso);
       stats.programados = { pendientes: _prog.pendientes || 0, atrasados: _prog.atrasados || 0 };
 
+      // ── Gasto Claude del día (cost_usd del audit claude_call, 24h) ──
+      // cost_usd viene del stream-json de la CLI; algunos calls viejos o
+      // fallidos no lo traen → con_costo permite ver la cobertura real.
+      const _gasto = db.prepare(`
+        SELECT COUNT(*) AS calls,
+               COUNT(json_extract(metadata_json, '$.cost_usd')) AS con_costo,
+               COALESCE(SUM(json_extract(metadata_json, '$.cost_usd')), 0) AS total
+        FROM eventos
+        WHERE canal = 'sistema' AND timestamp >= ?
+          AND json_extract(metadata_json, '$.tipo') = 'claude_call'
+      `).get(desde);
+      stats.gasto = {
+        total_usd: Number(_gasto.total || 0),
+        calls: _gasto.calls || 0,
+        con_costo: _gasto.con_costo || 0,
+      };
+
+      // ── No ruteado / rebotes (copia operador del catch-all, 24h) ──
+      // Lo que cada Maria no pudo rutear va al owner de SU instancia; esta
+      // sección le da al operador visibilidad cross-instancia.
+      const _hhmmART = (ts) => {
+        try {
+          return new Date(String(ts).replace(' ', 'T') + 'Z')
+            .toLocaleTimeString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', hour: '2-digit', minute: '2-digit' });
+        } catch { return '--:--'; }
+      };
+      const _desconocidos = db.prepare(`
+        SELECT timestamp, canal, de, nombre, asunto, cuerpo
+        FROM eventos
+        WHERE timestamp >= ?
+          AND json_extract(metadata_json, '$.tipo') IN ('unknown_first', 'unknown_pending_followup')
+        ORDER BY timestamp ASC LIMIT 50
+      `).all(desde).map(r => ({
+        hhmm: _hhmmART(r.timestamp), canal: r.canal,
+        de: r.de || '?', nombre: r.nombre || '',
+        snippet: String(r.asunto || r.cuerpo || '').slice(0, 100),
+      }));
+      const _avisos = db.prepare(`
+        SELECT timestamp, cuerpo FROM eventos
+        WHERE timestamp >= ?
+          AND json_extract(metadata_json, '$.tipo') = 'unknown_flow_aviso'
+        ORDER BY timestamp ASC LIMIT 20
+      `).all(desde).map(r => ({
+        hhmm: _hhmmART(r.timestamp),
+        snippet: String(r.cuerpo || '').replace(/\s+/g, ' ').slice(0, 140),
+      }));
+      const _rebotes = db.prepare(`
+        SELECT timestamp, de, asunto FROM eventos
+        WHERE timestamp >= ? AND canal = 'gmail' AND direccion = 'entrante'
+          AND (lower(de) LIKE '%mailer-daemon%' OR lower(de) LIKE '%postmaster%'
+               OR lower(COALESCE(asunto,'')) LIKE '%delivery status notification%'
+               OR lower(COALESCE(asunto,'')) LIKE '%undeliverable%'
+               OR lower(COALESCE(asunto,'')) LIKE '%address not found%')
+        ORDER BY timestamp ASC LIMIT 20
+      `).all(desde).map(r => ({
+        hhmm: _hhmmART(r.timestamp), de: r.de || '?',
+        asunto: String(r.asunto || '').slice(0, 100),
+      }));
+      const _prosp = db.prepare(`
+        SELECT COUNT(*) AS n FROM estado_usuario WHERE clave LIKE 'unknown_pending:%'
+      `).get().n || 0;
+      stats.no_ruteado = { desconocidos: _desconocidos, avisos: _avisos, rebotes: _rebotes, prospectos: _prosp };
+
       const usuarios = db.prepare(`SELECT id, nombre, rol FROM usuarios WHERE activo=1 ORDER BY rol DESC, id`).all();
       for (const u of usuarios) {
         const abiertos = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id=? AND estado='abierto'`).get(u.id).n;
@@ -349,6 +414,8 @@ function renderTexto(allStats, fechaStr) {
   lines.push(`📊 Reporte diario VPS Maria — ${fechaStr}`);
   lines.push('');
   lines.push(`Instancias activas: ${allStats.length}`);
+  const _gastoTotal = allStats.reduce((t, s) => t + (s.gasto ? s.gasto.total_usd : 0), 0);
+  lines.push(`Gasto Claude total 24h: $${_gastoTotal.toFixed(2)} USD`);
   lines.push('');
   for (const s of allStats) {
     lines.push('═══════════════════════════════════════════');
@@ -382,6 +449,28 @@ function renderTexto(allStats, fechaStr) {
       let pl = `Programados en cola: ${s.programados.pendientes}`;
       if (s.programados.atrasados) pl += `  🔴 ${s.programados.atrasados} ATRASADOS`;
       lines.push(pl);
+    }
+    if (s.gasto) {
+      const sinCosto = s.gasto.calls - s.gasto.con_costo;
+      lines.push(`💵 Gasto Claude 24h: $${s.gasto.total_usd.toFixed(2)} USD (${s.gasto.calls} llamadas${sinCosto > 0 ? `, ${sinCosto} sin costo informado` : ''})`);
+    }
+    const NR = s.no_ruteado;
+    if (NR && (NR.desconocidos.length || NR.avisos.length || NR.rebotes.length || NR.prospectos)) {
+      lines.push('📥 No ruteado / rebotes (24h):');
+      if (NR.rebotes.length) {
+        lines.push(`   ✉️ Rebotes de email ×${NR.rebotes.length}:`);
+        for (const r of NR.rebotes) lines.push(`      ${r.hhmm}  ${r.de} — "${r.asunto}"`);
+      }
+      if (NR.desconocidos.length) {
+        lines.push(`   ❓ Desconocidos sin rutear ×${NR.desconocidos.length}:`);
+        for (const d of NR.desconocidos.slice(0, 10)) lines.push(`      ${d.hhmm} [${d.canal}] ${d.nombre || d.de}: "${d.snippet}"`);
+        if (NR.desconocidos.length > 10) lines.push(`      …+${NR.desconocidos.length - 10} más`);
+      }
+      if (NR.avisos.length) {
+        lines.push(`   ⚠️ Cierres/escalados al owner ×${NR.avisos.length}:`);
+        for (const a of NR.avisos.slice(0, 5)) lines.push(`      ${a.hhmm}  ${a.snippet}`);
+      }
+      if (NR.prospectos) lines.push(`   👤 Prospectos esperando confirmación del owner: ${NR.prospectos}`);
     }
     if (e.wa_reconexiones) lines.push(`WA reconexiones (change_state): ${e.wa_reconexiones}`);
 
@@ -472,7 +561,7 @@ function renderHTML(allStats, fechaStr) {
 <tr><td style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:24px;border-radius:12px 12px 0 0;color:#fff;">
   <div style="font-size:13px;opacity:0.85;text-transform:uppercase;letter-spacing:1px;">Reporte diario</div>
   <div style="font-size:26px;font-weight:700;margin-top:4px;">📊 VPS Maria</div>
-  <div style="font-size:14px;opacity:0.9;margin-top:6px;">${_esc(fechaStr)} · ${allStats.length} instancia${allStats.length === 1 ? '' : 's'}</div>
+  <div style="font-size:14px;opacity:0.9;margin-top:6px;">${_esc(fechaStr)} · ${allStats.length} instancia${allStats.length === 1 ? '' : 's'} · 💵 $${allStats.reduce((t, x) => t + (x.gasto ? x.gasto.total_usd : 0), 0).toFixed(2)} USD Claude</div>
 </td></tr>`);
 
   for (const s of allStats) {
@@ -566,11 +655,45 @@ function renderHTML(allStats, fechaStr) {
       const reconLine = e.wa_reconexiones
         ? `<div style="margin-top:6px;font-size:12px;color:#64748b;">🔄 Reconexiones WA (change_state): <strong style="color:#1f2937;">${e.wa_reconexiones}</strong></div>`
         : '';
+      const gastoLine = s.gasto
+        ? `<div style="margin-top:10px;font-size:13px;color:#1f2937;">💵 Gasto Claude 24h: <strong>$${s.gasto.total_usd.toFixed(2)} USD</strong> <span style="color:#94a3b8;font-size:12px;">· ${s.gasto.calls} llamada${s.gasto.calls === 1 ? '' : 's'}${s.gasto.calls - s.gasto.con_costo > 0 ? ` · ${s.gasto.calls - s.gasto.con_costo} sin costo informado` : ''}</span></div>`
+        : '';
       html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
   <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">Rendimiento — latencia Claude (24h)</div>
   <table cellpadding="0" cellspacing="0" border="0" width="100%">${filasLat}</table>
-  ${slowNote}${progLine}${reconLine}
+  ${slowNote}${gastoLine}${progLine}${reconLine}
 </td></tr>`);
+    }
+
+    // ── No ruteado / rebotes (copia operador del catch-all) ──
+    {
+      const NR = s.no_ruteado;
+      if (NR && (NR.desconocidos.length || NR.avisos.length || NR.rebotes.length || NR.prospectos)) {
+        const bloques = [];
+        if (NR.rebotes.length) {
+          bloques.push(`<div style="padding:8px 10px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:3px;margin-bottom:6px;font-size:13px;">
+            <strong>✉️ Rebotes de email ×${NR.rebotes.length}</strong>
+            ${NR.rebotes.map(r => `<div style="margin-top:4px;font-size:12px;color:#475569;"><span style="color:#94a3b8;">${r.hhmm}</span> ${_esc(r.de)} — <em>"${_esc(r.asunto)}"</em></div>`).join('')}</div>`);
+        }
+        if (NR.desconocidos.length) {
+          bloques.push(`<div style="padding:8px 10px;background:#fffbeb;border-left:3px solid #f59e0b;border-radius:3px;margin-bottom:6px;font-size:13px;">
+            <strong>❓ Desconocidos sin rutear ×${NR.desconocidos.length}</strong>
+            ${NR.desconocidos.slice(0, 10).map(d => `<div style="margin-top:4px;font-size:12px;color:#475569;"><span style="color:#94a3b8;">${d.hhmm}</span> [${d.canal}] <strong>${_esc(d.nombre || d.de)}</strong>: <em>"${_esc(d.snippet)}"</em></div>`).join('')}
+            ${NR.desconocidos.length > 10 ? `<div style="margin-top:4px;font-size:11px;color:#94a3b8;">…+${NR.desconocidos.length - 10} más</div>` : ''}</div>`);
+        }
+        if (NR.avisos.length) {
+          bloques.push(`<div style="padding:8px 10px;background:#fafbfc;border-left:3px solid #6366f1;border-radius:3px;margin-bottom:6px;font-size:13px;">
+            <strong>⚠️ Cierres/escalados al owner ×${NR.avisos.length}</strong>
+            ${NR.avisos.slice(0, 5).map(a => `<div style="margin-top:4px;font-size:12px;color:#475569;"><span style="color:#94a3b8;">${a.hhmm}</span> ${_esc(a.snippet)}</div>`).join('')}</div>`);
+        }
+        if (NR.prospectos) {
+          bloques.push(`<div style="padding:8px 10px;background:#f0f9ff;border-left:3px solid #0ea5e9;border-radius:3px;margin-bottom:6px;font-size:13px;"><strong>👤 Prospectos esperando confirmación del owner: ${NR.prospectos}</strong></div>`);
+        }
+        html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">📥 No ruteado / rebotes (24h)</div>
+  ${bloques.join('')}
+</td></tr>`);
+      }
     }
 
     // ── Seguridad (sólo si hay matches en pm2 logs) ──
