@@ -1,0 +1,38 @@
+# ejecutado: 2026-06-14T10:16:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   cat > /tmp/test-filtro.js <<'JS'
+#   const uf = require('/root/secretaria/unknown-flow');
+#   (async () => {
+#     async function probar(de, label){
+#       let escalo = false, reproceso = false, respondio = false;
+#       const email = { de, asunto: 'test '+label, cuerpo: 'x', snippet: 'x', id: 'TEST-'+Date.now()+'-'+Math.random().toString(36).slice(2,6) };
+#       const r = await uf.handleEmail({
+#         waClient: { sendMessage: async()=>{ escalo = true; } },
+#         email,
+#         reprocesarComoUsuario: async()=>{ reproceso = true; },
+#         responderEmailFn: async()=>{ respondio = true; },
+#       });
+#       console.log(`[${label}] de="${de}" -> return=${r} | escalo_owner=${escalo} | reproceso=${reproceso} | respondio=${respondio}`);
+#     }
+#     await probar('Google <no-reply@accounts.google.com>', 'NOREPLY_GOOGLE');
+#     await probar('Workspace <google-workspace-alerts-noreply@google.com>', 'WS_ALERTS');
+#     await probar('Mail Delivery Subsystem <mailer-daemon@googlemail.com>', 'MAILER_DAEMON');
+#   })().catch(e=>console.log('ERR', e.message, e.stack));
+#   JS
+#   timeout 60 node /tmp/test-filtro.js 2>&1
+#   rm -f /tmp/test-filtro.js
+
+# ───── output ─────
+[unknown-flow/gmail] remitente automático/sistema (no-reply@accounts.google.com) — descarto sin avisar
+[NOREPLY_GOOGLE] de="Google <no-reply@accounts.google.com>" -> return=true | escalo_owner=false | reproceso=false | respondio=false
+[unknown-flow/gmail] remitente automático/sistema (google-workspace-alerts-noreply@google.com) — descarto sin avisar
+[WS_ALERTS] de="Workspace <google-workspace-alerts-noreply@google.com>" -> return=true | escalo_owner=false | reproceso=false | respondio=false
+[unknown-flow/gmail] remitente automático/sistema (mailer-daemon@googlemail.com) — descarto sin avisar
+[MAILER_DAEMON] de="Mail Delivery Subsystem <mailer-daemon@googlemail.com>" -> return=true | escalo_owner=false | reproceso=false | respondio=false
+
+# exit=0
