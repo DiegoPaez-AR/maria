@@ -851,7 +851,6 @@ async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, cusReal =
   return true;
 }
 
-/**
 // Remitentes automáticos / de sistema (no-reply de Google, alertas Workspace,
 // mailer-daemon, etc.). NO se escalan al owner ni cuentan como "desconocido sin
 // rutear": son ruido. Los rebotes (mailer-daemon/postmaster) ya se listan
