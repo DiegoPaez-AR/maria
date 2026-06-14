@@ -1,31 +1,3 @@
-0|maria-pa | 2026-06-14 10:02:10: [GMAIL poll] 2 email(s) nuevo(s)
-0|maria-pa | 2026-06-14 10:02:10: [GMAIL ←] Mail Delivery Subsystem <mailer-daemon@googlemail.com> | "Delivery Status Notification (Failure)"
-0|maria-pa | 2026-06-14 10:02:11: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=3 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=14, Fernando Boero=14, Santiago Bignone=0, Doris Capurro=31, Nicolas Kosinski=14, Walter Vera=14, Cristian Ruiz=30, Sebastian Ameijeira=14, Rubén Ward=0, Enrique Sosa=35, Santiago Capurro=60, Facundo Diaz=14, Guillermo Bagnato=14, Andres Neumann=26} remitente=Mail Delivery Subsystem <mailer-daemon@googlemail.com> contactos_ambiguos=0
-0|maria-pa | 2026-06-14 10:02:21: [unknown-flow/gmail] LLM resolucion: desconocido · Es un bounce automático del sistema de correo de Google (mailer-daemon), no corresponde a ningún usuario ni gestión; ya se cerró un thread idéntico el 11/06 sin poder identificar destinatario.
-0|maria-pa | 2026-06-14 10:02:22: [unknown-flow/gmail] primer contacto de Mail Delivery Subsystem <mailer-daemon@googlemail.com> (FSM)
-0|maria-pa | 2026-06-14 10:02:22: [GMAIL ←] Maria Paez <maria.paez@intensa.io> | "Re: Auth self 1781441522"
-0|maria-pa | 2026-06-14 10:02:28: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=47 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=14, Fernando Boero=14, Santiago Bignone=0, Doris Capurro=31, Nicolas Kosinski=14, Walter Vera=14, Cristian Ruiz=30, Sebastian Ameijeira=14, Rubén Ward=0, Enrique Sosa=35, Santiago Capurro=60, Facundo Diaz=14, Guillermo Bagnato=14, Andres Neumann=26} remitente=Maria Paez <maria.paez@intensa.io> contactos_ambiguos=0
-0|maria-pa | 2026-06-14 10:02:51: [unknown-flow/gmail] LLM resolucion: desconocido · maria.paez@intensa.io es la persona real detrás del dominio que comparte nombre con el asistente; viene respondiendo emails automáticos del sistema (reportes VPS, alertas, auth tests) diciendo que no reconoce los mensajes — no es usuario activo, no hay gestión pedida por ningún usuario, ni prospecto mencionado por Diego.
-0|maria-pa | 2026-06-14 10:02:52: [unknown-flow/gmail] primer contacto de Maria Paez <maria.paez@intensa.io> (FSM)
-0|maria-pa | 2026-06-14 10:07:10: [GMAIL poll] 1 email(s) nuevo(s)
-0|maria-pa | 2026-06-14 10:07:10: [GMAIL ←] Maria Paez <maria.paez@intensa.io> | "Re: Auth self 1781441522"
-0|maria-pa | 2026-06-14 10:12:02: 
-0|maria-pa | 2026-06-14 10:12:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-06-14 10:12:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-14 10:12:04: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-06-14 10:12:04:   Owner:      Diego (id=1)
-0|maria-pa | 2026-06-14 10:12:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato, Andres Neumann
-0|maria-pa | 2026-06-14 10:12:04:   Gmail poll: cada 300s
-0|maria-pa | 2026-06-14 10:12:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-06-14 10:12:04: ✓ whisper OK
-0|maria-pa | 2026-06-14 10:12:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-06-14 10:12:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-06-14 10:12:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-06-14 10:12:09: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-06-14 10:12:09: [WA authenticated]
-0|maria-pa | 2026-06-14 10:12:11: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-06-14 10:12:11: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-06-14 10:12:11: ▸ arrancando loop de recordatorios (cada 30min)
 0|maria-pa | 2026-06-14 10:12:11: ▸ arrancando dispatcher de programados (cada 60s)
 0|maria-pa | 2026-06-14 10:12:11: ▸ arrancando morning-brief (por usuario, ventana 4h)
 0|maria-pa | 2026-06-14 10:12:11: [morning-brief] activo, ventana 4h, cada usuario en su tz
@@ -197,4 +169,32 @@
 0|maria-pa | 2026-06-14 19:38:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
 0|maria-pa | 2026-06-14 19:38:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
 0|maria-pa | 2026-06-14 19:38:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-06-14 19:38:09: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-06-14 19:38:10: [WA authenticated]
+0|maria-pa | 2026-06-14 19:38:11: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-06-14 19:38:11: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-06-14 19:38:11: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-06-14 19:38:11: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-06-14 19:38:11: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-06-14 19:38:11: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+0|maria-pa | 2026-06-14 19:38:11: [cumple-avisos] activo, ventana 20-23h tz usuario
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando resumen-semanal (domingos, tz usuario)
+0|maria-pa | 2026-06-14 19:38:11: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando poda-eventos (diario)
+0|maria-pa | 2026-06-14 19:38:11: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+0|maria-pa | 2026-06-14 19:38:11: ▸ arrancando drainer de diferidos (horas de silencio)
+0|maria-pa | 2026-06-14 19:38:11: [diferidos] drainer activo (cada 5min)
+0|maria-pa | 2026-06-14 19:38:11: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-06-14 19:39:01: [memoria-curada] Diego × Evelia Restaurante: nota actualizada (5 eventos nuevos, 1786 chars)
+0|maria-pa | 2026-06-14 19:39:02: [memoria-curada] tick: 1/188 contactos curados
 
