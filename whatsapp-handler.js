@@ -311,15 +311,15 @@ async function _componerAvisoFallas(usuario, textoQueLeDijo, fallasVisibles) {
   const prompt = [
     `Sos ${nombreAsis}, secretaria personal de ${usuario.nombre}. Hablás en primera persona, como una persona real. NUNCA mencionás "sistema", "acción", "bot" ni nombres técnicos (crear_evento, enviar_wa, forzar, etc.).`,
     ``,
-    `Hace un momento le dijiste esto a ${usuario.nombre} por WhatsApp:`,
+    `Ibas a decirle esto a ${usuario.nombre} por WhatsApp (OJO: todavía NO se lo enviaste — este aviso REEMPLAZA ese mensaje, así que tiene que ser coherente leído solo):`,
     `<<<`,
-    String(textoQueLeDijo || '(no le dijiste nada todavía)').slice(0, 1200),
+    String(textoQueLeDijo || '(no ibas a decirle nada en particular)').slice(0, 1200),
     `>>>`,
     ``,
     `Pero una o más de las cosas que ibas a hacer NO se concretaron. Detalle TÉCNICO — es solo para que entiendas vos qué pasó; NO lo copies literal ni uses su vocabulario:`,
     detalle,
     ``,
-    `Redactá un mensaje breve y natural para ${usuario.nombre} avisándole con honestidad qué quedó sin hacer y por qué, en tu voz. Si el detalle indica que se puede reintentar con su confirmación (por ejemplo: un evento que se superpone con otro y se podría agendar igual encima), ofrecele esa opción en lenguaje natural. Si no hay nada que el usuario pueda decidir, simplemente avisale con claridad. Nada de jerga ni nombres técnicos.`,
+    `Redactá UN mensaje breve y natural para ${usuario.nombre} (es el ÚNICO que va a recibir) avisándole con honestidad qué pudiste hacer y qué no, y por qué, en tu voz. NO confirmes como hecho nada que figure como fallado arriba. Si el detalle indica que se puede reintentar con su confirmación (por ejemplo: un evento que se superpone con otro y se podría agendar igual encima), ofrecele esa opción en lenguaje natural. Si no hay nada que el usuario pueda decidir, simplemente avisale con claridad. Nada de jerga ni nombres técnicos.`,
     ``,
     `Respondé SOLO con JSON válido, sin markdown: {"aviso": "el texto del mensaje"}`,
   ].join('\n');
@@ -861,113 +861,101 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     return !!(last && last > startTs);
   }
 
-  // 1) Mandar al usuario atendido (si hay texto y destino).
-  if (respUsr.trim() && destinoUsuario) {
-    if (_hayMsgNuevoDesdeStart()) {
-      outFlags.abortado = true;
-      console.log(`[WA →usr] ABORTADO ${usuario.nombre} (${destinoUsuario}): llegó msg nuevo durante procesamiento — el próximo lote responde`);
-    } else
-    try {
-      await client.sendMessage(destinoUsuario, respUsr);
-      mem.log({
-        usuarioId: usuario.id,
-        canal: 'whatsapp', direccion: 'saliente',
-        de: destinoUsuario, nombre: usuario.nombre, cuerpo: respUsr,
-        metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_usuario' },
+  // ── Commit atómico: ACCIONES primero, después UN mensaje al usuario ──────
+  // Si llegó un mensaje nuevo mientras generábamos esta respuesta, abortamos
+  // TODO (sends + acciones): el próximo lote (que ya incluye el msg nuevo)
+  // regenera una respuesta coherente. Las acciones NO son idempotentes
+  // (enviar_wa/crear_evento duplicarían al re-procesar), por eso van junto al
+  // send, en un solo punto.
+  if (_hayMsgNuevoDesdeStart()) {
+    outFlags.abortado = true;
+    console.log(`[WA →usr] ABORTADO ${usuario.nombre} (${destinoUsuario}): llegó msg nuevo durante procesamiento — el próximo lote responde${acciones.length ? ` (${acciones.length} acción/es salteadas)` : ''}`);
+  } else {
+    // 1) Acciones PRIMERO: sabemos qué se concretó ANTES de confirmarle al
+    //    usuario. Evita el "ya les escribo" seguido de "no pude escribirles".
+    let fallasVisibles = [];
+    if (acciones.length) {
+      const resultados = await ejecutarAcciones(acciones, {
+        usuario,
+        waClient: client,
+        canalOrigen: 'whatsapp',
       });
-      console.log(`[WA →usr] ${usuario.nombre} (${destinoUsuario}): ${respUsr.slice(0, 160)}`);
-    } catch (err) {
-      console.error('[WA] enviar respuesta_a_usuario falló:', err.message);
-      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta_a_usuario');
+      const ok = resultados.filter(r => r.ok).length;
+      console.log(`[WA acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
+      if (ok < resultados.length) {
+        console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ` +
+          resultados.filter(r => !r.ok).map(r => `${r.accion?.tipo || '?'}: ${r.error}`).join(' | '));
+        // Acciones con efecto externo que el usuario "ve" → si fallan, hay que
+        // avisarle en vez de confirmar.
+        const ACCIONES_VISIBLES = new Set([
+          'enviar_wa', 'reenviar_wa', 'enviar_email', 'responder_email',
+          'programar_mensaje', 'cancelar_programado',
+          'crear_evento', 'modificar_evento', 'borrar_evento',
+        ]);
+        fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
+      }
     }
-  }
 
-  // 2) Mandar al remitente (si hay texto, hay destino, y NO es el mismo
-  //    chat que el usuario — evitamos doble mensaje en flujo normal).
-  if (respRem.trim() && destinoRemitente && !remitenteEsUsuario) {
-    if (_hayMsgNuevoDesdeStart()) {
-      outFlags.abortado = true;
-      console.log(`[WA →3ro] ABORTADO ${entrada.nombre || destinoRemitente}: llegó msg nuevo durante procesamiento`);
-    } else
-    try {
-      await client.sendMessage(destinoRemitente, respRem);
-      mem.log({
-        usuarioId: usuario.id,
-        canal: 'whatsapp', direccion: 'saliente',
-        de: destinoRemitente, nombre: entrada.nombre, cuerpo: respRem,
-        metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_remitente', tercero: true },
-      });
-      console.log(`[WA →3ro] ${usuario.nombre}/${entrada.nombre || destinoRemitente}: ${respRem.slice(0, 160)}`);
-    } catch (err) {
-      console.error('[WA] enviar respuesta_a_remitente falló:', err.message);
-      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta_a_remitente');
-    }
-  } else if (respRem.trim() && remitenteEsUsuario && !respUsr.trim()) {
-    // Caso edge: flujo normal y el LLM puso el texto en respuesta_a_remitente
-    // en vez de respuesta_a_usuario. Para no perder el mensaje, lo mandamos
-    // al usuario (que es el remitente).
-    if (_hayMsgNuevoDesdeStart()) {
-      outFlags.abortado = true;
-      console.log(`[WA →usr/fb] ABORTADO ${usuario.nombre}: llegó msg nuevo durante procesamiento`);
-    } else
-    try {
-      await client.sendMessage(destinoUsuario, respRem);
-      mem.log({
-        usuarioId: usuario.id,
-        canal: 'whatsapp', direccion: 'saliente',
-        de: destinoUsuario, nombre: usuario.nombre, cuerpo: respRem,
-        metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_remitente_redirected_to_usuario' },
-      });
-      console.log(`[WA →usr] ${usuario.nombre} (${destinoUsuario}) [via respuesta_a_remitente]: ${respRem.slice(0, 160)}`);
-    } catch (err) {
-      console.error('[WA] enviar respuesta (redirect) falló:', err.message);
-      if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage redirect');
-    }
-  }
-
-  if (acciones.length && outFlags.abortado) {
-    // Lote abortado: los items se re-encolan y el próximo lote re-genera
-    // las acciones. Ejecutarlas acá Y al re-procesar = doble evento/envío.
-    console.log(`[WA acciones/${usuario.nombre}] SALTEADAS ${acciones.length} acción(es) — lote abortado, se re-procesan con el próximo lote`);
-  } else if (acciones.length) {
-    const resultados = await ejecutarAcciones(acciones, {
-      usuario,
-      waClient: client,
-      canalOrigen: 'whatsapp',
-    });
-    const ok = resultados.filter(r => r.ok).length;
-    console.log(`[WA acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
-    if (ok < resultados.length) {
-      const fallas = resultados
-        .filter(r => !r.ok)
-        .map(r => `${r.accion?.tipo || '?'}: ${r.error}`)
-        .join(' | ');
-      console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ${fallas}`);
-
-      // Si una acción CON efecto externo (envío, evento, email, programación)
-      // falló, Maria redacta el aviso para el usuario en su propia voz vía un
-      // segundo turno acotado (_componerAvisoFallas). El error crudo del
-      // executor NUNCA va literal al usuario — es vocabulario interno del LLM.
-      const ACCIONES_VISIBLES = new Set([
-        'enviar_wa', 'reenviar_wa', 'enviar_email', 'responder_email',
-        'programar_mensaje', 'cancelar_programado',
-        'crear_evento', 'modificar_evento', 'borrar_evento',
-      ]);
-      const fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
-      if (fallasVisibles.length && destinoUsuario) {
-        const aviso = await _componerAvisoFallas(usuario, respUsr, fallasVisibles);
+    // 2) Mensaje al usuario atendido. Si una acción visible falló, mandamos el
+    //    aviso honesto (redactado por Maria) EN LUGAR de la confirmación
+    //    optimista — un solo mensaje, sin contradicción. Si no, la respuesta
+    //    normal del LLM.
+    if (destinoUsuario && (respUsr.trim() || fallasVisibles.length)) {
+      let textoUsr = respUsr;
+      let slot = 'respuesta_a_usuario';
+      if (fallasVisibles.length) {
+        textoUsr = await _componerAvisoFallas(usuario, respUsr, fallasVisibles);
+        slot = 'respuesta_con_fallos';
+      }
+      if (textoUsr && textoUsr.trim()) {
         try {
-          await client.sendMessage(destinoUsuario, aviso);
+          await client.sendMessage(destinoUsuario, textoUsr);
           mem.log({
             usuarioId: usuario.id,
             canal: 'whatsapp', direccion: 'saliente',
-            de: destinoUsuario, nombre: usuario.nombre, cuerpo: aviso,
-            metadata: { slot: 'aviso_fallos', fallas: fallasVisibles.length },
+            de: destinoUsuario, nombre: usuario.nombre, cuerpo: textoUsr,
+            metadata: { razonamiento, inReplyTo: entrada.messageId, slot, ...(fallasVisibles.length ? { fallas: fallasVisibles.length } : {}) },
           });
-          console.log(`[WA →usr] AVISO fallos a ${usuario.nombre}: ${fallasVisibles.length}`);
+          console.log(`[WA →usr] ${usuario.nombre} (${destinoUsuario})${fallasVisibles.length ? ' [con fallos]' : ''}: ${textoUsr.slice(0, 160)}`);
         } catch (err) {
-          console.error('[WA] enviar aviso fallos falló:', err.message);
+          console.error('[WA] enviar respuesta_a_usuario falló:', err.message);
+          if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta_a_usuario');
         }
+      }
+    }
+
+    // 3) Mandar al remitente tercero (si hay texto, hay destino, y NO es el
+    //    mismo chat que el usuario — evitamos doble mensaje en flujo normal).
+    if (respRem.trim() && destinoRemitente && !remitenteEsUsuario) {
+      try {
+        await client.sendMessage(destinoRemitente, respRem);
+        mem.log({
+          usuarioId: usuario.id,
+          canal: 'whatsapp', direccion: 'saliente',
+          de: destinoRemitente, nombre: entrada.nombre, cuerpo: respRem,
+          metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_remitente', tercero: true },
+        });
+        console.log(`[WA →3ro] ${usuario.nombre}/${entrada.nombre || destinoRemitente}: ${respRem.slice(0, 160)}`);
+      } catch (err) {
+        console.error('[WA] enviar respuesta_a_remitente falló:', err.message);
+        if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage respuesta_a_remitente');
+      }
+    } else if (respRem.trim() && remitenteEsUsuario && !respUsr.trim() && !fallasVisibles.length) {
+      // Edge: el LLM puso el texto en respuesta_a_remitente en vez de
+      // respuesta_a_usuario y el remitente es el propio usuario. (Si hubo
+      // fallos, en (2) ya le mandamos el aviso al usuario — no duplicamos.)
+      try {
+        await client.sendMessage(destinoUsuario, respRem);
+        mem.log({
+          usuarioId: usuario.id,
+          canal: 'whatsapp', direccion: 'saliente',
+          de: destinoUsuario, nombre: usuario.nombre, cuerpo: respRem,
+          metadata: { razonamiento, inReplyTo: entrada.messageId, slot: 'respuesta_a_remitente_redirected_to_usuario' },
+        });
+        console.log(`[WA →usr] ${usuario.nombre} (${destinoUsuario}) [via respuesta_a_remitente]: ${respRem.slice(0, 160)}`);
+      } catch (err) {
+        console.error('[WA] enviar respuesta (redirect) falló:', err.message);
+        if (client._watchdogFrameMuerto) client._watchdogFrameMuerto(err, 'sendMessage redirect');
       }
     }
   }
