@@ -33,9 +33,17 @@ db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
 
 // Env de fallback para el bootstrap inicial (solo si `usuarios` está vacía).
-const OWNER_NOMBRE   = process.env.OWNER_NOMBRE   || 'Diego';
-const OWNER_WA_CUS   = process.env.OWNER_WA       || process.env.DIEGO_WA    || '541132317896@c.us';
-const OWNER_EMAIL    = process.env.OWNER_EMAIL    || process.env.DIEGO_EMAIL || 'diego@paez.is';
+// Identidad del owner para el bootstrap inicial. Se lee del .conf de CADA
+// instancia (OWNER_NOMBRE/OWNER_WA/OWNER_EMAIL). NO hay default a Diego: si
+// faltan y hay que crear un owner nuevo, _asegurarOwner tira error (mejor
+// fallar fuerte que asignar a Diego como owner de otra instancia por error).
+// DIEGO_* se mantiene solo como alias legacy de env (sin literal hardcodeado).
+const OWNER_NOMBRE   = process.env.OWNER_NOMBRE   || process.env.DIEGO_NOMBRE || null;
+const _OWNER_WA_RAW  = process.env.OWNER_WA       || process.env.DIEGO_WA     || null;
+const OWNER_WA_CUS   = _OWNER_WA_RAW
+  ? (_OWNER_WA_RAW.includes('@') ? _OWNER_WA_RAW : `${_OWNER_WA_RAW.replace(/\D/g, '')}@c.us`)
+  : null;
+const OWNER_EMAIL    = process.env.OWNER_EMAIL    || process.env.DIEGO_EMAIL  || null;
 const OWNER_CAL_ID   = process.env.OWNER_CALENDAR_ID || OWNER_EMAIL;
 const OWNER_TZ       = process.env.MARIA_TZ       || 'America/Argentina/Buenos_Aires';
 
@@ -196,7 +204,11 @@ function _asegurarOwner() {
     db.prepare(`UPDATE usuarios SET rol = 'owner' WHERE id = ?`).run(algunUsuario.id);
     return algunUsuario.id;
   }
-  // Crear owner desde env.
+  // Crear owner desde env. Sin OWNER_* NO inventamos uno (evitamos asignar a
+  // Diego como owner de otra instancia por error): fallamos fuerte y visible.
+  if (!OWNER_NOMBRE || !OWNER_WA_CUS || !OWNER_EMAIL) {
+    throw new Error('[memory] No hay owner en la DB y faltan OWNER_NOMBRE/OWNER_WA/OWNER_EMAIL en el .conf de la instancia. Completá esas variables en config/instances/<slug>.conf y reiniciá (no creo un owner por default).');
+  }
   const info = db.prepare(`
     INSERT INTO usuarios (nombre, wa_cus, email, calendar_id, rol, tz, activo)
     VALUES (?, ?, ?, ?, 'owner', ?, 1)

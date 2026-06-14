@@ -852,6 +852,23 @@ async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, cusReal =
 }
 
 /**
+// Remitentes automáticos / de sistema (no-reply de Google, alertas Workspace,
+// mailer-daemon, etc.). NO se escalan al owner ni cuentan como "desconocido sin
+// rutear": son ruido. Los rebotes (mailer-daemon/postmaster) ya se listan
+// aparte en el daily-report.
+const _SISTEMA_LOCALPART_RE = /^(no-?reply|noreply|no_reply|do-?not-?reply|donotreply|mailer-daemon|postmaster|bounce|bounces)([._+-].*)?$/i;
+const _SISTEMA_EXACTOS = new Set([
+  'no-reply@accounts.google.com',
+  'google-workspace-alerts-noreply@google.com',
+]);
+function _esRemitenteSistemaAutomatico(senderEmail) {
+  const e = String(senderEmail || '').toLowerCase().trim();
+  if (!e.includes('@')) return false;
+  if (_SISTEMA_EXACTOS.has(e)) return true;
+  return _SISTEMA_LOCALPART_RE.test(e.split('@')[0]);
+}
+
+/*
  * Handler para Gmail. Mismo esquema que WA pero el canal es email.
  */
 async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEmailFn }) {
@@ -859,6 +876,19 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
   const m = String(remitenteId || '').match(/<([^>]+)>/);
   const senderEmail = (m ? m[1] : String(remitenteId || '')).trim().toLowerCase();
   const owner = _estadoOwner();
+
+  // Descartar mails automáticos / de sistema SIN avisar: no escalamos al owner,
+  // no abrimos prospecto, no contamos como "desconocido", no gastamos LLM.
+  if (_esRemitenteSistemaAutomatico(senderEmail)) {
+    mem.log({
+      usuarioId: owner ? owner.id : null,
+      canal: 'sistema', direccion: 'interno',
+      cuerpo: `[unknown-flow] descarté mail automático de ${senderEmail} (asunto: ${email.asunto || '-'})`,
+      metadata: { tipo: 'descartado_automatico', messageId: email.id, senderEmail },
+    });
+    console.log(`[unknown-flow/gmail] remitente automático/sistema (${senderEmail}) — descarto sin avisar`);
+    return true;
+  }
 
   const pendPrev = leerProspectoPendiente('gmail', remitenteId);
   if (pendPrev) {
