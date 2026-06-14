@@ -1,0 +1,74 @@
+# ejecutado: 2026-06-14T09:51:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   STAMP=$(date +%s)
+#   cat > /tmp/test-auth-mail.js <<JS
+#   const g = require('./google');
+#   const STAMP = "${STAMP}";
+#   (async () => {
+#     const verifier = 'check-auth@verifier.port25.com';
+#     const self = g.MARIA_EMAIL;
+#     console.log('FROM (Maria):', self, '| FROM_NAME:', g.MARIA_FROM_NAME);
+#     try { const r = await g.enviarEmail({ to: verifier, asunto: 'Auth test '+STAMP, texto: 'Test SPF/DKIM/DMARC para intensa.io. '+STAMP }); console.log('OK envio verifier id=', r.id); }
+#     catch(e){ console.log('ERROR envio verifier:', e.message); }
+#     try { const r = await g.enviarEmail({ to: self, asunto: 'Auth self '+STAMP, texto: 'self copy '+STAMP }); console.log('OK envio self id=', r.id); }
+#     catch(e){ console.log('ERROR envio self:', e.message); }
+#   
+#     console.log('esperando 70s la respuesta del verifier...');
+#     await new Promise(r => setTimeout(r, 70000));
+#   
+#     const { google } = require('googleapis');
+#     const auth = await g.autenticar();
+#     const gmail = google.gmail({ version:'v1', auth });
+#     async function dump(q, label){
+#       const list = await gmail.users.messages.list({ userId:'me', q, maxResults:5 });
+#       const ids = (list.data.messages||[]).map(m=>m.id);
+#       console.log('\n===== '+label+' (q='+q+') -> '+ids.length+' msgs =====');
+#       for (const id of ids){
+#         const m = await gmail.users.messages.get({ userId:'me', id, format:'full' });
+#         const H = Object.fromEntries((m.data.payload?.headers||[]).map(h=>[h.name.toLowerCase(), h.value]));
+#         console.log('--- subj="'+(H.subject||'')+'" from="'+(H.from||'')+'" ---');
+#         if (H['authentication-results']) console.log('Authentication-Results: '+H['authentication-results']);
+#         if (H['received-spf']) console.log('Received-SPF: '+H['received-spf']);
+#         try { const full = await g.leerEmail(id);
+#           const lines = (full.cuerpo||'').split('\n').filter(l=>/spf|dkim|dmarc|result|summary|pass|fail|signature/i.test(l));
+#           if (lines.length) console.log('Body:\n'+lines.slice(0,30).join('\n'));
+#         } catch(e){}
+#       }
+#     }
+#     await dump('from:port25.com newer_than:1d', 'VERIFIER REPLY');
+#     await dump('subject:"Auth self '+STAMP+'"', 'SELF COPY');
+#   })().catch(e=>console.log('FATAL', e.message, e.stack));
+#   JS
+#   node /tmp/test-auth-mail.js 2>&1
+#   rm -f /tmp/test-auth-mail.js
+
+# ───── output ─────
+node:internal/modules/cjs/loader:1137
+  throw err;
+  ^
+
+Error: Cannot find module './google'
+Require stack:
+- /tmp/test-auth-mail.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1134:15)
+    at Module._load (node:internal/modules/cjs/loader:975:27)
+    at Module.require (node:internal/modules/cjs/loader:1225:19)
+    at require (node:internal/modules/helpers:177:18)
+    at Object.<anonymous> (/tmp/test-auth-mail.js:1:11)
+    at Module._compile (node:internal/modules/cjs/loader:1356:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
+    at Module.load (node:internal/modules/cjs/loader:1197:32)
+    at Module._load (node:internal/modules/cjs/loader:1013:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/tmp/test-auth-mail.js' ]
+}
+
+Node.js v18.19.1
+
+# exit=0
