@@ -226,7 +226,7 @@ async function tickUsuario(waClient, usuario) {
 }
 
 async function tick(waClient) {
-  const activos = usuarios.listarActivos();
+  const activos = usuarios.listarServidos();
   for (const u of activos) {
     try { await tickUsuario(waClient, u); }
     catch (err) { console.error(`[morning-brief/${u.nombre}] tick:`, err.message); }

@@ -13,7 +13,7 @@
 // Si un pendiente tiene `recordar_desde` seteado, el loop lo ignora hasta
 // que esa fecha pase (postpone explícito vía posponer_pendiente).
 //
-// Multi-user: iteramos usuarios.listarActivos(). Cada usuario tiene sus
+// Multi-user: iteramos usuarios.listarServidos(). Cada usuario tiene sus
 // propios pendientes, su propio cooldown (en estado_usuario) y su propio
 // destino WA (wa_lid || wa_cus).
 
@@ -151,7 +151,7 @@ async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waC
 async function tickOnce({ waClient } = {}) {
   if (!waClient) return { enviado: false, motivo: 'no-waClient' };
 
-  const activos = usuarios.listarActivos();
+  const activos = usuarios.listarServidos();
   const resultados = [];
   for (const u of activos) {
     const pendientes = mem.listarPendientes(u.id);

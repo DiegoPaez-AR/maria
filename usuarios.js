@@ -13,6 +13,7 @@ const db  = mem.db;
 // ─── Queries ─────────────────────────────────────────────────────────────
 
 const qTodos         = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 ORDER BY id ASC`);
+const qServidos      = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 AND servido = 1 ORDER BY id ASC`);
 const qTodosIncl     = db.prepare(`SELECT * FROM usuarios ORDER BY id ASC`);
 const qPorId         = db.prepare(`SELECT * FROM usuarios WHERE id = ?`);
 const qPorNombre     = db.prepare(`SELECT * FROM usuarios WHERE nombre = ? COLLATE NOCASE AND activo = 1`);
@@ -51,6 +52,10 @@ const updateUbicacionCoords = db.prepare(`
 // ─── Listado / búsqueda ──────────────────────────────────────────────────
 
 function listarActivos() { return qTodos.all(); }
+// Solo los usuarios ATENDIDOS (servido=1). Lo usan los loops de servicio
+// (brief, recordatorios, cumple, resumen, meeting-prep) para no proactivar a
+// un owner/operador que es solo admin (servido=0).
+function listarServidos() { return qServidos.all(); }
 function listarTodos()   { return qTodosIncl.all(); }
 
 function obtener(id) { return qPorId.get(id) || null; }
@@ -452,6 +457,7 @@ function setUbicacionCoords(usuarioId, lat, lon) {
 
 module.exports = {
   listarActivos,
+  listarServidos,
   listarTodos,
   obtener,
   obtenerOwner,

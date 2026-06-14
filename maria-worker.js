@@ -79,6 +79,7 @@ function _armarEntrada(usuario, p) {
 async function procesarUno(waClient, p) {
   const usuario = usuarios.obtener(p.usuario_id);
   if (!usuario || usuario.activo === 0) return false;
+  if (usuario.servido === 0) return false; // owner/operador solo-admin: no proactivamos
 
   const meta = p.meta || {};
   if (meta.worker_pausado) return false;

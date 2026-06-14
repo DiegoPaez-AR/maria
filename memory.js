@@ -46,6 +46,9 @@ const OWNER_WA_CUS   = _OWNER_WA_RAW
 const OWNER_EMAIL    = process.env.OWNER_EMAIL    || process.env.DIEGO_EMAIL  || null;
 const OWNER_CAL_ID   = process.env.OWNER_CALENDAR_ID || OWNER_EMAIL;
 const OWNER_TZ       = process.env.MARIA_TZ       || 'America/Argentina/Buenos_Aires';
+// Si el owner es solo admin/operador y NO un usuario atendido, setear OWNER_SERVIDO=0
+// en el .conf. Default 1 (atendido como cualquier usuario).
+const OWNER_SERVIDO  = /^(0|no|false)$/i.test(String(process.env.OWNER_SERVIDO || '').trim()) ? 0 : 1;
 
 // ─── Schema base (idempotente) ────────────────────────────────────────────
 
@@ -58,6 +61,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   email        TEXT UNIQUE,
   calendar_id  TEXT,
   rol          TEXT NOT NULL DEFAULT 'usuario' CHECK(rol IN ('owner','usuario')),
+  servido      INTEGER NOT NULL DEFAULT 1,   -- 1=Maria le da servicio (brief/recordatorios/etc); 0=solo admin/owner, no atendido
   tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
   brief_hora   TEXT DEFAULT '07',
   brief_minuto TEXT DEFAULT '00',
@@ -210,10 +214,10 @@ function _asegurarOwner() {
     throw new Error('[memory] No hay owner en la DB y faltan OWNER_NOMBRE/OWNER_WA/OWNER_EMAIL en el .conf de la instancia. Completá esas variables en config/instances/<slug>.conf y reiniciá (no creo un owner por default).');
   }
   const info = db.prepare(`
-    INSERT INTO usuarios (nombre, wa_cus, email, calendar_id, rol, tz, activo)
-    VALUES (?, ?, ?, ?, 'owner', ?, 1)
-  `).run(OWNER_NOMBRE, OWNER_WA_CUS, OWNER_EMAIL, OWNER_CAL_ID, OWNER_TZ);
-  console.log(`[memory] owner creado: ${OWNER_NOMBRE} (id=${info.lastInsertRowid})`);
+    INSERT INTO usuarios (nombre, wa_cus, email, calendar_id, rol, tz, activo, servido)
+    VALUES (?, ?, ?, ?, 'owner', ?, 1, ?)
+  `).run(OWNER_NOMBRE, OWNER_WA_CUS, OWNER_EMAIL, OWNER_CAL_ID, OWNER_TZ, OWNER_SERVIDO);
+  console.log(`[memory] owner creado: ${OWNER_NOMBRE} (id=${info.lastInsertRowid}, servido=${OWNER_SERVIDO})`);
   return info.lastInsertRowid;
 }
 
@@ -233,6 +237,16 @@ function _migrarAgregarUsuarioId(tabla) {
 for (const t of ['eventos', 'pendientes', 'programados']) {
   _migrarAgregarUsuarioId(t);
 }
+
+// Migración: usuarios.servido (1=atendido, 0=solo admin/owner). Default 1 →
+// usuarios existentes (incluido el owner ya creado) siguen siendo atendidos.
+function _migrarUsuariosServido() {
+  if (_tieneColumna('usuarios', 'servido')) return false;
+  db.exec(`ALTER TABLE usuarios ADD COLUMN servido INTEGER NOT NULL DEFAULT 1`);
+  console.log('[memory] migración: usuarios.servido agregado (default 1 = atendido)');
+  return true;
+}
+_migrarUsuariosServido();
 
 // Migración: usuarios.calendar_acceso (none|read|write).
 // Modela los 3 tiers de integración con calendar:

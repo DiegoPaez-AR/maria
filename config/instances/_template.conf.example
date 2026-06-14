@@ -22,6 +22,10 @@ OWNER_NOMBRE=NombreOwner
 OWNER_EMAIL=owner@dominio
 OWNER_WA=549XXXXXXXXXX@c.us
 OWNER_CALENDAR_ID=owner@dominio
+# OWNER_SERVIDO: 1 (default) = el owner es también un usuario atendido (recibe
+# brief, recordatorios, etc.). 0 = el owner es solo admin/operador y NO recibe
+# servicio proactivo (pero sigue siendo owner y recibe escalados/alertas).
+OWNER_SERVIDO=1
 
 # ─── Cap de usuarios (vacío = ilimitado) ─────────────────────────────────
 # ASISTENTE_MAX_USUARIOS=10

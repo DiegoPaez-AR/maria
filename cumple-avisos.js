@@ -79,7 +79,7 @@ async function tickUsuario(waClient, usuario) {
 }
 
 async function tick(waClient) {
-  for (const u of usuarios.listarActivos()) {
+  for (const u of usuarios.listarServidos()) {
     try { await tickUsuario(waClient, u); }
     catch (err) { console.error(`[cumple-avisos/${u.nombre}] tick:`, err.message); }
   }

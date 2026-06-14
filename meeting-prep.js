@@ -128,7 +128,7 @@ async function _tickUsuario(usuario) {
 }
 
 async function tick() {
-  const activos = usuarios.listarActivos();
+  const activos = usuarios.listarServidos();
   let total = 0;
   for (const u of activos) {
     try { total += await _tickUsuario(u); }
