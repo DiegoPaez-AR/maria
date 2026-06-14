@@ -1,4 +1,4 @@
-# ejecutado: 2026-06-14T09:51:02-03:00
+# ejecutado: 2026-06-14T09:52:02-03:00
 # host: ubuntu-4gb-nbg1-2
 # instancia: maria-paez
 # script:
@@ -7,7 +7,8 @@
 #   cd /root/secretaria || exit 1
 #   STAMP=$(date +%s)
 #   cat > /tmp/test-auth-mail.js <<JS
-#   const g = require('./google');
+#   const g = require('/root/secretaria/google');
+#   const { google } = require('/root/secretaria/node_modules/googleapis');
 #   const STAMP = "${STAMP}";
 #   (async () => {
 #     const verifier = 'check-auth@verifier.port25.com';
@@ -21,7 +22,6 @@
 #     console.log('esperando 70s la respuesta del verifier...');
 #     await new Promise(r => setTimeout(r, 70000));
 #   
-#     const { google } = require('googleapis');
 #     const auth = await g.autenticar();
 #     const gmail = google.gmail({ version:'v1', auth });
 #     async function dump(q, label){
@@ -30,7 +30,8 @@
 #       console.log('\n===== '+label+' (q='+q+') -> '+ids.length+' msgs =====');
 #       for (const id of ids){
 #         const m = await gmail.users.messages.get({ userId:'me', id, format:'full' });
-#         const H = Object.fromEntries((m.data.payload?.headers||[]).map(h=>[h.name.toLowerCase(), h.value]));
+#         const Hh = (m.data.payload?.headers||[]).map(h=>[h.name.toLowerCase(), h.value]);
+#         const H = Object.fromEntries(Hh);
 #         console.log('--- subj="'+(H.subject||'')+'" from="'+(H.from||'')+'" ---');
 #         if (H['authentication-results']) console.log('Authentication-Results: '+H['authentication-results']);
 #         if (H['received-spf']) console.log('Received-SPF: '+H['received-spf']);
@@ -48,27 +49,49 @@
 #   rm -f /tmp/test-auth-mail.js
 
 # ───── output ─────
-node:internal/modules/cjs/loader:1137
-  throw err;
-  ^
+FROM (Maria): maria.paez@intensa.io | FROM_NAME: Maria Paez
+OK envio verifier id= 19ec63071b981657
+OK envio self id= 19ec63073be38f19
+esperando 70s la respuesta del verifier...
 
-Error: Cannot find module './google'
-Require stack:
-- /tmp/test-auth-mail.js
-    at Module._resolveFilename (node:internal/modules/cjs/loader:1134:15)
-    at Module._load (node:internal/modules/cjs/loader:975:27)
-    at Module.require (node:internal/modules/cjs/loader:1225:19)
-    at require (node:internal/modules/helpers:177:18)
-    at Object.<anonymous> (/tmp/test-auth-mail.js:1:11)
-    at Module._compile (node:internal/modules/cjs/loader:1356:14)
-    at Module._extensions..js (node:internal/modules/cjs/loader:1414:10)
-    at Module.load (node:internal/modules/cjs/loader:1197:32)
-    at Module._load (node:internal/modules/cjs/loader:1013:12)
-    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [ '/tmp/test-auth-mail.js' ]
-}
+===== VERIFIER REPLY (q=from:port25.com newer_than:1d) -> 1 msgs =====
+--- subj="Authentication Report" from="auth-results@verifier.port25.com" ---
+Authentication-Results: mx.google.com;       dkim=pass header.i=@port25.com header.s=verifier201208 header.b=Wz6d+PDB;       spf=pass (google.com: domain of auth-results@verifier.port25.com designates 2600:1f14:a73:9b01:d769:5be1:de28:5251 as permitted sender) smtp.mailfrom=auth-results@verifier.port25.com;       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=port25.com
+Received-SPF: pass (google.com: domain of auth-results@verifier.port25.com designates 2600:1f14:a73:9b01:d769:5be1:de28:5251 as permitted sender) client-ip=2600:1f14:a73:9b01:d769:5be1:de28:5251;
+Body:
+Summary of Results
+SPF check:          pass
+"iprev" check:      pass
+DKIM check:         pass
+SPF check details:
+Result:         pass
+    intensa.io. 300 IN TXT "v=spf1 include:_spf.google.com ~all"
+    _spf.google.com. 186 IN TXT "v=spf1 ip4:74.125.0.0/16 ip4:209.85.128.0/17 ip6:2001:4860:4864::/56 ip6:2404:6800:4864::/56 ip6:2607:f8b0:4864::/56 ip6:2800:3f0:4864::/56 ip6:2a00:1450:4864::/56 ip6:2c0f:fb50:4864::/56 ~all"
+Result:         pass (matches mail-lj1-x233.google.com)
+DKIM check details:
+Result:         pass (matches From: maria.paez@intensa.io)
+    dkim-signature:v=1;'20'a=rsa-sha256;'20'c=relaxed/relaxed;'20'd=intensa.io;'20's=google;'20't=1781441526;'20'x=1782046326;'20'darn=verifier.port25.com;'20'h=to:subject:message-id:date:mime-version:from:from:to:cc:subject'20':date:message-id:reply-to;'20'bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;'20'b=
+    google._domainkey.intensa.io. 300 IN TXT "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuVdYUbw6yeidInht/hdBVFS2ea5Ap3gxgcBojqQlDLAhEXtWGmwVSNt04TSVj8jUMvAiDPqVO8agxrzXtaJvxNN6AHZOrl+KziRnSWc/daU2j1XvVRIAKHWIY6UdQg8P4ddMjjte05y1UT2rUsNwEqo98S/gWKVwoB0QBYLTtSS+1vQI92M+rglkI8R2VDYKNNbiR8WyrH8etx6AKqR7/DEH+AULkM+Rjuf1CUWl6sdTCbiuW91daQEqlN4NwtXkTC5tIXO+k9PGKvOJ2y9wHRSiGistknWKYD/a5EwXl37werwi+ZBGCYUf31k6p3TX17fblaYZGrD+8dDy1pKKpwIDAQAB"
+NOTE: DKIM checking has been performed based on the latest DKIM specs
+(RFC 4871 or draft-ietf-dkim-base-10) and verification may fail for
+version 3.2r11 or later to get a compatible version of DKIM.
+Explanation of the possible results (based on RFCs 7601, 7208)
+DKIM Results
+pass:  The message was signed, the signature or signatures were
+    acceptable to the ADMD, and the signature(s) passed verification
+fail:  The message was signed and the signature or signatures were
+    acceptable to the ADMD, but they failed the verification test(s).
+policy:  The message was signed, but some aspect of the signature or
+    signatures was not acceptable to the ADMD.
+neutral:  The message was signed, but the signature or signatures
+    processed.  This result is also used for other failures not
+    result.
+    later attempt is unlikely to produce a final result.
+SPF Results
+    (b) no SPF records were retrieved from the DNS.
 
-Node.js v18.19.1
+===== SELF COPY (q=subject:"Auth self 1781441522") -> 2 msgs =====
+--- subj="Re: Auth self 1781441522" from="Maria Paez <maria.paez@intensa.io>" ---
+--- subj="Auth self 1781441522" from="Maria Paez <maria.paez@intensa.io>" ---
 
 # exit=0
