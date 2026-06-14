@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                         cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9200  2026-06-14 15:42:53  sistema   interno                                                            acción FALLÓ: modificar_pendiente — Tipo de acción desconocido: modificar_pendiente                                                                                                                     
+
+9199  2026-06-14 15:42:53  sistema   interno                                                            acción ejecutada: enviar_wa                                                                                                                                                                             
+
+9198  2026-06-14 15:42:53  whatsapp  saliente   5491153160615@c.us                                      ¡Hola! Soy María Páez, secretaria personal. Les escribo de parte de Diego Páez. Quería consultarles: ¿abren mañana lunes 15 de junio siendo feriado? En caso de que sí, ¿podrían reservarnos una mesa pa
+
+9197  2026-06-14 15:42:52  sistema   interno                                                            claude_call moderacion: 7569ms prompt=1699c raw=6875c in=10t(cache_read=0 new=22526) out=436t ttfb=1849ms api=6496ms turnos=1 $0.0309                                                                   
+
+9196  2026-06-14 15:42:45  whatsapp  saliente   34342575317160@lid                                      Dale, les mando el mensaje ahora con las dos cosas. Te aviso cuando confirmen.                                                                                                                          
+
+9195  2026-06-14 15:42:45  sistema   interno                                                            claude_call whatsapp: 27677ms prompt=8211c raw=11885c in=10t(cache_read=0 new=35103) out=1433t ttfb=1761ms api=25187ms turnos=1 $0.1532                                                                 
+
+9194  2026-06-14 15:42:16  whatsapp  entrante   5491132317896@c.us                                      Escribí a Evelia para preguntar si abren mañana lunes. Y si abren reserva para 4 a las 13                                                                                                               
+
 9193  2026-06-14 15:41:29  sistema   interno                                                            contacto vcard (privado): Evelia Restaurante → 5491153160615@c.us                                                                                                                                       
 
 9192  2026-06-14 15:28:54  whatsapp  saliente   34342575317160@lid                                      Diego, te cuento que no pude escribirle al número que tenía anotado (el 5491153160615) porque no lo tengo guardado en la libreta y no figura como usuario activo. ¿Me podés confirmar que ese número es 
@@ -407,17 +421,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                                         dispositivo Apple iPhone 6s. Si has sido                                                                                                                                                                
 
 9101  2026-06-13 03:23:23  sistema   interno                                                            unknown-flow/gmail LLM: desconocido · Es una alerta automática de Google para la cuenta maria.paez@intensa.io, que no corresponde a ningún usuario activo ni a una gestión pedida por alguno; el histori
-
-9100  2026-06-13 03:23:23  sistema   interno                                                            claude_call unknown-flow: 12525ms prompt=75929c raw=7020c in=10t(cache_read=0 new=47011) out=404t ttfb=1707ms api=12230ms turnos=1 $0.2190                                                              
-
-9099  2026-06-13 03:23:08  sistema   interno                                                            Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-9098  2026-06-13 03:23:02  sistema   interno                                                            shutdown por SIGINT                                                                                                                                                                                     
-
-9097  2026-06-13 03:20:26  sistema   interno                                                            Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-9096  2026-06-13 03:20:19  sistema   interno                                                            shutdown por SIGINT                                                                                                                                                                                     
-
-9095  2026-06-13 02:58:10  sistema   interno                                                            Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-9094  2026-06-13 02:58:02  sistema   interno                                                            shutdown por SIGINT                                                                                                                                                                                     
