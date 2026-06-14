@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")                                         cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  ------------------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9186  2026-06-14 15:19:38  whatsapp  saliente   34342575317160@lid                                      Diego, te aviso que al final no les pude escribir por WhatsApp — me faltaba el número o los datos del contacto para mandarles el mensaje. ¿Me pasás a quién le tenía que escribir y qué les pregunto? As
+
+9185  2026-06-14 15:19:30  sistema   interno                                                            acción FALLÓ: agregar_pendiente — Faltan campos requeridos: desc                                                                                                                                        
+
+9184  2026-06-14 15:19:30  sistema   interno                                                            acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
+
+9183  2026-06-14 15:19:30  sistema   interno                                                            acción FALLÓ: agregar_contacto — Tipo de acción desconocido: agregar_contacto                                                                                                                           
+
+9182  2026-06-14 15:19:30  whatsapp  saliente   34342575317160@lid                                      Dale, lo guardo en contactos y les escribo ahora para preguntar. Cuando me respondan te aviso.                                                                                                          
+
+9181  2026-06-14 15:19:29  sistema   interno                                                            claude_call whatsapp: 29767ms prompt=8414c raw=12273c in=10t(cache_read=0 new=24988) out=1565t ttfb=1852ms api=27287ms turnos=1 $0.1172                                                                 
+
 9180  2026-06-14 15:18:59  whatsapp  entrante   5491132317896@c.us                                      Sí, perfecto, ese seguardalo, por favor, en la agenda de contactos y escribiles para preguntarles si abren                                                                                              
                                                                                                          mañala en unes que es feriado.                                                                                                                                                                         
 
@@ -422,15 +434,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")                 
                                                                                                         You allowed secretaria-maria access                                                                                                                                                                     
 
 9087  2026-06-13 01:53:09  sistema   interno                                                            Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-9086  2026-06-13 01:53:02  sistema   interno                                                            shutdown por SIGINT                                                                                                                                                                                     
-
-9085  2026-06-13 01:35:10  sistema   interno                                                            Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-9084  2026-06-13 01:35:03  sistema   interno                                                            shutdown por SIGINT                                                                                                                                                                                     
-
-9083  2026-06-12 23:13:23  whatsapp  saliente   34342575317160@lid                                      El domingo (14/06) tampoco tenés nada. Fin de semana libre 🙌                                                                                                                                            
-
-9082  2026-06-12 23:13:23  sistema   interno                                                            claude_call whatsapp: 6824ms prompt=7524c raw=4670c in=10t(cache_read=23384 new=3746) out=148t ttfb=1806ms api=4301ms turnos=1 $0.0233                                                                  
-
-9081  2026-06-12 23:13:15  whatsapp  entrante   5491132317896@c.us                                      y el domingo?                                                                                                                                                                                           
