@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9288  2026-06-15 19:56:55  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude agendarlo todavía — me faltan algunos datos del evento: el título o de qué se trata, y la fecha y hora de inicio y fin. ¿Me los pasás y lo cargo enseguida? Lo de Nat
+
+9287  2026-06-15 19:56:45  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
+
+9286  2026-06-15 19:56:45  sistema   interno                         acción FALLÓ: buscar_contacto — Tipo de acción desconocido: buscar_contacto                                                                                                                             
+
+9285  2026-06-15 19:56:45  sistema   interno                         claude_call whatsapp: 30433ms prompt=8007c raw=13009c in=10t(cache_read=53145 new=4676) out=1548t ttfb=1635ms api=28192ms turnos=1 $0.0567                                                              
+
+9284  2026-06-15 19:56:14  whatsapp  entrante   5491132317896@c.us   el viernes poneme Almuerzo con Nati de 13 a 1430                                                                                                                                                        
+
 9283  2026-06-15 19:54:40  whatsapp  saliente   34342575317160@lid   Mirando la agenda desde el miércoles:                                                                                                                                                                   
                                                                                                                                                                                                                                                                              
                                                                      *Mié 17/06* — mañana libre (hasta las 13:00, que arranca el almuerzo con Vizzotti). Tarde ocupada hasta las 19:00.                                                                                      
@@ -351,13 +361,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9190  2026-06-14 15:28:46  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491153160615@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
 
 9189  2026-06-14 15:28:46  whatsapp  saliente   34342575317160@lid   Gracias, les escribo ahora. Te aviso cuando respondan.                                                                                                                                                  
-
-9188  2026-06-14 15:28:46  sistema   interno                         claude_call whatsapp: 22522ms prompt=7796c raw=10538c in=10t(cache_read=0 new=30166) out=1182t ttfb=1746ms api=20206ms turnos=1 $0.1309                                                                 
-
-9187  2026-06-14 15:28:22  whatsapp  entrante   5491132317896@c.us   Acá: +54 9 11 5316-0615                                                                                                                                                                                 
-
-9186  2026-06-14 15:19:38  whatsapp  saliente   34342575317160@lid   Diego, te aviso que al final no les pude escribir por WhatsApp — me faltaba el número o los datos del contacto para mandarles el mensaje. ¿Me pasás a quién le tenía que escribir y qué les pregunto? As
-
-9185  2026-06-14 15:19:30  sistema   interno                         acción FALLÓ: agregar_pendiente — Faltan campos requeridos: desc                                                                                                                                        
-
-9184  2026-06-14 15:19:30  sistema   interno                         acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
