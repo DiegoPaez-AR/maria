@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9283  2026-06-15 19:54:40  whatsapp  saliente   34342575317160@lid   Mirando la agenda desde el miércoles:                                                                                                                                                                   
+                                                                                                                                                                                                                                                                             
+                                                                     *Mié 17/06* — mañana libre (hasta las 13:00, que arranca el almuerzo con Vizzotti). Tarde ocupada hasta las 19:00.                                                                                      
+                                                                                                                                                                                                                                                                             
+                                                                     *Jue 18/06* — día muy cargado: yoga, visita T                                                                                                                                                           
+
+9282  2026-06-15 19:54:40  sistema   interno                         claude_call whatsapp: 19862ms prompt=8244c raw=8272c in=10t(cache_read=48648 new=4497) out=836t ttfb=1776ms api=17493ms turnos=1 $0.0440                                                                
+
+9281  2026-06-15 19:54:19  whatsapp  entrante   5491132317896@c.us   que tengo disponible esta semana?                                                                                                                                                                       
+
 9280  2026-06-15 19:53:45  whatsapp  saliente   34342575317160@lid   Listo, cierro lo de Leandro — te lo dejo a vos.                                                                                                                                                         
                                                                                                                                                                                                                                                                              
                                                                      Queda pendiente lo de Máximo Maderbuen: pide reunirse desde el miércoles en adelante. ¿Qué día y horario le ofrezco?                                                                                    
@@ -351,9 +361,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9185  2026-06-14 15:19:30  sistema   interno                         acción FALLÓ: agregar_pendiente — Faltan campos requeridos: desc                                                                                                                                        
 
 9184  2026-06-14 15:19:30  sistema   interno                         acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
-
-9183  2026-06-14 15:19:30  sistema   interno                         acción FALLÓ: agregar_contacto — Tipo de acción desconocido: agregar_contacto                                                                                                                           
-
-9182  2026-06-14 15:19:30  whatsapp  saliente   34342575317160@lid   Dale, lo guardo en contactos y les escribo ahora para preguntar. Cuando me respondan te aviso.                                                                                                          
-
-9181  2026-06-14 15:19:29  sistema   interno                         claude_call whatsapp: 29767ms prompt=8414c raw=12273c in=10t(cache_read=0 new=24988) out=1565t ttfb=1852ms api=27287ms turnos=1 $0.1172                                                                 
