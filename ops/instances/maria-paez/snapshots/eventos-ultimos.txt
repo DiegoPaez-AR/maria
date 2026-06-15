@@ -1,5 +1,7 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9289  2026-06-15 20:03:16  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
+
 9288  2026-06-15 19:56:55  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude agendarlo todavía — me faltan algunos datos del evento: el título o de qué se trata, y la fecha y hora de inicio y fin. ¿Me los pasás y lo cargo enseguida? Lo de Nat
 
 9287  2026-06-15 19:56:45  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
@@ -359,5 +361,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9191  2026-06-14 15:28:46  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 9190  2026-06-14 15:28:46  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491153160615@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
-
-9189  2026-06-14 15:28:46  whatsapp  saliente   34342575317160@lid   Gracias, les escribo ahora. Te aviso cuando respondan.                                                                                                                                                  
