@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9301  2026-06-15 23:08:30  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9300  2026-06-15 23:08:30  whatsapp  saliente   34342575317160@lid   Diego, retomo lo de Máximo Maderbuen — pide reunirse con vos miércoles en adelante. ¿Qué día y horario le ofrezco?                                                                                      
+
+9299  2026-06-15 23:08:30  sistema   interno                         claude_call maria-worker: 17650ms prompt=69987c raw=8116c in=10t(cache_read=0 new=34907) out=693t ttfb=1736ms api=17161ms turnos=1 $0.1506                                                              
+
 9298  2026-06-15 22:39:21  whatsapp  saliente   34342575317160@lid   Perfecto, mañana arrancamos con lo de Máximo.                                                                                                                                                           
                                                                                                                                                                                                                                                                              
                                                                      Mientras tanto, para el almuerzo con Nati del viernes 19/06 13:00-14:30 — ¿me pasás el email de Nati para mandarle la invitación?                                                                       
@@ -361,9 +367,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9203  2026-06-14 16:01:33  whatsapp  saliente   34342575317160@lid   Eso escapa a lo que puedo buscar — soy más de agendas y gestiones que de resultados deportivos 😅 Para eso te recomendaría una búsqueda rápida en Google.                                                
 
 9202  2026-06-14 16:01:32  sistema   interno                         claude_call whatsapp: 13694ms prompt=8251c raw=7354c in=10t(cache_read=0 new=40301) out=464t ttfb=1904ms api=11209ms turnos=1 $0.1581                                                                   
-
-9201  2026-06-14 16:01:18  whatsapp  entrante   5491132317896@c.us   Me decí que son los ganadores de las mundiales del azul de más 40 años.                                                                                                                                 
-
-9200  2026-06-14 15:42:53  sistema   interno                         acción FALLÓ: modificar_pendiente — Tipo de acción desconocido: modificar_pendiente                                                                                                                     
-
-9199  2026-06-14 15:42:53  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
