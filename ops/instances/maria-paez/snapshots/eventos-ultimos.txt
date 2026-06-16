@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9501  2026-06-16 23:20:11  whatsapp  saliente   5491137646922@c.us   ¡Genial, gracias! Perfecto, lo tengo en cuenta.                                                                                                                                                         
+
+9500  2026-06-16 23:20:10  whatsapp  saliente   34342575317160@lid   Poch Burgers responde: todas las opciones que tienen la V en el menú se pueden hacer veggie. También te mandaron el menú en PDF (3MB) — te lo reenvío.                                                  
+
+9499  2026-06-16 23:20:10  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9498  2026-06-16 23:20:10  sistema   interno                         acción ejecutada: reenviar_wa                                                                                                                                                                           
+
+9497  2026-06-16 23:20:10  whatsapp  saliente                        (forward de false_64652830601462@lid_3EB08C519006785E1866CE → 34342575317160@lid)                                                                                                                       
+
+9496  2026-06-16 23:20:09  sistema   interno                         claude_call moderacion: 7261ms prompt=1507c raw=6220c in=10t(cache_read=0 new=22448) out=312t ttfb=2536ms api=5296ms turnos=1 $0.0301                                                                   
+
 9495  2026-06-16 23:20:02  sistema   interno                         claude_call whatsapp: 23830ms prompt=72175c raw=10047c in=10t(cache_read=6271 new=29454) out=923t ttfb=3045ms api=21971ms turnos=1 $0.1361                                                              
 
 9494  2026-06-16 23:19:38  whatsapp  entrante   5491137646922@c.us   Todas las opciones que tengan la V se pueden hacer veggies!                                                                                                                                             
@@ -200,20 +212,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9403  2026-06-16 19:28:19  whatsapp  saliente   34342575317160@lid   Leandro Groisman te propone encontrarse en Armenia 1595, Palermo (te mandó el link de maps). ¿Te queda bien esa zona para la reunión del viernes 19/06?                                                 
 
 9402  2026-06-16 19:28:19  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9401  2026-06-16 19:28:19  sistema   interno                         claude_call whatsapp: 23452ms prompt=71977c raw=9536c in=10t(cache_read=6271 new=29384) out=886t ttfb=1835ms api=22308ms turnos=1 $0.1353                                                               
-
-9400  2026-06-16 19:27:55  whatsapp  entrante   5491140495070@c.us   https://maps.app.goo.gl/QCoCQ5LKUPhzUuJT9                                                                                                                                                               
-                                                                     Armenia 1595, C1414 Cdad. Autónoma de Buenos Aires                                                                                                                                                      
-                                                                     Avisa si esta OK por esa zona                                                                                                                                                                           
-
-9399  2026-06-16 19:27:45  sistema   interno                         claude_call whatsapp: 30196ms prompt=71939c raw=11859c in=10t(cache_read=0 new=35631) out=1406t ttfb=1847ms api=30022ms turnos=1 $0.1647                                                                
-
-9398  2026-06-16 19:27:15  whatsapp  entrante   5491140495070@c.us   https://maps.app.goo.gl/QCoCQ5LKUPhzUuJT9                                                                                                                                                               
-                                                                     Armenia 1595, C1414 Cdad. Autónoma de Buenos Aires                                                                                                                                                      
-
-9397  2026-06-16 19:05:12  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Turno con Dr. Vommaro, Santiago Javier (04:20 p. m.) @Gral. Lucio N. Mansilla 2677 1° "A", Ciudad de Buenos Aires, Ciudad de Buenos Aires                                                 
-                                                                     Turno con Dr. Vommaro, Santiago Javier, en Gral.                                                                                                                                                        
-
-9396  2026-06-16 18:45:19  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: SoundHound & Sondeos Global Training/Enablement Scoping (04:00 p. m.)                                                                                                                     
-                                                                     Con: hernan.fulco@sondeosglobal.com, efithian@soundhound.com, bweiss@soundhound.com, pfish@soundhound.com, mhowey@so                                                                                    
