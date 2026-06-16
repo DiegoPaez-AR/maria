@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9490  2026-06-16 23:14:24  whatsapp  saliente   34342575317160@lid   Claro, les escribo ahora. Te aviso cuando respondan.                                                                                                                                                    
+
+9489  2026-06-16 23:14:24  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9488  2026-06-16 23:14:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+9487  2026-06-16 23:14:24  whatsapp  saliente   5491137646922@c.us   ¡Hola! Soy María Páez, secretaria personal de Diego Páez. Quería consultarles: ¿tienen alguna hamburguesa vegetariana en el menú? ¡Gracias!                                                             
+
+9486  2026-06-16 23:14:24  sistema   interno                         claude_call moderacion: 7470ms prompt=1587c raw=7000c in=10t(cache_read=0 new=22485) out=438t ttfb=1718ms api=6286ms turnos=1 $0.0308                                                                   
+
+9485  2026-06-16 23:14:16  sistema   interno                         claude_call whatsapp: 13413ms prompt=7341c raw=7004c in=10t(cache_read=136302 new=3595) out=501t ttfb=1888ms api=10946ms turnos=1 $0.0619                                                               
+
 9484  2026-06-16 23:14:02  whatsapp  entrante   5491132317896@c.us   Podrás preguntar en Poch si hay alguna hamburguesa vegie?                                                                                                                                               
 
 9483  2026-06-16 23:13:45  sistema   interno                         claude_call whatsapp: 5858ms prompt=7352c raw=4331c in=10t(cache_read=132510 new=3792) out=100t ttfb=1744ms api=3499ms turnos=1 $0.0555                                                                 
@@ -209,16 +221,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                      1. Confirmarle a Máximo Maderbuen el nuevo día y hora para la reunión con Diego (pide miércoles en adelante). — de Maximo Maderbuen — 28h                                                               
                                                                                                                                                                                                                                                                              
                                                                      Decime qué hago con                                                                                                                                                                                     
-
-9390  2026-06-16 17:03:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-9389  2026-06-16 16:40:33  whatsapp  saliente   34342575317160@lid   Listo, la muevo para hoy a las 17:30.                                                                                                                                                                   
-
-9388  2026-06-16 16:40:33  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
-
-9387  2026-06-16 16:40:33  calendar  saliente                        modificado: Reunión Diego / Gustavo Rossi (2026-06-16T17:30:00-03:00 → 2026-06-16T18:30:00-03:00)                                                                                                       
-
-9386  2026-06-16 16:40:31  sistema   interno                         claude_call whatsapp: 14917ms prompt=9643c raw=6563c in=10t(cache_read=89742 new=5479) out=563t ttfb=1791ms api=12536ms turnos=1 $0.0559                                                                
-
-9385  2026-06-16 16:40:15  whatsapp  entrante   5491132317896@c.us   Es la reunión que tenía hoy a las 12 con este chico Gustavo Rossi, hoy a las 12, quiero que                                                                                                             
-                                                                      la mua hasta las 17-30.                                                                                                                                                                                
