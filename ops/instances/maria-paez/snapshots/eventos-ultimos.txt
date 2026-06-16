@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9384  2026-06-16 16:39:14  whatsapp  saliente   34342575317160@lid   Diego, quería moverte el evento para hoy a las 17:00, pero no pude concretarlo porque no encontré cuál evento modificar exactamente. ¿Me podés decir de qué evento se trata para buscarlo y hacer el cam
+
+9383  2026-06-16 16:39:08  sistema   interno                         acción FALLÓ: modificar_evento — Faltan campos requeridos: id                                                                                                                                           
+
+9382  2026-06-16 16:39:08  sistema   interno                         claude_call whatsapp: 24846ms prompt=9479c raw=8756c in=10t(cache_read=0 new=89742) out=1029t ttfb=1748ms api=22509ms turnos=1 $0.3520                                                                  
+
 9381  2026-06-16 16:38:42  whatsapp  entrante   5491132317896@c.us   María, correme la reunión que tuve hoy con Gustavo Rossi a las 12. Correla para hoy                                                                                                                     
                                                                       a las 17 trasringas que la vamos a tener en esa hora. Gracias.                                                                                                                                         
 
@@ -334,13 +340,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9286  2026-06-15 19:56:45  sistema   interno                         acción FALLÓ: buscar_contacto — Tipo de acción desconocido: buscar_contacto                                                                                                                             
 
 9285  2026-06-15 19:56:45  sistema   interno                         claude_call whatsapp: 30433ms prompt=8007c raw=13009c in=10t(cache_read=53145 new=4676) out=1548t ttfb=1635ms api=28192ms turnos=1 $0.0567                                                              
-
-9284  2026-06-15 19:56:14  whatsapp  entrante   5491132317896@c.us   el viernes poneme Almuerzo con Nati de 13 a 1430                                                                                                                                                        
-
-9283  2026-06-15 19:54:40  whatsapp  saliente   34342575317160@lid   Mirando la agenda desde el miércoles:                                                                                                                                                                   
-                                                                                                                                                                                                                                                                             
-                                                                     *Mié 17/06* — mañana libre (hasta las 13:00, que arranca el almuerzo con Vizzotti). Tarde ocupada hasta las 19:00.                                                                                      
-                                                                                                                                                                                                                                                                             
-                                                                     *Jue 18/06* — día muy cargado: yoga, visita T                                                                                                                                                           
-
-9282  2026-06-15 19:54:40  sistema   interno                         claude_call whatsapp: 19862ms prompt=8244c raw=8272c in=10t(cache_read=48648 new=4497) out=836t ttfb=1776ms api=17493ms turnos=1 $0.0440                                                                
