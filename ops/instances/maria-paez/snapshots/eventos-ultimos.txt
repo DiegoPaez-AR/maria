@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9484  2026-06-16 23:14:02  whatsapp  entrante   5491132317896@c.us   Podrás preguntar en Poch si hay alguna hamburguesa vegie?                                                                                                                                               
+
+9483  2026-06-16 23:13:45  sistema   interno                         claude_call whatsapp: 5858ms prompt=7352c raw=4331c in=10t(cache_read=132510 new=3792) out=100t ttfb=1744ms api=3499ms turnos=1 $0.0555                                                                 
+
+9482  2026-06-16 23:13:39  whatsapp  entrante   5491132317896@c.us   Perfecto                                                                                                                                                                                                
+
+9481  2026-06-16 23:13:22  whatsapp  saliente   34342575317160@lid   Sí, exacto — Máximo quedó de 15:00 a 16:00 en la oficina.                                                                                                                                               
+
+9480  2026-06-16 23:13:22  sistema   interno                         claude_call whatsapp: 9900ms prompt=7536c raw=5122c in=10t(cache_read=128833 new=3677) out=279t ttfb=1844ms api=7450ms turnos=1 $0.0567                                                                 
+
+9479  2026-06-16 23:13:11  whatsapp  entrante   5491132317896@c.us   Y máximo quedó de 15 a 16?                                                                                                                                                                              
+
 9478  2026-06-16 23:12:58  sistema   interno                         claude_call whatsapp: 5527ms prompt=7424c raw=4415c in=10t(cache_read=125076 new=3757) out=105t ttfb=1714ms api=3212ms turnos=1 $0.0532                                                                 
 
 9477  2026-06-16 23:12:52  whatsapp  entrante   5491132317896@c.us   Ok                                                                                                                                                                                                      
@@ -210,18 +222,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 9385  2026-06-16 16:40:15  whatsapp  entrante   5491132317896@c.us   Es la reunión que tenía hoy a las 12 con este chico Gustavo Rossi, hoy a las 12, quiero que                                                                                                             
                                                                       la mua hasta las 17-30.                                                                                                                                                                                
-
-9384  2026-06-16 16:39:14  whatsapp  saliente   34342575317160@lid   Diego, quería moverte el evento para hoy a las 17:00, pero no pude concretarlo porque no encontré cuál evento modificar exactamente. ¿Me podés decir de qué evento se trata para buscarlo y hacer el cam
-
-9383  2026-06-16 16:39:08  sistema   interno                         acción FALLÓ: modificar_evento — Faltan campos requeridos: id                                                                                                                                           
-
-9382  2026-06-16 16:39:08  sistema   interno                         claude_call whatsapp: 24846ms prompt=9479c raw=8756c in=10t(cache_read=0 new=89742) out=1029t ttfb=1748ms api=22509ms turnos=1 $0.3520                                                                  
-
-9381  2026-06-16 16:38:42  whatsapp  entrante   5491132317896@c.us   María, correme la reunión que tuve hoy con Gustavo Rossi a las 12. Correla para hoy                                                                                                                     
-                                                                      a las 17 trasringas que la vamos a tener en esa hora. Gracias.                                                                                                                                         
-
-9380  2026-06-16 16:33:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-9379  2026-06-16 15:45:19  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Almuerzo Diego / Alejandro Senmartin (Aguas de Zarate) (01:00 p. m.) @Mirasol                                                                                                             
-                                                                     Con: nicolas.jordan@enpiric.com                                                                                                                                                                         
-                                                                     👤 Nicolas Jordan: Nicolás Jordan es un contacto de negocios con quien tengo                                                                                                                             
