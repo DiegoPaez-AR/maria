@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9521  2026-06-16 23:35:54  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9520  2026-06-16 23:35:54  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+9519  2026-06-16 23:35:54  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491130514423@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
+
+9518  2026-06-16 23:35:54  sistema   interno                         claude_call whatsapp: 27955ms prompt=9094c raw=10978c in=10t(cache_read=154383 new=4853) out=1213t ttfb=1742ms api=25645ms turnos=1 $0.0827                                                             
+
+9517  2026-06-16 23:35:43  sistema   interno                         claude_call whatsapp: 11565ms prompt=72113c raw=6378c in=10t(cache_read=0 new=35575) out=389t ttfb=1688ms api=10718ms turnos=1 $0.1492                                                                  
+
+9516  2026-06-16 23:35:31  whatsapp  entrante   5491137646922@c.us   Buenisimo! Ahi te paso el monto!                                                                                                                                                                        
+
+9515  2026-06-16 23:35:25  whatsapp  entrante   5491132317896@c.us   No, no, es el cone a japonés ahí en cone a tienen hacen tienen un lugar que te                                                                                                                          
+                                                                      reservan arriba de cara o qué para 8, 10 personas, es decirle que me gustaría                                                                                                                          
+                                                                      reservar para el sábado que te cuenten un                                                                                                                                                              
+
 9514  2026-06-16 23:30:33  whatsapp  saliente   34342575317160@lid   Encontré dos Kona en Buenos Aires:                                                                                                                                                                      
                                                                                                                                                                                                                                                                              
                                                                      1. *Kōnā Corner* — japonés en Belgrano (Castañeda 1899), de Narda Lepes e Inés de los Santos. Guía Michelin. Tel/WA: +54 9 11 3051-4423                                                                 
@@ -214,20 +230,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                      Decime qué hago con                                                                                                                                                                                     
 
 9422  2026-06-16 20:33:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-9421  2026-06-16 20:23:13  whatsapp  saliente   5491156449434@c.us   ¡Perfecto Georgina, gracias por confirmar! Le aviso a Diego y te confirmo.                                                                                                                              
-
-9420  2026-06-16 20:23:13  whatsapp  saliente   34342575317160@lid   Georgina confirma una sesión con Fernando para el *lunes 22/06 a las 13:15 hs* (o ¿es de 13 a 15 hs?). Antes de armar el evento, ¿podés decirme quién es Fernando? Y confirmame si el horario es 13:15 o
-
-9419  2026-06-16 20:23:13  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9418  2026-06-16 20:23:13  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-9417  2026-06-16 20:23:13  sistema   interno                         claude_call whatsapp: 102715ms prompt=69732c raw=35286c in=18t(cache_read=34882 new=39792) out=5422t ttfb=1698ms api=101820ms turnos=2 $0.2502                                                          
-
-9416  2026-06-16 20:21:30  whatsapp  entrante   5491156449434@c.us   Hola Maria, te confirmo sesión con Fernando. El próximo lunes 13 15 horas puede ser                                                                                                                     
-                                                                     Le avisas a Diego?                                                                                                                                                                                      
-
-9415  2026-06-16 20:15:20  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión Diego / Gustavo Rossi (05:30 p. m.)                                                                                                                                               
-                                                                     Con: gustavorossi@gmail.com                                                                                                                                                                             
-                                                                     👤 Gustavo Rossi: Gustavo Rossi es un contacto con quien estoy coordinando una reunión de trabajo. El vínculo está                                                                                       
