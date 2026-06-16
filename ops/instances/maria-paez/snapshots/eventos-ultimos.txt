@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9524  2026-06-16 23:37:00  sistema   interno                         claude_call whatsapp: 23380ms prompt=72780c raw=9629c in=10t(cache_read=6271 new=29545) out=1046t ttfb=1692ms api=22368ms turnos=1 $0.1385                                                              
+
+9523  2026-06-16 23:36:36  whatsapp  entrante   5491137646922@c.us   Anotado tu pedido seria $78800                                                                                                                                                                          
+
+9522  2026-06-16 23:36:04  whatsapp  saliente   34342575317160@lid   Diego, quería escribirle a Kōnā Corner para preguntar por la reserva del piso de arriba el sábado, pero el número que tengo guardado para ellos no me está funcionando — no lo reconoce como activo. ¿Me
+
 9521  2026-06-16 23:35:54  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 9520  2026-06-16 23:35:54  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
@@ -220,13 +226,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9426  2026-06-16 20:57:13  whatsapp  saliente   5491176176620@c.us   Hola Máximo, todavía estoy esperando confirmar disponibilidad de Diego. Te escribo en cuanto tenga respuesta, no demoro.                                                                                
 
 9425  2026-06-16 20:57:13  sistema   interno                         claude_call whatsapp: 14500ms prompt=71589c raw=7003c in=10t(cache_read=0 new=35365) out=467t ttfb=1961ms api=14110ms turnos=1 $0.1493                                                                  
-
-9424  2026-06-16 20:56:58  whatsapp  entrante   5491176176620@c.us   Pudiste ver asi me organizo?                                                                                                                                                                            
-
-9423  2026-06-16 20:38:12  whatsapp  saliente   34342575317160@lid   Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     1. Confirmarle a Máximo Maderbuen el nuevo día y hora para la reunión con Diego (pide miércoles en adelante). — de Maximo Maderbuen — 31h                                                               
-                                                                                                                                                                                                                                                                             
-                                                                     Decime qué hago con                                                                                                                                                                                     
-
-9422  2026-06-16 20:33:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
