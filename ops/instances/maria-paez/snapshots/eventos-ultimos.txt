@@ -1,5 +1,12 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9462  2026-06-16 22:31:49  whatsapp  saliente   5491156449434@c.us   Perfecto, Georgina, anotado: lunes 22/06 de 13:15 a 14:15. ¿Me podrías pasar el contacto de Fernando Maciel (WhatsApp o email) así le mando la invitación de calendar? ¡Gracias!                        
+
+9461  2026-06-16 22:31:49  sistema   interno                         claude_call whatsapp: 40489ms prompt=69289c raw=13827c in=10t(cache_read=0 new=34658) out=1821t ttfb=1816ms api=39793ms turnos=1 $0.1663                                                                
+
+9460  2026-06-16 22:31:08  whatsapp  entrante   5491156449434@c.us   Yo ya lo confirmé                                                                                                                                                                                       
+                                                                     El horario es ee 13,15 a 14,15                                                                                                                                                                          
+
 9459  2026-06-16 22:19:19  whatsapp  saliente   34342575317160@lid   Entendido — Fernando es Maciel, no Boero. Espero que Georgina me mande el contacto de él. Le pregunto también lo del horario del lunes. Lo de Máximo ya está agendado a las 15:00, que no debería pisar 
 
 9458  2026-06-16 22:19:19  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -222,9 +229,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9364  2026-06-16 15:23:44  whatsapp  entrante   5491132317896@c.us   Georgina                                                                                                                                                                                                
 
 9363  2026-06-16 15:21:53  whatsapp  saliente   34342575317160@lid   Con gusto, pero no tengo a "Sorcina" en la libreta — ¿me pasás su número o contacto? Apenas lo tenga le escribo y le ofrezco los horarios libres de tu agenda.                                          
-
-9362  2026-06-16 15:21:53  sistema   interno                         claude_call whatsapp: 34373ms prompt=9146c raw=13619c in=10t(cache_read=0 new=73359) out=1508t ttfb=1854ms api=31838ms turnos=1 $0.2977                                                                 
-
-9361  2026-06-16 15:21:17  whatsapp  entrante   5491132317896@c.us   Escribile por favor a Sorcina para coordinar una reunión, dale, te va a pedir hora y una hora para sonar mi, dale cualquier horario que yo tenga disponible a mi agenda.                                
-
-9360  2026-06-16 15:20:43  sistema   interno                         contacto vcard (privado): Georgina Milei → 5491156449434@c.us                                                                                                                                           
