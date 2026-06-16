@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9530  2026-06-16 23:38:00  sistema   interno                         claude_call whatsapp: 7553ms prompt=68870c raw=5243c in=10t(cache_read=6271 new=28240) out=171t ttfb=1899ms api=6366ms turnos=1 $0.1192                                                                 
+
+9529  2026-06-16 23:37:52  whatsapp  entrante   5491132317896@c.us   ok a lo de poch                                                                                                                                                                                         
+
+9528  2026-06-16 23:37:28  whatsapp  saliente   34342575317160@lid   Diego, Poch confirmó el pedido: $78.800 y listo en 30 minutos.                                                                                                                                          
+
+9527  2026-06-16 23:37:28  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9526  2026-06-16 23:37:28  sistema   interno                         claude_call whatsapp: 17259ms prompt=72439c raw=8194c in=10t(cache_read=6271 new=29372) out=691t ttfb=1799ms api=16138ms turnos=1 $0.1324                                                               
+
+9525  2026-06-16 23:37:10  whatsapp  entrante   5491137646922@c.us   Anotado tu pedido seria $78800                                                                                                                                                                          
+                                                                     En 30min lo tienen listo!                                                                                                                                                                               
+                                                                     Muchismas gracias!!!                                                                                                                                                                                    
+
 9524  2026-06-16 23:37:00  sistema   interno                         claude_call whatsapp: 23380ms prompt=72780c raw=9629c in=10t(cache_read=6271 new=29545) out=1046t ttfb=1692ms api=22368ms turnos=1 $0.1385                                                              
 
 9523  2026-06-16 23:36:36  whatsapp  entrante   5491137646922@c.us   Anotado tu pedido seria $78800                                                                                                                                                                          
@@ -214,15 +228,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9432  2026-06-16 21:12:55  whatsapp  saliente   5491176176620@c.us   Hola Máximo! Te escribo de parte de Diego. Esta semana está complicado, ¿te viene bien el lunes 22 de junio a las 15:00 en su oficina (Carlos Pellegrini 1521, piso 8, CABA)? Avisame y lo agendamos. ¡G
 
 9431  2026-06-16 21:12:55  sistema   interno                         claude_call moderacion: 6570ms prompt=1655c raw=6770c in=10t(cache_read=0 new=22517) out=419t ttfb=1708ms api=5525ms turnos=1 $0.0308                                                                   
-
-9430  2026-06-16 21:12:48  sistema   interno                         claude_call whatsapp: 30242ms prompt=8431c raw=11693c in=10t(cache_read=0 new=104909) out=1470t ttfb=1725ms api=27911ms turnos=1 $0.4155                                                                
-
-9429  2026-06-16 21:12:17  whatsapp  entrante   5491132317896@c.us   Desile a máximo que estoy complicada esta semana que si puede el lunes que viene a la tarde con el 15 horas en mi oficina.                                                                              
-
-9428  2026-06-16 20:58:34  sistema   interno                         claude_call whatsapp: 7261ms prompt=71296c raw=5026c in=10t(cache_read=6271 new=28966) out=166t ttfb=1799ms api=6341ms turnos=1 $0.1226                                                                 
-
-9427  2026-06-16 20:58:26  whatsapp  entrante   5491176176620@c.us   Gracias!!!                                                                                                                                                                                              
-
-9426  2026-06-16 20:57:13  whatsapp  saliente   5491176176620@c.us   Hola Máximo, todavía estoy esperando confirmar disponibilidad de Diego. Te escribo en cuanto tenga respuesta, no demoro.                                                                                
-
-9425  2026-06-16 20:57:13  sistema   interno                         claude_call whatsapp: 14500ms prompt=71589c raw=7003c in=10t(cache_read=0 new=35365) out=467t ttfb=1961ms api=14110ms turnos=1 $0.1493                                                                  
