@@ -1,5 +1,16 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9389  2026-06-16 16:40:33  whatsapp  saliente   34342575317160@lid   Listo, la muevo para hoy a las 17:30.                                                                                                                                                                   
+
+9388  2026-06-16 16:40:33  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+
+9387  2026-06-16 16:40:33  calendar  saliente                        modificado: Reunión Diego / Gustavo Rossi (2026-06-16T17:30:00-03:00 → 2026-06-16T18:30:00-03:00)                                                                                                       
+
+9386  2026-06-16 16:40:31  sistema   interno                         claude_call whatsapp: 14917ms prompt=9643c raw=6563c in=10t(cache_read=89742 new=5479) out=563t ttfb=1791ms api=12536ms turnos=1 $0.0559                                                                
+
+9385  2026-06-16 16:40:15  whatsapp  entrante   5491132317896@c.us   Es la reunión que tenía hoy a las 12 con este chico Gustavo Rossi, hoy a las 12, quiero que                                                                                                             
+                                                                      la mua hasta las 17-30.                                                                                                                                                                                
+
 9384  2026-06-16 16:39:14  whatsapp  saliente   34342575317160@lid   Diego, quería moverte el evento para hoy a las 17:00, pero no pude concretarlo porque no encontré cuál evento modificar exactamente. ¿Me podés decir de qué evento se trata para buscarlo y hacer el cam
 
 9383  2026-06-16 16:39:08  sistema   interno                         acción FALLÓ: modificar_evento — Faltan campos requeridos: id                                                                                                                                           
@@ -330,13 +341,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                      Decime qué hago con c                                                                                                                                                                                   
 
 9290  2026-06-15 21:45:12  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Paddle LECHU  (07:00 p. m.)                                                                                                                                                               
-
-9289  2026-06-15 20:03:16  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-9288  2026-06-15 19:56:55  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude agendarlo todavía — me faltan algunos datos del evento: el título o de qué se trata, y la fecha y hora de inicio y fin. ¿Me los pasás y lo cargo enseguida? Lo de Nat
-
-9287  2026-06-15 19:56:45  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
-
-9286  2026-06-15 19:56:45  sistema   interno                         acción FALLÓ: buscar_contacto — Tipo de acción desconocido: buscar_contacto                                                                                                                             
-
-9285  2026-06-15 19:56:45  sistema   interno                         claude_call whatsapp: 30433ms prompt=8007c raw=13009c in=10t(cache_read=53145 new=4676) out=1548t ttfb=1635ms api=28192ms turnos=1 $0.0567                                                              
