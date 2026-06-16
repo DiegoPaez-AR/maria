@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9473  2026-06-16 23:11:45  whatsapp  saliente   34342575317160@lid   ¿Preguntarle qué exactamente? El mensaje quedó corto — decime qué querés que le consulte y le escribo ahora.                                                                                            
+
+9472  2026-06-16 23:11:45  sistema   interno                         claude_call whatsapp: 21513ms prompt=7561c raw=9254c in=10t(cache_read=0 new=120691) out=847t ttfb=1736ms api=19174ms turnos=1 $0.4653                                                                  
+
+9471  2026-06-16 23:11:22  whatsapp  entrante   5491132317896@c.us   Pregúntale a Georgina                                                                                                                                                                                   
+
 9470  2026-06-16 22:39:26  sistema   interno                         claude_call memoria-curada: 27069ms prompt=4596c raw=12083c in=10t(cache_read=6266 new=6043) out=1129t ttfb=1773ms api=26057ms turnos=1 $0.0435                                                         
 
 9469  2026-06-16 22:38:59  sistema   interno                         claude_call memoria-curada: 26221ms prompt=3737c raw=12504c in=10t(cache_read=6266 new=5756) out=1314t ttfb=1555ms api=26102ms turnos=1 $0.0449                                                         
@@ -219,11 +225,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9375  2026-06-16 15:26:31  whatsapp  saliente   34342575317160@lid   Entendido, le escribo ahora con opciones de la semana que viene.                                                                                                                                        
 
 9374  2026-06-16 15:26:31  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9373  2026-06-16 15:26:31  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-9372  2026-06-16 15:26:31  whatsapp  saliente   5491156449434@c.us   ¡Hola Georgina! Soy María Páez, secretaria personal de Diego Páez. Te contacto para coordinar una reunión con él. Los horarios disponibles para la semana que viene son:                                
-                                                                                                                                                                                                                                                                             
-                                                                     • *Lunes 22/06* — desde las 13                                                                                                                                                                          
-
-9371  2026-06-16 15:26:31  sistema   interno                         claude_call moderacion: 6130ms prompt=1873c raw=6004c in=10t(cache_read=0 new=22598) out=293t ttfb=1699ms api=5371ms turnos=1 $0.0303                                                                   
