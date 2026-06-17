@@ -1,5 +1,15 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9707  2026-06-17 20:46:51  whatsapp  saliente   5491156449434@c.us   Anotado, gracias Georgina! Lo agendo a las 13:00 el lunes 22.                                                                                                                                           
+
+9706  2026-06-17 20:46:51  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9705  2026-06-17 20:46:51  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9704  2026-06-17 20:46:51  sistema   interno                         claude_call whatsapp: 39071ms prompt=72201c raw=13620c in=10t(cache_read=0 new=35592) out=1818t ttfb=1833ms api=43515ms turnos=1 $0.1703                                                                
+
+9703  2026-06-17 20:46:12  whatsapp  entrante   5491156449434@c.us   hola maria la reunion con fernando se movio a las 13 hs                                                                                                                                                 
+
 9702  2026-06-17 20:15:17  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: 277 Veleros (05:30 p. m.)                                                                                                                                                                 
                                                                      Con: pablo.petrillo@luftlatam.com, federico.caceres@4caminos.co, blabasco@thequadcollective.com                                                                                                         
 
@@ -240,15 +250,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9609  2026-06-17 12:14:32  whatsapp  saliente   34342575317160@lid   Es Kōnā Corner — restaurante japonés en Castañeda 1899, Belgrano, de Narda Lepes. Tienen karaoke en el primer piso, reservado para grupos privados de 8-10. Les escribo ahora preguntando por el sábado 
 
 9608  2026-06-17 12:14:31  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9607  2026-06-17 12:14:31  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-9606  2026-06-17 12:14:31  whatsapp  saliente   5491130514423@c.us   ¡Hola! Los contacto de parte de Diego Páez. Le gustaría reservar el espacio de karaoke para el *sábado 21 de junio a las 21 hs*, para un grupo de *8 a 10 personas*.                                    
-                                                                                                                                                                                                                                                                             
-                                                                     ¿Tienen disponibilidad para esa no                                                                                                                                                                      
-
-9605  2026-06-17 12:14:31  sistema   interno                         claude_call moderacion: 6112ms prompt=1832c raw=5715c in=10t(cache_read=0 new=22570) out=255t ttfb=1851ms api=5970ms turnos=1 $0.0301                                                                   
-
-9604  2026-06-17 12:14:25  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-9603  2026-06-17 12:14:25  sistema   interno                         claude_call whatsapp: 117718ms prompt=71368c raw=52299c in=92t(cache_read=198828 new=34954) out=4535t ttfb=1789ms api=114399ms turnos=7 $0.3289                                                         
