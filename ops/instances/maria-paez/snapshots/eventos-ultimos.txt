@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9647  2026-06-17 15:58:27  whatsapp  saliente   34342575317160@lid   Perfecto. Les confirmo opción 1 para 8 personas el sábado 21 a las 21 hs, y les pregunto lo del horario del karaoke. Te aviso cuando confirmen.                                                         
+
+9646  2026-06-17 15:58:26  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9645  2026-06-17 15:58:26  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+9644  2026-06-17 15:58:26  whatsapp  saliente   5491130514423@c.us   ¡Hola! Gracias por la info. Vamos por la *Opción 1*: cenar a la carta abajo y subir después al karaoke. La reserva sería para *8 personas el sábado 21/06 a las 21 hs*, nombre *Diego Páez*.            
+                                                                                                                                                                                                                                                                             
+                                                                     Antes de c                                                                                                                                                                                              
+
+9643  2026-06-17 15:58:26  sistema   interno                         claude_call moderacion: 6890ms prompt=1774c raw=6657c in=10t(cache_read=0 new=22556) out=395t ttfb=1577ms api=5850ms turnos=1 $0.0307                                                                   
+
+9642  2026-06-17 15:58:20  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9641  2026-06-17 15:58:20  sistema   interno                         claude_call whatsapp: 18127ms prompt=9474c raw=8366c in=10t(cache_read=0 new=36291) out=755t ttfb=2373ms api=15188ms turnos=1 $0.1474                                                                   
+
 9640  2026-06-17 15:58:00  whatsapp  entrante   5491132317896@c.us   me cierra más lo de la opción uno, serar la carta abajo y después subir al carauque.                                                                                                                    
                                                                       No entiendo bien si el carauque después está limitado un hora y media o no, o si es hasta la media noche.                                                                                              
                                                                       Y bueno                                                                                                                                                                                                
@@ -322,25 +338,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9549  2026-06-17 09:45:50  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
 
 9548  2026-06-17 09:03:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-9547  2026-06-17 07:00:21  whatsapp  saliente   34342575317160@lid   ☀️ *Buen día, Diego.* miércoles 17 de junio.                                                                                                                                                            
-                                                                                                                                                                                                                                                                             
-                                                                     *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
-                                                                     ☁️ nublado, min 7° / max 13°                                                                                                                                                                            
-                                                                                                                                                                                                                                                                             
-                                                                     *📅 Agenda del día*                                                                                                                                                                                      
-                                                                     • 01:00 p. m. — Almuerzo Diego / Pablo Vizzotti                                                                                                                                                         
-                                                                     • 03:30 p. m. — Personal                                                                                                                                                                                
-                                                                                                                                                                                                                                                                             
-
-9546  2026-06-17 03:42:01  whatsapp  saliente   5491132317896@c.us   Dale, lo mando ahora.                                                                                                                                                                                   
-
-9545  2026-06-17 03:42:01  sistema   interno                         acción FALLÓ: enviar_mensaje — Tipo de acción desconocido: enviar_mensaje                                                                                                                               
-
-9544  2026-06-17 03:42:01  sistema   interno                         claude_call whatsapp: 15572ms prompt=8673c raw=8084c in=10t(cache_read=33487 new=4673) out=677t ttfb=1762ms api=13252ms turnos=1 $0.0378                                                                
-
-9543  2026-06-17 03:41:44  whatsapp  entrante   5491132317896@c.us   mandalo ahora, estan abiertos                                                                                                                                                                           
-
-9542  2026-06-17 03:40:15  whatsapp  saliente   5491132317896@c.us   Son las 12:39 AM — no mando mensajes a terceros entre las 12 y las 6 de la mañana. A las 6 AM les escribo a Kōnā Corner con la consulta completa: disponibilidad sábado 20/06 para 8-10 personas en el e
-
-9541  2026-06-17 03:40:15  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que intenté programar un mensaje pero no pude dejarlo listo porque me faltaron datos clave: no tenía claro para cuándo ni a quién mandarlo. Si me confirmás esos detalles, lo pro
