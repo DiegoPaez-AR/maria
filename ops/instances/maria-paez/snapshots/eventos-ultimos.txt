@@ -1,5 +1,18 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9737  2026-06-17 21:52:54  whatsapp  saliente   34342575317160@lid   Ahora sí, lo cargo.                                                                                                                                                                                     
+
+9736  2026-06-17 21:52:53  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+9735  2026-06-17 21:52:53  calendar  saliente                        creado: Almuerzo PV-DP (2026-06-23T13:00:00-03:00 → 2026-06-23T15:00:00-03:00) · Meet: https://meet.google.com/qoa-wneu-fxo                                                                             
+
+9734  2026-06-17 21:52:52  sistema   interno                         claude_call whatsapp: 13276ms prompt=8670c raw=6825c in=10t(cache_read=73995 new=4838) out=504t ttfb=1665ms api=11011ms turnos=1 $0.0479                                                                
+
+9733  2026-06-17 21:52:38  whatsapp  entrante   5491132317896@c.us   Titulo: Almuerzo PV-DP                                                                                                                                                                                  
+                                                                     Fecha: martes proximo                                                                                                                                                                                   
+                                                                     Inicio: 13 horas                                                                                                                                                                                        
+                                                                     Fin: 15 horas                                                                                                                                                                                           
+
 9732  2026-06-17 21:50:38  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude agendarte nada todavía porque me faltaron los datos del evento: el título, la fecha y hora de inicio, y la hora de fin. ¿Me los pasás y lo cargo enseguida?          
 
 9731  2026-06-17 21:50:31  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
@@ -217,18 +230,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                      *Opción 1* — Cenar a la carta abajo y subir al karaoke antes o después.                                                                                                                                 
                                                                                                                                                                                                                                                                              
                                                                      *Opción 2* — Menú karaoke en la sala ($80.000 por persona), inclu                                                                                                                                       
-
-9637  2026-06-17 15:55:32  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9636  2026-06-17 15:55:32  sistema   interno                         claude_call whatsapp: 39371ms prompt=73056c raw=15023c in=10t(cache_read=6271 new=31496) out=1830t ttfb=1805ms api=38677ms turnos=1 $0.1575                                                             
-
-9635  2026-06-17 15:54:52  whatsapp  entrante   5491130514423@c.us   Hola! Como estas?                                                                                                                                                                                       
-                                                                     Contamos con 2 opciones                                                                                                                                                                                 
-                                                                     Pueden cenar a la carta y subir antes o después a la sala                                                                                                                                               
-                                                                     O contamos con un menú para consumir directamente en la sala                                                                                                                                            
-                                                                     🎤 Karaoke Kona - Experiencia exclusiva                                                                                                                                                                  
-
-9634  2026-06-17 15:54:40  sistema   interno                         claude_call whatsapp: 13894ms prompt=71705c raw=6469c in=10t(cache_read=0 new=35673) out=380t ttfb=1708ms api=13344ms turnos=1 $0.1491                                                                  
-
-9633  2026-06-17 15:54:25  whatsapp  entrante   5491130514423@c.us   Hola! Como estas?                                                                                                                                                                                       
-                                                                     Contamos con 2 opciones                                                                                                                                                                                 
