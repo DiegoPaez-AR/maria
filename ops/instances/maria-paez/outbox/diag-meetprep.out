@@ -1,0 +1,94 @@
+# ejecutado: 2026-06-17T13:01:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   cat > /tmp/dmp.js <<'JS'
+#   const mem=require('/root/secretaria/memory'); const db=mem.db;
+#   const art=(ts)=>{try{return new Date(String(ts).replace(' ','T')+'Z').toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires',hour12:false});}catch{return ts;}};
+#   console.log('== ultimos avisos meeting-prep que recibio Diego (uid=1) ==');
+#   const rows=db.prepare("SELECT timestamp,cuerpo,metadata_json FROM eventos WHERE usuario_id=1 AND direccion='saliente' AND (cuerpo LIKE '%En 15min%' OR cuerpo LIKE '%En %min%:%' OR cuerpo LIKE '⏰%') ORDER BY timestamp DESC LIMIT 6").all();
+#   console.log(rows.length+' encontrados\n');
+#   for(const r of rows){ console.log('--- '+art(r.timestamp)+' ---'); console.log(r.cuerpo); console.log(''); }
+#   console.log('== tambien busco en programados (razon meeting_prep) los textos ==');
+#   for(const p of db.prepare("SELECT cuando,texto,razon FROM programados WHERE razon LIKE 'meeting_prep:%' ORDER BY id DESC LIMIT 5").all()){ console.log('--- '+art(p.cuando)+' ['+p.razon+'] ---'); console.log(p.texto); console.log(''); }
+#   JS
+#   node /tmp/dmp.js 2>&1; rm -f /tmp/dmp.js
+
+# ───── output ─────
+== ultimos avisos meeting-prep que recibio Diego (uid=1) ==
+6 encontrados
+
+--- 17/6/2026, 12:45:17 ---
+⏰ *En 15min*: Almuerzo Diego / Pablo Vizzotti (01:00 p. m.)
+Con: pvizzotti@gmail.com, diego@paez.is
+👤 Pablo Vizzotti: Pablo Vizzotti es un contacto con quien tengo una relación lo suficientemente cercana como para juntarme a almorzar. Por ahora no tengo más contexto acumulado s…
+👤 Diego Paez: Soy yo mismo. Este contacto refleja mi propio perfil y mis patrones de uso de la secretaria virtual. Me comunico casi exclusivamente por Gmail. Los mensajes que…
+
+--- 17/6/2026, 04:00:21 ---
+☀️ *Buen día, Diego.* miércoles 17 de junio.
+
+*🌡️ Clima en Buenos Aires, AR*
+☁️ nublado, min 7° / max 13°
+
+*📅 Agenda del día*
+• 01:00 p. m. — Almuerzo Diego / Pablo Vizzotti
+• 03:30 p. m. — Personal
+
+*📝 Pendientes*
+1. iProt Seguridad
+2. DDJJ 2025
+3. Presentaciones a Eliza
+4. Aysa
+5. Llamar a Alex
+
+*🔄 Gestionando para vos*
+- Cuando Andrés Neumann confirme disponibilidad para almuerzo con Diego (semana del 8/6, 13-15hs), crear evento en calendar de Diego e informarle. Slots propuestos: mar 09/06 13:00-15:00, mié 10/06 13:00-15:00, jue 11/06 13:00-15:00.
+- Cuando Fernando Maciel se contacte, obtener su email/WA, crear evento lunes 22/06 de 13:15 a 14:15 con Diego y Fernando, e informarle a Diego.
+- Cuando Kōnā Corner (5491130514423@c.us) responda sobre disponibilidad para el sábado 20/06 (8-10 personas, espacio privado arriba) y cuente cómo funciona el sistema, informarle a Diego.
+
+--- 16/6/2026, 17:15:20 ---
+⏰ *En 15min*: Reunión Diego / Gustavo Rossi (05:30 p. m.)
+Con: gustavorossi@gmail.com
+👤 Gustavo Rossi: Gustavo Rossi es un contacto con quien estoy coordinando una reunión de trabajo. El vínculo está todavía en etapa inicial y no tengo mucho contexto sobre su rol…
+
+--- 16/6/2026, 15:15:12 ---
+⏰ *En 15min*: Personal (03:30 p. m.)
+
+--- 16/6/2026, 12:45:19 ---
+⏰ *En 15min*: Almuerzo Diego / Alejandro Senmartin (Aguas de Zarate) (01:00 p. m.) @Mirasol
+Con: nicolas.jordan@enpiric.com
+👤 Nicolas Jordan: Nicolás Jordan es un contacto de negocios con quien tengo una relación activa y de confianza. Su canal exclusivo para coordinar cualquier cosa operativa es What…
+
+--- 16/6/2026, 11:45:19 ---
+⏰ *En 15min*: Reunión Diego / Gustavo Rossi (12:00 p. m.)
+Con: gustavorossi@gmail.com
+👤 Gustavo Rossi: Gustavo Rossi es un contacto con quien estoy coordinando una reunión de trabajo. El vínculo está todavía en etapa inicial y no tengo mucho contexto sobre su rol…
+
+== tambien busco en programados (razon meeting_prep) los textos ==
+--- Invalid Date [meeting_prep:13:7lmpu48elb8nilb4gl1f772nk6_20260617T173000Z] ---
+⏰ *En 15min*: Richi + Andres + Santi (02:30 p. m.)
+Con: ricardo@pumayna.com, santiago@capurro.com.ar, andres@pumayna.com
+
+--- Invalid Date [meeting_prep:2:1ap363ksjsbellneop7m8ckpgk_20260617T173000Z] ---
+⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.)
+Con: hernan.fulco@sondeosglobal.com, lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com
+Buenas, dejo este slot como recurrente si les parece para semana a semana chequear el correcto enrutamiento con las distintas opciones que vamos decidiendo en funcion a precio/calidad. Si les parece b
+
+--- Invalid Date [meeting_prep:13:79fu7jfqbn6fnrddvb9ap95md0] ---
+⏰ *En 15min*: Luli (01:00 p. m.)
+
+--- Invalid Date [meeting_prep:1:mjklkk79dhpavp4p7o9kqn6o2s] ---
+⏰ *En 15min*: Almuerzo Diego / Pablo Vizzotti (01:00 p. m.)
+Con: pvizzotti@gmail.com, diego@paez.is
+👤 Pablo Vizzotti: Pablo Vizzotti es un contacto con quien tengo una relación lo suficientemente cercana como para juntarme a almorzar. Por ahora no tengo más contexto acumulado s…
+👤 Diego Paez: Soy yo mismo. Este contacto refleja mi propio perfil y mis patrones de uso de la secretaria virtual. Me comunico casi exclusivamente por Gmail. Los mensajes que…
+
+--- Invalid Date [meeting_prep:13:jilf60m1se20am27oiekvgc44s] ---
+⏰ *En 15min*: 277 Veleros Call (12:30 p. m.)
+Con: angel@thenicolasgroup.com, federico.caceres@4caminos.co, fortu82@gmail.com, fortu@roklending.com, pablo.petrillo@luftlatam.com, joshua@roklending.com
+
+
+# exit=0
