@@ -1,5 +1,19 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9722  2026-06-17 21:45:55  whatsapp  saliente   34342575317160@lid   Diego, quería reenviarle los datos de la reserva a esa persona por WhatsApp, pero no me salió — no tenía el mensaje original a mano para reenviarlo. ¿Me podés pasar los datos de la reserva de nuevo o 
+
+9721  2026-06-17 21:45:48  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9720  2026-06-17 21:45:48  sistema   interno                         acción FALLÓ: reenviar_wa — Faltan campos requeridos: messageId                                                                                                                                         
+
+9719  2026-06-17 21:45:48  sistema   interno                         claude_call whatsapp: 23279ms prompt=7837c raw=10151c in=10t(cache_read=59815 new=4704) out=1050t ttfb=1754ms api=20739ms turnos=1 $0.0514                                                              
+
+9718  2026-06-17 21:45:24  whatsapp  entrante   5491132317896@c.us   aca va el comprobante para kona                                                                                                                                                                         
+
+9717  2026-06-17 21:45:24  whatsapp  entrante   5491132317896@c.us   comprobante_163784256621.pdf                                                                                                                                                                            
+
+9716  2026-06-17 21:45:14  sistema   interno                         claude_call whatsapp: 32147ms prompt=8326c raw=71418c in=20t(cache_read=57648 new=59815) out=1315t ttfb=1794ms api=29760ms turnos=3 $0.2614                                                             
+
 9715  2026-06-17 21:44:41  whatsapp  entrante   5491132317896@c.us   comprobante_163784256621.pdf                                                                                                                                                                            
 
 9714  2026-06-17 21:35:08  sistema   interno                         claude_call whatsapp: 7512ms prompt=71910c raw=4648c in=10t(cache_read=0 new=35448) out=110t ttfb=3190ms api=5353ms turnos=1 $0.1439                                                                    
@@ -224,21 +238,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 9623  2026-06-17 13:45:17  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Seguimiento Infraestructura (11:00 a. m.)                                                                                                                                                 
                                                                      Con: cristian.incarnato@sondeosglobal.com, hernan.fulco@sondeosglobal.com, martin.gagliano@sondeos.com.ar, cristian.villalba@sondeos.com.ar, lau                                                        
-
-9622  2026-06-17 13:34:26  whatsapp  saliente   5491126970402@c.us   ¡Muchas gracias por la confirmación! Hasta el viernes.                                                                                                                                                  
-
-9621  2026-06-17 13:34:26  whatsapp  saliente   34342575317160@lid   Sagardi confirmó la reserva para el *viernes 19/06 a las 20:30*, 11 personas. No mencionaron nada de la mesa alta — queda sujeta a disponibilidad en el momento. Como dato extra: tienen 2 hs de estacio
-
-9620  2026-06-17 13:34:26  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-9619  2026-06-17 13:34:26  calendar  saliente                        creado: Cena Sagardi — 11 personas (2026-06-19T20:30:00-03:00 → 2026-06-19T23:00:00-03:00)                                                                                                              
-
-9618  2026-06-17 13:34:25  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-9617  2026-06-17 13:34:25  sistema   interno                         claude_call whatsapp: 25134ms prompt=74433c raw=11423c in=10t(cache_read=0 new=36481) out=1167t ttfb=1647ms api=24492ms turnos=1 $0.1647                                                                
-
-9616  2026-06-17 13:33:59  whatsapp  entrante   5491126970402@c.us   Estimada,                                                                                                                                                                                               
-                                                                     Confirmamos su reserva para el día 19/06 a las 20:30hs para 11 personas.                                                                                                                                
-                                                                     Recuerde que la misma es válida en la zona del restaurante, donde los consumos son a la carta.                                                                                                          
-                                                                                                                                                                                                                                                                             
-                                                                     También tiene 2hs sin                                                                                                                                                                                   
