@@ -1,5 +1,17 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9622  2026-06-17 13:34:26  whatsapp  saliente   5491126970402@c.us   ¡Muchas gracias por la confirmación! Hasta el viernes.                                                                                                                                                  
+
+9621  2026-06-17 13:34:26  whatsapp  saliente   34342575317160@lid   Sagardi confirmó la reserva para el *viernes 19/06 a las 20:30*, 11 personas. No mencionaron nada de la mesa alta — queda sujeta a disponibilidad en el momento. Como dato extra: tienen 2 hs de estacio
+
+9620  2026-06-17 13:34:26  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+9619  2026-06-17 13:34:26  calendar  saliente                        creado: Cena Sagardi — 11 personas (2026-06-19T20:30:00-03:00 → 2026-06-19T23:00:00-03:00)                                                                                                              
+
+9618  2026-06-17 13:34:25  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9617  2026-06-17 13:34:25  sistema   interno                         claude_call whatsapp: 25134ms prompt=74433c raw=11423c in=10t(cache_read=0 new=36481) out=1167t ttfb=1647ms api=24492ms turnos=1 $0.1647                                                                
+
 9616  2026-06-17 13:33:59  whatsapp  entrante   5491126970402@c.us   Estimada,                                                                                                                                                                                               
                                                                      Confirmamos su reserva para el día 19/06 a las 20:30hs para 11 personas.                                                                                                                                
                                                                      Recuerde que la misma es válida en la zona del restaurante, donde los consumos son a la carta.                                                                                                          
@@ -315,15 +327,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9524  2026-06-16 23:37:00  sistema   interno                         claude_call whatsapp: 23380ms prompt=72780c raw=9629c in=10t(cache_read=6271 new=29545) out=1046t ttfb=1692ms api=22368ms turnos=1 $0.1385                                                              
 
 9523  2026-06-16 23:36:36  whatsapp  entrante   5491137646922@c.us   Anotado tu pedido seria $78800                                                                                                                                                                          
-
-9522  2026-06-16 23:36:04  whatsapp  saliente   34342575317160@lid   Diego, quería escribirle a Kōnā Corner para preguntar por la reserva del piso de arriba el sábado, pero el número que tengo guardado para ellos no me está funcionando — no lo reconoce como activo. ¿Me
-
-9521  2026-06-16 23:35:54  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9520  2026-06-16 23:35:54  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-9519  2026-06-16 23:35:54  sistema   interno                         acción FALLÓ: enviar_wa — enviar_wa: WA "5491130514423@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
-
-9518  2026-06-16 23:35:54  sistema   interno                         claude_call whatsapp: 27955ms prompt=9094c raw=10978c in=10t(cache_read=154383 new=4853) out=1213t ttfb=1742ms api=25645ms turnos=1 $0.0827                                                             
-
-9517  2026-06-16 23:35:43  sistema   interno                         claude_call whatsapp: 11565ms prompt=72113c raw=6378c in=10t(cache_read=0 new=35575) out=389t ttfb=1688ms api=10718ms turnos=1 $0.1492                                                                  
