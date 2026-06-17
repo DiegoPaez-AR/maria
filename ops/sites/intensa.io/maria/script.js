@@ -267,16 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Lemon Squeezy checkout handler — los CTAs con data-lemon-product van
-  // a abrir el Lemon checkout cuando Diego pase los Product IDs.
-  // Por ahora, scrollean al final o muestran un alert temporal.
+  // CTAs con data-lemon-product → flujo de signup (/maria/signup/), que valida
+  // email+WA con código y lleva al checkout. Antes esto abría un mailto
+  // placeholder (de cuando no existía el signup); ya no.
   document.querySelectorAll('[data-lemon-product]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const product = btn.dataset.lemonProduct;
-      // TODO: reemplazar con Lemon.js cuando esté el store:
-      //   window.LemonSqueezy.Url.Open(`https://YOURSTORE.lemonsqueezy.com/buy/PRODUCT_${product}_ID`);
-      window.location.href = `mailto:hola@intensa.io?subject=Plan ${product} de Maria&body=Hola, me gustaría suscribirme al plan ${product}.`;
+      window.location.href = '/maria/signup/';
     });
   });
 
