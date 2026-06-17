@@ -1,0 +1,77 @@
+# ejecutado: 2026-06-17T00:37:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   node -e '
+#   const mem=require("/root/secretaria/memory"); const db=mem.db;
+#   const art=(ts)=>{try{return new Date(String(ts).replace(" ","T")+"Z").toLocaleString("es-AR",{timeZone:"America/Argentina/Buenos_Aires",hour12:false});}catch{return ts;}};
+#   console.log("== pendientes uid=1 relacionados a Kona/reserva/sabado/corner ==");
+#   const p=db.prepare("SELECT id,estado,dueno,disparador,desc,meta_json,creado,cerrado FROM pendientes WHERE usuario_id=1 AND (desc LIKE ? OR desc LIKE ? OR desc LIKE ? OR desc LIKE ? OR desc LIKE ?) ORDER BY id DESC LIMIT 15").all("%ona%","%eserva%","%ábado%","%abado%","%orner%");
+#   for(const x of p){ let m=""; try{const j=JSON.parse(x.meta_json||"{}"); m=JSON.stringify(j);}catch{}; console.log(`#${x.id} [${x.estado}] dueno=${x.dueno} disp=${x.disparador} creado=${art(x.creado)}\n   desc: ${x.desc}\n   meta: ${m}`); }
+#   console.log("\n== últimos pendientes abiertos uid=1 (todos, por las dudas) ==");
+#   for(const x of db.prepare("SELECT id,estado,dueno,disparador,desc,creado FROM pendientes WHERE usuario_id=1 AND estado=\"abierto\" ORDER BY id DESC LIMIT 12").all()) console.log(`#${x.id} [${x.estado}] ${x.dueno}/${x.disparador} ${art(x.creado)} :: ${String(x.desc).slice(0,120)}`);
+#   ' 2>&1
+
+# ───── output ─────
+== pendientes uid=1 relacionados a Kona/reserva/sabado/corner ==
+#164 [abierto] dueno=maria disp=trigger_externo creado=16/6/2026, 20:35:54
+   desc: Cuando Kōnā Corner (5491130514423@c.us) responda sobre disponibilidad para el sábado 20/06 (8-10 personas, espacio privado arriba) y cuente cómo funciona el sistema, informarle a Diego.
+   meta: {}
+#127 [cerrado] dueno=usuario disp=respuesta_usuario creado=4/6/2026, 11:22:57
+   desc: Confirmarle a Biketrip (33688061362@c.us): si procedemos con la reserva de 3 scooters 125cc a 220€/unidad (660€ total) y si los otros 2 conductores del grupo también tienen permiso de moto.
+   meta: {}
+#109 [cerrado] dueno=maria disp=trigger_externo creado=30/5/2026, 14:43:42
+   desc: Cuando Nika confirme (o niegue) la reserva para hoy a las 21:00 para 5 personas, avisarle a Diego.
+   meta: {"destino":"5491130215648@c.us"}
+#96 [cerrado] dueno=maria disp=trigger_externo creado=23/5/2026, 20:11:08
+   desc: Cuando Trocca responda si tienen cena el domingo 24/05 (consulta enviada porque el lunes 25 es feriado): si confirman cena → preguntarle a Diego qué turno quiere (19:45/20:00 o 22:00/22:15) y reservar; si no tienen cena el domingo → reservar al mediodía a las 13:00 para 2 personas.
+   meta: {}
+#95 [cerrado] dueno=maria disp=trigger_externo creado=23/5/2026, 20:09:36
+   desc: Esperar confirmación de Trocca para la reserva del domingo 24/05 a las 13 hs para 2 personas. Cuando confirmen: avisarle a Diego.
+   meta: {}
+#94 [cerrado] dueno=usuario disp=respuesta_usuario creado=23/5/2026, 20:08:52
+   desc: Confirmar reserva en Trocca para el domingo 24/05 para 2 personas: Diego tiene que elegir entre turno 1 (19:45/20:00) o turno 2 (22:00/22:15).
+   meta: {}
+#93 [cerrado] dueno=usuario disp=respuesta_usuario creado=23/5/2026, 20:06:38
+   desc: Responderle a Diego sobre la reserva en Trocca: domingos solo hasta las 16hs, las 21 no da. ¿Cambia a almuerzo del domingo o elige otro día?
+   meta: {}
+#92 [cerrado] dueno=maria disp=trigger_externo creado=23/5/2026, 20:05:47
+   desc: Cuando Trocca confirme (o rechace) la reserva del domingo 24/05 a las 21 hs para 2 personas: avisarle a Diego.
+   meta: {}
+#60 [cerrado] dueno=usuario disp=manual creado=15/5/2026, 13:40:04
+   desc: Confirmar con Diego si La Cabrera está bien para el almuerzo del viernes 22/5 con Gabriel Pacheco (13-15hs). Si dice que sí: hacer reserva para 2 personas a las 13hs y crear evento con invitación a gap2612@gmail.com.
+   meta: {"tipo":"consulta"}
+#59 [cerrado] dueno=usuario disp=manual creado=15/5/2026, 13:38:12
+   desc: Esperar respuesta de Gabriel Pacheco sobre dónde quiere almorzar el viernes 22/5 (13-15hs) para hacer la reserva y agendar con invitación al calendar (gap2612@gmail.com)
+   meta: {"tipo":"consulta"}
+#49 [cerrado] dueno=usuario disp=manual creado=8/5/2026, 21:02:33
+   desc: Confirmar o rechazar reserva en Fico para mañana sábado 9/5 a las 20:15 (6 personas) — Diego tiene que decir si le cierra el horario
+   meta: {"tipo":"consulta"}
+#35 [cerrado] dueno=usuario disp=manual creado=3/5/2026, 10:58:17
+   desc: Chino pidió reserva en Farinelli para Diego — esperar confirmación de Diego con fecha, hora y cantidad de personas para gestionar
+   meta: {"tipo":"consulta"}
+
+== últimos pendientes abiertos uid=1 (todos, por las dudas) ==
+/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5
+	return this[cppdb].prepare(sql, this, false);
+	                   ^
+
+SqliteError: no such column: "abierto" - should this be a string literal in single-quotes?
+    at Database.prepare (/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at [eval]:8:19
+    at Script.runInThisContext (node:vm:122:12)
+    at Object.runInThisContext (node:vm:298:38)
+    at node:internal/process/execution:82:21
+    at [eval]-wrapper:6:24
+    at runScript (node:internal/process/execution:81:62)
+    at evalScript (node:internal/process/execution:103:10)
+    at node:internal/main/eval_string:30:3 {
+  code: 'SQLITE_ERROR'
+}
+
+Node.js v18.19.1
+
+# exit=0
