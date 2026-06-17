@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9592  2026-06-17 11:48:58  whatsapp  saliente   34342575317160@lid   Les escribo ahora por WhatsApp para preguntar por la mesa alta para 11 el viernes 19/06 a las 20:30.                                                                                                    
+
+9591  2026-06-17 11:48:58  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9590  2026-06-17 11:48:58  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+9589  2026-06-17 11:48:58  whatsapp  saliente   5491126970402@c.us   ¡Hola! Les escribo de parte de Diego Páez. Quería consultar si tienen disponibilidad en la mesa alta para 11 personas el viernes 19 de junio a las 20:30. ¿Podrían confirmarme? Muchas gracias.         
+
+9588  2026-06-17 11:48:57  sistema   interno                         claude_call moderacion: 6196ms prompt=1639c raw=6469c in=10t(cache_read=0 new=22500) out=359t ttfb=1755ms api=5055ms turnos=1 $0.0304                                                                   
+
+9587  2026-06-17 11:48:51  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+9586  2026-06-17 11:48:51  sistema   interno                         claude_call whatsapp: 32676ms prompt=68881c raw=13379c in=10t(cache_read=6271 new=28228) out=1603t ttfb=1756ms api=31868ms turnos=1 $0.1406                                                             
+
+9585  2026-06-17 11:48:18  whatsapp  entrante   5491132317896@c.us   podras escribirles para preguntar si podemos hacer una reserva en la mesa alta para 11 personas el viernes a las 2030                                                                                   
+
 9584  2026-06-17 11:47:24  whatsapp  saliente   34342575317160@lid   Sí, tienen WhatsApp: +54 11 2697-0402                                                                                                                                                                   
 
 9583  2026-06-17 11:47:23  sistema   interno                         claude_call whatsapp: 18857ms prompt=68893c raw=14058c in=28t(cache_read=76037 new=29758) out=408t ttfb=1747ms api=17779ms turnos=3 $0.1751                                                             
@@ -302,19 +318,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9494  2026-06-16 23:19:38  whatsapp  entrante   5491137646922@c.us   Todas las opciones que tengan la V se pueden hacer veggies!                                                                                                                                             
 
 9493  2026-06-16 23:19:21  whatsapp  saliente   5491137646922@c.us   ¡Hola! Todo bien, gracias. Te había consultado recién por WhatsApp — ¿tienen hamburguesa vegetariana en el menú?                                                                                        
-
-9492  2026-06-16 23:19:21  sistema   interno                         claude_call whatsapp: 11953ms prompt=71698c raw=6884c in=10t(cache_read=0 new=35428) out=383t ttfb=1795ms api=12072ms turnos=1 $0.1484                                                                  
-
-9491  2026-06-16 23:19:09  whatsapp  entrante   5491137646922@c.us   Hola maria que tal?                                                                                                                                                                                     
-
-9490  2026-06-16 23:14:24  whatsapp  saliente   34342575317160@lid   Claro, les escribo ahora. Te aviso cuando respondan.                                                                                                                                                    
-
-9489  2026-06-16 23:14:24  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9488  2026-06-16 23:14:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-9487  2026-06-16 23:14:24  whatsapp  saliente   5491137646922@c.us   ¡Hola! Soy María Páez, secretaria personal de Diego Páez. Quería consultarles: ¿tienen alguna hamburguesa vegetariana en el menú? ¡Gracias!                                                             
-
-9486  2026-06-16 23:14:24  sistema   interno                         claude_call moderacion: 7470ms prompt=1587c raw=7000c in=10t(cache_read=0 new=22485) out=438t ttfb=1718ms api=6286ms turnos=1 $0.0308                                                                   
-
-9485  2026-06-16 23:14:16  sistema   interno                         claude_call whatsapp: 13413ms prompt=7341c raw=7004c in=10t(cache_read=136302 new=3595) out=501t ttfb=1888ms api=10946ms turnos=1 $0.0619                                                               
