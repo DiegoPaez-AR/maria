@@ -13,6 +13,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const providers = require('./providers');
+const { invocarClaude } = require('./claude-client');
 
 const MINUTOS_ANTES = Number(process.env.MEETING_PREP_MIN_ANTES || 15);
 const VENTANA_HORAS = Number(process.env.MEETING_PREP_VENTANA_H || 2);
@@ -23,7 +24,50 @@ function _destinoWA(usuario) {
   return usuario.wa_lid || usuario.wa_cus || null;
 }
 
-function _componerTexto(e, usuario) {
+const _DOMINIOS_GENERICOS = new Set([
+  'gmail.com','googlemail.com','hotmail.com','hotmail.com.ar','outlook.com','outlook.com.ar',
+  'yahoo.com','yahoo.com.ar','icloud.com','me.com','live.com','proton.me','protonmail.com','aol.com',
+]);
+
+function _nombreDesdeEmail(email) {
+  const local = String(email || '').split('@')[0] || '';
+  const parts = local.replace(/[._+-]+/g, ' ').replace(/\d+/g, '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return null;
+  return parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+}
+function _empresaDesdeEmail(email) {
+  const dom = (String(email || '').split('@')[1] || '').toLowerCase();
+  if (!dom || _DOMINIOS_GENERICOS.has(dom)) return null;
+  return dom;
+}
+
+// Approach B (2026-06-17): al PROGRAMAR el aviso, por cada asistente buscamos en
+// la web su rol/empresa para darle contexto al usuario (LinkedIn no se puede
+// consultar por email — perfiles cerrados/sin API —, pero una búsqueda
+// nombre+empresa suele traer el cargo). Best-effort: si no hay datos confiables
+// o falla, devuelve null y el aviso sigue sin esa línea.
+async function _enriquecerAsistente({ email, nombre, usuario }) {
+  const nom = nombre || _nombreDesdeEmail(email);
+  if (!nom) return null;
+  const empresa = _empresaDesdeEmail(email);
+  const prompt = `Buscá en la web quién es esta persona, para darle contexto a ${usuario.nombre} antes de una reunión.
+Persona: ${nom}${empresa ? ` (empresa probable según su email: ${empresa})` : ''}
+Email: ${email}
+
+Devolvé UNA sola línea corta (máx ~110 caracteres) con su ROL/CARGO y EMPRESA actuales si los encontrás con confianza razonable (ej: "Director Comercial en Acme" o "Founder & CEO, Acme"). Si no encontrás info confiable de ESTA persona, devolvé EXACTAMENTE: sin datos
+No inventes ni completes con suposiciones. Sin comillas ni explicaciones: solo la línea.`;
+  try {
+    let r = await invocarClaude(prompt, { timeoutMs: 60_000, audit: { usuarioId: usuario.id, canal: 'meeting-prep-enrich' } });
+    r = String(r || '').replace(/\s+/g, ' ').trim();
+    if (!r || /^sin datos\.?$/i.test(r)) return null;
+    return r.slice(0, 140);
+  } catch (err) {
+    console.warn(`[meeting-prep enrich] ${email} falló: ${err.message}`);
+    return null;
+  }
+}
+
+async function _componerTexto(e, usuario) {
   const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
   const d = new Date(e.start);
   const hm = d.toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
@@ -43,16 +87,23 @@ function _componerTexto(e, usuario) {
     for (const em of attendees) {
       if (agregadas >= 2) break;
       const c = mem.buscarContacto({ usuarioId: usuario.id, email: String(em).trim().toLowerCase() });
-      if (!c) continue;
-      const nota = mem.getNotaContacto(usuario.id, c.id);
-      const fuente = (nota && nota.nota) ? nota.nota : (c.notas || null);
-      if (!fuente) continue;
-      const plano = String(fuente).replace(/\s+/g, ' ').trim();
-      txt += `\n👤 ${c.nombre}: ${plano.slice(0, 160)}${plano.length > 160 ? '…' : ''}`;
+      const nombre = c ? c.nombre : (_nombreDesdeEmail(em) || em);
+      const nota = c ? mem.getNotaContacto(usuario.id, c.id) : null;
+      const fuente = (nota && nota.nota) ? nota.nota : (c && c.notas) || null;
+      // Enriquecimiento web (rol/empresa) por asistente.
+      const web = await _enriquecerAsistente({ email: em, nombre: c ? c.nombre : null, usuario });
+      if (!fuente && !web) continue; // nada útil para este asistente
+      let linea = `\n👤 ${nombre}`;
+      if (web) linea += ` — ${web}`;
+      if (fuente) {
+        const plano = String(fuente).replace(/\s+/g, ' ').trim();
+        linea += `: ${plano.slice(0, 120)}${plano.length > 120 ? '…' : ''}`;
+      }
+      txt += linea;
       agregadas++;
     }
   } catch (err) {
-    console.warn(`[meeting-prep] notas de asistentes falló:`, err.message);
+    console.warn(`[meeting-prep] notas/enriquecimiento de asistentes falló:`, err.message);
   }
   if (e.descripcion) {
     const desc = e.descripcion.replace(/\s+/g, ' ').slice(0, 200);
@@ -118,7 +169,7 @@ async function _tickUsuario(usuario) {
         canal: 'whatsapp',
         destino,
         asunto: null,
-        texto: _componerTexto(e, usuario),
+        texto: await _componerTexto(e, usuario),
         razon,
         metadata: { eventoId: e.id, summary: e.summary, inicio: e.start },
       });
