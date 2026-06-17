@@ -28,7 +28,11 @@ function _componerTexto(e, usuario) {
   const d = new Date(e.start);
   const hm = d.toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
   const lugar = e.ubicacion ? ` @${e.ubicacion}` : '';
-  const asistentes = (e.attendees || []).filter(a => a).slice(0, 6).join(', ');
+  // No incluir al propio usuario en la lista ni describirlo a sí mismo.
+  const _yo = (usuario.email || '').toLowerCase().trim();
+  const _esYo = (em) => { const x = String(em || '').toLowerCase().trim(); return !!x && !!_yo && x === _yo; };
+  const attendees = (e.attendees || []).filter(a => a && !_esYo(a));
+  const asistentes = attendees.slice(0, 6).join(', ');
   let txt = `⏰ *En ${MINUTOS_ANTES}min*: ${e.summary} (${hm})${lugar}`;
   if (asistentes) txt += `\nCon: ${asistentes}`;
   // Contexto de los asistentes (2026-06-10): si el attendee está en la libreta
@@ -36,7 +40,7 @@ function _componerTexto(e, usuario) {
   // si no hay, las notas de libreta. Máx 2 asistentes para no inflar el aviso.
   try {
     let agregadas = 0;
-    for (const em of (e.attendees || []).filter(Boolean)) {
+    for (const em of attendees) {
       if (agregadas >= 2) break;
       const c = mem.buscarContacto({ usuarioId: usuario.id, email: String(em).trim().toLowerCase() });
       if (!c) continue;
