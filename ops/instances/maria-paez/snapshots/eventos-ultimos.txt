@@ -1,5 +1,11 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9710  2026-06-17 21:00:34  whatsapp  saliente   5491126970402@c.us   ¡Gracias por la aclaración! Perfecto, quedamos entonces con la reserva en la zona del restaurante para el viernes 19 a las 20:30, 11 personas. ¡Nos vemos el viernes!                                   
+
+9709  2026-06-17 21:00:34  sistema   interno                         claude_call whatsapp: 17952ms prompt=73371c raw=8853c in=10t(cache_read=0 new=36060) out=712t ttfb=1751ms api=17231ms turnos=1 $0.1559                                                                  
+
+9708  2026-06-17 21:00:16  whatsapp  entrante   5491126970402@c.us   Buenas tardes! La mesa alta es la barra de pintxos, alli no realizamos la reserva. Por las dudas, capaz no habiamos sido claros con esa indicación. Su reserva fue realizada en la zona del restaurante,
+
 9707  2026-06-17 20:46:51  whatsapp  saliente   5491156449434@c.us   Anotado, gracias Georgina! Lo agendo a las 13:00 el lunes 22.                                                                                                                                           
 
 9706  2026-06-17 20:46:51  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -244,9 +250,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                                                                                                                                                                                                                              
                                                                      *📅 Agenda del día*                                                                                                                                                                                      
                                                                      (sin eventos hoy)                                                                                                                                                                                       
-
-9610  2026-06-17 12:15:09  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Vence Monotributo (09:30 a. m.)                                                                                                                                                           
-
-9609  2026-06-17 12:14:32  whatsapp  saliente   34342575317160@lid   Es Kōnā Corner — restaurante japonés en Castañeda 1899, Belgrano, de Narda Lepes. Tienen karaoke en el primer piso, reservado para grupos privados de 8-10. Les escribo ahora preguntando por el sábado 
-
-9608  2026-06-17 12:14:31  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
