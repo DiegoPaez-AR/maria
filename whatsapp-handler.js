@@ -893,6 +893,23 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
           'crear_evento', 'modificar_evento', 'borrar_evento',
         ]);
         fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
+
+        // Backstop: si un envío visible falló, cancelar los pendientes
+        // "esperando respuesta" (trigger_externo) creados en ESTE turno —
+        // esperan respuesta a un mensaje que NO salió, y harían creer en turnos
+        // futuros que ya se mandó (caso Kona/Evelia: "ya les mandé" falso).
+        if (fallasVisibles.length) {
+          for (const r of resultados) {
+            if (r.ok && r.accion?.tipo === 'agregar_pendiente'
+                && r.accion?.disparador === 'trigger_externo' && r.resultado?.id) {
+              try {
+                mem.quitarPendiente(usuario.id, r.resultado.id);
+                if (r.resultado.follow_up?.id) mem.setFollowUpEstado(r.resultado.follow_up.id, 'cancelado');
+                console.log(`[WA backstop] cancelé pendiente trigger_externo #${r.resultado.id} (un envío del turno falló)`);
+              } catch (e) { console.warn('[WA backstop] cancelar pendiente falló:', e.message); }
+            }
+          }
+        }
       }
     }
 

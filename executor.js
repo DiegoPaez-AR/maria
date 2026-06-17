@@ -768,7 +768,22 @@ async function _upsertContacto(a, ctx) {
   // El validador devuelve el wid resuelto por WA Web (puede ser @c.us o @lid).
   let waNorm = null;
   if (a.whatsapp) {
-    waNorm = await waValidate.normalizarWaCus(a.whatsapp, ctx.waClient);
+    try {
+      waNorm = await waValidate.normalizarWaCus(a.whatsapp, ctx.waClient);
+    } catch (err) {
+      // No perdemos un número que el usuario nos dio: si WhatsApp no lo pudo
+      // verificar (getNumberId transitorio, número fuera de cache, etc.), lo
+      // guardamos igual en formato <digitos>@c.us. El envío real es la prueba:
+      // si el número está mal, enviar_wa falla y se avisa honesto (en vez de
+      // descartar en silencio un número válido y dejar el contacto inservible).
+      const dig = String(a.whatsapp).replace(/[^\d]/g, '');
+      if (dig) {
+        waNorm = `${dig}@c.us`;
+        console.warn(`[upsert_contacto] no pude verificar "${a.whatsapp}" (${err.message}); guardo ${waNorm} sin verificar`);
+      } else {
+        throw err;
+      }
+    }
   }
   const visibilidad = a.visibilidad === 'publica' ? 'publica' : 'privada';
   const c = mem.upsertContacto({
