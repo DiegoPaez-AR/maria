@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9609  2026-06-17 12:14:32  whatsapp  saliente   34342575317160@lid   Es Kōnā Corner — restaurante japonés en Castañeda 1899, Belgrano, de Narda Lepes. Tienen karaoke en el primer piso, reservado para grupos privados de 8-10. Les escribo ahora preguntando por el sábado 
+
+9608  2026-06-17 12:14:31  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9607  2026-06-17 12:14:31  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+9606  2026-06-17 12:14:31  whatsapp  saliente   5491130514423@c.us   ¡Hola! Los contacto de parte de Diego Páez. Le gustaría reservar el espacio de karaoke para el *sábado 21 de junio a las 21 hs*, para un grupo de *8 a 10 personas*.                                    
+                                                                                                                                                                                                                                                                             
+                                                                     ¿Tienen disponibilidad para esa no                                                                                                                                                                      
+
+9605  2026-06-17 12:14:31  sistema   interno                         claude_call moderacion: 6112ms prompt=1832c raw=5715c in=10t(cache_read=0 new=22570) out=255t ttfb=1851ms api=5970ms turnos=1 $0.0301                                                                   
+
+9604  2026-06-17 12:14:25  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+9603  2026-06-17 12:14:25  sistema   interno                         claude_call whatsapp: 117718ms prompt=71368c raw=52299c in=92t(cache_read=198828 new=34954) out=4535t ttfb=1789ms api=114399ms turnos=7 $0.3289                                                         
+
 9602  2026-06-17 12:12:26  whatsapp  entrante   5491132317896@c.us   podrás escribirle a Zona, con a Corner, creo que se llama, y decirles que el sábado que                                                                                                                 
                                                                       hiciera mocir y reservar para el caroque de la noche, que te cuenten un poco cómo es                                                                                                                   
                                                                       el, cómo funciona, así es                                                                                                                                                                              
@@ -306,27 +322,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9511  2026-06-16 23:29:04  whatsapp  saliente   34342575317160@lid   Lo pido ahora con todo, te aviso cuando confirmen hora y precio.                                                                                                                                        
 
 9510  2026-06-16 23:29:04  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-9509  2026-06-16 23:29:04  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-9508  2026-06-16 23:29:04  whatsapp  saliente   5491137646922@c.us   ¡Hola! Quería hacer un pedido para retirar:                                                                                                                                                             
-                                                                     • 1 Only Cheese simple carne con aros                                                                                                                                                                   
-                                                                     • 1 Stadium doble carne con papas                                                                                                                                                                       
-                                                                     • 1 Qatar veggie con mozzarella                                                                                                                                                                         
-                                                                     • 1 Sola (pan y carne) con papas                                                                                                                                                                        
-                                                                                                                                                                                                                                                                             
-                                                                     ¿Me pueden decir a                                                                                                                                                                                      
-
-9507  2026-06-16 23:29:03  sistema   interno                         claude_call moderacion: 6989ms prompt=1715c raw=6264c in=10t(cache_read=0 new=22539) out=352t ttfb=1666ms api=6662ms turnos=1 $0.0305                                                                   
-
-9506  2026-06-16 23:28:56  sistema   interno                         claude_call whatsapp: 24310ms prompt=7757c raw=10463c in=10t(cache_read=144031 new=4233) out=1050t ttfb=1715ms api=22020ms turnos=1 $0.0749                                                             
-
-9505  2026-06-16 23:28:31  whatsapp  entrante   5491132317896@c.us   Que te avisen a qué hora paso annuscarla y cuánto es                                                                                                                                                    
-
-9504  2026-06-16 23:28:31  whatsapp  entrante   5491132317896@c.us   Pedí:                                                                                                                                                                                                   
-                                                                     1 only cheese simple carne con aros                                                                                                                                                                     
-                                                                     1 stadium doble carne con papas                                                                                                                                                                         
-                                                                     1 Qatar veggie con mozzarella                                                                                                                                                                           
-                                                                     1 sola (pan y carne) con papas                                                                                                                                                                          
-
-9503  2026-06-16 23:28:21  sistema   interno                         claude_call whatsapp: 16108ms prompt=7721c raw=7647c in=10t(cache_read=0 new=144031) out=598t ttfb=1757ms api=13624ms turnos=1 $0.5491                                                                  
