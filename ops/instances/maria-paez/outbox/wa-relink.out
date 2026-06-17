@@ -1,0 +1,38 @@
+# ejecutado: 2026-06-17T19:22:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "== stop maria-paez =="
+#   pm2 stop maria-paez 2>&1 | tail -3
+#   echo "== matar chromium de maria =="
+#   pkill -9 -f 'state/maria-paez/.wwebjs_auth'; echo "pkill rc=$?"
+#   sleep 2
+#   echo "== borrar sesión WA muerta =="
+#   rm -rf /root/secretaria/state/maria-paez/.wwebjs_auth/session && echo "sesión borrada"
+#   ls -la /root/secretaria/state/maria-paez/.wwebjs_auth/ 2>/dev/null
+#   echo "== restart maria-paez (va a emitir QR nuevo) =="
+#   pm2 restart maria-paez 2>&1 | tail -4
+#   echo "DONE $(date -Iseconds) — ahora corré: pm2 logs maria-paez --lines 100 y escaneá el QR"
+
+# ───── output ─────
+== stop maria-paez ==
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 2279134  │ 12h    │ 0    │ online    │ 0%       │ 72.2mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 0        │ 0      │ 5    │ stopped   │ 0%       │ 0b       │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+== matar chromium de maria ==
+pkill rc=1
+== borrar sesión WA muerta ==
+sesión borrada
+total 8
+drwxr-xr-x+ 2 root root 4096 Jun 17 19:22 .
+drwxr-xr-x+ 5 root root 4096 Jun 13 00:23 ..
+== restart maria-paez (va a emitir QR nuevo) ==
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 2279134  │ 12h    │ 0    │ online    │ 0%       │ 72.5mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 2463027  │ 0s     │ 5    │ online    │ 0%       │ 9.5mb    │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+DONE 2026-06-17T19:22:04-03:00 — ahora corré: pm2 logs maria-paez --lines 100 y escaneá el QR
+
+# exit=0
