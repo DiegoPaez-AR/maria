@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9546  2026-06-17 03:42:01  whatsapp  saliente   5491132317896@c.us   Dale, lo mando ahora.                                                                                                                                                                                   
+
+9545  2026-06-17 03:42:01  sistema   interno                         acción FALLÓ: enviar_mensaje — Tipo de acción desconocido: enviar_mensaje                                                                                                                               
+
+9544  2026-06-17 03:42:01  sistema   interno                         claude_call whatsapp: 15572ms prompt=8673c raw=8084c in=10t(cache_read=33487 new=4673) out=677t ttfb=1762ms api=13252ms turnos=1 $0.0378                                                                
+
+9543  2026-06-17 03:41:44  whatsapp  entrante   5491132317896@c.us   mandalo ahora, estan abiertos                                                                                                                                                                           
+
 9542  2026-06-17 03:40:15  whatsapp  saliente   5491132317896@c.us   Son las 12:39 AM — no mando mensajes a terceros entre las 12 y las 6 de la mañana. A las 6 AM les escribo a Kōnā Corner con la consulta completa: disponibilidad sábado 20/06 para 8-10 personas en el e
 
 9541  2026-06-17 03:40:15  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que intenté programar un mensaje pero no pude dejarlo listo porque me faltaron datos clave: no tenía claro para cuándo ni a quién mandarlo. Si me confirmás esos detalles, lo pro
@@ -221,11 +229,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9448  2026-06-16 21:22:09  whatsapp  saliente   5491176176620@c.us   Perfecto, te mando la invitación al calendario ahora.                                                                                                                                                   
 
 9447  2026-06-16 21:22:09  whatsapp  saliente   34342575317160@lid   Máximo confirmó — le agendo la reunión para el *lunes 22/06 a las 15:00* en la oficina (Carlos Pellegrini 1521, piso 8) y le mando la invitación.                                                       
-
-9446  2026-06-16 21:22:09  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-9445  2026-06-16 21:22:09  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-9444  2026-06-16 21:22:09  calendar  saliente                        creado: Reunión Diego / Máximo Maderbuen (2026-06-22T15:00:00-03:00 → 2026-06-22T16:00:00-03:00) · Meet: https://meet.google.com/pcg-iaiw-yxa                                                           
-
-9443  2026-06-16 21:22:08  sistema   interno                         claude_call whatsapp: 27073ms prompt=71630c raw=10681c in=10t(cache_read=6271 new=29124) out=1233t ttfb=1802ms api=26556ms turnos=1 $0.1393                                                             
