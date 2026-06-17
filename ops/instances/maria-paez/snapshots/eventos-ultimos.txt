@@ -1,5 +1,13 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9573  2026-06-17 10:04:26  whatsapp  saliente   34342575317160@lid   Listo, te anoto Banco Frances en tus pendientes.                                                                                                                                                        
+
+9572  2026-06-17 10:04:26  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9571  2026-06-17 10:04:26  sistema   interno                         claude_call whatsapp: 10586ms prompt=70267c raw=6271c in=10t(cache_read=0 new=35116) out=330t ttfb=1679ms api=9492ms turnos=1 $0.1461                                                                   
+
+9570  2026-06-17 10:04:15  whatsapp  entrante   5491132317896@c.us   Agrega una tarea pendiente de mía que se llama Banco Frances.                                                                                                                                           
+
 9569  2026-06-17 10:01:37  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
 
 9568  2026-06-17 10:00:45  whatsapp  saliente   5491164719969@c.us   ☀️ *Buen día, Andres Neumann.* miércoles 17 de junio.                                                                                                                                                   
@@ -300,11 +308,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9475  2026-06-16 23:12:27  sistema   interno                         claude_call whatsapp: 8162ms prompt=7500c raw=5233c in=10t(cache_read=120691 new=4385) out=234t ttfb=1758ms api=5841ms turnos=1 $0.0562                                                                 
 
 9474  2026-06-16 23:12:18  whatsapp  entrante   5491132317896@c.us   A qué hora es la meet con Fernando Maciel                                                                                                                                                               
-
-9473  2026-06-16 23:11:45  whatsapp  saliente   34342575317160@lid   ¿Preguntarle qué exactamente? El mensaje quedó corto — decime qué querés que le consulte y le escribo ahora.                                                                                            
-
-9472  2026-06-16 23:11:45  sistema   interno                         claude_call whatsapp: 21513ms prompt=7561c raw=9254c in=10t(cache_read=0 new=120691) out=847t ttfb=1736ms api=19174ms turnos=1 $0.4653                                                                  
-
-9471  2026-06-16 23:11:22  whatsapp  entrante   5491132317896@c.us   Pregúntale a Georgina                                                                                                                                                                                   
-
-9470  2026-06-16 22:39:26  sistema   interno                         claude_call memoria-curada: 27069ms prompt=4596c raw=12083c in=10t(cache_read=6266 new=6043) out=1129t ttfb=1773ms api=26057ms turnos=1 $0.0435                                                         
