@@ -1,5 +1,31 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9686  2026-06-17 18:44:53  whatsapp  saliente   34342575317160@lid   Ya les pasé eso — cena a las 21, karaoke a las 22:30. Esperando que confirmen el turno y manden los datos para la seña.                                                                                 
+
+9685  2026-06-17 18:44:53  sistema   interno                         claude_call whatsapp: 9113ms prompt=7892c raw=5726c in=10t(cache_read=45306 new=4204) out=248t ttfb=1836ms api=6663ms turnos=1 $0.0331                                                                  
+
+9684  2026-06-17 18:44:43  whatsapp  entrante   5491132317896@c.us   cenamos a las 21 y subimos al karaoke a las 2230                                                                                                                                                        
+
+9683  2026-06-17 18:44:43  whatsapp  entrante   5491132317896@c.us   que nos den el turno de las 2230 en el karaoke                                                                                                                                                          
+
+9682  2026-06-17 18:44:33  sistema   interno                         claude_call whatsapp: 12413ms prompt=7890c raw=6758c in=10t(cache_read=40990 new=4316) out=472t ttfb=1748ms api=10076ms turnos=1 $0.0356                                                                
+
+9681  2026-06-17 18:44:20  whatsapp  entrante   5491132317896@c.us   que nos den el turno de las 2230 en el karaoke                                                                                                                                                          
+
+9680  2026-06-17 18:44:10  whatsapp  saliente   34342575317160@lid   Confirmado. Les pregunto los datos para la seña y te los paso.                                                                                                                                          
+
+9679  2026-06-17 18:44:10  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9678  2026-06-17 18:44:10  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+9677  2026-06-17 18:44:10  whatsapp  saliente   5491130514423@c.us   ¡Perfecto! Diego confirma la reserva. ¿A dónde mandamos la seña de $100.000? ¿Tienen CBU/alias o algún otro medio de pago?                                                                              
+
+9676  2026-06-17 18:44:10  sistema   interno                         claude_call moderacion: 7238ms prompt=1570c raw=6535c in=10t(cache_read=0 new=22480) out=387t ttfb=1722ms api=6221ms turnos=1 $0.0305                                                                   
+
+9675  2026-06-17 18:44:03  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+9674  2026-06-17 18:44:03  sistema   interno                         claude_call whatsapp: 13831ms prompt=8474c raw=6877c in=10t(cache_read=0 new=40990) out=491t ttfb=1710ms api=11457ms turnos=1 $0.1611                                                                   
+
 9673  2026-06-17 18:43:48  whatsapp  entrante   5491132317896@c.us   si, confirma, donde mando la seña?                                                                                                                                                                      
 
 9672  2026-06-17 18:36:46  whatsapp  saliente   5491130514423@c.us   Perfecto, gracias por la info. Lo consulto con Diego y te confirmo a la brevedad si mandamos la seña.                                                                                                   
@@ -237,39 +263,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9588  2026-06-17 11:48:57  sistema   interno                         claude_call moderacion: 6196ms prompt=1639c raw=6469c in=10t(cache_read=0 new=22500) out=359t ttfb=1755ms api=5055ms turnos=1 $0.0304                                                                   
 
 9587  2026-06-17 11:48:51  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-9586  2026-06-17 11:48:51  sistema   interno                         claude_call whatsapp: 32676ms prompt=68881c raw=13379c in=10t(cache_read=6271 new=28228) out=1603t ttfb=1756ms api=31868ms turnos=1 $0.1406                                                             
-
-9585  2026-06-17 11:48:18  whatsapp  entrante   5491132317896@c.us   podras escribirles para preguntar si podemos hacer una reserva en la mesa alta para 11 personas el viernes a las 2030                                                                                   
-
-9584  2026-06-17 11:47:24  whatsapp  saliente   34342575317160@lid   Sí, tienen WhatsApp: +54 11 2697-0402                                                                                                                                                                   
-
-9583  2026-06-17 11:47:23  sistema   interno                         claude_call whatsapp: 18857ms prompt=68893c raw=14058c in=28t(cache_read=76037 new=29758) out=408t ttfb=1747ms api=17779ms turnos=3 $0.1751                                                             
-
-9582  2026-06-17 11:47:04  whatsapp  entrante   5491132317896@c.us   y no tienen algun whatsapp?                                                                                                                                                                             
-
-9581  2026-06-17 11:46:22  whatsapp  saliente   34342575317160@lid   El restaurante se llama *Sagardi* (no Zagardi) — está en Humberto Primo 319, San Telmo.                                                                                                                 
-                                                                     📞 +54 11 4361-2538                                                                                                                                                                                      
-
-9580  2026-06-17 11:46:22  sistema   interno                         claude_call whatsapp: 30233ms prompt=69946c raw=18577c in=28t(cache_read=70672 new=36500) out=1177t ttfb=1776ms api=29765ms turnos=3 $0.2120                                                            
-
-9579  2026-06-17 11:45:51  whatsapp  entrante   5491132317896@c.us   Me podrán buscar el teléfono de Zagardi, el restaurante en Santelmo, en la calle Humberto Primo.                                                                                                        
-
-9578  2026-06-17 11:45:47  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Revisión preventa (09:00 a. m.)                                                                                                                                                           
-                                                                     Con: damian.perez@sondeosglobal.com, hernan.fulco@sondeosglobal.com                                                                                                                                     
-
-9577  2026-06-17 11:45:39  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Hernan / Damián (Onboarding) (09:00 a. m.)                                                                                                                                                
-                                                                     Con: hernan.fulco@sondeosglobal.com, damian.perez@sondeosglobal.com                                                                                                                                     
-
-9576  2026-06-17 11:01:32  whatsapp  saliente   34342575317160@lid   Recordatorio — tenés 4 tareas abiertas 📝                                                                                                                                                                
-                                                                                                                                                                                                                                                                             
-                                                                     1. iProt Seguridad — 1384h                                                                                                                                                                              
-                                                                     2. DDJJ 2025 — 1013h                                                                                                                                                                                    
-                                                                     3. Presentaciones a Eliza — 189h                                                                                                                                                                        
-                                                                     4. Aysa — 102h                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                             
-                                                                     Cuando termines alguna decime "listo <nombre>" y la saco.                                                                                                                                               
-
-9575  2026-06-17 10:45:32  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Gimnasio (08:00 a. m.)                                                                                                                                                                    
-
-9574  2026-06-17 10:31:38  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
