@@ -1,5 +1,21 @@
 id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 ----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9639  2026-06-17 15:55:32  whatsapp  saliente   5491130514423@c.us   Hola! Muy bien, gracias! Justo lo que necesitaba 🙌                                                                                                                                                      
+                                                                                                                                                                                                                                                                             
+                                                                     Me podés confirmar disponibilidad para el *sábado 21/06 a las 21hs* para un grupo de *8 a 10 personas*?                                                                                                 
+                                                                                                                                                                                                                                                                             
+                                                                     Y en caso de ir por el menú karaoke, ¿el pr                                                                                                                                                             
+
+9638  2026-06-17 15:55:32  whatsapp  saliente   34342575317160@lid   Diego, Kōnā te respondió con dos opciones para el sábado 21:                                                                                                                                            
+                                                                                                                                                                                                                                                                             
+                                                                     *Opción 1* — Cenar a la carta abajo y subir al karaoke antes o después.                                                                                                                                 
+                                                                                                                                                                                                                                                                             
+                                                                     *Opción 2* — Menú karaoke en la sala ($80.000 por persona), inclu                                                                                                                                       
+
+9637  2026-06-17 15:55:32  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+9636  2026-06-17 15:55:32  sistema   interno                         claude_call whatsapp: 39371ms prompt=73056c raw=15023c in=10t(cache_read=6271 new=31496) out=1830t ttfb=1805ms api=38677ms turnos=1 $0.1575                                                             
+
 9635  2026-06-17 15:54:52  whatsapp  entrante   5491130514423@c.us   Hola! Como estas?                                                                                                                                                                                       
                                                                      Contamos con 2 opciones                                                                                                                                                                                 
                                                                      Pueden cenar a la carta y subir antes o después a la sala                                                                                                                                               
@@ -326,11 +342,3 @@ id    timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 9541  2026-06-17 03:40:15  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que intenté programar un mensaje pero no pude dejarlo listo porque me faltaron datos clave: no tenía claro para cuándo ni a quién mandarlo. Si me confirmás esos detalles, lo pro
 
 9540  2026-06-17 03:40:07  sistema   interno                         acción FALLÓ: programar_mensaje — Faltan campos requeridos: cuando, destino                                                                                                                             
-
-9539  2026-06-17 03:40:07  sistema   interno                         claude_call whatsapp: 15753ms prompt=8394c raw=8139c in=10t(cache_read=0 new=33487) out=716t ttfb=1550ms api=13633ms turnos=1 $0.1363                                                                   
-
-9538  2026-06-17 03:39:51  whatsapp  entrante   5491132317896@c.us   volve a mandarle en mensaje a Kona con la consula                                                                                                                                                       
-
-9537  2026-06-17 03:34:56  whatsapp  saliente   5491132317896@c.us   Todo anotado. El número de Kōnā Corner ya está guardado en la agenda. Ya les mandé mensaje preguntando por disponibilidad el sábado 20/06 para 8-10 personas en el espacio de arriba y cómo funciona el 
-
-9536  2026-06-17 03:34:55  sistema   interno                         acción FALLÓ: actualizar_pendiente — Tipo de acción desconocido: actualizar_pendiente                                                                                                                   
