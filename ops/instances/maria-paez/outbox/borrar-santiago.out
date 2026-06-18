@@ -1,0 +1,38 @@
+# ejecutado: 2026-06-18T08:20:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   cat > /tmp/bs.js <<'JS'
+#   const u = require('/root/secretaria/usuarios');
+#   const row = u.obtener(17);
+#   console.log('usuario id=17 antes:', JSON.stringify(row ? {id:row.id, nombre:row.nombre, email:row.email, activo:row.activo} : null));
+#   if (!row || !/santiago\s*paez/i.test(row.nombre || '')) {
+#     console.log('ABORT: id=17 NO es santiago paez — no toco nada.'); process.exit(1);
+#   }
+#   const r = u.desactivar(17);
+#   console.log('desactivar() ->', JSON.stringify(r));
+#   const after = u.obtener(17);
+#   console.log('usuario id=17 despues: activo =', after ? after.activo : '(?)');
+#   JS
+#   node /tmp/bs.js 2>&1; rm -f /tmp/bs.js
+#   echo ""
+#   echo "== estado del cliente en control DB (queda activo si no lo tocamos) =="
+#   sqlite3 -line /root/secretaria/state/control/control.sqlite "SELECT id,nombre,email,estado,instancia_usuario_id,lemon_subscription_id FROM clientes WHERE instancia_usuario_id=17 OR email='santiago@paez.is';" 2>/dev/null
+
+# ───── output ─────
+usuario id=17 antes: {"id":17,"nombre":"santiago paez","email":"santiago@paez.is","activo":1}
+desactivar() -> {"id":17,"nombre":"santiago paez","wa_lid":null,"wa_cus":"541164393520@c.us","email":"santiago@paez.is","calendar_id":null,"rol":"usuario","tz":"America/Argentina/Buenos_Aires","brief_hora":"04","brief_minuto":"00","activo":1,"creado":"2026-06-18 01:54:23","actualizado":"2026-06-18 01:54:23","calendar_acceso":"none","calendar_provider":"google","calendar_auth_json":null,"bienvenida_enviada":1,"lemon_customer_id":"9057218","lemon_subscription_id":"2269820","cliente_id":null,"brief_activo":1,"ubicacion":null,"lat":null,"lon":null,"servido":1,"idioma":"es"}
+usuario id=17 despues: activo = 0
+
+== estado del cliente en control DB (queda activo si no lo tocamos) ==
+                   id = 2
+               nombre = santiago paez
+                email = santiago@paez.is
+               estado = active
+ instancia_usuario_id = 17
+lemon_subscription_id = 2269820
+
+# exit=0
