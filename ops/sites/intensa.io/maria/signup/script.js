@@ -141,7 +141,8 @@ document.getElementById('form-datos').addEventListener('submit', async (e) => {
   if (!acepto) {
     showError('errors-step1', t('err.must_accept_terms')); btn.disabled = false; return;
   }
-  const token = turnstileToken();
+  // Esperamos a que el widget termine de cargar (async) antes de decidir.
+  const token = await esperarTurnstileToken();
   if (turnstilePresente() && !token) {
     showError('errors-step1', t('err.captcha_required')); btn.disabled = false; return;
   }
@@ -237,6 +238,20 @@ document.querySelectorAll('.lang-btn').forEach(b => {
 
 // ── Turnstile helpers ──
 function turnstilePresente() { return !!document.querySelector('.cf-turnstile'); }
+// Espera a que Turnstile (que carga async) produzca su token antes de bloquear.
+// Evita el falso "captcha requerido" cuando el usuario apura el click antes de
+// que el widget termine de renderizar. Devuelve el token, o '' si tras maxMs no
+// hay (Turnstile genuinamente no cargó).
+async function esperarTurnstileToken(maxMs = 6000) {
+  if (!turnstilePresente()) return '';
+  let token = turnstileToken();
+  const t0 = Date.now();
+  while (!token && Date.now() - t0 < maxMs) {
+    await new Promise(r => setTimeout(r, 200));
+    token = turnstileToken();
+  }
+  return token;
+}
 function turnstileToken() { return document.querySelector('[name="cf-turnstile-response"]')?.value || ''; }
 function resetTurnstile() { try { if (typeof turnstile !== 'undefined') turnstile.reset(); } catch {} }
 
