@@ -33,8 +33,8 @@ const qPorEmail      = db.prepare(`SELECT * FROM usuarios WHERE email = ? COLLAT
 const qOwner         = db.prepare(`SELECT * FROM usuarios WHERE rol = 'owner' AND activo = 1 LIMIT 1`);
 
 const insertUsuario = db.prepare(`
-  INSERT INTO usuarios (nombre, wa_lid, wa_cus, email, calendar_id, rol, tz, brief_hora, brief_minuto, ubicacion, activo)
-  VALUES (@nombre, @wa_lid, @wa_cus, @email, @calendar_id, @rol, @tz, @brief_hora, @brief_minuto, @ubicacion, 1)
+  INSERT INTO usuarios (nombre, wa_lid, wa_cus, email, calendar_id, rol, tz, brief_hora, brief_minuto, ubicacion, idioma, activo)
+  VALUES (@nombre, @wa_lid, @wa_cus, @email, @calendar_id, @rol, @tz, @brief_hora, @brief_minuto, @ubicacion, @idioma, 1)
 `);
 const updateUsuarioWaLid = db.prepare(`
   UPDATE usuarios SET wa_lid = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?
@@ -225,7 +225,7 @@ function _activoHomonimo(nombre, exceptoId = null) {
   return null;
 }
 
-function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null, ubicacion = null }) {
+function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id = null, tz = null, brief_hora = null, brief_minuto = null, ubicacion = null, idioma = null }) {
   if (!nombre) throw new Error('crear usuario: nombre requerido');
 
   // Normalizar
@@ -259,6 +259,7 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
     if (brief_hora) patch.brief_hora = brief_hora;
     if (brief_minuto) patch.brief_minuto = brief_minuto;
     if (ubicacion && String(ubicacion).trim()) patch.ubicacion = String(ubicacion).trim();
+    if (idioma === 'en' || idioma === 'es') patch.idioma = idioma;
     if (Object.keys(patch).length) actualizar(inactivo.id, patch);
     const u = obtener(inactivo.id);
     u.reactivado = true;
@@ -282,6 +283,7 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
     brief_hora: brief_hora || '07',
     brief_minuto: brief_minuto || '00',
     ubicacion: (ubicacion && String(ubicacion).trim()) ? String(ubicacion).trim() : null,
+    idioma: (idioma === 'en' ? 'en' : 'es'),
   });
   return obtener(info.lastInsertRowid);
 }
@@ -296,7 +298,7 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
 // helpers específicos).
 
 const CAMPOS_ACTUALIZABLES = new Set([
-  'nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto', 'ubicacion',
+  'nombre', 'wa_lid', 'wa_cus', 'email', 'calendar_id', 'tz', 'brief_hora', 'brief_minuto', 'ubicacion', 'idioma',
   // Multi-provider calendar (F2/F3): sin estos tres, configurar_caldav /
   // configurar_microsoft y la rotación del refresh_token de MS se descartan
   // en silencio (fix 2026-06-09).

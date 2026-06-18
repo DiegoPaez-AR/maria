@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   calendar_id  TEXT,
   rol          TEXT NOT NULL DEFAULT 'usuario' CHECK(rol IN ('owner','usuario')),
   servido      INTEGER NOT NULL DEFAULT 1,   -- 1=Maria le da servicio (brief/recordatorios/etc); 0=solo admin/owner, no atendido
+  idioma       TEXT NOT NULL DEFAULT 'es' CHECK(idioma IN ('es','en')),
   tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
   brief_hora   TEXT DEFAULT '07',
   brief_minuto TEXT DEFAULT '00',
@@ -247,6 +248,16 @@ function _migrarUsuariosServido() {
   return true;
 }
 _migrarUsuariosServido();
+
+// Migración: usuarios.idioma ('es'|'en', default 'es'). Idioma en que Maria le
+// responde al usuario y en que salen sus mensajes automáticos (brief, etc.).
+function _migrarUsuariosIdioma() {
+  if (_tieneColumna('usuarios', 'idioma')) return false;
+  db.exec(`ALTER TABLE usuarios ADD COLUMN idioma TEXT NOT NULL DEFAULT 'es'`);
+  console.log("[memory] migración: usuarios.idioma agregado (default 'es')");
+  return true;
+}
+_migrarUsuariosIdioma();
 
 // Migración: usuarios.calendar_acceso (none|read|write).
 // Modela los 3 tiers de integración con calendar:
