@@ -22,7 +22,8 @@ function generarCodigo() {
  * Inicia signup: genera 2 códigos (email + WA), los persiste en signup_pending,
  * y los envía vía la Maria "signup_bot".
  */
-function iniciarSignup({ nombre, email, wa, calendar_provider }) {
+function iniciarSignup({ nombre, email, wa, calendar_provider, idioma }) {
+  const idiomaN = idioma === 'en' ? 'en' : 'es';
   if (!nombre || !email || !wa) throw new Error('iniciarSignup: faltan campos');
   const c = db.control();
 
@@ -70,9 +71,9 @@ function iniciarSignup({ nombre, email, wa, calendar_provider }) {
   const expira = new Date(ahora.getTime() + TTL_MIN * 60_000).toISOString();
 
   const r = c.prepare(`
-    INSERT INTO signup_pending (nombre, email, wa, calendar_provider, email_code, wa_code, expira_en, terminos_aceptados_en)
-    VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
-  `).run(nombre, email, wa, calendar_provider || null, email_code, wa_code, expira);
+    INSERT INTO signup_pending (nombre, email, wa, calendar_provider, idioma, email_code, wa_code, expira_en, terminos_aceptados_en)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+  `).run(nombre, email, wa, calendar_provider || null, idiomaN, email_code, wa_code, expira);
 
   console.log(`[codes] signup_pending id=${r.lastInsertRowid} email=${email} wa=${wa}`);
   _enviarCodigos({ nombre, email, wa, email_code, wa_code });

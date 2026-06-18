@@ -150,6 +150,7 @@ document.getElementById('form-datos').addEventListener('submit', async (e) => {
     nombre: fd.get('nombre').trim(),
     email: fd.get('email').trim(),
     wa: fd.get('wa').trim(),
+    idioma: lang,
     acepto_terminos: true,
     turnstile_token: token,
   };

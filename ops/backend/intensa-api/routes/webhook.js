@@ -169,12 +169,12 @@ async function _onSubscriptionCreated(evt, signupToken) {
       // Existía INACTIVO (ex-cliente que vuelve) → reactivamos y refrescamos datos.
       idb.prepare(`
         UPDATE usuarios SET activo=1, bienvenida_enviada=0, nombre=?, email=?, wa_cus=?,
-          calendar_id=?, calendar_provider=?, calendar_acceso=?,
+          calendar_id=?, calendar_provider=?, calendar_acceso=?, idioma=?,
           lemon_customer_id=?, lemon_subscription_id=?
         WHERE id=?
       `).run(
         nombreFinal, pending.email, waCus,
-        sinCalendar ? null : pending.email, provider, acceso,
+        sinCalendar ? null : pending.email, provider, acceso, (pending.idioma === 'en' ? 'en' : 'es'),
         customerId, subscriptionId, yaUsuario.id,
       );
       usuarioId = yaUsuario.id;
@@ -182,8 +182,8 @@ async function _onSubscriptionCreated(evt, signupToken) {
     } else {
       try {
         const r = idb.prepare(`
-          INSERT INTO usuarios (nombre, email, wa_cus, calendar_id, calendar_provider, calendar_acceso, rol, tz, activo, bienvenida_enviada, lemon_customer_id, lemon_subscription_id)
-          VALUES (?, ?, ?, ?, ?, ?, 'usuario', 'America/Argentina/Buenos_Aires', 1, 0, ?, ?)
+          INSERT INTO usuarios (nombre, email, wa_cus, calendar_id, calendar_provider, calendar_acceso, rol, tz, idioma, activo, bienvenida_enviada, lemon_customer_id, lemon_subscription_id)
+          VALUES (?, ?, ?, ?, ?, ?, 'usuario', 'America/Argentina/Buenos_Aires', ?, 1, 0, ?, ?)
         `).run(
           nombreFinal,
           pending.email,
@@ -191,6 +191,7 @@ async function _onSubscriptionCreated(evt, signupToken) {
           sinCalendar ? null : pending.email,   // calendar_id null si no tiene calendar
           provider,
           acceso,
+          (pending.idioma === 'en' ? 'en' : 'es'),
           customerId,
           subscriptionId,
         );
@@ -256,7 +257,9 @@ async function _onSubscriptionCreated(evt, signupToken) {
   // (bienvenida_enviada queda en 0 para reintentar después).
   if (debeBienvenida) {
     const asistente = instance.asistente || 'Maria'; // instances hoy no tiene nombre de asistente propio → default
-    const msg = `¡Hola ${pending.nombre}! Soy ${asistente}, tu nueva secretaria personal. Tu alta quedó confirmada ✅\n\nYa podés escribirme por acá para lo que necesites: agendar reuniones, recordatorios, coordinar con terceros, transcribir audios y más.\n\nPara arrancar: ¿qué calendario usás? (Google / Outlook / iCloud / otro) Así te paso los pasos para conectarlo y empiezo a cuidarte la agenda.`;
+    const msg = (pending.idioma === 'en')
+      ? `Hi ${pending.nombre}! I'm ${asistente}, your new personal assistant. Your sign-up is confirmed ✅\n\nYou can message me right here for whatever you need: scheduling meetings, reminders, coordinating with others, transcribing audio and more.\n\nTo get started: which calendar do you use? (Google / Outlook / iCloud / other) I'll walk you through connecting it and start taking care of your agenda.`
+      : `¡Hola ${pending.nombre}! Soy ${asistente}, tu nueva secretaria personal. Tu alta quedó confirmada ✅\n\nYa podés escribirme por acá para lo que necesites: agendar reuniones, recordatorios, coordinar con terceros, transcribir audios y más.\n\nPara arrancar: ¿qué calendario usás? (Google / Outlook / iCloud / otro) Así te paso los pasos para conectarlo y empiezo a cuidarte la agenda.`;
     try {
       await mariaRpc.sendWa(instance, { to: pending.wa, body: msg });
       const idb2 = new Database(`/root/secretaria/state/${instance.slug}/db/maria.sqlite`);

@@ -27,6 +27,11 @@ function _migrarControl(db) {
     db.exec(`ALTER TABLE portal_otp ADD COLUMN proposito TEXT NOT NULL DEFAULT 'login'`);
     console.log(`[db] migración: portal_otp.proposito agregada`);
   }
+  const spCols = db.prepare(`PRAGMA table_info(signup_pending)`).all().map(c => c.name);
+  if (!spCols.includes('idioma')) {
+    db.exec(`ALTER TABLE signup_pending ADD COLUMN idioma TEXT NOT NULL DEFAULT 'es'`);
+    console.log(`[db] migración: signup_pending.idioma agregada`);
+  }
 }
 
 function init() {

@@ -34,7 +34,8 @@ function _validateStart(b) {
   // calendar_provider: SIEMPRE 'ninguno' por default — Maria configura después
   // el provider real por chat con el cliente, basado en el dominio del email
   // u onboarding F4. Acá no preguntamos para minimizar fricción.
-  return { nombre: nombre.trim(), email: email.toLowerCase().trim(), wa: waClean, calendar_provider: 'ninguno', acepto_terminos: true };
+  const idioma = (b.idioma === 'en') ? 'en' : 'es';
+  return { nombre: nombre.trim(), email: email.toLowerCase().trim(), wa: waClean, calendar_provider: 'ninguno', acepto_terminos: true, idioma };
 }
 
 function _err(code, message, status = 400) {
