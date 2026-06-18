@@ -14,6 +14,7 @@
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
+const i18n = require('./i18n');
 
 const HORA      = Number(process.env.CUMPLE_AVISO_HORA || 20);
 const VENTANA_H = Number(process.env.CUMPLE_AVISO_VENTANA_H || 3);
@@ -61,11 +62,11 @@ async function tickUsuario(waClient, usuario) {
   if (!usuario.wa_lid && !usuario.wa_cus) return;
   if (!waClient) return;
 
+  const TT = i18n.T(usuario.idioma);
   const lineas = cumpleaneros.slice(0, 5).map(c =>
-    `• ${c.nombre}${c.whatsapp ? '' : ' (sin WhatsApp en libreta)'}`);
+    `• ${c.nombre}${c.whatsapp ? '' : TT.sinWaLibreta}`);
   const plural = cumpleaneros.length > 1;
-  const txt = `🎂 *Mañana cumple${plural ? 'n' : ''} años:*\n${lineas.join('\n')}\n\n` +
-    `¿Le${plural ? 's' : ''} mando un saludo de tu parte? Decime el tono o pasame el texto y lo mando mañana a primera hora. Si no, ignorá este mensaje.`;
+  const txt = `${TT.cumpleEnc(plural)}\n${lineas.join('\n')}\n\n${TT.cumpleCierre(plural)}`;
 
   try {
     await waSend.enviarWAUsuario(waClient, usuario, txt, {

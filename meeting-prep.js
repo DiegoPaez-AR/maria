@@ -14,6 +14,7 @@ const g   = require('./google');
 const usuarios = require('./usuarios');
 const providers = require('./providers');
 const { invocarClaude } = require('./claude-client');
+const i18n = require('./i18n');
 
 const MINUTOS_ANTES = Number(process.env.MEETING_PREP_MIN_ANTES || 15);
 const VENTANA_HORAS = Number(process.env.MEETING_PREP_VENTANA_H || 2);
@@ -70,15 +71,16 @@ No inventes ni completes con suposiciones. Sin comillas ni explicaciones: solo l
 async function _componerTexto(e, usuario) {
   const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
   const d = new Date(e.start);
-  const hm = d.toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
+  const hm = d.toLocaleTimeString(i18n.locale(usuario.idioma), { timeZone: tz, hour: '2-digit', minute: '2-digit' });
   const lugar = e.ubicacion ? ` @${e.ubicacion}` : '';
   // No incluir al propio usuario en la lista ni describirlo a sí mismo.
   const _yo = (usuario.email || '').toLowerCase().trim();
   const _esYo = (em) => { const x = String(em || '').toLowerCase().trim(); return !!x && !!_yo && x === _yo; };
   const attendees = (e.attendees || []).filter(a => a && !_esYo(a));
   const asistentes = attendees.slice(0, 6).join(', ');
-  let txt = `⏰ *En ${MINUTOS_ANTES}min*: ${e.summary} (${hm})${lugar}`;
-  if (asistentes) txt += `\nCon: ${asistentes}`;
+  const TT = i18n.T(usuario.idioma);
+  let txt = `${TT.enMin(MINUTOS_ANTES)} ${e.summary} (${hm})${lugar}`;
+  if (asistentes) txt += `\n${TT.con} ${asistentes}`;
   // Contexto de los asistentes (2026-06-10): si el attendee está en la libreta
   // del usuario, anexar 1 línea de su nota curada (memoria de largo plazo) o,
   // si no hay, las notas de libreta. Máx 2 asistentes para no inflar el aviso.

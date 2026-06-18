@@ -11,6 +11,7 @@
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
+const i18n = require('./i18n');
 
 const DIA       = Number(process.env.RESUMEN_SEMANAL_DIA || 0);   // 0=domingo
 const HORA      = Number(process.env.RESUMEN_SEMANAL_HORA || 19);
@@ -39,12 +40,14 @@ function _componer(usuario, t) {
               + s.pendCerrados + s.pendNuevos + s.fuCerrados + s.fuDisparados;
   if (!total) return null;
 
-  const lineas = [`📊 *Tu semana* (al ${String(t.dia).padStart(2, '0')}/${String(t.mes).padStart(2, '0')})`];
-  if (s.waIn + s.waOut)     lineas.push(`💬 WhatsApp: ${s.waIn} recibidos · ${s.waOut} enviados`);
-  if (s.mailIn + s.mailOut) lineas.push(`📧 Emails: ${s.mailIn} recibidos · ${s.mailOut} enviados`);
-  if (s.eventosCreados)     lineas.push(`📅 Eventos agendados: ${s.eventosCreados}`);
-  lineas.push(`📝 Pendientes: ${s.pendCerrados} cerrados · ${s.pendNuevos} nuevos · ${s.pendAbiertos} abiertos ahora`);
-  if (s.fuCerrados + s.fuDisparados) lineas.push(`⏳ Follow-ups: ${s.fuCerrados} resueltos · ${s.fuDisparados} disparados`);
+  const TT = i18n.T(usuario.idioma);
+  const dd = String(t.dia).padStart(2, '0'), mm = String(t.mes).padStart(2, '0');
+  const lineas = [TT.tuSemana(dd, mm)];
+  if (s.waIn + s.waOut)     lineas.push(TT.waLine(s.waIn, s.waOut));
+  if (s.mailIn + s.mailOut) lineas.push(TT.mailLine(s.mailIn, s.mailOut));
+  if (s.eventosCreados)     lineas.push(TT.eventosLine(s.eventosCreados));
+  lineas.push(TT.pendLine(s.pendCerrados, s.pendNuevos, s.pendAbiertos));
+  if (s.fuCerrados + s.fuDisparados) lineas.push(TT.fuLine(s.fuCerrados, s.fuDisparados));
 
   // Top pendientes abiertos del usuario (dueno=usuario), para arrancar la semana
   try {
@@ -54,7 +57,7 @@ function _componer(usuario, t) {
       .map(p => `• ${String(p.desc).slice(0, 80)}`);
     if (abiertos.length) {
       lineas.push('');
-      lineas.push('*Arrancás la semana con:*');
+      lineas.push(TT.arrancas);
       lineas.push(...abiertos);
     }
   } catch {}

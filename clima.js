@@ -104,11 +104,13 @@ async function pronosticoHoy(lat, lon, tz) {
   const d = data && data.daily;
   if (!d || !Array.isArray(d.time) || !d.time.length) return null;
   const [emoji, desc] = _describir(d.weather_code && d.weather_code[0]);
+  const _wmoCode = (d.weather_code && d.weather_code[0]);
   const max = d.temperature_2m_max && d.temperature_2m_max[0];
   const min = d.temperature_2m_min && d.temperature_2m_min[0];
   const prob = d.precipitation_probability_max && d.precipitation_probability_max[0];
   return {
     emoji,
+    code: _wmoCode,
     desc,
     max: (max == null ? null : Math.round(max)),
     min: (min == null ? null : Math.round(min)),

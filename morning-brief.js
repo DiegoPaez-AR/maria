@@ -14,6 +14,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
+const i18n = require('./i18n');
 const providers = require('./providers');
 const clima = require('./clima');
 
@@ -53,10 +54,11 @@ async function _agendaHoy(usuario) {
     const d = horaMinEnTz(usuario.tz, new Date(e.start));
     return d.yyyymmdd === hoy.yyyymmdd;
   });
-  if (!items.length) return '(sin eventos hoy)';
+  const TT = i18n.T(usuario.idioma);
+  if (!items.length) return TT.sinEventos;
   return items.map(e => {
-    if (e.allDay) return `• todo el día — ${e.summary}${e.ubicacion ? ' @' + e.ubicacion : ''}`;
-    const hm = new Date(e.start).toLocaleTimeString('es-AR', { timeZone: usuario.tz, hour: '2-digit', minute: '2-digit' });
+    if (e.allDay) return `• ${TT.todoElDia} — ${e.summary}${e.ubicacion ? ' @' + e.ubicacion : ''}`;
+    const hm = new Date(e.start).toLocaleTimeString(i18n.locale(usuario.idioma), { timeZone: usuario.tz, hour: '2-digit', minute: '2-digit' });
     return `• ${hm} — ${e.summary}${e.ubicacion ? ' @' + e.ubicacion : ''}`;
   }).join('\n');
 }
@@ -144,10 +146,12 @@ async function _climaHoy(usuario) {
   try {
     const pr = await clima.pronosticoHoy(lat, lon, usuario.tz);
     if (!pr || (pr.min == null && pr.max == null)) return null;
-    let linea = `${pr.emoji} ${pr.desc}`;
-    if (pr.min != null && pr.max != null) linea += `, min ${pr.min}° / max ${pr.max}°`;
-    else if (pr.max != null) linea += `, max ${pr.max}°`;
-    if (pr.probLluvia != null && pr.probLluvia >= 30) linea += ` · ${pr.probLluvia}% prob. de lluvia`;
+    const TT = i18n.T(usuario.idioma);
+    const desc = usuario.idioma === 'en' ? (i18n.CLIMA_EN[pr.code] || pr.desc) : pr.desc;
+    let linea = `${pr.emoji} ${desc}`;
+    if (pr.min != null && pr.max != null) linea += TT.climaMinMax(pr.min, pr.max);
+    else if (pr.max != null) linea += TT.climaMax(pr.max);
+    if (pr.probLluvia != null && pr.probLluvia >= 30) linea += TT.probLluvia(pr.probLluvia);
     return linea;
   } catch (err) {
     console.warn(`[morning-brief/${usuario.nombre}] clima fallo:`, err.message);
@@ -157,19 +161,19 @@ async function _climaHoy(usuario) {
 
 async function componerBrief(usuario) {
   const t = horaMinEnTz(usuario.tz);
-  const dowIdx = new Date(Date.UTC(t.year, t.mes - 1, t.dia)).getUTCDay();
-  const fecha  = `${DIAS_SEMANA[dowIdx]} ${t.dia} de ${MESES[t.mes - 1]}`;
+  const TT = i18n.T(usuario.idioma);
+  const fecha  = new Date(Date.UTC(t.year, t.mes - 1, t.dia)).toLocaleDateString(i18n.locale(usuario.idioma), { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 
   const [agenda, cumples, climaLinea] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario), _climaHoy(usuario)]);
   const pendientes = _pendientesLista(usuario);
   const gestionando = _gestionandoLista(usuario);
 
-  let out = `☀️ *Buen día, ${usuario.nombre}.* ${fecha}.\n\n`;
-  if (climaLinea) out += `*🌡️ Clima${usuario.ubicacion ? ' en ' + usuario.ubicacion : ''}*\n${climaLinea}\n\n`;
-  out += `*📅 Agenda del día*\n${agenda}\n`;
-  if (cumples)   out += `\n*Cumpleaños hoy*\n${cumples}\n`;
-  if (pendientes) out += `\n*📝 Pendientes*\n${pendientes}\n`;
-  if (gestionando) out += `\n*🔄 Gestionando para vos*\n${gestionando}\n`;
+  let out = `${TT.buenDia(usuario.nombre, fecha)}\n\n`;
+  if (climaLinea) out += `${TT.climaLbl(usuario.ubicacion)}\n${climaLinea}\n\n`;
+  out += `${TT.agendaLbl}\n${agenda}\n`;
+  if (cumples)   out += `\n${TT.cumplesLbl}\n${cumples}\n`;
+  if (pendientes) out += `\n${TT.pendientesLbl}\n${pendientes}\n`;
+  if (gestionando) out += `\n${TT.gestionandoLbl}\n${gestionando}\n`;
   return out.trim();
 }
 

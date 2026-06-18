@@ -20,6 +20,7 @@
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
+const i18n = require('./i18n');
 
 const CONSULTA_UMBRAL_H   = Number(process.env.RECORDATORIO_CONSULTA_UMBRAL_H   || 2);
 const CONSULTA_COOLDOWN_H = Number(process.env.RECORDATORIO_CONSULTA_COOLDOWN_H || 3);
@@ -65,18 +66,20 @@ function _destinoWA(usuario) {
   return usuario.wa_lid || usuario.wa_cus || null;
 }
 
-function _formatearTexto(disparador, candidatos) {
-  const cfg = BUCKETS[disparador];
+function _formatearTexto(disparador, candidatos, usuario) {
+  const TT = i18n.T(usuario && usuario.idioma);
+  const enc = disparador === 'respuesta_usuario' ? TT.recConsultaEnc : TT.recTareaEnc;
+  const cierre = disparador === 'respuesta_usuario' ? TT.recConsultaCierre : TT.recTareaCierre;
   const lineas = candidatos.map((p, i) => {
     const partes = [p.desc];
-    if (disparador === 'respuesta_usuario' && p.meta?.remitente) partes.push(`de ${p.meta.remitente}`);
+    if (disparador === 'respuesta_usuario' && p.meta?.remitente) partes.push(TT.recDe(p.meta.remitente));
     if (p.creado) {
       const h = Math.floor(_horasDesde(p.creado));
       if (h >= 1) partes.push(`${h}h`);
     }
     return `${i + 1}. ${partes.join(' — ')}`;
   });
-  return `${cfg.encabezado(candidatos.length)}\n\n${lineas.join('\n')}\n\n${cfg.cierre}`;
+  return `${enc(candidatos.length)}\n\n${lineas.join('\n')}\n\n${cierre}`;
 }
 
 /**
@@ -109,7 +112,7 @@ async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waC
 
   if (!candidatos.length) return { enviado: false, motivo: 'sin-candidatos' };
 
-  const texto = _formatearTexto(disparador, candidatos);
+  const texto = _formatearTexto(disparador, candidatos, usuario);
 
   let destinoFinal;
   let _diferido = false;
