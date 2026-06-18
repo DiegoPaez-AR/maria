@@ -1,0 +1,124 @@
+# ejecutado: 2026-06-17T22:59:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "== 1. deploy.sh (sincroniza /var/www con el fix del captcha) =="
+#   bash /root/secretaria/ops/sites/intensa.io/deploy.sh 2>&1 | grep -iE "cache-bust|signup|done|error|reload nginx|active|HTTPS 200" | head
+#   echo "  verif script.js servido tiene esperarTurnstileToken:"
+#   grep -c "esperarTurnstileToken" /var/www/intensa.io/maria/signup/script.js
+#   echo ""
+#   echo "== 2. clientes en control DB (schema + santiago bien) =="
+#   CTRL=/root/secretaria/state/control/control.sqlite
+#   echo "-- columnas de clientes --"; sqlite3 "$CTRL" "PRAGMA table_info(clientes);" 2>/dev/null
+#   echo "-- filas de santiago (email o wa con/sin 9) --"
+#   sqlite3 -line "$CTRL" "SELECT * FROM clientes WHERE email LIKE '%santiago@paez.is%' OR wa LIKE '%64393520%';" 2>/dev/null | head -40
+#   echo "-- total clientes + últimos 3 --"
+#   sqlite3 "$CTRL" "SELECT COUNT(*) FROM clientes;" 2>/dev/null
+#   sqlite3 -line "$CTRL" "SELECT * FROM clientes ORDER BY rowid DESC LIMIT 3;" 2>/dev/null | head -40
+
+# ───── output ─────
+== 1. deploy.sh (sincroniza /var/www con el fix del captcha) ==
+  index.html con cache-bust v=20260617-225902
+    index.html con cache-bust v=20260617-225902
+    cache-bust v=20260617-225902 en cuenta/index.html
+    cache-bust v=20260617-225902 en signup/index.html
+    cache-bust v=20260617-225902 en terminos/index.html
+═══ 4. Reload nginx (atomic) ═══
+active
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+  verif script.js servido tiene esperarTurnstileToken:
+2
+
+== 2. clientes en control DB (schema + santiago bien) ==
+-- columnas de clientes --
+0|id|INTEGER|0||1
+1|nombre|TEXT|1||0
+2|email|TEXT|1||0
+3|wa|TEXT|1||0
+4|calendar_provider|TEXT|0||0
+5|instancia_slug|TEXT|1||0
+6|instancia_usuario_id|INTEGER|0||0
+7|estado|TEXT|1|'active'|0
+8|lemon_customer_id|TEXT|0||0
+9|lemon_subscription_id|TEXT|0||0
+10|lemon_customer_portal|TEXT|0||0
+11|ultimo_cobro_en|DATETIME|0||0
+12|proximo_cobro_en|DATETIME|0||0
+13|ultimo_evento|TEXT|0||0
+14|ultimo_evento_en|DATETIME|0||0
+15|creado|DATETIME|0|CURRENT_TIMESTAMP|0
+16|actualizado|DATETIME|0|CURRENT_TIMESTAMP|0
+17|inactivado_en|DATETIME|0||0
+18|cancelado_en|DATETIME|0||0
+19|terminos_aceptados_en|DATETIME|1||0
+20|terminos_version|TEXT|0||0
+-- filas de santiago (email o wa con/sin 9) --
+                   id = 2
+               nombre = santiago paez
+                email = santiago@paez.is
+                   wa = 541164393520
+    calendar_provider = ninguno
+       instancia_slug = maria-paez
+ instancia_usuario_id = 17
+               estado = active
+    lemon_customer_id = 9057218
+lemon_subscription_id = 2269820
+lemon_customer_portal = https://intensa.lemonsqueezy.com/billing?expires=1781769263&store_domain=intensa.lemonsqueezy.com&test_mode=1&user=7414778&signature=4eaf372f8f0f245304d85a8ce9a2e236b426cdf522a532db78c7660153875ee9
+      ultimo_cobro_en = 2026-06-18 01:55:51
+     proximo_cobro_en = 
+        ultimo_evento = payment_success
+     ultimo_evento_en = 2026-06-18 01:55:51
+               creado = 2026-06-18 01:54:23
+          actualizado = 2026-06-18 01:55:51
+        inactivado_en = 
+         cancelado_en = 
+terminos_aceptados_en = 2026-06-18 01:52:28
+     terminos_version = v1-2026-05-19
+-- total clientes + últimos 3 --
+2
+                   id = 2
+               nombre = santiago paez
+                email = santiago@paez.is
+                   wa = 541164393520
+    calendar_provider = ninguno
+       instancia_slug = maria-paez
+ instancia_usuario_id = 17
+               estado = active
+    lemon_customer_id = 9057218
+lemon_subscription_id = 2269820
+lemon_customer_portal = https://intensa.lemonsqueezy.com/billing?expires=1781769263&store_domain=intensa.lemonsqueezy.com&test_mode=1&user=7414778&signature=4eaf372f8f0f245304d85a8ce9a2e236b426cdf522a532db78c7660153875ee9
+      ultimo_cobro_en = 2026-06-18 01:55:51
+     proximo_cobro_en = 
+        ultimo_evento = payment_success
+     ultimo_evento_en = 2026-06-18 01:55:51
+               creado = 2026-06-18 01:54:23
+          actualizado = 2026-06-18 01:55:51
+        inactivado_en = 
+         cancelado_en = 
+terminos_aceptados_en = 2026-06-18 01:52:28
+     terminos_version = v1-2026-05-19
+
+                   id = 1
+               nombre = Diego
+                email = diego@paez.is
+                   wa = 5491132317896
+    calendar_provider = ninguno
+       instancia_slug = maria-paez
+ instancia_usuario_id = 1
+               estado = active
+    lemon_customer_id = 8763200
+lemon_subscription_id = 2170223
+lemon_customer_portal = https://intensa.lemonsqueezy.com/billing?expires=1779237097&store_domain=intensa.lemonsqueezy.com&test_mode=1&user=7128453&signature=4ed622ae86c331a0cf49243d5b845d708124fdf2d6aafca231620f99e68144d8
+      ultimo_cobro_en = 2026-05-26 19:32:18
+     proximo_cobro_en = 
+        ultimo_evento = payment_success
+     ultimo_evento_en = 2026-05-26 19:32:18
+               creado = 2026-05-19 20:31:02
+          actualizado = 2026-05-26 19:32:18
+        inactivado_en = 
+
+# exit=0
