@@ -1,0 +1,36 @@
+# ejecutado: 2026-06-17T22:51:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "== sitekey servido en /var/www (signup) =="
+#   grep -oE 'data-sitekey="[^"]*"' /var/www/intensa.io/maria/signup/index.html 2>/dev/null
+#   grep -c 'challenges.cloudflare.com/turnstile' /var/www/intensa.io/maria/signup/index.html 2>/dev/null && echo "(script turnstile presente si >=1)"
+#   echo ""
+#   echo "== sitekey en el repo (para comparar) =="
+#   grep -oE 'data-sitekey="[^"]*"' /root/secretaria/ops/sites/intensa.io/maria/signup/index.html 2>/dev/null
+#   echo ""
+#   echo "== TURNSTILE en .env-intensa-api (presencia, enmascarado) =="
+#   grep -iE 'TURNSTILE' /root/secretaria/.env-intensa-api 2>/dev/null | sed -E 's/(=.{6}).*/\1…(oculto)/'
+#   echo ""
+#   echo "== intensa-api está corriendo? =="
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'],p['pm2_env'].get('status')) for p in json.load(sys.stdin) if p['name']=='intensa-api']" 2>/dev/null
+
+# ───── output ─────
+== sitekey servido en /var/www (signup) ==
+data-sitekey="0x4AAAAAADSjZdSiOLo4gIGt"
+1
+(script turnstile presente si >=1)
+
+== sitekey en el repo (para comparar) ==
+data-sitekey="0x4AAAAAADSjZdSiOLo4gIGt"
+
+== TURNSTILE en .env-intensa-api (presencia, enmascarado) ==
+TURNSTILE_SITE_KEY=0x4AAA…(oculto)
+TURNSTILE_SECRET_KEY=0x4AAA…(oculto)
+
+== intensa-api está corriendo? ==
+intensa-api online
+
+# exit=0
