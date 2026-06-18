@@ -1,0 +1,101 @@
+# ejecutado: 2026-06-17T22:57:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   CTRL=/root/secretaria/state/control/control.sqlite
+#   INST=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   EMAIL='santiago@paez.is'; WA='5491164393520'
+#   echo "############ CONTROL DB ############"
+#   echo "== tablas =="; sqlite3 "$CTRL" ".tables" 2>/dev/null
+#   for T in signup_pending clientes webhook_events; do
+#     echo ""; echo "== $T (santiago) =="
+#     sqlite3 -header -line "$CTRL" "SELECT * FROM $T WHERE (email LIKE '%$EMAIL%' OR wa LIKE '%$WA%' OR CAST(payload AS TEXT) LIKE '%$EMAIL%' OR CAST(payload AS TEXT) LIKE '%$WA%') ORDER BY rowid DESC LIMIT 5;" 2>/dev/null | head -60
+#   done
+#   echo ""; echo "== últimos 5 webhook_events (cualquiera) =="
+#   sqlite3 -header -line "$CTRL" "SELECT rowid,* FROM webhook_events ORDER BY rowid DESC LIMIT 5;" 2>/dev/null | head -50
+#   echo ""
+#   echo "############ INSTANCIA maria-paez ############"
+#   echo "== usuario santiago en usuarios =="
+#   sqlite3 -header -line "$INST" "SELECT id,nombre,email,wa_cus,wa_lid,activo,servido,bienvenida_enviada,lemon_customer_id,lemon_subscription_id,cliente_id,creado FROM usuarios WHERE email LIKE '%$EMAIL%' OR wa_cus LIKE '%$WA%' OR nombre LIKE '%antiago paez%' ORDER BY id DESC LIMIT 5;" 2>/dev/null
+
+# ───── output ─────
+############ CONTROL DB ############
+== tablas ==
+clientes         portal_otp       signup_pending 
+instances        portal_sessions  webhook_events 
+
+== signup_pending (santiago) ==
+
+== clientes (santiago) ==
+
+== webhook_events (santiago) ==
+
+== últimos 5 webhook_events (cualquiera) ==
+          id = 13
+          id = 13
+ ls_event_id = a20c8c2e-4b7b-4bc0-b89e-eb5af53dc613
+  event_name = subscription_payment_success
+     payload = {"meta":{"test_mode":true,"event_name":"subscription_payment_success","custom_data":{"signup_token":"542349ae0460c15a16fbf3cd0c6ed6b2db6787db46f93ccff990fad6c63590e9"},"webhook_id":"a20c8c2e-4b7b-4bc0-b89e-eb5af53dc613"},"data":{"type":"subscription-invoices","id":"7644565","attributes":{"store_id":380844,"subscription_id":2269820,"customer_id":9057218,"user_name":"santiago paez","user_email":"santiago@paez.is","billing_reason":"initial","card_brand":null,"card_last_four":null,"currency":"USD","currency_rate":"1.00000000","status":"paid","status_formatted":"Paid","refunded":false,"refunded_at":null,"subtotal":0,"discount_total":0,"tax":0,"tax_inclusive":false,"total":0,"refunded_amount":0,"subtotal_usd":0,"discount_total_usd":0,"tax_usd":0,"total_usd":0,"refunded_amount_usd":0,"subtotal_formatted":"$0.00","discount_total_formatted":"$0.00","tax_formatted":"$0.00","total_formatted":"$0.00","refunded_amount_formatted":"$0.00","urls":{"invoice_url":"https://app.lemonsqueezy.com/my-orders/196ba405-32ca-46f1-970c-10e3a1b39357/subscription-invoice/7644565?expires=1781769351&signature=b1596db530ba13a80ea75fb0b3ad1c8d85984fea85facfcdb245f628d366e10e"},"created_at":"2026-06-18T01:54:51.000000Z","updated_at":"2026-06-18T01:55:51.000000Z","test_mode":true},"relationships":{"store":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565/store","self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565/relationships/store"}},"subscription":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565/subscription","self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565/relationships/subscription"}},"customer":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565/customer","self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565/relationships/customer"}}},"links":{"self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7644565"}}}
+   procesado = 1
+procesado_en = 2026-06-18 01:55:51
+       error = 
+ recibido_en = 2026-06-18 01:55:51
+
+          id = 12
+          id = 12
+ ls_event_id = a20c8ba7-dbbd-439a-a078-74c04431f59f
+  event_name = subscription_updated
+     payload = {"meta":{"test_mode":true,"event_name":"subscription_updated","custom_data":{"signup_token":"542349ae0460c15a16fbf3cd0c6ed6b2db6787db46f93ccff990fad6c63590e9"},"webhook_id":"a20c8ba7-dbbd-439a-a078-74c04431f59f"},"data":{"type":"subscriptions","id":"2269820","attributes":{"store_id":380844,"customer_id":9057218,"order_id":8724460,"order_item_id":8653338,"product_id":1069390,"variant_id":1676273,"product_name":"maria","variant_name":"Default","user_name":"santiago paez","user_email":"santiago@paez.is","status":"on_trial","status_formatted":"On Trial","card_brand":"visa","card_last_four":"4242","payment_processor":"stripe","pause":null,"cancelled":false,"trial_ends_at":"2026-06-25T01:54:18.000000Z","billing_anchor":25,"first_subscription_item":{"id":8755144,"subscription_id":2269820,"price_id":2805126,"quantity":1,"is_usage_based":false,"created_at":"2026-06-18T01:54:23.000000Z","updated_at":"2026-06-18T01:54:23.000000Z"},"urls":{"update_payment_method":"https://intensa.lemonsqueezy.com/subscription/2269820/payment-details?expires=1781769263&signature=4e4957cb7d85fb853d0879e96010fa457b862041a86cec6cd9e5e2ed20b7cf62","customer_portal":"https://intensa.lemonsqueezy.com/billing?expires=1781769263&store_domain=intensa.lemonsqueezy.com&test_mode=1&user=7414778&signature=4eaf372f8f0f245304d85a8ce9a2e236b426cdf522a532db78c7660153875ee9","customer_portal_update_subscription":"https://intensa.lemonsqueezy.com/billing/2269820/update?expires=1781769263&store_domain=intensa.lemonsqueezy.com&user=7414778&signature=f29f5b350bd1bae0fdbd801af3a44284a98cd5285ca8b013413c981fa7bbea51"},"renews_at":"2026-06-25T01:54:18.000000Z","ends_at":null,"created_at":"2026-06-18T01:54:19.000000Z","updated_at":"2026-06-18T01:54:23.000000Z","test_mode":true},"relationships":{"store":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/store","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/store"}},"customer":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/customer","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/customer"}},"order":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/order","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/order"}},"order-item":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/order-item","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/order-item"}},"product":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/product","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/product"}},"variant":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/variant","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/variant"}},"subscription-items":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/subscription-items","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/subscription-items"}},"subscription-invoices":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/subscription-invoices","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/subscription-invoices"}}},"links":{"self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820"}}}
+   procesado = 1
+procesado_en = 2026-06-18 01:54:23
+       error = 
+ recibido_en = 2026-06-18 01:54:23
+
+          id = 11
+          id = 11
+ ls_event_id = a20c8ba7-620c-4413-a3d7-ba000972431e
+  event_name = subscription_created
+     payload = {"meta":{"test_mode":true,"event_name":"subscription_created","custom_data":{"signup_token":"542349ae0460c15a16fbf3cd0c6ed6b2db6787db46f93ccff990fad6c63590e9"},"webhook_id":"a20c8ba7-620c-4413-a3d7-ba000972431e"},"data":{"type":"subscriptions","id":"2269820","attributes":{"store_id":380844,"customer_id":9057218,"order_id":8724460,"order_item_id":8653338,"product_id":1069390,"variant_id":1676273,"product_name":"maria","variant_name":"Default","user_name":"santiago paez","user_email":"santiago@paez.is","status":"on_trial","status_formatted":"On Trial","card_brand":"visa","card_last_four":"4242","payment_processor":"stripe","pause":null,"cancelled":false,"trial_ends_at":"2026-06-25T01:54:18.000000Z","billing_anchor":25,"first_subscription_item":{"id":8755144,"subscription_id":2269820,"price_id":2805126,"quantity":1,"is_usage_based":false,"created_at":"2026-06-18T01:54:23.000000Z","updated_at":"2026-06-18T01:54:23.000000Z"},"urls":{"update_payment_method":"https://intensa.lemonsqueezy.com/subscription/2269820/payment-details?expires=1781769263&signature=4e4957cb7d85fb853d0879e96010fa457b862041a86cec6cd9e5e2ed20b7cf62","customer_portal":"https://intensa.lemonsqueezy.com/billing?expires=1781769263&store_domain=intensa.lemonsqueezy.com&test_mode=1&user=7414778&signature=4eaf372f8f0f245304d85a8ce9a2e236b426cdf522a532db78c7660153875ee9","customer_portal_update_subscription":"https://intensa.lemonsqueezy.com/billing/2269820/update?expires=1781769263&store_domain=intensa.lemonsqueezy.com&user=7414778&signature=f29f5b350bd1bae0fdbd801af3a44284a98cd5285ca8b013413c981fa7bbea51"},"renews_at":"2026-06-25T01:54:18.000000Z","ends_at":null,"created_at":"2026-06-18T01:54:19.000000Z","updated_at":"2026-06-18T01:54:22.000000Z","test_mode":true},"relationships":{"store":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/store","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/store"}},"customer":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/customer","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/customer"}},"order":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/order","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/order"}},"order-item":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/order-item","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/order-item"}},"product":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/product","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/product"}},"variant":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/variant","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/variant"}},"subscription-items":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/subscription-items","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/subscription-items"}},"subscription-invoices":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/subscription-invoices","self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820/relationships/subscription-invoices"}}},"links":{"self":"https://api.lemonsqueezy.com/v1/subscriptions/2269820"}}}
+   procesado = 1
+procesado_en = 2026-06-18 01:54:23
+       error = 
+ recibido_en = 2026-06-18 01:54:23
+
+          id = 10
+          id = 10
+ ls_event_id = a1fe203d-9f68-4be0-8cc8-7d5a8ba3db78
+  event_name = subscription_updated
+     payload = {"meta":{"test_mode":true,"event_name":"subscription_updated","webhook_id":"a1fe203d-9f68-4be0-8cc8-7d5a8ba3db78"},"data":{"type":"subscriptions","id":"2170087","attributes":{"store_id":380844,"customer_id":8762973,"order_id":null,"order_item_id":null,"product_id":null,"variant_id":1676273,"product_name":null,"variant_name":null,"user_name":"Diego Paez","user_email":"diego@paez.net","status":"unpaid","status_formatted":"Unpaid","card_brand":null,"card_last_four":null,"payment_processor":"stripe","pause":null,"cancelled":false,"trial_ends_at":"2026-05-26T17:56:39.000000Z","billing_anchor":26,"first_subscription_item":{"id":8425450,"subscription_id":2170087,"price_id":2805126,"quantity":1,"is_usage_based":false,"created_at":"2026-05-26T17:57:06.000000Z","updated_at":"2026-06-10T21:52:26.000000Z"},"urls":{"update_payment_method":"https://intensa.lemonsqueezy.com/subscription/2170087/payment-details?expires=1781149946&signature=7f7997fa4991c6ec4aab9b809bfb56acfd42aba4f4862456eaa78a6ab136a4ab","customer_portal":"https://intensa.lemonsqueezy.com/billing?expires=1781149946&store_domain=intensa.lemonsqueezy.com&test_mode=1&user=7129293&signature=2ec0ab5ff23580765853f42f30d1969cf3c443db96902a3ed6ac51cf3db02d46","customer_portal_update_subscription":"https://intensa.lemonsqueezy.com/billing/2170087/update?expires=1781149946&store_domain=intensa.lemonsqueezy.com&user=7129293&signature=29dd6947a6be7d18cac236508b99d9b04232549e80ea09b084a7165633a5921a"},"renews_at":"2026-06-26T17:56:39.000000Z","ends_at":null,"created_at":"2026-05-19T17:56:42.000000Z","updated_at":"2026-06-10T21:52:26.000000Z","test_mode":true},"relationships":{"store":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/store","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/store"}},"customer":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/customer","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/customer"}},"order":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/order","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/order"}},"order-item":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/order-item","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/order-item"}},"product":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/product","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/product"}},"variant":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/variant","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/variant"}},"subscription-items":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/subscription-items","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/subscription-items"}},"subscription-invoices":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/subscription-invoices","self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087/relationships/subscription-invoices"}}},"links":{"self":"https://api.lemonsqueezy.com/v1/subscriptions/2170087"}}}
+   procesado = 1
+procesado_en = 2026-06-10 21:52:27
+       error = 
+ recibido_en = 2026-06-10 21:52:27
+
+          id = 9
+          id = 9
+ ls_event_id = a1dfc15c-8a52-4c3a-aae5-d77857a61482
+  event_name = subscription_payment_success
+     payload = {"meta":{"test_mode":true,"event_name":"subscription_payment_success","custom_data":{"signup_token":"ae7c26796b844c534efe34bc7bf132247811bfc9099e4167c6678baff1eb8bea"},"webhook_id":"a1dfc15c-8a52-4c3a-aae5-d77857a61482"},"data":{"type":"subscription-invoices","id":"7188828","attributes":{"store_id":380844,"subscription_id":2170223,"customer_id":8763200,"user_name":"Diego Paez","user_email":"diego@paez.is","billing_reason":"renewal","card_brand":"visa","card_last_four":"4242","currency":"USD","currency_rate":"1.00000000","status":"paid","status_formatted":"Paid","refunded":false,"refunded_at":null,"subtotal":4999,"discount_total":0,"tax":0,"tax_inclusive":false,"total":4999,"refunded_amount":0,"subtotal_usd":4999,"discount_total_usd":0,"tax_usd":0,"total_usd":4999,"refunded_amount_usd":0,"subtotal_formatted":"$49.99","discount_total_formatted":"$0.00","tax_formatted":"$0.00","total_formatted":"$49.99","refunded_amount_formatted":"$0.00","urls":{"invoice_url":"https://app.lemonsqueezy.com/my-orders/d8fe890f-bfbe-48ac-a666-cfddab984600/subscription-invoice/7188828?expires=1779845538&signature=25411741050740a0e7fea25dbf5f07a54de8cf8c7afcb015c9af399d42188bcc"},"created_at":"2026-05-26T18:32:03.000000Z","updated_at":"2026-05-26T19:32:18.000000Z","test_mode":true},"relationships":{"store":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828/store","self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828/relationships/store"}},"subscription":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828/subscription","self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828/relationships/subscription"}},"customer":{"links":{"related":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828/customer","self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828/relationships/customer"}}},"links":{"self":"https://api.lemonsqueezy.com/v1/subscription-invoices/7188828"}}}
+   procesado = 1
+procesado_en = 2026-05-26 19:32:18
+       error = 
+ recibido_en = 2026-05-26 19:32:18
+
+############ INSTANCIA maria-paez ############
+== usuario santiago en usuarios ==
+                   id = 17
+               nombre = santiago paez
+                email = santiago@paez.is
+               wa_cus = 541164393520@c.us
+               wa_lid = 
+               activo = 1
+              servido = 1
+   bienvenida_enviada = 1
+    lemon_customer_id = 9057218
+lemon_subscription_id = 2269820
+           cliente_id = 
+               creado = 2026-06-18 01:54:23
+
+# exit=0
