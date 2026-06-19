@@ -376,6 +376,20 @@ async function _modificarEvento(a, ctx) {
     attendees: a.attendees,
     calendarId,
   });
+  // Verificación: confirmar que los cambios pedidos quedaron aplicados (el `ev`
+  // devuelto es el estado post-modificación). Cubre el caso "acción OK pero el
+  // campo no se escribió". Si algo no se aplicó, fallamos para que el usuario
+  // reciba un aviso honesto en vez de una confirmación falsa.
+  const _noAplicado = [];
+  if (a.ubicacion && !String(ev.ubicacion || '').toLowerCase().includes(String(a.ubicacion).toLowerCase().slice(0, 15))) {
+    _noAplicado.push('la ubicación');
+  }
+  if (a.summary && ev.summary && String(ev.summary).trim() !== String(a.summary).trim()) {
+    _noAplicado.push('el título');
+  }
+  if (_noAplicado.length) {
+    throw new Error(`modificar_evento: la acción corrió pero NO se aplicó ${_noAplicado.join(' ni ')} al evento ${a.id}. Reintentá asegurándote de incluir el campo correcto.`);
+  }
   mem.log({
     usuarioId: u.id,
     canal: 'calendar', direccion: 'saliente',
