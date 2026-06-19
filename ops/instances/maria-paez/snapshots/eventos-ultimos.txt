@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                
 -----  -------------------  --------  ---------  -------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10156  2026-06-19 11:13:57  whatsapp  saliente   34342575317160@lid   Es virtual — tiene link de Google Meet. No hay dirección física cargada en el evento.                                                                                                                 
+
+10155  2026-06-19 11:13:56  sistema   interno                         claude_call whatsapp: 16514ms prompt=70389c raw=8002c in=10t(cache_read=0 new=35060) out=625t ttfb=1693ms api=16834ms turnos=1 $0.1497                                                                
+
+10154  2026-06-19 11:13:39  whatsapp  entrante   5491132317896@c.us   María, donde es la reunión con Leandro que tengo a las 10?                                                                                                                                            
+
 10153  2026-06-19 11:01:39  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                   
 
 10152  2026-06-19 11:01:34  whatsapp  saliente   34342575317160@lid   Recordatorio — tenés 6 tareas abiertas 📝                                                                                                                                                              
@@ -327,9 +333,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10058  2026-06-18 12:03:53  sistema   interno                         claude_call meeting-prep-enrich: 13924ms prompt=565c raw=18166c in=28t(cache_read=28862 new=6900) out=344t ttfb=1722ms api=16730ms turnos=4 $0.0878                                                   
 
 10057  2026-06-18 12:03:39  sistema   interno                         claude_call meeting-prep-enrich: 42272ms prompt=563c raw=38495c in=52t(cache_read=70069 new=9110) out=539t ttfb=1581ms api=41416ms turnos=6 $0.1694                                                   
-
-10056  2026-06-18 12:02:57  sistema   interno                         claude_call meeting-prep-enrich: 39611ms prompt=565c raw=32516c in=52t(cache_read=68491 new=8305) out=523t ttfb=1726ms api=38484ms turnos=6 $0.1523                                                   
-
-10055  2026-06-18 12:02:17  sistema   interno                         claude_call meeting-prep-enrich: 29254ms prompt=565c raw=27949c in=44t(cache_read=54318 new=7809) out=462t ttfb=1760ms api=28457ms turnos=5 $0.1303                                                   
-
-10054  2026-06-18 12:01:48  sistema   interno                         claude_call meeting-prep-enrich: 13877ms prompt=571c raw=14863c in=28t(cache_read=22579 new=12637) out=268t ttfb=1653ms api=13172ms turnos=3 $0.0877                                                  
