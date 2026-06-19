@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                             
 -----  -------------------  --------  ---------  -------------------  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10326  2026-06-19 14:44:57  sistema   interno                         claude_call whatsapp: 27195ms prompt=71614c raw=10976c in=10t(cache_read=0 new=35468) out=1232t ttfb=1771ms api=26286ms turnos=1 $0.1605                           
+
+10325  2026-06-19 14:44:30  whatsapp  entrante   5491132317896@c.us   martin.gagliano@sondeos.com.ar                                                                                                                                     
+
+10324  2026-06-19 14:44:16  sistema   interno                         contacto vcard (privado): Martin Gagliano → 5491133124784@c.us                                                                                                     
+
 10323  2026-06-19 14:00:15  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                
 
 10322  2026-06-19 13:55:15  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                
@@ -197,9 +203,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10228  2026-06-19 12:20:52  sistema   interno                         claude_call enriquecer-contacto: 61734ms prompt=547c raw=67541c in=104t(cache_read=110465 new=13381) out=1462t ttfb=1598ms api=76910ms turnos=14 $0.2986           
 
 10227  2026-06-19 12:19:48  sistema   interno                         claude_call enriquecer-contacto: 28995ms prompt=557c raw=25302c in=36t(cache_read=41369 new=7463) out=697t ttfb=1712ms api=27704ms turnos=4 $0.0991                
-
-10226  2026-06-19 12:19:18  sistema   interno                         claude_call enriquecer-contacto: 17892ms prompt=507c raw=20449c in=926t(cache_read=28798 new=6040) out=356t ttfb=1974ms api=21608ms turnos=4 $0.0868               
-
-10225  2026-06-19 12:18:58  sistema   interno                         claude_call enriquecer-contacto: 19185ms prompt=556c raw=13876c in=28t(cache_read=28842 new=6191) out=285t ttfb=1793ms api=18175ms turnos=3 $0.0605                
-
-10224  2026-06-19 12:18:38  sistema   interno                         claude_call enriquecer-contacto: 15399ms prompt=550c raw=14769c in=28t(cache_read=28833 new=6250) out=309t ttfb=1729ms api=15855ms turnos=3 $0.0641                
