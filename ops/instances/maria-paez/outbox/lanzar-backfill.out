@@ -1,0 +1,19 @@
+# ejecutado: 2026-06-19T09:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   if pgrep -f 'backfill-perfiles.js' >/dev/null; then echo "backfill YA está corriendo (pid $(pgrep -f backfill-perfiles.js)) — no relanzo"; exit 0; fi
+#   nohup node /root/secretaria/backfill-perfiles.js > /tmp/backfill-perfiles.log 2>&1 &
+#   echo "backfill lanzado, pid=$! — log /tmp/backfill-perfiles.log"
+#   sleep 4
+#   echo "--- primeras líneas ---"; head -6 /tmp/backfill-perfiles.log 2>/dev/null
+
+# ───── output ─────
+backfill lanzado, pid=3009803 — log /tmp/backfill-perfiles.log
+--- primeras líneas ---
+[backfill] start 2026-06-19T12:05:03.122Z — 120 contactos con email sin perfil
+
+# exit=0
