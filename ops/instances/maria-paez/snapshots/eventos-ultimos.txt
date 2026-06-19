@@ -1,5 +1,16 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10366  2026-06-19 20:42:45  whatsapp  saliente   34342575317160@lid   *Agenda del lunes 22/06:*                                                                                                                                                                               
+                                                                                                                                                                                                                                                                              
+                                                                      🕥 10:45 - 11:30 — Seguimiento comercial                                                                                                                                                                 
+                                                                      🕛 12:00 - 13:00 — Seguimiento con Nico                                                                                                                                                                  
+                                                                      🕐 13:00 - 14:00 — Reunión con Fernando Maciel                                                                                                                                                           
+                                                                      🕒 15:00 - 16:00 — Reunión con Máximo Maderbuen (                                                                                                                                                        
+
+10365  2026-06-19 20:42:45  sistema   interno                         claude_call whatsapp: 34141ms prompt=6948c raw=12903c in=10t(cache_read=46009 new=3929) out=1575t ttfb=1667ms api=31788ms turnos=1 $0.0522                                                              
+
+10364  2026-06-19 20:42:10  whatsapp  entrante   5491132317896@c.us   Me puedes mostrar cómo está mi agenda para lunes y mandáme también mis pendientes, las tareas pendientes que tengo.                                                                                     
+
 10363  2026-06-19 20:41:35  whatsapp  saliente   34342575317160@lid   Diego, el audio no se transcribió bien — me llegó algo como «¿Te puedes ver a mi hija de agenda para el mando?» que no tiene sentido. ¿Podés reenviar el audio o escribirlo?                            
 
 10362  2026-06-19 20:41:35  sistema   interno                         claude_call whatsapp: 17871ms prompt=6894c raw=8517c in=10t(cache_read=41606 new=4403) out=710t ttfb=1764ms api=15527ms turnos=1 $0.0397                                                                
@@ -211,9 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10268  2026-06-19 12:39:32  sistema   interno                         claude_call enriquecer-contacto: 30596ms prompt=558c raw=27337c in=44t(cache_read=54138 new=7574) out=544t ttfb=1811ms api=29413ms turnos=5 $0.1213                                                     
 
 10267  2026-06-19 12:39:00  sistema   interno                         claude_call enriquecer-contacto: 40984ms prompt=552c raw=35503c in=44t(cache_read=54086 new=7890) out=1093t ttfb=1744ms api=44157ms turnos=6 $0.1549                                                    
-
-10266  2026-06-19 12:38:18  sistema   interno                         claude_call enriquecer-contacto: 41707ms prompt=564c raw=36120c in=70t(cache_read=96809 new=8713) out=870t ttfb=1661ms api=40189ms turnos=8 $0.1450                                                     
-
-10265  2026-06-19 12:37:35  sistema   interno                         claude_call enriquecer-contacto: 25811ms prompt=501c raw=20755c in=36t(cache_read=41102 new=6917) out=458t ttfb=1767ms api=24584ms turnos=4 $0.0948                                                     
-
-10264  2026-06-19 12:37:07  sistema   interno                         claude_call enriquecer-contacto: 13365ms prompt=543c raw=12495c in=28t(cache_read=28828 new=6063) out=259t ttfb=1765ms api=12169ms turnos=3 $0.0602                                                     
