@@ -1,0 +1,18 @@
+# ejecutado: 2026-06-19T10:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "SELECT COUNT(*) FROM contactos WHERE perfil_web IS NOT NULL;"
+#   pgrep -f backfill-perfiles.js >/dev/null && echo RUNNING || echo STOPPED
+#   tail -4 /tmp/backfill-perfiles.log 2>/dev/null
+
+# ───── output ─────
+55
+STOPPED
+· #314 Maximo Maderbuen (maximoj@indesamdeltagroup.com) -> sin datos
+· #317 Gustavo Rossi (gustavorossi@gmail.com) -> sin datos
+✓ #324 Tomas Vallejos (tvallejos@curtis.com) -> Asociado en Curtis, Mallet-Prevost, Colt & Mosle LLP
+[backfill] DONE 2026-06-19T13:04:03.265Z — ok=55 sin=65 err=0
+
+# exit=0

@@ -1,0 +1,29 @@
+# ejecutado: 2026-06-19T10:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "corriendo? $(pgrep -f backfill-perfiles.js >/dev/null && echo SÍ || echo NO)"
+#   echo "perfil_web cargados: $(sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "SELECT COUNT(*) FROM contactos WHERE perfil_web IS NOT NULL;") / 120"
+#   echo "--- últimas líneas del log ---"
+#   tail -12 /tmp/backfill-perfiles.log 2>/dev/null
+
+# ───── output ─────
+corriendo? NO
+perfil_web cargados: 55 / 120
+--- últimas líneas del log ---
+✓ #286 Ignacio Garcia (ignacio@trampolinevp.com) -> Founder & Managing Partner, Trampoline Venture Partners (early-stage VC, Dubai)
+✓ #291 Walter Vera (wvera@froneus.com) -> CTO en Froneus
+· #292 Nicolás Kosinski (nkosinski@froneus.com) -> sin datos
+✓ #299 Andres Neumann (andres@nomada.com) -> Co-Founder & CEO, NÓMADA
+· #304 Jose Valdes (jtvf1991@gmail.com) -> sin datos
+· #308 Alejandro Becerra (navieradelparana@gmail.com) -> sin datos
+· #309 Bruno Compa (brunocompa@southernsilica.com) -> sin datos
+· #311 Pablo Vizzotti (pvizzotti@gmail.com) -> sin datos
+· #314 Maximo Maderbuen (maximoj@indesamdeltagroup.com) -> sin datos
+· #317 Gustavo Rossi (gustavorossi@gmail.com) -> sin datos
+✓ #324 Tomas Vallejos (tvallejos@curtis.com) -> Asociado en Curtis, Mallet-Prevost, Colt & Mosle LLP
+[backfill] DONE 2026-06-19T13:04:03.265Z — ok=55 sin=65 err=0
+
+# exit=0

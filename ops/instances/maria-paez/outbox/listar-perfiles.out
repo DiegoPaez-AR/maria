@@ -1,0 +1,134 @@
+# ejecutado: 2026-06-19T10:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "backfill corriendo? $(pgrep -f backfill-perfiles.js >/dev/null && echo SÍ || echo NO/terminado)"
+#   echo "enriquecidos: $(sqlite3 "$DB" "SELECT COUNT(*) FROM contactos WHERE perfil_web IS NOT NULL;") / 120 con email ($(sqlite3 "$DB" "SELECT COUNT(*) FROM contactos;") total)"
+#   echo ""
+#   echo "=== PERFILES (por usuario) ==="
+#   sqlite3 "$DB" "
+#   SELECT '['||COALESCE(u.nombre,'uid '||c.usuario_id)||'] '||c.nombre||'  <'||COALESCE(c.email,'')||'>'||char(10)||'    → '||c.perfil_web
+#   FROM contactos c LEFT JOIN usuarios u ON u.id=c.usuario_id
+#   WHERE c.perfil_web IS NOT NULL
+#   ORDER BY u.nombre, c.nombre;"
+
+# ───── output ─────
+backfill corriendo? NO/terminado
+enriquecidos: 55 / 120 con email (191 total)
+
+=== PERFILES (por usuario) ===
+[Andres Neumann] Andres Neumann  <andres@nomada.com>
+    → Co-Founder & CEO, NÓMADA
+[Diego] Adrián Duek  <adrianduek@hotmail.com>
+    → Escribano en Escribanía Duek, CABA
+[Diego] Alfonso Amat  <alfonso.amat@gmail.com>
+    → Head of Startup Business Development en Amazon Web Services (AWS), Argentina
+[Diego] Ana Vainman  <ana@vainman.com.ar>
+    → Directora Ejecutiva en AFARTE (Asociación de Fábricas Argentinas Terminales de Electrónica)
+[Diego] Andrea Kozameh  <andreak@opticomsa.com.ar>
+    → Responsable de Marketing y Comunicación en Opticom SA
+[Diego] Andres Neumann  <andres@nomada.com>
+    → Co-Founder & CEO, NÓMADA (real estate corporativo, Buenos Aires)
+[Diego] Antonio Peña  <toni@gomovil.co>
+    → Cofounder, GoMovil — también Managing Partner en Overboost & General Partner, Kamay Ventures
+[Diego] Bryan Tafel  <Btafel@gmail.com>
+    → Co-Founder and CEO, Mofiler
+[Diego] Carlos Krigun  <ckrigun@millscapitalgroup.com>
+    → Co-Founder & CFO, Mills Capital Group
+[Diego] Damian Lanatta  <damian.lanatta@gmail.com>
+    → Preparador Físico Alterno, Selección Colombiana de Fútbol (FCF)
+[Diego] Daniel Salvucci  <dsalvucci@cygnusvc.com>
+    → Managing Partner en Draper Cygnus (fondo de VC early stage, +$50M, foco en deep tech latinoamericano)
+[Diego] Daniela Ciavone  <dc@sensmedical.com>
+    → Directora en Sens Medical Sources: - [Daniela Ciavone – ZoomInfo](https://www.zoominfo.com/p/Daniela-Ciavone/-1503570444) - [iProfesional – Sens Medical](https:
+[Diego] Dario Fainguersch  <dfainguersch@dragonesvc.com>
+    → Partner en Dragones Venture Partners (early-stage VC, LatAm & Israel)
+[Diego] David Winograd  <dwinograd@froneus.com>
+    → CEO en Froneus (IA conversacional / voicebots para atención al cliente)
+[Diego] Diego Paez  <diego@paez.is>
+    → General Partner en Enpiric, Co-Founder de Qubit Corporate — inversor ángel, emprendedor serial, Argentina
+[Diego] Doris Capurro  <doris@capurro.com.ar>
+    → Founder, Presidente & CEO, LUFT Energía
+[Diego] Eduaedo Canicoba  <ecanicoba@gmail.com>
+    → AVP & Country Manager Brazil, Geotab
+[Diego] Enrique Sosa  <enrique.sosa@globalnetmobile.com>
+    → CEO en GlobalNET Mobile Solutions
+[Diego] Facundo Martin Diaz  <f@q99.ai>
+    → Co-Founder & President, /q99 (Deep Tech AI + Quantum Computing, Palo Alto)
+[Diego] Florencia Funez  <florsuper@hotmail.com>
+    → Ayudante en Universidad de Buenos Aires (SISBI)
+[Diego] Gabriel Isola  <Isola.gabriel@gmail.com>
+    → Director General de Desarrollo Rural, Ministerio de Ganadería Agricultura y Pesca – Uruguay
+[Diego] Guillermo (TQA)  <g@thequantumalliance.com>
+    → Guillermo Bagnato, The Quantum Alliance — LinkedIn lo lista ahí, pero su título exacto en esa empresa no aparece con claridad en los resultados públicos disponi
+[Diego] Gustavo Dzugala  <dzugala@hotmail.com>
+    → Embajador / Diplomático de carrera, Cancillería Argentina (último cargo: Embajador en Colombia hasta 2024)
+[Diego] Gustavo Sorotski  <gustavo.sorotski@disney.com>
+    → VP In-Home Distribution & Partnerships, The Walt Disney Company Latin America
+[Diego] Hernan Fulco  <hernan.fulco@sondeosglobal.com>
+    → CEO en Sondeos Global (omnicanalidad / telecomunicaciones, LATAM)
+[Diego] Ignacio Garcia  <ignacio@trampolinevp.com>
+    → Founder & Managing Partner, Trampoline Venture Partners (early-stage VC, Dubai)
+[Diego] Javier Guevara  <javier.guevara@vrainz.com>
+    → CEO, Vrainz Accelerator
+[Diego] Jorge Ravlich  <jorge.e.ravlich@ypf.com>
+    → Gerente de Desarrollo de Negocios y Ventas en YPF Luz Sources: - [Jorge Ravlich - YPF LUZ | LinkedIn](https://www.linkedin.com/in/jorge-ravlich-b444a35/)
+[Diego] Jose Milei  <drjosemilei@cardiopsis.com.ar>
+    → Cardiólogo / Investigador, Cardiopsis (Buenos Aires)
+[Diego] Juan de la Cruz  <juan.ramirezsilva@fravega.com.ar>
+    → Gerente Comercial Nacional en Frávega
+[Diego] Magda Pons  <reservas@univerxo.es>
+    → Responsable de Reservas, UniverXO (grupo DiverXO)
+[Diego] Maira Yahia  <mairayahia@hotmail.com>
+    → Dueña, Maira Yahia Accesorios (marca de accesorios, Buenos Aires)
+[Diego] Marcela Carbajo  <mcarbajo@movilgate.com>
+    → Co-Fundadora y Directora Comercial, MovilGate
+[Diego] Mariano Clarath  <Mclarat@iplan.com.ar>
+    → Head Manager Small & Medium Business en IPLAN
+[Diego] Matias Israel  <matias.israel@gmail.com>
+    → CEO & Co-Owner en Mooving S.R.L.
+[Diego] Maxigkunz Gonzalez Kunz  <maximiliano@gruponucleo.com.ar>
+    → CEO en Grupo Núcleo
+[Diego] Natali Funez  <nfunez@iplan.com.ar>
+    → Líder de Fidelización & Retención B2B / Corporate en IPLAN
+[Diego] Nicolás Sgroi  <nsgroi@enpiric.com>
+    → General Partner, Enpiric
+[Diego] Oliver Erlich  <olivererlich@yahoo.com.ar>
+    → Presidente, Andeslan Textil
+[Diego] Pablo Capurro  <pablo@capurro.com.ar>
+    → Investor & Advisor, Private Investment Group; Co-founder de Papumba (app educativa, +10M descargas)
+[Diego] Pablo Casal  <pablo.casal@areait.com.ar>
+    → CEO en AreaIT
+[Diego] Pablo Mariani  <pmariani@gmail.com>
+    → Founder en LATAM Payments / Acquiring (ar.linkedin.com/in/pablomariani)
+[Diego] Pablo Petrillo  <pablo.petrillo@luftlatam.com>
+    → Senior Financial Analyst en Luft Latam
+[Diego] Roxana Stefani  <roxana.stefani@sondeos.com.ar>
+    → Responsable Administrativa en Sondeos ATX
+[Diego] Ruben Ward  <ruben.ward@sondeosglobal.com>
+    → Presidente en Sondeos Global
+[Diego] Rubén Ward  <ruben.ward@sondeos.com.ar>
+    → Presidente en Sondeos Sources: - [Ruben Ward – President at Sondeos (ZoomInfo)](https://www.zoominfo.com/p/Ruben-Ward/-1617710396)
+[Diego] Santiago Lopez Alfaro  <slopeza@delphosinv.com>
+    → Socio / Partner en Delphos Investment
+[Diego] Soledad Nakama  <soledadnakama@gmail.com>
+    → Project Manager & Software Tester Freelance en Upgram
+[Diego] Tomas Vallejos  <tvallejos@curtis.com>
+    → Asociado en Curtis, Mallet-Prevost, Colt & Mosle LLP
+[Diego] Veronica Ciccarelli  <veronica.ciccarelli@ericsson.com>
+    → No pude confirmar el cargo de una fuente directamente legible. La única fuente encontrada (WIT Argentina) no está accesible. No reportaré un título sin verifica
+[Diego] Veronica Lascaray  <verolascaray@hotmail.com>
+    → Coordinadora General en Meikin
+[Diego] Walter Vera  <wvera@froneus.com>
+    → CTO en Froneus
+[Hernan Fulco] Walter Vera  <wvera@froneus.com>
+    → CTO en Froneus
+[Natali Funez] Damián Maldini  <Dmaldini@iplan.com.ar>
+    → CEO en iplan
+[Natali Funez] Hernán Arcidiacono  <harcidiacono@iplan.com.ar>
+    → CTIO en IPLAN Soluciones IT
+
+# exit=0
