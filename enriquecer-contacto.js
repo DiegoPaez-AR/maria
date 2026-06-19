@@ -28,7 +28,7 @@ Persona: ${contacto.nombre}${empresa ? ` (empresa probable según su email: ${em
 Email: ${contacto.email}
 
 Devolvé UNA sola línea corta (máx ~110 caracteres) con su ROL/CARGO y EMPRESA actuales si los encontrás con confianza razonable (ej: "Director Comercial en Acme" o "Founder & CEO, Acme"). Si no encontrás info confiable de ESTA persona, devolvé EXACTAMENTE: sin datos
-No inventes ni completes con suposiciones. Sin comillas ni explicaciones: solo la línea.`;
+No inventes ni completes con suposiciones. NO incluyas fuentes, links, URLs, markdown ni la palabra "Sources": SOLO la línea del rol/empresa (o exactamente "sin datos"). Si no estás 100% seguro, devolvé "sin datos".`;
   try {
     let r = await invocarClaude(prompt, { timeoutMs: 70_000, audit: { usuarioId, canal: 'enriquecer-contacto' } });
     r = String(r || '').replace(/\s+/g, ' ').trim();
