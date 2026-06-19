@@ -1,0 +1,40 @@
+# ejecutado: 2026-06-19T08:33:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria || exit 1
+#   cat > /tmp/dl.js <<'JS'
+#   const mem=require('/root/secretaria/memory'); const db=mem.db;
+#   const art=(ts)=>{try{return new Date(String(ts).replace(' ','T')+'Z').toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires',hour12:false});}catch{return ts;}};
+#   const clean=(s)=>String(s==null?'':s).replace(/\s+/g,' ').trim();
+#   // 16/06 16:00-17:00 ART = UTC 19:00-20:00
+#   console.log('=== Diego (uid=1) 16/06 ~16:00-17:00 ART (turno Leandro/dirección) ===');
+#   const rows=db.prepare("SELECT timestamp,canal,direccion,nombre,de,cuerpo,metadata_json FROM eventos WHERE usuario_id=1 AND timestamp BETWEEN '2026-06-16 19:00:00' AND '2026-06-16 20:10:00' ORDER BY timestamp ASC").all();
+#   for(const e of rows){
+#     const cu=clean(e.cuerpo);
+#     if(e.canal==='sistema' && /^claude_call/.test(cu)) continue;
+#     let tag=''; try{const m=JSON.parse(e.metadata_json||'{}'); if(m.tag)tag=' ['+m.tag+']'; if(m.slot)tag+=' {'+m.slot+'}';}catch{}
+#     const fl=e.direccion==='entrante'?'→':(e.direccion==='saliente'?'←':'·');
+#     console.log(`[${art(e.timestamp)}] ${fl} ${e.canal} ${e.nombre||e.de||''}${tag}: ${cu.slice(0,400)}`);
+#   }
+#   JS
+#   node /tmp/dl.js 2>&1; rm -f /tmp/dl.js
+
+# ───── output ─────
+=== Diego (uid=1) 16/06 ~16:00-17:00 ART (turno Leandro/dirección) ===
+[16/6/2026, 16:27:15] → whatsapp lavaca: https://maps.app.goo.gl/QCoCQ5LKUPhzUuJT9 Armenia 1595, C1414 Cdad. Autónoma de Buenos Aires
+[16/6/2026, 16:27:55] → whatsapp lavaca: https://maps.app.goo.gl/QCoCQ5LKUPhzUuJT9 Armenia 1595, C1414 Cdad. Autónoma de Buenos Aires Avisa si esta OK por esa zona
+[16/6/2026, 16:28:19] ← whatsapp lavaca {respuesta_a_remitente}: Perfecto, lo consulto con Diego y te confirmo enseguida.
+[16/6/2026, 16:28:19] ← whatsapp Diego {respuesta_a_usuario}: Leandro Groisman te propone encontrarse en Armenia 1595, Palermo (te mandó el link de maps). ¿Te queda bien esa zona para la reunión del viernes 19/06?
+[16/6/2026, 16:28:19] · sistema : acción ejecutada: agregar_pendiente
+[16/6/2026, 16:40:18] → whatsapp Diego: Perfecto confirmarle que esto gay, y metelo en la... en la cita.
+[16/6/2026, 16:40:51] · sistema : acción ejecutada: enviar_wa
+[16/6/2026, 16:40:51] ← whatsapp 5491140495070@c.us [enviar_wa]: ¡Perfecto Leandro! Armenia 1595 le queda bien a Diego. ¡Nos vemos el viernes!
+[16/6/2026, 16:40:52] ← whatsapp Diego {respuesta_a_usuario}: Listo, le confirmo a Leandro y meto la ubicación en el evento.
+[16/6/2026, 16:40:52] · sistema : acción ejecutada: quitar_pendiente
+[16/6/2026, 16:40:52] · sistema : acción ejecutada: modificar_evento
+[16/6/2026, 16:40:52] ← calendar : modificado: Reunión Diego / Leandro Groisman (2026-06-19T10:00:00-03:00 → 2026-06-19T11:00:00-03:00)
+
+# exit=0
