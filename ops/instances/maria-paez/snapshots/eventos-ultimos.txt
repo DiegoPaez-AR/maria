@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10358  2026-06-19 20:40:41  whatsapp  entrante   5491132317896@c.us   Ok.                                                                                                                                                                                                     
+
+10357  2026-06-19 20:40:22  whatsapp  saliente   34342575317160@lid   Dale, le mando las opciones a Rodrigo ahora y te aviso cuando confirme.                                                                                                                                 
+
+10356  2026-06-19 20:40:21  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+10355  2026-06-19 20:40:21  sistema   interno                         acción FALLÓ: enviar_mensaje — Tipo de acción desconocido: enviar_mensaje                                                                                                                               
+
+10354  2026-06-19 20:40:21  sistema   interno                         claude_call whatsapp: 19575ms prompt=7780c raw=8926c in=10t(cache_read=32715 new=4648) out=843t ttfb=2383ms api=16559ms turnos=1 $0.0399                                                                
+
 10353  2026-06-19 20:40:01  whatsapp  entrante   5491132317896@c.us   Send him all of them and let me know if any works for him                                                                                                                                               
 
 10352  2026-06-19 20:39:12  whatsapp  saliente   34342575317160@lid   El lunes 22 tenés bastante ocupado, pero hay tres huecos de 1 hora:                                                                                                                                     
@@ -207,13 +217,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10260  2026-06-19 12:35:04  sistema   interno                         claude_call enriquecer-contacto: 19100ms prompt=554c raw=13618c in=28t(cache_read=28824 new=6091) out=278t ttfb=1790ms api=16700ms turnos=3 $0.0588                                                     
 
 10259  2026-06-19 12:34:43  sistema   interno                         claude_call enriquecer-contacto: 16979ms prompt=500c raw=20876c in=28t(cache_read=28814 new=7008) out=349t ttfb=1654ms api=22967ms turnos=4 $0.0884                                                     
-
-10258  2026-06-19 12:34:25  sistema   interno                         claude_call enriquecer-contacto: 22007ms prompt=498c raw=19676c in=28t(cache_read=28821 new=6717) out=554t ttfb=1564ms api=26635ms turnos=4 $0.0913                                                     
-
-10257  2026-06-19 12:34:01  sistema   interno                         claude_call enriquecer-contacto: 20433ms prompt=506c raw=19469c in=36t(cache_read=41113 new=6674) out=337t ttfb=1590ms api=19845ms turnos=4 $0.0915                                                     
-
-10256  2026-06-19 12:33:39  sistema   interno                         claude_call enriquecer-contacto: 19900ms prompt=503c raw=20257c in=667t(cache_read=28795 new=6213) out=470t ttfb=1718ms api=23424ms turnos=4 $0.0845                                                    
-
-10255  2026-06-19 12:33:18  sistema   interno                         claude_call enriquecer-contacto: 36379ms prompt=504c raw=27440c in=44t(cache_read=54238 new=7481) out=400t ttfb=1686ms api=35582ms turnos=5 $0.1219                                                     
-
-10254  2026-06-19 12:32:40  sistema   interno                         claude_call enriquecer-contacto: 18969ms prompt=504c raw=19714c in=758t(cache_read=28807 new=6165) out=358t ttfb=1736ms api=24430ms turnos=4 $0.0847                                                    
