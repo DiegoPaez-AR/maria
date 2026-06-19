@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10182  2026-06-19 11:44:24  whatsapp  saliente   34342575317160@lid   Perfecto, actualizo el contacto de Tomás con el email y te agendo la reunión el *miércoles 24/06 de 12:00 a 13:00* — el slot está libre. Le mando invitación a tvallejos@curtis.com.                    
+
+10181  2026-06-19 11:44:17  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+10180  2026-06-19 11:44:17  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+10179  2026-06-19 11:44:17  calendar  saliente                        creado: Reunión Diego / Tomás Vallejos (2026-06-24T12:00:00-03:00 → 2026-06-24T13:00:00-03:00) · Meet: https://meet.google.com/yie-gqrq-xbu                                                             
+
+10178  2026-06-19 11:44:15  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+10177  2026-06-19 11:44:15  sistema   interno                         claude_call whatsapp: 48105ms prompt=70799c raw=16117c in=10t(cache_read=6271 new=28932) out=2360t ttfb=1694ms api=47417ms turnos=1 $0.1548                                                             
+
 10176  2026-06-19 11:43:27  whatsapp  entrante   5491132317896@c.us   esto es para que agendes la reunion con Tomas el miercoes 24 de 12 a 13                                                                                                                                 
 
 10175  2026-06-19 11:43:27  whatsapp  entrante   5491132317896@c.us   tvallejos@curtis.com                                                                                                                                                                                    
@@ -315,15 +327,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 10083  2026-06-18 13:15:40  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Weekly Proyectos (10:30 a. m.)                                                                                                                                                            
                                                                       Con: osidoni@c2scs.com, pablo.petrillo@luftlatam.com, federico.caceres@4caminos.co, pablo@capurro.com.ar, lucas@capurro.com.ar, gtoro@cheetahmotorsport.com                                             
-
-10082  2026-06-18 13:11:28  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-10081  2026-06-18 13:11:28  sistema   interno                         claude_call meeting-prep-enrich: 36957ms prompt=551c raw=34896c in=897t(cache_read=74097 new=4361) out=828t ttfb=1715ms api=42640ms turnos=8 $0.1327                                                    
-
-10080  2026-06-18 13:10:51  sistema   interno                         claude_call meeting-prep-enrich: 62843ms prompt=557c raw=39614c ERROR=Timeout global 60000ms invocando claude (prompt=557c)                                                                             
-
-10079  2026-06-18 13:09:48  sistema   interno                         claude_call meeting-prep-enrich: 35475ms prompt=553c raw=29323c in=44t(cache_read=59542 new=3445) out=483t ttfb=1652ms api=34925ms turnos=5 $0.1176                                                     
-
-10078  2026-06-18 13:09:12  sistema   interno                         claude_call meeting-prep-enrich: 30542ms prompt=510c raw=27947c in=44t(cache_read=59162 new=3063) out=520t ttfb=1609ms api=29844ms turnos=5 $0.1021                                                     
-
-10077  2026-06-18 13:08:42  sistema   interno                         claude_call meeting-prep-enrich: 33523ms prompt=553c raw=21698c in=36t(cache_read=46009 new=2525) out=359t ttfb=1639ms api=32447ms turnos=4 $0.0797                                                     
