@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10171  2026-06-19 11:31:53  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
+
+10170  2026-06-19 11:31:48  sistema   interno                         claude_call meeting-prep-enrich: 14192ms prompt=538c raw=12789c in=28t(cache_read=22548 new=12151) out=309t ttfb=1653ms api=13569ms turnos=3 $0.0775                                                    
+
 10169  2026-06-19 11:29:48  whatsapp  saliente   34342575317160@lid   Tenés razón y no tengo una buena explicación. Me comprometí a las dos cosas — confirmarle a Leandro y meter la dirección en el evento — y solo hice la primera. No hay justificación, fue un error mío. 
 
 10168  2026-06-19 11:29:48  sistema   interno                         claude_call whatsapp: 30631ms prompt=70420c raw=12458c in=10t(cache_read=0 new=34962) out=1430t ttfb=1731ms api=29775ms turnos=1 $0.1613                                                                
@@ -323,7 +327,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10073  2026-06-18 13:07:16  sistema   interno                         claude_call meeting-prep-enrich: 56926ms prompt=553c raw=49059c in=78t(cache_read=117292 new=10682) out=1161t ttfb=1663ms api=58615ms turnos=11 $0.2510                                                 
 
 10072  2026-06-18 13:06:19  sistema   interno                         claude_call meeting-prep-enrich: 35540ms prompt=551c raw=33386c in=54t(cache_read=71381 new=8901) out=821t ttfb=1740ms api=39167ms turnos=8 $0.1586                                                     
-
-10071  2026-06-18 13:05:43  sistema   interno                         claude_call meeting-prep-enrich: 24173ms prompt=557c raw=26875c in=36t(cache_read=42082 new=7867) out=437t ttfb=1665ms api=28256ms turnos=5 $0.1395                                                     
-
-10070  2026-06-18 13:05:19  sistema   interno                         claude_call meeting-prep-enrich: 31025ms prompt=553c raw=28114c in=44t(cache_read=54853 new=7990) out=495t ttfb=1582ms api=29700ms turnos=5 $0.1361                                                     
