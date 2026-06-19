@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10370  2026-06-19 21:22:38  whatsapp  saliente   34342575317160@lid   No tengo acceso al calendario de Santiago Capurro — solo puedo ver el tuyo. Si querés, le escribo para preguntarle su disponibilidad de mañana.                                                         
+
+10369  2026-06-19 21:22:38  sistema   interno                         claude_call whatsapp: 11366ms prompt=8270c raw=6539c in=10t(cache_read=0 new=55348) out=380t ttfb=1718ms api=9025ms turnos=1 $0.2133                                                                    
+
+10368  2026-06-19 21:22:26  whatsapp  entrante   5491132317896@c.us   pasame la agenda de santiago capurro de manana                                                                                                                                                          
+
 10367  2026-06-19 20:50:10  sistema   interno                         follow-up #12 cerrado: 5491156449434@c.us respondió antes del vencimiento (Cuando Fernando Maciel se contacte, obtener su email/WA, crear evento lunes 22/06 de 13:00 a 14:00 con Diego y Fernando, e in
 
 10366  2026-06-19 20:42:45  whatsapp  saliente   34342575317160@lid   *Agenda del lunes 22/06:*                                                                                                                                                                               
@@ -216,9 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10272  2026-06-19 12:41:07  sistema   interno                         claude_call enriquecer-contacto: 20374ms prompt=549c raw=15696c in=28t(cache_read=28817 new=6027) out=610t ttfb=1665ms api=20118ms turnos=3 $0.0636                                                     
 
 10271  2026-06-19 12:40:45  sistema   interno                         claude_call enriquecer-contacto: 23670ms prompt=544c raw=13382c in=28t(cache_read=28823 new=6109) out=281t ttfb=1737ms api=22797ms turnos=3 $0.0587                                                     
-
-10270  2026-06-19 12:40:20  sistema   interno                         claude_call enriquecer-contacto: 18195ms prompt=572c raw=14647c in=28t(cache_read=28848 new=6391) out=271t ttfb=2462ms api=16326ms turnos=3 $0.0614                                                     
-
-10269  2026-06-19 12:40:00  sistema   interno                         claude_call enriquecer-contacto: 26214ms prompt=560c raw=20477c in=36t(cache_read=41341 new=6932) out=408t ttfb=1755ms api=25695ms turnos=4 $0.0933                                                     
-
-10268  2026-06-19 12:39:32  sistema   interno                         claude_call enriquecer-contacto: 30596ms prompt=558c raw=27337c in=44t(cache_read=54138 new=7574) out=544t ttfb=1811ms api=29413ms turnos=5 $0.1213                                                     
