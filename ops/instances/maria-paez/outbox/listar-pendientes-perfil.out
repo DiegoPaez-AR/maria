@@ -1,0 +1,90 @@
+# ejecutado: 2026-06-19T16:15:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "=== PENDIENTES (perfil_web NULL, con email) — id|uid|usuario|nombre|email ==="
+#   sqlite3 "$DB" "SELECT c.id||'|'||c.usuario_id||'|'||COALESCE(u.nombre,'?')||'|'||c.nombre||'|'||c.email FROM contactos c LEFT JOIN usuarios u ON u.id=c.usuario_id WHERE c.email IS NOT NULL AND c.email!='' AND c.perfil_web IS NULL ORDER BY c.usuario_id, c.nombre;"
+#   echo ""
+#   echo "=== A REHACER (perfil con basura: Sources/http/markdown o muy largo) — id|nombre|email ==="
+#   sqlite3 "$DB" "SELECT c.id||'|'||c.nombre||'|'||c.email||'  ||  '||substr(c.perfil_web,1,60) FROM contactos c WHERE c.perfil_web IS NOT NULL AND (c.perfil_web LIKE '%Sources%' OR c.perfil_web LIKE '%http%' OR c.perfil_web LIKE '%](%' OR c.perfil_web LIKE '%No pude%' OR c.perfil_web LIKE '%no aparece con claridad%');"
+
+# ───── output ─────
+=== PENDIENTES (perfil_web NULL, con email) — id|uid|usuario|nombre|email ===
+47|1|Diego|Agustina Acevedo|aagustinaacevedo@hotmail.es
+308|1|Diego|Alejandro Becerra|navieradelparana@gmail.com
+139|1|Diego|Ana Gianini|anagianini@hotmail.com
+132|1|Diego|Ariana Fleitas|arianafleitas@yahoo.com.ar
+130|1|Diego|Brigida Pacheco|brigidapacheco@hotmail.com
+166|1|Diego|Brunatti Carolina|carolina.brunatti@telefonica.com
+309|1|Diego|Bruno Compa|brunocompa@southernsilica.com
+45|1|Diego|Carina Pubill|carinapubill21@gmail.com
+118|1|Diego|Carlos Canosa|carlosalbertocanosa@yahoo.com
+153|1|Diego|Carlos Maidana|carlosmaidana01@gmail.com
+206|1|Diego|Carlos Rivera|crivera@millscapitalgroup.com
+195|1|Diego|Carmen Paez|carpaespa@gmail.com
+154|1|Diego|Carolina Modai|carolinamodai@hotmail.com
+147|1|Diego|Celeste Maneiro|celestemaneiro@hotmail.com
+184|1|Diego|Cristian Huichaqueo|cristian.huichaqueo@mviajes.com.ar
+227|1|Diego|Cristian Ruiz|cruiz@froneus.com
+180|1|Diego|Diego Perez|diegohpp@hotmail.com
+92|1|Diego|Diego Ramirez Schrempp|d@thequantumalliance.com
+160|1|Diego|Dolores Spangenberg|doloresspangen@gmail.com
+127|1|Diego|Fabiana Teubal|arqsam@gmail.com
+210|1|Diego|Fabio Boschetto|fabio.boschetto@vrainz.com
+211|1|Diego|Federico Goldenberg|federico.goldenberg@sondeos.com.ar
+141|1|Diego|Fernanda Lascaray|Fl@sensmedical.com
+102|1|Diego|Fernando Boero|fboero@luminaconsultora.com.ar
+131|1|Diego|Gabriel Pacheco|gap2612@gmail.com
+217|1|Diego|Gastón Girotti|gaston.girotti@gmail.com
+148|1|Diego|Gastón Ruggerio|gastonruggerio@hotmail.com
+145|1|Diego|Georgina Milei|georgina.milei@gmail.com
+275|1|Diego|Guillermo Bagnato|G@thequantumalliance.com
+85|1|Diego|Gustavo Raul Aragon|gustavoraularagon@gmail.com
+317|1|Diego|Gustavo Rossi|gustavorossi@gmail.com
+186|1|Diego|Hernan Mantovani|hernan_mantovani@hotmail.com
+81|1|Diego|Isabel Imperiale|isabelimperiale@gmail.com
+168|1|Diego|Javier Corraro|Javier.Corraro@telefonica.com
+304|1|Diego|Jose Valdes|jtvf1991@gmail.com
+120|1|Diego|Juan Ignacio Paez Maña|ignacio@paez.net
+163|1|Diego|Juliana Laurini|juliana.laurini@gmail.com
+151|1|Diego|Julieta Picasso|lietita@yahoo.com.ar
+128|1|Diego|Leo Ferran|leo.ferran@babelq.com
+162|1|Diego|Lorena Gerattano|lorenagerattano@Gmail.com
+90|1|Diego|Lucas Capurro|Lucas@capurro.com.ar
+156|1|Diego|Malena Ansalone|malenaansalone@hotmail.com
+16|1|Diego|Manuel Paez|manuel@paez.is
+138|1|Diego|Mariano Herrera|mariano.a.herrera@gmail.com
+176|1|Diego|Marino Bracamonte|marino.bracamonte@telefonica.com
+140|1|Diego|Mario Miccelli|mario.miccelli@gmail.com
+326|1|Diego|Martin Gagliano|martin.gagliano@sondeos.com.ar
+104|1|Diego|María José Laiseca|mlaiseca@iplan.com.ar
+314|1|Diego|Maximo Maderbuen|maximoj@indesamdeltagroup.com
+202|1|Diego|Mercedes Spangenberg|pachespangenberg@hotmail.com
+177|1|Diego|Mónica Matto|monica.matto@sondeos.com.ar
+167|1|Diego|Nicolas Jordan|nicolas.jordan@enpiric.com
+292|1|Diego|Nicolás Kosinski|nkosinski@froneus.com
+169|1|Diego|Pablo Bisceglia|pablo.bisceglia@sondeos.com.ar
+311|1|Diego|Pablo Vizzotti|pvizzotti@gmail.com
+17|1|Diego|Paloma Paez|paloma.paez@gmail.com
+143|1|Diego|Pilar Spangenberg|pspangenberg@gmail.com
+108|1|Diego|Rodrigo Paez Canosa|rpc@sondeos.com.ar
+46|1|Diego|Romina|romina.rios@ebuono.com.ar
+98|1|Diego|Santiago Bignone|santiagocbignone@gmail.com
+58|1|Diego|Santiago Capurro|santiago@capurro.com.ar
+18|1|Diego|Santiago Paez|santiago@paez.is
+214|1|Diego|Santiago Rodriguez|santijrodriguez@gmail.com
+234|1|Diego|Sebastian Ameijeira|sameijeira@froneus.com
+79|2|Hernan Fulco|Mariela Nigro|mariela.nigro@sondeos.com.ar
+86|2|Hernan Fulco|Nicolás Kosinski|nkosinski@froneus.com
+
+=== A REHACER (perfil con basura: Sources/http/markdown o muy largo) — id|nombre|email ===
+73|Rubén Ward|ruben.ward@sondeos.com.ar  ||  Presidente en Sondeos Sources: - [Ruben Ward – President at 
+97|Guillermo (TQA)|g@thequantumalliance.com  ||  Guillermo Bagnato, The Quantum Alliance — LinkedIn lo lista 
+144|Veronica Ciccarelli|veronica.ciccarelli@ericsson.com  ||  No pude confirmar el cargo de una fuente directamente legibl
+173|Daniela Ciavone|dc@sensmedical.com  ||  Directora en Sens Medical Sources: - [Daniela Ciavone – Zoom
+197|Jorge Ravlich|jorge.e.ravlich@ypf.com  ||  Gerente de Desarrollo de Negocios y Ventas en YPF Luz Source
+
+# exit=0
