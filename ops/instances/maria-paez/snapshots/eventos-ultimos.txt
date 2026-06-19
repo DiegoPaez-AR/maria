@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                
 -----  -------------------  --------  ---------  -------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10160  2026-06-19 11:15:45  whatsapp  saliente   34342575317160@lid   Busqué en mi historial con Leandro y no me aparece ningún mensaje donde haya definido un lugar. ¿Me podés reenviar o copiar ese mensaje? Así actualizo el evento con la dirección.                    
+
+10159  2026-06-19 11:15:45  sistema   interno                         claude_call whatsapp: 13413ms prompt=70446c raw=7768c in=10t(cache_read=6271 new=28750) out=500t ttfb=1739ms api=12378ms turnos=1 $0.1261                                                             
+
+10158  2026-06-19 11:15:32  sistema   interno                         claude_call whatsapp: 8177ms prompt=69899c raw=5612c in=10t(cache_read=6271 new=28524) out=239t ttfb=1753ms api=7564ms turnos=1 $0.1210                                                               
+
+10157  2026-06-19 11:15:23  whatsapp  entrante   5491132317896@c.us   No, mira tu conversación con el y vas a ver que te definió un lugar que evidentemente no agendaste                                                                                                    
+
 10156  2026-06-19 11:13:57  whatsapp  saliente   34342575317160@lid   Es virtual — tiene link de Google Meet. No hay dirección física cargada en el evento.                                                                                                                 
 
 10155  2026-06-19 11:13:56  sistema   interno                         claude_call whatsapp: 16514ms prompt=70389c raw=8002c in=10t(cache_read=0 new=35060) out=625t ttfb=1693ms api=16834ms turnos=1 $0.1497                                                                
@@ -319,17 +327,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello                                    
 
 10061  2026-06-18 12:16:33  sistema   interno                         follow-up #9 cerrado: 5491130514423@c.us respondió antes del vencimiento (Cuando Kōnā Corner confirme disponibilidad karaoke sábado 21/06 21hs para 8-10 personas, informarle a Diego.)               
-
-10060  2026-06-18 12:15:34  whatsapp  saliente   5491126406612@c.us   ☀️ *Buen día, Cristian Ruiz.* jueves, 18 de junio.                                                                                                                                                    
-                                                                                                                                                                                                                                                                            
-                                                                      *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                        
-                                                                      🌧️ lluvia, mín 10° / máx 13° · 100% prob. de lluvia                                                                                                                                                   
-                                                                                                                                                                                                                                                                            
-                                                                      *📅 Agenda del día*                                                                                                                                                                                    
-                                                                      (sin eventos hoy)                                                                                                                                                                                     
-
-10059  2026-06-18 12:03:58  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                   
-
-10058  2026-06-18 12:03:53  sistema   interno                         claude_call meeting-prep-enrich: 13924ms prompt=565c raw=18166c in=28t(cache_read=28862 new=6900) out=344t ttfb=1722ms api=16730ms turnos=4 $0.0878                                                   
-
-10057  2026-06-18 12:03:39  sistema   interno                         claude_call meeting-prep-enrich: 42272ms prompt=563c raw=38495c in=52t(cache_read=70069 new=9110) out=539t ttfb=1581ms api=41416ms turnos=6 $0.1694                                                   
