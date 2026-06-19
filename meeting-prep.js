@@ -92,8 +92,8 @@ async function _componerTexto(e, usuario) {
       const nombre = c ? c.nombre : (_nombreDesdeEmail(em) || em);
       const nota = c ? mem.getNotaContacto(usuario.id, c.id) : null;
       const fuente = (nota && nota.nota) ? nota.nota : (c && c.notas) || null;
-      // Enriquecimiento web (rol/empresa) por asistente.
-      const web = await _enriquecerAsistente({ email: em, nombre: c ? c.nombre : null, usuario });
+      // Perfil web (rol/empresa) ya enriquecido al crear el contacto.
+      const web = c ? (c.perfil_web || null) : null;
       if (!fuente && !web) continue; // nada útil para este asistente
       let linea = `\n👤 ${nombre}`;
       if (web) linea += ` — ${web}`;

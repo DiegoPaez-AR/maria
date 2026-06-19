@@ -92,18 +92,22 @@ async function _cumplesHoy(usuario) {
     console.warn(`[morning-brief/${usuario.nombre}] cumples libreta falló:`, err.message);
   }
 
-  if (!items.length) return null;
-  // Deduplicar por nombre case-insensitive (puede pasar que Google y libreta
-  // tengan el mismo Juan).
+  if (!items.length) return { lista: null, esTuCumple: false };
+  // Detectar el cumple del PROPIO usuario (no lo listamos como contacto: lo
+  // saludamos). Dedup por nombre case-insensitive (Google + libreta).
+  const _norm = (x) => String(x || '').toLowerCase().replace(/🎂/g, '').replace(/cumplea[ñn]os de/g, '').replace(/\(compartido\)/g, '').trim();
+  const yo = _norm(usuario.nombre);
   const vistos = new Set();
   const dedup = [];
+  let esTuCumple = false;
   for (const it of items) {
-    const k = it.toLowerCase();
-    if (vistos.has(k)) continue;
-    vistos.add(k);
+    const n = _norm(it);
+    if (yo && n === yo) { esTuCumple = true; continue; }
+    if (vistos.has(n)) continue;
+    vistos.add(n);
     dedup.push(it);
   }
-  return dedup.join('\n');
+  return { lista: dedup.length ? dedup.join('\n') : null, esTuCumple };
 }
 
 function _pendientesLista(usuario) {
@@ -164,17 +168,18 @@ async function componerBrief(usuario) {
   const TT = i18n.T(usuario.idioma);
   const fecha  = new Date(Date.UTC(t.year, t.mes - 1, t.dia)).toLocaleDateString(i18n.locale(usuario.idioma), { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 
-  const [agenda, cumples, climaLinea] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario), _climaHoy(usuario)]);
+  const [agenda, cumplesRes, climaLinea] = await Promise.all([_agendaHoy(usuario), _cumplesHoy(usuario), _climaHoy(usuario)]);
   const pendientes = _pendientesLista(usuario);
   const gestionando = _gestionandoLista(usuario);
 
   let out = `${TT.buenDia(usuario.nombre, fecha)}\n\n`;
+  if (cumplesRes.esTuCumple) out += `${TT.feliz(usuario.nombre)}\n\n`;
   if (climaLinea) out += `${TT.climaLbl(usuario.ubicacion)}\n${climaLinea}\n\n`;
   out += `${TT.agendaLbl}\n${agenda}\n`;
-  if (cumples)   out += `\n${TT.cumplesLbl}\n${cumples}\n`;
+  if (cumplesRes.lista) out += `\n${TT.cumplesLbl}\n${cumplesRes.lista}\n`;
   if (pendientes) out += `\n${TT.pendientesLbl}\n${pendientes}\n`;
   if (gestionando) out += `\n${TT.gestionandoLbl}\n${gestionando}\n`;
-  return out.trim();
+  return { texto: out.trim(), esTuCumple: cumplesRes.esTuCumple };
 }
 
 // ─── Envío ───────────────────────────────────────────────────────────────
@@ -190,13 +195,26 @@ async function enviarBrief(waClient, usuario) {
     return false;
   }
 
-  const texto = await componerBrief(usuario);
+  const { texto, esTuCumple } = await componerBrief(usuario);
 
   const { destinoFinal } = await waSend.enviarWAUsuario(waClient, usuario, texto, {
     tag: `morning-brief/${usuario.nombre}`,
     metadata: { tipo: 'morning_brief' },
   });
   console.log(`[morning-brief/${usuario.nombre}] ✓ enviado a ${destinoFinal}`);
+
+  // Cumpleaños del propio usuario: saludo aparte a la mañana (además del brief).
+  if (esTuCumple) {
+    try {
+      await waSend.enviarWAUsuario(waClient, usuario, i18n.T(usuario.idioma).saludoCumple(usuario.nombre), {
+        tag: `saludo-cumple/${usuario.nombre}`,
+        metadata: { tipo: 'saludo_cumple' },
+      });
+      console.log(`[morning-brief/${usuario.nombre}] ✓ saludo de cumpleaños enviado`);
+    } catch (err) {
+      console.warn(`[morning-brief/${usuario.nombre}] saludo cumple falló:`, err.message);
+    }
+  }
   return true;
 }
 

@@ -513,6 +513,16 @@ function _migrarContactos() {
 }
 _migrarContactos();
 
+// Perfil web del contacto (rol/empresa por búsqueda web, enriquecido al crearlo).
+// Separado de la nota curada (notas_contacto, que la regenera memoria-curada).
+function _migrarContactosPerfilWeb() {
+  if (!_tablaExiste('contactos')) return;
+  if (_tieneColumna('contactos', 'perfil_web')) return;
+  db.exec(`ALTER TABLE contactos ADD COLUMN perfil_web TEXT`);
+  console.log('[memory] migración: contactos.perfil_web agregado');
+}
+_migrarContactosPerfilWeb();
+
 // `hechos` lo mismo: clave única era global, pasa a per-user.
 function _migrarHechos() {
   if (!_tablaExiste('hechos')) {
@@ -966,6 +976,11 @@ function getNotaContacto(usuarioId, contactoId) {
 }
 function listarNotasContactoDeUsuario(usuarioId) {
   return qNotasContactoDeUsuario.all(usuarioId);
+}
+const updPerfilWebContacto = db.prepare(`UPDATE contactos SET perfil_web = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ? AND usuario_id = ?`);
+function setPerfilWebContacto(usuarioId, contactoId, perfil) {
+  if (!usuarioId || !contactoId) return;
+  updPerfilWebContacto.run(perfil || null, contactoId, usuarioId);
 }
 function upsertNotaContacto({ usuarioId, contactoId, nota, hasta }) {
   upsertNotaContactoStmt.run({ usuarioId, contactoId, nota, hasta });
@@ -1884,6 +1899,7 @@ module.exports = {
   getNotaContacto,
   listarNotasContactoDeUsuario,
   upsertNotaContacto,
+  setPerfilWebContacto,
   eventosConContactoDesde,
   // estado global
   setEstado,

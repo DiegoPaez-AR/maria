@@ -53,6 +53,8 @@ const M = {
     // meeting-prep
     enMin: (m) => `⏰ *En ${m}min*:`,
     con: 'Con:',
+    feliz: (n) => `🎂 *¡Feliz cumpleaños, ${n}!* 🎉`,
+    saludoCumple: (n) => `🎂 ¡Feliz cumpleaños, ${n}! Que tengas un gran día. 🎉`,
   },
   en: {
     buenDia: (n, f) => `☀️ *Good morning, ${n}.* ${f}.`,
@@ -83,6 +85,8 @@ const M = {
     arrancas: '*You start the week with:*',
     enMin: (m) => `⏰ *In ${m}min*:`,
     con: 'With:',
+    feliz: (n) => `🎂 *Happy birthday, ${n}!* 🎉`,
+    saludoCumple: (n) => `🎂 Happy birthday, ${n}! Have a great day. 🎉`,
   },
 };
 

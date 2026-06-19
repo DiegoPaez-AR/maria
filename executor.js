@@ -809,6 +809,14 @@ async function _upsertContacto(a, ctx) {
     visibilidad,
     cumple: a.cumple || null,
   });
+  // Enriquecimiento web (rol/empresa) en background: NO bloquea el turno. Si el
+  // contacto tiene email, buscamos su perfil y lo guardamos en perfil_web para
+  // que el meeting-prep y el prompt lo tengan listo. Fire-and-forget.
+  if (c && c.id && a.email) {
+    require('./enriquecer-contacto')
+      .enriquecerContacto(ctx.usuario.id, { id: c.id, nombre: c.nombre, email: a.email })
+      .catch(err => console.warn('[upsert_contacto] enriquecer falló:', err.message));
+  }
   return { id: c.id, nombre: c.nombre, visibilidad: c.visibilidad, cumple: c.cumple };
 }
 
