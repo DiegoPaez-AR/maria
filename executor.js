@@ -146,7 +146,43 @@ function _accionMasParecida(tipo) {
   return bestD <= 6 ? best : null;
 }
 
+// Sinónimos conocidos → acción canónica. El LLM driftea el nombre de la acción
+// (send_wa, enviar_whatsapp, mandar_wa, ...). En vez de fallar, normalizamos.
+const SINONIMOS_ACCION = {
+  enviar_whatsapp:'enviar_wa', enviar_wsp:'enviar_wa', enviar_wpp:'enviar_wa',
+  wa_enviar:'enviar_wa', send_wa:'enviar_wa', wa_send:'enviar_wa', sendwa:'enviar_wa',
+  mandar_wa:'enviar_wa', mandar_whatsapp:'enviar_wa', enviar_mensaje_wa:'enviar_wa',
+  mensaje_wa:'enviar_wa', wa_mensaje:'enviar_wa', enviar_mensaje:'enviar_wa',
+  enviar_mail:'enviar_email', mandar_mail:'enviar_email', mandar_email:'enviar_email',
+  send_email:'enviar_email', enviar_correo:'enviar_email',
+};
+
+// Resuelve accion.tipo a su forma canónica. Devuelve el tipo (posiblemente
+// corregido). NO auto-rutea acciones destructivas ni ambiguas: ante la duda,
+// devuelve el crudo y el default del switch tira el error auto-correctivo.
+function _normalizarTipo(accion) {
+  const raw = String(accion && accion.tipo || '');
+  const t = raw.toLowerCase().trim();
+  const aliasSwitch = ['agregar_contacto','crear_contacto','guardar_contacto'];
+  if (ACCIONES_VALIDAS.includes(t) || aliasSwitch.includes(t)) return raw;
+  // 1) sinónimo explícito
+  if (SINONIMOS_ACCION[t]) return SINONIMOS_ACCION[t];
+  // 2) inferencia por forma del payload — WhatsApp: { a:'...@c.us|@lid', texto }
+  const a = accion || {};
+  if (typeof a.a === 'string' && /@(c\.us|lid)$/.test(a.a) && typeof a.texto === 'string') {
+    return 'enviar_wa';
+  }
+  // 3) inferencia — email: { to|para, asunto|subject }
+  if ((a.to || a.para) && (a.asunto || a.subject)) return 'enviar_email';
+  return raw; // sin match seguro → que falle con el error auto-correctivo
+}
+
 async function ejecutarUna(accion, ctx) {
+  const _canon = _normalizarTipo(accion);
+  if (_canon !== accion.tipo) {
+    console.warn(`[executor] auto-ruteo de acción "${accion.tipo}" → "${_canon}"`);
+    accion = { ...accion, tipo: _canon };
+  }
   switch (accion.tipo) {
     case 'crear_evento':       return await _crearEvento(accion, ctx);
     case 'modificar_evento':   return await _modificarEvento(accion, ctx);
