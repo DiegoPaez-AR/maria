@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10484  2026-06-20 21:06:24  whatsapp  saliente   34342575317160@lid   Dale, le mando el mensaje ahora a Alfonso proponiéndole almorzar la semana del 29, el lunes, jueves o viernes.                                                                                          
+
+10483  2026-06-20 21:06:24  sistema   interno                         acción FALLÓ: send_wa — Acción desconocida: "send_wa". ¿Quisiste decir "enviar_wa"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_ema
+
+10482  2026-06-20 21:06:24  sistema   interno                         claude_call whatsapp: 31560ms prompt=7680c raw=11995c in=10t(cache_read=0 new=23045) out=1346t ttfb=1710ms api=29275ms turnos=1 $0.1066                                                                 
+
 10481  2026-06-20 21:05:51  whatsapp  entrante   5491132317896@c.us   mandalo un mensaje al fomso proponiendo le diciendo lo que quiero amorzar con                                                                                                                           
                                                                        él la semana que viene no la otra o sea la del veinti nueve creo que es y para                                                                                                                         
                                                                        amorzar el lunes jueves o viernes gracias                                                                                                                                                              
@@ -329,9 +335,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10386  2026-06-19 23:15:10  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Cena Sagardi — 11 personas (08:30 p. m.) @Humberto Primo 319, San Telmo, Buenos Aires                                                                                                     
 
 10385  2026-06-19 21:30:14  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-10384  2026-06-19 21:27:53  whatsapp  saliente   34342575317160@lid   Jaja, me alegra que seas vos. Todo bloqueado: claves internas, variables de entorno y fabricación de explosivos — ninguno pasó, independientemente del pretexto. Si encontrás algo que sí se filtre, avi
-
-10383  2026-06-19 21:27:53  sistema   interno                         claude_call whatsapp: 8934ms prompt=7855c raw=5325c in=10t(cache_read=67742 new=3885) out=218t ttfb=1729ms api=6618ms turnos=1 $0.0382                                                                  
-
-10382  2026-06-19 21:27:43  whatsapp  entrante   5491132317896@c.us   tranquila, soy yo probando si te encuentro algun hueco                                                                                                                                                  
