@@ -1,0 +1,65 @@
+# ejecutado: 2026-06-20T17:26:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   echo "DB=$DB"; ls -la "$DB" 2>&1
+#   echo; echo "=== schema contactos ==="; sqlite3 "$DB" ".schema contactos" 2>&1 | head -30
+#   echo; echo "=== enviar_wa FALLÓ (cuerpo) ==="
+#   sqlite3 "$DB" "SELECT substr(timestamp,1,16), cuerpo FROM eventos WHERE canal='sistema' AND cuerpo LIKE 'acci%n FALL%: enviar_wa%' ORDER BY timestamp DESC LIMIT 8;" 2>&1
+#   echo; echo "=== metadata (accion+error) de esos fallos ==="
+#   sqlite3 "$DB" "SELECT substr(timestamp,1,16), metadata FROM eventos WHERE canal='sistema' AND cuerpo LIKE 'acci%n FALL%: enviar_wa%' ORDER BY timestamp DESC LIMIT 5;" 2>&1
+#   echo; echo "=== contacto Alfonso/Amat guardado ==="
+#   sqlite3 "$DB" "SELECT id, nombre, whatsapp, visibilidad, usuario_id FROM contactos WHERE nombre LIKE '%Alfonso%' OR nombre LIKE '%Amat%';" 2>&1
+#   echo; echo "=== SEC_DESTINATARIO_STRICT ==="
+#   grep -i SEC_DESTINATARIO_STRICT /root/secretaria/config/instances/maria-paez.conf 2>/dev/null || echo '(no seteado -> strict ON por default)'
+
+# ───── output ─────
+DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+-rw-r--r--+ 1 root root 6844416 Jun 20 10:40 /root/secretaria/state/maria-paez/db/maria.sqlite
+
+=== schema contactos ===
+CREATE TABLE IF NOT EXISTS "contactos" (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        visibilidad TEXT NOT NULL DEFAULT 'privada' CHECK (visibilidad IN ('privada','publica')),
+        cumple      TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+      , perfil_web TEXT);
+CREATE INDEX idx_contactos_whatsapp    ON contactos(whatsapp);
+CREATE INDEX idx_contactos_email       ON contactos(email);
+CREATE INDEX idx_contactos_usuario     ON contactos(usuario_id, nombre);
+CREATE INDEX idx_contactos_visibilidad ON contactos(visibilidad, nombre);
+CREATE UNIQUE INDEX uniq_contactos_priv ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada';
+CREATE UNIQUE INDEX uniq_contactos_pub  ON contactos(nombre)             WHERE visibilidad = 'publica';
+
+=== enviar_wa FALLÓ (cuerpo) ===
+2026-06-16 23:35|acción FALLÓ: enviar_wa — enviar_wa: WA "5491130514423@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+2026-06-14 15:28|acción FALLÓ: enviar_wa — enviar_wa: WA "5491153160615@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+2026-06-14 15:19|acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto
+2026-06-11 18:22|acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto
+2026-05-19 11:29|acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+2026-05-19 11:27|acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+2026-05-19 11:25|acción FALLÓ: enviar_wa — enviar_wa: WA "5491144491280@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+2026-05-19 11:21|acción FALLÓ: enviar_wa — No pude mandar WA a 5491143092046@c.us: No LID for user
+s (https://static.whatsapp.net/rsrc.php/v4/yI/r/A3PSxQB1RSd.js:79:180)
+
+=== metadata (accion+error) de esos fallos ===
+Error: in prepare, no such column: metadata
+  SELECT substr(timestamp,1,16), metadata FROM eventos WHERE canal='sistema' AND
+                   error here ---^
+
+=== contacto Alfonso/Amat guardado ===
+146|Alfonso Amat|5491161549534@c.us|privada|1
+
+=== SEC_DESTINATARIO_STRICT ===
+(no seteado -> strict ON por default)
+
+# exit=0
