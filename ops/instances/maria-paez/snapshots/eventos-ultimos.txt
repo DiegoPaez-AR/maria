@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10391  2026-06-20 02:32:54  whatsapp  saliente   5491164393520@c.us   Hola Santi, soy María, secretaria de tu papá. No tengo el detalle de las cosas que tenés en clase viva — ¿podés contarme un poco más qué necesitás?                                                     
+
+10390  2026-06-20 02:32:54  whatsapp  saliente   34342575317160@lid   Santi me escribió diciendo "Recordarme cosas que tengo en clase viva". No tengo info de qué cosas tiene él en clase viva ni si querés que yo le haga seguimiento de eso. ¿Qué le contesto?              
+
+10389  2026-06-20 02:32:54  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+10388  2026-06-20 02:32:54  sistema   interno                         claude_call whatsapp: 30514ms prompt=71609c raw=12767c in=10t(cache_read=0 new=35298) out=1461t ttfb=1715ms api=29930ms turnos=1 $0.1631                                                                
+
+10387  2026-06-20 02:32:23  whatsapp  entrante   5491164393520@c.us   Recordarme cosas que tengo en clase viva                                                                                                                                                                
+
 10386  2026-06-19 23:15:10  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Cena Sagardi — 11 personas (08:30 p. m.) @Humberto Primo 319, San Telmo, Buenos Aires                                                                                                     
 
 10385  2026-06-19 21:30:14  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
@@ -218,13 +228,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10293  2026-06-19 12:51:42  sistema   interno                         claude_call enriquecer-contacto: 14137ms prompt=558c raw=12747c in=28t(cache_read=28836 new=6067) out=294t ttfb=1599ms api=12861ms turnos=3 $0.0596                                                     
 
 10292  2026-06-19 12:51:26  sistema   interno                         claude_call enriquecer-contacto: 16184ms prompt=564c raw=15013c in=28t(cache_read=28831 new=6159) out=320t ttfb=1740ms api=16349ms turnos=3 $0.0609                                                     
-
-10291  2026-06-19 12:51:09  sistema   interno                         claude_call enriquecer-contacto: 51530ms prompt=564c raw=42998c in=78t(cache_read=110342 new=9072) out=1047t ttfb=1672ms api=53666ms turnos=10 $0.1763                                                  
-
-10290  2026-06-19 12:50:16  sistema   interno                         claude_call enriquecer-contacto: 16534ms prompt=547c raw=13228c in=28t(cache_read=28822 new=6018) out=272t ttfb=1768ms api=16054ms turnos=3 $0.0592                                                     
-
-10289  2026-06-19 12:49:58  sistema   interno                         claude_call enriquecer-contacto: 17141ms prompt=559c raw=14444c in=28t(cache_read=28840 new=6248) out=284t ttfb=1731ms api=16390ms turnos=3 $0.0614                                                     
-
-10288  2026-06-19 12:49:39  sistema   interno                         claude_call enriquecer-contacto: 59458ms prompt=538c raw=37317c in=761t(cache_read=55365 new=8698) out=1147t ttfb=1672ms api=65540ms turnos=6 $0.1660                                                   
-
-10287  2026-06-19 12:48:38  sistema   interno                         claude_call enriquecer-contacto: 31206ms prompt=513c raw=32589c in=44t(cache_read=54065 new=8195) out=502t ttfb=1581ms api=34541ms turnos=6 $0.1485                                                     
