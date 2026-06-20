@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10458  2026-06-20 16:29:06  whatsapp  saliente   34342575317160@lid   Dale. Cierro el pendiente de Evelia entonces. El de Alfonso (id:179) lo dejo abierto — avisame si lo manejás vos también o esperamos que se solucione el envío.                                         
+
+10457  2026-06-20 16:29:06  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+10456  2026-06-20 16:29:06  sistema   interno                         claude_call whatsapp: 13889ms prompt=7252c raw=7197c in=10t(cache_read=113284 new=3758) out=486t ttfb=1691ms api=11578ms turnos=1 $0.0554                                                               
+
 10455  2026-06-20 16:28:51  whatsapp  entrante   5491132317896@c.us   Ok, yo escribo                                                                                                                                                                                          
 
 10454  2026-06-20 16:27:41  whatsapp  saliente   34342575317160@lid   El sistema rechaza todas las acciones de envío de mensajes salientes a terceros con el error "Tipo de acción desconocido". Lo probé con varios nombres de acción distintos y ninguno funciona. Puedo rec
@@ -329,9 +335,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10360  2026-06-19 20:41:17  whatsapp  entrante   5491132317896@c.us   Ok.                                                                                                                                                                                                     
 
 10359  2026-06-19 20:41:07  sistema   interno                         claude_call whatsapp: 24988ms prompt=7248c raw=11072c in=10t(cache_read=37363 new=4243) out=1163t ttfb=1750ms api=22666ms turnos=1 $0.0446                                                              
-
-10358  2026-06-19 20:40:41  whatsapp  entrante   5491132317896@c.us   Ok.                                                                                                                                                                                                     
-
-10357  2026-06-19 20:40:22  whatsapp  saliente   34342575317160@lid   Dale, le mando las opciones a Rodrigo ahora y te aviso cuando confirme.                                                                                                                                 
-
-10356  2026-06-19 20:40:21  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
