@@ -109,7 +109,11 @@ async function ejecutarUna(accion, ctx) {
     case 'borrar_evento':      return await _borrarEvento(accion, ctx);
     case 'responder_email':    return await _responderEmail(accion, ctx);
     case 'enviar_email':       return await _enviarEmail(accion, ctx);
-    case 'enviar_wa':          return await _enviarWA(accion, ctx);
+    case 'enviar_wa':
+    case 'wa_enviar':          // alias: el LLM a veces invierte el orden
+    case 'enviar_whatsapp':    // alias: o lo nombra completo
+    case 'mandar_wa':          // alias defensivo
+      return await _enviarWA(accion, ctx);
     case 'reenviar_wa':        return await _reenviarWA(accion, ctx);
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
