@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10417  2026-06-20 11:51:35  whatsapp  saliente   34342575317160@lid   Listo, dado de baja.                                                                                                                                                                                    
+
+10416  2026-06-20 11:51:35  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+10415  2026-06-20 11:51:35  sistema   interno                         claude_call whatsapp: 6699ms prompt=8071c raw=4837c in=10t(cache_read=75752 new=4242) out=176t ttfb=1726ms api=4399ms turnos=1 $0.0413                                                                  
+
+10414  2026-06-20 11:51:28  whatsapp  entrante   5491132317896@c.us   dalo de baja el pendiente                                                                                                                                                                               
+
 10413  2026-06-20 11:50:58  whatsapp  saliente   34342575317160@lid   No, no puedo acceder a sitios web ni apps externas — solo opero por WhatsApp, Gmail y Google Calendar.                                                                                                  
                                                                                                                                                                                                                                                                               
                                                                       Eso sí, tengo pendiente [id:178] la consulta de Santiago sobre recordatorios de Classe Viva. ¿Qu                                                                                                        
@@ -327,11 +335,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10319  2026-06-19 13:10:04  whatsapp  saliente   34342575317160@lid   healthcheck maria-paez: recuperado, todos los checks OK                                                                                                                                                 
 
 10318  2026-06-19 13:04:01  sistema   interno                         claude_call enriquecer-contacto: 16559ms prompt=545c raw=13510c in=28t(cache_read=28816 new=6127) out=288t ttfb=1689ms api=15297ms turnos=3 $0.0601                                                     
-
-10317  2026-06-19 13:03:43  sistema   interno                         claude_call enriquecer-contacto: 17714ms prompt=500c raw=19424c in=747t(cache_read=28801 new=6133) out=337t ttfb=1564ms api=22722ms turnos=4 $0.0867                                                    
-
-10316  2026-06-19 13:03:24  sistema   interno                         claude_call enriquecer-contacto: 30101ms prompt=567c raw=22708c in=546t(cache_read=40963 new=6495) out=394t ttfb=1750ms api=35275ms turnos=5 $0.1128                                                    
-
-10315  2026-06-19 13:02:52  sistema   interno                         claude_call enriquecer-contacto: 26453ms prompt=498c raw=20459c in=36t(cache_read=41137 new=6907) out=341t ttfb=1581ms api=25959ms turnos=4 $0.0913                                                     
-
-10314  2026-06-19 13:02:24  sistema   interno                         claude_call enriquecer-contacto: 22152ms prompt=559c raw=19962c in=36t(cache_read=41240 new=6757) out=325t ttfb=1816ms api=21381ms turnos=4 $0.0900                                                     
