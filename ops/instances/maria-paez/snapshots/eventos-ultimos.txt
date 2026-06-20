@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10454  2026-06-20 16:27:41  whatsapp  saliente   34342575317160@lid   El sistema rechaza todas las acciones de envío de mensajes salientes a terceros con el error "Tipo de acción desconocido". Lo probé con varios nombres de acción distintos y ninguno funciona. Puedo rec
+
+10453  2026-06-20 16:27:41  sistema   interno                         claude_call whatsapp: 14253ms prompt=6895c raw=6989c in=10t(cache_read=109078 new=4206) out=446t ttfb=1812ms api=11859ms turnos=1 $0.0552                                                               
+
+10452  2026-06-20 16:27:26  whatsapp  entrante   5491132317896@c.us   Cuál es el problema técnico?                                                                                                                                                                            
+
 10451  2026-06-20 16:23:56  whatsapp  saliente   34342575317160@lid   Le escribo ahora mismo — es urgente, quedan poco más de una hora. Te aviso cuando respondan.                                                                                                            
                                                                                                                                                                                                                                                                               
                                                                       ⚠️ Aviso: el mensaje a Alfonso tampoco salió (mismo problema técnico con el envío). Cuando se resuelva te                                                                                               
@@ -329,13 +335,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10356  2026-06-19 20:40:21  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 10355  2026-06-19 20:40:21  sistema   interno                         acción FALLÓ: enviar_mensaje — Tipo de acción desconocido: enviar_mensaje                                                                                                                               
-
-10354  2026-06-19 20:40:21  sistema   interno                         claude_call whatsapp: 19575ms prompt=7780c raw=8926c in=10t(cache_read=32715 new=4648) out=843t ttfb=2383ms api=16559ms turnos=1 $0.0399                                                                
-
-10353  2026-06-19 20:40:01  whatsapp  entrante   5491132317896@c.us   Send him all of them and let me know if any works for him                                                                                                                                               
-
-10352  2026-06-19 20:39:12  whatsapp  saliente   34342575317160@lid   El lunes 22 tenés bastante ocupado, pero hay tres huecos de 1 hora:                                                                                                                                     
-                                                                                                                                                                                                                                                                              
-                                                                      1️⃣ *9:00 - 10:00* (antes de tu primera reunión a las 10:45)                                                                                                                                            
-                                                                      2️⃣ *14:00 - 15:00* (entre Fernando Maciel y Máximo Maderbuen)                                                                                                                                          
-                                                                      3️⃣ *16                                                                                                                                                                                                 
