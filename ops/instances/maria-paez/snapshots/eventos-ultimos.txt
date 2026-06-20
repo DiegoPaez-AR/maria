@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10490  2026-06-20 21:20:27  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude mandarte el mensaje por WhatsApp porque me faltaron datos para hacerlo — ni el destinatario ni el texto quedaron registrados correctamente. Si me confirmás a quién q
+
+10489  2026-06-20 21:20:20  sistema   interno                         acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
+
+10488  2026-06-20 21:20:20  sistema   interno                         claude_call whatsapp: 9821ms prompt=7872c raw=5503c in=10t(cache_read=0 new=27906) out=286t ttfb=1817ms api=7360ms turnos=1 $0.1090                                                                     
+
+10487  2026-06-20 21:20:09  whatsapp  entrante   5491132317896@c.us   mandalo un mensaje al fomso proponiendo le diciendo lo que quiero amorzar con                                                                                                                           
+                                                                       él la semana que viene no la otra o sea la del veinti nueve creo que es y para                                                                                                                         
+                                                                       amorzar el lunes jueves o viernes gracias                                                                                                                                                              
+
 10486  2026-06-20 21:16:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 10485  2026-06-20 21:16:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -327,11 +337,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       3. Present                                                                                                                                                                                              
 
 10391  2026-06-20 02:32:54  whatsapp  saliente   5491164393520@c.us   Hola Santi, soy María, secretaria de tu papá. No tengo el detalle de las cosas que tenés en clase viva — ¿podés contarme un poco más qué necesitás?                                                     
-
-10390  2026-06-20 02:32:54  whatsapp  saliente   34342575317160@lid   Santi me escribió diciendo "Recordarme cosas que tengo en clase viva". No tengo info de qué cosas tiene él en clase viva ni si querés que yo le haga seguimiento de eso. ¿Qué le contesto?              
-
-10389  2026-06-20 02:32:54  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-10388  2026-06-20 02:32:54  sistema   interno                         claude_call whatsapp: 30514ms prompt=71609c raw=12767c in=10t(cache_read=0 new=35298) out=1461t ttfb=1715ms api=29930ms turnos=1 $0.1631                                                                
-
-10387  2026-06-20 02:32:23  whatsapp  entrante   5491164393520@c.us   Recordarme cosas que tengo en clase viva                                                                                                                                                                
