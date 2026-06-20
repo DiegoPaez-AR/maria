@@ -72,7 +72,7 @@ const microsoftProvider = require('./providers/microsoft');
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
  */
-async function ejecutarAcciones(acciones = [], ctx = {}) {
+async function ejecutarAcciones(acciones = [], ctx = {}, _opts = {}) {
   if (!Array.isArray(acciones)) return [];
   if (!ctx.usuario || !ctx.usuario.id) {
     throw new Error('ejecutarAcciones: ctx.usuario requerido');
@@ -99,6 +99,42 @@ async function ejecutarAcciones(acciones = [], ctx = {}) {
       console.error(`[executor] acción #${i} (${accion.tipo}) falló:`, err.message);
     }
   }
+
+  // ─── Repair round-trip (2026-06-20) ──────────────────────────────────────
+  // Si alguna acción falló porque el "tipo" no existe (drift de nombre que ni
+  // el auto-ruteo ni la inferencia por payload pudieron resolver), re-llamamos
+  // al modelo UNA sola vez para que la re-emita con el nombre correcto y la
+  // ejecutamos. Fail-safe: cualquier error del repair NO rompe el camino
+  // principal — se sigue con los resultados originales. Con el auto-ruteo
+  // puesto, esto casi nunca dispara; es el último escalón de la red.
+  if (!_opts.reparando) {
+    const esFallaNombre = r => !r.ok && /^Acci[oó]n desconocida/.test(r.error || '');
+    const fallasNombre = resultados.filter(esFallaNombre);
+    if (fallasNombre.length) {
+      try {
+        const { invocarClaudeJSON } = require('./claude-client'); // lazy: evita ciclo
+        const payloads = fallasNombre.map(r => r.accion);
+        const prompt =
+          `Emitiste estas acciones con un campo "tipo" que NO existe:\n` +
+          `${JSON.stringify(payloads, null, 2)}\n\n` +
+          `Los únicos nombres de "tipo" válidos son: ${ACCIONES_VALIDAS.join(', ')}.\n` +
+          `Devolvé SOLO un JSON {"acciones":[...]} con las MISMAS acciones, cambiando ` +
+          `únicamente el campo "tipo" al nombre válido correcto (mismo payload, mismo ` +
+          `destino, mismo texto). No agregues ni quites acciones, no expliques nada.`;
+        const { json } = await invocarClaudeJSON(prompt, { audit: null });
+        const corregidas = Array.isArray(json && json.acciones) ? json.acciones : [];
+        if (corregidas.length) {
+          console.warn(`[executor] repair: re-emitiendo ${corregidas.length} acción(es) corregida(s)`);
+          const repResultados = await ejecutarAcciones(corregidas, ctx, { reparando: true });
+          const sinFallasNombre = resultados.filter(r => !esFallaNombre(r));
+          return [...sinFallasNombre, ...repResultados];
+        }
+      } catch (err) {
+        console.warn('[executor] repair falló, sigo con resultados originales:', err.message);
+      }
+    }
+  }
+
   return resultados;
 }
 
