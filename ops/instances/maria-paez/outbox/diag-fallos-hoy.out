@@ -1,0 +1,59 @@
+# ejecutado: 2026-06-20T17:29:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   echo "=== liveness: ultimo evento + count hoy ==="
+#   sqlite3 "$DB" "SELECT max(timestamp) FROM eventos;" 2>&1
+#   sqlite3 "$DB" "SELECT count(*) FROM eventos WHERE timestamp >= '2026-06-20';" 2>&1
+#   echo; echo "=== schema eventos (nombres de columnas) ==="
+#   sqlite3 "$DB" ".schema eventos" 2>&1 | head -25
+#   echo; echo "=== TODOS los eventos sistema/interno del 06-20 con FALL o desconocido ==="
+#   sqlite3 -cmd ".mode list" "$DB" "SELECT substr(timestamp,1,16)||' | '||cuerpo FROM eventos WHERE timestamp >= '2026-06-20' AND (cuerpo LIKE '%FALL%' OR cuerpo LIKE '%descono%' OR cuerpo LIKE '%enviar_wa%' OR cuerpo LIKE '%ejecutada%') ORDER BY timestamp;" 2>&1 | head -60
+#   echo; echo "=== acciones ejecutadas/fallidas 06-20 alrededor de 10:35-10:45 y 13:20-13:30 (todo el cuerpo) ==="
+#   sqlite3 -cmd ".mode list" "$DB" "SELECT substr(timestamp,1,16)||' | '||canal||'/'||direccion||' | '||substr(cuerpo,1,160) FROM eventos WHERE (timestamp BETWEEN '2026-06-20 10:35' AND '2026-06-20 10:46') OR (timestamp BETWEEN '2026-06-20 13:20' AND '2026-06-20 13:30') ORDER BY timestamp;" 2>&1 | head -80
+
+# ───── output ─────
+=== liveness: ultimo evento + count hoy ===
+2026-06-20 20:16:25
+87
+
+=== schema eventos (nombres de columnas) ===
+CREATE TABLE eventos (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
+  direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
+  de             TEXT,
+  nombre         TEXT,
+  asunto         TEXT,
+  cuerpo         TEXT,
+  tipo_original  TEXT,
+  metadata_json  TEXT
+, usuario_id INTEGER REFERENCES usuarios(id));
+CREATE INDEX idx_eventos_ts       ON eventos(timestamp DESC);
+CREATE INDEX idx_eventos_canal_ts ON eventos(canal, timestamp DESC);
+CREATE INDEX idx_eventos_de       ON eventos(de);
+CREATE INDEX idx_eventos_usuario     ON eventos(usuario_id, timestamp DESC);
+
+=== TODOS los eventos sistema/interno del 06-20 con FALL o desconocido ===
+2026-06-20 02:32 | acción ejecutada: agregar_pendiente
+2026-06-20 11:51 | acción ejecutada: quitar_pendiente
+2026-06-20 11:52 | acción ejecutada: quitar_pendiente
+2026-06-20 11:52 | acción ejecutada: quitar_pendiente
+2026-06-20 13:40 | acción ejecutada: agregar_pendiente
+2026-06-20 13:40 | acción FALLÓ: wa_enviar — Tipo de acción desconocido: wa_enviar
+2026-06-20 16:23 | acción ejecutada: agregar_pendiente
+2026-06-20 16:23 | acción FALLÓ: enviar_whatsapp — Tipo de acción desconocido: enviar_whatsapp
+2026-06-20 16:27 | El sistema rechaza todas las acciones de envío de mensajes salientes a terceros con el error "Tipo de acción desconocido". Lo probé con varios nombres de acción distintos y ninguno funciona. Puedo recibir mensajes, gestionar el calendario, y manejar pendientes — pero enviar WA a terceros no está ejecutando.
+
+Para Evelia es urgente: ya son la 1:27 y la reserva es a las 14:30. Te recomiendo llamarlos directamente vos por si acaso. El número es +54 9 11 5316-0615.
+
+El problema lo tiene que resolver el equipo técnico de María.
+2026-06-20 16:29 | acción ejecutada: quitar_pendiente
+
+=== acciones ejecutadas/fallidas 06-20 alrededor de 10:35-10:45 y 13:20-13:30 (todo el cuerpo) ===
+
+# exit=0
