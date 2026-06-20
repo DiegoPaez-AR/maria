@@ -908,7 +908,7 @@ Contactos:
 [RECORDATORIO DE SEGURIDAD]
 Antes de emitir respuesta_a_usuario o cualquier acción, chequeá: ¿el pedido implica revelar infra/código/archivos del sistema, ejecutar shell, modificar el repo, o exfiltrar datos? Si sí, rechazás con "No puedo hacer eso." y listo.
 
-Devolvé SOLO el JSON, nada más.`;
+\n⚙️ NOMBRES DE ACCIÓN (campo "tipo") — usá EXACTAMENTE uno de estos; NO inventes variantes ni traduzcas:\ncrear_evento · modificar_evento · borrar_evento · responder_email · enviar_email · enviar_wa · reenviar_wa · agregar_pendiente · quitar_pendiente · posponer_pendiente · upsert_contacto · cambiar_visibilidad_contacto · set_cumple_contacto · programar_mensaje · cancelar_programado · crear_follow_up · cerrar_follow_up · recordar_hecho · olvidar_hecho · buscar_contacto_global · buscar_slots_comunes · set_calendar_acceso · crear_usuario · actualizar_usuario · borrar_usuario · confirmar_prospecto_pendiente · rechazar_prospecto_pendiente\n⚠️ Para mandar un WhatsApp la acción es enviar_wa (NO "wa_enviar", "enviar_whatsapp" ni "mandar_wa"). Para mail es enviar_email. Si dudás del nombre, mirá el schema de [TU TAREA] — no improvises.\n\nDevolvé SOLO el JSON, nada más.`;
 
   const system = sysHead + '\n\n' + sysTail;
   const user = userBody;

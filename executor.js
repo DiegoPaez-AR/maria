@@ -102,6 +102,50 @@ async function ejecutarAcciones(acciones = [], ctx = {}) {
   return resultados;
 }
 
+// Lista canónica de tipos de acción que entiende ejecutarUna(). Se usa para
+// dar un error AUTO-CORRECTIVO cuando el LLM erra el nombre (drift de acción).
+// MANTENER SINCRONIZADA con el switch de abajo (TODO: unificar en una fuente).
+const ACCIONES_VALIDAS = [
+  'crear_evento','modificar_evento','borrar_evento',
+  'responder_email','enviar_email','enviar_wa','reenviar_wa',
+  'agregar_pendiente','quitar_pendiente','posponer_pendiente',
+  'upsert_contacto','cambiar_visibilidad_contacto','set_cumple_contacto',
+  'programar_mensaje','cancelar_programado',
+  'crear_follow_up','cerrar_follow_up','recordar_hecho','olvidar_hecho',
+  'crear_usuario','actualizar_usuario','borrar_usuario',
+  'set_calendar_acceso','buscar_contacto_global','buscar_slots_comunes',
+  'confirmar_prospecto_pendiente','rechazar_prospecto_pendiente',
+  'configurar_brief','configurar_ubicacion','configurar_caldav',
+  'configurar_microsoft','iniciar_microsoft_auth',
+];
+
+function _levenshtein(a, b) {
+  a = String(a); b = String(b);
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, i) => i);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+    }
+    prev = cur;
+  }
+  return prev[n];
+}
+
+// Devuelve la acción válida más parecida (o null si nada se acerca).
+function _accionMasParecida(tipo) {
+  const t = String(tipo || '').toLowerCase();
+  let best = null, bestD = Infinity;
+  for (const a of ACCIONES_VALIDAS) {
+    const d = _levenshtein(t, a);
+    if (d < bestD) { bestD = d; best = a; }
+  }
+  return bestD <= 6 ? best : null;
+}
+
 async function ejecutarUna(accion, ctx) {
   switch (accion.tipo) {
     case 'crear_evento':       return await _crearEvento(accion, ctx);
@@ -145,8 +189,14 @@ async function ejecutarUna(accion, ctx) {
       return _confirmarProspectoPendiente(accion, ctx);
     case 'rechazar_prospecto_pendiente':
       return _rechazarProspectoPendiente(accion, ctx);
-    default:
-      throw new Error(`Tipo de acción desconocido: ${accion.tipo}`);
+    default: {
+      const _sug = _accionMasParecida(accion.tipo);
+      throw new Error(
+        `Acción desconocida: "${accion.tipo}".` +
+        (_sug ? ` ¿Quisiste decir "${_sug}"?` : '') +
+        ` El campo se llama "tipo" y debe ser EXACTAMENTE uno de: ${ACCIONES_VALIDAS.join(', ')}.`
+      );
+    }
   }
 }
 
