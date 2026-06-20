@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10451  2026-06-20 16:23:56  whatsapp  saliente   34342575317160@lid   Le escribo ahora mismo — es urgente, quedan poco más de una hora. Te aviso cuando respondan.                                                                                                            
+                                                                                                                                                                                                                                                                              
+                                                                      ⚠️ Aviso: el mensaje a Alfonso tampoco salió (mismo problema técnico con el envío). Cuando se resuelva te                                                                                               
+
+10450  2026-06-20 16:23:56  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+10449  2026-06-20 16:23:56  sistema   interno                         acción FALLÓ: enviar_whatsapp — Tipo de acción desconocido: enviar_whatsapp                                                                                                                             
+
+10448  2026-06-20 16:23:56  sistema   interno                         claude_call whatsapp: 28139ms prompt=7058c raw=10143c in=10t(cache_read=0 new=109078) out=1017t ttfb=1716ms api=25853ms turnos=1 $0.4243                                                                
+
+10447  2026-06-20 16:23:27  whatsapp  entrante   5491132317896@c.us   Podrás preguntar en Evelia si tienen lugar para reservar hoy a las 1430 para 4 personas?                                                                                                                
+
 10446  2026-06-20 16:00:15  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
 
 10445  2026-06-20 13:40:11  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo a Alfonso ahora.                                                                                                                                                                   
@@ -327,17 +339,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       1️⃣ *9:00 - 10:00* (antes de tu primera reunión a las 10:45)                                                                                                                                            
                                                                       2️⃣ *14:00 - 15:00* (entre Fernando Maciel y Máximo Maderbuen)                                                                                                                                          
                                                                       3️⃣ *16                                                                                                                                                                                                 
-
-10351  2026-06-19 20:39:12  sistema   interno                         claude_call whatsapp: 23573ms prompt=7521c raw=8438c in=10t(cache_read=28508 new=4207) out=1036t ttfb=1668ms api=21347ms turnos=1 $0.0399                                                               
-
-10350  2026-06-19 20:38:47  whatsapp  entrante   5491132317896@c.us   One hour, meet, do I have any available slots on Monday?                                                                                                                                                
-
-10349  2026-06-19 20:37:55  whatsapp  saliente   34342575317160@lid   ¡Dale! Tengo el contacto de Rodrigo (Dodi). Para coordinarlo necesito que me digas:                                                                                                                     
-                                                                                                                                                                                                                                                                              
-                                                                      1️⃣ ¿Qué día(s) y horario(s) querés proponer?                                                                                                                                                           
-                                                                      2️⃣ ¿Cuánto tiempo le dedicarían?                                                                                                                                                                       
-                                                                      3️⃣ ¿Es presencial o por Meet? Si e                                                                                                                                                                     
-
-10348  2026-06-19 20:37:55  sistema   interno                         claude_call whatsapp: 16793ms prompt=7776c raw=7865c in=10t(cache_read=0 new=28508) out=692t ttfb=1708ms api=14594ms turnos=1 $0.1173                                                                   
-
-10347  2026-06-19 20:37:37  whatsapp  entrante   5491132317896@c.us   Hello maria, can you schedule a meeting with my brother Rodrigo?                                                                                                                                        
