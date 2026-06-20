@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10545  2026-06-20 23:42:56  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
+
+10544  2026-06-20 23:42:45  sistema   interno                         acción FALLÓ: buscar_en_historial — Acción desconocida: "buscar_en_historial". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, e
+
+10543  2026-06-20 23:42:45  sistema   interno                         claude_call whatsapp: 11522ms prompt=7557c raw=6855c in=10t(cache_read=54630 new=3879) out=427t ttfb=1764ms api=9170ms turnos=1 $0.0374                                                                 
+
+10542  2026-06-20 23:42:32  whatsapp  entrante   5491132317896@c.us   No, no quiero que ya me eso. Fíjate que debes tener registrado un contacto de cona con caa,                                                                                                             
+                                                                       miré en el historial de conversaciones con cona porque le hiciste vos en la raserra con ella.                                                                                                          
+
 10541  2026-06-20 23:41:33  whatsapp  saliente   34342575317160@lid   Diego, no tengo registro de esa reserva en Cona — no la hice yo. Puede ser que la hayas hecho directamente vos u otro medio. ¿Querés que llame al restaurante para confirmar los detalles?              
 
 10540  2026-06-20 23:41:33  sistema   interno                         claude_call whatsapp: 10686ms prompt=7333c raw=6073c in=10t(cache_read=0 new=54630) out=322t ttfb=1857ms api=8228ms turnos=1 $0.2097                                                                    
@@ -223,11 +232,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10447  2026-06-20 16:23:27  whatsapp  entrante   5491132317896@c.us   Podrás preguntar en Evelia si tienen lugar para reservar hoy a las 1430 para 4 personas?                                                                                                                
 
 10446  2026-06-20 16:00:15  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-10445  2026-06-20 13:40:11  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo a Alfonso ahora.                                                                                                                                                                   
-
-10444  2026-06-20 13:40:10  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-10443  2026-06-20 13:40:10  sistema   interno                         acción FALLÓ: wa_enviar — Tipo de acción desconocido: wa_enviar                                                                                                                                         
-
-10442  2026-06-20 13:40:10  sistema   interno                         claude_call whatsapp: 31135ms prompt=6671c raw=12220c in=10t(cache_read=100641 new=3752) out=1417t ttfb=1711ms api=28782ms turnos=1 $0.0655                                                             
