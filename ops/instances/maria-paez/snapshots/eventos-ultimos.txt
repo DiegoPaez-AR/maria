@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10541  2026-06-20 23:41:33  whatsapp  saliente   34342575317160@lid   Diego, no tengo registro de esa reserva en Cona — no la hice yo. Puede ser que la hayas hecho directamente vos u otro medio. ¿Querés que llame al restaurante para confirmar los detalles?              
+
+10540  2026-06-20 23:41:33  sistema   interno                         claude_call whatsapp: 10686ms prompt=7333c raw=6073c in=10t(cache_read=0 new=54630) out=322t ttfb=1857ms api=8228ms turnos=1 $0.2097                                                                    
+
+10539  2026-06-20 23:41:22  whatsapp  entrante   5491132317896@c.us   María, ¿para cuántos hicimos la reserva ahora en Cona de las 9?                                                                                                                                         
+
 10538  2026-06-20 23:07:09  whatsapp  saliente   34342575317160@lid   🎂 *Mañana cumple años:*                                                                                                                                                                                 
                                                                       • Martín Souza (sin WhatsApp en libreta)                                                                                                                                                                
                                                                                                                                                                                                                                                                               
@@ -225,9 +231,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10443  2026-06-20 13:40:10  sistema   interno                         acción FALLÓ: wa_enviar — Tipo de acción desconocido: wa_enviar                                                                                                                                         
 
 10442  2026-06-20 13:40:10  sistema   interno                         claude_call whatsapp: 31135ms prompt=6671c raw=12220c in=10t(cache_read=100641 new=3752) out=1417t ttfb=1711ms api=28782ms turnos=1 $0.0655                                                             
-
-10441  2026-06-20 13:39:39  whatsapp  entrante   5491132317896@c.us   Tengo todos los días libres, así que ofrece el lunes jueves o viernes.                                                                                                                                  
-
-10440  2026-06-20 13:38:10  whatsapp  saliente   34342575317160@lid   Dale, tengo el contacto de Alfonso (Amat). Para coordinar necesito que me digas qué días y horarios querés proponer — no tengo visibilidad de tu agenda de la semana del 29 todavía. ¿Qué opciones le of
-
-10439  2026-06-20 13:38:10  sistema   interno                         claude_call whatsapp: 17444ms prompt=6596c raw=7997c in=10t(cache_read=97298 new=3343) out=644t ttfb=1749ms api=15048ms turnos=1 $0.0514                                                                
