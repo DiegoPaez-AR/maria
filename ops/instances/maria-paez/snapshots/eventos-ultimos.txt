@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10555  2026-06-21 00:34:46  whatsapp  saliente   34342575317160@lid   Dale, la doy de alta a Gabriela ahora.                                                                                                                                                                  
+
+10554  2026-06-21 00:34:46  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                                                         
+
+10553  2026-06-21 00:34:46  sistema   interno                         claude_call whatsapp: 16787ms prompt=7024c raw=8545c in=10t(cache_read=62557 new=3646) out=708t ttfb=1890ms api=14477ms turnos=1 $0.0431                                                                
+
+10552  2026-06-21 00:34:28  whatsapp  entrante   5491132317896@c.us   Agrégala a Gabriela como usuario                                                                                                                                                                        
+
+10551  2026-06-21 00:34:23  sistema   interno                         claude_call enriquecer-contacto: 28598ms prompt=629c raw=21723c in=36t(cache_read=41384 new=7095) out=475t ttfb=1821ms api=27339ms turnos=4 $0.0898                                                     
+
 10550  2026-06-21 00:33:55  whatsapp  saliente   34342575317160@lid   Guardado — actualizo el email de Gabriela Echaniz.                                                                                                                                                      
 
 10549  2026-06-21 00:33:55  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
@@ -220,15 +230,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10457  2026-06-20 16:29:06  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 10456  2026-06-20 16:29:06  sistema   interno                         claude_call whatsapp: 13889ms prompt=7252c raw=7197c in=10t(cache_read=113284 new=3758) out=486t ttfb=1691ms api=11578ms turnos=1 $0.0554                                                               
-
-10455  2026-06-20 16:28:51  whatsapp  entrante   5491132317896@c.us   Ok, yo escribo                                                                                                                                                                                          
-
-10454  2026-06-20 16:27:41  whatsapp  saliente   34342575317160@lid   El sistema rechaza todas las acciones de envío de mensajes salientes a terceros con el error "Tipo de acción desconocido". Lo probé con varios nombres de acción distintos y ninguno funciona. Puedo rec
-
-10453  2026-06-20 16:27:41  sistema   interno                         claude_call whatsapp: 14253ms prompt=6895c raw=6989c in=10t(cache_read=109078 new=4206) out=446t ttfb=1812ms api=11859ms turnos=1 $0.0552                                                               
-
-10452  2026-06-20 16:27:26  whatsapp  entrante   5491132317896@c.us   Cuál es el problema técnico?                                                                                                                                                                            
-
-10451  2026-06-20 16:23:56  whatsapp  saliente   34342575317160@lid   Le escribo ahora mismo — es urgente, quedan poco más de una hora. Te aviso cuando respondan.                                                                                                            
-                                                                                                                                                                                                                                                                              
-                                                                      ⚠️ Aviso: el mensaje a Alfonso tampoco salió (mismo problema técnico con el envío). Cuando se resuelva te                                                                                               
