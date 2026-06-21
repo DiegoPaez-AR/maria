@@ -30,6 +30,11 @@ const TAREA_COOLDOWN_H    = Number(process.env.RECORDATORIO_TAREA_COOLDOWN_H   |
 const KEY_ULT_CONSULTA = 'ultimo_recordatorio_consultas';
 const KEY_ULT_TAREA    = 'ultimo_recordatorio_tareas';
 
+// Re-ping diario de tareas propias del usuario ('manual' → "tenés N tareas
+// abiertas 📝"). Apagado por default desde 2026-06-21 a pedido de Diego (para
+// todos). Reactivable con RECORDATORIO_TAREAS_ON=1 en el .conf, sin tocar código.
+const TAREAS_RECORDATORIO_ON = process.env.RECORDATORIO_TAREAS_ON === '1';
+
 // Cada bucket = un disparador procesable, con su cooldown y su copy.
 const BUCKETS = {
   respuesta_usuario: {
@@ -160,7 +165,9 @@ async function tickOnce({ waClient } = {}) {
     const pendientes = mem.listarPendientes(u.id);
     if (!pendientes.length) continue;
     const resConsulta = await _procesarDisparadorUsuario('respuesta_usuario', u, pendientes, { waClient });
-    const resTarea    = await _procesarDisparadorUsuario('manual',            u, pendientes, { waClient });
+    const resTarea    = TAREAS_RECORDATORIO_ON
+      ? await _procesarDisparadorUsuario('manual', u, pendientes, { waClient })
+      : { enviado: false, motivo: 'tareas-recordatorio-off' };
     resultados.push({ usuario: u.nombre, consulta: resConsulta, tarea: resTarea });
   }
   return { resultados };
