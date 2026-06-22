@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10653  2026-06-22 18:02:50  whatsapp  saliente   5491176176620@c.us   ¡Hola Máximo! Todo bien, gracias. Justo a tiempo para la reunión con Diego 😊                                                                                                                            
+
+10652  2026-06-22 18:02:50  sistema   interno                         claude_call whatsapp: 15960ms prompt=75690c raw=6565c in=10t(cache_read=0 new=36642) out=408t ttfb=1824ms api=15152ms turnos=1 $0.1534                                                                  
+
+10651  2026-06-22 18:02:33  whatsapp  entrante   5491176176620@c.us   Hola como estas?                                                                                                                                                                                        
+
 10650  2026-06-22 17:45:18  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión Diego / Máximo Maderbuen (03:00 p. m.) @Carlos Pellegrini 1521, piso 8, CABA                                                                                                      
                                                                       Con: maximoj@indesamdeltagroup.com                                                                                                                                                                      
                                                                       👤 Maximo Maderbuen — Indesam Delta Group: Máximo Maderbuen trabaja                                                                                                                                      
@@ -423,9 +429,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10555  2026-06-21 00:34:46  whatsapp  saliente   34342575317160@lid   Dale, la doy de alta a Gabriela ahora.                                                                                                                                                                  
 
 10554  2026-06-21 00:34:46  sistema   interno                         acción ejecutada: crear_usuario                                                                                                                                                                         
-
-10553  2026-06-21 00:34:46  sistema   interno                         claude_call whatsapp: 16787ms prompt=7024c raw=8545c in=10t(cache_read=62557 new=3646) out=708t ttfb=1890ms api=14477ms turnos=1 $0.0431                                                                
-
-10552  2026-06-21 00:34:28  whatsapp  entrante   5491132317896@c.us   Agrégala a Gabriela como usuario                                                                                                                                                                        
-
-10551  2026-06-21 00:34:23  sistema   interno                         claude_call enriquecer-contacto: 28598ms prompt=629c raw=21723c in=36t(cache_read=41384 new=7095) out=475t ttfb=1821ms api=27339ms turnos=4 $0.0898                                                     
