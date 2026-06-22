@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10633  2026-06-22 16:03:01  whatsapp  saliente   34342575317160@lid   Ya le escribo a Farinelli para pedirle la carta.                                                                                                                                                        
+
+10632  2026-06-22 16:03:01  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+10631  2026-06-22 16:03:01  whatsapp  saliente   5491156920073@c.us   Hola, te escribo de parte de Diego Páez. ¿Me podrías pasar la carta?                                                                                                                                    
+
+10630  2026-06-22 16:03:00  sistema   interno                         claude_call moderacion: 7366ms prompt=1516c raw=5729c in=10t(cache_read=0 new=22458) out=262t ttfb=1726ms api=6111ms turnos=1 $0.0298                                                                   
+
+10629  2026-06-22 16:02:53  sistema   interno                         claude_call whatsapp: 24120ms prompt=72671c raw=9820c in=10t(cache_read=0 new=35809) out=997t ttfb=1624ms api=23271ms turnos=1 $0.1583                                                                  
+
+10628  2026-06-22 16:02:28  whatsapp  entrante   5491132317896@c.us   le podras pedir la carta a farinelli?                                                                                                                                                                   
+
+10627  2026-06-22 16:02:16  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (17 usuarios)                                                                                                                                                     
+
 10626  2026-06-22 15:57:24  sistema   interno                         claude_call memoria-curada: 12659ms prompt=4401c raw=10028c in=10t(cache_read=0 new=12252) out=899t ttfb=1698ms api=10379ms turnos=1 $0.0595                                                            
 
 10625  2026-06-22 15:45:11  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Reunión Diego / Fernando Maciel (01:00 p. m.)                                                                                                                                             
@@ -415,19 +429,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10535  2026-06-20 21:38:34  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 10534  2026-06-20 21:38:34  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-10533  2026-06-20 21:38:34  whatsapp  saliente   5491161549534@c.us   Alfonso, quedaría el lunes 29 de junio de 13 a 15hs. ¿Tenés preferencia por algún lugar? Si no, Diego propone por La Recoba.                                                                            
-
-10532  2026-06-20 21:38:34  sistema   interno                         claude_call moderacion: 7978ms prompt=1572c raw=6364c in=10t(cache_read=0 new=22480) out=360t ttfb=1729ms api=7318ms turnos=1 $0.0304                                                                   
-
-10531  2026-06-20 21:38:26  sistema   interno                         claude_call whatsapp: 22410ms prompt=6715c raw=9611c in=10t(cache_read=0 new=50265) out=955t ttfb=1821ms api=19992ms turnos=1 $0.2028                                                                   
-
-10530  2026-06-20 21:38:03  whatsapp  entrante   5491132317896@c.us   Hemos el lunes 29 de 13 a 15.                                                                                                                                                                           
-                                                                       Decile preguntarle si prefieres algún lugar.                                                                                                                                                           
-                                                                       Si no, quedamos, se le viene bien, quedamos por la recoba.                                                                                                                                             
-
-10529  2026-06-20 21:37:03  whatsapp  saliente   5491161549534@c.us   Perfecto Alfonso, le consulto a Diego y te confirmo enseguida.                                                                                                                                          
-
-10528  2026-06-20 21:37:03  whatsapp  saliente   34342575317160@lid   Diego, Alfonso dice que puede el lunes 29/06 o el jueves 02/07. ¿Cuál preferís? Y a qué hora lo harías, para que le confirme y lo agendo.                                                               
-
-10527  2026-06-20 21:37:03  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
