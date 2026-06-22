@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10644  2026-06-22 16:08:14  sistema   interno                         claude_call whatsapp: 26124ms prompt=74787c raw=10399c in=10t(cache_read=6271 new=30001) out=1182t ttfb=1740ms api=25279ms turnos=1 $0.1416                                                             
+
+10643  2026-06-22 16:08:04  whatsapp  saliente   34342575317160@lid   Dale, voy a buscar el número del local de Maru Botana en Suipacha y les pido la carta.                                                                                                                  
+
+10642  2026-06-22 16:08:04  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
+
 10641  2026-06-22 16:07:58  sistema   interno                         acción FALLÓ: buscar_contacto — Acción desconocida: "buscar_contacto". ¿Quisiste decir "upsert_contacto"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar
 
 10640  2026-06-22 16:07:58  sistema   interno                         claude_call whatsapp: 12376ms prompt=7669c raw=6885c in=10t(cache_read=0 new=23921) out=458t ttfb=1829ms api=9941ms turnos=1 $0.0966                                                                    
@@ -421,10 +427,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10546  2026-06-21 00:33:09  sistema   interno                         contacto vcard (privado): Gabriela Echaniz → 5491165286555@c.us                                                                                                                                         
 
 10545  2026-06-20 23:42:56  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
-
-10544  2026-06-20 23:42:45  sistema   interno                         acción FALLÓ: buscar_en_historial — Acción desconocida: "buscar_en_historial". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, e
-
-10543  2026-06-20 23:42:45  sistema   interno                         claude_call whatsapp: 11522ms prompt=7557c raw=6855c in=10t(cache_read=54630 new=3879) out=427t ttfb=1764ms api=9170ms turnos=1 $0.0374                                                                 
-
-10542  2026-06-20 23:42:32  whatsapp  entrante   5491132317896@c.us   No, no quiero que ya me eso. Fíjate que debes tener registrado un contacto de cona con caa,                                                                                                             
-                                                                       miré en el historial de conversaciones con cona porque le hiciste vos en la raserra con ella.                                                                                                          
