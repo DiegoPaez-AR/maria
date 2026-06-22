@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10648  2026-06-22 16:09:18  whatsapp  saliente   5491156920073@c.us   ¡Perfecto, gracias!                                                                                                                                                                                     
+
+10647  2026-06-22 16:09:18  whatsapp  saliente   34342575317160@lid   Farinelli reabre mañana (martes 23). Para Maru Botana: los encontré en Suipacha 1371 pero el teléfono que figura es un fijo (+54 11 4326-7134), no tienen WhatsApp disponible. ¿Los llamo yo para pedir 
+
+10646  2026-06-22 16:09:18  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+10645  2026-06-22 16:09:18  sistema   interno                         claude_call whatsapp: 64082ms prompt=75540c raw=26291c in=28t(cache_read=80983 new=32834) out=2586t ttfb=1728ms api=63206ms turnos=3 $0.2255                                                            
+
 10644  2026-06-22 16:08:14  sistema   interno                         claude_call whatsapp: 26124ms prompt=74787c raw=10399c in=10t(cache_read=6271 new=30001) out=1182t ttfb=1740ms api=25279ms turnos=1 $0.1416                                                             
 
 10643  2026-06-22 16:08:04  whatsapp  saliente   34342575317160@lid   Dale, voy a buscar el número del local de Maru Botana en Suipacha y les pido la carta.                                                                                                                  
@@ -419,11 +427,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10550  2026-06-21 00:33:55  whatsapp  saliente   34342575317160@lid   Guardado — actualizo el email de Gabriela Echaniz.                                                                                                                                                      
 
 10549  2026-06-21 00:33:55  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-10548  2026-06-21 00:33:54  sistema   interno                         claude_call whatsapp: 11184ms prompt=7896c raw=6310c in=10t(cache_read=0 new=62557) out=393t ttfb=1784ms api=8740ms turnos=1 $0.2405                                                                    
-
-10547  2026-06-21 00:33:42  whatsapp  entrante   5491132317896@c.us   Gabyechaniz@gmail.com                                                                                                                                                                                   
-
-10546  2026-06-21 00:33:09  sistema   interno                         contacto vcard (privado): Gabriela Echaniz → 5491165286555@c.us                                                                                                                                         
-
-10545  2026-06-20 23:42:56  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
