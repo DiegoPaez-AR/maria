@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10641  2026-06-22 16:07:58  sistema   interno                         acción FALLÓ: buscar_contacto — Acción desconocida: "buscar_contacto". ¿Quisiste decir "upsert_contacto"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar
+
+10640  2026-06-22 16:07:58  sistema   interno                         claude_call whatsapp: 12376ms prompt=7669c raw=6885c in=10t(cache_read=0 new=23921) out=458t ttfb=1829ms api=9941ms turnos=1 $0.0966                                                                    
+
+10639  2026-06-22 16:07:47  whatsapp  entrante   5491156920073@c.us   Mañana!                                                                                                                                                                                                 
+
+10638  2026-06-22 16:07:44  whatsapp  entrante   5491132317896@c.us   fijate si podes conseguir el numero de maru botana, el local de suipacha y pedis la carta ahi                                                                                                           
+
 10637  2026-06-22 16:06:52  whatsapp  saliente   5491156920073@c.us   Ah, entendido! Gracias por avisarme. ¿Saben cuándo vuelven a abrir?                                                                                                                                     
 
 10636  2026-06-22 16:06:51  whatsapp  saliente   34342575317160@lid   Farinelli está cerrado hoy por reformas, así que no pude conseguir la carta. ¿Querés que intente para otro día o lo dejamos?                                                                            
@@ -420,14 +428,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 10542  2026-06-20 23:42:32  whatsapp  entrante   5491132317896@c.us   No, no quiero que ya me eso. Fíjate que debes tener registrado un contacto de cona con caa,                                                                                                             
                                                                        miré en el historial de conversaciones con cona porque le hiciste vos en la raserra con ella.                                                                                                          
-
-10541  2026-06-20 23:41:33  whatsapp  saliente   34342575317160@lid   Diego, no tengo registro de esa reserva en Cona — no la hice yo. Puede ser que la hayas hecho directamente vos u otro medio. ¿Querés que llame al restaurante para confirmar los detalles?              
-
-10540  2026-06-20 23:41:33  sistema   interno                         claude_call whatsapp: 10686ms prompt=7333c raw=6073c in=10t(cache_read=0 new=54630) out=322t ttfb=1857ms api=8228ms turnos=1 $0.2097                                                                    
-
-10539  2026-06-20 23:41:22  whatsapp  entrante   5491132317896@c.us   María, ¿para cuántos hicimos la reserva ahora en Cona de las 9?                                                                                                                                         
-
-10538  2026-06-20 23:07:09  whatsapp  saliente   34342575317160@lid   🎂 *Mañana cumple años:*                                                                                                                                                                                 
-                                                                      • Martín Souza (sin WhatsApp en libreta)                                                                                                                                                                
-                                                                                                                                                                                                                                                                              
-                                                                      ¿Le mando un saludo de tu parte? Decime el tono o pasame el texto y lo mando mañana a primera hora. Si no, ignorá este mensaje.                                                                         
