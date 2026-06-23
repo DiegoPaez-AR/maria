@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10740  2026-06-23 23:02:18  whatsapp  saliente   34342575317160@lid   Dale, le mando un saludo mañana *24/06* a primera hora de mi parte.                                                                                                                                     
+
+10739  2026-06-23 23:02:18  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+10738  2026-06-23 23:02:18  sistema   interno                         claude_call moderacion: 5334ms prompt=1504c raw=5401c in=10t(cache_read=17396 new=5063) out=231t ttfb=1805ms api=3951ms turnos=1 $0.0097                                                                
+
+10737  2026-06-23 23:02:13  sistema   interno                         claude_call whatsapp: 22654ms prompt=72265c raw=10011c in=10t(cache_read=6271 new=29245) out=1002t ttfb=1665ms api=21772ms turnos=1 $0.1353                                                             
+
 10736  2026-06-23 23:01:50  whatsapp  entrante   5491132317896@c.us   Dale, mandarle de un mensaje, felicitándolo como si fuera una cosa tuya, no mía, yo después                                                                                                             
                                                                        mañana lo voy a llamar.                                                                                                                                                                                
 
@@ -309,11 +317,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10642  2026-06-22 16:08:04  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
 
 10641  2026-06-22 16:07:58  sistema   interno                         acción FALLÓ: buscar_contacto — Acción desconocida: "buscar_contacto". ¿Quisiste decir "upsert_contacto"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar
-
-10640  2026-06-22 16:07:58  sistema   interno                         claude_call whatsapp: 12376ms prompt=7669c raw=6885c in=10t(cache_read=0 new=23921) out=458t ttfb=1829ms api=9941ms turnos=1 $0.0966                                                                    
-
-10639  2026-06-22 16:07:47  whatsapp  entrante   5491156920073@c.us   Mañana!                                                                                                                                                                                                 
-
-10638  2026-06-22 16:07:44  whatsapp  entrante   5491132317896@c.us   fijate si podes conseguir el numero de maru botana, el local de suipacha y pedis la carta ahi                                                                                                           
-
-10637  2026-06-22 16:06:52  whatsapp  saliente   5491156920073@c.us   Ah, entendido! Gracias por avisarme. ¿Saben cuándo vuelven a abrir?                                                                                                                                     
