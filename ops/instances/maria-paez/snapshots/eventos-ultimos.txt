@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10744  2026-06-23 23:17:00  whatsapp  entrante   5491156408326@c.us   Viernes 03/07                                                                                                                                                                                           
+
+10743  2026-06-23 23:16:48  whatsapp  saliente   5491156408326@c.us   ¡Hola Gastón! Todo bien, gracias. ¿Vos cómo andás?                                                                                                                                                      
+                                                                                                                                                                                                                                                                              
+                                                                      Te escribía justo por el almuerzo en Iñaki con Diego — ¿pudiste ver las opciones? Martes 30/06, miércoles 01/07 o viernes 03/07, siempre de 13 a 14:                                                    
+
+10742  2026-06-23 23:16:48  sistema   interno                         claude_call whatsapp: 11963ms prompt=71779c raw=6481c in=10t(cache_read=0 new=35334) out=385t ttfb=1663ms api=11154ms turnos=1 $0.1469                                                                  
+
+10741  2026-06-23 23:16:35  whatsapp  entrante   5491156408326@c.us   Hola Maria q tal                                                                                                                                                                                        
+
 10740  2026-06-23 23:02:18  whatsapp  saliente   34342575317160@lid   Dale, le mando un saludo mañana *24/06* a primera hora de mi parte.                                                                                                                                     
 
 10739  2026-06-23 23:02:18  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
@@ -309,11 +319,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10646  2026-06-22 16:09:18  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 10645  2026-06-22 16:09:18  sistema   interno                         claude_call whatsapp: 64082ms prompt=75540c raw=26291c in=28t(cache_read=80983 new=32834) out=2586t ttfb=1728ms api=63206ms turnos=3 $0.2255                                                            
-
-10644  2026-06-22 16:08:14  sistema   interno                         claude_call whatsapp: 26124ms prompt=74787c raw=10399c in=10t(cache_read=6271 new=30001) out=1182t ttfb=1740ms api=25279ms turnos=1 $0.1416                                                             
-
-10643  2026-06-22 16:08:04  whatsapp  saliente   34342575317160@lid   Dale, voy a buscar el número del local de Maru Botana en Suipacha y les pido la carta.                                                                                                                  
-
-10642  2026-06-22 16:08:04  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
-
-10641  2026-06-22 16:07:58  sistema   interno                         acción FALLÓ: buscar_contacto — Acción desconocida: "buscar_contacto". ¿Quisiste decir "upsert_contacto"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar
