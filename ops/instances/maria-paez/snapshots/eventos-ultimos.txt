@@ -1,5 +1,20 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10734  2026-06-23 22:58:44  whatsapp  saliente   34342575317160@lid   Perfecto, le escribo a Gastón ahora con las tres opciones. Cuando él confirme, agendo y reservo en Iñaki.                                                                                               
+
+10733  2026-06-23 22:58:43  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+10732  2026-06-23 22:58:43  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+10731  2026-06-23 22:58:43  whatsapp  saliente   5491156408326@c.us   ¡Hola Gastón! Soy Maria Paez, secretaria de Diego. Te escribo para coordinar un almuerzo con él en Iñaki la semana que viene. ¿Te viene alguna de estas opciones, de 13 a 14:30?                        
+                                                                                                                                                                                                                                                                              
+                                                                      · Martes 30/06                                                                                                                                                                                          
+                                                                      · Miérc                                                                                                                                                                                                 
+
+10730  2026-06-23 22:58:43  sistema   interno                         claude_call moderacion: 6051ms prompt=1728c raw=5894c in=10t(cache_read=0 new=22543) out=264t ttfb=1727ms api=4835ms turnos=1 $0.0300                                                                   
+
+10729  2026-06-23 22:58:37  sistema   interno                         claude_call whatsapp: 38419ms prompt=71811c raw=14667c in=10t(cache_read=6271 new=29023) out=1838t ttfb=1659ms api=37937ms turnos=1 $0.1468                                                             
+
 10728  2026-06-23 22:57:58  whatsapp  entrante   5491132317896@c.us   Organiza un almuerzo con Gaston en Iñaki, para la semana proxima, martes, miercoles o viernes de 13 a 1430. cuando el te defina, agendalo y reserva en iñaki.                                           
 
 10727  2026-06-23 22:56:30  sistema   interno                         contacto vcard (privado): Gastón Girotti → 5491156408326@c.us                                                                                                                                           
@@ -298,17 +313,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10636  2026-06-22 16:06:51  whatsapp  saliente   34342575317160@lid   Farinelli está cerrado hoy por reformas, así que no pude conseguir la carta. ¿Querés que intente para otro día o lo dejamos?                                                                            
 
 10635  2026-06-22 16:06:51  sistema   interno                         claude_call whatsapp: 11636ms prompt=74591c raw=6407c in=10t(cache_read=6271 new=29922) out=373t ttfb=1702ms api=11169ms turnos=1 $0.1291                                                               
-
-10634  2026-06-22 16:06:39  whatsapp  entrante   5491156920073@c.us   Hola! Cómo estás?                                                                                                                                                                                       
-                                                                      El local está cerrado hoy                                                                                                                                                                               
-                                                                      Estamos haciendo reformas                                                                                                                                                                               
-
-10633  2026-06-22 16:03:01  whatsapp  saliente   34342575317160@lid   Ya le escribo a Farinelli para pedirle la carta.                                                                                                                                                        
-
-10632  2026-06-22 16:03:01  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-10631  2026-06-22 16:03:01  whatsapp  saliente   5491156920073@c.us   Hola, te escribo de parte de Diego Páez. ¿Me podrías pasar la carta?                                                                                                                                    
-
-10630  2026-06-22 16:03:00  sistema   interno                         claude_call moderacion: 7366ms prompt=1516c raw=5729c in=10t(cache_read=0 new=22458) out=262t ttfb=1726ms api=6111ms turnos=1 $0.0298                                                                   
-
-10629  2026-06-22 16:02:53  sistema   interno                         claude_call whatsapp: 24120ms prompt=72671c raw=9820c in=10t(cache_read=0 new=35809) out=997t ttfb=1624ms api=23271ms turnos=1 $0.1583                                                                  
