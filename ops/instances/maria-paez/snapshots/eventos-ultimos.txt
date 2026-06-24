@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                 
 -----  -------------------  --------  ---------  -------------------  -------------------------------------------------------------------------------------------------------------------------------------------------------
+10866  2026-06-24 21:23:09  whatsapp  saliente   34342575317160@lid   Anotado, llamar a Poggetti.                                                                                                                            
+
+10865  2026-06-24 21:23:09  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                    
+
+10864  2026-06-24 21:23:09  sistema   interno                         claude_call whatsapp: 9683ms prompt=70084c raw=5936c in=10t(cache_read=0 new=34604) out=297t ttfb=1859ms api=8989ms turnos=1 $0.1421                   
+
 10863  2026-06-24 21:22:59  whatsapp  entrante   5491132317896@c.us   Agrégame una tarea: llamar a Poggetti                                                                                                                  
 
 10862  2026-06-24 19:16:07  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: RETCO - Weekly Call  (04:30 p. m.)                                                                                                       
@@ -313,14 +319,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 10768  2026-06-24 00:12:21  whatsapp  saliente   5491164393520@c.us   ¡Claro! Para qué hora lo necesitás? Así hago el pedido con tiempo.                                                                                     
 
 10767  2026-06-24 00:12:21  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                    
-
-10766  2026-06-24 00:12:21  sistema   interno                         claude_call whatsapp: 25208ms prompt=71408c raw=10362c in=10t(cache_read=6271 new=28873) out=1137t ttfb=1627ms api=24401ms turnos=1 $0.1356            
-
-10765  2026-06-24 00:11:55  whatsapp  entrante   5491164393520@c.us   Maria, nos podras hacer este pedido en Poch:                                                                                                           
-                                                                      1 hamburguesa sola (pan y carne( simple con papas                                                                                                      
-                                                                      2 only cheese simples con aros                                                                                                                         
-                                                                      1 Miami simple con papas                                                                                                                               
-                                                                                                                                                                                                                             
-                                                                      Avisale a papa cuando esten para que vaya a busc                                                                                                       
-
-10764  2026-06-24 00:08:17  sistema   interno                         claude_call whatsapp: 14065ms prompt=70370c raw=7357c in=10t(cache_read=0 new=34733) out=478t ttfb=1722ms api=12941ms turnos=1 $0.1454                 
