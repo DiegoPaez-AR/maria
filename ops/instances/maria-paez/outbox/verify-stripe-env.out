@@ -1,0 +1,42 @@
+# ejecutado: 2026-06-28T01:41:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   API=/root/secretaria/ops/backend/intensa-api
+#   echo "## cómo carga el env intensa-api (grep dotenv/env-intensa):"
+#   grep -rInE "dotenv|env-intensa|\.env" "$API"/index.js "$API"/*.js 2>/dev/null | head -20
+#   echo
+#   echo "## test: Node parsea STRIPE_WEBHOOK_SECRET desde el .env-intensa-api"
+#   cd "$API"
+#   node -e "
+#   try {
+#     require('dotenv').config({ path: '/root/secretaria/.env-intensa-api' });
+#     const v = process.env.STRIPE_WEBHOOK_SECRET || '';
+#     console.log('STRIPE_WEBHOOK_SECRET visible a Node:', v ? 'SI' : 'NO', '| len=', v.length, '| prefix=', v.slice(0,6));
+#     console.log('LEMON_WEBHOOK_SECRET aún presente:', !!process.env.LEMON_WEBHOOK_SECRET);
+#   } catch(e){ console.log('err', e.message); }
+#   "
+
+# ───── output ─────
+## cómo carga el env intensa-api (grep dotenv/env-intensa):
+/root/secretaria/ops/backend/intensa-api/index.js:20:const dotenv = (() => {
+/root/secretaria/ops/backend/intensa-api/index.js:21:  try { return require('dotenv').config(); } catch { return null; }
+/root/secretaria/ops/backend/intensa-api/index.js:29:const PORT = Number(process.env.INTENSA_API_PORT || 4080);
+/root/secretaria/ops/backend/intensa-api/index.js:30:const HOST = process.env.INTENSA_API_HOST || '127.0.0.1';
+/root/secretaria/ops/backend/intensa-api/index.js:87:  console.log(`[intensa-api] CONTROL_DB=${process.env.CONTROL_DB || '/root/secretaria/state/control/control.sqlite'}`);
+/root/secretaria/ops/backend/intensa-api/db.js:7:const CONTROL_DB = process.env.CONTROL_DB || '/root/secretaria/state/control/control.sqlite';
+/root/secretaria/ops/backend/intensa-api/db.js:8:const ARCHIVE_DB = process.env.ARCHIVE_DB || '/root/secretaria/state/control/archive.sqlite';
+/root/secretaria/ops/backend/intensa-api/index.js:20:const dotenv = (() => {
+/root/secretaria/ops/backend/intensa-api/index.js:21:  try { return require('dotenv').config(); } catch { return null; }
+/root/secretaria/ops/backend/intensa-api/index.js:29:const PORT = Number(process.env.INTENSA_API_PORT || 4080);
+/root/secretaria/ops/backend/intensa-api/index.js:30:const HOST = process.env.INTENSA_API_HOST || '127.0.0.1';
+/root/secretaria/ops/backend/intensa-api/index.js:87:  console.log(`[intensa-api] CONTROL_DB=${process.env.CONTROL_DB || '/root/secretaria/state/control/control.sqlite'}`);
+
+## test: Node parsea STRIPE_WEBHOOK_SECRET desde el .env-intensa-api
+err Cannot find module 'dotenv'
+Require stack:
+- /root/secretaria/ops/backend/intensa-api/[eval]
+
+# exit=0
