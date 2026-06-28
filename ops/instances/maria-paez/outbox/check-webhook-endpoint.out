@@ -1,0 +1,26 @@
+# ejecutado: 2026-06-28T02:20:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   SK=$(grep -E '^STRIPE_SECRET_KEY=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+#   echo "== webhook endpoints configurados en Stripe =="
+#   curl -s https://api.stripe.com/v1/webhook_endpoints -u "${SK}:" -G -d limit=10 \
+#    | python3 -c "
+#   import json,sys
+#   d=json.load(sys.stdin)
+#   ds=d.get('data',[])
+#   if not ds: print('  (NINGUNO configurado — hay que crear el endpoint)')
+#   for e in ds:
+#     print('  id=',e['id'],'| status=',e.get('status'),'| url=',e.get('url'))
+#     evs=e.get('enabled_events',[])
+#     print('     eventos:', ', '.join(evs) if evs!=['*'] else '* (todos)')
+#   "
+
+# ───── output ─────
+== webhook endpoints configurados en Stripe ==
+  id= we_1TnAOZBSnDFb8JXI1RrVYPes | status= enabled | url= https://intensa.io/maria/api/webhook
+     eventos: checkout.session.completed, customer.subscription.created, customer.subscription.deleted, invoice.paid, invoice.payment_failed
+
+# exit=0
