@@ -3,14 +3,15 @@
 //
 // Endpoints (montados bajo el prefijo /maria/api por NGINX):
 //   POST /signup/start     → genera 2 códigos, manda email + WA
-//   POST /signup/verify    → valida códigos, devuelve URL de checkout LS
-//   POST /webhook          → recibe webhooks de LemonSqueezy
+//   POST /signup/verify    → valida códigos, devuelve URL de checkout de Stripe
+//   POST /webhook          → recibe webhooks de Stripe
 //   POST /cuenta/login     → pide código por email o WA (passwordless)
 //   POST /cuenta/verify    → valida código, devuelve session cookie
 //   GET  /cuenta/me        → datos del cliente logueado
 //   POST /cuenta/reauth-code → manda OTP fresco para confirmar operación sensible
 //   POST /cuenta/update    → cambiar email o WA (requiere OTP fresco)
-//   POST /cuenta/cancel    → cancela suscripción (requiere OTP fresco)
+//   POST /cuenta/cancel    → cancela suscripción en Stripe (requiere OTP fresco)
+//   POST /cuenta/portal    → genera URL del Billing Portal de Stripe
 
 const express = require('express');
 const cookieParser = require('cookie-parser');

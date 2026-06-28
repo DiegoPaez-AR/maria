@@ -7,6 +7,7 @@ const codes = require('../lib/codes');
 const db = require('../lib/db');
 const turnstile = require('../lib/turnstile');
 const ratelimit = require('../lib/ratelimit');
+const stripe = require('../lib/stripe');
 
 // Límites del signup (manda email + WA a direcciones arbitrarias vía el
 // signup_bot real → vector de spam/abuso del número de WA y del dominio).
@@ -84,20 +85,35 @@ router.post('/verify', async (req, res, next) => {
       });
     }
 
-    // Construir checkout URL de LemonSqueezy con el signup_token
-    const productVariant = process.env.LEMON_PRODUCT_VARIANT_ID;
-    const buyBase = process.env.LEMON_BUY_BASE; // ej. https://intensa.lemonsqueezy.com/buy/abc-def
-    if (!productVariant || !buyBase) {
-      console.warn('[signup/verify] LEMON_PRODUCT_VARIANT_ID o LEMON_BUY_BASE no configurado — devolviendo URL de placeholder');
+    // Crear una Checkout Session de Stripe con el signup_token en metadata,
+    // para recuperarlo en el webhook checkout.session.completed.
+    const priceId = process.env.STRIPE_PRICE_ID;
+    const landing = process.env.INTENSA_LANDING_BASE || 'https://intensa.io/maria';
+    if (!priceId) {
+      console.error('[signup/verify] STRIPE_PRICE_ID no configurado');
+      throw _err('checkout_not_configured', 'El checkout no está configurado. Probá más tarde.', 503);
     }
 
-    // Recuperamos los datos del signup_pending para pre-rellenar el checkout
     const row = db.control().prepare(`SELECT nombre, email FROM signup_pending WHERE signup_token=?`).get(r.signup_token);
-    const checkoutUrl = _buildCheckoutUrl(buyBase, {
-      checkout_data: { custom: { signup_token: r.signup_token } },
-      email: row?.email,
-      name:  row?.nombre,
-    });
+
+    let checkoutUrl;
+    try {
+      const session = await stripe.api('POST', '/checkout/sessions', {
+        mode: 'subscription',
+        line_items: [{ price: priceId, quantity: 1 }],
+        customer_email: row?.email || undefined,
+        client_reference_id: r.signup_token,
+        metadata: { signup_token: r.signup_token },
+        subscription_data: { metadata: { signup_token: r.signup_token } },
+        allow_promotion_codes: true,
+        success_url: `${landing}/signup/?status=ok`,
+        cancel_url: `${landing}/signup/?status=cancel`,
+      });
+      checkoutUrl = session.url;
+    } catch (e) {
+      console.error('[signup/verify] crear checkout de Stripe falló:', e.message);
+      throw _err('checkout_failed', 'No pudimos iniciar el checkout. Probá de nuevo en un momento.', 502);
+    }
 
     res.json({
       ok: true,
@@ -110,25 +126,5 @@ router.post('/verify', async (req, res, next) => {
     next(err);
   }
 });
-
-function _buildCheckoutUrl(buyBase, opts) {
-  if (!buyBase) return '#lemon-not-configured';
-  // LemonSqueezy espera el formato literal `?checkout[custom][key]=value` —
-  // los brackets NO deben ir URL-encodeados (ni %5B ni %5D), si no LS no
-  // reconoce el parámetro y devuelve 'Se ha producido un error de procesamiento'.
-  // Construimos el query string a mano para evitar el encoding agresivo de URL.
-  const parts = [];
-  if (opts.checkout_data && opts.checkout_data.custom) {
-    for (const [k, v] of Object.entries(opts.checkout_data.custom)) {
-      // Solo encodeamos el value, no la key (brackets literales).
-      parts.push(`checkout[custom][${k}]=${encodeURIComponent(v)}`);
-    }
-  }
-  if (opts.email)          parts.push(`checkout[email]=${encodeURIComponent(opts.email)}`);
-  if (opts.name)           parts.push(`checkout[name]=${encodeURIComponent(opts.name)}`);
-  if (!parts.length) return buyBase;
-  const sep = buyBase.includes('?') ? '&' : '?';
-  return buyBase + sep + parts.join('&');
-}
 
 module.exports = router;

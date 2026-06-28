@@ -220,8 +220,21 @@ async function cargarMe() {
   document.getElementById('me-wa').textContent = '+' + cli.wa;
   document.getElementById('me-ultimo').textContent = cli.ultimo_cobro_en ? new Date(cli.ultimo_cobro_en).toLocaleDateString() : '—';
   document.getElementById('me-proximo').textContent = cli.proximo_cobro_en ? new Date(cli.proximo_cobro_en).toLocaleDateString() : '—';
-  document.getElementById('link-portal').href = cli.lemon_customer_portal || '#';
-  if (!cli.lemon_customer_portal) document.getElementById('link-portal').style.display = 'none';
+  const portalEl = document.getElementById('link-portal');
+  if (cli.tiene_portal) {
+    portalEl.style.display = '';
+    portalEl.href = '#';
+    portalEl.onclick = async (ev) => {
+      ev.preventDefault();
+      portalEl.style.pointerEvents = 'none';
+      const pr = await api('/portal', {}, 'POST');
+      portalEl.style.pointerEvents = '';
+      if (pr.ok && pr.body && pr.body.url) window.location.href = pr.body.url;
+      else alert(t('err.generic') || 'Error');
+    };
+  } else {
+    portalEl.style.display = 'none';
+  }
 }
 
 document.getElementById('link-volver-login').addEventListener('click', e => { e.preventDefault(); showStep('login'); });

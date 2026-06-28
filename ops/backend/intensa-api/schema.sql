@@ -39,7 +39,10 @@ CREATE TABLE IF NOT EXISTS clientes (
   -- LemonSqueezy
   lemon_customer_id       TEXT,
   lemon_subscription_id   TEXT UNIQUE,
-  lemon_customer_portal   TEXT,                           -- URL del customer portal de LS
+  lemon_customer_portal   TEXT,                           -- URL del customer portal de LS (legacy)
+  -- Stripe (sistema de pagos vigente)
+  stripe_customer_id      TEXT,
+  stripe_subscription_id  TEXT UNIQUE,
   -- Trazabilidad de cobros
   ultimo_cobro_en         DATETIME,
   proximo_cobro_en        DATETIME,

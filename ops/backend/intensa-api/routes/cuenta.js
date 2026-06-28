@@ -12,6 +12,7 @@ const crypto = require('crypto');
 const db = require('../lib/db');
 const instances = require('../lib/instances');
 const mariaRpc = require('../lib/maria-rpc');
+const stripe = require('../lib/stripe');
 
 const router = express.Router();
 const SESSION_COOKIE = 'intensa_cuenta';
@@ -152,8 +153,26 @@ router.get('/me', _requireSession, (req, res) => {
     creado: cli.creado,
     ultimo_cobro_en: cli.ultimo_cobro_en,
     proximo_cobro_en: cli.proximo_cobro_en,
-    lemon_customer_portal: cli.lemon_customer_portal,
+    tiene_portal: !!cli.stripe_customer_id,
   });
+});
+
+// Crea una sesión del Billing Portal de Stripe (ver pagos / actualizar tarjeta).
+// La URL es de un solo uso y de corta vida, por eso se genera on-demand.
+router.post('/portal', _requireSession, async (req, res, next) => {
+  try {
+    const customerId = req.cliente.stripe_customer_id;
+    if (!customerId) throw _err('no_customer', 'No tenés datos de pago todavía', 409);
+    const landing = process.env.INTENSA_LANDING_BASE || 'https://intensa.io/maria';
+    const session = await stripe.api('POST', '/billing_portal/sessions', {
+      customer: customerId,
+      return_url: `${landing}/cuenta/`,
+    });
+    res.json({ ok: true, url: session.url });
+  } catch (err) {
+    if (err.stripe) return next(_err('portal_failed', `Stripe: ${err.message}`, 502));
+    next(err);
+  }
 });
 
 // ── Re-confirmación con OTP fresco para operaciones sensibles ────────────────
@@ -279,24 +298,20 @@ router.post('/update', _requireSession, _requireOtpFresco, async (req, res, next
 
 router.post('/cancel', _requireSession, _requireOtpFresco, async (req, res, next) => {
   try {
-    // Llamar a LS API para cancelar la suscripción
-    const apiKey = process.env.LEMON_API_KEY;
-    if (!apiKey) throw _err('lemon_not_configured', 'API LS no configurada', 503);
-    const subId = req.cliente.lemon_subscription_id;
+    const subId = req.cliente.stripe_subscription_id;
     if (!subId) throw _err('no_sub', 'No tenés suscripción activa', 409);
-
-    const r = await fetch(`https://api.lemonsqueezy.com/v1/subscriptions/${subId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Accept': 'application/vnd.api+json',
-      },
-    });
-    if (!r.ok) {
-      const body = await r.text();
-      throw _err('lemon_cancel_failed', `LS respondió ${r.status}: ${body}`, 502);
+    // Cancelación inmediata en Stripe (DELETE /v1/subscriptions/:id).
+    // El webhook customer.subscription.deleted hace el resto del cleanup.
+    try {
+      await stripe.api('DELETE', `/subscriptions/${subId}`);
+    } catch (e) {
+      // Si Stripe dice que ya no existe / ya estaba cancelada, lo tratamos como éxito.
+      if (e.status === 404 || (e.stripe && e.stripe.code === 'resource_missing')) {
+        console.warn(`[cuenta/cancel] sub ${subId} ya no existe en Stripe — sigo`);
+      } else {
+        throw _err('stripe_cancel_failed', `Stripe respondió ${e.status}: ${e.message}`, 502);
+      }
     }
-    // El webhook subscription_cancelled hará el resto del cleanup.
     res.json({ ok: true, message: 'Tu suscripción quedó cancelada. No vas a recibir más cobros.' });
   } catch (err) { next(err); }
 });

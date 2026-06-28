@@ -32,6 +32,20 @@ function _migrarControl(db) {
     db.exec(`ALTER TABLE signup_pending ADD COLUMN reenviado_en DATETIME`);
     console.log(`[db] migración: signup_pending.reenviado_en agregada`);
   }
+
+  // Migración a Stripe: columnas stripe_* en clientes (las lemon_* quedan para
+  // registros viejos/archive). El UNIQUE va por índice parcial porque SQLite no
+  // permite ALTER ADD COLUMN ... UNIQUE.
+  const colsCli = db.prepare(`PRAGMA table_info(clientes)`).all().map(c => c.name);
+  if (!colsCli.includes('stripe_customer_id')) {
+    db.exec(`ALTER TABLE clientes ADD COLUMN stripe_customer_id TEXT`);
+    console.log(`[db] migración: clientes.stripe_customer_id agregada`);
+  }
+  if (!colsCli.includes('stripe_subscription_id')) {
+    db.exec(`ALTER TABLE clientes ADD COLUMN stripe_subscription_id TEXT`);
+    console.log(`[db] migración: clientes.stripe_subscription_id agregada`);
+  }
+  db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_clientes_stripe_sub ON clientes(stripe_subscription_id) WHERE stripe_subscription_id IS NOT NULL`);
 }
 
 function init() {
