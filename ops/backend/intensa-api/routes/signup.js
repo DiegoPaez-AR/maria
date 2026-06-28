@@ -100,6 +100,7 @@ router.post('/verify', async (req, res, next) => {
     try {
       const session = await stripe.api('POST', '/checkout/sessions', {
         mode: 'subscription',
+        payment_method_types: ['card'],
         line_items: [{ price: priceId, quantity: 1 }],
         customer_email: row?.email || undefined,
         client_reference_id: r.signup_token,
