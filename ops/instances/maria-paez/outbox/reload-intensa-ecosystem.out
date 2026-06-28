@@ -1,0 +1,58 @@
+# ejecutado: 2026-06-28T01:44:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   cd /root/secretaria
+#   echo "## reload via ecosystem.config.js (re-corre _intensaApiEnv que lee .env-intensa-api)"
+#   pm2 reload ecosystem.config.js --only intensa-api --update-env 2>&1 | tail -6 \
+#     || pm2 startOrRestart ecosystem.config.js --only intensa-api 2>&1 | tail -6
+#   sleep 2
+#   PID=$(pm2 jlist 2>/dev/null | python3 -c "import json,sys
+#   for p in json.load(sys.stdin):
+#     if p.get('name')=='intensa-api': print(p.get('pid'))")
+#   echo "pid=$PID"
+#   echo
+#   echo "## vars clave en environ del proceso (masked):"
+#   if [ -r /proc/$PID/environ ]; then
+#     for k in INTENSA_API_SECRET LEMON_WEBHOOK_SECRET LEMON_API_KEY STRIPE_WEBHOOK_SECRET CONTROL_DB; do
+#       if tr '\0' '\n' < /proc/$PID/environ | grep -q "^$k="; then echo "$k=PRESENTE"; else echo "$k=AUSENTE"; fi
+#     done
+#     echo
+#     echo "## STRIPE_WEBHOOK_SECRET (masked, confirmación de valor correcto):"
+#     tr '\0' '\n' < /proc/$PID/environ | grep '^STRIPE_WEBHOOK_SECRET=' | sed -E 's/=(.{6}).*/=\1…/'
+#   fi
+#   echo
+#   echo "## status + puerto:"
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys
+#   for p in json.load(sys.stdin):
+#     if p.get('name')=='intensa-api':
+#       e=p.get('pm2_env',{}); print('status=',e.get('status'),'restarts=',e.get('restart_time'))"
+#   ss -ltnp 2>/dev/null | grep 4080 || echo "(nada en 4080!)"
+#   echo "## health:"
+#   curl -s -o /dev/null -w "http_code=%{http_code}\n" http://127.0.0.1:4080/ 2>/dev/null
+
+# ───── output ─────
+## reload via ecosystem.config.js (re-corre _intensaApiEnv que lee .env-intensa-api)
+[PM2] Applying action reloadProcessId on app [intensa-api](ids: [ 1 ])
+[PM2] [intensa-api](1) ✓
+pid=1774755
+
+## vars clave en environ del proceso (masked):
+INTENSA_API_SECRET=PRESENTE
+LEMON_WEBHOOK_SECRET=PRESENTE
+LEMON_API_KEY=PRESENTE
+STRIPE_WEBHOOK_SECRET=PRESENTE
+CONTROL_DB=PRESENTE
+
+## STRIPE_WEBHOOK_SECRET (masked, confirmación de valor correcto):
+STRIPE_WEBHOOK_SECRET=whsec_…
+
+## status + puerto:
+status= online restarts= 2
+LISTEN 0      511        127.0.0.1:4080       0.0.0.0:*    users:(("node /root/secr",pid=1774755,fd=32))                                             
+## health:
+http_code=404
+
+# exit=0
