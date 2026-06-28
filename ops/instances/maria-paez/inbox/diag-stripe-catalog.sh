@@ -1,0 +1,26 @@
+#!/bin/bash
+set -u
+SK=$(grep -E '^STRIPE_SECRET_KEY=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+echo "## Productos en Stripe:"
+curl -s https://api.stripe.com/v1/products -u "${SK}:" -d limit=10 -G \
+  | python3 -c "import json,sys;d=json.load(sys.stdin);[print('  prod=',p['id'],'| active=',p['active'],'| name=',p.get('name')) for p in d.get('data',[])] or print('  (ninguno)')" 2>/dev/null
+echo
+echo "## Precios en Stripe:"
+curl -s https://api.stripe.com/v1/prices -u "${SK}:" -d limit=10 -d 'expand[]=data.product' -G \
+  | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+ds=d.get('data',[])
+if not ds: print('  (ninguno)')
+for p in ds:
+  rec=p.get('recurring') or {}
+  print('  price=',p['id'],'| active=',p['active'],'|',p.get('unit_amount'),p.get('currency'),'| interval=',rec.get('interval'),'| trial=',rec.get('trial_period_days'),'| prod=',(p.get('product') or {}).get('name') if isinstance(p.get('product'),dict) else p.get('product'))
+" 2>/dev/null
+echo
+echo "## clientes en control DB (estado + si tienen lemon_subscription_id):"
+CDB=$(grep -E '^CONTROL_DB=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+sqlite3 -header -column "${CDB:-/root/secretaria/state/control/control.sqlite}" \
+  "SELECT estado, COUNT(*) n, SUM(lemon_subscription_id IS NOT NULL) con_lemon FROM clientes GROUP BY estado;" 2>&1
+echo
+echo "## ¿columnas stripe ya en clientes?"
+sqlite3 "${CDB:-/root/secretaria/state/control/control.sqlite}" "PRAGMA table_info(clientes);" 2>&1 | grep -i stripe || echo "  (todavía no hay columnas stripe_*)"
