@@ -1,0 +1,128 @@
+# ejecutado: 2026-06-28T01:43:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   echo "## index.js top 35 lineas:"
+#   sed -n '1,35p' /root/secretaria/ops/backend/intensa-api/index.js
+#   echo
+#   echo "## ecosystem.config.js (busca intensa-api / env / env_file):"
+#   grep -nE "intensa|env_file|env:|cwd|script|name" /root/secretaria/ecosystem.config.js 2>/dev/null | head -40
+#   echo
+#   echo "## ¿cómo se arrancó? buscar scripts que source .env-intensa-api o arranquen intensa-api:"
+#   grep -rIln "env-intensa-api\|intensa-api" /root/secretaria/ops --include='*.sh' 2>/dev/null | head
+#   echo
+#   echo "## /proc/environ del proceso intensa-api: qué vars clave tiene (masked):"
+#   PID=$(pm2 jlist 2>/dev/null | python3 -c "import json,sys
+#   for p in json.load(sys.stdin):
+#     if p.get('name')=='intensa-api': print(p.get('pid'))")
+#   echo "pid=$PID"
+#   if [ -r /proc/$PID/environ ]; then
+#     for k in INTENSA_API_SECRET LEMON_WEBHOOK_SECRET LEMON_API_KEY STRIPE_WEBHOOK_SECRET CONTROL_DB INTENSA_API_PORT; do
+#       if tr '\0' '\n' < /proc/$PID/environ | grep -q "^$k="; then echo "$k=PRESENTE_en_environ"; else echo "$k=AUSENTE_en_environ"; fi
+#     done
+#   fi
+#   echo
+#   echo "## ¿el proceso responde? healthcheck local a 4080:"
+#   curl -s -o /dev/null -w "http_code=%{http_code}\n" http://127.0.0.1:4080/ 2>/dev/null || echo "curl falló"
+#   echo
+#   echo "## últimas 15 líneas de log de intensa-api:"
+#   pm2 logs intensa-api --lines 15 --nostream 2>/dev/null | tail -15
+
+# ───── output ─────
+## index.js top 35 lineas:
+// intensa-api — control plane para signup/checkout/webhook + portal de cuenta.
+// Es un servicio separado de cada Maria; sirve a TODAS las instancias.
+//
+// Endpoints (montados bajo el prefijo /maria/api por NGINX):
+//   POST /signup/start     → genera 2 códigos, manda email + WA
+//   POST /signup/verify    → valida códigos, devuelve URL de checkout LS
+//   POST /webhook          → recibe webhooks de LemonSqueezy
+//   POST /cuenta/login     → pide código por email o WA (passwordless)
+//   POST /cuenta/verify    → valida código, devuelve session cookie
+//   GET  /cuenta/me        → datos del cliente logueado
+//   POST /cuenta/reauth-code → manda OTP fresco para confirmar operación sensible
+//   POST /cuenta/update    → cambiar email o WA (requiere OTP fresco)
+//   POST /cuenta/cancel    → cancela suscripción (requiere OTP fresco)
+
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const fs = require('fs');
+const path = require('path');
+
+const dotenv = (() => {
+  try { return require('dotenv').config(); } catch { return null; }
+})();
+
+const db = require('./lib/db');
+const codes = require('./lib/codes');
+const instances = require('./lib/instances');
+const mariaRpc = require('./lib/maria-rpc');
+
+const PORT = Number(process.env.INTENSA_API_PORT || 4080);
+const HOST = process.env.INTENSA_API_HOST || '127.0.0.1';
+
+const app = express();
+// Detrás de NGINX: confiar en el primer proxy para leer la IP real del cliente
+// (x-forwarded-for) en rate-limit y turnstile. Solo 1 hop (NGINX local).
+app.set('trust proxy', 1);
+
+## ecosystem.config.js (busca intensa-api / env / env_file):
+19:const ROOT          = __dirname;
+52:  // legacy 'maria' apuntando al cwd con env mínimo.
+55:      name: 'maria',
+56:      script: 'index.js',
+57:      cwd: ROOT,
+62:      env: { NODE_ENV: 'production', TZ: 'America/Argentina/Buenos_Aires' },
+69:      const slug = env.ASISTENTE_SLUG || path.basename(file, '.conf');
+71:        name: slug,
+72:        script: 'index.js',
+73:        cwd: ROOT,
+78:        env: {
+89:// ─── intensa-api (servicio de control: signup/webhook/portal cliente) ───
+90:// Lee env de /root/secretaria/.env-intensa-api si existe (creds LS, Turnstile, etc.).
+91:function _intensaApiEnv() {
+92:  const envFile = '/root/secretaria/.env-intensa-api';
+109:const _intensaApi = {
+110:  name: 'intensa-api',
+111:  script: 'ops/backend/intensa-api/index.js',
+112:  cwd: ROOT,
+117:  env: _intensaApiEnv(),
+121:  module.exports.apps.push(_intensaApi);
+
+## ¿cómo se arrancó? buscar scripts que source .env-intensa-api o arranquen intensa-api:
+/root/secretaria/ops/instances/maria-paez/inbox/diag-env-mechanism.sh
+/root/secretaria/ops/scripts/borrar-cancelled.sh
+/root/secretaria/ops/scripts/backup-weekly.sh
+
+## /proc/environ del proceso intensa-api: qué vars clave tiene (masked):
+pid=1773728
+INTENSA_API_SECRET=PRESENTE_en_environ
+LEMON_WEBHOOK_SECRET=PRESENTE_en_environ
+LEMON_API_KEY=PRESENTE_en_environ
+STRIPE_WEBHOOK_SECRET=AUSENTE_en_environ
+CONTROL_DB=PRESENTE_en_environ
+INTENSA_API_PORT=PRESENTE_en_environ
+
+## ¿el proceso responde? healthcheck local a 4080:
+http_code=404
+
+## últimas 15 líneas de log de intensa-api:
+1|intensa- | 2026-06-24 23:55:55: [2026-06-25T02:55:55.317Z] POST / → 200 8ms
+1|intensa- | 2026-06-26 14:57:20: [webhook] subscription_updated attrs.user_email=diego@paez.net signup_token=(none)
+1|intensa- | 2026-06-26 14:57:20: [2026-06-26T17:57:20.834Z] POST / → 200 2ms
+1|intensa- | 2026-06-26 15:32:30: [webhook] subscription_updated attrs.user_email=diego@paez.is signup_token=ae7c2679…
+1|intensa- | 2026-06-26 15:32:30: [2026-06-26T18:32:30.069Z] POST / → 200 2ms
+1|intensa- | 2026-06-26 16:32:58: [webhook] subscription_payment_success attrs.user_email=diego@paez.is signup_token=ae7c2679…
+1|intensa- | 2026-06-26 16:32:58: [2026-06-26T19:32:58.135Z] POST / → 200 2ms
+1|intensa- | 2026-06-28 01:40:03: [intensa-api] SIGINT recibido, cerrando…
+1|intensa- | 2026-06-28 01:40:03: [db] control=/root/secretaria/state/control/control.sqlite  archive=/root/secretaria/state/control/archive.sqlite
+1|intensa- | 2026-06-28 01:40:03: [instances] 1 ya cargadas en DB, skip bootstrap
+1|intensa- | 2026-06-28 01:40:03: [intensa-api] escuchando en http://127.0.0.1:4080
+1|intensa- | 2026-06-28 01:40:03: [intensa-api] CONTROL_DB=/root/secretaria/state/control/control.sqlite
+1|intensa- | 2026-06-28 01:40:03: [intensa-api] instancias activas: maria-paez
+1|intensa- | 2026-06-28 01:43:02: [2026-06-28T04:43:02.894Z] GET / → 404 9ms
+
+
+# exit=0
