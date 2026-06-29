@@ -1,0 +1,79 @@
+# ejecutado: 2026-06-29T20:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   IDB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   CDB=$(grep -E '^CONTROL_DB=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+#   CDB=${CDB:-/root/secretaria/state/control/control.sqlite}
+#   
+#   echo "===== usuarios en instancia maria-paez (match por nombre) ====="
+#   sqlite3 -header -column "$IDB" "
+#   SELECT id, nombre, activo, rol, email, wa_cus
+#   FROM usuarios
+#   WHERE nombre LIKE '%Ward%' OR nombre LIKE '%Facundo%' OR nombre LIKE '%Bagnato%'
+#      OR nombre LIKE '%santiago%' OR nombre LIKE '%Santiago%' OR nombre LIKE '%Rub%n%'
+#   ORDER BY nombre;"
+#   echo
+#   echo "===== TODOS los usuarios activos (para ver el panorama) ====="
+#   sqlite3 -header -column "$IDB" "SELECT id, nombre, activo, rol FROM usuarios WHERE activo=1 ORDER BY nombre;"
+#   echo
+#   echo "===== clientes en control (match por nombre) ====="
+#   sqlite3 -header -column "$CDB" "
+#   SELECT id, nombre, estado, instancia_slug, instancia_usuario_id,
+#          stripe_subscription_id, lemon_subscription_id
+#   FROM clientes
+#   WHERE nombre LIKE '%Ward%' OR nombre LIKE '%Facundo%' OR nombre LIKE '%Bagnato%'
+#      OR nombre LIKE '%santiago%' OR nombre LIKE '%Santiago%' OR nombre LIKE '%Rub%n%'
+#   ORDER BY nombre;"
+#   echo
+#   echo "===== clientes activos totales ====="
+#   sqlite3 -header -column "$CDB" "SELECT id, nombre, estado, stripe_subscription_id, lemon_subscription_id FROM clientes ORDER BY id;"
+
+# ───── output ─────
+===== usuarios en instancia maria-paez (match por nombre) =====
+id  nombre             activo  rol      email                         wa_cus            
+--  -----------------  ------  -------  ----------------------------  ------------------
+14  Facundo Diaz       1       usuario  f@q99.ai                      14242831584@c.us  
+15  Guillermo Bagnato  1       usuario  g@thequantumalliance.com                        
+11  Rubén Ward         1       usuario  ruben.ward@sondeosglobal.com  5491154024727@c.us
+5   Santiago Bignone   1       usuario  santiagocbignone@gmail.com    5491134274828@c.us
+13  Santiago Capurro   1       usuario  santiago@capurro.com.ar       5491166010010@c.us
+17  santiago paez      1       usuario  santiago@paez.is              541164393520@c.us 
+
+===== TODOS los usuarios activos (para ver el panorama) =====
+id  nombre               activo  rol    
+--  -------------------  ------  -------
+16  Andres Neumann       1       usuario
+9   Cristian Ruiz        1       usuario
+1   Diego                1       owner  
+6   Doris Capurro        1       usuario
+12  Enrique Sosa         1       usuario
+14  Facundo Diaz         1       usuario
+4   Fernando Boero       1       usuario
+18  Gabriela Echaniz     1       usuario
+15  Guillermo Bagnato    1       usuario
+2   Hernan Fulco         1       usuario
+19  Jaime Cibils         1       usuario
+3   Natali Funez         1       usuario
+7   Nicolas Kosinski     1       usuario
+11  Rubén Ward           1       usuario
+5   Santiago Bignone     1       usuario
+13  Santiago Capurro     1       usuario
+10  Sebastian Ameijeira  1       usuario
+8   Walter Vera          1       usuario
+17  santiago paez        1       usuario
+
+===== clientes en control (match por nombre) =====
+id  nombre         estado     instancia_slug  instancia_usuario_id  stripe_subscription_id  lemon_subscription_id
+--  -------------  ---------  --------------  --------------------  ----------------------  ---------------------
+2   santiago paez  cancelled  maria-paez      17                                            2269820              
+
+===== clientes activos totales =====
+id  nombre         estado     stripe_subscription_id  lemon_subscription_id
+--  -------------  ---------  ----------------------  ---------------------
+1   Diego          active                             2170223              
+2   santiago paez  cancelled                          2269820              
+
+# exit=0
