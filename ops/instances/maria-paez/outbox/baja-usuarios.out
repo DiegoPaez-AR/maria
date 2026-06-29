@@ -1,0 +1,47 @@
+# ejecutado: 2026-06-29T20:58:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   IDB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   IDS="11,14,15,17"
+#   echo "== ANTES =="
+#   sqlite3 -header -column "$IDB" "SELECT id, nombre, activo FROM usuarios WHERE id IN ($IDS) ORDER BY id;"
+#   echo
+#   echo "== UPDATE activo=0 =="
+#   sqlite3 "$IDB" "UPDATE usuarios SET activo=0 WHERE id IN ($IDS);"
+#   echo "filas afectadas: $(sqlite3 "$IDB" "SELECT changes();")"
+#   echo
+#   echo "== DESPUÉS =="
+#   sqlite3 -header -column "$IDB" "SELECT id, nombre, activo FROM usuarios WHERE id IN ($IDS) ORDER BY id;"
+#   echo
+#   echo "== usuarios activos restantes =="
+#   sqlite3 -header -column "$IDB" "SELECT COUNT(*) AS activos FROM usuarios WHERE activo=1;"
+
+# ───── output ─────
+== ANTES ==
+id  nombre             activo
+--  -----------------  ------
+11  Rubén Ward         1     
+14  Facundo Diaz       1     
+15  Guillermo Bagnato  1     
+17  santiago paez      1     
+
+== UPDATE activo=0 ==
+filas afectadas: 0
+
+== DESPUÉS ==
+id  nombre             activo
+--  -----------------  ------
+11  Rubén Ward         0     
+14  Facundo Diaz       0     
+15  Guillermo Bagnato  0     
+17  santiago paez      0     
+
+== usuarios activos restantes ==
+activos
+-------
+15     
+
+# exit=0
