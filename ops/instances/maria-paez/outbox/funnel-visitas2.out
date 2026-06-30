@@ -1,0 +1,122 @@
+# ejecutado: 2026-06-30T19:19:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   collect(){
+#     for f in /var/log/nginx/intensa.io.access.log /var/log/nginx/intensa.io.access.log.1; do
+#       [ -f "$f" ] && cat "$f"
+#     done
+#     for g in /var/log/nginx/intensa.io.access.log.*.gz; do
+#       [ -f "$g" ] && zcat "$g"
+#     done
+#   }
+#   echo "=== total lineas intensa.io (todos los logs) ==="; collect | wc -l
+#   
+#   echo; echo "=== paths GET unicos que contienen 'signup' o '/maria' (top 40) ==="
+#   collect | grep -aoE 'GET [^"? ]*' | sed 's/GET //' | grep -aiE 'signup|^/maria' | sort | uniq -c | sort -rn | head -40
+#   
+#   echo; echo "=== muestra lineas signup (15) ==="
+#   collect | grep -aiE 'signup' | tail -15
+#   
+#   WIN='\[(2[3-9]|30)/Jun/2026'
+#   PAGE='GET (/maria)?/signup/?( |[?])'
+#   
+#   echo; echo "=== VISITAS pagina signup (HTML) ventana 23-30 Jun ==="
+#   collect | grep -aE "$WIN" | grep -aE "$PAGE" | grep -avE '\.(css|js|png|jpg|jpeg|svg|ico|woff2?|map)' | wc -l
+#   echo "--- IPs unicas ---"
+#   collect | grep -aE "$WIN" | grep -aE "$PAGE" | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | awk '{print $1}' | sort -u | wc -l
+#   echo "--- sin bots ---"
+#   collect | grep -aE "$WIN" | grep -aE "$PAGE" | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | grep -aivE 'bot|spider|crawl|slurp|facebookexternal|headless|curl|wget|python-requests|scanner|monitor|uptime|pingdom|lighthouse|TLM-Audit' | wc -l
+#   echo "--- por dia ---"
+#   collect | grep -aE "$WIN" | grep -aE "$PAGE" | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | grep -aoE '\[[0-9]{2}/Jun/2026' | sort | uniq -c
+#   echo "--- top UA ---"
+#   collect | grep -aE "$WIN" | grep -aE "$PAGE" | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | grep -aoE '"[^"]*"$' | sort | uniq -c | sort -rn | head -8
+#   echo "--- detalle lineas pagina signup en ventana (todas) ---"
+#   collect | grep -aE "$WIN" | grep -aE "$PAGE" | grep -avE '\.(css|js|png|jpg|svg|ico|woff)'
+#   
+#   echo; echo "=== Home /maria/ (landing) ventana ==="
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/?( |[?])' | grep -avE 'signup|cuenta|/api/|\.(css|js|png|jpg|svg|ico|woff|map)' | wc -l
+#   echo "=== DONE ==="
+
+# ───── output ─────
+=== total lineas intensa.io (todos los logs) ===
+14591
+
+=== paths GET unicos que contienen 'signup' o '/maria' (top 40) ===
+    127 /maria/
+     39 /maria/script.js
+     38 /maria/styles.css
+     17 /maria/signup/
+     10 /maria/signup/script.js
+      9 /maria/signup/styles.css
+      5 /maria/terminos/
+      4 /maria/cuenta/
+      3 /maria/api/cuenta/me
+      3 /maria
+      2 /signup
+      2 /maria/terminos/styles.css
+      2 /maria/terminos/script.js
+      2 /maria/signup
+      1 /maria/cuenta/styles.css
+      1 /maria/cuenta/script.js
+
+=== muestra lineas signup (15) ===
+181.26.46.215 - - [17/Jun/2026:22:52:28 -0300] "POST /maria/api/signup/start HTTP/1.1" 200 101 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15"
+181.26.46.215 - - [17/Jun/2026:22:53:25 -0300] "POST /maria/api/signup/verify HTTP/1.1" 200 256 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15"
+181.167.76.24 - - [16/Jun/2026:01:35:20 -0300] "GET /maria/signup/ HTTP/1.1" 200 2065 "https://intensa.io/maria/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+181.167.76.24 - - [16/Jun/2026:01:35:20 -0300] "GET /maria/signup/styles.css?v=20260524-074702 HTTP/1.1" 200 1834 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+181.167.76.24 - - [16/Jun/2026:01:35:20 -0300] "GET /maria/signup/script.js?v=20260524-074702 HTTP/1.1" 200 3447 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+181.167.76.24 - - [16/Jun/2026:01:35:27 -0300] "GET /maria/terminos/ HTTP/1.1" 200 4609 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+185.177.72.69 - - [23/Jun/2026:00:15:10 -0300] "GET /signup HTTP/1.1" 200 4477 "-" "curl/8.7.1"
+139.45.180.6 - - [23/Jun/2026:01:31:16 -0300] "GET /maria/signup/ HTTP/1.1" 200 2171 "https://secure.helpscout.net/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+139.45.180.6 - - [23/Jun/2026:01:31:16 -0300] "GET /maria/signup/styles.css?v=20260617-231901 HTTP/1.1" 200 1834 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+139.45.180.6 - - [23/Jun/2026:01:31:16 -0300] "GET /maria/signup/script.js?v=20260617-231901 HTTP/1.1" 200 4019 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+139.45.180.6 - - [23/Jun/2026:01:31:17 -0300] "GET /favicon.ico HTTP/1.1" 200 4477 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+139.45.180.6 - - [23/Jun/2026:01:31:21 -0300] "GET /maria/ HTTP/1.1" 200 6708 "https://intensa.io/maria/signup/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+190.210.147.135 - - [23/Jun/2026:14:33:14 -0300] "GET /maria/signup/ HTTP/1.1" 200 2171 "https://intensa.io/maria/" "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/149.0.7827.137 Mobile/15E148 Safari/604.1"
+190.210.147.135 - - [23/Jun/2026:14:33:15 -0300] "GET /maria/signup/script.js?v=20260617-231901 HTTP/1.1" 200 4019 "https://intensa.io/maria/signup/" "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/149.0.7827.137 Mobile/15E148 Safari/604.1"
+190.210.147.135 - - [23/Jun/2026:14:33:15 -0300] "GET /maria/signup/styles.css?v=20260617-231901 HTTP/1.1" 200 1834 "https://intensa.io/maria/signup/" "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/149.0.7827.137 Mobile/15E148 Safari/604.1"
+
+=== VISITAS pagina signup (HTML) ventana 23-30 Jun ===
+17
+--- IPs unicas ---
+8
+--- sin bots ---
+12
+--- por dia ---
+      3 [23/Jun/2026
+      6 [29/Jun/2026
+      8 [30/Jun/2026
+--- top UA ---
+      7 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+      4 "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)"
+      3 "curl/8.5.0"
+      1 "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.200 Mobile Safari/537.36 (compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)"
+      1 "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/149.0.7827.137 Mobile/15E148 Safari/604.1"
+      1 "curl/8.7.1"
+--- detalle lineas pagina signup en ventana (todas) ---
+34.162.230.222 - - [30/Jun/2026:00:17:04 -0300] "GET /maria/signup HTTP/1.1" 301 178 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)"
+34.162.230.222 - - [30/Jun/2026:00:17:05 -0300] "GET /maria/signup/ HTTP/1.1" 200 2289 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)"
+127.0.0.1 - - [30/Jun/2026:00:27:01 -0300] "GET /maria/signup/ HTTP/1.1" 200 6306 "-" "curl/8.5.0"
+34.162.230.222 - - [30/Jun/2026:00:48:21 -0300] "GET /maria/signup?status=ok HTTP/1.1" 301 178 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)"
+34.162.230.222 - - [30/Jun/2026:00:48:22 -0300] "GET /maria/signup/?status=ok HTTP/1.1" 200 2455 "-" "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Claude-User/1.0; +claude-user@anthropic.com)"
+181.26.0.101 - - [30/Jun/2026:00:51:40 -0300] "GET /maria/signup/ HTTP/1.1" 200 2455 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+181.26.16.142 - - [30/Jun/2026:17:30:00 -0300] "GET /maria/signup/ HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+74.125.218.225 - - [30/Jun/2026:19:15:13 -0300] "GET /maria/signup/ HTTP/1.1" 200 2455 "-" "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.200 Mobile Safari/537.36 (compatible; AdsBot-Google-Mobile; +http://www.google.com/mobile/adsbot.html)"
+181.26.0.101 - - [29/Jun/2026:20:56:57 -0300] "GET /maria/signup/ HTTP/1.1" 200 2171 "https://intensa.io/maria/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+181.26.0.101 - - [29/Jun/2026:21:03:29 -0300] "GET /maria/signup/?status=ok HTTP/1.1" 200 2171 "https://checkout.stripe.com/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+127.0.0.1 - - [29/Jun/2026:21:08:05 -0300] "GET /maria/signup/ HTTP/1.1" 200 5985 "-" "curl/8.5.0"
+127.0.0.1 - - [29/Jun/2026:21:08:05 -0300] "GET /maria/signup/ HTTP/1.1" 200 5985 "-" "curl/8.5.0"
+181.26.0.101 - - [29/Jun/2026:21:12:08 -0300] "GET /maria/signup/?status=ok HTTP/1.1" 200 2289 "https://checkout.stripe.com/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+181.26.0.101 - - [29/Jun/2026:23:06:01 -0300] "GET /maria/signup/?status=ok HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+185.177.72.69 - - [23/Jun/2026:00:15:10 -0300] "GET /signup HTTP/1.1" 200 4477 "-" "curl/8.7.1"
+139.45.180.6 - - [23/Jun/2026:01:31:16 -0300] "GET /maria/signup/ HTTP/1.1" 200 2171 "https://secure.helpscout.net/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36"
+190.210.147.135 - - [23/Jun/2026:14:33:14 -0300] "GET /maria/signup/ HTTP/1.1" 200 2171 "https://intensa.io/maria/" "Mozilla/5.0 (iPhone; CPU iPhone OS 26_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/149.0.7827.137 Mobile/15E148 Safari/604.1"
+
+=== Home /maria/ (landing) ventana ===
+124
+=== DONE ===
+
+# exit=0
