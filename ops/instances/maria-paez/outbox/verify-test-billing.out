@@ -1,0 +1,74 @@
+# ejecutado: 2026-06-29T21:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   IDB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   CDB=$(grep -E '^CONTROL_DB=' /root/secretaria/.env-intensa-api | cut -d= -f2-); CDB=${CDB:-/root/secretaria/state/control/control.sqlite}
+#   SK=$(grep -E '^STRIPE_SECRET_KEY=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+#   
+#   echo "===== webhook_events recientes ====="
+#   sqlite3 -header -column "$CDB" "SELECT id, event_name, procesado, COALESCE(error,'') err, recibido_en FROM webhook_events ORDER BY id DESC LIMIT 8;"
+#   echo
+#   echo "===== cliente santiago (control) ====="
+#   sqlite3 -header -column "$CDB" "SELECT id, nombre, estado, stripe_customer_id, stripe_subscription_id, ultimo_cobro_en, proximo_cobro_en, ultimo_evento FROM clientes WHERE id=2;"
+#   echo
+#   echo "===== usuario 17 (instancia) ====="
+#   sqlite3 -header -column "$IDB" "SELECT id, nombre, activo, bienvenida_enviada, email, wa_cus FROM usuarios WHERE id=17;"
+#   echo
+#   echo "===== suscripción en Stripe (estado real) ====="
+#   SUB=$(sqlite3 "$CDB" "SELECT stripe_subscription_id FROM clientes WHERE id=2;")
+#   echo "sub=$SUB"
+#   if [ -n "$SUB" ]; then
+#     curl -s "https://api.stripe.com/v1/subscriptions/${SUB}" -u "${SK}:" | python3 -c "import json,sys;d=json.load(sys.stdin);print('status=',d.get('status'),'| current_period_end=',d.get('current_period_end'),'| cancel_at_period_end=',d.get('cancel_at_period_end'))" 2>/dev/null
+#   fi
+#   echo
+#   echo "===== últimas líneas de log webhook ====="
+#   pm2 logs intensa-api --lines 30 --nostream 2>/dev/null | grep -iE "webhook|checkout|cliente|bienvenida|firma|signature|error" | tail -20
+
+# ───── output ─────
+===== webhook_events recientes =====
+id  event_name                     procesado  err  recibido_en        
+--  -----------------------------  ---------  ---  -------------------
+23  invoice.paid                   1               2026-06-30 00:03:27
+22  customer.subscription.created  1               2026-06-30 00:03:27
+21  checkout.session.completed     1               2026-06-30 00:03:27
+20  subscription_payment_success   1               2026-06-26 19:32:58
+19  subscription_updated           1               2026-06-26 18:32:30
+18  subscription_updated           1               2026-06-26 17:57:20
+17  subscription_payment_success   1               2026-06-25 02:55:55
+16  subscription_updated           1               2026-06-25 01:55:18
+
+===== cliente santiago (control) =====
+id  nombre         estado  stripe_customer_id  stripe_subscription_id        ultimo_cobro_en      proximo_cobro_en  ultimo_evento     
+--  -------------  ------  ------------------  ----------------------------  -------------------  ----------------  ------------------
+2   Santiago Paez  active  cus_UnPzLwbfxjAY8X  sub_1Tnp97BSnDFb8JXImxvnVx4m  2026-06-30 00:03:27                    checkout_completed
+
+===== usuario 17 (instancia) =====
+id  nombre         activo  bienvenida_enviada  email             wa_cus            
+--  -------------  ------  ------------------  ----------------  ------------------
+17  Santiago Paez  1       1                   santiago@paez.is  5491164393520@c.us
+
+===== suscripción en Stripe (estado real) =====
+sub=sub_1Tnp97BSnDFb8JXImxvnVx4m
+status= active | current_period_end= None | cancel_at_period_end= False
+
+===== últimas líneas de log webhook =====
+/root/.pm2/logs/intensa-api-error.log last 30 lines:
+1|intensa- | 2026-06-17 22:42:47: [ERROR] POST /signup/start: Error: Captcha requerido
+1|intensa- | 2026-06-17 22:43:26: [ERROR] POST /signup/start: Error: Captcha requerido
+1|intensa- | 2026-06-28 02:17:06: [webhook] firma inválida: missing stripe-signature
+1|intensa- | 2026-06-28 02:17:03: [db] migración: clientes.stripe_customer_id agregada
+1|intensa- | 2026-06-28 02:17:03: [db] migración: clientes.stripe_subscription_id agregada
+1|intensa- | 2026-06-29 21:03:27: [webhook] checkout.session.completed obj=cs_live_b1PuCb2p5HUgo4HSQEp4jNukpRnDIFJyH4cyFN9SA4HUTcMy6PTVaMndAO
+1|intensa- | 2026-06-29 21:03:27: [webhook] checkout completado: email=santiago@paez.is sub=sub_1Tnp97BSnDFb8JXImxvnVx4m signup_token=624daf4c…
+1|intensa- | 2026-06-29 21:03:27: [webhook] customer.subscription.created obj=sub_1Tnp97BSnDFb8JXImxvnVx4m
+1|intensa- | 2026-06-29 21:03:27: [webhook] evento customer.subscription.created sin handler — guardado y marcado OK
+1|intensa- | 2026-06-29 21:03:27: [webhook] usuario reactivado en maria-paez (id=17)
+1|intensa- | 2026-06-29 21:03:27: [webhook] cliente existente (id=2, estado=cancelled) → active
+1|intensa- | 2026-06-29 21:03:27: [webhook] invoice.paid obj=in_1Tnp95BSnDFb8JXIXhC3pbYZ
+1|intensa- | 2026-06-29 21:03:27: [webhook] bienvenida enviada a 5491164393520 via maria-paez
+1|intensa- | 2026-06-29 21:03:27: [webhook] CLIENTE CREADO: santiago@paez.is → maria-paez/usuario_id=17
+
+# exit=0
