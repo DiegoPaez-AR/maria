@@ -1,0 +1,76 @@
+# ejecutado: 2026-06-29T21:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   echo "===== 1) reload intensa-api (toma webhook.js nuevo) ====="
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only intensa-api --update-env 2>&1 | tail -2
+#   sleep 2
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys
+#   for p in json.load(sys.stdin):
+#     if p.get('name')=='intensa-api':
+#       print('  intensa-api status=',p.get('pm2_env',{}).get('status'))"
+#   echo
+#   echo "===== 2) deploy del sitio intensa.io (publica a /var/www) ====="
+#   bash /root/secretaria/ops/sites/intensa.io/deploy.sh 2>&1 | tail -40
+#   echo
+#   echo "===== 3) checks del signup publicado ====="
+#   echo -n "copy nuevo (sin 'prueba gratuita')? "
+#   if curl -s -H "Host: intensa.io" https://127.0.0.1/maria/signup/ -k | grep -q "prueba gratuita de 7"; then echo "TODAVÍA viejo (mal)"; else echo "OK actualizado"; fi
+#   echo -n "step-listo presente en el HTML? "
+#   curl -s -H "Host: intensa.io" https://127.0.0.1/maria/signup/ -k | grep -q 'id="step-listo"' && echo "OK" || echo "NO (mal)"
+#   echo -n "listo.sub en script.js publicado? "
+#   curl -s -H "Host: intensa.io" "https://127.0.0.1/maria/signup/script.js" -k | grep -q "listo.sub" && echo "OK" || echo "NO (revisar cache-bust)"
+
+# ───── output ─────
+===== 1) reload intensa-api (toma webhook.js nuevo) =====
+[PM2] Applying action reloadProcessId on app [intensa-api](ids: [ 1 ])
+[PM2] [intensa-api](1) ✓
+  intensa-api status= online
+
+===== 2) deploy del sitio intensa.io (publica a /var/www) =====
+═══ 1. Crear/actualizar docroot ═══
+'/root/secretaria/ops/sites/intensa.io/styles.css' -> '/var/www/intensa.io/styles.css'
+'/root/secretaria/ops/sites/intensa.io/script.js' -> '/var/www/intensa.io/script.js'
+  index.html con cache-bust v=20260629-210805
+
+═══ 1b. Sincronizar landings (subdirs de SRC/) ═══
+  → maria
+'/root/secretaria/ops/sites/intensa.io/maria//styles.css' -> '/var/www/intensa.io/maria/styles.css'
+'/root/secretaria/ops/sites/intensa.io/maria//script.js' -> '/var/www/intensa.io/maria/script.js'
+    index.html con cache-bust v=20260629-210805
+    cache-bust v=20260629-210805 en cuenta/index.html
+    cache-bust v=20260629-210805 en signup/index.html
+    cache-bust v=20260629-210805 en terminos/index.html
+
+═══ 2. Vhost nginx ═══
+Vhost existente tiene SSL configurado (post-certbot) — NO TOCANDO el archivo.
+Si querés actualizar la config del vhost a mano, editá /etc/nginx/sites-available/intensa.io.conf directamente.
+symlink ya existe
+
+═══ 3. Validar config nginx ═══
+2026/06/29 21:08:05 [warn] 2387266#2387266: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/intensa.io.conf:15
+2026/06/29 21:08:05 [warn] 2387266#2387266: duplicate MIME type "text/html" in /etc/nginx/sites-enabled/pmovil.conf:11
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
+═══ 4. Reload nginx (atomic) ═══
+active
+
+═══ 5. Smoke test local ═══
+intensa.io        HTTP 301
+www.intensa.io    HTTP 301
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+
+═══ DONE ═══
+
+===== 3) checks del signup publicado =====
+copy nuevo (sin 'prueba gratuita')? OK actualizado
+step-listo presente en el HTML? OK
+listo.sub en script.js publicado? OK
+
+# exit=0
