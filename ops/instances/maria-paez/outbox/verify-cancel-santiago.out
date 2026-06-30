@@ -1,0 +1,77 @@
+# ejecutado: 2026-06-29T21:17:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   IDB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   CDB=$(grep -E '^CONTROL_DB=' /root/secretaria/.env-intensa-api | cut -d= -f2-); CDB=${CDB:-/root/secretaria/state/control/control.sqlite}
+#   SK=$(grep -E '^STRIPE_SECRET_KEY=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+#   
+#   echo "===== cliente santiago (control) ====="
+#   sqlite3 -header -column "$CDB" "SELECT id, nombre, estado, stripe_subscription_id, cancelado_en, inactivado_en, ultimo_evento, ultimo_evento_en FROM clientes WHERE id=2;"
+#   echo
+#   echo "===== usuario 17 (instancia) — debería quedar activo=0 ====="
+#   sqlite3 -header -column "$IDB" "SELECT id, nombre, activo FROM usuarios WHERE id=17;"
+#   echo
+#   echo "===== webhook_events recientes ====="
+#   sqlite3 -header -column "$CDB" "SELECT id, event_name, procesado, COALESCE(error,'') err, recibido_en FROM webhook_events ORDER BY id DESC LIMIT 8;"
+#   echo
+#   echo "===== suscripción en Stripe (estado real) ====="
+#   SUB=$(sqlite3 "$CDB" "SELECT stripe_subscription_id FROM clientes WHERE id=2;")
+#   echo "sub=$SUB"
+#   [ -n "$SUB" ] && curl -s "https://api.stripe.com/v1/subscriptions/${SUB}" -u "${SK}:" | python3 -c "import json,sys;d=json.load(sys.stdin);print('status=',d.get('status'),'| cancel_at_period_end=',d.get('cancel_at_period_end'),'| canceled_at=',d.get('canceled_at'),'| ended_at=',d.get('ended_at'))" 2>/dev/null
+#   echo
+#   echo "===== instancia: contador de usuarios ====="
+#   sqlite3 -header -column "$CDB" "SELECT slug, usuarios_actuales, max_usuarios FROM instances;"
+#   echo
+#   echo "===== logs webhook (cancel/deleted/portal) ====="
+#   pm2 logs intensa-api --lines 40 --nostream 2>/dev/null | grep -iE "cancel|deleted|subscription|portal|cliente|error" | tail -20
+
+# ───── output ─────
+===== cliente santiago (control) =====
+id  nombre         estado     stripe_subscription_id        cancelado_en         inactivado_en  ultimo_evento           ultimo_evento_en   
+--  -------------  ---------  ----------------------------  -------------------  -------------  ----------------------  -------------------
+2   Santiago Paez  cancelled  sub_1Tnp97BSnDFb8JXImxvnVx4m  2026-06-30 00:14:06                 subscription_cancelled  2026-06-30 00:14:06
+
+===== usuario 17 (instancia) — debería quedar activo=0 =====
+id  nombre         activo
+--  -------------  ------
+17  Santiago Paez  0     
+
+===== webhook_events recientes =====
+id  event_name                     procesado  err  recibido_en        
+--  -----------------------------  ---------  ---  -------------------
+24  customer.subscription.deleted  1               2026-06-30 00:14:06
+23  invoice.paid                   1               2026-06-30 00:03:27
+22  customer.subscription.created  1               2026-06-30 00:03:27
+21  checkout.session.completed     1               2026-06-30 00:03:27
+20  subscription_payment_success   1               2026-06-26 19:32:58
+19  subscription_updated           1               2026-06-26 18:32:30
+18  subscription_updated           1               2026-06-26 17:57:20
+17  subscription_payment_success   1               2026-06-25 02:55:55
+
+===== suscripción en Stripe (estado real) =====
+sub=sub_1Tnp97BSnDFb8JXImxvnVx4m
+status= canceled | cancel_at_period_end= False | canceled_at= 1782778445 | ended_at= 1782778445
+
+===== instancia: contador de usuarios =====
+slug        usuarios_actuales  max_usuarios
+----------  -----------------  ------------
+maria-paez  3                  25          
+
+===== logs webhook (cancel/deleted/portal) =====
+/root/.pm2/logs/intensa-api-error.log last 40 lines:
+1|intensa- | 2026-06-17 22:42:47: [ERROR] POST /signup/start: Error: Captcha requerido
+1|intensa- | 2026-06-17 22:43:26: [ERROR] POST /signup/start: Error: Captcha requerido
+1|intensa- | 2026-06-29 21:12:30: [ERROR] GET /cuenta/me: Error: No autenticado
+1|intensa- | 2026-06-29 21:03:27: [webhook] customer.subscription.created obj=sub_1Tnp97BSnDFb8JXImxvnVx4m
+1|intensa- | 2026-06-29 21:03:27: [webhook] evento customer.subscription.created sin handler — guardado y marcado OK
+1|intensa- | 2026-06-29 21:03:27: [webhook] cliente existente (id=2, estado=cancelled) → active
+1|intensa- | 2026-06-29 21:03:27: [webhook] CLIENTE CREADO: santiago@paez.is → maria-paez/usuario_id=17
+1|intensa- | 2026-06-29 21:13:24: [2026-06-30T00:13:24.945Z] POST /portal → 200 342ms
+1|intensa- | 2026-06-29 21:14:05: [2026-06-30T00:14:05.778Z] POST /cancel → 200 508ms
+1|intensa- | 2026-06-29 21:14:06: [webhook] customer.subscription.deleted obj=sub_1Tnp97BSnDFb8JXImxvnVx4m
+1|intensa- | 2026-06-29 21:14:18: [2026-06-30T00:14:18.610Z] POST /portal → 200 342ms
+
+# exit=0
