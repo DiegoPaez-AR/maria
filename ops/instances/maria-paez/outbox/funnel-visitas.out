@@ -1,0 +1,139 @@
+# ejecutado: 2026-06-30T19:18:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   echo "=== nginx log files ==="
+#   ls -la /var/log/nginx/ 2>&1 | grep -iE "access" 
+#   
+#   # juntar logs (current + rotados sin comprimir + gz), todo a stdout
+#   collect(){
+#     for f in /var/log/nginx/access.log /var/log/nginx/access.log.1; do
+#       [ -f "$f" ] && cat "$f"
+#     done
+#     for g in /var/log/nginx/access.log.*.gz; do
+#       [ -f "$g" ] && zcat "$g"
+#     done
+#   }
+#   
+#   echo; echo "=== muestra: lineas que mencionan signup (ultimas 15) ==="
+#   collect | grep -aiE "signup" | tail -15
+#   
+#   echo; echo "=== paths GET con 'signup' (conteo por path exacto, todo el log) ==="
+#   collect | grep -aoE '"GET [^"? ]*signup[^"? ]*' | sed 's/"GET //' | sort | uniq -c | sort -rn | head -30
+#   
+#   # ventana ultimos 7 dias: 23..30 Jun 2026
+#   WIN='\[(2[3-9]|30)/Jun/2026'
+#   
+#   echo; echo "=== VISITAS a la PAGINA signup (HTML) en ventana 23-30 Jun ==="
+#   echo "--- hits a /maria/signup/ (HTML, excluye assets) ---"
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/signup/?( |[?])' | grep -avE '\.(css|js|png|jpg|jpeg|svg|ico|woff2?|map)' | wc -l
+#   echo "--- IPs unicas que vieron la pagina signup ---"
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/signup/?( |[?])' | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | awk '{print $1}' | sort -u | wc -l
+#   
+#   echo; echo "=== por dia (HTML signup, ventana) ==="
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/signup/?( |[?])' | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | grep -aoE '\[[0-9]{2}/Jun/2026' | sort | uniq -c
+#   
+#   echo; echo "=== VISITAS sin bots (UA conocidos) en ventana ==="
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/signup/?( |[?])' | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | grep -aivE 'bot|spider|crawl|slurp|bingpreview|facebookexternal|headless|curl|wget|python-requests|monitor|uptime|pingdom|gtmetrix|lighthouse' | wc -l
+#   
+#   echo; echo "=== top User-Agents que vieron signup (ventana) ==="
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/signup/?( |[?])' | grep -avE '\.(css|js|png|jpg|svg|ico|woff)' | grep -aoE '"[^"]*"$' | sort | uniq -c | sort -rn | head -10
+#   
+#   echo; echo "=== tambien: landing intensa.io/maria/ (home) en ventana ==="
+#   collect | grep -aE "$WIN" | grep -aE 'GET /maria/?( |[?])' | grep -avE 'signup|cuenta|/api/|\.(css|js|png|jpg|svg|ico|woff|map)' | wc -l
+#   echo "=== DONE ==="
+
+# ───── output ─────
+=== nginx log files ===
+-rw-r-----  1 www-data adm     62942 Jun 30 19:09 access.log
+-rw-r-----  1 www-data adm    534843 Jun 29 23:55 access.log.1
+-rw-r-----  1 www-data adm     10696 Jun 20 23:55 access.log.10.gz
+-rw-r-----  1 www-data adm      9060 Jun 19 23:59 access.log.11.gz
+-rw-r-----  1 www-data adm     10573 Jun 18 23:48 access.log.12.gz
+-rw-r-----  1 www-data adm     14030 Jun 17 23:57 access.log.13.gz
+-rw-r-----  1 www-data adm      9481 Jun 16 23:58 access.log.14.gz
+-rw-r-----  1 www-data adm     13235 Jun 28 23:56 access.log.2.gz
+-rw-r-----  1 www-data adm     14166 Jun 27 23:50 access.log.3.gz
+-rw-r-----  1 www-data adm    122080 Jun 26 23:53 access.log.4.gz
+-rw-r-----  1 www-data adm     14351 Jun 25 23:57 access.log.5.gz
+-rw-r-----  1 www-data adm     13246 Jun 24 23:55 access.log.6.gz
+-rw-r-----  1 www-data adm     12671 Jun 23 23:43 access.log.7.gz
+-rw-r-----  1 www-data adm     14882 Jun 22 23:54 access.log.8.gz
+-rw-r-----  1 www-data adm      9965 Jun 21 23:57 access.log.9.gz
+-rw-r-----  1 www-data adm    265977 Jun 30 19:15 intensa.io.access.log
+-rw-r-----  1 www-data adm    432762 Jun 29 23:58 intensa.io.access.log.1
+-rw-r-----  1 www-data adm      6803 Jun 20 23:56 intensa.io.access.log.10.gz
+-rw-r-----  1 www-data adm     11338 Jun 19 23:50 intensa.io.access.log.11.gz
+-rw-r-----  1 www-data adm      6120 Jun 18 23:57 intensa.io.access.log.12.gz
+-rw-r-----  1 www-data adm      8673 Jun 17 23:55 intensa.io.access.log.13.gz
+-rw-r-----  1 www-data adm      8644 Jun 16 23:57 intensa.io.access.log.14.gz
+-rw-r-----  1 www-data adm     11540 Jun 28 23:38 intensa.io.access.log.2.gz
+-rw-r-----  1 www-data adm      4812 Jun 27 23:38 intensa.io.access.log.3.gz
+-rw-r-----  1 www-data adm     10858 Jun 26 23:55 intensa.io.access.log.4.gz
+-rw-r-----  1 www-data adm      8088 Jun 25 23:52 intensa.io.access.log.5.gz
+-rw-r-----  1 www-data adm     14646 Jun 24 23:56 intensa.io.access.log.6.gz
+-rw-r-----  1 www-data adm     25532 Jun 23 23:52 intensa.io.access.log.7.gz
+-rw-r-----  1 www-data adm      8378 Jun 22 23:43 intensa.io.access.log.8.gz
+-rw-r-----  1 www-data adm      5290 Jun 21 23:17 intensa.io.access.log.9.gz
+-rw-r-----  1 www-data adm     19978 Jun 30 19:09 pmovil.access.log
+-rw-r-----  1 www-data adm     13795 Jun 29 23:18 pmovil.access.log.1
+-rw-r-----  1 www-data adm      3933 Jun 20 23:46 pmovil.access.log.10.gz
+-rw-r-----  1 www-data adm      2997 Jun 19 23:18 pmovil.access.log.11.gz
+-rw-r-----  1 www-data adm      2793 Jun 18 23:40 pmovil.access.log.12.gz
+-rw-r-----  1 www-data adm      1887 Jun 17 23:40 pmovil.access.log.13.gz
+-rw-r-----  1 www-data adm      3512 Jun 16 23:47 pmovil.access.log.14.gz
+-rw-r-----  1 www-data adm      5448 Jun 28 23:49 pmovil.access.log.2.gz
+-rw-r-----  1 www-data adm      2304 Jun 27 23:56 pmovil.access.log.3.gz
+-rw-r-----  1 www-data adm      2559 Jun 26 23:56 pmovil.access.log.4.gz
+-rw-r-----  1 www-data adm      6926 Jun 25 23:55 pmovil.access.log.5.gz
+-rw-r-----  1 www-data adm      2779 Jun 24 23:35 pmovil.access.log.6.gz
+-rw-r-----  1 www-data adm      2628 Jun 23 23:36 pmovil.access.log.7.gz
+-rw-r-----  1 www-data adm      2901 Jun 22 23:44 pmovil.access.log.8.gz
+-rw-r-----  1 www-data adm      2230 Jun 21 23:53 pmovil.access.log.9.gz
+-rw-r-----  1 www-data adm      6100 Jun 30 17:30 veritas-trace.access.log
+-rw-r-----  1 www-data adm     12429 Jun 29 23:55 veritas-trace.access.log.1
+-rw-r-----  1 www-data adm      2349 Jun 20 23:06 veritas-trace.access.log.10.gz
+-rw-r-----  1 www-data adm      1072 Jun 19 23:35 veritas-trace.access.log.11.gz
+-rw-r-----  1 www-data adm      1066 Jun 18 23:48 veritas-trace.access.log.12.gz
+-rw-r-----  1 www-data adm       884 Jun 17 23:19 veritas-trace.access.log.13.gz
+-rw-r-----  1 www-data adm      1882 Jun 16 23:23 veritas-trace.access.log.14.gz
+-rw-r-----  1 www-data adm      2297 Jun 28 23:52 veritas-trace.access.log.2.gz
+-rw-r-----  1 www-data adm      6585 Jun 27 23:52 veritas-trace.access.log.3.gz
+-rw-r-----  1 www-data adm      4825 Jun 26 23:59 veritas-trace.access.log.4.gz
+-rw-r-----  1 www-data adm      6889 Jun 25 23:43 veritas-trace.access.log.5.gz
+-rw-r-----  1 www-data adm      1060 Jun 24 23:37 veritas-trace.access.log.6.gz
+-rw-r-----  1 www-data adm      1047 Jun 23 23:11 veritas-trace.access.log.7.gz
+-rw-r-----  1 www-data adm      3495 Jun 22 23:48 veritas-trace.access.log.8.gz
+-rw-r-----  1 www-data adm      1465 Jun 21 23:47 veritas-trace.access.log.9.gz
+
+=== muestra: lineas que mencionan signup (ultimas 15) ===
+195.178.110.199 - - [27/Jun/2026:00:34:32 -0300] "GET /signup HTTP/1.1" 301 178 "-" "TLM-Audit-Scanner/1.0"
+185.177.72.11 - - [26/Jun/2026:04:36:37 -0300] "GET /signup HTTP/1.1" 404 134 "-" "curl/8.7.1"
+185.177.72.30 - - [26/Jun/2026:05:24:15 -0300] "GET /signup/%2eenv HTTP/1.1" 404 134 "-" "curl/8.7.1"
+185.177.72.30 - - [26/Jun/2026:05:24:38 -0300] "GET /testsignup%2ephp HTTP/1.1" 404 134 "-" "curl/8.7.1"
+
+=== paths GET con 'signup' (conteo por path exacto, todo el log) ===
+      2 /signup
+      1 /testsignup%2ephp
+      1 /signup/%2eenv
+
+=== VISITAS a la PAGINA signup (HTML) en ventana 23-30 Jun ===
+--- hits a /maria/signup/ (HTML, excluye assets) ---
+0
+--- IPs unicas que vieron la pagina signup ---
+0
+
+=== por dia (HTML signup, ventana) ===
+
+=== VISITAS sin bots (UA conocidos) en ventana ===
+0
+
+=== top User-Agents que vieron signup (ventana) ===
+
+=== tambien: landing intensa.io/maria/ (home) en ventana ===
+0
+=== DONE ===
+
+# exit=0
