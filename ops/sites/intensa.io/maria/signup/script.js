@@ -29,6 +29,10 @@ const TR = {
     'step3.h1': 'Casi listo. <em>Te llevamos al checkout.</em>',
     'step3.sub': 'En 3 segundos te redirigimos al checkout seguro de Stripe para finalizar el pago.',
     'step3.cta': 'Ir al checkout ahora',
+    'listo.h1': '¡Listo! <em>Tu suscripción está activa.</em>',
+    'listo.sub': 'María te va a escribir por WhatsApp en un momento para arrancar. Revisá tu teléfono.',
+    'listo.cta': 'Volver al inicio',
+    'msg.checkout_cancel': 'Cancelaste el pago. Cuando quieras, completá el alta de nuevo.',
     'err.generic': 'Algo falló. Probá de nuevo en un momento.',
     'err.bad_nombre': 'Ingresá tu nombre completo.',
     'err.bad_email': 'Email inválido.',
@@ -67,6 +71,10 @@ const TR = {
     'step3.h1': 'Almost done. <em>Taking you to checkout.</em>',
     'step3.sub': 'Redirecting you to the Stripe secure checkout in 3 seconds to complete payment.',
     'step3.cta': 'Go to checkout now',
+    'listo.h1': "You're all set! <em>Your subscription is active.</em>",
+    'listo.sub': 'María will message you on WhatsApp shortly to get started. Check your phone.',
+    'listo.cta': 'Back to home',
+    'msg.checkout_cancel': 'You canceled the payment. You can complete signup again whenever you want.',
     'err.generic': 'Something failed. Try again in a moment.',
     'err.bad_nombre': 'Enter your full name.',
     'err.bad_email': 'Invalid email.',
@@ -257,3 +265,14 @@ function turnstileToken() { return document.querySelector('[name="cf-turnstile-r
 function resetTurnstile() { try { if (typeof turnstile !== 'undefined') turnstile.reset(); } catch {} }
 
 applyI18n();
+
+// Retorno desde el checkout de Stripe: success_url/cancel_url traen ?status=ok|cancel
+(function handleCheckoutReturn() {
+  const status = new URLSearchParams(window.location.search).get('status');
+  if (status === 'ok') {
+    showStep('listo');
+  } else if (status === 'cancel') {
+    showStep('datos');
+    showError('errors-step1', t('msg.checkout_cancel'));
+  }
+})();

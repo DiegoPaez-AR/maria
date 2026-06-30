@@ -81,6 +81,13 @@ async function _procesar(eventName, evt) {
   }
 }
 
+// current_period_end puede venir en el top-level (API vieja) o en el primer
+// item de la suscripción (API nueva). Devolvemos unix segs o null.
+function _subPeriodEnd(sub) {
+  if (!sub) return null;
+  return sub.current_period_end || sub.items?.data?.[0]?.current_period_end || null;
+}
+
 async function _onCheckoutCompleted(session) {
   // Solo nos interesan los checkouts de suscripción que quedaron pagos.
   if (session.mode && session.mode !== 'subscription') {
@@ -100,7 +107,7 @@ async function _onCheckoutCompleted(session) {
   if (subscriptionId) {
     try {
       const sub = await stripe.api('GET', `/subscriptions/${subscriptionId}`);
-      proximoCobro = stripe.unixToIso(sub.current_period_end);
+      proximoCobro = stripe.unixToIso(_subPeriodEnd(sub));
     } catch (e) {
       console.warn(`[webhook] no pude leer subscription ${subscriptionId}: ${e.message}`);
     }
@@ -259,14 +266,18 @@ async function _onSubscriptionUpdated(sub) {
     UPDATE clientes SET ultimo_evento='subscription_updated', ultimo_evento_en=datetime('now'),
       proximo_cobro_en=?, actualizado=datetime('now')
     WHERE stripe_subscription_id=?
-  `).run(stripe.unixToIso(sub.current_period_end), subId);
+  `).run(stripe.unixToIso(_subPeriodEnd(sub)), subId);
 }
 
 async function _onPaymentSuccess(invoice) {
   const c = db.control();
   const subId = invoice.subscription ? String(invoice.subscription) : null;
   if (!subId) return;
-  const proximo = stripe.unixToIso(invoice.lines?.data?.[0]?.period?.end || invoice.period_end);
+  let proximo = stripe.unixToIso(invoice.lines?.data?.[0]?.period?.end || invoice.period_end);
+  if (!proximo) {
+    try { proximo = stripe.unixToIso(_subPeriodEnd(await stripe.api('GET', `/subscriptions/${subId}`))); }
+    catch (e) { console.warn(`[webhook] no pude leer sub ${subId} para proximo_cobro: ${e.message}`); }
+  }
   c.prepare(`
     UPDATE clientes SET
       estado=CASE WHEN estado='inactive' THEN 'active' ELSE estado END,
