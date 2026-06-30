@@ -407,9 +407,77 @@ function statsInstancia(env) {
   return stats;
 }
 
+// ─── Stats funnel suscripción (plano de control, global) ───────────────────
+
+function statsFunnel() {
+  const f = { ok:false, nota:null, visitasRaw:0, visitasHumanas:0, ipsHumanas:0,
+              iniciados:null, pagos:0, altas:0, activos:0, totalClientes:0, cancelados:0 };
+  const cutoff = Date.now() - 24*60*60*1000;
+  const MES = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+  const ES_BOT = /bot|spider|crawl|slurp|facebookexternal|headless|curl|wget|python-requests|scanner|monitor|uptime|pingdom|lighthouse|tlm-audit|claude-user|adsbot|preview/i;
+
+  // 1) Visitas a la página de signup (NGINX vhost intensa.io)
+  try {
+    const ipsH = new Set();
+    for (const lf of ['/var/log/nginx/intensa.io.access.log', '/var/log/nginx/intensa.io.access.log.1']) {
+      if (!fs.existsSync(lf)) continue;
+      for (const line of fs.readFileSync(lf, 'utf8').split('\n')) {
+        if (!/GET \/maria\/signup\/?[ ?]/.test(line)) continue;
+        if (/\.(css|js|png|jpe?g|svg|ico|woff2?|map)/.test(line)) continue;
+        const md = line.match(/\[(\d{2})\/([A-Za-z]{3})\/(\d{4}):(\d{2}:\d{2}:\d{2}) ([+-]\d{4})\]/);
+        if (!md || !MES[md[2]]) continue;
+        const off = md[5].slice(0,3) + ':' + md[5].slice(3);
+        const ts = Date.parse(`${md[3]}-${MES[md[2]]}-${md[1]}T${md[4]}${off}`);
+        if (isNaN(ts) || ts < cutoff) continue;
+        f.visitasRaw++;
+        const ip = line.split(' ')[0];
+        const ua = (line.match(/"[^"]*"\s*$/) || [''])[0];
+        if (!ES_BOT.test(ua) && ip !== '127.0.0.1') { f.visitasHumanas++; ipsH.add(ip); }
+      }
+    }
+    f.ipsHumanas = ipsH.size;
+  } catch (e) { f.nota = 'visitas n/d: ' + e.message; }
+
+  // 2) Signups iniciados (intensa-api log; POST .../start es inequívoco)
+  try {
+    const apilog = '/root/.pm2/logs/intensa-api-out.log';
+    if (fs.existsSync(apilog)) {
+      let n = 0;
+      for (const line of fs.readFileSync(apilog, 'utf8').split('\n')) {
+        if (!/POST \/(signup\/)?start /.test(line)) continue;
+        const m = line.match(/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/);
+        if (!m) continue;
+        const ts = Date.parse(`${m[1]}T${m[2]}-03:00`);
+        if (!isNaN(ts) && ts >= cutoff) n++;
+      }
+      f.iniciados = n;
+    }
+  } catch (e) { /* dejar null */ }
+
+  // 3) Control DB: pagos/checkout (24h), altas (24h), totales all-time
+  try {
+    const dbp = path.join(ROOT, 'state', 'control', 'control.sqlite');
+    if (fs.existsSync(dbp)) {
+      const db = new Database(dbp, { readonly: true });
+      try {
+        f.pagos = db.prepare("SELECT COUNT(*) c FROM webhook_events WHERE event_name IN ('checkout.session.completed','subscription_created') AND recibido_en >= datetime('now','-1 day')").get().c;
+        f.altas = db.prepare("SELECT COUNT(*) c FROM clientes WHERE creado >= datetime('now','-1 day')").get().c;
+        for (const r of db.prepare("SELECT estado, COUNT(*) c FROM clientes GROUP BY estado").all()) {
+          f.totalClientes += r.c;
+          if (r.estado === 'active') f.activos = r.c;
+          if (r.estado === 'cancelled') f.cancelados = r.c;
+        }
+        f.ok = true;
+      } finally { db.close(); }
+    } else { f.nota = (f.nota ? f.nota + ' · ' : '') + 'control.sqlite n/d'; }
+  } catch (e) { f.nota = (f.nota ? f.nota + ' · ' : '') + 'control DB: ' + e.message; }
+
+  return f;
+}
+
 // ─── Render texto plano (fallback) ────────────────────────────────────────
 
-function renderTexto(allStats, fechaStr) {
+function renderTexto(allStats, fechaStr, funnel) {
   const lines = [];
   lines.push(`📊 Reporte diario VPS Maria — ${fechaStr}`);
   lines.push('');
@@ -512,6 +580,20 @@ function renderTexto(allStats, fechaStr) {
     }
     lines.push('');
   }
+  if (funnel) {
+    const F = funnel;
+    lines.push('═══════════════════════════════════════════');
+    lines.push('FUNNEL SUSCRIPCIÓN (últimas 24h)');
+    lines.push('═══════════════════════════════════════════');
+    lines.push(`Visitas a la página: ${F.visitasHumanas} (${F.visitasRaw} brutas · ${F.ipsHumanas} IPs)`);
+    lines.push(`Signups iniciados:   ${F.iniciados == null ? 'n/d' : F.iniciados}`);
+    lines.push(`Pagos / checkout:    ${F.pagos}`);
+    lines.push(`Altas nuevas:        ${F.altas}`);
+    lines.push(`Clientes: ${F.activos} activos · ${F.totalClientes} total${F.cancelados ? ` · ${F.cancelados} cancelados` : ''}`);
+    if (F.pagos > 0 && F.altas === 0) lines.push('⚠ Hubo pago(s) pero 0 altas — revisar handler webhook.');
+    if (F.nota) lines.push(`⚠ ${F.nota}`);
+    lines.push('');
+  }
   lines.push('—');
   lines.push('Reporte automático generado por daily-report.js');
   return lines.join('\n');
@@ -548,7 +630,7 @@ function _evaluarSalud(s) {
   return { color: '#10b981', label: 'OK' };
 }
 
-function renderHTML(allStats, fechaStr) {
+function renderHTML(allStats, fechaStr, funnel) {
   const html = [];
   html.push(`<!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -767,6 +849,35 @@ function renderHTML(allStats, fechaStr) {
     html.push(`</table></td></tr>`);
   }
 
+  // ── Sección global: funnel de suscripción (plano de control) ──
+  if (funnel) {
+    const F = funnel;
+    const maxF = Math.max(F.visitasHumanas, F.iniciados || 0, F.pagos, F.altas, 1);
+    const gap = (F.pagos > 0 && F.altas === 0);
+    const _frow = (label, num, sub, color, disp) => `
+<tr style="border-top:1px solid #f1f5f9;">
+  <td style="padding:7px 24px;font-size:13px;color:#1f2937;width:46%;">${label}${sub ? `<div style="font-size:11px;color:#94a3b8;">${sub}</div>` : ''}</td>
+  <td style="padding:7px 0;">${_bar(num || 0, maxF, color)}</td>
+  <td style="padding:7px 24px;font-size:15px;font-weight:700;color:${color};text-align:right;">${disp == null ? num : disp}</td>
+</tr>`;
+    html.push(`<tr><td style="background:#fff;padding:0;">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr><td colspan="3" style="padding:16px 24px 4px;border-top:3px solid #eef2f7;">
+  <span style="font-size:15px;font-weight:700;color:#1f2937;">🪜 Funnel suscripción</span>
+  <span style="font-size:12px;color:#94a3b8;"> · últimas 24h · intensa.io/maria/signup</span>
+</td></tr>
+${_frow('Visitas a la página', F.visitasHumanas, `${F.visitasRaw} brutas − bots · ${F.ipsHumanas} IPs`, '#2f5d8f')}
+${_frow('Signups iniciados', F.iniciados || 0, 'POST /signup/start', '#3b6fb0', F.iniciados == null ? 'n/d' : F.iniciados)}
+${_frow('Pagos / checkout', F.pagos, 'webhooks checkout/subscription', '#5a9e7a')}
+${_frow('Altas (clientes nuevos)', F.altas, 'fila en control DB', gap ? '#dc2626' : '#10b981')}
+<tr><td colspan="3" style="padding:8px 24px 14px;font-size:12px;color:#475569;background:#fafbfc;">
+  Clientes: <b>${F.activos}</b> activos · ${F.totalClientes} total${F.cancelados ? ` · ${F.cancelados} cancelados` : ''}.
+  ${gap ? '<span style="color:#dc2626;font-weight:600;"> ⚠ Hubo pago(s) pero 0 altas — revisar handler de webhook.</span>' : ''}
+  ${F.nota ? `<div style="color:#b45309;margin-top:4px;">⚠ ${_esc(F.nota)}</div>` : ''}
+</td></tr>
+</table></td></tr>`);
+  }
+
   html.push(`<!-- Footer -->
 <tr><td style="padding:20px 24px;background:#1f2937;color:#94a3b8;border-radius:0 0 12px 12px;font-size:12px;">
   <div style="opacity:0.8;">Reporte automático · daily-report.js · 06:00 ART</div>
@@ -781,10 +892,10 @@ function renderHTML(allStats, fechaStr) {
 }
 
 // Wrapper que devuelve {texto, html}
-function renderReporte(allStats, fechaStr) {
+function renderReporte(allStats, fechaStr, funnel) {
   return {
-    texto: renderTexto(allStats, fechaStr),
-    html:  renderHTML(allStats, fechaStr),
+    texto: renderTexto(allStats, fechaStr, funnel),
+    html:  renderHTML(allStats, fechaStr, funnel),
   };
 }
 
@@ -806,7 +917,8 @@ async function main() {
 
   const fecha = new Date();
   const fechaStr = fecha.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', year: 'numeric' });
-  const { texto, html } = renderReporte(allStats, fechaStr);
+  const funnel = statsFunnel();
+  const { texto, html } = renderReporte(allStats, fechaStr, funnel);
 
   console.log('\n────── PREVIEW (texto) ──────');
   console.log(texto);
