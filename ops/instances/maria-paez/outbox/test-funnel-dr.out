@@ -1,0 +1,57 @@
+# ejecutado: 2026-06-30T19:28:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   cd /root/secretaria
+#   DUMP_HTML=/tmp/funnel-preview.html DRY_RUN=1 node daily-report.js > /tmp/dr.out 2>&1
+#   echo "### exit code: $? ###"
+#   echo "### TEXT — sección funnel ###"
+#   sed -n '/FUNNEL SUSCRIPCIÓN/,/Reporte automático generado/p' /tmp/dr.out
+#   echo
+#   echo "### HTML — bloque funnel (texto plano) ###"
+#   sed -n '/Funnel suscripción/,/Clientes:/p' /tmp/funnel-preview.html | sed 's/<[^>]*>//g' | grep -vE '^\s*$' | head -30
+#   echo
+#   echo "### ultimas lineas del run (errores si hubo) ###"
+#   tail -6 /tmp/dr.out
+#   echo "=== DONE ==="
+
+# ───── output ─────
+### exit code: 0 ###
+### TEXT — sección funnel ###
+FUNNEL SUSCRIPCIÓN (últimas 24h)
+═══════════════════════════════════════════
+Visitas a la página: 6 (14 brutas · 2 IPs)
+Signups iniciados:   1
+Pagos / checkout:    1
+Altas nuevas:        0
+Clientes: 1 activos · 2 total · 1 cancelados
+⚠ Hubo pago(s) pero 0 altas — revisar handler webhook.
+
+—
+Reporte automático generado por daily-report.js
+
+### HTML — bloque funnel (texto plano) ###
+  🪜 Funnel suscripción
+   · últimas 24h · intensa.io/maria/signup
+  Visitas a la página14 brutas − bots · 2 IPs
+  6
+  Signups iniciadosPOST /signup/start
+  1
+  Pagos / checkoutwebhooks checkout/subscription
+  1
+  Altas (clientes nuevos)fila en control DB
+  0
+  Clientes: 1 activos · 2 total · 1 cancelados.
+
+### ultimas lineas del run (errores si hubo) ###
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 17425 bytes
+
+HTML escrito en /tmp/funnel-preview.html
+DRY_RUN=1 — no mando email
+=== DONE ===
+
+# exit=0
