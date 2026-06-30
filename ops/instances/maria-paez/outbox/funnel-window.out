@@ -1,0 +1,76 @@
+# ejecutado: 2026-06-30T19:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set +e
+#   LOG=/root/.pm2/logs/intensa-api-out.log
+#   echo "### Request lines en ventana >= 2026-06-23 (clasificadas) ###"
+#   awk '$0 ~ /^2026-(06-2[3-9]|06-30)/' "$LOG" | grep -aE "→ [0-9]" 
+#   echo
+#   echo "### Conteo por endpoint en ventana ###"
+#   awk '$0 ~ /^2026-(06-2[3-9]|06-30)/' "$LOG" | grep -aoE "(GET|POST) /[a-zA-Z/-]*" | sort | uniq -c | sort -rn
+#   echo
+#   echo "### subscription/checkout events recientes (id, tipo) ###"
+#   DB=/root/secretaria/state/control/control.sqlite
+#   sqlite3 -column "$DB" "SELECT id, event_name, substr(coalesce(recibido_en, creado_en, ''),1,19) ts FROM webhook_events ORDER BY id DESC LIMIT 12;" 2>&1
+#   echo "### schema webhook_events (col de fecha) ###"
+#   sqlite3 "$DB" "PRAGMA table_info(webhook_events);" 2>&1
+#   echo "=== DONE ==="
+
+# ───── output ─────
+### Request lines en ventana >= 2026-06-23 (clasificadas) ###
+2026-06-24 22:55:18: [2026-06-25T01:55:18.930Z] POST / → 200 19ms
+2026-06-24 23:55:55: [2026-06-25T02:55:55.317Z] POST / → 200 8ms
+2026-06-26 14:57:20: [2026-06-26T17:57:20.834Z] POST / → 200 2ms
+2026-06-26 15:32:30: [2026-06-26T18:32:30.069Z] POST / → 200 2ms
+2026-06-26 16:32:58: [2026-06-26T19:32:58.135Z] POST / → 200 2ms
+2026-06-28 01:43:02: [2026-06-28T04:43:02.894Z] GET / → 404 9ms
+2026-06-28 01:44:04: [2026-06-28T04:44:04.954Z] GET / → 404 6ms
+2026-06-28 02:17:06: [2026-06-28T05:17:06.734Z] GET /health → 200 6ms
+2026-06-28 02:17:06: [2026-06-28T05:17:06.748Z] POST / → 401 6ms
+2026-06-29 21:02:10: [2026-06-30T00:02:10.715Z] POST /start → 200 510ms
+2026-06-29 21:02:43: [2026-06-30T00:02:43.946Z] POST /verify → 200 690ms
+2026-06-29 21:03:27: [2026-06-30T00:03:27.546Z] POST / → 200 3ms
+2026-06-29 21:03:27: [2026-06-30T00:03:27.821Z] POST / → 200 6ms
+2026-06-29 21:03:27: [2026-06-30T00:03:27.847Z] POST / → 200 439ms
+2026-06-29 21:12:30: [2026-06-30T00:12:30.549Z] GET /cuenta/me → 401 10ms
+2026-06-29 21:12:55: [2026-06-30T00:12:55.586Z] POST /login → 200 450ms
+2026-06-29 21:13:13: [2026-06-30T00:13:13.941Z] POST /verify → 200 3ms
+2026-06-29 21:13:14: [2026-06-30T00:13:14.201Z] GET /me → 200 2ms
+2026-06-29 21:13:24: [2026-06-30T00:13:24.945Z] POST /portal → 200 342ms
+2026-06-29 21:13:46: [2026-06-30T00:13:46.129Z] POST /reauth-code → 200 3ms
+2026-06-29 21:14:05: [2026-06-30T00:14:05.778Z] POST /cancel → 200 508ms
+2026-06-29 21:14:06: [2026-06-30T00:14:06.253Z] POST / → 200 6ms
+2026-06-29 21:14:14: [2026-06-30T00:14:14.142Z] GET /me → 200 1ms
+2026-06-29 21:14:18: [2026-06-30T00:14:18.610Z] POST /portal → 200 342ms
+
+### Conteo por endpoint en ventana ###
+     10 POST /
+      2 POST /verify
+      2 POST /portal
+      2 GET /me
+      2 GET /
+      1 POST /start
+      1 POST /reauth-code
+      1 POST /login
+      1 POST /cancel
+      1 GET /health
+      1 GET /cuenta/me
+
+### subscription/checkout events recientes (id, tipo) ###
+Error: in prepare, no such column: creado_en
+  LECT id, event_name, substr(coalesce(recibido_en, creado_en, ''),1,19) ts FROM
+                                      error here ---^
+### schema webhook_events (col de fecha) ###
+0|id|INTEGER|0||1
+1|ls_event_id|TEXT|1||0
+2|event_name|TEXT|1||0
+3|payload|TEXT|1||0
+4|procesado|INTEGER|1|0|0
+5|procesado_en|DATETIME|0||0
+6|error|TEXT|0||0
+7|recibido_en|DATETIME|0|CURRENT_TIMESTAMP|0
+=== DONE ===
+
+# exit=0
