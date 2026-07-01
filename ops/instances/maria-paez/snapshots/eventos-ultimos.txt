@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12824  2026-07-01 14:50:10  whatsapp  saliente   5491165286555@c.us                        No es nada de tu lado, el problema está de mi lado con los contactos adjuntos — a veces no me llegan bien. ¿Me mandás los números directamente acá en el chat, en texto? Con eso lo resuelvo sin problem
+
+12823  2026-07-01 14:50:10  sistema   interno                                              claude_call whatsapp: 17789ms prompt=78546c raw=7977c in=10t(cache_read=0 new=37476) out=610t ttfb=1679ms api=17285ms turnos=1 $0.1602                                                                  
+
 12822  2026-07-01 14:50:02  whatsapp  saliente   34342575317160@lid                        Diego, quería avisarte que no pude agendar el evento porque me faltaron los datos necesarios: el título, la fecha y el horario. ¿Me los confirmás y lo agendo enseguida?                                
 
 12821  2026-07-01 14:49:55  sistema   interno                                              acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
@@ -228,7 +232,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 12726  2026-07-01 14:09:35  sistema   interno                                              claude_call memoria-curada: 27077ms prompt=8400c raw=12155c in=10t(cache_read=6266 new=7732) out=1149t ttfb=1739ms api=26847ms turnos=1 $0.0518                                                         
 
 12725  2026-07-01 14:09:27  whatsapp  entrante   5491165286555@c.us                        es ese                                                                                                                                                                                                  
-
-12724  2026-07-01 14:09:08  sistema   interno                                              claude_call memoria-curada: 27066ms prompt=5974c raw=13414c in=10t(cache_read=0 new=12761) out=1286t ttfb=1837ms api=26131ms turnos=1 $0.0696                                                           
-
-12723  2026-07-01 14:08:41  whatsapp  entrante   5491132317896@c.us                        decile que no. y el dni que te pidio antes, se lo mandaste a briones y no a el. asi que mandaselo a el                                                                                                  
