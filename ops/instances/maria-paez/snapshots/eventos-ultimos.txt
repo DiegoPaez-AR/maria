@@ -1,5 +1,32 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13208  2026-07-01 23:07:59  whatsapp  saliente   34342575317160@lid  Les escribí a los tres. En cuanto alguno responda te paso el número.                                                                                                                                    
+
+13207  2026-07-01 23:07:59  sistema   interno                        claude_call whatsapp: 38320ms prompt=8333c raw=16810c in=28t(cache_read=235472 new=5667) out=782t ttfb=2067ms api=17040ms turnos=5 $0.1037                                                              
+
+13206  2026-07-01 23:07:54  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+13205  2026-07-01 23:07:49  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13204  2026-07-01 23:07:49  whatsapp  saliente   5491166431877@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                                      
+
+13203  2026-07-01 23:07:49  sistema   interno                        claude_call moderacion: 7700ms prompt=1546c raw=6509c in=10t(cache_read=22466 new=0) out=385t ttfb=1712ms api=7439ms turnos=1 $0.0047                                                                   
+
+13202  2026-07-01 23:07:41  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13201  2026-07-01 23:07:41  whatsapp  saliente   5491123348031@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                                      
+
+13200  2026-07-01 23:07:41  sistema   interno                        claude_call moderacion: 5703ms prompt=1546c raw=5736c in=10t(cache_read=22466 new=0) out=279t ttfb=1687ms api=4506ms turnos=1 $0.0041                                                                   
+
+13199  2026-07-01 23:07:35  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13198  2026-07-01 23:07:35  whatsapp  saliente   5491132350755@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                                      
+
+13197  2026-07-01 23:07:35  sistema   interno                        claude_call moderacion: 6429ms prompt=1546c raw=6261c in=10t(cache_read=0 new=22466) out=332t ttfb=1683ms api=5575ms turnos=1 $0.0302                                                                   
+
+13196  2026-07-01 23:07:20  whatsapp  entrante   5491132317896@c.us  Escribirle por WhatsApp a alguno de los tres barra chalacas, eso o a los tres.                                                                                                                          
+                                                                      El pedile es que te den el número de WhatsApp del barra chalaca de la calle caseros.                                                                                                                   
+
 13195  2026-07-01 23:05:50  whatsapp  saliente   34342575317160@lid  Sí, lo tengo. En la libreta tengo *Caseros Restaurante* con el +54 9 11 3662-1659 — puede ser ese.                                                                                                      
                                                                                                                                                                                                                                                                              
                                                                      Si no es, también tengo los otros locales de Barra Chalaca:                                                                                                                                             
@@ -189,29 +216,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13110  2026-07-01 22:25:41  sistema   interno                        claude_call whatsapp: 19051ms prompt=5199c raw=8644c in=20t(cache_read=64544 new=52400) out=259t ttfb=2127ms api=9194ms turnos=2 $0.2198                                                                
 
 13109  2026-07-01 22:25:37  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13108  2026-07-01 22:25:37  whatsapp  saliente   5491157276026@c.us  Genial Dodi, Gabriela confirma el domingo todo el día! ¿Tenés ganas de hacer algo en particular?                                                                                                        
-
-13107  2026-07-01 22:25:37  sistema   interno                        claude_call moderacion: 7047ms prompt=1544c raw=6602c in=10t(cache_read=0 new=22463) out=377t ttfb=1739ms api=5954ms turnos=1 $0.0304                                                                   
-
-13106  2026-07-01 22:25:21  whatsapp  entrante   5491165286555@c.us  Decile que si, que tiene ganas de hacer?                                                                                                                                                                
-
-13105  2026-07-01 22:23:07  whatsapp  saliente   34342575317160@lid  A nadie — me equivoqué al decir eso. No tengo un canal directo para reportar bugs del sistema. Si querés que se corrija, lo tendrías que reportar vos al equipo de soporte. Perdón por el wording imprec
-
-13104  2026-07-01 22:23:07  sistema   interno                        claude_call whatsapp: 16353ms prompt=7811c raw=7819c in=10t(cache_read=0 new=62916) out=379t ttfb=2165ms api=13523ms turnos=1 $0.2417                                                                   
-
-13103  2026-07-01 22:22:49  whatsapp  entrante   5491132317896@c.us  Y a quien se lo escalaste?                                                                                                                                                                              
-
-13102  2026-07-01 22:16:17  whatsapp  saliente   34342575317160@lid  Listo, le pasé a Gabi. Entiendo que esto se repite — hay un problema en cómo el sistema maneja los mensajes de Dodi cuando son para otra usuaria. Lo estoy escalando para que se corrija.               
-
-13101  2026-07-01 22:16:16  sistema   interno                        claude_call whatsapp: 24589ms prompt=8007c raw=11111c in=20t(cache_read=58561 new=59083) out=573t ttfb=2112ms api=15526ms turnos=2 $0.2478                                                              
-
-13100  2026-07-01 22:16:09  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13099  2026-07-01 22:16:09  whatsapp  saliente   5491165286555@c.us  Gabi, Dodi dice que le gustaría que sea un programa de todo el día el domingo. ¿Te cierra?                                                                                                              
-
-13098  2026-07-01 22:16:09  whatsapp  saliente   5491165286555@c.us  Gabi, Dodi dice que le gustaría que sea un programa de todo el día el domingo. ¿Te cierra?                                                                                                              
-
-13097  2026-07-01 22:16:09  sistema   interno                        claude_call moderacion: 6248ms prompt=1538c raw=6343c in=10t(cache_read=0 new=22462) out=284t ttfb=1698ms api=6057ms turnos=1 $0.0300                                                                   
-
-13096  2026-07-01 22:15:51  whatsapp  entrante   5491132317896@c.us  Otra vez lo mismo, es para Gabriela                                                                                                                                                                     
