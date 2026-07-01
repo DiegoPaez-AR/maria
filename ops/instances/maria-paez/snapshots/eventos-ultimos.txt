@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12669  2026-07-01 13:37:36  whatsapp  saliente   5491165286555@c.us   Dale Gabi, lo busco y cancelo.                                                                                                                                                                          
+
+12668  2026-07-01 13:37:36  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+12667  2026-07-01 13:37:36  sistema   interno                         claude_call whatsapp: 43419ms prompt=74044c raw=14735c in=10t(cache_read=0 new=36013) out=2003t ttfb=1617ms api=55279ms turnos=1 $0.1744                                                                
+
 12666  2026-07-01 13:36:52  whatsapp  entrante   5491165286555@c.us   Te pido si cancelas el viernes con dermatología a las 18                                                                                                                                                
 
 12665  2026-07-01 13:29:12  sistema   interno                         claude_call enriquecer-contacto: 30327ms prompt=673c raw=18214c in=46t(cache_read=54225 new=6917) out=543t ttfb=1873ms api=27163ms turnos=5 $0.0901                                                     
@@ -199,9 +205,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12571  2026-07-01 12:31:43  sistema   interno                         claude_call whatsapp: 17035ms prompt=7037c raw=7969c in=10t(cache_read=23592 new=3314) out=770t ttfb=1794ms api=14619ms turnos=1 $0.0311                                                                
 
 12570  2026-07-01 12:31:42  whatsapp  entrante   5491165286555@c.us   Bueno entonces, por ejemplo yo te paso un turno y vos lo vas agendando? O te paso un contacto y le escribís para coordinar y así?                                                                       
-
-12569  2026-07-01 12:31:25  whatsapp  entrante   5491132317896@c.us   poneme una reunion con Nicolas Jordan el Martes de 1230 a 14. Y avisale a el y mandale invitacion                                                                                                       
-
-12568  2026-07-01 12:30:39  sistema   interno                         claude_call whatsapp: 5870ms prompt=6802c raw=4527c in=10t(cache_read=0 new=23592) out=123t ttfb=1704ms api=3497ms turnos=1 $0.0903                                                                     
-
-12567  2026-07-01 12:30:32  whatsapp  entrante   5491132317896@c.us   exelente                                                                                                                                                                                                
