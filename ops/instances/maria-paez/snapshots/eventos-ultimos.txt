@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12857  2026-07-01 15:05:56  whatsapp  saliente   5491157276026@c.us                        Perfecto, le aviso.                                                                                                                                                                                     
+
+12856  2026-07-01 15:05:56  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+12855  2026-07-01 15:05:56  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
+
+12854  2026-07-01 15:05:56  whatsapp  saliente   5491165286555@c.us                        ¡Hola Gabi! Te aviso que Rodrigo confirmó que acepta la cita este fin de semana. 🙂                                                                                                                      
+
+12853  2026-07-01 15:05:56  sistema   interno                                              claude_call moderacion: 7125ms prompt=1531c raw=6469c in=10t(cache_read=0 new=22465) out=384t ttfb=1732ms api=5887ms turnos=1 $0.0305                                                                   
+
+12852  2026-07-01 15:05:49  sistema   interno                                              claude_call whatsapp: 46221ms prompt=75537c raw=16137c in=10t(cache_read=0 new=36589) out=2172t ttfb=2383ms api=59924ms turnos=1 $0.1795                                                                
+
 12851  2026-07-01 15:05:02  whatsapp  entrante   5491157276026@c.us                        entonces confirmale que acepto la cita                                                                                                                                                                  
 
 12850  2026-07-01 15:00:00  sistema   interno                                              claude_call whatsapp: 9786ms prompt=78775c raw=5668c in=10t(cache_read=6271 new=31298) out=260t ttfb=1795ms api=9070ms turnos=1 $0.1338                                                                 
@@ -225,15 +237,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                            desde su cel personal                                                                                                                                                                                   
 
 12758  2026-07-01 14:20:19  sistema   interno                                              claude_call whatsapp: 67855ms prompt=77840c raw=25147c in=20t(cache_read=43452 new=34057) out=3280t ttfb=1739ms api=67356ms turnos=2 $0.2002                                                            
-
-12757  2026-07-01 14:19:10  whatsapp  entrante   5491165286555@c.us                        ahora?                                                                                                                                                                                                  
-
-12756  2026-07-01 14:18:52  whatsapp  saliente   5491121773859@c.us                        ¡Gracias! Me comunico directamente con Ezequiel entonces.                                                                                                                                               
-
-12755  2026-07-01 14:18:52  sistema   interno                                              claude_call whatsapp: 80012ms prompt=78370c raw=29609c in=10t(cache_read=0 new=37417) out=4430t ttfb=1729ms api=79126ms turnos=1 $0.2173                                                                
-
-12754  2026-07-01 14:18:12  whatsapp  saliente   5491165286555@c.us                        Qué raro, algo debe estar pasando porque no me están llegando. Mandámelos de nuevo acá por favor — el de logística y el otro.                                                                           
-
-12753  2026-07-01 14:18:12  sistema   interno                                              claude_call whatsapp: 22125ms prompt=79233c raw=9988c in=10t(cache_read=6271 new=31461) out=896t ttfb=1707ms api=21523ms turnos=1 $0.1441                                                               
-
-12752  2026-07-01 14:17:50  sistema   interno                                              claude_call whatsapp: 13109ms prompt=78669c raw=7008c in=10t(cache_read=6271 new=31228) out=454t ttfb=1720ms api=12903ms turnos=1 $0.1364                                                               
