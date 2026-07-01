@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12752  2026-07-01 14:17:50  sistema   interno                         claude_call whatsapp: 13109ms prompt=78669c raw=7008c in=10t(cache_read=6271 new=31228) out=454t ttfb=1720ms api=12903ms turnos=1 $0.1364                                                               
+
+12751  2026-07-01 14:17:37  whatsapp  entrante   5491165286555@c.us   te llegan? me sorprende porque te los pase varias verces, algo debe pasar que no te llegan                                                                                                              
+
+12750  2026-07-01 14:17:32  whatsapp  entrante   5491121773859@c.us   Le reenvio la info                                                                                                                                                                                      
+                                                                      Por favor seguilo con Ezequiel, que es quien te sabe asesorar                                                                                                                                           
+
+12749  2026-07-01 14:17:05  sistema   interno                         claude_call memoria-curada: 23506ms prompt=4739c raw=13160c in=10t(cache_read=0 new=12331) out=1296t ttfb=1848ms api=22726ms turnos=1 $0.0677                                                           
+
 12748  2026-07-01 14:16:12  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 12747  2026-07-01 14:16:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -207,11 +216,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12654  2026-07-01 13:28:42  sistema   interno                         claude_call whatsapp: 30569ms prompt=73956c raw=12276c in=10t(cache_read=6271 new=29709) out=1429t ttfb=1761ms api=30569ms turnos=1 $0.1440                                                             
 
 12653  2026-07-01 13:28:11  whatsapp  entrante   5491165286555@c.us   a.zamora@una.edu.ar                                                                                                                                                                                     
-
-12652  2026-07-01 13:26:56  whatsapp  saliente   34342575317160@lid   Diego, te cuento: quise dejar agendado el recordatorio de Gabi para las 10h, pero no me salió — me faltó un dato del destinatario y no se programó. ¿Me confirmás a quién se lo mando y te lo dejo listo
-
-12651  2026-07-01 13:26:48  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-12650  2026-07-01 13:26:48  sistema   interno                         acción FALLÓ: programar_mensaje — Faltan campos requeridos: destino                                                                                                                                     
-
-12649  2026-07-01 13:26:48  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
