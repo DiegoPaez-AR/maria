@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12714  2026-07-01 14:02:45  whatsapp  saliente   5491165286555@c.us   Gabi, anotado lo de Paraná Muebles — no los tengo en mis contactos todavía. ¿Me pasás un teléfono, WhatsApp o email de ellos para escribirles?                                                          
+                                                                                                                                                                                                                                                                              
+                                                                      Y el turno de dermatología del viernes 03/07 a las 18h y                                                                                                                                                
+
+12713  2026-07-01 14:02:45  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+12712  2026-07-01 14:02:45  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+12711  2026-07-01 14:02:45  sistema   interno                         claude_call whatsapp: 55346ms prompt=75424c raw=20814c in=10t(cache_read=6271 new=30311) out=2856t ttfb=1839ms api=54186ms turnos=1 $0.1682                                                             
+
 12710  2026-07-01 14:01:50  sistema   interno                         claude_call whatsapp: 86319ms prompt=74838c raw=28694c in=10t(cache_read=6271 new=30071) out=4294t ttfb=1825ms api=85668ms turnos=1 $0.1887                                                             
 
 12709  2026-07-01 14:00:23  whatsapp  entrante   5491165286555@c.us   Quería pedirte que llames a Paraná Muebles : Results que encargué una biblioteca a medida y l hicieron mal, tardaron en retirarla y fueron muy desprolijos en todo el proceso. Ahora no le responden, de
@@ -205,11 +215,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12616  2026-07-01 12:44:07  whatsapp  saliente   5491131121057@c.us   Jaja, libreta digital de última generación, che. Todo en la nube, nada se pierde 😄                                                                                                                      
 
 12615  2026-07-01 12:44:07  sistema   interno                         claude_call whatsapp: 9636ms prompt=75742c raw=5681c in=10t(cache_read=6271 new=30216) out=243t ttfb=1720ms api=8589ms turnos=1 $0.1286                                                                 
-
-12614  2026-07-01 12:43:57  whatsapp  entrante   5491131121057@c.us   Usas libreta de papel? Q antigua!!                                                                                                                                                                      
-
-12613  2026-07-01 12:43:16  sistema   interno                         claude_call enriquecer-contacto: 18340ms prompt=631c raw=20436c in=28t(cache_read=28876 new=6806) out=367t ttfb=1860ms api=23375ms turnos=4 $0.0858                                                     
-
-12612  2026-07-01 12:42:58  whatsapp  saliente   5491131121057@c.us   Anotado, Nico. Actualizo tu mail en mi libreta.                                                                                                                                                         
-
-12611  2026-07-01 12:42:58  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
