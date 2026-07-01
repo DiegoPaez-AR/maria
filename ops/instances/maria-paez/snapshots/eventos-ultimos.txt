@@ -1,5 +1,24 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13120  2026-07-01 22:26:57  sistema   interno                         claude_call whatsapp: 14045ms prompt=5254c raw=9570c in=18t(cache_read=124524 new=2811) out=414t ttfb=2243ms api=11141ms turnos=2 $0.0542                                                               
+
+13119  2026-07-01 22:26:43  whatsapp  entrante   5491165286555@c.us   No déjalo privado                                                                                                                                                                                       
+
+13118  2026-07-01 22:26:32  whatsapp  entrante   5491157276026@c.us   Qué me aconsejas?                                                                                                                                                                                       
+                                                                      Para una salida romántica                                                                                                                                                                               
+
+13117  2026-07-01 22:26:32  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a María coordinar una cita con Dodi (Rodrigo Páez Canosa) y le pasó su número; el mensaje actual es part
+
+13116  2026-07-01 22:26:32  sistema   interno                         claude_call unknown-flow: 11507ms prompt=82587c raw=5922c in=10t(cache_read=6266 new=44151) out=295t ttfb=1853ms api=11201ms turnos=1 $0.2120                                                           
+
+13115  2026-07-01 22:26:23  whatsapp  saliente   5491165286555@c.us   Dale, pasámelo cuando puedas y le escribo enseguida!                                                                                                                                                    
+
+13114  2026-07-01 22:26:23  sistema   interno                         claude_call whatsapp: 6351ms prompt=5331c raw=5651c in=10t(cache_read=58666 new=2397) out=96t ttfb=2484ms api=3217ms turnos=1 $0.0281                                                                   
+
+13113  2026-07-01 22:26:18  sistema   interno                         contacto vcard (privado): Roque → 5491157683720@c.us                                                                                                                                                    
+
+13112  2026-07-01 22:26:16  whatsapp  entrante   5491165286555@c.us   Otra cosa te voy a pasar el contacto de mi hijo Roque, escribile a ver si ya está en casa                                                                                                               
+
 13111  2026-07-01 22:25:41  whatsapp  saliente   5491165286555@c.us   Confirmado el domingo todo el día, y le pregunté qué tiene ganas de hacer. En cuanto responda te cuento!                                                                                                
 
 13110  2026-07-01 22:25:41  sistema   interno                         claude_call whatsapp: 19051ms prompt=5199c raw=8644c in=20t(cache_read=64544 new=52400) out=259t ttfb=2127ms api=9194ms turnos=2 $0.2198                                                                
@@ -200,24 +219,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13022  2026-07-01 20:23:43  whatsapp  entrante   5491165286555@c.us   cuando tenga algún contacto público te aviso.                                                                                                                                                           
 
 13021  2026-07-01 20:22:13  whatsapp  saliente   5491165286555@c.us   La *privada* tiene tus contactos personales — solo yo los veo, nadie más. La *pública* es para contactos compartidos: si en algún momento usás María con otra persona (familia, equipo), esos contactos 
-
-13020  2026-07-01 20:22:12  sistema   interno                         claude_call whatsapp: 13178ms prompt=5588c raw=8071c in=10t(cache_read=25858 new=3028) out=415t ttfb=2363ms api=10237ms turnos=1 $0.0254                                                                
-
-13019  2026-07-01 20:21:59  whatsapp  entrante   5491165286555@c.us   ¿Cuál es la diferencia de la libreta privada y la pública?                                                                                                                                              
-
-13018  2026-07-01 20:21:22  sistema   interno                         contacto vcard (privado): Dodi → 5491157276026@c.us                                                                                                                                                     
-
-13017  2026-07-01 20:20:32  whatsapp  saliente   5491165286555@c.us   Entendido, Gabi! Busqué pero no tengo el contacto de Dody (Rodrigo Paes Canosa) guardado en tu libreta, así que no puedo retomar la conversación con él. ¿Me pasás su número de WhatsApp? Con eso lo con
-
-13016  2026-07-01 20:20:32  sistema   interno                         claude_call whatsapp: 21114ms prompt=5514c raw=12082c in=18t(cache_read=48249 new=3103) out=867t ttfb=2211ms api=18196ms turnos=2 $0.0392                                                               
-
-13015  2026-07-01 20:20:10  whatsapp  entrante   5491165286555@c.us   Dos días Rodrigo Paes Canosa, con quien hablaste para coordinar una cita al fin de semana,                                                                                                              
-                                                                       pero quisiera que termines de arreglar día y horario.                                                                                                                                                  
-
-13014  2026-07-01 20:18:52  whatsapp  saliente   5491165286555@c.us   Gabi, no tengo registro de ningún arreglo con Dody en mi historial — no me aparece ese contacto ni ninguna coordinación con esa persona. ¿Podés contarme más contexto? ¿Es una reunión que manejaste vos
-
-13013  2026-07-01 20:18:52  sistema   interno                         claude_call whatsapp: 15412ms prompt=5153c raw=10356c in=20t(cache_read=22419 new=22755) out=548t ttfb=2082ms api=12686ms turnos=2 $0.1003                                                              
-
-13012  2026-07-01 20:18:36  whatsapp  entrante   5491165286555@c.us   La María te quería preguntar en qué quedaste con Dody.                                                                                                                                                  
-                                                                       ¿Areglaron para qué día?                                                                                                                                                                               
-                                                                       ¿Para... y qué horario?                                                                                                                                                                                
