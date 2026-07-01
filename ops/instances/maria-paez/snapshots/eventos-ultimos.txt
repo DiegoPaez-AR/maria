@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12590  2026-07-01 12:39:59  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+12589  2026-07-01 12:39:59  calendar  saliente                        creado: Reunion NJ - DP (2026-07-07T12:30:00-03:00 → 2026-07-07T13:30:00-03:00) · Meet: https://meet.google.com/sry-dwva-xwf                                                                            
+
+12588  2026-07-01 12:39:58  sistema   interno                         claude_call whatsapp: 59964ms prompt=6962c raw=21460c in=10t(cache_read=0 new=30785) out=3479t ttfb=1788ms api=57531ms turnos=1 $0.1677                                                                 
+
 12587  2026-07-01 12:38:57  whatsapp  entrante   5491132317896@c.us   por defecto si no te doy un titulo, pone siempre como titulo: Reunion y las iniciales de los integrantes, en este caso seria Reunion NJ - DP. Y por defecto, siempre, si no te digo nada especifico, las
 
 12586  2026-07-01 12:36:37  sistema   interno                         claude_call whatsapp: 6986ms prompt=72129c raw=5001c in=10t(cache_read=6271 new=29051) out=145t ttfb=1670ms api=6315ms turnos=1 $0.1216                                                                 
@@ -305,10 +311,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12492  2026-07-01 01:59:09  sistema   interno                         claude_call whatsapp: 14404ms prompt=7227c raw=7151c in=10t(cache_read=0 new=24312) out=574t ttfb=1734ms api=12110ms turnos=1 $0.0998                                                                   
 
 12491  2026-07-01 01:58:54  whatsapp  entrante   5491132317896@c.us   tenes razon. es el viernes 7 de agosto de 20 a 23 y al aviso un dia antes                                                                                                                               
-
-12490  2026-07-01 01:58:02  whatsapp  saliente   34342575317160@lid   El 8 de agosto cae en *sábado*, no en viernes. ¿Lo agendo para el *viernes 7* de agosto o el *sábado 8*?                                                                                                
-
-12489  2026-07-01 01:58:02  sistema   interno                         claude_call whatsapp: 34816ms prompt=73115c raw=13976c in=10t(cache_read=0 new=35682) out=1797t ttfb=1765ms api=34042ms turnos=1 $0.1697                                                                
-
-12488  2026-07-01 01:57:27  whatsapp  entrante   5491132317896@c.us   El viernes ocho de agosto a las 20 horas ponenme un evento que se llame Teatro de 20                                                                                                                    
-                                                                       horas a 23 horas. Y además de hacerme el recordatorio normal, hacemos un recordatorio un día antes, por favor.                                                                                         
