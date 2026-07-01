@@ -1,5 +1,20 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13068  2026-07-01 20:48:54  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
+                                                                                                                                                                                                                                                                              
+                                                                      Mensaje original: "Para Gabriela Echaniz"                                                                                                                                                               
+                                                                      Última respuesta: "Decile que nos v                                                                                                                                                                     
+
+13067  2026-07-01 20:48:06  whatsapp  saliente   5491165286555@c.us   Listo, le volví a escribir! También le expliqué que el mensaje automático de "no registrado" es normal — no afecta que yo pueda contactarlo. En cuanto responda te aviso.                               
+
+13066  2026-07-01 20:48:06  sistema   interno                         claude_call whatsapp: 18659ms prompt=5399c raw=9228c in=18t(cache_read=102003 new=3482) out=321t ttfb=2181ms api=9434ms turnos=2 $0.0485                                                                
+
+13065  2026-07-01 20:48:02  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13064  2026-07-01 20:48:02  whatsapp  saliente   5491157276026@c.us   Hola Dodi! Te escribo de nuevo — soy María, la asistente de Gabriela. Si te llegó un mensaje automático diciendo que no estás registrado, es porque el sistema solo reconoce usuarios propios, pero yo s
+
+13063  2026-07-01 20:48:02  sistema   interno                         claude_call moderacion: 6316ms prompt=1778c raw=6612c in=10t(cache_read=0 new=22530) out=368t ttfb=1645ms api=5297ms turnos=1 $0.0305                                                                   
+
 13062  2026-07-01 20:47:47  whatsapp  entrante   5491165286555@c.us   Escribile de nuevo por favor                                                                                                                                                                            
 
 13061  2026-07-01 20:46:37  whatsapp  saliente   5491165286555@c.us   Sí, lo tengo registrado en tu libreta — es Dodi, el número que vos me pasaste. Lo que puede pasar es que él le escribió a mi número de WhatsApp y el sistema le avisó que no está registrado como usuari
@@ -236,15 +251,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12970  2026-07-01 17:20:14  sistema   interno                         claude_call whatsapp: 25236ms prompt=77204c raw=14087c in=28t(cache_read=82480 new=32603) out=726t ttfb=2168ms api=22727ms turnos=3 $0.1676                                                             
 
 12969  2026-07-01 17:20:08  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-12968  2026-07-01 17:20:08  calendar  saliente                        creado: Médico (2026-07-04T13:00:00-03:00 → 2026-07-04T14:00:00-03:00)                                                                                                                                  
-
-12967  2026-07-01 17:19:49  whatsapp  entrante   5491132317896@c.us   poneme una reu el sabado a las 13: Medico                                                                                                                                                               
-
-12966  2026-07-01 17:18:11  sistema   interno                         claude_call whatsapp: 12527ms prompt=58627c raw=8213c in=10t(cache_read=6271 new=24678) out=407t ttfb=2249ms api=11524ms turnos=1 $0.1043                                                               
-
-12965  2026-07-01 17:17:58  whatsapp  entrante   5491140793225@c.us   Genial, derivo este telefono de contacto, feliz tarde!                                                                                                                                                  
-
-12964  2026-07-01 17:16:54  whatsapp  saliente   5491140793225@c.us   Perfecto, Caterina, entendido. Quedamos esperando tu mensaje una vez que tengan la definición. Y sin problema, seguimos todo el seguimiento por este número.                                            
-
-12963  2026-07-01 17:16:54  whatsapp  saliente   5491165286555@c.us   Gabi, Caterina de Paraná Muebles Logística dice que están revisando las medidas del mueble contra los planos y que te van a escribir por este medio cuando tengan una definición. También piden que todo
