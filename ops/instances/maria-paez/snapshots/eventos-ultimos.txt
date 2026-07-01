@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13034  2026-07-01 20:25:20  sistema   interno                         claude_call whatsapp: 6297ms prompt=5248c raw=5311c in=10t(cache_read=35637 new=2388) out=46t ttfb=2071ms api=3615ms turnos=1 $0.0204                                                                   
+
+13033  2026-07-01 20:25:13  whatsapp  entrante   5491165286555@c.us   Dale!                                                                                                                                                                                                   
+
 13032  2026-07-01 20:24:51  whatsapp  saliente   5491165286555@c.us   Listo! Le escribí a Dodi preguntando qué día y horario le viene bien este fin de semana. En cuanto responda te aviso.                                                                                   
 
 13031  2026-07-01 20:24:51  sistema   interno                         claude_call whatsapp: 32783ms prompt=5177c raw=18857c in=44t(cache_read=170613 new=3970) out=929t ttfb=2166ms api=20053ms turnos=5 $0.0801                                                              
@@ -237,7 +241,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12936  2026-07-01 16:56:12  sistema   interno                         claude_call whatsapp: 9804ms prompt=199c raw=10787c in=28t(cache_read=22834 new=11760) out=294t ttfb=2300ms api=7948ms turnos=3 $0.0559                                                                 
 
 12935  2026-07-01 16:56:10  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-12934  2026-07-01 16:53:24  sistema   interno                         claude_call whatsapp: 19536ms prompt=78219c raw=12748c in=28t(cache_read=76434 new=38709) out=581t ttfb=2674ms api=18059ms turnos=3 $0.1871                                                             
-
-12933  2026-07-01 16:53:19  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
