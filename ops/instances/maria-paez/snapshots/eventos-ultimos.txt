@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12746  2026-07-01 14:12:13  whatsapp  saliente   5491165286555@c.us   Perfecto, entendido el orden. Pero todavía no tengo los números de WhatsApp de ninguno de los dos. ¿Me los pasás? (el de logística y el otro)                                                           
+
+12745  2026-07-01 14:12:13  sistema   interno                         claude_call whatsapp: 28002ms prompt=77796c raw=11318c in=10t(cache_read=6271 new=30972) out=1247t ttfb=1832ms api=27453ms turnos=1 $0.1471                                                             
+
 12744  2026-07-01 14:11:45  whatsapp  entrante   5491165286555@c.us   son dos contactos, por favor escribiles primero al que dice logistica. sino responden hoy les volves a escrivir mañana a ambos contactos                                                                
 
 12743  2026-07-01 14:11:29  whatsapp  saliente   34342575317160@lid   Listo. Le digo que no a Eze por el Subaru y le reenvío el DNI al número correcto suyo.                                                                                                                  
@@ -211,7 +215,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12648  2026-07-01 13:26:48  sistema   interno                         claude_call whatsapp: 25706ms prompt=8075c raw=11033c in=10t(cache_read=0 new=45791) out=1180t ttfb=1974ms api=22891ms turnos=1 $0.1894                                                                 
 
 12647  2026-07-01 13:26:46  whatsapp  saliente   5491165286555@c.us   Perfecto, gracias por el contexto. Para poder coordinarme con Ana Clara y encontrar un horario, ¿me pasás su número de WhatsApp o email?                                                                
-
-12646  2026-07-01 13:26:46  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-12645  2026-07-01 13:26:46  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
