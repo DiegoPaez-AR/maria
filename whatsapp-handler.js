@@ -255,6 +255,8 @@ const _colas         = new Map(); // from → { items, timer }
 const _enProceso     = new Map(); // from → true mientras se está despachando
 const _colaPendiente = new Map(); // from → items[] acumulados durante un despacho en curso
 const _lastIncoming  = new Map(); // from → ts (Date.now()) del último mensaje entrante — usado para abortar respuestas obsoletas si entró algo nuevo durante el procesamiento
+const _procesadosMsg = new Map(); // message-id → ts, dedupe de entregas repetidas (redelivery tras reconexión)
+const _DEDUPE_TTL_MS = 10 * 60 * 1000; // 10 min: ventana de retención de ids ya procesados
 
 // Cache lid -> @c.us telefonico. El @lid puede rotar entre sesiones de WA;
 // dentro de una sesion es estable, asi que cachear evita pegarle a
@@ -345,6 +347,25 @@ async function handleMessage(client, msg) {
     pushname = contact?.pushname || contact?.name || null;
   } catch {}
   const messageId = msg.id?._serialized || msg.id?.id || null;
+
+  // ─── Dedupe por message-id (evita reprocesar la MISMA entrega) ────────
+  // WhatsApp Web re-emite 'message' para mensajes ya vistos tras una
+  // reconexión/reboot (mismo id._serialized). Sin este guard, Maria vuelve
+  // a correr el turno completo (doble claude_call, doble acción). Chequeo
+  // SINCRÓNICO acá arriba (antes de cualquier await) para blindar la
+  // re-entrancy entre dos eventos del mismo id. OJO: esto NO cubre reenvíos
+  // del usuario (texto repetido con id NUEVO) — eso es tema de latencia.
+  if (messageId) {
+    const _now = Date.now();
+    if (_procesadosMsg.has(messageId)) {
+      console.log(`[WA dedupe] ${messageId} ya procesado — salteo`);
+      return;
+    }
+    _procesadosMsg.set(messageId, _now);
+    if (_procesadosMsg.size > 3000) {
+      for (const [k, t] of _procesadosMsg) if (_now - t > _DEDUPE_TTL_MS) _procesadosMsg.delete(k);
+    }
+  }
 
   // Normalizar `from` al @c.us estable (número telefónico). El @lid rota
   // entre sesiones; el @c.us es invariante mientras dure el número. Trabajar
