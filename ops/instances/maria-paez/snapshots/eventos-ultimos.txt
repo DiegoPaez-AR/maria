@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13005  2026-07-01 18:06:40  sistema   interno                         claude_call whatsapp: 5964ms prompt=4481c raw=5488c in=10t(cache_read=17964 new=2129) out=75t ttfb=2264ms api=3082ms turnos=1 $0.0145                                                                   
+
+13004  2026-07-01 18:06:33  whatsapp  entrante   5491165286555@c.us   Perfecto!                                                                                                                                                                                               
+
 13003  2026-07-01 18:04:52  whatsapp  saliente   5491165286555@c.us   De nada, Gabi! Quedó programado — el viernes a las 10 de la mañana le mando un mensaje a Caterina preguntando por la definición. Si antes de eso te llega algo de su parte me avisás y lo cancelamos. 🙌 
 
 13002  2026-07-01 18:04:52  sistema   interno                         claude_call whatsapp: 20601ms prompt=4354c raw=10178c in=18t(cache_read=17449 new=17964) out=473t ttfb=2170ms api=10483ms turnos=2 $0.0797                                                              
@@ -229,7 +233,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12907  2026-07-01 16:05:12  sistema   interno                         acción FALLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responde
 
 12906  2026-07-01 16:05:12  sistema   interno                         acción ejecutada: olvidar_hecho                                                                                                                                                                         
-
-12905  2026-07-01 16:05:12  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-12904  2026-07-01 16:05:12  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
