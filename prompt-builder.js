@@ -107,6 +107,7 @@ function _formatearFechaEvento(e, tz) {
 //   MARIA_HISTORIAL_COMPACTO=0  → vuelve a la ventana completa de 48h
 //   MARIA_HISTORIAL_WA_MAX / GMAIL_MAX / ACCIONES_MAX / MAX_HORAS
 const HISTORIAL_COMPACTO = process.env.MARIA_HISTORIAL_COMPACTO !== '0';
+const MCP_ACTIONS = process.env.MARIA_MCP_ACTIONS === '1';
 const _envInt = (k, def) => {
   const v = parseInt(process.env[k], 10);
   return Number.isFinite(v) ? v : def;
@@ -780,7 +781,11 @@ Reglas duras sobre los slots de respuesta:
 
 LEGACY: Si por alguna razón devolvés solo \`"respuesta": "..."\`, el sistema lo trata según el canal: en WhatsApp lo manda al usuario atendido, en email lo usa como respuesta al thread del entrante. PREFERÍ los slots nuevos — son explícitos y evitan ambigüedad.
 
-Tipos de acción disponibles:
+${MCP_ACTIONS ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[CÓMO EJECUTÁS ACCIONES — MODO TOOLS]
+Tenés herramientas (tools) llamadas mcp__maria-actions__<accion>, UNA por cada acción de la lista de abajo. Para HACER algo (agendar, mandar un WhatsApp, guardar un contacto, dar de alta un usuario, etc.) LLAMÁS AL TOOL correspondiente con sus parámetros. NO metas un array "acciones" en tu JSON de salida: ese array YA NO se ejecuta. Los tools corren EN VIVO y te devuelven { ok, resultado } o { ok:false, error }: LEÉ ese resultado y reaccioná — si un tool falló, NO le digas al usuario que lo hiciste; si un tool devuelve "turno_obsoleto" (llegó un mensaje nuevo), frená y no sigas ejecutando. Tu JSON final SÓLO lleva respuesta_a_usuario y respuesta_a_remitente (más razonamiento si querés). La lista de abajo es la REFERENCIA de los parámetros de cada tool.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+` : ''}Tipos de acción disponibles:
 
   { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false, "para_usuario_id": 3 }
       // El executor decide automáticamente en qué calendar crearlo según el tier (ver [ACCESO A SU CALENDAR]). En tier 0/1 también suma al usuario como attendee automáticamente — no hace falta que lo pongas explícito en attendees.

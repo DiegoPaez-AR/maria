@@ -20,6 +20,8 @@ const path = require('path');
 const qrcode = require('qrcode-terminal');
 
 const mem = require('./memory');
+const turnState = require('./turn-state');
+const MCP_ACTIONS = process.env.MARIA_MCP_ACTIONS === '1';
 const usuarios = require('./usuarios');
 const unknownFlow = require('./unknown-flow');
 const seguridad = require('./seguridad');
@@ -416,6 +418,9 @@ async function handleMessage(client, msg) {
 
   // ─── Rate limit por usuario / global ─────────────────────────────────
   const _usrTmp = usuarios.resolverPorWa(from);
+  // Guard MCP (fase 2): registrar el ts del último entrante por usuario, para
+  // que /accion pueda abortar acciones de un turno que quedó obsoleto.
+  if (_usrTmp) turnState.setLastInbound(_usrTmp.id, Date.now());
   const rl = seguridad.verificarRateLimit({ usuarioId: _usrTmp?.id || null });
   if (!rl.ok) {
     console.warn(`[WA rate-limit] ${from} bloqueado: ${rl.motivo}`);
@@ -904,7 +909,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // 1) Acciones PRIMERO: sabemos qué se concretó ANTES de confirmarle al
     //    usuario. Evita el "ya les escribo" seguido de "no pude escribirles".
     let fallasVisibles = [];
-    if (acciones.length) {
+    if (acciones.length && !MCP_ACTIONS) {
       const resultados = await ejecutarAcciones(acciones, {
         usuario,
         waClient: client,

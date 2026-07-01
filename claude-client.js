@@ -208,10 +208,44 @@ function _invocarClaudeCrudo(prompt, {
     // Resolvemos a path absoluto para que sea accesible adentro del sandbox.
     // El path se va a bind-mountear más abajo si bwrap está activo.
     const path = require('path');
+
+    // ─── Fase 2: acciones como tools MCP (killswitch MARIA_MCP_ACTIONS) ──────
+    // Genera un mcp-config por TURNO apuntando al mcp-actions-server, con el
+    // usuarioId/canal/start_ts del turno inyectados por env. El server pega a
+    // la internal-api /accion → el executor corre en el proceso principal con
+    // el runtime vivo. Default OFF: no toca el flujo JSON actual.
+    let _mcpActionsTmp = null;
+    const _mcpActionsOn = process.env.MARIA_MCP_ACTIONS === '1' && audit && audit.usuarioId;
+    if (_mcpActionsOn) {
+      try {
+        const os = require('os');
+        const cfg = { mcpServers: { 'maria-actions': {
+          command: process.execPath,
+          args: [path.join(__dirname, 'mcp-actions-server.mjs')],
+          env: {
+            MARIA_INTERNAL_PORT:  String(process.env.ASISTENTE_INTERNAL_PORT || ''),
+            MARIA_INTERNAL_SECRET: String(process.env.ASISTENTE_INTERNAL_SECRET || ''),
+            MARIA_TURN_USUARIO_ID: String(audit.usuarioId),
+            MARIA_TURN_CANAL:      String(audit.canal || 'whatsapp'),
+            MARIA_TURN_START_TS:   String(_t0),
+          },
+        } } };
+        _mcpActionsTmp = path.join(os.tmpdir(), `maria-mcpcfg-${audit.usuarioId}-${_t0}.json`);
+        fs.writeFileSync(_mcpActionsTmp, JSON.stringify(cfg));
+        args.push('--allowedTools', 'mcp__maria-actions');
+      } catch (e) {
+        console.warn('[claude-client] no pude preparar mcp-config de acciones:', e.message);
+        _mcpActionsTmp = null;
+      }
+    }
+
     let mcpCfgAbs = null;
     const mcpCfgRaw = process.env.CLAUDE_MCP_CONFIG || './mcp-config.json';
     const mcpCfgResolved = path.resolve(mcpCfgRaw);
-    if (fs.existsSync(mcpCfgResolved)) {
+    if (_mcpActionsTmp) {
+      mcpCfgAbs = _mcpActionsTmp;
+      args.push('--mcp-config', mcpCfgAbs);
+    } else if (fs.existsSync(mcpCfgResolved)) {
       mcpCfgAbs = mcpCfgResolved;
       args.push('--mcp-config', mcpCfgAbs);
     }
@@ -232,6 +266,12 @@ function _invocarClaudeCrudo(prompt, {
       const extraBinds = [];
       // Bind-mountear el mcp-config para que claude pueda leerlo adentro.
       if (mcpCfgAbs) extraBinds.push({ src: mcpCfgAbs, dst: mcpCfgAbs, ro: true });
+      // Para el MCP actions server: su código (+ node_modules + action-schemas)
+      // y el binario de node tienen que ser accesibles adentro del sandbox.
+      if (_mcpActionsTmp) {
+        extraBinds.push({ src: __dirname, dst: __dirname, ro: true });
+        extraBinds.push({ src: path.dirname(process.execPath), dst: path.dirname(process.execPath), ro: true });
+      }
       // Settings file también si existe
       if (settingsFile && fs.existsSync(settingsFile)) {
         extraBinds.push({ src: path.resolve(settingsFile), dst: path.resolve(settingsFile), ro: true });
@@ -322,6 +362,7 @@ function _invocarClaudeCrudo(prompt, {
     function _cleanup() {
       clearTimeout(globalTo);
       if (idleTo) clearTimeout(idleTo);
+      if (_mcpActionsTmp) { try { fs.unlinkSync(_mcpActionsTmp); } catch {} _mcpActionsTmp = null; }
     }
     p.on('error', err => { _cleanup(); _audit(err.message); reject(err); });
     p.on('close', code => {
