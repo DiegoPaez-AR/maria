@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13006  2026-07-01 18:15:08  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Personal (03:30 p. m.)                                                                                                                                                                    
+
 13005  2026-07-01 18:06:40  sistema   interno                         claude_call whatsapp: 5964ms prompt=4481c raw=5488c in=10t(cache_read=17964 new=2129) out=75t ttfb=2264ms api=3082ms turnos=1 $0.0145                                                                   
 
 13004  2026-07-01 18:06:33  whatsapp  entrante   5491165286555@c.us   Perfecto!                                                                                                                                                                                               
@@ -231,5 +233,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12908  2026-07-01 16:07:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
 
 12907  2026-07-01 16:05:12  sistema   interno                         acción FALLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responde
-
-12906  2026-07-01 16:05:12  sistema   interno                         acción ejecutada: olvidar_hecho                                                                                                                                                                         
