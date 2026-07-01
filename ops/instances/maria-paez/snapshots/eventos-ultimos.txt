@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13131  2026-07-01 22:28:53  whatsapp  entrante   5491157683720@c.us   era un chiste                                                                                                                                                                                           
+
+13130  2026-07-01 22:28:28  whatsapp  saliente   5491165286555@c.us   Gabi, te responde Roque: dice "no escape, voy a vivir en la calle" 😅 ¿Le contesto algo?                                                                                                                 
+
+13129  2026-07-01 22:28:28  sistema   interno                         claude_call whatsapp: 15432ms prompt=58814c raw=8126c in=10t(cache_read=0 new=31158) out=425t ttfb=2075ms api=14014ms turnos=1 $0.1272                                                                  
+
+13128  2026-07-01 22:28:12  whatsapp  entrante   5491157683720@c.us   no escape, voy a vivir en la calle                                                                                                                                                                      
+
 13127  2026-07-01 22:27:33  whatsapp  saliente   5491165286555@c.us   Listo, le escribí a Roque. Y sí, queda en tu libreta privada — solo yo lo veo. En cuanto responda te aviso.                                                                                             
 
 13126  2026-07-01 22:27:33  sistema   interno                         claude_call whatsapp: 25032ms prompt=5120c raw=10841c in=18t(cache_read=130080 new=2963) out=631t ttfb=2130ms api=14729ms turnos=2 $0.0597                                                              
@@ -211,11 +219,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13033  2026-07-01 20:25:13  whatsapp  entrante   5491165286555@c.us   Dale!                                                                                                                                                                                                   
 
 13032  2026-07-01 20:24:51  whatsapp  saliente   5491165286555@c.us   Listo! Le escribí a Dodi preguntando qué día y horario le viene bien este fin de semana. En cuanto responda te aviso.                                                                                   
-
-13031  2026-07-01 20:24:51  sistema   interno                         claude_call whatsapp: 32783ms prompt=5177c raw=18857c in=44t(cache_read=170613 new=3970) out=929t ttfb=2166ms api=20053ms turnos=5 $0.0801                                                              
-
-13030  2026-07-01 20:24:47  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-13029  2026-07-01 20:24:42  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13028  2026-07-01 20:24:42  whatsapp  saliente   5491157276026@c.us   Hola Dodi! Soy María, la asistente de Gabriela. Te escribo para terminar de coordinar el encuentro de este fin de semana — ¿qué día y horario te viene bien?                                            
