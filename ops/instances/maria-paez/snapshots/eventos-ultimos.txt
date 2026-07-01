@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12799  2026-07-01 14:33:28  whatsapp  saliente   5491165286555@c.us                        ¡Exacto! Una vez que me pasás un contacto, lo guardo en tu agenda y no hace falta que me lo mandes de nuevo.                                                                                            
+                                                                                                                                                                                                                                                                                                   
+                                                                                           Para pasarme contactos desde WA sin tener que copiar y pegar, hay una forma más rápida: de                                                                                                              
+
+12798  2026-07-01 14:33:28  sistema   interno                                              claude_call whatsapp: 17278ms prompt=78209c raw=8155c in=10t(cache_read=6271 new=31035) out=640t ttfb=1709ms api=17415ms turnos=1 $0.1383                                                               
+
+12797  2026-07-01 14:33:10  whatsapp  entrante   5491165286555@c.us                        sabes si hay alguna forma de pasar los contactos de wtsp directo a mail comaprtiendo? ya qwue tuve quye entrar al contacto copiarlo y pegarlo                                                           
+                                                                                           vos vas a ir armando una agenda de contacots, no?                                                                                                                                                       
+                                                                                           es decir                                                                                                                                                                                                
+
 12796  2026-07-01 14:32:52  sistema   interno                                              claude_call whatsapp: 23896ms prompt=77847c raw=9856c in=10t(cache_read=6271 new=30926) out=891t ttfb=1744ms api=22991ms turnos=1 $0.1415                                                               
 
 12795  2026-07-01 14:32:28  whatsapp  entrante   5491165286555@c.us                        sabes si hay alguna forma de pasar los contactos de wtsp directo a mail comaprtiendo? ya qwue tuve quye entrar al contacto copiarlo y pegarlo                                                           
@@ -216,9 +226,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 12701  2026-07-01 13:51:42  sistema   interno                                              claude_call whatsapp: 19293ms prompt=76378c raw=7787c in=10t(cache_read=6271 new=30436) out=735t ttfb=1761ms api=18719ms turnos=1 $0.1370                                                               
 
 12700  2026-07-01 13:51:22  whatsapp  entrante   5491167859758@c.us                        Dalee                                                                                                                                                                                                   
-
-12699  2026-07-01 13:51:00  sistema   interno                                              acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-12698  2026-07-01 13:51:00  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
-
-12697  2026-07-01 13:51:00  whatsapp  saliente   5491121773859@c.us                        Eze, el DNI de Diego es *92297127*. Gracias!                                                                                                                                                            
