@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12907  2026-07-01 16:05:12  sistema   interno                         acción FALLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responde
+
+12906  2026-07-01 16:05:12  sistema   interno                         acción ejecutada: olvidar_hecho                                                                                                                                                                         
+
+12905  2026-07-01 16:05:12  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+12904  2026-07-01 16:05:12  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
+
+12903  2026-07-01 16:05:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+
+12902  2026-07-01 16:05:03  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+
 12901  2026-07-01 16:02:15  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
 
 12900  2026-07-01 15:47:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
@@ -206,20 +218,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12809  2026-07-01 14:43:45  whatsapp  entrante   5491165286555@c.us   te llego el de Dodi?                                                                                                                                                                                    
 
 12808  2026-07-01 14:43:30  whatsapp  saliente   5491165286555@c.us   No te preocupes, hay una forma más fácil: escribime los números directamente acá en el chat, uno por uno. Con eso me alcanza para hacer el reclamo.                                                     
-
-12807  2026-07-01 14:43:30  sistema   interno                         claude_call whatsapp: 12416ms prompt=78441c raw=7016c in=10t(cache_read=6271 new=31128) out=407t ttfb=1696ms api=11693ms turnos=1 $0.1352                                                               
-
-12806  2026-07-01 14:43:17  whatsapp  entrante   5491165286555@c.us   es que no me aparece ese clip, lo que tengo es la opción del signo + y ahi contacto y lo comaprto, asi lo hago usualmenter pero no te llega                                                             
-
-12805  2026-07-01 14:40:26  whatsapp  saliente   5491165286555@c.us   No importa si es el común o el de empresas, la opción más fácil es esta:                                                                                                                                
-                                                                                                                                                                                                                                                                              
-                                                                      1. Abrí nuestro chat (este mismo)                                                                                                                                                                       
-                                                                      2. Tocá el clip de adjuntar 📎                                                                                                                                                                           
-                                                                      3. Elegí *Contacto*                                                                                                                                                                                     
-                                                                      4. Buscás el contacto que querés pasarme y                                                                                                                                                              
-
-12804  2026-07-01 14:40:26  sistema   interno                         claude_call whatsapp: 16211ms prompt=78605c raw=7983c in=10t(cache_read=0 new=37421) out=592t ttfb=1760ms api=15799ms turnos=1 $0.1597                                                                  
-
-12803  2026-07-01 14:40:09  whatsapp  entrante   5491165286555@c.us   sabes que no me aparece esa opción, es desde cualquier wtsp o desde el de empresas, yo tengo el comun                                                                                                   
-
-12802  2026-07-01 14:34:54  whatsapp  saliente   5491165286555@c.us   ¡Dale, probemos! Mandame el contacto como vCard (desde el chat del contacto, tocás su nombre arriba → *Compartir contacto* → elegís una app como WA o mail, pero en este caso buscá la opción de compart
