@@ -1,5 +1,18 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12520  2026-07-01 02:06:33  sistema   interno                         claude_call enriquecer-contacto: 23530ms prompt=629c raw=21621c in=36t(cache_read=41344 new=7052) out=406t ttfb=1798ms api=22615ms turnos=4 $0.1011                                                     
+
+12519  2026-07-01 02:06:17  whatsapp  saliente   5491165286555@c.us   ¡Perfecto, Gabi! Te anoto el mail laboral también.                                                                                                                                                      
+                                                                                                                                                                                                                                                                              
+                                                                      Para la opción 1, los pasos son sencillos:                                                                                                                                                              
+                                                                                                                                                                                                                                                                              
+                                                                      1️⃣ Abrí *Google Calendar* en la web (calendar.google.com)                                                                                                                                              
+                                                                      2️⃣ En el panel izquierdo, buscá tu calendar                                                                                                                                                            
+
+12518  2026-07-01 02:06:10  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+12517  2026-07-01 02:06:10  sistema   interno                         claude_call whatsapp: 16790ms prompt=72786c raw=8057c in=10t(cache_read=6271 new=29331) out=684t ttfb=1863ms api=15770ms turnos=1 $0.1310                                                               
+
 12516  2026-07-01 02:05:53  whatsapp  entrante   5491165286555@c.us   Elijo la 1 y te agrego otro Mail que es el laboral g.echaniz@una.edu.ar                                                                                                                                 
 
 12515  2026-07-01 02:04:04  whatsapp  saliente   34342575317160@lid   Sí, quedó todo listo 👌                                                                                                                                                                                  
@@ -237,18 +250,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello                                      
 
 12421  2026-06-30 12:30:08  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-12420  2026-06-30 12:15:04  whatsapp  saliente   5491126406612@c.us   ☀️ *Buen día, Cristian Ruiz.* martes, 30 de junio.                                                                                                                                                      
-                                                                                                                                                                                                                                                                              
-                                                                      *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
-                                                                      ☀️ despejado, mín 6° / máx 12°                                                                                                                                                                          
-                                                                                                                                                                                                                                                                              
-                                                                      *📅 Agenda del día*                                                                                                                                                                                      
-                                                                      (sin eventos hoy)                                                                                                                                                                                       
-
-12419  2026-06-30 12:00:10  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: MC Daily (09:15 a. m.)                                                                                                                                                                    
-                                                                      Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgloba                                     
-
-12418  2026-06-30 11:45:04  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: Leandro (09:00 a. m.)                                                                                                                                                                     
-
-12417  2026-06-30 11:45:03  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Gustavo está de vacaciones (09:00 a. m.)                                                                                                                                                  
