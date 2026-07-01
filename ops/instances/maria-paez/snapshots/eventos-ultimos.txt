@@ -1,5 +1,22 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13049  2026-07-01 20:40:50  whatsapp  entrante   5491157276026@c.us   Para Gabriela Echaniz                                                                                                                                                                                   
+
+13048  2026-07-01 20:40:50  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a María que contactara a Dodi (Rodrigo Páez Canosa, +54 9 11 5727-6026 = 5491157276026@c.us) para coordi
+
+13047  2026-07-01 20:40:50  sistema   interno                         claude_call unknown-flow: 13896ms prompt=80870c raw=6921c in=10t(cache_read=6266 new=43478) out=494t ttfb=1749ms api=14216ms turnos=1 $0.2118                                                           
+
+13046  2026-07-01 20:40:26  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
+                                                                                                                                                                                                                                                                              
+                                                                      Mensaje original: "Maria"                                                                                                                                                                               
+                                                                      Última respuesta: "Vos me escribiste como asistente                                                                                                                                                     
+
+13045  2026-07-01 20:40:08  whatsapp  entrante   5491157276026@c.us   Maria                                                                                                                                                                                                   
+
+13044  2026-07-01 20:40:08  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pasó a María el número +54 9 11 5727-6026 (= 5491157276026@c.us) identificándolo como 'Dodi' y le pidió coordi
+
+13043  2026-07-01 20:40:08  sistema   interno                         claude_call unknown-flow: 27846ms prompt=80288c raw=10288c in=10t(cache_read=0 new=49510) out=1197t ttfb=1794ms api=27912ms turnos=1 $0.2428                                                            
+
 13042  2026-07-01 20:33:19  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
                                                                                                                                                                                                                                                                               
                                                                       Mensaje original: "A gabriela"                                                                                                                                                                          
@@ -232,17 +249,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12951  2026-07-01 17:09:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 12950  2026-07-01 17:09:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12949  2026-07-01 17:08:03  sistema   interno                         acción ejecutada: borrar_evento                                                                                                                                                                         
-
-12948  2026-07-01 17:08:03  calendar  saliente                        borrado: evento up8hrfda1r63glv9itn05garcc                                                                                                                                                              
-
-12947  2026-07-01 17:05:25  sistema   interno                         claude_call whatsapp: 20139ms prompt=79015c raw=12826c in=28t(cache_read=83479 new=33047) out=625t ttfb=2120ms api=17584ms turnos=3 $0.1686                                                             
-
-12946  2026-07-01 17:05:19  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-12945  2026-07-01 17:05:19  calendar  saliente                        creado: ZZ_TEST_MCP (2026-12-30T23:00:00-03:00 → 2026-12-30T23:30:00-03:00)                                                                                                                             
-
-12944  2026-07-01 17:03:17  sistema   interno                         claude_call whatsapp: 13437ms prompt=79111c raw=11394c in=28t(cache_read=83153 new=32558) out=398t ttfb=2125ms api=13574ms turnos=3 $0.1633                                                             
-
-12943  2026-07-01 17:03:12  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
