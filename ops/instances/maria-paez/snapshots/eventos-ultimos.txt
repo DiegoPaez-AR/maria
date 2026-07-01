@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13127  2026-07-01 22:27:33  whatsapp  saliente   5491165286555@c.us   Listo, le escribí a Roque. Y sí, queda en tu libreta privada — solo yo lo veo. En cuanto responda te aviso.                                                                                             
+
+13126  2026-07-01 22:27:33  sistema   interno                         claude_call whatsapp: 25032ms prompt=5120c raw=10841c in=18t(cache_read=130080 new=2963) out=631t ttfb=2130ms api=14729ms turnos=2 $0.0597                                                              
+
+13125  2026-07-01 22:27:29  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13124  2026-07-01 22:27:29  whatsapp  saliente   5491157683720@c.us   Hola Roque! Soy María, la asistente de tu mamá Gabriela. Me pide que te pregunte: ¿ya estás en casa?                                                                                                    
+
+13123  2026-07-01 22:27:29  sistema   interno                         claude_call moderacion: 7448ms prompt=1548c raw=6688c in=10t(cache_read=17396 new=5077) out=397t ttfb=1710ms api=6094ms turnos=1 $0.0105                                                                
+
+13122  2026-07-01 22:27:07  whatsapp  entrante   5491165286555@c.us   Escribile ahora por favor                                                                                                                                                                               
+
+13121  2026-07-01 22:27:07  whatsapp  entrante   5491165286555@c.us   No déjalo privado                                                                                                                                                                                       
+
 13120  2026-07-01 22:26:57  sistema   interno                         claude_call whatsapp: 14045ms prompt=5254c raw=9570c in=18t(cache_read=124524 new=2811) out=414t ttfb=2243ms api=11141ms turnos=2 $0.0542                                                               
 
 13119  2026-07-01 22:26:43  whatsapp  entrante   5491165286555@c.us   No déjalo privado                                                                                                                                                                                       
@@ -205,17 +219,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13029  2026-07-01 20:24:42  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
 
 13028  2026-07-01 20:24:42  whatsapp  saliente   5491157276026@c.us   Hola Dodi! Soy María, la asistente de Gabriela. Te escribo para terminar de coordinar el encuentro de este fin de semana — ¿qué día y horario te viene bien?                                            
-
-13027  2026-07-01 20:24:42  sistema   interno                         claude_call moderacion: 9868ms prompt=1604c raw=8173c in=10t(cache_read=0 new=22484) out=487t ttfb=1765ms api=9579ms turnos=1 $0.0310                                                                   
-
-13026  2026-07-01 20:24:27  sistema   interno                         acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
-
-13025  2026-07-01 20:24:17  whatsapp  entrante   5491165286555@c.us   Si                                                                                                                                                                                                      
-
-13024  2026-07-01 20:23:53  whatsapp  saliente   5491165286555@c.us   Perfecto, cuando quieras. Y me quedó pendiente lo de Dodi — ¿le escribo para cerrar el fin de semana?                                                                                                   
-
-13023  2026-07-01 20:23:53  sistema   interno                         claude_call whatsapp: 10106ms prompt=5565c raw=7057c in=10t(cache_read=28886 new=2781) out=270t ttfb=2121ms api=7302ms turnos=1 $0.0232                                                                 
-
-13022  2026-07-01 20:23:43  whatsapp  entrante   5491165286555@c.us   cuando tenga algún contacto público te aviso.                                                                                                                                                           
-
-13021  2026-07-01 20:22:13  whatsapp  saliente   5491165286555@c.us   La *privada* tiene tus contactos personales — solo yo los veo, nadie más. La *pública* es para contactos compartidos: si en algún momento usás María con otra persona (familia, equipo), esos contactos 
