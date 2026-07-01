@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13071  2026-07-01 20:49:32  whatsapp  entrante   5491157276026@c.us   Podria ser un programa de todo el dia                                                                                                                                                                   
+
+13070  2026-07-01 20:49:32  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a Maria coordinar una cita con Dodi (Rodrigo Páez Canosa, número 5491157276026 que ella misma confirmó e
+
+13069  2026-07-01 20:49:32  sistema   interno                         claude_call unknown-flow: 23687ms prompt=82361c raw=10179c in=10t(cache_read=6266 new=43999) out=1051t ttfb=1825ms api=23649ms turnos=1 $0.2226                                                         
+
 13068  2026-07-01 20:48:54  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
                                                                                                                                                                                                                                                                               
                                                                       Mensaje original: "Para Gabriela Echaniz"                                                                                                                                                               
@@ -245,9 +251,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12973  2026-07-01 17:21:09  sistema   interno                         claude_call whatsapp: 19041ms prompt=8374c raw=9094c in=10t(cache_read=0 new=25547) out=695t ttfb=2212ms api=16074ms turnos=1 $0.1063                                                                   
 
 12972  2026-07-01 17:20:49  whatsapp  entrante   5491132317896@c.us   Listame mis pendientes pf                                                                                                                                                                               
-
-12971  2026-07-01 17:20:15  whatsapp  saliente   34342575317160@lid   Listo, te agendé *Médico* el sábado 04/07 de 13 a 14 hs.                                                                                                                                                
-
-12970  2026-07-01 17:20:14  sistema   interno                         claude_call whatsapp: 25236ms prompt=77204c raw=14087c in=28t(cache_read=82480 new=32603) out=726t ttfb=2168ms api=22727ms turnos=3 $0.1676                                                             
-
-12969  2026-07-01 17:20:08  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
