@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12875  2026-07-01 15:10:02  whatsapp  entrante   5491167859758@c.us                        Dale Maria aguardo 💪🏼                                                                                                                                                                                   
+
+12874  2026-07-01 15:09:24  whatsapp  saliente   34342575317160@lid                        Diego, quería avisarte que no pude agendarte el evento porque me faltaron los datos para crearlo: el título, la fecha y el horario. Si me confirmás esos detalles, lo agrego sin problema.              
+
+12873  2026-07-01 15:09:16  sistema   interno                                              acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
+
+12872  2026-07-01 15:09:16  sistema   interno                                              claude_call whatsapp: 48189ms prompt=9221c raw=16454c in=10t(cache_read=0 new=49292) out=2298t ttfb=3436ms api=43999ms turnos=1 $0.2193                                                                 
+
+12871  2026-07-01 15:09:09  whatsapp  saliente   5491131121057@c.us                        Nico, te reenvío el invite al nico.jordan2024@gmail.com ahora.                                                                                                                                          
+
 12870  2026-07-01 15:09:01  sistema   interno                                              acción ejecutada: modificar_evento                                                                                                                                                                      
 
 12869  2026-07-01 15:09:01  calendar  saliente                                             modificado: Reunion NJ - DP (2026-07-07T12:30:00-03:00 → 2026-07-07T14:00:00-03:00)                                                                                                                     
@@ -223,13 +233,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                            Tu consulta quedó registrada correctamente                                                                                                                                                              
                                                                                                                                                                                                                                                                                                    
                                                                                            Atendemos de lunes a viernes de 8am a 12hs, te responderemos por este mismo medio en el próximo horario de atenc                                                                                        
-
-12775  2026-07-01 14:27:42  whatsapp  saliente   5491165286555@c.us                        Perfecto, los tengo. Les escribo ahora al de logística.                                                                                                                                                 
-
-12774  2026-07-01 14:27:42  sistema   interno                                              acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-12773  2026-07-01 14:27:42  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
-
-12772  2026-07-01 14:27:42  whatsapp  saliente   5491140793225@c.us                        Buen día. Les escribo de parte de Gabriela Echaniz. Encargaron una biblioteca a medida que no fue realizada según lo acordado. Necesitamos que nos den una definición a la brevedad: o rehacen el mueble
-
-12771  2026-07-01 14:27:41  sistema   interno                                              claude_call moderacion: 7858ms prompt=1773c raw=7405c in=10t(cache_read=0 new=22527) out=482t ttfb=1781ms api=10617ms turnos=1 $0.0311                                                                  
