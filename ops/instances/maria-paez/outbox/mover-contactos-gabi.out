@@ -1,0 +1,34 @@
+=== contactos actuales de Gabi (uid=18) ANTES ===
+id   nombre                    whatsapp            email
+---  ------------------------  ------------------  -----
+344  Parana Muebles            5491135802073@c.us       
+345  Parana Muebles Logistica  5491140793225@c.us       
+
+=== los 3 a mover (confirmar nombre antes) ===
+id   usuario_id  nombre                    whatsapp          
+---  ----------  ------------------------  ------------------
+340  1           Ana Clara Zamora                            
+342  1           Paraná Muebles            5491135802073@c.us
+343  1           Paraná Muebles Logística  5491140793225@c.us
+
+=== otros posibles de Gabi en tu libreta (Dodi/Rodrigo o creados en su ventana owner) ===
+id   nombre               whatsapp            creado             
+---  -------------------  ------------------  -------------------
+106  Rodrigo Paez                             2026-05-07 21:10:59
+108  Rodrigo Paez Canosa  5491157276026@c.us  2026-05-07 21:18:38
+
+=== MOVER 340,342,343 -> uid=18 (solo si hoy son de uid=1) ===
+8000
+exit_update=0
+
+=== DESPUES: libreta de Gabi ===
+id   nombre                    whatsapp            email              
+---  ------------------------  ------------------  -------------------
+340  Ana Clara Zamora                              a.zamora@una.edu.ar
+342  Paraná Muebles            5491135802073@c.us                     
+343  Paraná Muebles Logística  5491140793225@c.us                     
+344  Parana Muebles            5491135802073@c.us                     
+345  Parana Muebles Logistica  5491140793225@c.us                     
+=== quedan esos ids bajo uid=1? (debe ser vacio
+# exit=0
+
