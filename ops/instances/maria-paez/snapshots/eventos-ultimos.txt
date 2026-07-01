@@ -1,5 +1,37 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13223  2026-07-01 23:11:49  sistema   interno                        claude_call whatsapp: 30807ms prompt=76296c raw=18261c in=28t(cache_read=81939 new=32825) out=1039t ttfb=2128ms api=23565ms turnos=5 $0.1726                                                            
+
+13222  2026-07-01 23:11:47  whatsapp  saliente   5491165286555@c.us  Acá lo que encontré en *Florida Este* (entre Panamericana y el río):                                                                                                                                    
+                                                                                                                                                                                                                                                                             
+                                                                     *PHs con patio/terraza:*                                                                                                                                                                                
+                                                                                                                                                                                                                                                                             
+                                                                     1️⃣ *Valle Grande al 300* — 3 amb, 68 m², patio. USD 145.000 (apto crédito)                                                                                                                             
+                                                                     2️⃣ *Antonio Malaver al 1600                                                                                                                                                                            
+
+13221  2026-07-01 23:11:43  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+13220  2026-07-01 23:11:43  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13219  2026-07-01 23:11:43  whatsapp  saliente   34342575317160@lid  Te consigo el número de WhatsApp de Barra Chalaca Caseros: *11 6959-4900* (me lo pasó el local de Bulnes).                                                                                              
+
+13218  2026-07-01 23:11:43  sistema   interno                        claude_call moderacion: 6208ms prompt=1554c raw=6088c in=10t(cache_read=17396 new=5076) out=317t ttfb=1599ms api=4956ms turnos=1 $0.0102                                                                
+
+13217  2026-07-01 23:11:40  sistema   interno                        claude_call whatsapp: 88432ms prompt=58529c raw=71305c in=1308t(cache_read=242747 new=39753) out=3328t ttfb=2134ms api=106060ms turnos=14 $0.4822                                                       
+
+13216  2026-07-01 23:11:36  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+13215  2026-07-01 23:11:18  whatsapp  entrante   5491123348031@c.us  Buenas noches                                                                                                                                                                                           
+                                                                     1169594900                                                                                                                                                                                              
+
+13214  2026-07-01 23:11:08  sistema   interno                        claude_call whatsapp: 26623ms prompt=76342c raw=13737c in=28t(cache_read=81588 new=31979) out=687t ttfb=2095ms api=19409ms turnos=3 $0.1641                                                             
+
+13213  2026-07-01 23:11:03  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13212  2026-07-01 23:11:03  whatsapp  saliente   5491123348031@c.us  Buenas noches! Te consulto: ¿tenés el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias!                                                                                       
+
+13211  2026-07-01 23:11:03  sistema   interno                        claude_call moderacion: 5752ms prompt=1561c raw=5983c in=10t(cache_read=17396 new=5077) out=306t ttfb=1677ms api=4680ms turnos=1 $0.0101                                                                
+
 13210  2026-07-01 23:10:40  whatsapp  entrante   5491123348031@c.us  Buenas noches                                                                                                                                                                                           
 
 13209  2026-07-01 23:10:11  whatsapp  entrante   5491165286555@c.us  Profundicemos en Florida pero en Florida este, es decir entre la panamericana y el río                                                                                                                  
@@ -189,30 +221,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13125  2026-07-01 22:27:29  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
 13124  2026-07-01 22:27:29  whatsapp  saliente   5491157683720@c.us  Hola Roque! Soy María, la asistente de tu mamá Gabriela. Me pide que te pregunte: ¿ya estás en casa?                                                                                                    
-
-13123  2026-07-01 22:27:29  sistema   interno                        claude_call moderacion: 7448ms prompt=1548c raw=6688c in=10t(cache_read=17396 new=5077) out=397t ttfb=1710ms api=6094ms turnos=1 $0.0105                                                                
-
-13122  2026-07-01 22:27:07  whatsapp  entrante   5491165286555@c.us  Escribile ahora por favor                                                                                                                                                                               
-
-13121  2026-07-01 22:27:07  whatsapp  entrante   5491165286555@c.us  No déjalo privado                                                                                                                                                                                       
-
-13120  2026-07-01 22:26:57  sistema   interno                        claude_call whatsapp: 14045ms prompt=5254c raw=9570c in=18t(cache_read=124524 new=2811) out=414t ttfb=2243ms api=11141ms turnos=2 $0.0542                                                               
-
-13119  2026-07-01 22:26:43  whatsapp  entrante   5491165286555@c.us  No déjalo privado                                                                                                                                                                                       
-
-13118  2026-07-01 22:26:32  whatsapp  entrante   5491157276026@c.us  Qué me aconsejas?                                                                                                                                                                                       
-                                                                     Para una salida romántica                                                                                                                                                                               
-
-13117  2026-07-01 22:26:32  sistema   interno                        unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a María coordinar una cita con Dodi (Rodrigo Páez Canosa) y le pasó su número; el mensaje actual es part
-
-13116  2026-07-01 22:26:32  sistema   interno                        claude_call unknown-flow: 11507ms prompt=82587c raw=5922c in=10t(cache_read=6266 new=44151) out=295t ttfb=1853ms api=11201ms turnos=1 $0.2120                                                           
-
-13115  2026-07-01 22:26:23  whatsapp  saliente   5491165286555@c.us  Dale, pasámelo cuando puedas y le escribo enseguida!                                                                                                                                                    
-
-13114  2026-07-01 22:26:23  sistema   interno                        claude_call whatsapp: 6351ms prompt=5331c raw=5651c in=10t(cache_read=58666 new=2397) out=96t ttfb=2484ms api=3217ms turnos=1 $0.0281                                                                   
-
-13113  2026-07-01 22:26:18  sistema   interno                        contacto vcard (privado): Roque → 5491157683720@c.us                                                                                                                                                    
-
-13112  2026-07-01 22:26:16  whatsapp  entrante   5491165286555@c.us  Otra cosa te voy a pasar el contacto de mi hijo Roque, escribile a ver si ya está en casa                                                                                                               
-
-13111  2026-07-01 22:25:41  whatsapp  saliente   5491165286555@c.us  Confirmado el domingo todo el día, y le pregunté qué tiene ganas de hacer. En cuanto responda te cuento!                                                                                                
