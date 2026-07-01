@@ -1,5 +1,18 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12734  2026-07-01 14:11:03  sistema   interno                         claude_call maria-worker: 26524ms prompt=76520c raw=11486c in=10t(cache_read=6271 new=30678) out=1199t ttfb=1710ms api=25482ms turnos=1 $0.1449                                                         
+
+12733  2026-07-01 14:10:52  sistema   interno                         claude_call memoria-curada: 23113ms prompt=4605c raw=11326c in=10t(cache_read=6266 new=6046) out=1025t ttfb=1737ms api=22015ms turnos=1 $0.0419                                                         
+
+12732  2026-07-01 14:10:36  sistema   interno                         claude_call maria-worker: 25437ms prompt=75976c raw=11551c in=20t(cache_read=42991 new=31753) out=999t ttfb=1770ms api=24702ms turnos=2 $0.1568                                                         
+
+12731  2026-07-01 14:10:33  whatsapp  entrante   5491165286555@c.us   es ese                                                                                                                                                                                                  
+                                                                      parana muebles logistica                                                                                                                                                                                
+
+12730  2026-07-01 14:10:29  sistema   interno                         claude_call memoria-curada: 30929ms prompt=4972c raw=12730c in=10t(cache_read=6266 new=6158) out=1245t ttfb=1749ms api=29932ms turnos=1 $0.0458                                                         
+
+12729  2026-07-01 14:10:23  sistema   interno                         claude_call whatsapp: 56173ms prompt=75178c raw=19631c in=10t(cache_read=6271 new=30164) out=2921t ttfb=1762ms api=57615ms turnos=1 $0.1683                                                             
+
 12728  2026-07-01 14:09:58  sistema   interno                         claude_call memoria-curada: 22915ms prompt=3822c raw=11539c in=10t(cache_read=6266 new=5719) out=1024t ttfb=1756ms api=32375ms turnos=1 $0.0404                                                         
 
 12727  2026-07-01 14:09:50  sistema   interno                         claude_call whatsapp: 68955ms prompt=74909c raw=23314c in=20t(cache_read=42595 new=33212) out=3071t ttfb=2078ms api=68942ms turnos=2 $0.1929                                                            
@@ -202,15 +215,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12636  2026-07-01 13:23:59  whatsapp  saliente   5491165286555@c.us   ¡Anotado! ¿A qué hora del jueves querés el recordatorio? Dame un horario puntual y lo cargo enseguida.                                                                                                  
 
 12635  2026-07-01 13:23:59  sistema   interno                         claude_call whatsapp: 23188ms prompt=73997c raw=9566c in=10t(cache_read=6271 new=29792) out=999t ttfb=1807ms api=22498ms turnos=1 $0.1379                                                               
-
-12634  2026-07-01 13:23:35  whatsapp  entrante   5491165286555@c.us   llamar a Daniela Perrota el jueves a la mañana                                                                                                                                                          
-
-12633  2026-07-01 13:22:05  whatsapp  saliente   5491165286555@c.us   ¡Claro que sí! Contame un poco más: ¿qué recordatorios querés que te agregue? Decime qué es cada uno, la fecha y hora, y si tiene alguna duración o es solo un aviso puntual.                           
-
-12632  2026-07-01 13:22:04  sistema   interno                         claude_call whatsapp: 15277ms prompt=73984c raw=7211c in=10t(cache_read=6271 new=29742) out=514t ttfb=1789ms api=14597ms turnos=1 $0.1304                                                               
-
-12631  2026-07-01 13:21:49  whatsapp  entrante   5491165286555@c.us   tambien que agregues por favor al calendar algunos recordatorios puede ser?                                                                                                                             
-
-12630  2026-07-01 13:21:34  whatsapp  saliente   5491165286555@c.us   ¡Perfecto! Pasame el contacto de Ana Clara así la busco. Una pregunta rápida: ¿la reunión es entre vos y Ana Clara solamente, o también va a estar Diego?                                               
-
-12629  2026-07-01 13:21:34  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
