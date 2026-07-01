@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12972  2026-07-01 17:20:49  whatsapp  entrante   5491132317896@c.us   Listame mis pendientes pf                                                                                                                                                                               
+
+12971  2026-07-01 17:20:15  whatsapp  saliente   34342575317160@lid   Listo, te agendé *Médico* el sábado 04/07 de 13 a 14 hs.                                                                                                                                                
+
+12970  2026-07-01 17:20:14  sistema   interno                         claude_call whatsapp: 25236ms prompt=77204c raw=14087c in=28t(cache_read=82480 new=32603) out=726t ttfb=2168ms api=22727ms turnos=3 $0.1676                                                             
+
+12969  2026-07-01 17:20:08  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+12968  2026-07-01 17:20:08  calendar  saliente                        creado: Médico (2026-07-04T13:00:00-03:00 → 2026-07-04T14:00:00-03:00)                                                                                                                                  
+
 12967  2026-07-01 17:19:49  whatsapp  entrante   5491132317896@c.us   poneme una reu el sabado a las 13: Medico                                                                                                                                                               
 
 12966  2026-07-01 17:18:11  sistema   interno                         claude_call whatsapp: 12527ms prompt=58627c raw=8213c in=10t(cache_read=6271 new=24678) out=407t ttfb=2249ms api=11524ms turnos=1 $0.1043                                                               
@@ -198,13 +208,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12874  2026-07-01 15:09:24  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude agendarte el evento porque me faltaron los datos para crearlo: el título, la fecha y el horario. Si me confirmás esos detalles, lo agrego sin problema.              
 
 12873  2026-07-01 15:09:16  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
-
-12872  2026-07-01 15:09:16  sistema   interno                         claude_call whatsapp: 48189ms prompt=9221c raw=16454c in=10t(cache_read=0 new=49292) out=2298t ttfb=3436ms api=43999ms turnos=1 $0.2193                                                                 
-
-12871  2026-07-01 15:09:09  whatsapp  saliente   5491131121057@c.us   Nico, te reenvío el invite al nico.jordan2024@gmail.com ahora.                                                                                                                                          
-
-12870  2026-07-01 15:09:01  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
-
-12869  2026-07-01 15:09:01  calendar  saliente                        modificado: Reunion NJ - DP (2026-07-07T12:30:00-03:00 → 2026-07-07T14:00:00-03:00)                                                                                                                     
-
-12868  2026-07-01 15:09:00  sistema   interno                         claude_call whatsapp: 16731ms prompt=78917c raw=6818c in=10t(cache_read=6271 new=31346) out=483t ttfb=1640ms api=17080ms turnos=1 $0.1374                                                               
