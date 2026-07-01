@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13041  2026-07-01 20:33:02  whatsapp  entrante   5491157276026@c.us   A gabriela                                                                                                                                                                                              
+
+13040  2026-07-01 20:33:02  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pasó a María el número de Dodi (5491157276026) y le pidió coordinar un encuentro con él; María le escribió a e
+
+13039  2026-07-01 20:33:02  sistema   interno                         claude_call unknown-flow: 12902ms prompt=79764c raw=6339c in=10t(cache_read=6266 new=43035) out=368t ttfb=1912ms api=12437ms turnos=1 $0.2078                                                           
+
+13038  2026-07-01 20:32:21  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
+                                                                                                                                                                                                                                                                              
+                                                                      Mensaje original: "Me gustaria pasar con ella el domingo. Puede serbin progra                                                                                                                           
+
 13037  2026-07-01 20:29:26  whatsapp  entrante   5491157276026@c.us   Me gustaria pasar con ella el domingo. Puede serbin programa de todo el dia                                                                                                                             
 
 13036  2026-07-01 20:29:25  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Es Rodrigo Páez Canosa (Dodi), cuyo número +54 9 11 5727-6026 Gabriela Echaniz (id=18) le pasó a Maria hoy, pidiéndole que coordinara una 
@@ -233,11 +243,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12943  2026-07-01 17:03:12  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
 
 12942  2026-07-01 17:01:43  sistema   interno                         claude_call whatsapp: 37581ms prompt=78921c raw=10380c in=10t(cache_read=38226 new=377) out=214t ttfb=2470ms api=36203ms turnos=2 $0.1511                                                               
-
-12941  2026-07-01 17:01:16  sistema   interno                         meeting-prep: 3 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-12940  2026-07-01 17:01:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-12939  2026-07-01 17:01:03  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12938  2026-07-01 16:56:22  sistema   interno                         claude_call whatsapp: 9461ms prompt=279c raw=10691c in=28t(cache_read=29164 new=5513) out=284t ttfb=2145ms api=7767ms turnos=3 $0.0342                                                                  
