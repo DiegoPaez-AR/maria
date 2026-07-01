@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12670  2026-07-01 13:40:46  whatsapp  entrante   5491167859758@c.us   Hola Maria como estas? todo bien?                                                                                                                                                                       
+
 12669  2026-07-01 13:37:36  whatsapp  saliente   5491165286555@c.us   Dale Gabi, lo busco y cancelo.                                                                                                                                                                          
 
 12668  2026-07-01 13:37:36  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -203,5 +205,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12572  2026-07-01 12:31:43  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
 
 12571  2026-07-01 12:31:43  sistema   interno                         claude_call whatsapp: 17035ms prompt=7037c raw=7969c in=10t(cache_read=23592 new=3314) out=770t ttfb=1794ms api=14619ms turnos=1 $0.0311                                                                
-
-12570  2026-07-01 12:31:42  whatsapp  entrante   5491165286555@c.us   Bueno entonces, por ejemplo yo te paso un turno y vos lo vas agendando? O te paso un contacto y le escribís para coordinar y así?                                                                       
