@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13032  2026-07-01 20:24:51  whatsapp  saliente   5491165286555@c.us   Listo! Le escribí a Dodi preguntando qué día y horario le viene bien este fin de semana. En cuanto responda te aviso.                                                                                   
+
+13031  2026-07-01 20:24:51  sistema   interno                         claude_call whatsapp: 32783ms prompt=5177c raw=18857c in=44t(cache_read=170613 new=3970) out=929t ttfb=2166ms api=20053ms turnos=5 $0.0801                                                              
+
+13030  2026-07-01 20:24:47  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+13029  2026-07-01 20:24:42  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13028  2026-07-01 20:24:42  whatsapp  saliente   5491157276026@c.us   Hola Dodi! Soy María, la asistente de Gabriela. Te escribo para terminar de coordinar el encuentro de este fin de semana — ¿qué día y horario te viene bien?                                            
+
+13027  2026-07-01 20:24:42  sistema   interno                         claude_call moderacion: 9868ms prompt=1604c raw=8173c in=10t(cache_read=0 new=22484) out=487t ttfb=1765ms api=9579ms turnos=1 $0.0310                                                                   
+
+13026  2026-07-01 20:24:27  sistema   interno                         acción FALLÓ: enviar_wa — Faltan campos requeridos: a, texto                                                                                                                                            
+
+13025  2026-07-01 20:24:17  whatsapp  entrante   5491165286555@c.us   Si                                                                                                                                                                                                      
+
 13024  2026-07-01 20:23:53  whatsapp  saliente   5491165286555@c.us   Perfecto, cuando quieras. Y me quedó pendiente lo de Dodi — ¿le escribo para cerrar el fin de semana?                                                                                                   
 
 13023  2026-07-01 20:23:53  sistema   interno                         claude_call whatsapp: 10106ms prompt=5565c raw=7057c in=10t(cache_read=28886 new=2781) out=270t ttfb=2121ms api=7302ms turnos=1 $0.0232                                                                 
@@ -225,19 +241,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12934  2026-07-01 16:53:24  sistema   interno                         claude_call whatsapp: 19536ms prompt=78219c raw=12748c in=28t(cache_read=76434 new=38709) out=581t ttfb=2674ms api=18059ms turnos=3 $0.1871                                                             
 
 12933  2026-07-01 16:53:19  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-12932  2026-07-01 16:53:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-12931  2026-07-01 16:53:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12930  2026-07-01 16:37:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-12929  2026-07-01 16:37:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12928  2026-07-01 16:36:09  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-12927  2026-07-01 16:36:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12926  2026-07-01 16:35:07  whatsapp  saliente   34342575317160@lid   Listo, te agendé *Médico* el sábado 04/07 de 13 a 14 hs.                                                                                                                                                
-
-12925  2026-07-01 16:35:07  sistema   interno                         claude_call whatsapp: 29488ms prompt=76722c raw=16170c in=28t(cache_read=82521 new=32850) out=1211t ttfb=2222ms api=26822ms turnos=3 $0.1758                                                            
