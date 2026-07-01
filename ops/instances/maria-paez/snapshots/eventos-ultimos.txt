@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12636  2026-07-01 13:23:59  whatsapp  saliente   5491165286555@c.us   ¡Anotado! ¿A qué hora del jueves querés el recordatorio? Dame un horario puntual y lo cargo enseguida.                                                                                                  
+
+12635  2026-07-01 13:23:59  sistema   interno                         claude_call whatsapp: 23188ms prompt=73997c raw=9566c in=10t(cache_read=6271 new=29792) out=999t ttfb=1807ms api=22498ms turnos=1 $0.1379                                                               
+
+12634  2026-07-01 13:23:35  whatsapp  entrante   5491165286555@c.us   llamar a Daniela Perrota el jueves a la mañana                                                                                                                                                          
+
 12633  2026-07-01 13:22:05  whatsapp  saliente   5491165286555@c.us   ¡Claro que sí! Contame un poco más: ¿qué recordatorios querés que te agregue? Decime qué es cada uno, la fecha y hora, y si tiene alguna duración o es solo un aviso puntual.                           
 
 12632  2026-07-01 13:22:04  sistema   interno                         claude_call whatsapp: 15277ms prompt=73984c raw=7211c in=10t(cache_read=6271 new=29742) out=514t ttfb=1789ms api=14597ms turnos=1 $0.1304                                                               
@@ -287,9 +293,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12538  2026-07-01 03:08:13  sistema   interno                         auto-accept calendar share: gabyechaniz@gmail.com → read (role=reader)                                                                                                                                  
 
 12537  2026-07-01 03:04:21  whatsapp  saliente   5491165286555@c.us   ¡Perfecto, Gabi! Voy a verificar el acceso ahora mismo. En un momento te confirmo que todo quedó bien conectado.                                                                                        
-
-12536  2026-07-01 03:04:21  sistema   interno                         acción ejecutada: set_calendar_acceso                                                                                                                                                                   
-
-12535  2026-07-01 03:04:21  sistema   interno                         calendar_acceso seteado a "read" (autodetectado)                                                                                                                                                        
-
-12534  2026-07-01 03:04:20  sistema   interno                         claude_call whatsapp: 14396ms prompt=72756c raw=7254c in=10t(cache_read=6271 new=29263) out=493t ttfb=1761ms api=13551ms turnos=1 $0.1278                                                               
