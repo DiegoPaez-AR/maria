@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13152  2026-07-01 22:32:53  whatsapp  saliente   5491165286555@c.us   Eloísa dice que no tiene tarea. El bolso de danzas quedó sin confirmar — capaz que el "No" era solo para la tarea.                                                                                      
+
+13151  2026-07-01 22:32:53  sistema   interno                         claude_call whatsapp: 11134ms prompt=58902c raw=7009c in=10t(cache_read=6271 new=24976) out=283t ttfb=2147ms api=12049ms turnos=1 $0.1038                                                               
+
+13150  2026-07-01 22:32:42  whatsapp  entrante   5491176667387@c.us   No                                                                                                                                                                                                      
+
+13149  2026-07-01 22:32:19  whatsapp  saliente   5491165286555@c.us   Listo, le escribí a Eloísa! Le pregunté si tiene tarea y le pedí que arme el bolso de danzas. En cuanto responda te cuento.                                                                             
+
+13148  2026-07-01 22:32:18  sistema   interno                         claude_call whatsapp: 19149ms prompt=5225c raw=8792c in=18t(cache_read=145719 new=2744) out=314t ttfb=2632ms api=8920ms turnos=2 $0.0588                                                                
+
+13147  2026-07-01 22:32:14  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13146  2026-07-01 22:32:14  whatsapp  saliente   5491176667387@c.us   Hola Eloísa! Soy María, la asistente de tu mamá Gabriela. Me pide que te pregunte: ¿tenés tarea? Y que por favor armes el bolso de danzas. 🙂                                                            
+
+13145  2026-07-01 22:32:14  sistema   interno                         claude_call moderacion: 6879ms prompt=1589c raw=7149c in=10t(cache_read=17396 new=5096) out=462t ttfb=1557ms api=6184ms turnos=1 $0.0109                                                                
+
 13144  2026-07-01 22:31:59  whatsapp  entrante   5491165286555@c.us   Decile si tiene tarea y que por favor arme el bolso de danzas                                                                                                                                           
 
 13143  2026-07-01 22:31:23  whatsapp  saliente   5491165286555@c.us   Dale, te escucho!                                                                                                                                                                                       
@@ -194,24 +210,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13054  2026-07-01 20:43:52  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
 
 13053  2026-07-01 20:43:42  whatsapp  entrante   5491165286555@c.us   Es mi novio, mi marido, no sé cómo del destino.                                                                                                                                                         
-
-13052  2026-07-01 20:43:42  whatsapp  entrante   5491165286555@c.us   Hola María, pudiste hablar con Dodi? Dodi es Rodrigo Paescanosa, es la misma persona.                                                                                                                   
-                                                                       Yo lo tengo agendado como Dodi porque es mi pareja.                                                                                                                                                    
-
-13051  2026-07-01 20:43:32  sistema   interno                         claude_call whatsapp: 29892ms prompt=5459c raw=15568c in=26t(cache_read=87460 new=35330) out=1159t ttfb=4663ms api=24610ms turnos=3 $0.1762                                                             
-
-13050  2026-07-01 20:43:01  whatsapp  entrante   5491165286555@c.us   Hola María, pudiste hablar con Dodi? Dodi es Rodrigo Paescanosa, es la misma persona.                                                                                                                   
-                                                                       Yo lo tengo agendado como Dodi porque es mi pareja.                                                                                                                                                    
-
-13049  2026-07-01 20:40:50  whatsapp  entrante   5491157276026@c.us   Para Gabriela Echaniz                                                                                                                                                                                   
-
-13048  2026-07-01 20:40:50  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a María que contactara a Dodi (Rodrigo Páez Canosa, +54 9 11 5727-6026 = 5491157276026@c.us) para coordi
-
-13047  2026-07-01 20:40:50  sistema   interno                         claude_call unknown-flow: 13896ms prompt=80870c raw=6921c in=10t(cache_read=6266 new=43478) out=494t ttfb=1749ms api=14216ms turnos=1 $0.2118                                                           
-
-13046  2026-07-01 20:40:26  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
-                                                                                                                                                                                                                                                                              
-                                                                      Mensaje original: "Maria"                                                                                                                                                                               
-                                                                      Última respuesta: "Vos me escribiste como asistente                                                                                                                                                     
-
-13045  2026-07-01 20:40:08  whatsapp  entrante   5491157276026@c.us   Maria                                                                                                                                                                                                   
