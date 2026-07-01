@@ -1,0 +1,18 @@
+=== .conf ===
+68:MARIA_MCP_ACTIONS=0
+=== restart (NO reload) para limpiar env del proceso ===
+[PM2] Applying action restartProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 1  │ intensa-api    │ default     │ 1.0.0
+# exit=0
+k    │ 2514057  │ 31h    │ 0    │ online    │ 0%       │ 69.3mb   │ root     │ disabled │
+│ 0  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 2972177  │ 0s     │ 16   │ online    │ 0%       │ 13.4mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+restart=0
+pid=2972177 status=online MARIA_MCP_ACTIONS=0
+0|maria-pa | 2026-07-01 13:37:08: [WA authenticated]
+0|maria-pa | 2026-07-01 13:37:08: ✅ [WA ready] Maria conectada
+done
