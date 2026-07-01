@@ -1,5 +1,24 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                    
 -----  -------------------  --------  ---------  ------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13309  2026-07-01 23:52:35  whatsapp  saliente   5491169594900@c.us  Hola! Consultamos con el cliente y te confirmamos en un momento. ¿Podría reemplazar las tortitas por algo similar que sí esté disponible para llevar? Así le comento las opciones.        
+
+13308  2026-07-01 23:52:34  whatsapp  saliente   34342575317160@lid  El local de Caseros confirma el pedido pero dice que las tortitas de choclo no están disponibles para take away. Te preguntan si las reemplazás por otra cosa.                            
+                                                                                                                                                                                                                                                               
+                                                                     Dos cosas que necesito de vos:                                                                                                                                                            
+                                                                     1. ¿A nom                                                                                                                                                                                 
+
+13307  2026-07-01 23:52:34  sistema   interno                        claude_call whatsapp: 16742ms prompt=80086c raw=9719c in=10t(cache_read=6271 new=32242) out=607t ttfb=2426ms api=15878ms turnos=1 $0.1421                                                 
+
+13306  2026-07-01 23:52:27  sistema   interno                        claude_call memoria-curada: 25677ms prompt=1518c raw=11956c in=10t(cache_read=6266 new=5482) out=931t ttfb=2738ms api=23587ms turnos=1 $0.0374                                            
+
+13305  2026-07-01 23:52:17  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                        
+                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                      
+                                                                     Las tortitas de choclo, lamentablemente no son para llevar                                                                                                                                
+                                                                     Si, estamos atendiendo en el local, perdón la demora                                                                                                                                      
+                                                                     Desea reemplazar las tortitas de                                                                                                                                                          
+
+13304  2026-07-01 23:52:07  sistema   interno                        claude_call whatsapp: 35880ms prompt=80083c raw=18896c in=28t(cache_read=84477 new=34010) out=1471t ttfb=2158ms api=34523ms turnos=3 $0.1853                                              
+
 13303  2026-07-01 23:52:01  sistema   interno                        claude_call memoria-curada: 18543ms prompt=2603c raw=10164c in=10t(cache_read=6266 new=5825) out=668t ttfb=2237ms api=17173ms turnos=1 $0.0351                                            
 
 13302  2026-07-01 23:51:58  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                       
@@ -225,15 +244,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13211  2026-07-01 23:11:03  sistema   interno                        claude_call moderacion: 5752ms prompt=1561c raw=5983c in=10t(cache_read=17396 new=5077) out=306t ttfb=1677ms api=4680ms turnos=1 $0.0101                                                  
 
 13210  2026-07-01 23:10:40  whatsapp  entrante   5491123348031@c.us  Buenas noches                                                                                                                                                                             
-
-13209  2026-07-01 23:10:11  whatsapp  entrante   5491165286555@c.us  Profundicemos en Florida pero en Florida este, es decir entre la panamericana y el río                                                                                                    
-
-13208  2026-07-01 23:07:59  whatsapp  saliente   34342575317160@lid  Les escribí a los tres. En cuanto alguno responda te paso el número.                                                                                                                      
-
-13207  2026-07-01 23:07:59  sistema   interno                        claude_call whatsapp: 38320ms prompt=8333c raw=16810c in=28t(cache_read=235472 new=5667) out=782t ttfb=2067ms api=17040ms turnos=5 $0.1037                                                
-
-13206  2026-07-01 23:07:54  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                       
-
-13205  2026-07-01 23:07:49  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                               
-
-13204  2026-07-01 23:07:49  whatsapp  saliente   5491166431877@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                        
