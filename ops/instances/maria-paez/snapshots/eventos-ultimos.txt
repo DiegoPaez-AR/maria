@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12710  2026-07-01 14:01:50  sistema   interno                         claude_call whatsapp: 86319ms prompt=74838c raw=28694c in=10t(cache_read=6271 new=30071) out=4294t ttfb=1825ms api=85668ms turnos=1 $0.1887                                                             
+
 12709  2026-07-01 14:00:23  whatsapp  entrante   5491165286555@c.us   Quería pedirte que llames a Paraná Muebles : Results que encargué una biblioteca a medida y l hicieron mal, tardaron en retirarla y fueron muy desprolijos en todo el proceso. Ahora no le responden, de
 
 12708  2026-07-01 13:59:54  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -211,5 +213,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12612  2026-07-01 12:42:58  whatsapp  saliente   5491131121057@c.us   Anotado, Nico. Actualizo tu mail en mi libreta.                                                                                                                                                         
 
 12611  2026-07-01 12:42:58  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-12610  2026-07-01 12:42:58  sistema   interno                         claude_call whatsapp: 25274ms prompt=75754c raw=10528c in=10t(cache_read=6271 new=30238) out=1116t ttfb=1672ms api=24230ms turnos=1 $0.1418                                                             
