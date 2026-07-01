@@ -395,7 +395,16 @@ async function handleMessage(client, msg) {
   // sin debouncing — es metadata, no parte del flujo conversacional.
   if (msg.type === 'vcard') {
     const usuario = usuarios.resolverPorWa(from);
-    if (!usuario) return;
+    if (!usuario) {
+      // Antes: return silencioso -> el vCard desaparecía sin rastro (fue el
+      // caso Gabi pre-binding). Ahora lo logueamos para que sea diagnosticable
+      // en vez de perderse: si un usuario servido no resuelve, esto lo delata.
+      console.warn(`[WA vcard] remitente no resuelto (${from}) - vCard NO guardado`);
+      mem.log({ canal: 'sistema', direccion: 'interno',
+        cuerpo: `vCard de remitente no resuelto (${from}) - no se guardó (usuario no reconocido)`,
+        metadata: { tipo: 'vcard_no_resuelto', from, fromLid } });
+      return;
+    }
     return await _manejarVCard(client, msg, usuario);
   }
 

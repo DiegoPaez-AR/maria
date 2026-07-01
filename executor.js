@@ -1015,6 +1015,25 @@ async function _crearUsuario(a, ctx) {
   let waCusNorm = null;
   if (a.wa_cus) {
     waCusNorm = await waValidate.normalizarWaCus(a.wa_cus, ctx.waClient);
+  } else if (!a.wa_lid) {
+    // Sin wa_cus ni wa_lid explícitos: intentar HEREDARLO de la libreta del
+    // owner. Caso típico: el owner ya guardó a esta persona por vCard antes de
+    // darla de alta (fue el bug de Gabi: se creaba "ciega" sin WhatsApp → sin
+    // brief/recordatorios y sin resolución de sus mensajes). Best-effort: si el
+    // número heredado no valida, NO bloqueamos el alta.
+    try {
+      let cont = mem.buscarContacto({ usuarioId: ctx.usuario.id, nombre: a.nombre });
+      if (!cont || !cont.whatsapp) {
+        const fuzzy = mem.buscarContactosVisibles(ctx.usuario.id, a.nombre, { max: 3 });
+        cont = (fuzzy || []).find(c => c.whatsapp) || cont;
+      }
+      if (cont && cont.whatsapp) {
+        waCusNorm = await waValidate.normalizarWaCus(cont.whatsapp, ctx.waClient);
+        console.log(`[crear_usuario] wa_cus heredado de libreta: ${a.nombre} -> ${cont.whatsapp}`);
+      }
+    } catch (e) {
+      console.warn(`[crear_usuario] no pude heredar wa de libreta para ${a.nombre}: ${e.message}`);
+    }
   }
   // Si dieron ciudad y NO tz explícita, derivamos la tz del lugar (geocoder).
   let _tz = a.tz || null;
@@ -1049,7 +1068,9 @@ async function _crearUsuario(a, ctx) {
     console.warn(`[executor] no pude pre-marcar morning_brief para id=${u.id}: ${err.message}`);
   }
   console.log(`[executor] usuario creado: id=${u.id} nombre=${u.nombre}${u.calendar_id ? '' : ' (sin calendar_id todavía)'}`);
-  return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null };
+  const _sinWa = !waCusNorm && !a.wa_lid;
+  if (_sinWa) console.warn(`[crear_usuario] ${u.nombre} (id=${u.id}) quedó SIN WhatsApp: no recibirá brief/recordatorios ni se reconocerán sus mensajes hasta cargar su número`);
+  return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null, sin_whatsapp: _sinWa };
 }
 
 // Opt-out del brief matutino. Cualquier usuario puede pausar/reactivar el SUYO
