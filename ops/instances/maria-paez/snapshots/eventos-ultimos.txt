@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13111  2026-07-01 22:25:41  whatsapp  saliente   5491165286555@c.us   Confirmado el domingo todo el día, y le pregunté qué tiene ganas de hacer. En cuanto responda te cuento!                                                                                                
+
+13110  2026-07-01 22:25:41  sistema   interno                         claude_call whatsapp: 19051ms prompt=5199c raw=8644c in=20t(cache_read=64544 new=52400) out=259t ttfb=2127ms api=9194ms turnos=2 $0.2198                                                                
+
+13109  2026-07-01 22:25:37  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13108  2026-07-01 22:25:37  whatsapp  saliente   5491157276026@c.us   Genial Dodi, Gabriela confirma el domingo todo el día! ¿Tenés ganas de hacer algo en particular?                                                                                                        
+
+13107  2026-07-01 22:25:37  sistema   interno                         claude_call moderacion: 7047ms prompt=1544c raw=6602c in=10t(cache_read=0 new=22463) out=377t ttfb=1739ms api=5954ms turnos=1 $0.0304                                                                   
+
+13106  2026-07-01 22:25:21  whatsapp  entrante   5491165286555@c.us   Decile que si, que tiene ganas de hacer?                                                                                                                                                                
+
 13105  2026-07-01 22:23:07  whatsapp  saliente   34342575317160@lid   A nadie — me equivoqué al decir eso. No tengo un canal directo para reportar bugs del sistema. Si querés que se corrija, lo tendrías que reportar vos al equipo de soporte. Perdón por el wording imprec
 
 13104  2026-07-01 22:23:07  sistema   interno                         claude_call whatsapp: 16353ms prompt=7811c raw=7819c in=10t(cache_read=0 new=62916) out=379t ttfb=2165ms api=13523ms turnos=1 $0.2417                                                                   
@@ -209,20 +221,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13012  2026-07-01 20:18:36  whatsapp  entrante   5491165286555@c.us   La María te quería preguntar en qué quedaste con Dody.                                                                                                                                                  
                                                                        ¿Areglaron para qué día?                                                                                                                                                                               
                                                                        ¿Para... y qué horario?                                                                                                                                                                                
-
-13011  2026-07-01 19:34:13  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-13010  2026-07-01 19:15:15  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: RETCO - Weekly Call  (04:30 p. m.)                                                                                                                                                        
-                                                                      Con: pablo.petrillo@luftlatam.com, martin.sarsale@gmail.com, alex@ubiica.com, rgana@ubiica.com, rodrigo.gana@thebigkeygroup.com                                                                         
-
-13009  2026-07-01 18:45:30  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: 10/07 Vencimiento dominio: pannelli.com.ar (04:00 p. m.)                                                                                                                                  
-                                                                      Con: federico.dupuy@ebuono.com.ar, pablo@capurro.com.ar                                                                                                                                                 
-                                                                      Archivo: <a href="https://docs.google.com/spreadsheets/d/15RCwO7FfEITIX58                                                                                                                               
-
-13008  2026-07-01 18:45:22  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: Las 6 (04:00 p. m.) @https://meet.google.com/rmk-aher-qnb?authuser=0                                                                                                                      
-                                                                      Con: claudiahilb@gmail.com, verahilb@gmail.com, marcelaineshuberman@gmail.com, norahilb@gmail.com, m@kluthweb.de, mar                                                                                   
-
-13007  2026-07-01 18:45:15  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Reunión RR.HH (04:00 p. m.)                                                                                                                                                               
-                                                                      Con: celeste.ramos@sondeosglobal.com                                                                                                                                                                    
-
-13006  2026-07-01 18:15:08  whatsapp  saliente   34342575317160@lid   ⏰ *En 15min*: Personal (03:30 p. m.)                                                                                                                                                                    
