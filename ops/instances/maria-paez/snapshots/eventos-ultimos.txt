@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13174  2026-07-01 22:37:42  whatsapp  saliente   5491165286555@c.us   Claro que sí! Pasame las características que busca (ubicación, ambientes, precio, lo que tengas) y las páginas, y me pongo a buscar.                                                                    
+
+13173  2026-07-01 22:37:42  sistema   interno                         claude_call whatsapp: 8891ms prompt=5390c raw=5925c in=10t(cache_read=80411 new=2500) out=137t ttfb=2145ms api=6130ms turnos=1 $0.0356                                                                  
+
+13172  2026-07-01 22:37:32  whatsapp  entrante   5491165286555@c.us   Quería saber si vos podés hacer una búsqueda de casa para mi papá que se va a mudar. Podría ser? Yo te paso las características y las páginas donde buscar                                              
+
 13171  2026-07-01 22:35:47  whatsapp  saliente   5491165286555@c.us   Jaja, Eloísa dice que mueva el culo 😄                                                                                                                                                                   
 
 13170  2026-07-01 22:35:47  sistema   interno                         claude_call whatsapp: 12345ms prompt=58775c raw=7805c in=10t(cache_read=6271 new=24934) out=422t ttfb=2054ms api=11685ms turnos=1 $0.1057                                                               
@@ -200,12 +206,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13076  2026-07-01 21:01:58  whatsapp  entrante   5491132317896@c.us   El mensaje era para Gabriela Echaniz                                                                                                                                                                    
 
 13075  2026-07-01 20:50:38  whatsapp  entrante   5491157276026@c.us   Nonestas siguiendo el hilo de la conversación                                                                                                                                                           
-
-13074  2026-07-01 20:50:37  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a María que contactara a Dodi (Rodrigo Páez Canosa, +54 9 11 5727-6026) para coordinar una cita este fin
-
-13073  2026-07-01 20:50:37  sistema   interno                         claude_call unknown-flow: 15892ms prompt=82828c raw=7709c in=10t(cache_read=6266 new=44187) out=643t ttfb=1771ms api=15429ms turnos=1 $0.2173                                                           
-
-13072  2026-07-01 20:50:11  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
-                                                                                                                                                                                                                                                                              
-                                                                      Mensaje original: "Podria ser un programa de todo el dia"                                                                                                                                               
-                                                                      Última respuesta: "                                                                                                                                                                                     
