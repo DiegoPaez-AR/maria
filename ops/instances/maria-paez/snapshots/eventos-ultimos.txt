@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12756  2026-07-01 14:18:52  whatsapp  saliente   5491121773859@c.us   ¡Gracias! Me comunico directamente con Ezequiel entonces.                                                                                                                                               
+
+12755  2026-07-01 14:18:52  sistema   interno                         claude_call whatsapp: 80012ms prompt=78370c raw=29609c in=10t(cache_read=0 new=37417) out=4430t ttfb=1729ms api=79126ms turnos=1 $0.2173                                                                
+
+12754  2026-07-01 14:18:12  whatsapp  saliente   5491165286555@c.us   Qué raro, algo debe estar pasando porque no me están llegando. Mandámelos de nuevo acá por favor — el de logística y el otro.                                                                           
+
+12753  2026-07-01 14:18:12  sistema   interno                         claude_call whatsapp: 22125ms prompt=79233c raw=9988c in=10t(cache_read=6271 new=31461) out=896t ttfb=1707ms api=21523ms turnos=1 $0.1441                                                               
+
 12752  2026-07-01 14:17:50  sistema   interno                         claude_call whatsapp: 13109ms prompt=78669c raw=7008c in=10t(cache_read=6271 new=31228) out=454t ttfb=1720ms api=12903ms turnos=1 $0.1364                                                               
 
 12751  2026-07-01 14:17:37  whatsapp  entrante   5491165286555@c.us   te llegan? me sorprende porque te los pase varias verces, algo debe pasar que no te llegan                                                                                                              
@@ -208,11 +216,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12658  2026-07-01 13:28:49  whatsapp  saliente   34342575317160@lid   Gabi me pasó el email de Ana Clara: a.zamora@una.edu.ar. Lo guardo en la libreta. Antes de escribirle y proponer horarios, te consulto: ¿vas a participar vos también en esa reunión? Y, para la semana 
 
 12657  2026-07-01 13:28:49  whatsapp  entrante   5491132317896@c.us   los temas de gabi seguilos con ella. ella es un usuario como yo, si te falto algun dato, preguntaselo a ella                                                                                            
-
-12656  2026-07-01 13:28:42  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-12655  2026-07-01 13:28:42  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-12654  2026-07-01 13:28:42  sistema   interno                         claude_call whatsapp: 30569ms prompt=73956c raw=12276c in=10t(cache_read=6271 new=29709) out=1429t ttfb=1761ms api=30569ms turnos=1 $0.1440                                                             
-
-12653  2026-07-01 13:28:11  whatsapp  entrante   5491165286555@c.us   a.zamora@una.edu.ar                                                                                                                                                                                     
