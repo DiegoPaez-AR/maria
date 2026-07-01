@@ -1,0 +1,28 @@
+=== confirmar los 3 antes de mover (deben ser de Gabi, uid=1) ===
+id   usuario_id  substr(desc,1,80)                                                               
+---  ----------  --------------------------------------------------------------------------------
+204  1           Borrar el evento de dermatología del 03/07 a las 18h del calendario de Gabi (Gab
+205  1           Si Paraná Muebles Logística no responde al reclamo de Gabi en el día, escribirle
+208  1           Confirmarle a Gabi la respuesta de Ana Clara Zamora sobre la reunión (semana del
+=== MOVER 204,205,208 -> uid=18 (solo si hoy son de uid=1) ===
+8000
+update exit=0
+=== DESPUES: pendientes abiertos de Gabi (uid=18) ===
+id   substr(desc,1,80)                                                               
+---  --------------------------------------------------------------------------------
+204  Borrar el evento de dermatología del 03/07 a las 18h del calendario de Gabi (Gab
+205  Si Paraná Muebles Logística no responde al reclamo de Gabi en el día, escribirle
+208  Confirmarle a Gabi la respuesta de Ana Clara Zamora sobre la reunión (semana del
+209  Esperar respuesta de Paraná Muebles Logística (Caterina) con la definición sobre
+=== quedan 204/205/208 bajo uid=1? (debe ser vacio) ===
+=== tus pendientes (uid=1) que quedan ===
+id  
+# exit=0
+sc,1,50)       
+---  ------------------------
+5    iProt Seguridad         
+37   DDJJ 2025               
+175  Llamar a Juan de la Cruz
+189  Llamar a Poggetti       
+210  Presentaciones a Eliza  
+done
