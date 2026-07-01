@@ -15,6 +15,8 @@ const mem = require('./memory');
 const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
 const google = require('./google');
+const turnState = require('./turn-state');
+const { ejecutarAcciones } = require('./executor');
 
 const PORT = Number(process.env.ASISTENTE_INTERNAL_PORT || 0);
 const SECRET = process.env.ASISTENTE_INTERNAL_SECRET || '';
@@ -174,6 +176,36 @@ function start({ waClient } = {}) {
       if (req.url === '/reload-usuarios') {
         usuarios.refrescarCache?.();
         return send(200, { ok: true, usuarios: usuarios.listarActivos().length });
+      }
+
+      if (req.url === '/accion') {
+        // Ejecuta UNA acción del executor con el CONTEXTO VIVO (waClient +
+        // usuario). Lo consume el MCP actions server (fase 2): el CLI llama al
+        // tool, el tool pega acá, y el executor corre en el proceso principal
+        // con todo el runtime (moderación, validación de destinatarios, etc.).
+        const { usuarioId, accion, canalOrigen = 'whatsapp', turnStartTs = null } = body;
+        if (!usuarioId || !accion || !accion.tipo) {
+          return send(400, { error: 'bad_body', need: 'usuarioId + accion{tipo}' });
+        }
+        const usuario = usuarios.obtener(usuarioId);
+        if (!usuario) return send(404, { error: 'usuario_not_found', usuarioId });
+        // Guard de turno-viejo: si entró un mensaje NUEVO del usuario desde que
+        // arrancó el turno, la acción (no idempotente) NO se ejecuta — el
+        // modelo debe frenar y regenerar. Preserva el abort atómico del handler.
+        if (turnStartTs) {
+          const last = turnState.getLastInbound(usuarioId);
+          if (last && last > Number(turnStartTs)) {
+            return send(200, { ok: false, stale: true,
+              error: 'turno_obsoleto: llegó un mensaje nuevo del usuario mientras generabas; NO ejecuté esta acción. Regenerá tu respuesta contemplando el mensaje nuevo.' });
+          }
+        }
+        try {
+          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen });
+          return send(200, r || { ok: false, error: 'sin_resultado' });
+        } catch (err) {
+          console.error('[internal-api/accion] error:', err.stack || err.message);
+          return send(200, { ok: false, error: err.message });
+        }
       }
 
       return send(404, { error: 'not_found' });
