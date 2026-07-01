@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12625  2026-07-01 12:53:35  sistema   interno                         claude_call whatsapp: 16693ms prompt=75816c raw=6425c in=10t(cache_read=0 new=36537) out=323t ttfb=1788ms api=18129ms turnos=1 $0.1517                                                                  
+
+12624  2026-07-01 12:53:18  whatsapp  entrante   5491121773859@c.us   Hola, buen día, te escribe Ezequiel en minutos y te cuenta                                                                                                                                              
+
 12623  2026-07-01 12:45:17  whatsapp  saliente   34342575317160@lid   Ya les escribo. Te aviso cuando respondan.                                                                                                                                                              
 
 12622  2026-07-01 12:45:17  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
@@ -290,7 +294,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12527  2026-07-01 02:56:34  whatsapp  entrante   5491165286555@c.us   sabes que no logro encontrar los trs puntitos del paso 1, probe varias cosas pro evidentemente no estoy encontrando la forma de darte acceso                                                            
 
 12526  2026-07-01 02:43:13  sistema   interno                         auto-accept calendar share: gabyechaniz@gmail.com → read (role=reader)                                                                                                                                  
-
-12525  2026-07-01 02:42:13  whatsapp  saliente   5491165286555@c.us   ¡Perfecto, Gabi! Ahora mismo chequeo si ya tengo acceso. Dame un segundo 🙏                                                                                                                              
-
-12524  2026-07-01 02:42:13  sistema   interno                         acción ejecutada: set_calendar_acceso                                                                                                                                                                   
