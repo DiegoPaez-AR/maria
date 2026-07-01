@@ -1,41 +1,3 @@
-0|maria-pa | 2026-07-01 13:23:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-07-01 13:27:02: 
-0|maria-pa | 2026-07-01 13:27:02: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-07-01 13:27:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-07-01 13:27:05: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-07-01 13:27:05:   Owner:      Diego (id=1)
-0|maria-pa | 2026-07-01 13:27:05:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-0|maria-pa | 2026-07-01 13:27:05:   Gmail poll: cada 300s
-0|maria-pa | 2026-07-01 13:27:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-07-01 13:27:05: ✓ whisper OK
-0|maria-pa | 2026-07-01 13:27:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-0|maria-pa | 2026-07-01 13:27:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-0|maria-pa | 2026-07-01 13:27:05: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-0|maria-pa | 2026-07-01 13:27:09: [WA loading] 100% - WhatsApp
-0|maria-pa | 2026-07-01 13:27:09: [WA authenticated]
-0|maria-pa | 2026-07-01 13:27:09: ✅ [WA ready] Maria conectada
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-07-01 13:27:09: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-07-01 13:27:09: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-07-01 13:27:09: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-07-01 13:27:09: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-07-01 13:27:09: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-07-01 13:27:09: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-07-01 13:27:09: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-07-01 13:27:09: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-07-01 13:27:09: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-07-01 13:27:09: [diferidos] drainer activo (cada 5min)
 0|maria-pa | 2026-07-01 13:27:09: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
 0|maria-pa | 2026-07-01 13:32:10: [meeting-prep/Diego] + id=773 Personal @ 2026-07-01T18:15:00.000Z
 0|maria-pa | 2026-07-01 13:34:27: [WA lid-resolve] 34342575317160@lid -> 5491132317896@c.us
@@ -197,4 +159,42 @@
 0|maria-pa | 2026-07-01 14:01:12: [meeting-prep/Hernan Fulco] + id=774 Reunión RR.HH @ 2026-07-01T18:45:00.000Z
 0|maria-pa | 2026-07-01 14:01:13: [meeting-prep/Doris Capurro] + id=775 Las 6 @ 2026-07-01T18:45:00.000Z
 0|maria-pa | 2026-07-01 14:01:15: [meeting-prep/Santiago Capurro] + id=776 10/07 Vencimiento dominio: pannelli.com.ar @ 2026-07-01T18:45:00.000Z
+0|maria-pa | 2026-07-01 14:09:02: 
+0|maria-pa | 2026-07-01 14:09:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-07-01 14:09:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-07-01 14:09:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-07-01 14:09:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-07-01 14:09:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+0|maria-pa | 2026-07-01 14:09:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-07-01 14:09:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-07-01 14:09:04: ✓ whisper OK
+0|maria-pa | 2026-07-01 14:09:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-07-01 14:09:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-07-01 14:09:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-07-01 14:09:07: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-07-01 14:09:08: [WA authenticated]
+0|maria-pa | 2026-07-01 14:09:08: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-07-01 14:09:08: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-07-01 14:09:08: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-07-01 14:09:08: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-07-01 14:09:08: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-07-01 14:09:08: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+0|maria-pa | 2026-07-01 14:09:08: [cumple-avisos] activo, ventana 20-23h tz usuario
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando resumen-semanal (domingos, tz usuario)
+0|maria-pa | 2026-07-01 14:09:08: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando poda-eventos (diario)
+0|maria-pa | 2026-07-01 14:09:08: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+0|maria-pa | 2026-07-01 14:09:08: ▸ arrancando drainer de diferidos (horas de silencio)
+0|maria-pa | 2026-07-01 14:09:08: [diferidos] drainer activo (cada 5min)
+0|maria-pa | 2026-07-01 14:09:08: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
 
