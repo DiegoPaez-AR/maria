@@ -1,5 +1,22 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13139  2026-07-01 22:29:29  sistema   interno                         claude_call whatsapp: 9933ms prompt=58593c raw=7108c in=10t(cache_read=6271 new=24801) out=238t ttfb=2548ms api=8099ms turnos=1 $0.1023                                                                 
+
+13138  2026-07-01 22:29:28  whatsapp  saliente   5491165286555@c.us   Sí, lo tomé como chiste y le pregunté si ya está en casa — quedamos esperando su confirmación. De nada!                                                                                                 
+
+13137  2026-07-01 22:29:28  sistema   interno                         claude_call whatsapp: 9652ms prompt=5066c raw=6563c in=10t(cache_read=66837 new=2360) out=217t ttfb=2555ms api=6371ms turnos=1 $0.0322                                                                  
+
+13136  2026-07-01 22:29:19  whatsapp  entrante   5491157683720@c.us   trnaquila                                                                                                                                                                                               
+                                                                      si                                                                                                                                                                                                      
+
+13135  2026-07-01 22:29:17  whatsapp  entrante   5491165286555@c.us   Gracias!                                                                                                                                                                                                
+
+13134  2026-07-01 22:29:17  whatsapp  entrante   5491165286555@c.us   Debe ser un chiste                                                                                                                                                                                      
+
+13133  2026-07-01 22:29:02  whatsapp  saliente   5491157683720@c.us   jajaj me imaginé 😄 entonces todo bien, ya estás en casa?                                                                                                                                                
+
+13132  2026-07-01 22:29:02  sistema   interno                         claude_call whatsapp: 9368ms prompt=58841c raw=6659c in=10t(cache_read=6271 new=24904) out=205t ttfb=2137ms api=7620ms turnos=1 $0.1023                                                                 
+
 13131  2026-07-01 22:28:53  whatsapp  entrante   5491157683720@c.us   era un chiste                                                                                                                                                                                           
 
 13130  2026-07-01 22:28:28  whatsapp  saliente   5491165286555@c.us   Gabi, te responde Roque: dice "no escape, voy a vivir en la calle" 😅 ¿Le contesto algo?                                                                                                                 
@@ -201,21 +218,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13041  2026-07-01 20:33:02  whatsapp  entrante   5491157276026@c.us   A gabriela                                                                                                                                                                                              
 
 13040  2026-07-01 20:33:02  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pasó a María el número de Dodi (5491157276026) y le pidió coordinar un encuentro con él; María le escribió a e
-
-13039  2026-07-01 20:33:02  sistema   interno                         claude_call unknown-flow: 12902ms prompt=79764c raw=6339c in=10t(cache_read=6266 new=43035) out=368t ttfb=1912ms api=12437ms turnos=1 $0.2078                                                           
-
-13038  2026-07-01 20:32:21  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
-                                                                                                                                                                                                                                                                              
-                                                                      Mensaje original: "Me gustaria pasar con ella el domingo. Puede serbin progra                                                                                                                           
-
-13037  2026-07-01 20:29:26  whatsapp  entrante   5491157276026@c.us   Me gustaria pasar con ella el domingo. Puede serbin programa de todo el dia                                                                                                                             
-
-13036  2026-07-01 20:29:25  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Es Rodrigo Páez Canosa (Dodi), cuyo número +54 9 11 5727-6026 Gabriela Echaniz (id=18) le pasó a Maria hoy, pidiéndole que coordinara una 
-
-13035  2026-07-01 20:29:25  sistema   interno                         claude_call unknown-flow: 19452ms prompt=79441c raw=8277c in=10t(cache_read=6266 new=42916) out=698t ttfb=1755ms api=19632ms turnos=1 $0.2121                                                           
-
-13034  2026-07-01 20:25:20  sistema   interno                         claude_call whatsapp: 6297ms prompt=5248c raw=5311c in=10t(cache_read=35637 new=2388) out=46t ttfb=2071ms api=3615ms turnos=1 $0.0204                                                                   
-
-13033  2026-07-01 20:25:13  whatsapp  entrante   5491165286555@c.us   Dale!                                                                                                                                                                                                   
-
-13032  2026-07-01 20:24:51  whatsapp  saliente   5491165286555@c.us   Listo! Le escribí a Dodi preguntando qué día y horario le viene bien este fin de semana. En cuanto responda te aviso.                                                                                   
