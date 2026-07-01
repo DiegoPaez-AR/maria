@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12598  2026-07-01 12:40:25  whatsapp  saliente   34342575317160@lid   Listo! Agendé *Reunion NJ - DP* el martes 7/7 de 12:30 a 13:30 con Meet. Le mandé invitación a Nicolás y le aviso por WhatsApp. Guardé los defaults también.                                            
+
+12597  2026-07-01 12:40:25  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+12596  2026-07-01 12:40:25  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+12595  2026-07-01 12:40:18  sistema   interno                         acción FALLÓ: guardar_hecho — Acción desconocida: "guardar_hecho". ¿Quisiste decir "recordar_hecho"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_even
+
+12594  2026-07-01 12:40:18  sistema   interno                         acción FALLÓ: guardar_hecho — Acción desconocida: "guardar_hecho". ¿Quisiste decir "recordar_hecho"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_even
+
+12593  2026-07-01 12:40:18  sistema   interno                         acción ejecutada: enviar_mensaje                                                                                                                                                                        
+
+12592  2026-07-01 12:40:18  whatsapp  saliente   5491131121057@c.us   Hola Nicolás, te escribo de parte de Diego Páez. Quedamos en una reunión para el *martes 7 de julio de 12:30 a 13:30 hs*. Te mandé la invitación de calendario a nicolas.jordan@enpiric.com. Cualquier c
+
+12591  2026-07-01 12:40:11  sistema   interno                         claude_call moderacion: 11252ms prompt=1662c raw=6276c in=10t(cache_read=0 new=22511) out=345t ttfb=2727ms api=12055ms turnos=1 $0.0304                                                                 
+
 12590  2026-07-01 12:39:59  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
 
 12589  2026-07-01 12:39:59  calendar  saliente                        creado: Reunion NJ - DP (2026-07-07T12:30:00-03:00 → 2026-07-07T13:30:00-03:00) · Meet: https://meet.google.com/sry-dwva-xwf                                                                            
@@ -292,22 +308,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12500  2026-07-01 02:01:06  calendar  saliente                        creado: Teatro (2026-08-07T20:00:00-03:00 → 2026-08-07T23:00:00-03:00)                                                                                                                                  
 
 12499  2026-07-01 02:01:05  sistema   interno                         claude_call whatsapp: 14740ms prompt=7267c raw=7693c in=10t(cache_read=24312 new=3769) out=636t ttfb=1815ms api=12365ms turnos=1 $0.0310                                                                
-
-12498  2026-07-01 02:00:49  whatsapp  entrante   5491132317896@c.us   Evento: Teatro                                                                                                                                                                                          
-                                                                      Fecha: viernes 7 de agosto                                                                                                                                                                              
-                                                                      Hora: de 20 a 23                                                                                                                                                                                        
-                                                                      El recordatorio mandamelo a mi                                                                                                                                                                          
-
-12497  2026-07-01 01:59:30  whatsapp  saliente   34342575317160@lid   Diego, te cuento que no me salió ninguna de las dos cosas: ni pude agendarte el teatro ni programar el recordatorio. Me faltó información para completarlas, así que quedaron sin hacer. ¿Me confirmás l
-
-12496  2026-07-01 01:59:17  sistema   interno                         acción FALLÓ: programar_mensaje — Faltan campos requeridos: cuando, destino, texto                                                                                                                      
-
-12495  2026-07-01 01:59:17  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
-
-12494  2026-07-01 01:59:09  sistema   interno                         acción FALLÓ: undefined — Acción desconocida: "". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenv
-
-12493  2026-07-01 01:59:09  sistema   interno                         acción FALLÓ: undefined — Acción desconocida: "". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenv
-
-12492  2026-07-01 01:59:09  sistema   interno                         claude_call whatsapp: 14404ms prompt=7227c raw=7151c in=10t(cache_read=0 new=24312) out=574t ttfb=1734ms api=12110ms turnos=1 $0.0998                                                                   
-
-12491  2026-07-01 01:58:54  whatsapp  entrante   5491132317896@c.us   tenes razon. es el viernes 7 de agosto de 20 a 23 y al aviso un dia antes                                                                                                                               
