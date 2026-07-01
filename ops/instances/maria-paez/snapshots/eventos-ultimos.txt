@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12568  2026-07-01 12:30:39  sistema   interno                         claude_call whatsapp: 5870ms prompt=6802c raw=4527c in=10t(cache_read=0 new=23592) out=123t ttfb=1704ms api=3497ms turnos=1 $0.0903                                                                     
+
+12567  2026-07-01 12:30:32  whatsapp  entrante   5491132317896@c.us   exelente                                                                                                                                                                                                
+
+12566  2026-07-01 12:30:06  whatsapp  saliente   5491165286555@c.us   Buen día, Gabi! Sí, quedó todo verificado y conectado. Tu calendar está integrado, ya puedo agendar directo desde mi lado. ¡Arrancamos cuando quieras!                                                  
+
+12565  2026-07-01 12:30:06  whatsapp  saliente   34342575317160@lid   Diego, el calendar de Gabi quedó conectado y listo. Me confirmó que podemos empezar.                                                                                                                    
+
+12564  2026-07-01 12:30:06  sistema   interno                         claude_call whatsapp: 19956ms prompt=73006c raw=8854c in=10t(cache_read=0 new=35673) out=752t ttfb=1779ms api=19150ms turnos=1 $0.1540                                                                  
+
 12563  2026-07-01 12:29:45  whatsapp  entrante   5491165286555@c.us   Buen día, pudiste verificar el acceso? Si está listo podemos empezar                                                                                                                                    
 
 12562  2026-07-01 12:15:12  whatsapp  saliente   5491126406612@c.us   ☀️ *Buen día, Cristian Ruiz.* miércoles, 1 de julio.                                                                                                                                                    
@@ -310,13 +320,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12470  2026-06-30 16:11:55  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 12469  2026-06-30 16:11:55  sistema   interno                         claude_call whatsapp: 22418ms prompt=75680c raw=9006c in=10t(cache_read=0 new=36422) out=896t ttfb=1765ms api=22080ms turnos=1 $0.1597                                                                  
-
-12468  2026-06-30 16:11:31  whatsapp  entrante   5491131121057@c.us   Buendia, que disponibilidad horaria tiene Diego este jueves p tener una reunion de 40 minutos x Genneia                                                                                                 
-
-12467  2026-06-30 16:00:09  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-12466  2026-06-30 15:13:26  whatsapp  saliente   34342575317160@lid   Dale, lo doy de alta a Alfonso y le mando la bienvenida ahora. También le paso el número de Dechecchi - Subaru (el que me acabás de mandar).                                                            
-
-12465  2026-06-30 15:13:26  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-12464  2026-06-30 15:13:26  whatsapp  saliente   5491161549534@c.us   Ah, y te paso el contacto del taller de Subaru que te recomendó Diego: *Dechecchi* — +54 9 11 5720-0850                                                                                                 
