@@ -909,6 +909,15 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // 1) Acciones PRIMERO: sabemos qué se concretó ANTES de confirmarle al
     //    usuario. Evita el "ya les escribo" seguido de "no pude escribirles".
     let fallasVisibles = [];
+    if (MCP_ACTIONS && acciones.length) {
+      // Telemetría del trial: en modo MCP las acciones van por tools. Si el
+      // modelo igual emitió el array, es un MISS de adopción — lo registramos
+      // (no lo ejecutamos: las que sí quiso hacer ya corrieron en vivo por tool).
+      console.warn(`[WA/${usuario.nombre}] MCP: modelo emitió ${acciones.length} acción(es) en array en vez de tools — NO ejecutadas`);
+      try { mem.log({ usuarioId: usuario.id, canal: 'sistema', direccion: 'interno',
+        cuerpo: `mcp_fallback: modelo emitió ${acciones.length} acción(es) en array en modo MCP (no ejecutadas): ${acciones.map(a => a && a.tipo).filter(Boolean).join(', ')}`,
+        metadata: { tipo: 'mcp_fallback', acciones } }); } catch {}
+    }
     if (acciones.length && !MCP_ACTIONS) {
       const resultados = await ejecutarAcciones(acciones, {
         usuario,
