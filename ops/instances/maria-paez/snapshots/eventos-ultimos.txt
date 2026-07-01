@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13102  2026-07-01 22:16:17  whatsapp  saliente   34342575317160@lid   Listo, le pasé a Gabi. Entiendo que esto se repite — hay un problema en cómo el sistema maneja los mensajes de Dodi cuando son para otra usuaria. Lo estoy escalando para que se corrija.               
+
+13101  2026-07-01 22:16:16  sistema   interno                         claude_call whatsapp: 24589ms prompt=8007c raw=11111c in=20t(cache_read=58561 new=59083) out=573t ttfb=2112ms api=15526ms turnos=2 $0.2478                                                              
+
+13100  2026-07-01 22:16:09  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13099  2026-07-01 22:16:09  whatsapp  saliente   5491165286555@c.us   Gabi, Dodi dice que le gustaría que sea un programa de todo el día el domingo. ¿Te cierra?                                                                                                              
+
+13098  2026-07-01 22:16:09  whatsapp  saliente   5491165286555@c.us   Gabi, Dodi dice que le gustaría que sea un programa de todo el día el domingo. ¿Te cierra?                                                                                                              
+
+13097  2026-07-01 22:16:09  sistema   interno                         claude_call moderacion: 6248ms prompt=1538c raw=6343c in=10t(cache_read=0 new=22462) out=284t ttfb=1698ms api=6057ms turnos=1 $0.0300                                                                   
+
 13096  2026-07-01 22:15:51  whatsapp  entrante   5491132317896@c.us   Otra vez lo mismo, es para Gabriela                                                                                                                                                                     
 
 13095  2026-07-01 21:45:44  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
@@ -214,15 +226,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13004  2026-07-01 18:06:33  whatsapp  entrante   5491165286555@c.us   Perfecto!                                                                                                                                                                                               
 
 13003  2026-07-01 18:04:52  whatsapp  saliente   5491165286555@c.us   De nada, Gabi! Quedó programado — el viernes a las 10 de la mañana le mando un mensaje a Caterina preguntando por la definición. Si antes de eso te llega algo de su parte me avisás y lo cancelamos. 🙌 
-
-13002  2026-07-01 18:04:52  sistema   interno                         claude_call whatsapp: 20601ms prompt=4354c raw=10178c in=18t(cache_read=17449 new=17964) out=473t ttfb=2170ms api=10483ms turnos=2 $0.0797                                                              
-
-13001  2026-07-01 18:04:48  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-13000  2026-07-01 18:04:48  sistema   interno                         claude_call moderacion: 7301ms prompt=1612c raw=7600c in=10t(cache_read=0 new=22486) out=424t ttfb=1610ms api=6989ms turnos=1 $0.0307                                                                   
-
-12999  2026-07-01 18:04:31  whatsapp  entrante   5491165286555@c.us   Gracias Maria                                                                                                                                                                                           
-
-12998  2026-07-01 18:04:31  whatsapp  entrante   5491165286555@c.us   Dale si el viernes no tenemos respuesta le volvemos a escribir                                                                                                                                          
-
-12997  2026-07-01 18:04:21  sistema   interno                         claude_call whatsapp: 24898ms prompt=57724c raw=14838c in=28t(cache_read=62231 new=31915) out=1065t ttfb=2190ms api=23448ms turnos=3 $0.1578                                                            
