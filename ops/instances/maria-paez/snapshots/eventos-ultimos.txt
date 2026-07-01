@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12525  2026-07-01 02:42:13  whatsapp  saliente   5491165286555@c.us   ¡Perfecto, Gabi! Ahora mismo chequeo si ya tengo acceso. Dame un segundo 🙏                                                                                                                              
+
+12524  2026-07-01 02:42:13  sistema   interno                         acción ejecutada: set_calendar_acceso                                                                                                                                                                   
+
+12523  2026-07-01 02:42:13  sistema   interno                         calendar_acceso seteado a "none"                                                                                                                                                                        
+
+12522  2026-07-01 02:42:13  sistema   interno                         claude_call whatsapp: 11635ms prompt=72614c raw=6645c in=10t(cache_read=0 new=35514) out=374t ttfb=2360ms api=10143ms turnos=1 $0.1476                                                                  
+
 12521  2026-07-01 02:42:01  whatsapp  entrante   5491165286555@c.us   Creo que ya estás agregada aunque no estoy segura si lo hice bien porque aparecía de otro modo                                                                                                          
 
 12520  2026-07-01 02:06:33  sistema   interno                         claude_call enriquecer-contacto: 23530ms prompt=629c raw=21621c in=36t(cache_read=41344 new=7052) out=406t ttfb=1798ms api=22615ms turnos=4 $0.1011                                                     
@@ -240,13 +248,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 12426  2026-06-30 13:00:10  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: UNICCA + STUCCOLOR + SERENA + PUMAYNA  (10:15 a. m.)                                                                                                                                      
                                                                       Con: dscheerle@uniccabuilders.com, lucas@capurro.com.ar                                                                                                                                                 
-
-12425  2026-06-30 13:00:09  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-12424  2026-06-30 12:45:10  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: Jordi (10:00 a. m.)                                                                                                                                                                       
-
-12423  2026-06-30 12:45:10  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Sondeos Sales Team Call (10:00 a. m.)                                                                                                                                                     
-                                                                      Con: abril.krzisnik@sondeosglobal.com, ibrahim.khan@sondeosglobal.com                                                                                                                                   
-
-12422  2026-06-30 12:30:10  whatsapp  saliente   137456250806423@lid  ⏰ *En 15min*: Daily CMP (09:45 a. m.)                                                                                                                                                                   
-                                                                      Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello                                      
