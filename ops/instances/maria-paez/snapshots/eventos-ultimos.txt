@@ -1,5 +1,16 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
 -----  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13322  2026-07-01 23:56:01  sistema   interno                        claude_call whatsapp: 28024ms prompt=79493c raw=14912c in=20t(cache_read=44613 new=33072) out=1163t ttfb=2172ms api=26842ms turnos=2 $0.1649                                                       
+
+13321  2026-07-01 23:55:32  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                           
+                                                                     Ya lo vamos marchando ni bien esté listo les avisamos                                                                                                                                              
+
+13320  2026-07-01 23:55:22  sistema   interno                        claude_call whatsapp: 29996ms prompt=79551c raw=20486c in=36t(cache_read=123733 new=33919) out=1289t ttfb=2187ms api=28637ms turnos=4 $0.1938                                                      
+
+13319  2026-07-01 23:55:17  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
+
+13318  2026-07-01 23:55:14  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+
 13317  2026-07-01 23:54:52  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                           
 
 13316  2026-07-01 23:54:36  whatsapp  saliente   34342575317160@lid  Listo, les confirmé: pedido a nombre tuyo, sin tortitas y con un ceviche clásico. Queda 1 tequeños de lomo, 1 ceviche clásico y 1 causa de atún. Te aviso cuando digan que está listo para retirar.
@@ -235,18 +246,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13224  2026-07-01 23:13:34  whatsapp  entrante   5491165286555@c.us  Si hasta 160.000 dólares                                                                                                                                                                           
 
 13223  2026-07-01 23:11:49  sistema   interno                        claude_call whatsapp: 30807ms prompt=76296c raw=18261c in=28t(cache_read=81939 new=32825) out=1039t ttfb=2128ms api=23565ms turnos=5 $0.1726                                                       
-
-13222  2026-07-01 23:11:47  whatsapp  saliente   5491165286555@c.us  Acá lo que encontré en *Florida Este* (entre Panamericana y el río):                                                                                                                               
-                                                                                                                                                                                                                                                                        
-                                                                     *PHs con patio/terraza:*                                                                                                                                                                           
-                                                                                                                                                                                                                                                                        
-                                                                     1️⃣ *Valle Grande al 300* — 3 amb, 68 m², patio. USD 145.000 (apto crédito)                                                                                                                        
-                                                                     2️⃣ *Antonio Malaver al 1600                                                                                                                                                                       
-
-13221  2026-07-01 23:11:43  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
-
-13220  2026-07-01 23:11:43  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
-
-13219  2026-07-01 23:11:43  whatsapp  saliente   34342575317160@lid  Te consigo el número de WhatsApp de Barra Chalaca Caseros: *11 6959-4900* (me lo pasó el local de Bulnes).                                                                                         
-
-13218  2026-07-01 23:11:43  sistema   interno                        claude_call moderacion: 6208ms prompt=1554c raw=6088c in=10t(cache_read=17396 new=5076) out=317t ttfb=1599ms api=4956ms turnos=1 $0.0102                                                           
