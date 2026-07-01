@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12708  2026-07-01 13:59:54  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+12707  2026-07-01 13:59:54  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+12706  2026-07-01 13:59:54  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+12705  2026-07-01 13:59:54  whatsapp  saliente   5491165286555@c.us   Gabi, te aviso que el turno con dermatología del viernes 03/07 a las 18h va a estar cancelado. ¿Me podés confirmar para que lo borre del calendar?                                                      
+
+12704  2026-07-01 13:59:54  sistema   interno                         claude_call moderacion: 14019ms prompt=1594c raw=5915c in=10t(cache_read=0 new=22481) out=301t ttfb=1719ms api=12932ms turnos=1 $0.0301                                                                 
+
+12703  2026-07-01 13:59:40  sistema   interno                         claude_call maria-worker: 49160ms prompt=74881c raw=19861c in=10t(cache_read=6271 new=30095) out=2732t ttfb=1826ms api=48683ms turnos=1 $0.1654                                                         
+
 12702  2026-07-01 13:58:50  sistema   interno                         claude_call maria-worker: 38565ms prompt=74063c raw=14948c in=10t(cache_read=0 new=36023) out=1896t ttfb=1754ms api=37965ms turnos=1 $0.1728                                                            
 
 12701  2026-07-01 13:51:42  sistema   interno                         claude_call whatsapp: 19293ms prompt=76378c raw=7787c in=10t(cache_read=6271 new=30436) out=735t ttfb=1761ms api=18719ms turnos=1 $0.1370                                                               
@@ -202,15 +214,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 12609  2026-07-01 12:42:32  whatsapp  entrante   5491131121057@c.us   Te paso mi nuevo mail nico.jordan2024@gmail.com                                                                                                                                                         
                                                                       Confirmado                                                                                                                                                                                              
-
-12608  2026-07-01 12:42:22  sistema   interno                         claude_call whatsapp: 22250ms prompt=76084c raw=8819c in=10t(cache_read=0 new=36627) out=798t ttfb=3418ms api=20129ms turnos=1 $0.1592                                                                  
-
-12607  2026-07-01 12:42:08  whatsapp  saliente   34342575317160@lid   Tenés razón, perdón. Aplicé el default de 1 hora pero vos me habías dado el horario exacto. Lo corrijo ahora.                                                                                           
-
-12606  2026-07-01 12:42:07  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-12605  2026-07-01 12:42:07  whatsapp  saliente   5491131121057@c.us   Nicolás, te corrijo el horario: la reunión es de *12:30 a 14:00 hs* (no 13:30). Disculpá la confusión, la invitación de calendario también se va a actualizar.                                          
-
-12604  2026-07-01 12:42:07  sistema   interno                         claude_call moderacion: 7714ms prompt=1606c raw=6162c in=10t(cache_read=17396 new=5095) out=335t ttfb=3520ms api=5536ms turnos=1 $0.0103                                                                
-
-12603  2026-07-01 12:42:00  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
