@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12924  2026-07-01 16:35:02  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+12923  2026-07-01 16:35:02  calendar  saliente                        creado: Medico (2026-07-04T13:00:00-03:00 → 2026-07-04T14:00:00-03:00)                                                                                                                                  
+
+12922  2026-07-01 16:34:37  whatsapp  entrante   5491132317896@c.us   poneme una reu el sabado a las 13: Medico                                                                                                                                                               
+
 12921  2026-07-01 16:34:16  sistema   interno                         claude_call whatsapp: 12578ms prompt=78551c raw=11129c in=28t(cache_read=76389 new=38583) out=372t ttfb=2164ms api=12011ms turnos=3 $0.1834                                                             
 
 12920  2026-07-01 16:34:13  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
@@ -209,9 +215,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12826  2026-07-01 14:51:26  sistema   interno                         claude_call whatsapp: 7768ms prompt=78047c raw=4937c in=10t(cache_read=6271 new=30974) out=175t ttfb=1657ms api=5493ms turnos=1 $0.1207                                                                 
 
 12825  2026-07-01 14:51:18  whatsapp  entrante   5491165286555@c.us   ok                                                                                                                                                                                                      
-
-12824  2026-07-01 14:50:10  whatsapp  saliente   5491165286555@c.us   No es nada de tu lado, el problema está de mi lado con los contactos adjuntos — a veces no me llegan bien. ¿Me mandás los números directamente acá en el chat, en texto? Con eso lo resuelvo sin problem
-
-12823  2026-07-01 14:50:10  sistema   interno                         claude_call whatsapp: 17789ms prompt=78546c raw=7977c in=10t(cache_read=0 new=37476) out=610t ttfb=1679ms api=17285ms turnos=1 $0.1602                                                                  
-
-12822  2026-07-01 14:50:02  whatsapp  saliente   34342575317160@lid   Diego, quería avisarte que no pude agendar el evento porque me faltaron los datos necesarios: el título, la fecha y el horario. ¿Me los confirmás y lo agendo enseguida?                                
