@@ -1,0 +1,32 @@
+node: v18.19.1
+=== npm install @modelcontextprotocol/sdk ===
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+=== version instalada ===
+undefined
+=== test imports (ESM) ===
+node:internal/errors:496
+    ErrorCaptureStackTrace(err);
+    ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@modelcontextprotocol/sdk' imported from /tmp/_mcptest.mjs
+    at new NodeError (node:internal/errors:405:5)
+    at packageResolve (node:internal/modules/esm/resolve:916:9)
+    at moduleResolve (node:internal/modules/esm/resolve:973:20)
+    at defaultResolve (node:internal/modules/esm/resolve:1193:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:403:12)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:372:25)
+    at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:249:38)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:76:39)
+    at link (node:internal/modules/esm/module_job:75:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.19.
+# exit=0
