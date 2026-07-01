@@ -1,5 +1,20 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                    
 -----  -------------------  --------  ---------  ------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13303  2026-07-01 23:52:01  sistema   interno                        claude_call memoria-curada: 18543ms prompt=2603c raw=10164c in=10t(cache_read=6266 new=5825) out=668t ttfb=2237ms api=17173ms turnos=1 $0.0351                                            
+
+13302  2026-07-01 23:51:58  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                       
+
+13301  2026-07-01 23:51:43  sistema   interno                        claude_call memoria-curada: 28980ms prompt=1674c raw=13035c in=10t(cache_read=6266 new=5560) out=1102t ttfb=2181ms api=28157ms turnos=1 $0.0404                                           
+
+13300  2026-07-01 23:51:31  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                        
+                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                      
+                                                                     Las tortitas de choclo, lamentablemente no son para llevar                                                                                                                                
+                                                                     Si, estamos atendiendo en el local, perdón la demora                                                                                                                                      
+
+13299  2026-07-01 23:51:18  sistema   interno                        claude_call whatsapp: 21020ms prompt=79977c raw=7365c in=10t(cache_read=6271 new=32285) out=262t ttfb=2289ms api=19764ms turnos=1 $0.1371                                                 
+
+13298  2026-07-01 23:51:14  sistema   interno                        claude_call memoria-curada: 20360ms prompt=1918c raw=11001c in=10t(cache_read=6266 new=5592) out=782t ttfb=2085ms api=19336ms turnos=1 $0.0357                                            
+
 13297  2026-07-01 23:50:56  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                        
                                                                      A nombre de quién tomamos el pedido?                                                                                                                                                      
 
@@ -222,15 +237,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13205  2026-07-01 23:07:49  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                               
 
 13204  2026-07-01 23:07:49  whatsapp  saliente   5491166431877@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                        
-
-13203  2026-07-01 23:07:49  sistema   interno                        claude_call moderacion: 7700ms prompt=1546c raw=6509c in=10t(cache_read=22466 new=0) out=385t ttfb=1712ms api=7439ms turnos=1 $0.0047                                                     
-
-13202  2026-07-01 23:07:41  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                               
-
-13201  2026-07-01 23:07:41  whatsapp  saliente   5491123348031@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                        
-
-13200  2026-07-01 23:07:41  sistema   interno                        claude_call moderacion: 5703ms prompt=1546c raw=5736c in=10t(cache_read=22466 new=0) out=279t ttfb=1687ms api=4506ms turnos=1 $0.0041                                                     
-
-13199  2026-07-01 23:07:35  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                               
-
-13198  2026-07-01 23:07:35  whatsapp  saliente   5491132350755@c.us  Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias                                                                                        
