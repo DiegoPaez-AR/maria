@@ -1,5 +1,45 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13248  2026-07-01 23:19:01  whatsapp  entrante   5491132317896@c.us  No a caseros                                                                                                                                                                                            
+
+13247  2026-07-01 23:18:52  sistema   interno                        claude_call whatsapp: 28778ms prompt=77237c raw=13608c in=28t(cache_read=75975 new=38520) out=619t ttfb=2152ms api=21020ms turnos=3 $0.1863                                                             
+
+13246  2026-07-01 23:18:47  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13245  2026-07-01 23:18:47  whatsapp  saliente   5491169594900@c.us  Gracias! Les consulto: ¿me pueden enviar la carta por favor?                                                                                                                                            
+
+13244  2026-07-01 23:18:47  sistema   interno                        claude_call moderacion: 6147ms prompt=1508c raw=5861c in=10t(cache_read=17396 new=5055) out=295t ttfb=1716ms api=6209ms turnos=1 $0.0100                                                                
+
+13243  2026-07-01 23:18:22  whatsapp  entrante   5491169594900@c.us  Hola, te comunicaste con Barra Chalaca San Telmo                                                                                                                                                        
+                                                                     📍 Av Caseros 467 🇵🇪                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                             
+                                                                     🍽️ Sin reserva previa . Por orden de llegada en base a la disponibilidad. A partir de 6 comensales se puede reservar.                                                                                   
+                                                                                                                                                                                                                                                                             
+                                                                     ✓Estamos de                                                                                                                                                                                             
+
+13242  2026-07-01 23:18:22  whatsapp  saliente   5491165286555@c.us  Claro, contame! En qué andás?                                                                                                                                                                           
+
+13241  2026-07-01 23:18:21  sistema   interno                        claude_call whatsapp: 6838ms prompt=5511c raw=5996c in=10t(cache_read=39088 new=2626) out=153t ttfb=2122ms api=4064ms turnos=1 $0.0239                                                                  
+
+13240  2026-07-01 23:18:19  whatsapp  saliente   34342575317160@lid  Listo, ya estaba agendado. Les escribí a Caseros pidiendo la carta — en cuanto la manden te la paso.                                                                                                    
+
+13239  2026-07-01 23:18:18  sistema   interno                        claude_call whatsapp: 25687ms prompt=7636c raw=12762c in=26t(cache_read=175914 new=79036) out=566t ttfb=2510ms api=15747ms turnos=3 $0.3577                                                             
+
+13238  2026-07-01 23:18:14  whatsapp  entrante   5491165286555@c.us  Hay otra cosa con la que quizás le                                                                                                                                                                      
+                                                                     Puedas ayudar a buscar                                                                                                                                                                                  
+
+13237  2026-07-01 23:18:13  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+13236  2026-07-01 23:18:08  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13235  2026-07-01 23:18:08  whatsapp  saliente   5491169594900@c.us  Hola! Me podrían mandar la carta? Gracias                                                                                                                                                               
+
+13234  2026-07-01 23:18:08  sistema   interno                        claude_call moderacion: 6391ms prompt=1489c raw=5692c in=10t(cache_read=0 new=22447) out=257t ttfb=2347ms api=4847ms turnos=1 $0.0298                                                                   
+
+13233  2026-07-01 23:18:03  whatsapp  saliente   5491165286555@c.us  Perfecto! Cuando tu papá vea y diga algo, me contás y seguimos filtrando o buscamos más info de los que le gusten. 🙌                                                                                    
+
+13232  2026-07-01 23:18:03  sistema   interno                        claude_call whatsapp: 8815ms prompt=5371c raw=6244c in=10t(cache_read=35443 new=3645) out=186t ttfb=2490ms api=5475ms turnos=1 $0.0271                                                                  
+
 13231  2026-07-01 23:17:53  whatsapp  entrante   5491165286555@c.us  Se los voy a enviar a mi papá  ver qué dice                                                                                                                                                             
 
 13230  2026-07-01 23:17:52  whatsapp  entrante   5491132317896@c.us  Perfecto, agéndalo y escribirles para pedirles que te manden la carta pf                                                                                                                                
@@ -190,38 +230,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13150  2026-07-01 22:32:42  whatsapp  entrante   5491176667387@c.us  No                                                                                                                                                                                                      
 
 13149  2026-07-01 22:32:19  whatsapp  saliente   5491165286555@c.us  Listo, le escribí a Eloísa! Le pregunté si tiene tarea y le pedí que arme el bolso de danzas. En cuanto responda te cuento.                                                                             
-
-13148  2026-07-01 22:32:18  sistema   interno                        claude_call whatsapp: 19149ms prompt=5225c raw=8792c in=18t(cache_read=145719 new=2744) out=314t ttfb=2632ms api=8920ms turnos=2 $0.0588                                                                
-
-13147  2026-07-01 22:32:14  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13146  2026-07-01 22:32:14  whatsapp  saliente   5491176667387@c.us  Hola Eloísa! Soy María, la asistente de tu mamá Gabriela. Me pide que te pregunte: ¿tenés tarea? Y que por favor armes el bolso de danzas. 🙂                                                            
-
-13145  2026-07-01 22:32:14  sistema   interno                        claude_call moderacion: 6879ms prompt=1589c raw=7149c in=10t(cache_read=17396 new=5096) out=462t ttfb=1557ms api=6184ms turnos=1 $0.0109                                                                
-
-13144  2026-07-01 22:31:59  whatsapp  entrante   5491165286555@c.us  Decile si tiene tarea y que por favor arme el bolso de danzas                                                                                                                                           
-
-13143  2026-07-01 22:31:23  whatsapp  saliente   5491165286555@c.us  Dale, te escucho!                                                                                                                                                                                       
-
-13142  2026-07-01 22:31:23  sistema   interno                        claude_call whatsapp: 6000ms prompt=5097c raw=5519c in=10t(cache_read=69197 new=2467) out=82t ttfb=2143ms api=3237ms turnos=1 $0.0313                                                                   
-
-13141  2026-07-01 22:31:20  sistema   interno                        contacto vcard (privado): Eloísa → 5491176667387@c.us                                                                                                                                                   
-
-13140  2026-07-01 22:31:16  whatsapp  entrante   5491165286555@c.us  Y ahora te paso el contacto de mi hija Eloísa                                                                                                                                                           
-
-13139  2026-07-01 22:29:29  sistema   interno                        claude_call whatsapp: 9933ms prompt=58593c raw=7108c in=10t(cache_read=6271 new=24801) out=238t ttfb=2548ms api=8099ms turnos=1 $0.1023                                                                 
-
-13138  2026-07-01 22:29:28  whatsapp  saliente   5491165286555@c.us  Sí, lo tomé como chiste y le pregunté si ya está en casa — quedamos esperando su confirmación. De nada!                                                                                                 
-
-13137  2026-07-01 22:29:28  sistema   interno                        claude_call whatsapp: 9652ms prompt=5066c raw=6563c in=10t(cache_read=66837 new=2360) out=217t ttfb=2555ms api=6371ms turnos=1 $0.0322                                                                  
-
-13136  2026-07-01 22:29:19  whatsapp  entrante   5491157683720@c.us  trnaquila                                                                                                                                                                                               
-                                                                     si                                                                                                                                                                                                      
-
-13135  2026-07-01 22:29:17  whatsapp  entrante   5491165286555@c.us  Gracias!                                                                                                                                                                                                
-
-13134  2026-07-01 22:29:17  whatsapp  entrante   5491165286555@c.us  Debe ser un chiste                                                                                                                                                                                      
-
-13133  2026-07-01 22:29:02  whatsapp  saliente   5491157683720@c.us  jajaj me imaginé 😄 entonces todo bien, ya estás en casa?                                                                                                                                                
-
-13132  2026-07-01 22:29:02  sistema   interno                        claude_call whatsapp: 9368ms prompt=58841c raw=6659c in=10t(cache_read=6271 new=24904) out=205t ttfb=2137ms api=7620ms turnos=1 $0.1023                                                                 
