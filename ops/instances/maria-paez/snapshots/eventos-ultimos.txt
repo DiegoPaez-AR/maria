@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13021  2026-07-01 20:22:13  whatsapp  saliente   5491165286555@c.us   La *privada* tiene tus contactos personales — solo yo los veo, nadie más. La *pública* es para contactos compartidos: si en algún momento usás María con otra persona (familia, equipo), esos contactos 
+
+13020  2026-07-01 20:22:12  sistema   interno                         claude_call whatsapp: 13178ms prompt=5588c raw=8071c in=10t(cache_read=25858 new=3028) out=415t ttfb=2363ms api=10237ms turnos=1 $0.0254                                                                
+
 13019  2026-07-01 20:21:59  whatsapp  entrante   5491165286555@c.us   ¿Cuál es la diferencia de la libreta privada y la pública?                                                                                                                                              
 
 13018  2026-07-01 20:21:22  sistema   interno                         contacto vcard (privado): Dodi → 5491157276026@c.us                                                                                                                                                     
@@ -237,7 +241,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12923  2026-07-01 16:35:02  calendar  saliente                        creado: Medico (2026-07-04T13:00:00-03:00 → 2026-07-04T14:00:00-03:00)                                                                                                                                  
 
 12922  2026-07-01 16:34:37  whatsapp  entrante   5491132317896@c.us   poneme una reu el sabado a las 13: Medico                                                                                                                                                               
-
-12921  2026-07-01 16:34:16  sistema   interno                         claude_call whatsapp: 12578ms prompt=78551c raw=11129c in=28t(cache_read=76389 new=38583) out=372t ttfb=2164ms api=12011ms turnos=3 $0.1834                                                             
-
-12920  2026-07-01 16:34:13  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
