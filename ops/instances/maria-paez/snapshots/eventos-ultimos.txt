@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12702  2026-07-01 13:58:50  sistema   interno                         claude_call maria-worker: 38565ms prompt=74063c raw=14948c in=10t(cache_read=0 new=36023) out=1896t ttfb=1754ms api=37965ms turnos=1 $0.1728                                                            
+
 12701  2026-07-01 13:51:42  sistema   interno                         claude_call whatsapp: 19293ms prompt=76378c raw=7787c in=10t(cache_read=6271 new=30436) out=735t ttfb=1761ms api=18719ms turnos=1 $0.1370                                                               
 
 12700  2026-07-01 13:51:22  whatsapp  entrante   5491167859758@c.us   Dalee                                                                                                                                                                                                   
@@ -212,5 +214,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12604  2026-07-01 12:42:07  sistema   interno                         claude_call moderacion: 7714ms prompt=1606c raw=6162c in=10t(cache_read=17396 new=5095) out=335t ttfb=3520ms api=5536ms turnos=1 $0.0103                                                                
 
 12603  2026-07-01 12:42:00  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
-
-12602  2026-07-01 12:42:00  calendar  saliente                        modificado: Reunion NJ - DP (2026-07-07T12:30:00-03:00 → 2026-07-07T14:00:00-03:00)                                                                                                                     
