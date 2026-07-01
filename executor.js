@@ -72,6 +72,14 @@ const microsoftProvider = require('./providers/microsoft');
 /**
  * Ejecuta acciones. ctx debe traer: { usuario, waClient, canalOrigen }.
  */
+// Normaliza saltos/tabs LITERALES (\n, \t) que el modelo a veces sobre-escapa
+// en el texto de un tool/acción, para que no salgan como "\n" crudos al
+// destinatario. Solo toca secuencias de escape literales; texto normal intacto.
+function _normNL(t) {
+  if (typeof t !== 'string') return t;
+  return t.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\r/g, '');
+}
+
 async function ejecutarAcciones(acciones = [], ctx = {}, _opts = {}) {
   if (!Array.isArray(acciones)) return [];
   if (!ctx.usuario || !ctx.usuario.id) {
@@ -561,6 +569,7 @@ async function _borrarEvento(a, ctx) {
 
 async function _responderEmail(a, ctx) {
   _requerir(a, ['messageId', 'texto']);
+  a.texto = _normNL(a.texto);
   // Capa 3 — validar que el messageId corresponde a un email que efectivamente
   // recibimos. Previene que un LLM jailbroken o un caller malicioso invente un
   // messageId y mande a un thread arbitrario.
@@ -607,6 +616,7 @@ async function _responderEmail(a, ctx) {
 //  - devuelve { id, threadId } del mensaje nuevo
 async function _enviarEmail(a, ctx) {
   _requerir(a, ['to', 'asunto', 'texto']);
+  a.texto = _normNL(a.texto);
   // Validar destinatarios contra libreta visible / usuarios activos.
   // TODOS los campos de destino: cc/bcc/replyTo sin validar eran un canal
   // de exfiltración (to legítimo + bcc del atacante) — fix 2026-06-09.
@@ -692,6 +702,7 @@ function _resolverDestinoWA(a) {
 
 async function _enviarWA(a, ctx) {
   _requerir(a, ['a', 'texto']);
+  a.texto = _normNL(a.texto);
   if (!ctx.waClient) throw new Error('enviar_wa: ctx.waClient no fue provisto al executor');
 
   // Validar destinatario contra libreta visible / usuarios activos.
@@ -814,6 +825,7 @@ function _quitarPendiente(a, ctx) {
 
 async function _programarMensaje(a, ctx) {
   _requerir(a, ['cuando', 'canal', 'destino', 'texto']);
+  a.texto = _normNL(a.texto);
   if (!['whatsapp', 'gmail'].includes(a.canal)) {
     throw new Error(`programar_mensaje: canal inválido (${a.canal})`);
   }
