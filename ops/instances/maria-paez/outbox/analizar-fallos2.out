@@ -1,0 +1,63 @@
+=== acciones FALLÓ desde 14:09 (detalle) ===
+12741 | 2026-07-01 11:11:29 | 1 | LLÓ: enviar_whatsapp — Faltan campos requeridos: a, texto
+12785 | 2026-07-01 11:31:04 | 1 | LLÓ: enviar_whatsapp — Faltan campos requeridos: a, texto
+12821 | 2026-07-01 11:49:55 | 1 | LLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12873 | 2026-07-01 12:09:16 | 1 | LLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12904 | 2026-07-01 13:05:12 | 1 | LLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12907 | 2026-07-01 13:05:12 | 1 | LLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, respond
+12910 | 2026-07-01 13:07:11 | 1 | LLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, respond
+12911 | 2026-07-01 13:07:11 | 1 | LLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+
+=== conteo de fallos por tipo/mensaje ===
+acción FALLÓ: crear_evento — Faltan campos requeridos: summa | 4
+acción FALLÓ: guardar_cosa_inexistente �
+# exit=0
+desconocida: | 2
+acción FALLÓ: enviar_whatsapp — Faltan campos requeridos: a, | 2
+
+=== hilo de acciones (OK+FALLO) desde 14:09 para ver auto-recuperación ===
+12739 | 2026-07-01 11:11:12 | 1 | acción ejecutada: enviar_wa
+12741 | 2026-07-01 11:11:29 | 1 | acción FALLÓ: enviar_whatsapp — Faltan campos requeridos: a, texto
+12742 | 2026-07-01 11:11:29 | 1 | acción ejecutada: quitar_pendiente
+12769 | 2026-07-01 11:27:33 | 1 | acción ejecutada: upsert_contacto
+12770 | 2026-07-01 11:27:34 | 1 | acción ejecutada: upsert_contacto
+12773 | 2026-07-01 11:27:42 | 1 | acción ejecutada: enviar_wa
+12774 | 2026-07-01 11:27:42 | 1 | acción ejecutada: agregar_pendiente
+12780 | 2026-07-01 11:29:33 | 1 | acción ejecutada: agregar_pendiente
+12785 | 2026-07-01 11:31:04 | 1 | acción FALLÓ: enviar_whatsapp — Faltan campos requeridos: a, texto
+12791 | 2026-07-01 11:31:24 | 18 | acción ejecutada: upsert_contacto
+12792 | 2026-07-01 11:31:24 | 18 | acción ejecutada: upsert_contacto
+12821 | 2026-07-01 11:49:55 | 1 | acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12833 | 2026-07-01 11:55:24 | 1 | acción ejecutada: enviar_wa
+12834 | 2026-07-01 11:55:24 | 1 | acción ejecutada: agregar_pendiente
+12840 | 2026-07-01 11:56:40 | 1 | acción ejecutada: enviar_email
+12841 | 2026-07-01 11:56:40 | 1 | acción ejecutada: agregar_pendiente
+12855 | 2026-07-01 12:05:56 | 1 | acción ejecutada: enviar_wa
+12856 | 2026-07-01 12:05:56 | 1 | acción ejecutada: quitar_pendiente
+12870 | 2026-07-01 12:09:01 | 1 | acción ejecutada: modificar_evento
+12873 | 2026-07-01 12:09:16 | 1 | acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12885 | 2026-07-01 12:13:20 | 1 | acción ejecutada: crear_evento
+12904 | 2026-07-01 13:05:12 | 1 | acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12905 | 2026-07-01 13:05:12 | 1 | acción ejecutada: recordar_hecho
+12906 | 2026-07-01 13:05:12 | 1 | acción ejecutada: olvidar_hecho
+12907 | 2026-07-01 13:05:12 | 1 | acción FALLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". E
+12910 | 2026-07-01 13:07:11 | 1 | acción FALLÓ: guardar_cosa_inexistente — Acción desconocida: "guardar_cosa_inexistente". E
+12911 | 2026-07-01 13:07:11 | 1 | acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end
+12915 | 2026-07-01 13:23:11 | 1 | acción ejecutada: recordar_hecho
+12920 | 2026-07-01 13:34:13 | 1 | acción ejecutada: recordar_hecho
+12924 | 2026-07-01 13:35:02 | 1 | acción ejecutada: crear_evento
+12933 | 2026-07-01 13:53:19 | 1 | acción ejecutada: recordar_hecho
+12935 | 2026-07-01 13:56:10 | 1 | acción ejecutada: recordar_hecho
+12937 | 2026-07-01 13:56:19 | 1 | acción ejecutada: recordar_hecho
+12943 | 2026-07-01 14:03:12 | 1 | acción ejecutada: recordar_hecho
+12946 | 2026-07-01 14:05:19 | 1 | acción ejecutada: crear_evento
+12949 | 2026-07-01 14:08:03 | 1 | acción ejecutada: borrar_evento
+12961 | 2026-07-01 14:16:46 | 18 | acción ejecutada: agregar_pendiente
+12969 | 2026-07-01 14:20:08 | 1 | acción ejecutada: crear_evento
+12980 | 2026-07-01 14:46:35 | 1 | acción ejecutada: quitar_pendiente
+12981 | 2026-07-01 14:46:35 | 1 | acción ejecutada: quitar_pendiente
+12982 | 2026-07-01 14:46:36 | 1 | acción ejecutada: quitar_pendiente
+12983 | 2026-07-01 14:46:36 | 1 | acción ejecutada: quitar_pendiente
+12990 | 2026-07-01 14:48:38 | 1 | acción ejecutada: agregar_pendiente
+13001 | 2026-07-01 15:04:48 | 18 | acción ejecutada: programar_mensaje
+done
