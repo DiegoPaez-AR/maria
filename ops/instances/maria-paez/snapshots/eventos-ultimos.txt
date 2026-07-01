@@ -1,5 +1,25 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12744  2026-07-01 14:11:45  whatsapp  entrante   5491165286555@c.us   son dos contactos, por favor escribiles primero al que dice logistica. sino responden hoy les volves a escrivir mañana a ambos contactos                                                                
+
+12743  2026-07-01 14:11:29  whatsapp  saliente   34342575317160@lid   Listo. Le digo que no a Eze por el Subaru y le reenvío el DNI al número correcto suyo.                                                                                                                  
+
+12742  2026-07-01 14:11:29  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+12741  2026-07-01 14:11:29  sistema   interno                         acción FALLÓ: enviar_whatsapp — Faltan campos requeridos: a, texto                                                                                                                                      
+
+12740  2026-07-01 14:11:29  sistema   interno                         claude_call whatsapp: 98045ms prompt=1818c raw=32352c in=10t(cache_read=6266 new=17940) out=5591t ttfb=1833ms api=95566ms turnos=1 $0.1530                                                              
+
+12739  2026-07-01 14:11:12  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+12738  2026-07-01 14:11:12  whatsapp  saliente   5491165286555@c.us   Gabi, ¿me podés confirmar el título exacto del turno de dermatología del viernes 3/7 a las 18h en tu calendario? Necesito ese dato para ubicar el evento y borrarlo.                                    
+
+12737  2026-07-01 14:11:12  sistema   interno                         claude_call moderacion: 9212ms prompt=1612c raw=7450c in=10t(cache_read=0 new=22486) out=477t ttfb=2045ms api=7741ms turnos=1 $0.0310                                                                   
+
+12736  2026-07-01 14:11:06  whatsapp  saliente   5491165286555@c.us   Perfecto, ya tengo el nombre: *Paraná Muebles Logística*. ¿Me pasás el número de WhatsApp? Lo necesito para escribirles.                                                                                
+
+12735  2026-07-01 14:11:06  sistema   interno                         claude_call whatsapp: 32343ms prompt=77913c raw=13551c in=10t(cache_read=6271 new=31010) out=1646t ttfb=1710ms api=45551ms turnos=1 $0.1532                                                             
+
 12734  2026-07-01 14:11:03  sistema   interno                         claude_call maria-worker: 26524ms prompt=76520c raw=11486c in=10t(cache_read=6271 new=30678) out=1199t ttfb=1710ms api=25482ms turnos=1 $0.1449                                                         
 
 12733  2026-07-01 14:10:52  sistema   interno                         claude_call memoria-curada: 23113ms prompt=4605c raw=11326c in=10t(cache_read=6266 new=6046) out=1025t ttfb=1737ms api=22015ms turnos=1 $0.0419                                                         
@@ -195,23 +215,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12646  2026-07-01 13:26:46  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 12645  2026-07-01 13:26:46  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-12644  2026-07-01 13:26:46  sistema   interno                         claude_call whatsapp: 22902ms prompt=74425c raw=10818c in=10t(cache_read=6271 new=29951) out=1037t ttfb=1963ms api=22634ms turnos=1 $0.1393                                                             
-
-12643  2026-07-01 13:26:23  whatsapp  entrante   5491165286555@c.us   con Ana Clara es para coordinar temas relacionados a la diplomatura en IA, la rendición del fortalecer y las jornadas en Contextos de Encierro                                                          
-
-12642  2026-07-01 13:26:21  whatsapp  entrante   5491132317896@c.us   gabi no tiene nada que ver conmigo, somos usuarios distintos, su agenda es su agenda y la mia es mia                                                                                                    
-
-12641  2026-07-01 13:25:20  whatsapp  saliente   5491165286555@c.us   ¡Perfecto, anotado! Lo coordino con Diego.                                                                                                                                                              
-
-12640  2026-07-01 13:25:19  whatsapp  saliente   34342575317160@lid   Gabi me confirma que el recordatorio de llamar a Daniela Perrota es el jueves a las 10h, por el proyecto de contextos de encierro. Pero ese horario cae en tu bloque de Yoga (8 a 12h del jueves). ¿Lo c
-
-12639  2026-07-01 13:25:19  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-12638  2026-07-01 13:25:19  sistema   interno                         claude_call whatsapp: 28162ms prompt=73853c raw=10843c in=10t(cache_read=6271 new=29752) out=1252t ttfb=1836ms api=27440ms turnos=1 $0.1415                                                             
-
-12637  2026-07-01 13:24:51  whatsapp  entrante   5491165286555@c.us   a las 10h es por el proyecot de contextos de encierro                                                                                                                                                   
-
-12636  2026-07-01 13:23:59  whatsapp  saliente   5491165286555@c.us   ¡Anotado! ¿A qué hora del jueves querés el recordatorio? Dame un horario puntual y lo cargo enseguida.                                                                                                  
-
-12635  2026-07-01 13:23:59  sistema   interno                         claude_call whatsapp: 23188ms prompt=73997c raw=9566c in=10t(cache_read=6271 new=29792) out=999t ttfb=1807ms api=22498ms turnos=1 $0.1379                                                               
