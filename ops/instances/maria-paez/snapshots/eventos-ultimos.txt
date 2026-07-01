@@ -1,5 +1,27 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12699  2026-07-01 13:51:00  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+12698  2026-07-01 13:51:00  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+12697  2026-07-01 13:51:00  whatsapp  saliente   5491121773859@c.us   Eze, el DNI de Diego es *92297127*. Gracias!                                                                                                                                                            
+
+12696  2026-07-01 13:51:00  sistema   interno                         claude_call moderacion: 22078ms prompt=1492c raw=12426c in=10t(cache_read=0 new=22451) out=1282t ttfb=1795ms api=22416ms turnos=1 $0.0349                                                               
+
+12695  2026-07-01 13:51:00  whatsapp  saliente   5491167859758@c.us   ¡Buena pregunta! Lo consulto con Diego y te confirmo enseguida 👍                                                                                                                                        
+
+12694  2026-07-01 13:50:59  whatsapp  saliente   34342575317160@lid   Eze pregunta si también querés dejar el Subaru en parte de pago por la HR-V EXL. ¿Qué le digo?                                                                                                          
+
+12693  2026-07-01 13:50:59  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+12692  2026-07-01 13:50:59  sistema   interno                         claude_call whatsapp: 19644ms prompt=76768c raw=8833c in=10t(cache_read=6271 new=30559) out=815t ttfb=1720ms api=19356ms turnos=1 $0.1388                                                               
+
+12691  2026-07-01 13:50:39  whatsapp  entrante   5491167859758@c.us   La subaru la querían dejar en parte de pago tambien ?                                                                                                                                                   
+
+12690  2026-07-01 13:50:38  sistema   interno                         claude_call whatsapp: 19028ms prompt=7761c raw=6722c in=10t(cache_read=0 new=54782) out=451t ttfb=1840ms api=16503ms turnos=1 $0.2122                                                                   
+
+12689  2026-07-01 13:50:18  whatsapp  entrante   5491132317896@c.us   pasale mi dni: 92297127                                                                                                                                                                                 
+
 12688  2026-07-01 13:49:06  whatsapp  saliente   5491167859758@c.us   ¡Perfecto Eze, muchas gracias! Le paso toda la info a Diego enseguida 😊                                                                                                                                 
 
 12687  2026-07-01 13:49:06  whatsapp  saliente   34342575317160@lid   Te mando la cotización de la HR-V EXL que me pasó Eze de Honda Briones:                                                                                                                                 
@@ -192,25 +214,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12601  2026-07-01 12:41:59  whatsapp  entrante   5491131121057@c.us   Te paso mi nuevo mail nico.jordan2024@gmail.com                                                                                                                                                         
 
 12600  2026-07-01 12:41:59  sistema   interno                         claude_call whatsapp: 13967ms prompt=7891c raw=6854c in=10t(cache_read=30785 new=7037) out=544t ttfb=1637ms api=11730ms turnos=1 $0.0438                                                                
-
-12599  2026-07-01 12:41:44  whatsapp  entrante   5491132317896@c.us   si lees el mensaje en donde te la pedi, vas a ver que te dije de 1230 a 14.                                                                                                                             
-
-12598  2026-07-01 12:40:25  whatsapp  saliente   34342575317160@lid   Listo! Agendé *Reunion NJ - DP* el martes 7/7 de 12:30 a 13:30 con Meet. Le mandé invitación a Nicolás y le aviso por WhatsApp. Guardé los defaults también.                                            
-
-12597  2026-07-01 12:40:25  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-12596  2026-07-01 12:40:25  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-12595  2026-07-01 12:40:18  sistema   interno                         acción FALLÓ: guardar_hecho — Acción desconocida: "guardar_hecho". ¿Quisiste decir "recordar_hecho"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_even
-
-12594  2026-07-01 12:40:18  sistema   interno                         acción FALLÓ: guardar_hecho — Acción desconocida: "guardar_hecho". ¿Quisiste decir "recordar_hecho"? El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_even
-
-12593  2026-07-01 12:40:18  sistema   interno                         acción ejecutada: enviar_mensaje                                                                                                                                                                        
-
-12592  2026-07-01 12:40:18  whatsapp  saliente   5491131121057@c.us   Hola Nicolás, te escribo de parte de Diego Páez. Quedamos en una reunión para el *martes 7 de julio de 12:30 a 13:30 hs*. Te mandé la invitación de calendario a nicolas.jordan@enpiric.com. Cualquier c
-
-12591  2026-07-01 12:40:11  sistema   interno                         claude_call moderacion: 11252ms prompt=1662c raw=6276c in=10t(cache_read=0 new=22511) out=345t ttfb=2727ms api=12055ms turnos=1 $0.0304                                                                 
-
-12590  2026-07-01 12:39:59  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
-
-12589  2026-07-01 12:39:59  calendar  saliente                        creado: Reunion NJ - DP (2026-07-07T12:30:00-03:00 → 2026-07-07T13:30:00-03:00) · Meet: https://meet.google.com/sry-dwva-xwf                                                                            
