@@ -1,5 +1,26 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13171  2026-07-01 22:35:47  whatsapp  saliente   5491165286555@c.us   Jaja, Eloísa dice que mueva el culo 😄                                                                                                                                                                   
+
+13170  2026-07-01 22:35:47  sistema   interno                         claude_call whatsapp: 12345ms prompt=58775c raw=7805c in=10t(cache_read=6271 new=24934) out=422t ttfb=2054ms api=11685ms turnos=1 $0.1057                                                               
+
+13169  2026-07-01 22:35:34  whatsapp  entrante   5491176667387@c.us   Decile q mueva el culo                                                                                                                                                                                  
+                                                                      Jejejejeej                                                                                                                                                                                              
+
+13168  2026-07-01 22:35:20  whatsapp  saliente   5491165286555@c.us   Le avisé a Eloísa que sí a todo! Y anotados: Roque y Eloísa, tus hijos. Un placer conocerlos 😄                                                                                                          
+
+13167  2026-07-01 22:35:20  sistema   interno                         claude_call whatsapp: 25211ms prompt=5262c raw=14398c in=34t(cache_read=316784 new=3223) out=650t ttfb=2130ms api=14920ms turnos=4 $0.1170                                                              
+
+13166  2026-07-01 22:35:15  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+13165  2026-07-01 22:35:12  sistema   interno                         acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+13164  2026-07-01 22:35:09  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13163  2026-07-01 22:35:09  whatsapp  saliente   5491176667387@c.us   ¡Dice que sí a todo! 😄                                                                                                                                                                                  
+
+13162  2026-07-01 22:35:08  sistema   interno                         claude_call moderacion: 7331ms prompt=1471c raw=5923c in=10t(cache_read=17396 new=5048) out=295t ttfb=2956ms api=5337ms turnos=1 $0.0100                                                                
+
 13161  2026-07-01 22:34:54  whatsapp  entrante   5491165286555@c.us   Bueno ya están presentados los hijos                                                                                                                                                                    
 
 13160  2026-07-01 22:34:54  whatsapp  entrante   5491165286555@c.us   Decile que si                                                                                                                                                                                           
@@ -188,26 +209,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                                                                                                                                                                                                                               
                                                                       Mensaje original: "Podria ser un programa de todo el dia"                                                                                                                                               
                                                                       Última respuesta: "                                                                                                                                                                                     
-
-13071  2026-07-01 20:49:32  whatsapp  entrante   5491157276026@c.us   Podria ser un programa de todo el dia                                                                                                                                                                   
-
-13070  2026-07-01 20:49:32  sistema   interno                         unknown-flow/whatsapp LLM: tercero_de_usuario usuario_id=18 · Gabriela Echaniz (id=18) le pidió a Maria coordinar una cita con Dodi (Rodrigo Páez Canosa, número 5491157276026 que ella misma confirmó e
-
-13069  2026-07-01 20:49:32  sistema   interno                         claude_call unknown-flow: 23687ms prompt=82361c raw=10179c in=10t(cache_read=6266 new=43999) out=1051t ttfb=1825ms api=23649ms turnos=1 $0.2226                                                         
-
-13068  2026-07-01 20:48:54  whatsapp  saliente   34342575317160@lid   ⚠️ No pude rutear con certeza un mensaje de *Rodrigo Páez Canosa* (5491157276026@c.us) por WA — sin match tras preguntar.                                                                               
-                                                                                                                                                                                                                                                                              
-                                                                      Mensaje original: "Para Gabriela Echaniz"                                                                                                                                                               
-                                                                      Última respuesta: "Decile que nos v                                                                                                                                                                     
-
-13067  2026-07-01 20:48:06  whatsapp  saliente   5491165286555@c.us   Listo, le volví a escribir! También le expliqué que el mensaje automático de "no registrado" es normal — no afecta que yo pueda contactarlo. En cuanto responda te aviso.                               
-
-13066  2026-07-01 20:48:06  sistema   interno                         claude_call whatsapp: 18659ms prompt=5399c raw=9228c in=18t(cache_read=102003 new=3482) out=321t ttfb=2181ms api=9434ms turnos=2 $0.0485                                                                
-
-13065  2026-07-01 20:48:02  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13064  2026-07-01 20:48:02  whatsapp  saliente   5491157276026@c.us   Hola Dodi! Te escribo de nuevo — soy María, la asistente de Gabriela. Si te llegó un mensaje automático diciendo que no estás registrado, es porque el sistema solo reconoce usuarios propios, pero yo s
-
-13063  2026-07-01 20:48:02  sistema   interno                         claude_call moderacion: 6316ms prompt=1778c raw=6612c in=10t(cache_read=0 new=22530) out=368t ttfb=1645ms api=5297ms turnos=1 $0.0305                                                                   
-
-13062  2026-07-01 20:47:47  whatsapp  entrante   5491165286555@c.us   Escribile de nuevo por favor                                                                                                                                                                            
