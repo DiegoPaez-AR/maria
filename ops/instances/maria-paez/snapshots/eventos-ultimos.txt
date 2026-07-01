@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+12497  2026-07-01 01:59:30  whatsapp  saliente   34342575317160@lid   Diego, te cuento que no me salió ninguna de las dos cosas: ni pude agendarte el teatro ni programar el recordatorio. Me faltó información para completarlas, así que quedaron sin hacer. ¿Me confirmás l
+
+12496  2026-07-01 01:59:17  sistema   interno                         acción FALLÓ: programar_mensaje — Faltan campos requeridos: cuando, destino, texto                                                                                                                      
+
+12495  2026-07-01 01:59:17  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
+
+12494  2026-07-01 01:59:09  sistema   interno                         acción FALLÓ: undefined — Acción desconocida: "". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenv
+
+12493  2026-07-01 01:59:09  sistema   interno                         acción FALLÓ: undefined — Acción desconocida: "". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenv
+
+12492  2026-07-01 01:59:09  sistema   interno                         claude_call whatsapp: 14404ms prompt=7227c raw=7151c in=10t(cache_read=0 new=24312) out=574t ttfb=1734ms api=12110ms turnos=1 $0.0998                                                                   
+
 12491  2026-07-01 01:58:54  whatsapp  entrante   5491132317896@c.us   tenes razon. es el viernes 7 de agosto de 20 a 23 y al aviso un dia antes                                                                                                                               
 
 12490  2026-07-01 01:58:02  whatsapp  saliente   34342575317160@lid   El 8 de agosto cae en *sábado*, no en viernes. ¿Lo agendo para el *viernes 7* de agosto o el *sábado 8*?                                                                                                
@@ -294,22 +306,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                                                                                                                                                                                                                               
                                                                       *📅 Agenda del día*                                                                                                                                                                                      
                                                                       (sin eventos hoy)                                                                                                                                                                                       
-
-12397  2026-06-30 10:00:09  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-12396  2026-06-30 10:00:08  whatsapp  saliente   137456250806423@lid  ☀️ *Buen día, Hernan Fulco.* martes, 30 de junio.                                                                                                                                                       
-                                                                                                                                                                                                                                                                              
-                                                                      *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
-                                                                      ☀️ despejado, mín 6° / máx 12°                                                                                                                                                                          
-                                                                                                                                                                                                                                                                              
-                                                                      *📅 Agenda del día*                                                                                                                                                                                      
-                                                                      • 09:00 a. m. — Gustavo está de vacaciones                                                                                                                                                              
-                                                                      • 09:15 a. m. — MC Daily                                                                                                                                                                                
-
-12395  2026-06-30 09:59:55  whatsapp  entrante   5491132317896@c.us   Me mostras la lista de usuarios pf con el campo de acrivo                                                                                                                                               
-
-12394  2026-06-30 09:10:03  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (15 usuarios)                                                                                                       
-
-12393  2026-06-30 09:09:49  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12392  2026-06-30 09:09:43  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
