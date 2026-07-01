@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13003  2026-07-01 18:04:52  whatsapp  saliente   5491165286555@c.us   De nada, Gabi! Quedó programado — el viernes a las 10 de la mañana le mando un mensaje a Caterina preguntando por la definición. Si antes de eso te llega algo de su parte me avisás y lo cancelamos. 🙌 
+
+13002  2026-07-01 18:04:52  sistema   interno                         claude_call whatsapp: 20601ms prompt=4354c raw=10178c in=18t(cache_read=17449 new=17964) out=473t ttfb=2170ms api=10483ms turnos=2 $0.0797                                                              
+
+13001  2026-07-01 18:04:48  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13000  2026-07-01 18:04:48  sistema   interno                         claude_call moderacion: 7301ms prompt=1612c raw=7600c in=10t(cache_read=0 new=22486) out=424t ttfb=1610ms api=6989ms turnos=1 $0.0307                                                                   
+
+12999  2026-07-01 18:04:31  whatsapp  entrante   5491165286555@c.us   Gracias Maria                                                                                                                                                                                           
+
+12998  2026-07-01 18:04:31  whatsapp  entrante   5491165286555@c.us   Dale si el viernes no tenemos respuesta le volvemos a escribir                                                                                                                                          
+
+12997  2026-07-01 18:04:21  sistema   interno                         claude_call whatsapp: 24898ms prompt=57724c raw=14838c in=28t(cache_read=62231 new=31915) out=1065t ttfb=2190ms api=23448ms turnos=3 $0.1578                                                            
+
 12996  2026-07-01 18:03:56  whatsapp  entrante   5491165286555@c.us   Dale si el viernes no tenemos respuesta le volvemos a escribir                                                                                                                                          
 
 12995  2026-07-01 17:57:52  whatsapp  saliente   34342575317160@lid   Acá va la lista actualizada:                                                                                                                                                                            
@@ -219,18 +233,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 12905  2026-07-01 16:05:12  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
 
 12904  2026-07-01 16:05:12  sistema   interno                         acción FALLÓ: crear_evento — Faltan campos requeridos: summary, start, end                                                                                                                              
-
-12903  2026-07-01 16:05:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-12902  2026-07-01 16:05:03  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12901  2026-07-01 16:02:15  sistema   interno                         meeting-prep: 2 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-12900  2026-07-01 15:47:10  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-12899  2026-07-01 15:47:03  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
-
-12898  2026-07-01 15:45:17  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Reunion en el Warehouse - Doral (01:00 p. m.)                                                                                                                                             
-                                                                      Con: dscheerle@c2scs.com, lucas@capurro.com.ar, sgomez@equity305.com                                                                                                                                    
-
-12897  2026-07-01 15:45:10  whatsapp  saliente   134076010885285@lid  ⏰ *En 15min*: Sebas  (01:00 p. m.)                                                                                                                                                                      
