@@ -107,7 +107,7 @@ async function ejecutarAcciones(acciones = [], ctx = {}, _opts = {}) {
   // ejecutamos. Fail-safe: cualquier error del repair NO rompe el camino
   // principal — se sigue con los resultados originales. Con el auto-ruteo
   // puesto, esto casi nunca dispara; es el último escalón de la red.
-  if (!_opts.reparando) {
+  if (!_opts.reparando && !_opts.skipRepair) {
     const esFallaNombre = r => !r.ok && /^Acci[oó]n desconocida/.test(r.error || '');
     const fallasNombre = resultados.filter(esFallaNombre);
     if (fallasNombre.length) {

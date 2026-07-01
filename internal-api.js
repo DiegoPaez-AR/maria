@@ -200,7 +200,7 @@ function start({ waClient } = {}) {
           }
         }
         try {
-          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen });
+          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen }, { skipRepair: true });
           return send(200, r || { ok: false, error: 'sin_resultado' });
         } catch (err) {
           console.error('[internal-api/accion] error:', err.stack || err.message);
