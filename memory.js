@@ -401,6 +401,21 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_pendientes_usuario  ON pendientes(usuario_id, estado, creado);
 `);
 
+// Migración 2026-07-02: eventos.tipo como COLUMNA (era solo metadata.tipo en el
+// JSON). Las queries calientes filtraban con LIKE '%"tipo":"..."%' = full scan
+// que crecía linealmente con el tráfico. Backfill desde el JSON existente.
+if (!_tieneColumna('eventos', 'tipo')) {
+  db.exec(`ALTER TABLE eventos ADD COLUMN tipo TEXT`);
+  const n = db.prepare(`UPDATE eventos SET tipo = json_extract(metadata_json, '$.tipo') WHERE metadata_json IS NOT NULL`).run().changes;
+  console.log(`[memory] migración: eventos.tipo agregada, backfill de ${n} filas desde metadata_json`);
+}
+db.exec(`
+  CREATE INDEX IF NOT EXISTS idx_eventos_canal_tipo_ts   ON eventos(canal, tipo, timestamp);
+  CREATE INDEX IF NOT EXISTS idx_eventos_usuario_canal_id ON eventos(usuario_id, canal, id DESC);
+  CREATE INDEX IF NOT EXISTS idx_eventos_gmail_msgid ON eventos(json_extract(metadata_json, '$.messageId'))
+    WHERE canal = 'gmail' AND direccion = 'entrante';
+`);
+
 // `contactos` evoluciona en dos pasos:
 //   v1: schema legacy global (sin usuario_id) o con UNIQUE table-constraint.
 //   v2: por usuario, UNIQUE(usuario_id, nombre).
@@ -618,8 +633,8 @@ _migrarEstadoUsuario();
 // ─── Eventos ──────────────────────────────────────────────────────────────
 
 const insertEvento = db.prepare(`
-  INSERT INTO eventos (usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json)
-  VALUES (@usuario_id, @canal, @direccion, @de, @nombre, @asunto, @cuerpo, @tipo_original, @metadata_json)
+  INSERT INTO eventos (usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json, tipo)
+  VALUES (@usuario_id, @canal, @direccion, @de, @nombre, @asunto, @cuerpo, @tipo_original, @metadata_json, @tipo)
 `);
 
 /**
@@ -637,6 +652,7 @@ function log(evt) {
     cuerpo: evt.cuerpo || null,
     tipo_original: evt.tipo_original || null,
     metadata_json: evt.metadata ? JSON.stringify(evt.metadata) : null,
+    tipo: (evt.metadata && evt.metadata.tipo != null) ? String(evt.metadata.tipo) : null,
   };
   const info = insertEvento.run(row);
   return info.lastInsertRowid;
@@ -674,17 +690,19 @@ function logSecurityEvent({ usuarioId = null, canal = null, motivo, body, extra 
 // un messageId y mande a un thread arbitrario. Solo retorna true si hubo un
 // log con canal='gmail' direccion='entrante' que tenga ese messageId en su
 // metadata. Sin filtro temporal: Diego puede responder un mail viejo.
+// json_extract + índice parcial de expresión idx_eventos_gmail_msgid
+// (2026-07-02, antes LIKE = full scan en cada responder_email).
 const qExisteEmailEntrante = db.prepare(`
   SELECT 1 FROM eventos
   WHERE canal = 'gmail' AND direccion = 'entrante'
-    AND metadata_json LIKE ?
+    AND json_extract(metadata_json, '$.messageId') = ?
   LIMIT 1
 `);
 const qExisteEmailEntranteUsuario = db.prepare(`
   SELECT 1 FROM eventos
   WHERE canal = 'gmail' AND direccion = 'entrante'
+    AND json_extract(metadata_json, '$.messageId') = ?
     AND (usuario_id = ? OR usuario_id IS NULL)
-    AND metadata_json LIKE ?
   LIMIT 1
 `);
 // usuarioId opcional: si viene, el match se limita al bucket de ese usuario
@@ -692,11 +710,9 @@ const qExisteEmailEntranteUsuario = db.prepare(`
 // recibió OTRO usuario. null = alcance global (owner / callers legacy).
 function existeEmailEntrante(messageId, usuarioId = null) {
   if (!messageId) return false;
-  // Defensa contra LIKE-injection (muy improbable, pero por las dudas).
-  if (/[%_\\]/.test(messageId)) return false;
-  const pat = `%"messageId":"${messageId}"%`;
-  if (usuarioId != null) return !!qExisteEmailEntranteUsuario.get(usuarioId, pat);
-  return !!qExisteEmailEntrante.get(pat);
+  const mid = String(messageId);
+  if (usuarioId != null) return !!qExisteEmailEntranteUsuario.get(mid, usuarioId);
+  return !!qExisteEmailEntrante.get(mid);
 }
 
 const qRecientesUsuario = db.prepare(`
@@ -768,10 +784,7 @@ const qUltimasAccionesUsuario = db.prepare(`
   FROM eventos
   WHERE usuario_id = ? AND canal IN ('sistema', 'calendar')
     AND timestamp >= datetime('now', ?)
-    AND (metadata_json IS NULL OR (
-      metadata_json NOT LIKE '%"tipo":"claude_call"%'
-      AND metadata_json NOT LIKE '%"tipo":"security"%'
-    ))
+    AND (tipo IS NULL OR tipo NOT IN ('claude_call', 'security'))
   ORDER BY id DESC LIMIT ?
 `);
 function contextoCompacto(usuarioId, { waMax = 5, gmailMax = 1, accionesMax = 3, maxHoras = 72, tz = null } = {}) {
@@ -1301,7 +1314,7 @@ const delTelemetriaVieja = db.prepare(`
   DELETE FROM eventos WHERE id IN (
     SELECT id FROM eventos
     WHERE canal = 'sistema' AND timestamp < datetime('now', ?)
-      AND metadata_json LIKE '%"tipo":"claude_call"%'
+      AND tipo = 'claude_call'
     LIMIT ?
   )
 `);

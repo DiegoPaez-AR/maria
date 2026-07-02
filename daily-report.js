@@ -325,7 +325,7 @@ function statsInstancia(env) {
                COALESCE(SUM(json_extract(metadata_json, '$.cost_usd')), 0) AS total
         FROM eventos
         WHERE canal = 'sistema' AND timestamp >= ?
-          AND json_extract(metadata_json, '$.tipo') = 'claude_call'
+          AND tipo = 'claude_call'
       `).get(desde);
       stats.gasto = {
         total_usd: Number(_gasto.total || 0),
@@ -346,7 +346,7 @@ function statsInstancia(env) {
         SELECT timestamp, canal, de, nombre, asunto, cuerpo
         FROM eventos
         WHERE timestamp >= ?
-          AND json_extract(metadata_json, '$.tipo') IN ('unknown_first', 'unknown_pending_followup')
+          AND tipo IN ('unknown_first', 'unknown_pending_followup')
         ORDER BY timestamp ASC LIMIT 50
       `).all(desde).map(r => ({
         hhmm: _hhmmART(r.timestamp), canal: r.canal,
@@ -356,7 +356,7 @@ function statsInstancia(env) {
       const _avisos = db.prepare(`
         SELECT timestamp, cuerpo FROM eventos
         WHERE timestamp >= ?
-          AND json_extract(metadata_json, '$.tipo') = 'unknown_flow_aviso'
+          AND tipo = 'unknown_flow_aviso'
         ORDER BY timestamp ASC LIMIT 20
       `).all(desde).map(r => ({
         hhmm: _hhmmART(r.timestamp),
