@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
 -----  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13344  2026-07-02 00:29:45  whatsapp  entrante   5491169594900@c.us  Ya pueden venir a buscarlo                                                                                                                                                                         
+
 13343  2026-07-02 00:27:19  whatsapp  saliente   34342575317160@lid  Les pregunté, te aviso cuando respondan.                                                                                                                                                           
 
 13342  2026-07-02 00:27:19  sistema   interno                        claude_call whatsapp: 19460ms prompt=7368c raw=8924c in=18t(cache_read=33816 new=34081) out=316t ttfb=2203ms api=9218ms turnos=2 $0.1427                                                           
@@ -234,5 +236,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13246  2026-07-01 23:18:47  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
 
 13245  2026-07-01 23:18:47  whatsapp  saliente   5491169594900@c.us  Gracias! Les consulto: ¿me pueden enviar la carta por favor?                                                                                                                                       
-
-13244  2026-07-01 23:18:47  sistema   interno                        claude_call moderacion: 6147ms prompt=1508c raw=5861c in=10t(cache_read=17396 new=5055) out=295t ttfb=1716ms api=6209ms turnos=1 $0.0100                                                           
