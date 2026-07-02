@@ -1,0 +1,60 @@
+# ejecutado: 2026-07-01T21:11:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="$MARIA_DB"
+#   echo "== eventos 8031 =="
+#   sqlite3 -readonly "$DB" "SELECT id, datetime(timestamp,'localtime'), direccion, de, nombre, substr(replace(cuerpo,char(10),' | '),1,500) FROM eventos WHERE de LIKE '%1123348031%' OR cuerpo LIKE '%1123348031%' ORDER BY id;" 2>&1
+#   echo "== contacto 8031 =="
+#   sqlite3 -readonly "$DB" -line "SELECT * FROM contactos WHERE whatsapp LIKE '%1123348031%';" 2>&1
+#   echo "== eventos alrededor: primer contacto saliente a 8031 =="
+#   sqlite3 -readonly "$DB" "SELECT id, datetime(timestamp,'localtime'), direccion, de, substr(replace(cuerpo,char(10),' | '),1,400) FROM eventos WHERE id BETWEEN (SELECT MIN(id)-15 FROM eventos WHERE de LIKE '%1123348031%') AND (SELECT MIN(id)+2 FROM eventos WHERE de LIKE '%1123348031%') ORDER BY id;" 2>&1
+
+# ───── output ─────
+== eventos 8031 ==
+4441|2026-05-16 14:14:13|saliente|5491123348031@c.us||Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!
+8596|2026-06-09 18:25:04|saliente|5491132317896@c.us|Diego|Acá está tu lista completa: |  | (sin nombre) — +5491161310664 | 1. Adrián Duek — +5491144396371 | 2. Agustina Acevedo — WA (lid) | 3. Alejandro Becerra — +5493364340748 | 4. Alfonso Amat — +5491148133819 | 5. Ana Carina — WA (lid) | 6. Ana Gianini — +5491168579234 | 7. Ana Vainman — +5491140759467 | 8. Analia Frangi — +5491161673400 | 9. Andrea Kozameh — +5491168626963 | 10. Andres Neumann — +5491164719969 | 11. Antonio Peña — +5491155645553 | 12. Ariana Fleitas — +5491150502080 | 13. Ariel Qui
+13201|2026-07-01 20:07:41|saliente|5491123348031@c.us||Hola! Me podrían dar el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias
+13210|2026-07-01 20:10:40|entrante|5491123348031@c.us|Barra Chalaca Bulnes|Buenas noches
+13212|2026-07-01 20:11:03|saliente|5491123348031@c.us||Buenas noches! Te consulto: ¿tenés el número de WhatsApp del local de Barra Chalaca en la calle Caseros? Gracias!
+13215|2026-07-01 20:11:18|entrante|5491123348031@c.us|Barra Chalaca Bulnes|Buenas noches | 1169594900
+13267|2026-07-01 20:25:29|entrante|5491123348031@c.us|Barra Chalaca Bulnes|Hola! como estas?
+13269|2026-07-01 20:26:00|saliente|5491123348031@c.us|Barra Chalaca Bulnes|¡Hola! Todo bien, gracias. ¿Vos cómo estás?
+13270|2026-07-01 20:26:14|entrante|5491123348031@c.us|Barra Chalaca Bulnes|por el momento no cuentan con un número de whatsapp ya que hace no mucho abrieron
+13273|2026-07-01 20:27:20|saliente|5491123348031@c.us|Barra Chalaca Bulnes|Entendido, gracias por avisarme. ¿Sabés si tienen algún mail de contacto o un número de teléfono fijo al que pueda llamar para consultarles la carta?
+13274|2026-07-01 20:30:54|entrante|5491123348031@c.us|Barra Chalaca Bulnes|perdón, me corrijo, ahi mi supervisor se lo paso | .
+13277|2026-07-01 20:31:34|saliente|5491123348031@c.us|Barra Chalaca Bulnes|Perfecto, gracias! Quedo esperando.
+== contacto 8031 ==
+         id = 241
+ usuario_id = 1
+     nombre = Barra Chalaca Bulnes
+   whatsapp = 5491123348031@c.us
+      email = 
+      notas = 
+visibilidad = privada
+     cumple = 
+     creado = 2026-05-16 17:14:12
+actualizado = 2026-05-16 17:14:12
+ perfil_web = 
+== eventos alrededor: primer contacto saliente a 8031 ==
+4426|2026-05-16 13:40:21|interno||claude_call whatsapp: 218691ms prompt=50999c raw=794c ERROR=claude exit null: 
+4427|2026-05-16 13:41:07|interno||claude_call whatsapp: 52867ms prompt=51121c raw=633c
+4428|2026-05-16 13:41:07|saliente|34342575317160@lid|Busqué y no aparece ningún local de Barra Chalaca en calle Caseros — los que tienen en Argentina son tres: |  | 📍 *Belgrano*: +54 11 6643-1877 | 📍 *Bulnes (Palermo)*: +54 11 2334-8031 | 📍 *Arévalo (Palermo)*: +54 11 3235-0755 |  | ¿Puede ser que sea uno de estos, o querés que siga buscando?
+4429|2026-05-16 14:04:07|interno||claude_call unknown-flow: 25520ms prompt=70439c raw=511c
+4430|2026-05-16 14:04:07|interno||unknown-flow/whatsapp LLM: usuario_activo usuario_id=1 · El pushname es 'Diego Paez', el historial del remitente (34342575317160@lid) es idéntico al historial del owner Diego (mismos mensajes, temas, tareas, agenda), y el mensaje actual es continuación directa de la búsqueda de Barra Chalaca que Diego inició minutos antes — es Diego escribiendo desde un ID @lid (linked device u otro formato de cue
+4431|2026-05-16 14:04:07|entrante|34342575317160@lid|Es uno nuevo que acaba de abrir, manda un mensaje a alguno de esos que me pasaste y pedí que te pasen el número del de Av. Caseros.
+4432|2026-05-16 14:04:57|interno||claude_call whatsapp: 49724ms prompt=50853c raw=704c
+4433|2026-05-16 14:04:57|saliente|34342575317160@lid|Dale, les escribo.
+4434|2026-05-16 14:04:57|interno||acción ejecutada: upsert_contacto
+4435|2026-05-16 14:04:58|saliente|5491166431877@c.us|Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!
+4436|2026-05-16 14:04:58|interno||acción ejecutada: enviar_wa
+4437|2026-05-16 14:13:45|entrante|16287086444644@lid|Hola! Aun no lo tenemos
+4438|2026-05-16 14:14:12|interno||claude_call whatsapp: 27409ms prompt=52128c raw=949c
+4439|2026-05-16 14:14:12|interno||acción ejecutada: upsert_contacto
+4440|2026-05-16 14:14:12|interno||acción ejecutada: upsert_contacto
+4441|2026-05-16 14:14:13|saliente|5491123348031@c.us|Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!
+4442|2026-05-16 14:14:13|interno||acción ejecutada: enviar_wa
+4443|2026-05-16 14:14:14|saliente|5491132350755@c.us|Hola! Te consulto: ¿me podrían pasar el número de WhatsApp del nuevo local de Barra Chalaca que abrió en Av. Caseros? Muchas gracias!
+
+# exit=0
