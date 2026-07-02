@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13590  2026-07-02 14:28:39  whatsapp  saliente   5491165286555@c.us                        Listo, te agendé el turno por el pie para el lunes 6/7 a las 15:30 hs 👣                                                                                                                                 
+
+13589  2026-07-02 14:28:39  sistema   interno                                              claude_call whatsapp: 22576ms prompt=5922c raw=12130c in=6t(cache_read=36623 new=72636) out=889t ttfb=2179ms api=18664ms turnos=3 $0.2967                                                               
+
+13588  2026-07-02 14:28:34  sistema   interno                                              acción ejecutada: crear_evento                                                                                                                                                                          
+
+13587  2026-07-02 14:28:34  calendar  saliente                                             creado: Turno por el pie (2026-07-06T15:30:00-03:00 → 2026-07-06T16:00:00-03:00) · Meet: https://meet.google.com/bfe-jnbf-kxz [en calendar de Maria]                                                    
+
+13586  2026-07-02 14:28:16  whatsapp  entrante   5491165286555@c.us                        Alo, podés agendarme turno por el pie el lunes a las 15.30?                                                                                                                                             
+
 13585  2026-07-02 14:20:45  sistema   interno                                              claude_call maria-worker: 96299ms prompt=60338c raw=49790c in=26t(cache_read=521338 new=94842) out=6146t ttfb=2124ms api=95534ms turnos=13 $0.6088                                                      
 
 13584  2026-07-02 14:20:35  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -328,13 +338,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13492  2026-07-02 02:12:18  whatsapp  entrante   5491165286555@c.us                        El de prwmiere lo va a hacer en utn o da vinci pero falta para que arranquen                                                                                                                            
 
 13491  2026-07-02 02:12:18  whatsapp  entrante   5491165286555@c.us                        Habrá en otros lados que no sea udemy? Para Final Cut                                                                                                                                                   
-
-13490  2026-07-02 02:12:18  whatsapp  entrante   5491165286555@c.us                        No no te preocupes se ve que ya tiene muchos suscriptores porque dice que no se puede tomar y el primero le pareció muy básico                                                                          
-
-13489  2026-07-02 02:12:08  sistema   interno                                              claude_call whatsapp: 41706ms prompt=6904c raw=29831c in=14t(cache_read=233460 new=46088) out=2054t ttfb=2166ms api=38871ms turnos=7 $0.3006                                                            
-
-13488  2026-07-02 02:11:25  whatsapp  entrante   5491165286555@c.us                        No no te preocupes se ve que ya tiene muchos suscriptores porque dice que no se puede tomar y el primero le pareció muy básico                                                                          
-
-13487  2026-07-02 02:10:51  whatsapp  saliente   5491165286555@c.us                        Ah, veo la captura, esos son los dos cursos en español que te había pasado antes 👌 el de "Final Cut Pro Para Principiantes" y el de "Final Cut Pro X Esencial". Si a Roque le rechaza la suscripción en 
-
-13486  2026-07-02 02:10:51  sistema   interno                                              claude_call whatsapp: 13275ms prompt=6999c raw=8330c in=2t(cache_read=27412 new=5545) out=724t ttfb=2187ms api=10417ms turnos=1 $0.0399                                                                 
