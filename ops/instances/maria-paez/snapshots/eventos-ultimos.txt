@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
 -----  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13343  2026-07-02 00:27:19  whatsapp  saliente   34342575317160@lid  Les pregunté, te aviso cuando respondan.                                                                                                                                                           
+
+13342  2026-07-02 00:27:19  sistema   interno                        claude_call whatsapp: 19460ms prompt=7368c raw=8924c in=18t(cache_read=33816 new=34081) out=316t ttfb=2203ms api=9218ms turnos=2 $0.1427                                                           
+
+13341  2026-07-02 00:27:14  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+
+13340  2026-07-02 00:27:14  whatsapp  saliente   5491169594900@c.us  ¡Hola! ¿Cómo viene el pedido? ¿Tienen estimación de cuándo está listo?                                                                                                                             
+
+13339  2026-07-02 00:27:14  sistema   interno                        claude_call moderacion: 7271ms prompt=1518c raw=6451c in=10t(cache_read=0 new=22464) out=384t ttfb=1713ms api=6605ms turnos=1 $0.0305                                                              
+
 13338  2026-07-02 00:26:58  whatsapp  entrante   5491132317896@c.us  les preguntas como viene el pedido?                                                                                                                                                                
 
 13337  2026-07-02 00:13:00  sistema   interno                        claude_call whatsapp: 12391ms prompt=79099c raw=7905c in=10t(cache_read=0 new=38197) out=342t ttfb=2133ms api=11224ms turnos=1 $0.1583                                                             
@@ -226,18 +236,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13245  2026-07-01 23:18:47  whatsapp  saliente   5491169594900@c.us  Gracias! Les consulto: ¿me pueden enviar la carta por favor?                                                                                                                                       
 
 13244  2026-07-01 23:18:47  sistema   interno                        claude_call moderacion: 6147ms prompt=1508c raw=5861c in=10t(cache_read=17396 new=5055) out=295t ttfb=1716ms api=6209ms turnos=1 $0.0100                                                           
-
-13243  2026-07-01 23:18:22  whatsapp  entrante   5491169594900@c.us  Hola, te comunicaste con Barra Chalaca San Telmo                                                                                                                                                   
-                                                                     📍 Av Caseros 467 🇵🇪                                                                                                                                                                                
-                                                                                                                                                                                                                                                                        
-                                                                     🍽️ Sin reserva previa . Por orden de llegada en base a la disponibilidad. A partir de 6 comensales se puede reservar.                                                                              
-                                                                                                                                                                                                                                                                        
-                                                                     ✓Estamos de                                                                                                                                                                                        
-
-13242  2026-07-01 23:18:22  whatsapp  saliente   5491165286555@c.us  Claro, contame! En qué andás?                                                                                                                                                                      
-
-13241  2026-07-01 23:18:21  sistema   interno                        claude_call whatsapp: 6838ms prompt=5511c raw=5996c in=10t(cache_read=39088 new=2626) out=153t ttfb=2122ms api=4064ms turnos=1 $0.0239                                                             
-
-13240  2026-07-01 23:18:19  whatsapp  saliente   34342575317160@lid  Listo, ya estaba agendado. Les escribí a Caseros pidiendo la carta — en cuanto la manden te la paso.                                                                                               
-
-13239  2026-07-01 23:18:18  sistema   interno                        claude_call whatsapp: 25687ms prompt=7636c raw=12762c in=26t(cache_read=175914 new=79036) out=566t ttfb=2510ms api=15747ms turnos=3 $0.3577                                                        
