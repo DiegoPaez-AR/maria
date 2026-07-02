@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13449  2026-07-02 01:59:52  whatsapp  saliente   5491165286555@c.us  Listo! Viernes a las 16:00 te recuerdo conectarte a la reunión de "Imaginarios del Arte Hoy" 🎨                                                                                                          
+
+13448  2026-07-02 01:59:52  sistema   interno                        claude_call whatsapp: 24398ms prompt=6355c raw=9035c in=4t(cache_read=254070 new=4522) out=719t ttfb=2099ms api=10181ms turnos=2 $0.1040                                                                
+
+13447  2026-07-02 01:59:47  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13446  2026-07-02 01:59:47  sistema   interno                        claude_call moderacion: 11271ms prompt=1517c raw=5823c in=10t(cache_read=17396 new=5060) out=269t ttfb=1579ms api=10003ms turnos=1 $0.0099                                                              
+
+13445  2026-07-02 01:59:27  whatsapp  entrante   5491165286555@c.us  Para el viernes a la 16 recordame la reunión por imaginarios del arte hoy que debo conectarme                                                                                                           
+
 13444  2026-07-02 01:58:40  whatsapp  saliente   5491165286555@c.us  Anotado! Mañana a las 9:30 te recuerdo pagar los aparatos de Eloísa y mandar el comprobante de lo que ya pagaste 🦷                                                                                      
 
 13443  2026-07-02 01:58:40  sistema   interno                        claude_call whatsapp: 19247ms prompt=6224c raw=8726c in=4t(cache_read=245651 new=4176) out=594t ttfb=2097ms api=10326ms turnos=2 $0.0983                                                                
@@ -210,13 +220,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13351  2026-07-02 00:32:35  whatsapp  entrante   5491132317896@c.us  Voy                                                                                                                                                                                                     
 
 13350  2026-07-02 00:30:09  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                            
-
-13349  2026-07-02 00:30:09  sistema   interno                        claude_call whatsapp: 23189ms prompt=78948c raw=13735c in=28t(cache_read=76806 new=39109) out=532t ttfb=2149ms api=15992ms turnos=4 $0.1876                                                             
-
-13348  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-13347  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13346  2026-07-02 00:30:05  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                            
-
-13345  2026-07-02 00:30:05  sistema   interno                        claude_call moderacion: 5737ms prompt=1556c raw=5751c in=10t(cache_read=17396 new=5079) out=268t ttfb=1822ms api=4345ms turnos=1 $0.0099                                                                
