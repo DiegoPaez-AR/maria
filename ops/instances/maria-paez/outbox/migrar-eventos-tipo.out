@@ -1,0 +1,99 @@
+# ejecutado: 2026-07-02T13:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # 1) Test sintético de la migración en DB temporal; 2) si pasa, reload (la
+#   # migración corre al boot sobre la DB real); 3) verificación post.
+#   cd /root/secretaria
+#   
+#   echo "── 1. test sintético (DB temporal) ──"
+#   rm -f /tmp/test-tipo.sqlite
+#   MARIA_DB=/tmp/test-tipo.sqlite node - <<'NODE'
+#   const Database = require('/root/secretaria/node_modules/better-sqlite3');
+#   const pre = new Database('/tmp/test-tipo.sqlite');
+#   pre.exec(`CREATE TABLE eventos (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, usuario_id INTEGER, canal TEXT NOT NULL, direccion TEXT NOT NULL, de TEXT, nombre TEXT, asunto TEXT, cuerpo TEXT, tipo_original TEXT, metadata_json TEXT)`);
+#   pre.prepare(`INSERT INTO eventos (usuario_id, canal, direccion, cuerpo, metadata_json) VALUES (1,'sistema','interno','claude_call x','{"tipo":"claude_call","ms":123}')`).run();
+#   pre.prepare(`INSERT INTO eventos (usuario_id, canal, direccion, cuerpo, metadata_json) VALUES (1,'gmail','entrante','mail','{"messageId":"abc123"}')`).run();
+#   pre.prepare(`INSERT INTO eventos (usuario_id, canal, direccion, cuerpo) VALUES (1,'whatsapp','entrante','hola')`).run();
+#   pre.close();
+#   const mem = require('/root/secretaria/memory.js');
+#   const db = new Database('/tmp/test-tipo.sqlite');
+#   const rows = db.prepare('SELECT id, tipo FROM eventos ORDER BY id').all();
+#   console.log('backfill:', JSON.stringify(rows));
+#   if (rows[0].tipo !== 'claude_call' || rows[1].tipo !== null && rows[1].tipo !== undefined && rows[1].tipo !== null) {}
+#   console.log('existeEmailEntrante abc123:', mem.existeEmailEntrante('abc123'), '| zzz:', mem.existeEmailEntrante('zzz'), '| abc123 u99:', mem.existeEmailEntrante('abc123', 99));
+#   const id = mem.log({ usuarioId: 1, canal: 'sistema', direccion: 'interno', cuerpo: 'x', metadata: { tipo: 'security' } });
+#   console.log('log nuevo tipo:', db.prepare('SELECT tipo FROM eventos WHERE id=?').get(id).tipo);
+#   console.log('plan msgid:', db.prepare(`EXPLAIN QUERY PLAN SELECT 1 FROM eventos WHERE canal='gmail' AND direccion='entrante' AND json_extract(metadata_json,'$.messageId')='a'`).all().map(r=>r.detail).join('|'));
+#   NODE
+#   RC=$?
+#   echo "test exit=$RC"
+#   [ $RC -ne 0 ] && { echo "TEST FALLÓ — NO recargo"; exit 1; }
+#   rm -f /tmp/test-tipo.sqlite
+#   
+#   echo ""
+#   echo "── 2. reload (migración sobre la DB real al boot) ──"
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   echo "reload exit=$?"
+#   sleep 8
+#   
+#   echo ""
+#   echo "── 3. verificación DB real ──"
+#   node - <<'NODE'
+#   const Database = require('/root/secretaria/node_modules/better-sqlite3');
+#   const db = new Database('/root/secretaria/state/maria-paez/db/maria.sqlite', { readonly: true });
+#   const cols = db.prepare(`PRAGMA table_info(eventos)`).all().map(c=>c.name);
+#   console.log('columna tipo:', cols.includes('tipo') ? 'OK' : 'FALTA');
+#   const tot = db.prepare(`SELECT COUNT(*) c FROM eventos`).get().c;
+#   const conTipo = db.prepare(`SELECT COUNT(*) c FROM eventos WHERE tipo IS NOT NULL`).get().c;
+#   const likeCC = db.prepare(`SELECT COUNT(*) c FROM eventos WHERE metadata_json LIKE '%"tipo":"claude_call"%'`).get().c;
+#   const colCC = db.prepare(`SELECT COUNT(*) c FROM eventos WHERE tipo='claude_call'`).get().c;
+#   console.log(`eventos=${tot} con_tipo=${conTipo} · claude_call LIKE=${likeCC} vs columna=${colCC} ${likeCC===colCC?'MATCH':'MISMATCH'}`);
+#   const idx = db.prepare(`SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='eventos'`).all().map(r=>r.name);
+#   console.log('índices:', idx.filter(n=>n.includes('tipo')||n.includes('msgid')||n.includes('usuario_canal')).join(', ') || 'FALTAN');
+#   console.log('plan poda:', db.prepare(`EXPLAIN QUERY PLAN SELECT id FROM eventos WHERE canal='sistema' AND timestamp < datetime('now','-60 days') AND tipo='claude_call' LIMIT 5`).all().map(r=>r.detail).join('|'));
+#   const mid = db.prepare(`SELECT json_extract(metadata_json,'$.messageId') m FROM eventos WHERE canal='gmail' AND direccion='entrante' AND json_extract(metadata_json,'$.messageId') IS NOT NULL ORDER BY id DESC LIMIT 1`).get();
+#   if (mid && mid.m) {
+#     const t0 = Date.now();
+#     const r = db.prepare(`SELECT 1 FROM eventos WHERE canal='gmail' AND direccion='entrante' AND json_extract(metadata_json,'$.messageId')=? LIMIT 1`).get(mid.m);
+#     console.log(`existeEmail real (${String(mid.m).slice(0,12)}…): ${r?'encontrado':'NO'} en ${Date.now()-t0}ms`);
+#   }
+#   db.close();
+#   NODE
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo LISTO
+
+# ───── output ─────
+── 1. test sintético (DB temporal) ──
+[memory] owner creado: Diego (id=1, servido=1)
+[memory] migración: usuarios.calendar_acceso agregado (backfill write para users con calendar_id)
+[memory] migración: usuarios.calendar_provider agregado (default 'google')
+[memory] migración: usuarios.calendar_auth_json agregado (NULL para Google)
+[memory] migración: pendientes.dueno/disparador/recordar_desde agregados
+[memory] migración: usuarios.bienvenida_enviada agregado, backfilled a 1 para usuarios existentes
+[memory] migración: usuarios.bienvenida_enviada/cliente_id agregados
+[memory] migracion: usuarios.brief_activo agregado (default 1)
+[memory] migracion: usuarios.ubicacion agregado (backfill Buenos Aires en 1 usuarios)
+[memory] migracion: usuarios.ubicacion/lat/lon listos
+[memory] migración: eventos.tipo agregada, backfill de 2 filas desde metadata_json
+[memory] migración: contactos.perfil_web agregado
+backfill: [{"id":1,"tipo":"claude_call"},{"id":2,"tipo":null},{"id":3,"tipo":null}]
+existeEmailEntrante abc123: true | zzz: false | abc123 u99: false
+log nuevo tipo: security
+plan msgid: SEARCH eventos USING INDEX idx_eventos_gmail_msgid (<expr>=?)
+test exit=0
+
+── 2. reload (migración sobre la DB real al boot) ──
+reload exit=0
+
+── 3. verificación DB real ──
+columna tipo: OK
+eventos=13617 con_tipo=3553 · claude_call LIKE=1824 vs columna=1824 MATCH
+índices: idx_eventos_canal_tipo_ts, idx_eventos_usuario_canal_id, idx_eventos_gmail_msgid
+plan poda: SEARCH eventos USING COVERING INDEX idx_eventos_canal_tipo_ts (canal=? AND tipo=? AND timestamp<?)
+existeEmail real (19f230e5da18…): encontrado en 1ms
+maria-paez online restarts=34
+LISTO
+
+# exit=0
