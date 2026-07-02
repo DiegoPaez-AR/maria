@@ -1,0 +1,25 @@
+# ejecutado: 2026-07-02T19:04:04-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── marker (debe NO existir) ──"
+#   cat /root/secretaria/state/.canary-bad-commit 2>/dev/null || echo "(sin marker — OK)"
+#   echo "── pm2 (restarts debe haber subido) ──"
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo "── canary log ──"
+#   grep -E "canary (OK|FALLÓ|FALLO)" /root/secretaria/ops/.cron.log | tail -3
+#   echo FIN
+
+# ───── output ─────
+── marker (debe NO existir) ──
+4ab7e8d30b7379b47caee631f1f649e8d15500a5
+── pm2 (restarts debe haber subido) ──
+maria-paez online restarts=2
+── canary log ──
+canary FALLÓ (82695d85e7bb6804906e6ce36cc5f6cc61c66b9e) — NO recargo pm2, prod sigue con la versión anterior en memoria
+canary FALLO require-smoke/migración:
+canary FALLÓ (4ab7e8d30b7379b47caee631f1f649e8d15500a5) — NO recargo pm2, prod sigue con la versión anterior en memoria
+FIN
+
+# exit=0
