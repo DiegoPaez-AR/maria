@@ -1,44 +1,3 @@
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-07-02 13:42:10: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-07-02 13:42:10: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-07-02 13:42:10: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-07-02 13:42:10: [follow-ups] activo, cada 5min
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-07-02 13:42:10: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-07-02 13:42:10: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-07-02 13:42:10: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-07-02 13:42:10: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-07-02 13:42:10: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-07-02 13:42:10: [diferidos] drainer activo (cada 5min)
-0|maria-pa | 2026-07-02 13:42:10: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-07-02 13:45:10: [programados] 2 mensaje(s) debidos, despachando…
-0|maria-pa | 2026-07-02 13:45:10: [programados] ✓ id=794 (whatsapp/34342575317160@lid) [meeting_prep:1:ae90hkm3o4vujrva8l574lu5bo]
-0|maria-pa | 2026-07-02 13:45:17: [programados] ✓ id=795 (whatsapp/137456250806423@lid) [meeting_prep:2:70qb0ioeignf60mm65aovoebie]
-0|maria-pa | 2026-07-02 14:02:14: [meeting-prep/Santiago Capurro] + id=799 Juana @ 2026-07-02T18:45:00.000Z
-0|maria-pa | 2026-07-02 14:10:16: [WA lid-resolve] 17699644153872@lid -> 5491165286555@c.us
-0|maria-pa | 2026-07-02 14:10:26: [WA ←] Gabriela Echaniz (5491165286555@c.us): unirse a la reunión virtual de mañana, viernes 3 de julio, a las 16 hs: https://meet.google.com/wuu-bfnz-iti.
-0|maria-pa | 2026-07-02 14:10:45: [WA acciones-mcp/Gabriela Echaniz] 1/1 ejecutadas en vivo
-0|maria-pa | 2026-07-02 14:10:46: [WA →usr] Gabriela Echaniz (5491165286555@c.us): Listo, actualicé el evento de Imaginarios del Arte Hoy con el link correcto de la reunión 🎨
-0|maria-pa | 2026-07-02 14:11:01: [WA ←] Gabriela Echaniz (5491165286555@c.us): este enlace es para la reunion de mañana de imaginarios del arte podes mandarmelo a las 16?
-0|maria-pa | 2026-07-02 14:11:25: [WA acciones-mcp/Gabriela Echaniz] 2/2 ejecutadas en vivo
-0|maria-pa | 2026-07-02 14:11:25: [WA →usr] Gabriela Echaniz (5491165286555@c.us): Listo, te lo mando mañana a las 16 hs con el link incluido 👍
-0|maria-pa | 2026-07-02 14:12:11: [WA change_state] OPENING
-0|maria-pa | 2026-07-02 14:12:11: [WA change_state] PAIRING
-0|maria-pa | 2026-07-02 14:12:11: [WA change_state] CONNECTED
-0|maria-pa | 2026-07-02 14:17:11: [GMAIL poll] 1 email(s) nuevo(s)
-0|maria-pa | 2026-07-02 14:17:11: [GMAIL ←] Google Payments <payments-noreply@google.com> | "Google Workspace: tu factura de intensa.io está disponible"
-0|maria-pa | 2026-07-02 14:17:12: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=1 hist_usuarios={Diego=60, Hernan Fulco=60, Natali Funez=16, Fernando Boero=16, Santiago Bignone=0, Doris Capurro=48, Nicolas Kosinski=16, Walter Vera=16, Cristian Ruiz=16, Sebastian Ameijeira=16, Enrique Sosa=16, Santiago Capurro=60, Andres Neumann=16, Gabriela Echaniz=60, Jaime Cibils=8, Alfonso Amat=4} remitente=Google Payments <payments-noreply@google.com> contactos_ambiguos=0
-0|maria-pa | 2026-07-02 14:17:19: [unknown-flow/gmail] LLM resolucion: desconocido · Email automático de facturación de Google Workspace para el dominio intensa.io; ningún usuario activo tiene ese dominio ni hay evidencia en los historiales de una gestión relacionada.
-0|maria-pa | 2026-07-02 14:17:20: [unknown-flow/gmail] primer contacto de Google Payments <payments-noreply@google.com> (FSM)
-0|maria-pa | 2026-07-02 14:23:27: 
 0|maria-pa | 2026-07-02 14:23:27: ▸ SIGINT recibido, cerrando…
 0|maria-pa | 2026-07-02 14:23:37: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 0|maria-pa | 2026-07-02 14:23:37: ▸ Maria Paez [maria-paez] iniciando…
@@ -197,4 +156,45 @@
 0|maria-pa | 2026-07-02 19:06:12: [WA →usr] Gabriela Echaniz (5491165286555@c.us): Listo, te lo recuerdo mañana a las 10 hs 📋
 0|maria-pa | 2026-07-02 19:07:05: 
 0|maria-pa | 2026-07-02 19:07:05: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-07-02 19:07:06: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-07-02 19:07:06: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-07-02 19:07:06:   Owner:      Diego (id=1)
+0|maria-pa | 2026-07-02 19:07:06:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+0|maria-pa | 2026-07-02 19:07:06:   Gmail poll: cada 300s
+0|maria-pa | 2026-07-02 19:07:06: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-07-02 19:07:06: ✓ whisper OK
+0|maria-pa | 2026-07-02 19:07:06: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-07-02 19:07:06: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-07-02 19:07:06: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-07-02 19:07:11: [WA loading] 100% - WhatsApp
+0|maria-pa | 2026-07-02 19:07:11: [WA authenticated]
+0|maria-pa | 2026-07-02 19:07:11: ✅ [WA ready] Maria conectada
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-07-02 19:07:11: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-07-02 19:07:11: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-07-02 19:07:11: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-07-02 19:07:11: [follow-ups] activo, cada 5min
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-07-02 19:07:11: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+0|maria-pa | 2026-07-02 19:07:11: [cumple-avisos] activo, ventana 20-23h tz usuario
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando resumen-semanal (domingos, tz usuario)
+0|maria-pa | 2026-07-02 19:07:11: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando poda-eventos (diario)
+0|maria-pa | 2026-07-02 19:07:11: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+0|maria-pa | 2026-07-02 19:07:11: ▸ arrancando drainer de diferidos (horas de silencio)
+0|maria-pa | 2026-07-02 19:07:11: [diferidos] drainer activo (cada 5min)
+0|maria-pa | 2026-07-02 19:07:11: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-07-02 19:07:13: [GMAIL poll] 1 email(s) nuevo(s)
+0|maria-pa | 2026-07-02 19:07:13: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Aceptado: Imaginarios del Arte Hoy vie 3 de jul de 2026 4pm - 5pm (ART) (maria.paez@intensa.io)"
+0|maria-pa | 2026-07-02 19:07:20: [GMAIL/Gabriela Echaniz] 19f24dbc6e48131a — sin acciones ni respuesta, queda no-leído
+0|maria-pa | 2026-07-02 19:08:04: 
+0|maria-pa | 2026-07-02 19:08:04: ▸ SIGINT recibido, cerrando…
 
