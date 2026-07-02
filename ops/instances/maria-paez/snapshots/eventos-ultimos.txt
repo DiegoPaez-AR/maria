@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
 -----  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13350  2026-07-02 00:30:09  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                       
+
+13349  2026-07-02 00:30:09  sistema   interno                        claude_call whatsapp: 23189ms prompt=78948c raw=13735c in=28t(cache_read=76806 new=39109) out=532t ttfb=2149ms api=15992ms turnos=4 $0.1876                                                        
+
+13348  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+
+13347  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+
+13346  2026-07-02 00:30:05  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                       
+
+13345  2026-07-02 00:30:05  sistema   interno                        claude_call moderacion: 5737ms prompt=1556c raw=5751c in=10t(cache_read=17396 new=5079) out=268t ttfb=1822ms api=4345ms turnos=1 $0.0099                                                           
+
 13344  2026-07-02 00:29:45  whatsapp  entrante   5491169594900@c.us  Ya pueden venir a buscarlo                                                                                                                                                                         
 
 13343  2026-07-02 00:27:19  whatsapp  saliente   34342575317160@lid  Les pregunté, te aviso cuando respondan.                                                                                                                                                           
@@ -224,15 +236,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
                                                                      1️⃣ ¿Qué talle usás?                                                                                                                                                                               
                                                                      2️⃣ ¿Tenés presupuesto en mente?                                                                                                                                                                   
                                                                      3️⃣ ¿Preferís comprar online (con envío) o ir a bu                                                                                                                                                 
-
-13250  2026-07-01 23:19:31  sistema   interno                        claude_call whatsapp: 11897ms prompt=5466c raw=7259c in=10t(cache_read=41714 new=2531) out=374t ttfb=2191ms api=9073ms turnos=1 $0.0276                                                            
-
-13249  2026-07-01 23:19:19  whatsapp  entrante   5491165286555@c.us  Voy a viajar al sur y necesito comprarme una campera abrigada pero quiero que sea canchera. No tengo tiempo de buscar yo.  Y siempre compro apurada cualquier cosa                                 
-
-13248  2026-07-01 23:19:01  whatsapp  entrante   5491132317896@c.us  No a caseros                                                                                                                                                                                       
-
-13247  2026-07-01 23:18:52  sistema   interno                        claude_call whatsapp: 28778ms prompt=77237c raw=13608c in=28t(cache_read=75975 new=38520) out=619t ttfb=2152ms api=21020ms turnos=3 $0.1863                                                        
-
-13246  2026-07-01 23:18:47  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
-
-13245  2026-07-01 23:18:47  whatsapp  saliente   5491169594900@c.us  Gracias! Les consulto: ¿me pueden enviar la carta por favor?                                                                                                                                       
