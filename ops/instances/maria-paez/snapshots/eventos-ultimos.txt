@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13696  2026-07-02 22:07:05  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
+
+13695  2026-07-02 22:06:12  whatsapp  saliente   5491165286555@c.us                             Listo, te lo recuerdo mañana a las 10 hs 📋                                                                                                                                                              
+
+13694  2026-07-02 22:06:12  sistema   interno                                                   claude_call whatsapp: 16272ms prompt=6420c raw=7222c in=4t(cache_read=95508 new=95873) out=295t ttfb=1525ms api=7317ms turnos=2 $0.3926                                                                 
+
+13693  2026-07-02 22:06:08  sistema   interno                                                   acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13692  2026-07-02 22:06:08  sistema   interno                                                   claude_call moderacion: 6705ms prompt=1494c raw=6799c in=10t(cache_read=0 new=22448) out=318t ttfb=1632ms api=5762ms turnos=1 $0.0301                                                                   
+
 13691  2026-07-02 22:05:55  whatsapp  entrante   5491165286555@c.us                             Por favor mañana a las 10 recordame que empiece la declaración jurada                                                                                                                                   
 
 13690  2026-07-02 22:04:04  whatsapp  saliente   34342575317160@lid                             🔴 canary: el deploy 4ab7e8d30b falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
@@ -212,13 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13597  2026-07-02 14:45:16  whatsapp  saliente   34342575317160@lid                             ⏰ *En 15min*: GN + VR Weekly (12:00 p. m.)                                                                                                                                                              
                                                                                                 Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com                                                                                                            
                                                                                                 👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un                                                                                                                                        
-
-13596  2026-07-02 14:36:18  whatsapp  saliente   5491165286555@c.us                             Listo, agendé la reunión de Imaginarios del Arte Hoy para mañana viernes 3/7 a las 16 hs, virtual con Meet 🎨                                                                                            
-
-13595  2026-07-02 14:36:18  sistema   interno                                                   claude_call whatsapp: 16153ms prompt=6099c raw=8937c in=4t(cache_read=40635 new=41392) out=605t ttfb=2654ms api=11865ms turnos=2 $0.1765                                                                
-
-13594  2026-07-02 14:36:13  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
-
-13593  2026-07-02 14:36:13  calendar  saliente                                                  creado: Imaginarios del Arte Hoy (2026-07-03T16:00:00-03:00 → 2026-07-03T17:00:00-03:00) · Meet: https://meet.google.com/ego-vxkp-zdc [en calendar de Maria]                                            
-
-13592  2026-07-02 14:36:01  whatsapp  entrante   5491165286555@c.us                             Agéndame también para mañana a las 4 reunión de imaginarios del arte hoy virtual                                                                                                                        
