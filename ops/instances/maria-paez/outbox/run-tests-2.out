@@ -1,0 +1,19 @@
+# ejecutado: 2026-07-02T13:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+#   env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
+#     npm test 2>&1 | grep -E "^# (tests|pass|fail)|^not ok" 
+#   echo "FIN"
+
+# ───── output ─────
+reload OK
+# tests 24
+# pass 24
+# fail 0
+FIN
+
+# exit=0
