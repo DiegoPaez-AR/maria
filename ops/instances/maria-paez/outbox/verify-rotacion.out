@@ -1,0 +1,40 @@
+# ejecutado: 2026-07-01T23:27:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Re-verificación de la rotación (curl con retry). NO imprime valores.
+#   SEC=/root/secretaria/config/secrets.conf
+#   CF=/root/secretaria/config/instances/maria-paez.conf
+#   NEW=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$SEC" | head -1 | cut -d= -f2- | tr -d '"')
+#   OLD=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$CF" | head -1 | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' "$CF" | head -1 | cut -d= -f2- | tr -d '"')
+#   echo "PORT leído: ${PORT:-VACIO} · NEW len=${#NEW} · OLD len=${#OLD} · distintos: $([ "$NEW" != "$OLD" ] && echo sí || echo NO)"
+#   for i in 1 2 3 4 5; do
+#     H=$(curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/reload-usuarios" -H "x-intensa-secret: $NEW")
+#     echo "intento $i: secret NUEVO → HTTP $H"
+#     [ "$H" = "200" ] && break
+#     sleep 3
+#   done
+#   H2=$(curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/reload-usuarios" -H "x-intensa-secret: $OLD")
+#   echo "secret VIEJO (comprometido) → HTTP $H2 (esperado 401)"
+#   # el env vivo del proceso, sin valores:
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   new=open('/root/secretaria/config/secrets.conf').read()
+#   val=[l.split('=',1)[1].strip() for l in new.splitlines() if l.startswith('ASISTENTE_INTERNAL_SECRET=')][0].strip('\"')
+#   for p in json.load(sys.stdin):
+#       if p['name']=='maria-paez':
+#           e=p['pm2_env']; env={**e, **(e.get('env') or {})}
+#           print('env vivo maria-paez:', 'MATCH con secrets.conf' if env.get('ASISTENTE_INTERNAL_SECRET')==val else 'MISMATCH')
+#   "
+#   echo "LISTO"
+
+# ───── output ─────
+PORT leído: 4501 · NEW len=64 · OLD len=64 · distintos: sí
+intento 1: secret NUEVO → HTTP 200
+secret VIEJO (comprometido) → HTTP 401 (esperado 401)
+env vivo maria-paez: MATCH con secrets.conf
+LISTO
+
+# exit=0
