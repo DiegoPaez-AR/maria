@@ -1,0 +1,62 @@
+# ejecutado: 2026-07-02T14:25:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── WA llegó a ready? ──"
+#   pm2 logs maria-paez --lines 60 --nostream 2>/dev/null | grep -E "WA ready|WA authenticated|QR|error" | tail -5
+#   echo ""
+#   echo "── detalle del fallo de tests ──"
+#   env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
+#     npm test 2>&1 | head -40
+
+# ───── output ─────
+── WA llegó a ready? ──
+/root/.pm2/logs/maria-paez-error.log last 60 lines:
+0|maria-pa | 2026-07-02 14:23:41: [WA authenticated]
+0|maria-pa | 2026-07-02 14:23:41: ✅ [WA ready] Maria conectada
+
+── detalle del fallo de tests ──
+
+> secretaria@1.0.0 test
+> node --test test/
+
+TAP version 13
+# node:internal/modules/cjs/loader:1433
+#   throw err;
+#   ^
+# Error: Cannot find module '/root/secretaria/test'
+#     at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+#     at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+#     at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+#     at Function._load (node:internal/modules/cjs/loader:1216:25)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+#     at node:internal/main/run_main_module:36:49 {
+#   code: 'MODULE_NOT_FOUND',
+#   requireStack: []
+# }
+# Node.js v22.23.1
+# Subtest: test
+not ok 1 - test
+  ---
+  duration_ms: 47.645898
+  type: 'test'
+  location: '/root/secretaria/test:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+
+# exit=0
