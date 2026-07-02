@@ -1,0 +1,71 @@
+# ejecutado: 2026-07-01T22:43:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # switch-model-sonnet5.sh — fija ANTHROPIC_MODEL=claude-sonnet-5 para el claude_call
+#   # principal (moderación sigue en haiku via MARIA_MOD_MODEL). Reversible: backup
+#   # del .conf al lado + borrar la línea y pm2 restart.
+#   set -u
+#   CONF=/root/secretaria/config/instances/maria-paez.conf
+#   MODEL=claude-sonnet-5
+#   
+#   echo "== estado previo =="
+#   claude --version 2>&1 | head -1
+#   grep -n "MODEL\|THINKING" "$CONF" 2>/dev/null || echo "(sin vars de modelo en el .conf)"
+#   
+#   echo; echo "== test del modelo con la CLI del VPS =="
+#   TEST_OUT=$(echo 'Respondé únicamente: ok' | timeout 90 claude -p --model "$MODEL" 2>&1)
+#   RC=$?
+#   echo "exit=$RC out=${TEST_OUT:0:200}"
+#   if [ $RC -ne 0 ] || [ -z "$TEST_OUT" ]; then
+#     echo "ABORT: el test de claude-sonnet-5 falló — no toco el .conf"
+#     exit 1
+#   fi
+#   
+#   echo; echo "== seteando ANTHROPIC_MODEL en el .conf =="
+#   cp "$CONF" "${CONF}.bak-model-$(date +%Y%m%d%H%M%S)"
+#   if grep -q '^ANTHROPIC_MODEL=' "$CONF"; then
+#     sed -i "s|^ANTHROPIC_MODEL=.*|ANTHROPIC_MODEL=$MODEL|" "$CONF"
+#   else
+#     printf '\n# Modelo del claude_call principal (switch 2026-07-01 via Cowork)\nANTHROPIC_MODEL=%s\n' "$MODEL" >> "$CONF"
+#   fi
+#   grep -n '^ANTHROPIC_MODEL=' "$CONF"
+#   
+#   echo; echo "== pm2 reload con env nuevo =="
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env 2>&1 | tail -3
+#   sleep 5
+#   PMID=$(pm2 id maria-paez 2>/dev/null | tr -dc '0-9')
+#   pm2 env "$PMID" 2>/dev/null | grep -i "^ANTHROPIC_MODEL" || echo "WARN: pm2 env no muestra ANTHROPIC_MODEL"
+#   
+#   echo; echo "== verificación: la CLI hereda ANTHROPIC_MODEL =="
+#   export ANTHROPIC_MODEL=$MODEL
+#   V=$(echo hola | timeout 90 claude -p --output-format json 2>&1)
+#   echo "$V" | grep -o '"model[^,}]*' | head -5
+#   [ -z "$(echo "$V" | grep -o '"model[^,}]*')" ] && echo "${V:0:300}"
+#   echo; echo "LISTO"
+
+# ───── output ─────
+== estado previo ==
+2.1.110 (Claude Code)
+60:CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
+61:MAX_THINKING_TOKENS=1024
+
+== test del modelo con la CLI del VPS ==
+exit=0 out=ok
+
+== seteando ANTHROPIC_MODEL en el .conf ==
+72:ANTHROPIC_MODEL=claude-sonnet-5
+
+== pm2 reload con env nuevo ==
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[PM2] [maria-paez](0) ✓
+ANTHROPIC_MODEL: claude-sonnet-5
+
+== verificación: la CLI hereda ANTHROPIC_MODEL ==
+"modelUsage":{"claude-sonnet-5":{"inputTokens":1
+
+LISTO
+
+# exit=0
