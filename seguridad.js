@@ -106,9 +106,18 @@ function _wasapMatch(a, b) {
  *
  * Bypass: env SEC_DESTINATARIO_STRICT=false desactiva la validación (siempre ok).
  */
+let _avisoStrictSinConfirm = false;
 let _avisoStrictOff = false;
 function validarDestinatario({ usuario, canal, destino }) {
-  if (process.env.SEC_DESTINATARIO_STRICT === 'false') {
+  // Doble flag (2026-07-02): un solo env var que apaga TODA la validación era
+  // un footgun. Ahora strict-off exige además la confirmación explícita.
+  if (process.env.SEC_DESTINATARIO_STRICT === 'false'
+      && process.env.SEC_DESTINATARIO_STRICT_CONFIRM !== 'si-entiendo-el-riesgo') {
+    if (!_avisoStrictSinConfirm) {
+      _avisoStrictSinConfirm = true;
+      console.warn('[seguridad] SEC_DESTINATARIO_STRICT=false IGNORADO: falta SEC_DESTINATARIO_STRICT_CONFIRM=si-entiendo-el-riesgo. La validación sigue ACTIVA.');
+    }
+  } else if (process.env.SEC_DESTINATARIO_STRICT === 'false') {
     // Telemetría (2026-06-11): strict-off es SOLO para debug. Si una instancia
     // quedó así en prod, que grite una vez por proceso en logs + eventos.
     if (!_avisoStrictOff) {

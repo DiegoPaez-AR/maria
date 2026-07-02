@@ -85,40 +85,8 @@ function start({ waClient } = {}) {
         }
       }
 
-      if (req.url === '/lid-info') {
-        // Temporal — diagnóstico para diseñar la conversión LID → c.us en wa-validate.
-        const { lid } = body;
-        if (!lid) return send(400, { error: 'bad_body', need: 'lid' });
-        if (!waClient) return send(503, { error: 'wa_not_ready' });
-        try {
-          const contact = await waClient.getContactById(lid);
-          // Extraemos propiedades que podrían contener el número original.
-          const dump = {
-            id: contact?.id,
-            number: contact?.number,
-            pushname: contact?.pushname,
-            name: contact?.name,
-            shortName: contact?.shortName,
-            type: contact?.type,
-            isBusiness: contact?.isBusiness,
-            isWAContact: contact?.isWAContact,
-            isMyContact: contact?.isMyContact,
-            isUser: contact?.isUser,
-          };
-          // Intento extra: ¿getNumberId del propio LID devuelve un @c.us?
-          let getNumberIdResult = null;
-          try {
-            const numStr = (contact?.number || lid.replace(/@.*/, ''));
-            const r = await waClient.getNumberId(numStr);
-            getNumberIdResult = r ? { _serialized: r._serialized, user: r.user, server: r.server } : null;
-          } catch (e) {
-            getNumberIdResult = { error: e.message };
-          }
-          return send(200, { ok: true, lid, contact: dump, getNumberIdReverse: getNumberIdResult });
-        } catch (err) {
-          return send(200, { ok: false, lid, error: err.message });
-        }
-      }
+      // /lid-info eliminado 2026-07-02 (review 0701): endpoint de diagnóstico
+      // temporal que exponía metadata de contactos. El diseño LID→c.us ya cerró.
 
       if (req.url === '/validate-wa') {
         const { wa } = body;
@@ -183,7 +151,7 @@ function start({ waClient } = {}) {
         // usuario). Lo consume el MCP actions server (fase 2): el CLI llama al
         // tool, el tool pega acá, y el executor corre en el proceso principal
         // con todo el runtime (moderación, validación de destinatarios, etc.).
-        const { usuarioId, accion, canalOrigen = 'whatsapp', turnStartTs = null, chatKey = null } = body;
+        const { usuarioId, accion, canalOrigen = 'whatsapp', turnStartTs = null, chatKey = null, turnoTercero = false } = body;
         if (!usuarioId || !accion || !accion.tipo) {
           return send(400, { error: 'bad_body', need: 'usuarioId + accion{tipo}' });
         }
@@ -202,7 +170,7 @@ function start({ waClient } = {}) {
           }
         }
         try {
-          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen }, { skipRepair: true });
+          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen, turnoDeTercero: !!turnoTercero }, { skipRepair: true });
           const res = r || { ok: false, accion, error: 'sin_resultado' };
           // Acumular para los backstops del cierre de turno (aviso honesto +
           // cancelar trigger_externo) — el handler los toma con takeTurnResults.

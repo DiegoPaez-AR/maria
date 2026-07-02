@@ -47,6 +47,36 @@ async function _avisarOwnerModeracion(ctx, { categoria, severidad, motivo, desti
   }
 }
 
+// Gate de turno-de-tercero (2026-07-02, review 0701): en un turno disparado
+// por un NO-usuario, los envíos hacia afuera (enviar_email/reenviar_wa) solo
+// pueden ir al propio usuario atendido. Corta la cadena de exfiltración
+// "tercero persuade a Maria de reenviarle la agenda/mails a un destino suyo".
+// La respuesta conversacional al tercero va por el slot respuesta_a_remitente
+// (no pasa por acá) y responder_email al hilo sigue permitido.
+function _esDestinoUsuario(destino, usuario, canal) {
+  if (!destino || !usuario) return false;
+  if (canal === 'email') return String(destino).toLowerCase().trim() === String(usuario.email || '').toLowerCase().trim() && !!usuario.email;
+  const d = String(destino).replace(/\D/g, '');
+  const u = String(usuario.wa_cus || '').replace(/\D/g, '');
+  if (destino === usuario.wa_lid) return true;
+  return d.length >= 8 && u.length >= 8 && (d.endsWith(u) || u.endsWith(d));
+}
+function _gateTercero(ctx, accionTipo, destinos, canal) {
+  if (!ctx.turnoDeTercero) return;
+  for (const dst of destinos) {
+    if (!_esDestinoUsuario(dst, ctx.usuario, canal)) {
+      try {
+        mem.logSecurityEvent({
+          usuarioId: ctx.usuario?.id || null, canal: accionTipo,
+          motivo: `gate_tercero: ${accionTipo} hacia "${dst}" bloqueado en turno de tercero`,
+          body: '', extra: { destino: dst },
+        });
+      } catch {}
+      throw new Error(`${accionTipo}: este turno lo inició un tercero — solo puedo enviar a ${ctx.usuario.nombre}. Si el pedido es legítimo, consultale primero al usuario (respuesta_a_usuario) y que él lo pida.`);
+    }
+  }
+}
+
 async function _moderarSaliente(texto, a, ctx, accionTipo, destino) {
   const r = await moderacion.revisarSaliente(texto);
   if (r.bloquear) {
@@ -628,6 +658,7 @@ async function _enviarEmail(a, ctx) {
     const v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'email', destino: t });
     if (!v.ok) throw new Error(`enviar_email: ${v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
   }
+  _gateTercero(ctx, 'enviar_email', [...tos, ...ccs, ...bccs, ...replyTos], 'email');
 
   await _moderarSaliente(`${a.asunto || ''}\n${a.texto || ''}`, a, ctx, 'enviar_email', Array.isArray(a.to) ? a.to.join(',') : a.to);
   const r = await g.enviarEmail({
@@ -667,6 +698,7 @@ async function _reenviarWA(a, ctx) {
   if (!ctx.waClient) throw new Error('reenviar_wa: waClient no disponible');
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
   if (!_v.ok) throw new Error(`reenviar_wa: ${_v.motivo}.`);
+  _gateTercero(ctx, 'reenviar_wa', [a.a], 'wa');
   const destino = _resolverDestinoWA(a.a);
   let original;
   try {

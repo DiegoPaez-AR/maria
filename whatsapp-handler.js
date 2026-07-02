@@ -787,6 +787,10 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   let acciones = [];
   let razonamiento = null;
   const _chatKeyTurno = (from || entrada.de) ? ('whatsapp:' + (from || entrada.de)) : null;
+  // ¿El turno lo inició el propio usuario o un tercero? (hoisted 2026-07-02
+  // para el gate de exfiltración del executor y el audit MCP)
+  const _esTurnoDeUsuario = !!entrada.de
+    && usuarios.resolverPorWa(entrada.de)?.id === usuario.id;
   try {
     // ─── Sesiones persistentes (MARIA_SESIONES=1, default APAGADO) ───────
     // Con sesión viva, resumimos la conversación de la CLI (--resume): el
@@ -800,12 +804,10 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // entra a la sesión del usuario vía [NOVEDADES] en el próximo turno.
     // resolverPorWa banca @lid/@c.us/9-movil — la comparacion literal de ayer
     // daba false para el propio usuario (sesion:"off" siempre, bug 2026-06-12).
-    const _esTurnoDeUsuario = !!entrada.de
-      && usuarios.resolverPorWa(entrada.de)?.id === usuario.id;
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
       && prompt && typeof prompt === 'object' && !!prompt.system
       && _esTurnoDeUsuario;
-    const auditWA = { usuarioId: usuario.id, canal: 'whatsapp', chatKey: _chatKeyTurno, turnStartTs: startTs };
+    const auditWA = { usuarioId: usuario.id, canal: 'whatsapp', chatKey: _chatKeyTurno, turnStartTs: startTs, turnoTercero: !_esTurnoDeUsuario };
     let json;
     if (!SESIONES_ON) {
       ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditWA, sesion: 'off' }));
@@ -961,6 +963,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
         usuario,
         waClient: client,
         canalOrigen: 'whatsapp',
+        turnoDeTercero: !_esTurnoDeUsuario,
       });
       const ok = resultados.filter(r => r.ok).length;
       console.log(`[WA acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
@@ -1019,7 +1022,22 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // 3) Mandar al remitente tercero (si hay texto, hay destino, y NO es el
     //    mismo chat que el usuario — evitamos doble mensaje en flujo normal).
     if (respRem.trim() && destinoRemitente && !remitenteEsUsuario) {
+      // Moderación del slot (2026-07-02, review 0701): texto libre del modelo
+      // hacia un TERCERO — era el único saliente que esquivaba la capa de
+      // moderación (iba por sendMessage directo). Mismo criterio fail-open
+      // que _moderarSaliente del executor.
+      let _modBloquea = false;
       try {
+        const _rm = await moderacion.revisarSaliente(respRem);
+        if (_rm.bloquear) {
+          _modBloquea = true;
+          console.warn(`[WA →3ro] respuesta_a_remitente BLOQUEADA por moderación (${_rm.categoria}/${_rm.severidad})`);
+          try { mem.logSecurityEvent({ usuarioId: usuario.id, canal: 'whatsapp',
+            motivo: `respuesta_a_remitente bloqueada (${_rm.categoria}/${_rm.severidad}): ${_rm.motivo || ''}`,
+            body: respRem, extra: { tipo_mod: 'saliente_bloqueado', destino: destinoRemitente } }); } catch {}
+        }
+      } catch (e) { console.warn('[WA →3ro] moderación falló (fail-open):', e.message); }
+      if (!_modBloquea) try {
         await client.sendMessage(destinoRemitente, respRem);
         mem.log({
           usuarioId: usuario.id,

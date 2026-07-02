@@ -64,6 +64,17 @@ test('validarDestinatario: destino vacío / sin usuario NO', () => {
   assert.equal(seguridad.validarDestinatario({ usuario: null, canal: 'whatsapp', destino: 'x@c.us' }).ok, false);
 });
 
+test('SEC_DESTINATARIO_STRICT=false SIN confirm NO desactiva la validación', () => {
+  process.env.SEC_DESTINATARIO_STRICT = 'false';
+  try {
+    const owner = usuarios.obtenerOwner();
+    const r = seguridad.validarDestinatario({ usuario: owner, canal: 'whatsapp', destino: '5215511111111@c.us' });
+    assert.equal(r.ok, false, 'sigue validando (flag ignorado sin confirm)');
+  } finally {
+    delete process.env.SEC_DESTINATARIO_STRICT;
+  }
+});
+
 test('verificarRateLimit: deja pasar tráfico normal', () => {
   const r = seguridad.verificarRateLimit({ usuarioId: 1 });
   assert.equal(r.ok, true);

@@ -174,6 +174,18 @@ async function procesarUnEmail(id, { waClient } = {}) {
   const usuario = usuarios.resolverPorEmailFrom(email.de);
 
   if (!usuario) {
+    // Telemetría de injection ANTES del clasificador de unknown-flow
+    // (2026-07-02, review 0701): el texto crudo del desconocido entra al
+    // prompt del clasificador — que quede registrado y alertado igual que
+    // en el camino de usuarios. No bloquea (capa de telemetría).
+    const _payloadU = `${email.asunto || ''}\n${emailCuerpo || ''}`;
+    const _motivoU = seguridad.detectarInjection(_payloadU);
+    if (_motivoU) {
+      console.warn(`[GMAIL injection/unknown] ${email.de} → ${_motivoU}`);
+      try { mem.logSecurityEvent({ usuarioId: null, canal: 'gmail',
+        motivo: `injection_attempt (pre-unknown-flow): ${_motivoU}`,
+        body: _payloadU.slice(0, 500), extra: { from: email.de, asunto: email.asunto } }); } catch {}
+    }
     // Desconocido → unknown flow. responderEmailFn usa g.responderEmail.
     await unknownFlow.handleEmail({
       waClient,
@@ -330,6 +342,12 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   let razonamiento = null;
   const _turnT0 = Date.now();
   const _chatKeyGmail = 'gmail:' + entrada.messageId; // hilo que disparó el turno
+  // ¿remitente == usuario atendido? (hoisted 2026-07-02 para el gate tercero)
+  const _rawDeH = (entrada.email || entrada.de || '').toLowerCase();
+  const _mH = _rawDeH.match(/<([^>]+)>/);
+  const _remEmailH = (_mH ? _mH[1] : _rawDeH).trim();
+  const _esTurnoDeUsuario = !!_remEmailH && !!(usuario.email || '')
+    && _remEmailH === (usuario.email || '').toLowerCase().trim();
   try {
     // ─── Sesiones persistentes (MARIA_SESIONES=1, default APAGADO) ───────
     // Mismo flujo que whatsapp-handler._procesarComoUsuario: con sesión viva
@@ -343,7 +361,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
       && prompt && typeof prompt === 'object' && !!prompt.system
       && _esTurnoDeUsuario;
-    const auditGmail = { usuarioId: usuario.id, canal: 'gmail', chatKey: _chatKeyGmail, turnStartTs: _turnT0 };
+    const auditGmail = { usuarioId: usuario.id, canal: 'gmail', chatKey: _chatKeyGmail, turnStartTs: _turnT0, turnoTercero: !_esTurnoDeUsuario };
     let json;
     if (!SESIONES_ON) {
       ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditGmail, sesion: 'off' }));
@@ -487,6 +505,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
       usuario,
       waClient,
       canalOrigen: 'gmail',
+      turnoDeTercero: !_esTurnoDeUsuario,
     });
     const ok = resultados.filter(r => r.ok).length;
     console.log(`[GMAIL acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);

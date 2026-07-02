@@ -231,6 +231,7 @@ function _invocarClaudeCrudo(prompt, {
             // la misma clave); fallback al t0 propio si no vino.
             MARIA_TURN_START_TS:   String(audit.turnStartTs || _t0),
             MARIA_TURN_CHAT_KEY:   String(audit.chatKey || ''),
+            MARIA_TURN_TERCERO:    audit.turnoTercero ? '1' : '0',
           },
         } } };
         _mcpActionsTmp = path.join(os.tmpdir(), `maria-mcpcfg-${audit.usuarioId}-${_t0}.json`);
