@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
 -----  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13337  2026-07-02 00:13:00  sistema   interno                        claude_call whatsapp: 12391ms prompt=79099c raw=7905c in=10t(cache_read=0 new=38197) out=342t ttfb=2133ms api=11224ms turnos=1 $0.1583                                                             
+
+13336  2026-07-02 00:12:47  whatsapp  entrante   5491169594900@c.us  Si, no hay problema Gracias a vos                                                                                                                                                                  
+
 13335  2026-07-02 00:04:22  whatsapp  saliente   34342575317160@lid  Listo, les avisé que el pago es al retirar.                                                                                                                                                        
 
 13334  2026-07-02 00:04:22  sistema   interno                        claude_call whatsapp: 17813ms prompt=7453c raw=8839c in=18t(cache_read=56295 new=3896) out=307t ttfb=2186ms api=8783ms turnos=2 $0.0362                                                            
@@ -238,7 +242,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 
 13238  2026-07-01 23:18:14  whatsapp  entrante   5491165286555@c.us  Hay otra cosa con la que quizás le                                                                                                                                                                 
                                                                      Puedas ayudar a buscar                                                                                                                                                                             
-
-13237  2026-07-01 23:18:13  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
-
-13236  2026-07-01 23:18:08  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
