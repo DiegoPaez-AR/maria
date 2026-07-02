@@ -1,234 +1,234 @@
-id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
------  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-13353  2026-07-02 01:01:52  whatsapp  entrante   5491132317896@c.us  Por qué me avisaste dos veces?                                                                                                                                                                     
+id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                               
+-----  -------------------  --------  ---------  ------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13355  2026-07-02 01:02:17  whatsapp  saliente   34342575317160@lid  Perdón por eso — parece que se duplicó el aviso. Cuando Barra Chalaca confirmó que el pedido estaba listo, se dispararon dos notificaciones al mismo tiempo. Ya lo tengo en cuenta para no repetirlo.
 
-13352  2026-07-02 00:32:43  sistema   interno                        claude_call whatsapp: 7237ms prompt=7307c raw=5841c in=10t(cache_read=0 new=37664) out=120t ttfb=2131ms api=4488ms turnos=1 $0.1431                                                                
+13354  2026-07-02 01:02:17  sistema   interno                        claude_call whatsapp: 23306ms prompt=7324c raw=11234c in=10t(cache_read=0 new=41320) out=975t ttfb=2069ms api=20634ms turnos=1 $0.1696                                                               
 
-13351  2026-07-02 00:32:35  whatsapp  entrante   5491132317896@c.us  Voy                                                                                                                                                                                                
+13353  2026-07-02 01:01:52  whatsapp  entrante   5491132317896@c.us  Por qué me avisaste dos veces?                                                                                                                                                                       
 
-13350  2026-07-02 00:30:09  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                       
+13352  2026-07-02 00:32:43  sistema   interno                        claude_call whatsapp: 7237ms prompt=7307c raw=5841c in=10t(cache_read=0 new=37664) out=120t ttfb=2131ms api=4488ms turnos=1 $0.1431                                                                  
 
-13349  2026-07-02 00:30:09  sistema   interno                        claude_call whatsapp: 23189ms prompt=78948c raw=13735c in=28t(cache_read=76806 new=39109) out=532t ttfb=2149ms api=15992ms turnos=4 $0.1876                                                        
+13351  2026-07-02 00:32:35  whatsapp  entrante   5491132317896@c.us  Voy                                                                                                                                                                                                  
 
-13348  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+13350  2026-07-02 00:30:09  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                         
 
-13347  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13349  2026-07-02 00:30:09  sistema   interno                        claude_call whatsapp: 23189ms prompt=78948c raw=13735c in=28t(cache_read=76806 new=39109) out=532t ttfb=2149ms api=15992ms turnos=4 $0.1876                                                          
 
-13346  2026-07-02 00:30:05  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                       
+13348  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                   
 
-13345  2026-07-02 00:30:05  sistema   interno                        claude_call moderacion: 5737ms prompt=1556c raw=5751c in=10t(cache_read=17396 new=5079) out=268t ttfb=1822ms api=4345ms turnos=1 $0.0099                                                           
+13347  2026-07-02 00:30:05  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13344  2026-07-02 00:29:45  whatsapp  entrante   5491169594900@c.us  Ya pueden venir a buscarlo                                                                                                                                                                         
+13346  2026-07-02 00:30:05  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                         
 
-13343  2026-07-02 00:27:19  whatsapp  saliente   34342575317160@lid  Les pregunté, te aviso cuando respondan.                                                                                                                                                           
+13345  2026-07-02 00:30:05  sistema   interno                        claude_call moderacion: 5737ms prompt=1556c raw=5751c in=10t(cache_read=17396 new=5079) out=268t ttfb=1822ms api=4345ms turnos=1 $0.0099                                                             
 
-13342  2026-07-02 00:27:19  sistema   interno                        claude_call whatsapp: 19460ms prompt=7368c raw=8924c in=18t(cache_read=33816 new=34081) out=316t ttfb=2203ms api=9218ms turnos=2 $0.1427                                                           
+13344  2026-07-02 00:29:45  whatsapp  entrante   5491169594900@c.us  Ya pueden venir a buscarlo                                                                                                                                                                           
 
-13341  2026-07-02 00:27:14  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13343  2026-07-02 00:27:19  whatsapp  saliente   34342575317160@lid  Les pregunté, te aviso cuando respondan.                                                                                                                                                             
 
-13340  2026-07-02 00:27:14  whatsapp  saliente   5491169594900@c.us  ¡Hola! ¿Cómo viene el pedido? ¿Tienen estimación de cuándo está listo?                                                                                                                             
+13342  2026-07-02 00:27:19  sistema   interno                        claude_call whatsapp: 19460ms prompt=7368c raw=8924c in=18t(cache_read=33816 new=34081) out=316t ttfb=2203ms api=9218ms turnos=2 $0.1427                                                             
 
-13339  2026-07-02 00:27:14  sistema   interno                        claude_call moderacion: 7271ms prompt=1518c raw=6451c in=10t(cache_read=0 new=22464) out=384t ttfb=1713ms api=6605ms turnos=1 $0.0305                                                              
+13341  2026-07-02 00:27:14  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13338  2026-07-02 00:26:58  whatsapp  entrante   5491132317896@c.us  les preguntas como viene el pedido?                                                                                                                                                                
+13340  2026-07-02 00:27:14  whatsapp  saliente   5491169594900@c.us  ¡Hola! ¿Cómo viene el pedido? ¿Tienen estimación de cuándo está listo?                                                                                                                               
 
-13337  2026-07-02 00:13:00  sistema   interno                        claude_call whatsapp: 12391ms prompt=79099c raw=7905c in=10t(cache_read=0 new=38197) out=342t ttfb=2133ms api=11224ms turnos=1 $0.1583                                                             
+13339  2026-07-02 00:27:14  sistema   interno                        claude_call moderacion: 7271ms prompt=1518c raw=6451c in=10t(cache_read=0 new=22464) out=384t ttfb=1713ms api=6605ms turnos=1 $0.0305                                                                
 
-13336  2026-07-02 00:12:47  whatsapp  entrante   5491169594900@c.us  Si, no hay problema Gracias a vos                                                                                                                                                                  
+13338  2026-07-02 00:26:58  whatsapp  entrante   5491132317896@c.us  les preguntas como viene el pedido?                                                                                                                                                                  
 
-13335  2026-07-02 00:04:22  whatsapp  saliente   34342575317160@lid  Listo, les avisé que el pago es al retirar.                                                                                                                                                        
+13337  2026-07-02 00:13:00  sistema   interno                        claude_call whatsapp: 12391ms prompt=79099c raw=7905c in=10t(cache_read=0 new=38197) out=342t ttfb=2133ms api=11224ms turnos=1 $0.1583                                                               
 
-13334  2026-07-02 00:04:22  sistema   interno                        claude_call whatsapp: 17813ms prompt=7453c raw=8839c in=18t(cache_read=56295 new=3896) out=307t ttfb=2186ms api=8783ms turnos=2 $0.0362                                                            
+13336  2026-07-02 00:12:47  whatsapp  entrante   5491169594900@c.us  Si, no hay problema Gracias a vos                                                                                                                                                                    
 
-13333  2026-07-02 00:04:17  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13335  2026-07-02 00:04:22  whatsapp  saliente   34342575317160@lid  Listo, les avisé que el pago es al retirar.                                                                                                                                                          
 
-13332  2026-07-02 00:04:17  whatsapp  saliente   5491169594900@c.us  Perfecto, y el pago lo hacen al retirar. ¡Gracias!                                                                                                                                                 
+13334  2026-07-02 00:04:22  sistema   interno                        claude_call whatsapp: 17813ms prompt=7453c raw=8839c in=18t(cache_read=56295 new=3896) out=307t ttfb=2186ms api=8783ms turnos=2 $0.0362                                                              
 
-13331  2026-07-02 00:04:17  sistema   interno                        claude_call moderacion: 6021ms prompt=1498c raw=6029c in=10t(cache_read=0 new=22454) out=305t ttfb=1592ms api=5177ms turnos=1 $0.0300                                                              
+13333  2026-07-02 00:04:17  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13330  2026-07-02 00:04:03  whatsapp  entrante   5491132317896@c.us  avisales                                                                                                                                                                                           
+13332  2026-07-02 00:04:17  whatsapp  saliente   5491169594900@c.us  Perfecto, y el pago lo hacen al retirar. ¡Gracias!                                                                                                                                                   
 
-13329  2026-07-02 00:00:00  sistema   interno                        claude_call whatsapp: 9921ms prompt=7491c raw=6449c in=10t(cache_read=0 new=26329) out=183t ttfb=2125ms api=7173ms turnos=1 $0.1015                                                                
+13331  2026-07-02 00:04:17  sistema   interno                        claude_call moderacion: 6021ms prompt=1498c raw=6029c in=10t(cache_read=0 new=22454) out=305t ttfb=1592ms api=5177ms turnos=1 $0.0300                                                                
 
-13328  2026-07-01 23:59:49  whatsapp  entrante   5491132317896@c.us  perfecto, lo pago cuando voy a retirar                                                                                                                                                             
+13330  2026-07-02 00:04:03  whatsapp  entrante   5491132317896@c.us  avisales                                                                                                                                                                                             
 
-13327  2026-07-01 23:57:23  sistema   interno                        claude_call whatsapp: 40603ms prompt=79418c raw=17505c in=28t(cache_read=84289 new=33679) out=1472t ttfb=2184ms api=33511ms turnos=3 $0.1837                                                       
+13329  2026-07-02 00:00:00  sistema   interno                        claude_call whatsapp: 9921ms prompt=7491c raw=6449c in=10t(cache_read=0 new=26329) out=183t ttfb=2125ms api=7173ms turnos=1 $0.1015                                                                  
 
-13326  2026-07-01 23:57:18  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13328  2026-07-01 23:59:49  whatsapp  entrante   5491132317896@c.us  perfecto, lo pago cuando voy a retirar                                                                                                                                                               
 
-13325  2026-07-01 23:57:18  whatsapp  saliente   34342575317160@lid  El total del pedido en Barra Chalaca es $62.000.                                                                                                                                                   
+13327  2026-07-01 23:57:23  sistema   interno                        claude_call whatsapp: 40603ms prompt=79418c raw=17505c in=28t(cache_read=84289 new=33679) out=1472t ttfb=2184ms api=33511ms turnos=3 $0.1837                                                         
 
-13324  2026-07-01 23:57:18  sistema   interno                        claude_call moderacion: 5478ms prompt=1496c raw=5969c in=10t(cache_read=17396 new=5053) out=288t ttfb=1605ms api=4283ms turnos=1 $0.0100                                                           
+13326  2026-07-01 23:57:18  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13323  2026-07-01 23:56:42  whatsapp  entrante   5491169594900@c.us  El total sería $62.000                                                                                                                                                                             
+13325  2026-07-01 23:57:18  whatsapp  saliente   34342575317160@lid  El total del pedido en Barra Chalaca es $62.000.                                                                                                                                                     
 
-13322  2026-07-01 23:56:01  sistema   interno                        claude_call whatsapp: 28024ms prompt=79493c raw=14912c in=20t(cache_read=44613 new=33072) out=1163t ttfb=2172ms api=26842ms turnos=2 $0.1649                                                       
+13324  2026-07-01 23:57:18  sistema   interno                        claude_call moderacion: 5478ms prompt=1496c raw=5969c in=10t(cache_read=17396 new=5053) out=288t ttfb=1605ms api=4283ms turnos=1 $0.0100                                                             
 
-13321  2026-07-01 23:55:32  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                           
-                                                                     Ya lo vamos marchando ni bien esté listo les avisamos                                                                                                                                              
+13323  2026-07-01 23:56:42  whatsapp  entrante   5491169594900@c.us  El total sería $62.000                                                                                                                                                                               
 
-13320  2026-07-01 23:55:22  sistema   interno                        claude_call whatsapp: 29996ms prompt=79551c raw=20486c in=36t(cache_read=123733 new=33919) out=1289t ttfb=2187ms api=28637ms turnos=4 $0.1938                                                      
+13322  2026-07-01 23:56:01  sistema   interno                        claude_call whatsapp: 28024ms prompt=79493c raw=14912c in=20t(cache_read=44613 new=33072) out=1163t ttfb=2172ms api=26842ms turnos=2 $0.1649                                                         
 
-13319  2026-07-01 23:55:17  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
+13321  2026-07-01 23:55:32  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                             
+                                                                     Ya lo vamos marchando ni bien esté listo les avisamos                                                                                                                                                
 
-13318  2026-07-01 23:55:14  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+13320  2026-07-01 23:55:22  sistema   interno                        claude_call whatsapp: 29996ms prompt=79551c raw=20486c in=36t(cache_read=123733 new=33919) out=1289t ttfb=2187ms api=28637ms turnos=4 $0.1938                                                        
 
-13317  2026-07-01 23:54:52  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                           
+13319  2026-07-01 23:55:17  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                  
 
-13316  2026-07-01 23:54:36  whatsapp  saliente   34342575317160@lid  Listo, les confirmé: pedido a nombre tuyo, sin tortitas y con un ceviche clásico. Queda 1 tequeños de lomo, 1 ceviche clásico y 1 causa de atún. Te aviso cuando digan que está listo para retirar.
+13318  2026-07-01 23:55:14  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                   
 
-13315  2026-07-01 23:54:36  sistema   interno                        claude_call whatsapp: 49516ms prompt=78209c raw=21931c in=28t(cache_read=83589 new=33848) out=1831t ttfb=2271ms api=39929ms turnos=4 $0.1892                                                       
+13317  2026-07-01 23:54:52  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                             
 
-13314  2026-07-01 23:54:28  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+13316  2026-07-01 23:54:36  whatsapp  saliente   34342575317160@lid  Listo, les confirmé: pedido a nombre tuyo, sin tortitas y con un ceviche clásico. Queda 1 tequeños de lomo, 1 ceviche clásico y 1 causa de atún. Te aviso cuando digan que está listo para retirar.  
 
-13313  2026-07-01 23:54:28  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13315  2026-07-01 23:54:36  sistema   interno                        claude_call whatsapp: 49516ms prompt=78209c raw=21931c in=28t(cache_read=83589 new=33848) out=1831t ttfb=2271ms api=39929ms turnos=4 $0.1892                                                         
 
-13312  2026-07-01 23:54:28  whatsapp  saliente   5491169594900@c.us  ¡Hola! El pedido va a nombre de Diego. Y en lugar de las tortitas de choclo, sumamos un ceviche clásico. Quedaría:                                                                                 
-                                                                                                                                                                                                                                                                        
-                                                                     - 1 tequeños de lomo                                                                                                                                                                               
-                                                                     - 1 ceviche clásico                                                                                                                                                                                
-                                                                     - 1 causa de atún                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                        
-                                                                     ¿Puede ser?                                                                                                                                                                                        
+13314  2026-07-01 23:54:28  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                   
 
-13311  2026-07-01 23:54:28  sistema   interno                        claude_call moderacion: 7839ms prompt=1635c raw=6812c in=10t(cache_read=17396 new=5115) out=424t ttfb=1696ms api=6914ms turnos=1 $0.0108                                                           
+13313  2026-07-01 23:54:28  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13310  2026-07-01 23:53:46  whatsapp  entrante   5491132317896@c.us  1. a nombre mio                                                                                                                                                                                    
-                                                                     2. sacamos las tortitas y suma un ceviche clasico                                                                                                                                                  
+13312  2026-07-01 23:54:28  whatsapp  saliente   5491169594900@c.us  ¡Hola! El pedido va a nombre de Diego. Y en lugar de las tortitas de choclo, sumamos un ceviche clásico. Quedaría:                                                                                   
+                                                                                                                                                                                                                                                                          
+                                                                     - 1 tequeños de lomo                                                                                                                                                                                 
+                                                                     - 1 ceviche clásico                                                                                                                                                                                  
+                                                                     - 1 causa de atún                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                          
+                                                                     ¿Puede ser?                                                                                                                                                                                          
 
-13309  2026-07-01 23:52:35  whatsapp  saliente   5491169594900@c.us  Hola! Consultamos con el cliente y te confirmamos en un momento. ¿Podría reemplazar las tortitas por algo similar que sí esté disponible para llevar? Así le comento las opciones.                 
+13311  2026-07-01 23:54:28  sistema   interno                        claude_call moderacion: 7839ms prompt=1635c raw=6812c in=10t(cache_read=17396 new=5115) out=424t ttfb=1696ms api=6914ms turnos=1 $0.0108                                                             
 
-13308  2026-07-01 23:52:34  whatsapp  saliente   34342575317160@lid  El local de Caseros confirma el pedido pero dice que las tortitas de choclo no están disponibles para take away. Te preguntan si las reemplazás por otra cosa.                                     
-                                                                                                                                                                                                                                                                        
-                                                                     Dos cosas que necesito de vos:                                                                                                                                                                     
-                                                                     1. ¿A nom                                                                                                                                                                                          
+13310  2026-07-01 23:53:46  whatsapp  entrante   5491132317896@c.us  1. a nombre mio                                                                                                                                                                                      
+                                                                     2. sacamos las tortitas y suma un ceviche clasico                                                                                                                                                    
 
-13307  2026-07-01 23:52:34  sistema   interno                        claude_call whatsapp: 16742ms prompt=80086c raw=9719c in=10t(cache_read=6271 new=32242) out=607t ttfb=2426ms api=15878ms turnos=1 $0.1421                                                          
+13309  2026-07-01 23:52:35  whatsapp  saliente   5491169594900@c.us  Hola! Consultamos con el cliente y te confirmamos en un momento. ¿Podría reemplazar las tortitas por algo similar que sí esté disponible para llevar? Así le comento las opciones.                   
 
-13306  2026-07-01 23:52:27  sistema   interno                        claude_call memoria-curada: 25677ms prompt=1518c raw=11956c in=10t(cache_read=6266 new=5482) out=931t ttfb=2738ms api=23587ms turnos=1 $0.0374                                                     
+13308  2026-07-01 23:52:34  whatsapp  saliente   34342575317160@lid  El local de Caseros confirma el pedido pero dice que las tortitas de choclo no están disponibles para take away. Te preguntan si las reemplazás por otra cosa.                                       
+                                                                                                                                                                                                                                                                          
+                                                                     Dos cosas que necesito de vos:                                                                                                                                                                       
+                                                                     1. ¿A nom                                                                                                                                                                                            
 
-13305  2026-07-01 23:52:17  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                 
-                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                               
-                                                                     Las tortitas de choclo, lamentablemente no son para llevar                                                                                                                                         
-                                                                     Si, estamos atendiendo en el local, perdón la demora                                                                                                                                               
-                                                                     Desea reemplazar las tortitas de                                                                                                                                                                   
+13307  2026-07-01 23:52:34  sistema   interno                        claude_call whatsapp: 16742ms prompt=80086c raw=9719c in=10t(cache_read=6271 new=32242) out=607t ttfb=2426ms api=15878ms turnos=1 $0.1421                                                            
 
-13304  2026-07-01 23:52:07  sistema   interno                        claude_call whatsapp: 35880ms prompt=80083c raw=18896c in=28t(cache_read=84477 new=34010) out=1471t ttfb=2158ms api=34523ms turnos=3 $0.1853                                                       
+13306  2026-07-01 23:52:27  sistema   interno                        claude_call memoria-curada: 25677ms prompt=1518c raw=11956c in=10t(cache_read=6266 new=5482) out=931t ttfb=2738ms api=23587ms turnos=1 $0.0374                                                       
 
-13303  2026-07-01 23:52:01  sistema   interno                        claude_call memoria-curada: 18543ms prompt=2603c raw=10164c in=10t(cache_read=6266 new=5825) out=668t ttfb=2237ms api=17173ms turnos=1 $0.0351                                                     
+13305  2026-07-01 23:52:17  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                   
+                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                                 
+                                                                     Las tortitas de choclo, lamentablemente no son para llevar                                                                                                                                           
+                                                                     Si, estamos atendiendo en el local, perdón la demora                                                                                                                                                 
+                                                                     Desea reemplazar las tortitas de                                                                                                                                                                     
 
-13302  2026-07-01 23:51:58  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
+13304  2026-07-01 23:52:07  sistema   interno                        claude_call whatsapp: 35880ms prompt=80083c raw=18896c in=28t(cache_read=84477 new=34010) out=1471t ttfb=2158ms api=34523ms turnos=3 $0.1853                                                         
 
-13301  2026-07-01 23:51:43  sistema   interno                        claude_call memoria-curada: 28980ms prompt=1674c raw=13035c in=10t(cache_read=6266 new=5560) out=1102t ttfb=2181ms api=28157ms turnos=1 $0.0404                                                    
+13303  2026-07-01 23:52:01  sistema   interno                        claude_call memoria-curada: 18543ms prompt=2603c raw=10164c in=10t(cache_read=6266 new=5825) out=668t ttfb=2237ms api=17173ms turnos=1 $0.0351                                                       
 
-13300  2026-07-01 23:51:31  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                 
-                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                               
-                                                                     Las tortitas de choclo, lamentablemente no son para llevar                                                                                                                                         
-                                                                     Si, estamos atendiendo en el local, perdón la demora                                                                                                                                               
+13302  2026-07-01 23:51:58  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                  
 
-13299  2026-07-01 23:51:18  sistema   interno                        claude_call whatsapp: 21020ms prompt=79977c raw=7365c in=10t(cache_read=6271 new=32285) out=262t ttfb=2289ms api=19764ms turnos=1 $0.1371                                                          
+13301  2026-07-01 23:51:43  sistema   interno                        claude_call memoria-curada: 28980ms prompt=1674c raw=13035c in=10t(cache_read=6266 new=5560) out=1102t ttfb=2181ms api=28157ms turnos=1 $0.0404                                                      
 
-13298  2026-07-01 23:51:14  sistema   interno                        claude_call memoria-curada: 20360ms prompt=1918c raw=11001c in=10t(cache_read=6266 new=5592) out=782t ttfb=2085ms api=19336ms turnos=1 $0.0357                                                     
+13300  2026-07-01 23:51:31  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                   
+                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                                 
+                                                                     Las tortitas de choclo, lamentablemente no son para llevar                                                                                                                                           
+                                                                     Si, estamos atendiendo en el local, perdón la demora                                                                                                                                                 
 
-13297  2026-07-01 23:50:56  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                 
-                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                               
+13299  2026-07-01 23:51:18  sistema   interno                        claude_call whatsapp: 21020ms prompt=79977c raw=7365c in=10t(cache_read=6271 new=32285) out=262t ttfb=2289ms api=19764ms turnos=1 $0.1371                                                            
 
-13296  2026-07-01 23:50:53  sistema   interno                        claude_call memoria-curada: 24666ms prompt=3922c raw=13428c in=10t(cache_read=6266 new=6200) out=1079t ttfb=2297ms api=23167ms turnos=1 $0.0431                                                    
+13298  2026-07-01 23:51:14  sistema   interno                        claude_call memoria-curada: 20360ms prompt=1918c raw=11001c in=10t(cache_read=6266 new=5592) out=782t ttfb=2085ms api=19336ms turnos=1 $0.0357                                                       
 
-13295  2026-07-01 23:50:46  sistema   interno                        claude_call whatsapp: 38554ms prompt=77869c raw=17917c in=28t(cache_read=76865 new=39467) out=1394t ttfb=2562ms api=29985ms turnos=3 $0.2016                                                       
+13297  2026-07-01 23:50:56  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                   
+                                                                     A nombre de quién tomamos el pedido?                                                                                                                                                                 
 
-13294  2026-07-01 23:50:41  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13296  2026-07-01 23:50:53  sistema   interno                        claude_call memoria-curada: 24666ms prompt=3922c raw=13428c in=10t(cache_read=6266 new=6200) out=1079t ttfb=2297ms api=23167ms turnos=1 $0.0431                                                      
 
-13293  2026-07-01 23:50:41  whatsapp  saliente   5491169594900@c.us  Buenas noches! Les escribí antes para hacer un pedido para retirar: 1 tequeños de lomo, 2 tortitas de choclo y 1 causa de atún. ¿Pueden confirmarlo y avisarme cuando esté listo? Gracias!         
+13295  2026-07-01 23:50:46  sistema   interno                        claude_call whatsapp: 38554ms prompt=77869c raw=17917c in=28t(cache_read=76865 new=39467) out=1394t ttfb=2562ms api=29985ms turnos=3 $0.2016                                                         
 
-13292  2026-07-01 23:50:41  sistema   interno                        claude_call moderacion: 7203ms prompt=1634c raw=7106c in=10t(cache_read=0 new=22501) out=466t ttfb=1701ms api=5809ms turnos=1 $0.0310                                                              
+13294  2026-07-01 23:50:41  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13291  2026-07-01 23:50:28  sistema   interno                        claude_call memoria-curada: 22455ms prompt=2145c raw=11883c in=10t(cache_read=6266 new=5716) out=970t ttfb=2339ms api=20643ms turnos=1 $0.0391                                                     
+13293  2026-07-01 23:50:41  whatsapp  saliente   5491169594900@c.us  Buenas noches! Les escribí antes para hacer un pedido para retirar: 1 tequeños de lomo, 2 tortitas de choclo y 1 causa de atún. ¿Pueden confirmarlo y avisarme cuando esté listo? Gracias!           
 
-13290  2026-07-01 23:50:07  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                 
+13292  2026-07-01 23:50:41  sistema   interno                        claude_call moderacion: 7203ms prompt=1634c raw=7106c in=10t(cache_read=0 new=22501) out=466t ttfb=1701ms api=5809ms turnos=1 $0.0310                                                                
 
-13289  2026-07-01 23:50:06  sistema   interno                        claude_call memoria-curada: 24799ms prompt=2260c raw=12819c in=10t(cache_read=0 new=12059) out=972t ttfb=2351ms api=23170ms turnos=1 $0.0612                                                       
+13291  2026-07-01 23:50:28  sistema   interno                        claude_call memoria-curada: 22455ms prompt=2145c raw=11883c in=10t(cache_read=6266 new=5716) out=970t ttfb=2339ms api=20643ms turnos=1 $0.0391                                                       
 
-13288  2026-07-01 23:49:11  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                  
+13290  2026-07-01 23:50:07  whatsapp  entrante   5491169594900@c.us  Hola buenas noches                                                                                                                                                                                   
 
-13287  2026-07-01 23:49:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                
+13289  2026-07-01 23:50:06  sistema   interno                        claude_call memoria-curada: 24799ms prompt=2260c raw=12819c in=10t(cache_read=0 new=12059) out=972t ttfb=2351ms api=23170ms turnos=1 $0.0612                                                         
 
-13286  2026-07-01 23:35:01  whatsapp  saliente   34342575317160@lid  Listo, le mandé el pedido a Barra Chalaca Caseros — 1 tequeños de lomo, 2 tortitas de choclo, 1 causa de atún, para retirar. En cuanto avisen que está te digo.                                    
+13288  2026-07-01 23:49:11  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                    
 
-13285  2026-07-01 23:35:01  sistema   interno                        claude_call whatsapp: 34422ms prompt=7919c raw=19614c in=26t(cache_read=199200 new=100853) out=1170t ttfb=2225ms api=25996ms turnos=5 $0.4556                                                      
+13287  2026-07-01 23:49:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                  
 
-13284  2026-07-01 23:34:55  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
+13286  2026-07-01 23:35:01  whatsapp  saliente   34342575317160@lid  Listo, le mandé el pedido a Barra Chalaca Caseros — 1 tequeños de lomo, 2 tortitas de choclo, 1 causa de atún, para retirar. En cuanto avisen que está te digo.                                      
 
-13283  2026-07-01 23:34:54  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+13285  2026-07-01 23:35:01  sistema   interno                        claude_call whatsapp: 34422ms prompt=7919c raw=19614c in=26t(cache_read=199200 new=100853) out=1170t ttfb=2225ms api=25996ms turnos=5 $0.4556                                                        
 
-13282  2026-07-01 23:34:54  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                 
+13284  2026-07-01 23:34:55  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                  
 
-13281  2026-07-01 23:34:46  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+13283  2026-07-01 23:34:54  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                   
 
-13280  2026-07-01 23:34:46  whatsapp  saliente   5491169594900@c.us  Hola! Quisiera hacer un pedido para retirar en el local:\n- 1 Tequeños de lomo\n- 2 Tortitas de choclo\n- 1 Causa de atún\n¿Me pueden avisar cuando esté listo? Gracias!                           
+13282  2026-07-01 23:34:54  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                   
 
-13279  2026-07-01 23:34:46  sistema   interno                        claude_call moderacion: 5483ms prompt=1616c raw=5657c in=10t(cache_read=0 new=22505) out=274t ttfb=1643ms api=4428ms turnos=1 $0.0300                                                              
+13281  2026-07-01 23:34:46  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                          
 
-13278  2026-07-01 23:34:25  whatsapp  entrante   5491132317896@c.us  pedime esto en Barra Chalaca y que te avisen cuando este que lo voy a buscar:                                                                                                                      
-                                                                     1 Tequeños de lomo                                                                                                                                                                                 
-                                                                     2 tortitas de choclo                                                                                                                                                                               
-                                                                     1 causa de atun                                                                                                                                                                                    
+13280  2026-07-01 23:34:46  whatsapp  saliente   5491169594900@c.us  Hola! Quisiera hacer un pedido para retirar en el local:\n- 1 Tequeños de lomo\n- 2 Tortitas de choclo\n- 1 Causa de atún\n¿Me pueden avisar cuando esté listo? Gracias!                             
 
-13277  2026-07-01 23:31:34  whatsapp  saliente   5491123348031@c.us  Perfecto, gracias! Quedo esperando.                                                                                                                                                                
+13279  2026-07-01 23:34:46  sistema   interno                        claude_call moderacion: 5483ms prompt=1616c raw=5657c in=10t(cache_read=0 new=22505) out=274t ttfb=1643ms api=4428ms turnos=1 $0.0300                                                                
 
-13276  2026-07-01 23:31:34  sistema   interno                        claude_call whatsapp: 39598ms prompt=75874c raw=21784c in=28t(cache_read=82117 new=33120) out=1916t ttfb=2156ms api=38409ms turnos=3 $0.1867                                                       
+13278  2026-07-01 23:34:25  whatsapp  entrante   5491132317896@c.us  pedime esto en Barra Chalaca y que te avisen cuando este que lo voy a buscar:                                                                                                                        
+                                                                     1 Tequeños de lomo                                                                                                                                                                                   
+                                                                     2 tortitas de choclo                                                                                                                                                                                 
+                                                                     1 causa de atun                                                                                                                                                                                      
 
-13275  2026-07-01 23:31:30  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
+13277  2026-07-01 23:31:34  whatsapp  saliente   5491123348031@c.us  Perfecto, gracias! Quedo esperando.                                                                                                                                                                  
 
-13274  2026-07-01 23:30:54  whatsapp  entrante   5491123348031@c.us  perdón, me corrijo, ahi mi supervisor se lo paso                                                                                                                                                   
-                                                                     .                                                                                                                                                                                                  
+13276  2026-07-01 23:31:34  sistema   interno                        claude_call whatsapp: 39598ms prompt=75874c raw=21784c in=28t(cache_read=82117 new=33120) out=1916t ttfb=2156ms api=38409ms turnos=3 $0.1867                                                         
 
-13273  2026-07-01 23:27:20  whatsapp  saliente   5491123348031@c.us  Entendido, gracias por avisarme. ¿Sabés si tienen algún mail de contacto o un número de teléfono fijo al que pueda llamar para consultarles la carta?                                              
+13275  2026-07-01 23:31:30  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                  
 
-13272  2026-07-01 23:27:20  sistema   interno                        claude_call whatsapp: 65559ms prompt=76277c raw=29108c in=28t(cache_read=83786 new=34783) out=3518t ttfb=2232ms api=63933ms turnos=3 $0.2177                                                       
+13274  2026-07-01 23:30:54  whatsapp  entrante   5491123348031@c.us  perdón, me corrijo, ahi mi supervisor se lo paso                                                                                                                                                     
+                                                                     .                                                                                                                                                                                                    
 
-13271  2026-07-01 23:27:15  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                  
+13273  2026-07-01 23:27:20  whatsapp  saliente   5491123348031@c.us  Entendido, gracias por avisarme. ¿Sabés si tienen algún mail de contacto o un número de teléfono fijo al que pueda llamar para consultarles la carta?                                                
 
-13270  2026-07-01 23:26:14  whatsapp  entrante   5491123348031@c.us  por el momento no cuentan con un número de whatsapp ya que hace no mucho abrieron                                                                                                                  
+13272  2026-07-01 23:27:20  sistema   interno                        claude_call whatsapp: 65559ms prompt=76277c raw=29108c in=28t(cache_read=83786 new=34783) out=3518t ttfb=2232ms api=63933ms turnos=3 $0.2177                                                         
 
-13269  2026-07-01 23:26:00  whatsapp  saliente   5491123348031@c.us  ¡Hola! Todo bien, gracias. ¿Vos cómo estás?                                                                                                                                                        
+13271  2026-07-01 23:27:15  sistema   interno                        acción ejecutada: upsert_contacto                                                                                                                                                                    
 
-13268  2026-07-01 23:26:00  sistema   interno                        claude_call whatsapp: 30377ms prompt=76083c raw=12799c in=10t(cache_read=0 new=37271) out=1309t ttfb=2069ms api=29344ms turnos=1 $0.1686                                                           
+13270  2026-07-01 23:26:14  whatsapp  entrante   5491123348031@c.us  por el momento no cuentan con un número de whatsapp ya que hace no mucho abrieron                                                                                                                    
 
-13267  2026-07-01 23:25:29  whatsapp  entrante   5491123348031@c.us  Hola! como estas?                                                                                                                                                                                  
+13269  2026-07-01 23:26:00  whatsapp  saliente   5491123348031@c.us  ¡Hola! Todo bien, gracias. ¿Vos cómo estás?                                                                                                                                                          
 
-13266  2026-07-01 23:23:35  whatsapp  saliente   5491165286555@c.us  Perfecto, arranco a buscar! Dos semanas alcanza bien para comprar online. En un ratito te mando las opciones.                                                                                      
+13268  2026-07-01 23:26:00  sistema   interno                        claude_call whatsapp: 30377ms prompt=76083c raw=12799c in=10t(cache_read=0 new=37271) out=1309t ttfb=2069ms api=29344ms turnos=1 $0.1686                                                             
 
-13265  2026-07-01 23:23:35  sistema   interno                        claude_call whatsapp: 105033ms prompt=5542c raw=70778c in=587t(cache_read=387342 new=10098) out=3457t ttfb=2125ms api=119979ms turnos=13 $0.3674                                                   
+13267  2026-07-01 23:25:29  whatsapp  entrante   5491123348031@c.us  Hola! como estas?                                                                                                                                                                                    
 
-13264  2026-07-01 23:21:49  whatsapp  entrante   5491165286555@c.us  Viajo en dos semanas                                                                                                                                                                               
+13266  2026-07-01 23:23:35  whatsapp  saliente   5491165286555@c.us  Perfecto, arranco a buscar! Dos semanas alcanza bien para comprar online. En un ratito te mando las opciones.                                                                                        
 
-13263  2026-07-01 23:21:49  whatsapp  entrante   5491165286555@c.us  Presupuesto tengo para esto  podes ver esas marcas que mencionaste y otras                                                                                                                         
+13265  2026-07-01 23:23:35  sistema   interno                        claude_call whatsapp: 105033ms prompt=5542c raw=70778c in=587t(cache_read=387342 new=10098) out=3457t ttfb=2125ms api=119979ms turnos=13 $0.3674                                                     
 
-13262  2026-07-01 23:21:04  whatsapp  saliente   5491165286555@c.us  Puffer es perfecto para el sur, además hay opciones muy cancheras! Me falta saber:                                                                                                                 
-                                                                                                                                                                                                                                                                        
-                                                                     💰 ¿Presupuesto más o menos?                                                                                                                                                                        
-                                                                     📦 ¿Online o preferís ir a un local?                                                                                                                                                                
-                                                                     📅 ¿Cuándo viajás?                                                                                                                                                                                  
+13264  2026-07-01 23:21:49  whatsapp  entrante   5491165286555@c.us  Viajo en dos semanas                                                                                                                                                                                 
 
-13261  2026-07-01 23:21:04  sistema   interno                        claude_call whatsapp: 8777ms prompt=5741c raw=6325c in=10t(cache_read=47059 new=2796) out=221t ttfb=2157ms api=6031ms turnos=1 $0.0279                                                             
+13263  2026-07-01 23:21:49  whatsapp  entrante   5491165286555@c.us  Presupuesto tengo para esto  podes ver esas marcas que mencionaste y otras                                                                                                                           
 
-13260  2026-07-01 23:20:55  whatsapp  entrante   5491165286555@c.us  Tengo dudas con el estilo… las puffer me encantan                                                                                                                                                  
+13262  2026-07-01 23:21:04  whatsapp  saliente   5491165286555@c.us  Puffer es perfecto para el sur, además hay opciones muy cancheras! Me falta saber:                                                                                                                   
+                                                                                                                                                                                                                                                                          
+                                                                     💰 ¿Presupuesto más o menos?                                                                                                                                                                          
+                                                                     📦 ¿Online o preferís ir a un local?                                                                                                                                                                  
+                                                                     📅 ¿Cuándo viajás?                                                                                                                                                                                    
 
-13259  2026-07-01 23:20:42  whatsapp  saliente   5491165286555@c.us  Anotado S/M! Me faltaron los otros datos 😄                                                                                                                                                         
-                                                                                                                                                                                                                                                                        
-                                                                     💰 ¿Tenés un presupuesto más o menos?                                                                                                                                                               
-                                                                     📦 ¿Online o local (para ir a buscarla)?                                                                                                                                                            
-                                                                     📅 ¿Cuándo viajás?                                                                                                                                                                                  
-                                                                     🎨 ¿Preferís algo más puffer/pluma, tipo outdoor Patagonia/The                                                                                                                                      
+13261  2026-07-01 23:21:04  sistema   interno                        claude_call whatsapp: 8777ms prompt=5741c raw=6325c in=10t(cache_read=47059 new=2796) out=221t ttfb=2157ms api=6031ms turnos=1 $0.0279                                                               
 
-13258  2026-07-01 23:20:42  sistema   interno                        claude_call whatsapp: 10198ms prompt=5533c raw=6496c in=10t(cache_read=44245 new=2814) out=265t ttfb=2145ms api=7468ms turnos=1 $0.0278                                                            
+13260  2026-07-01 23:20:55  whatsapp  entrante   5491165286555@c.us  Tengo dudas con el estilo… las puffer me encantan                                                                                                                                                    
 
-13257  2026-07-01 23:20:31  whatsapp  entrante   5491165286555@c.us  Soy talle S o M depende el                                                                                                                                                                         
-                                                                     Modelo y la marca                                                                                                                                                                                  
+13259  2026-07-01 23:20:42  whatsapp  saliente   5491165286555@c.us  Anotado S/M! Me faltaron los otros datos 😄                                                                                                                                                           
+                                                                                                                                                                                                                                                                          
+                                                                     💰 ¿Tenés un presupuesto más o menos?                                                                                                                                                                 
+                                                                     📦 ¿Online o local (para ir a buscarla)?                                                                                                                                                              
+                                                                     📅 ¿Cuándo viajás?                                                                                                                                                                                    
+                                                                     🎨 ¿Preferís algo más puffer/pluma, tipo outdoor Patagonia/The                                                                                                                                        
 
-13256  2026-07-01 23:20:14  whatsapp  saliente   34342575317160@lid  Ah, perdón — leí mal. Ya les escribí a Barra Chalaca Caseros (Av. Caseros 467) y quedé esperando la carta. El pendiente está abierto. Caseros Restaurante es otro, anotado.                        
+13258  2026-07-01 23:20:42  sistema   interno                        claude_call whatsapp: 10198ms prompt=5533c raw=6496c in=10t(cache_read=44245 new=2814) out=265t ttfb=2145ms api=7468ms turnos=1 $0.0278                                                              
 
-13255  2026-07-01 23:20:14  sistema   interno                        claude_call whatsapp: 15642ms prompt=7613c raw=8815c in=10t(cache_read=90862 new=4215) out=589t ttfb=2136ms api=12891ms turnos=1 $0.0519                                                           
+13257  2026-07-01 23:20:31  whatsapp  entrante   5491165286555@c.us  Soy talle S o M depende el                                                                                                                                                                           
+                                                                     Modelo y la marca                                                                                                                                                                                    
 
-13254  2026-07-01 23:19:58  whatsapp  entrante   5491132317896@c.us  A barra chalaca de la calle caseros. Caseros restaurante es otro                                                                                                                                   
+13256  2026-07-01 23:20:14  whatsapp  saliente   34342575317160@lid  Ah, perdón — leí mal. Ya les escribí a Barra Chalaca Caseros (Av. Caseros 467) y quedé esperando la carta. El pendiente está abierto. Caseros Restaurante es otro, anotado.                          
