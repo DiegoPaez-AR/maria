@@ -33,6 +33,7 @@ const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-c
 // desde respuesta_a_usuario) sí se ejecutan: son el delivery de los slots de
 // respuesta, no acciones del modelo. Espejo del tratamiento en whatsapp-handler.
 const MCP_ACTIONS = process.env.MARIA_MCP_ACTIONS === '1';
+const turnState = require('./turn-state');
 const sesiones = require('./session-manager');
 const { ejecutarAcciones } = require('./executor');
 const providers = require('./providers');
@@ -327,6 +328,8 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   let respRem = '';
   let acciones = [];
   let razonamiento = null;
+  const _turnT0 = Date.now();
+  const _chatKeyGmail = 'gmail:' + entrada.messageId; // hilo que disparó el turno
   try {
     // ─── Sesiones persistentes (MARIA_SESIONES=1, default APAGADO) ───────
     // Mismo flujo que whatsapp-handler._procesarComoUsuario: con sesión viva
@@ -340,7 +343,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
       && prompt && typeof prompt === 'object' && !!prompt.system
       && _esTurnoDeUsuario;
-    const auditGmail = { usuarioId: usuario.id, canal: 'gmail' };
+    const auditGmail = { usuarioId: usuario.id, canal: 'gmail', chatKey: _chatKeyGmail, turnStartTs: _turnT0 };
     let json;
     if (!SESIONES_ON) {
       ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditGmail, sesion: 'off' }));
@@ -416,6 +419,21 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   const usrEmail = (usuario.email || '').toLowerCase().trim();
   const remitenteEsUsuario = !!remEmail && !!usrEmail && remEmail === usrEmail;
 
+  // Resultados del turno MCP: si el modelo ya respondió el thread por TOOL
+  // (responder_email en vivo), NO sintetizar otro responder_email desde el
+  // slot respuesta_a_remitente — sería doble reply (2026-07-02).
+  let _respondioPorTool = false;
+  if (MCP_ACTIONS) {
+    const _resTurno = turnState.takeTurnResults(_chatKeyGmail, _turnT0);
+    if (_resTurno.length) {
+      const okMcp = _resTurno.filter(r => r.ok).length;
+      console.log(`[GMAIL acciones-mcp/${usuario.nombre}] ${okMcp}/${_resTurno.length} ejecutadas en vivo`);
+      _respondioPorTool = _resTurno.some(r => r.ok && r.accion?.tipo === 'responder_email'
+        && String(r.accion?.messageId || '') === String(entrada.messageId));
+      if (_respondioPorTool) console.log(`[GMAIL/${usuario.nombre}] responder_email ya salió por tool — no duplico desde respuesta_a_remitente`);
+    }
+  }
+
   // 1) respuesta_a_remitente → responder_email al thread del entrante.
   //    autoResponderEmail puede haberse seteado en false desde unknown-flow
   //    para evitar contestar autoresponder; si está en false, NO autoreplico
@@ -423,7 +441,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   const yaResponde = acciones.some(
     a => a.tipo === 'responder_email' && a.messageId === entrada.messageId
   );
-  if (respRem.trim() && !yaResponde && autoResponderEmail) {
+  if (respRem.trim() && !yaResponde && autoResponderEmail && !_respondioPorTool) {
     acciones.unshift({
       tipo: 'responder_email',
       messageId: entrada.messageId,

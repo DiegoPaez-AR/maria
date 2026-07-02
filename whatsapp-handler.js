@@ -257,6 +257,14 @@ const _colas         = new Map(); // from → { items, timer }
 const _enProceso     = new Map(); // from → true mientras se está despachando
 const _colaPendiente = new Map(); // from → items[] acumulados durante un despacho en curso
 const _lastIncoming  = new Map(); // from → ts (Date.now()) del último mensaje entrante — usado para abortar respuestas obsoletas si entró algo nuevo durante el procesamiento
+
+// Acciones con efecto externo que el usuario "ve" → si fallan, hay que avisarle
+// en vez de confirmar. Compartida entre el camino legacy (array) y el MCP (tools).
+const ACCIONES_VISIBLES = new Set([
+  'enviar_wa', 'reenviar_wa', 'enviar_email', 'responder_email',
+  'programar_mensaje', 'cancelar_programado',
+  'crear_evento', 'modificar_evento', 'borrar_evento',
+]);
 const _procesadosMsg = new Map(); // message-id → ts, dedupe de entregas repetidas (redelivery tras reconexión)
 const _DEDUPE_TTL_MS = 10 * 60 * 1000; // 10 min: ventana de retención de ids ya procesados
 
@@ -418,9 +426,11 @@ async function handleMessage(client, msg) {
 
   // ─── Rate limit por usuario / global ─────────────────────────────────
   const _usrTmp = usuarios.resolverPorWa(from);
-  // Guard MCP (fase 2): registrar el ts del último entrante por usuario, para
-  // que /accion pueda abortar acciones de un turno que quedó obsoleto.
-  if (_usrTmp) turnState.setLastInbound(_usrTmp.id, Date.now());
+  // Guard MCP (fase 2): registrar el ts del último entrante por CHAT (2026-07-02,
+  // antes por usuario), para que /accion pueda abortar acciones de un turno que
+  // quedó obsoleto. Se registra para TODO chat (usuarios y terceros): un tercero
+  // que reescribe también invalida su turno en curso — semántica del abort legacy.
+  turnState.setLastInbound('whatsapp:' + from, Date.now());
   const rl = seguridad.verificarRateLimit({ usuarioId: _usrTmp?.id || null });
   if (!rl.ok) {
     console.warn(`[WA rate-limit] ${from} bloqueado: ${rl.motivo}`);
@@ -776,6 +786,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   let respRem = '';
   let acciones = [];
   let razonamiento = null;
+  const _chatKeyTurno = (from || entrada.de) ? ('whatsapp:' + (from || entrada.de)) : null;
   try {
     // ─── Sesiones persistentes (MARIA_SESIONES=1, default APAGADO) ───────
     // Con sesión viva, resumimos la conversación de la CLI (--resume): el
@@ -794,7 +805,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     const SESIONES_ON = process.env.MARIA_SESIONES === '1'
       && prompt && typeof prompt === 'object' && !!prompt.system
       && _esTurnoDeUsuario;
-    const auditWA = { usuarioId: usuario.id, canal: 'whatsapp' };
+    const auditWA = { usuarioId: usuario.id, canal: 'whatsapp', chatKey: _chatKeyTurno, turnStartTs: startTs };
     let json;
     if (!SESIONES_ON) {
       ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditWA, sesion: 'off' }));
@@ -904,6 +915,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   // send, en un solo punto.
   if (_hayMsgNuevoDesdeStart()) {
     outFlags.abortado = true;
+    if (MCP_ACTIONS) turnState.takeTurnResults(_chatKeyTurno, startTs); // descarte: que no los herede otro turno
     console.log(`[WA →usr] ABORTADO ${usuario.nombre} (${destinoUsuario}): llegó msg nuevo durante procesamiento — el próximo lote responde${acciones.length ? ` (${acciones.length} acción/es salteadas)` : ''}`);
   } else {
     // 1) Acciones PRIMERO: sabemos qué se concretó ANTES de confirmarle al
@@ -918,6 +930,32 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
         cuerpo: `mcp_fallback: modelo emitió ${acciones.length} acción(es) en array en modo MCP (no ejecutadas): ${acciones.map(a => a && a.tipo).filter(Boolean).join(', ')}`,
         metadata: { tipo: 'mcp_fallback', acciones } }); } catch {}
     }
+    // Backstops deterministas del camino MCP (2026-07-02): las acciones ya
+    // corrieron en vivo vía /accion; acá tomamos sus resultados y aplicamos
+    // lo mismo que legacy aplica post-ejecución — aviso honesto en vez de
+    // confirmación optimista + cancelar trigger_externo huérfanos (Kona/Evelia).
+    if (MCP_ACTIONS && _chatKeyTurno && startTs) {
+      const _resTurno = turnState.takeTurnResults(_chatKeyTurno, startTs);
+      if (_resTurno.length) {
+        const okMcp = _resTurno.filter(r => r.ok).length;
+        console.log(`[WA acciones-mcp/${usuario.nombre}] ${okMcp}/${_resTurno.length} ejecutadas en vivo`);
+        fallasVisibles = _resTurno.filter(r => !r.ok && !r.stale && ACCIONES_VISIBLES.has(r.accion?.tipo));
+        if (fallasVisibles.length) {
+          console.warn(`[WA acciones-mcp/${usuario.nombre}] FALLARON visibles: ` +
+            fallasVisibles.map(r => `${r.accion?.tipo || '?'}: ${r.error}`).join(' | '));
+          for (const r of _resTurno) {
+            if (r.ok && r.accion?.tipo === 'agregar_pendiente'
+                && r.accion?.disparador === 'trigger_externo' && r.resultado?.id) {
+              try {
+                mem.quitarPendiente(usuario.id, r.resultado.id);
+                if (r.resultado.follow_up?.id) mem.setFollowUpEstado(r.resultado.follow_up.id, 'cancelado');
+                console.log(`[WA backstop-mcp] cancelé pendiente trigger_externo #${r.resultado.id} (un envío del turno falló)`);
+              } catch (e) { console.warn('[WA backstop-mcp] cancelar pendiente falló:', e.message); }
+            }
+          }
+        }
+      }
+    }
     if (acciones.length && !MCP_ACTIONS) {
       const resultados = await ejecutarAcciones(acciones, {
         usuario,
@@ -929,13 +967,6 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
       if (ok < resultados.length) {
         console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ` +
           resultados.filter(r => !r.ok).map(r => `${r.accion?.tipo || '?'}: ${r.error}`).join(' | '));
-        // Acciones con efecto externo que el usuario "ve" → si fallan, hay que
-        // avisarle en vez de confirmar.
-        const ACCIONES_VISIBLES = new Set([
-          'enviar_wa', 'reenviar_wa', 'enviar_email', 'responder_email',
-          'programar_mensaje', 'cancelar_programado',
-          'crear_evento', 'modificar_evento', 'borrar_evento',
-        ]);
         fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
 
         // Backstop: si un envío visible falló, cancelar los pendientes

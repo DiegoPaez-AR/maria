@@ -24,13 +24,14 @@ const SECRET    = process.env.MARIA_INTERNAL_SECRET || '';
 const USUARIO   = process.env.MARIA_TURN_USUARIO_ID ? Number(process.env.MARIA_TURN_USUARIO_ID) : null;
 const CANAL     = process.env.MARIA_TURN_CANAL || 'whatsapp';
 const START_TS  = process.env.MARIA_TURN_START_TS ? Number(process.env.MARIA_TURN_START_TS) : null;
+const CHAT_KEY  = process.env.MARIA_TURN_CHAT_KEY || null;
 
 function postAccion(accion) {
   return new Promise((resolve) => {
     if (!PORT || !SECRET || !USUARIO) {
       return resolve({ ok: false, error: 'mcp-actions-server: falta config (port/secret/usuarioId)' });
     }
-    const payload = JSON.stringify({ usuarioId: USUARIO, accion, canalOrigen: CANAL, turnStartTs: START_TS });
+    const payload = JSON.stringify({ usuarioId: USUARIO, accion, canalOrigen: CANAL, turnStartTs: START_TS, chatKey: CHAT_KEY });
     const req = http.request(
       { host: '127.0.0.1', port: PORT, path: '/accion', method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload), 'X-Intensa-Secret': SECRET },

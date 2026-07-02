@@ -183,28 +183,36 @@ function start({ waClient } = {}) {
         // usuario). Lo consume el MCP actions server (fase 2): el CLI llama al
         // tool, el tool pega acá, y el executor corre en el proceso principal
         // con todo el runtime (moderación, validación de destinatarios, etc.).
-        const { usuarioId, accion, canalOrigen = 'whatsapp', turnStartTs = null } = body;
+        const { usuarioId, accion, canalOrigen = 'whatsapp', turnStartTs = null, chatKey = null } = body;
         if (!usuarioId || !accion || !accion.tipo) {
           return send(400, { error: 'bad_body', need: 'usuarioId + accion{tipo}' });
         }
         const usuario = usuarios.obtener(usuarioId);
         if (!usuario) return send(404, { error: 'usuario_not_found', usuarioId });
-        // Guard de turno-viejo: si entró un mensaje NUEVO del usuario desde que
-        // arrancó el turno, la acción (no idempotente) NO se ejecuta — el
-        // modelo debe frenar y regenerar. Preserva el abort atómico del handler.
-        if (turnStartTs) {
-          const last = turnState.getLastInbound(usuarioId);
+        // Guard de turno-viejo — keyed por CHAT que disparó el turno (2026-07-02,
+        // antes por usuario: mataba acciones de turnos de email/tercero cuando el
+        // usuario escribía cualquier cosa, y no frenaba turnos de terceros).
+        // Misma semántica que el abort legacy del handler (_lastIncoming por from).
+        // Sin chatKey (p.ej. turnos gmail) no hay guard — paridad con legacy.
+        if (turnStartTs && chatKey) {
+          const last = turnState.getLastInbound(chatKey);
           if (last && last > Number(turnStartTs)) {
             return send(200, { ok: false, stale: true,
-              error: 'turno_obsoleto: llegó un mensaje nuevo del usuario mientras generabas; NO ejecuté esta acción. Regenerá tu respuesta contemplando el mensaje nuevo.' });
+              error: 'turno_obsoleto: llegó un mensaje nuevo en esta conversación mientras generabas; NO ejecuté esta acción. Regenerá tu respuesta contemplando el mensaje nuevo.' });
           }
         }
         try {
           const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen }, { skipRepair: true });
-          return send(200, r || { ok: false, error: 'sin_resultado' });
+          const res = r || { ok: false, accion, error: 'sin_resultado' };
+          // Acumular para los backstops del cierre de turno (aviso honesto +
+          // cancelar trigger_externo) — el handler los toma con takeTurnResults.
+          turnState.addTurnResult(chatKey, turnStartTs, res);
+          return send(200, res);
         } catch (err) {
           console.error('[internal-api/accion] error:', err.stack || err.message);
-          return send(200, { ok: false, error: err.message });
+          const res = { ok: false, accion, error: err.message };
+          turnState.addTurnResult(chatKey, turnStartTs, res);
+          return send(200, res);
         }
       }
 

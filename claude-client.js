@@ -227,7 +227,10 @@ function _invocarClaudeCrudo(prompt, {
             MARIA_INTERNAL_SECRET: String(process.env.ASISTENTE_INTERNAL_SECRET || ''),
             MARIA_TURN_USUARIO_ID: String(audit.usuarioId),
             MARIA_TURN_CANAL:      String(audit.canal || 'whatsapp'),
-            MARIA_TURN_START_TS:   String(_t0),
+            // turnStartTs del handler (para que pueda tomar los resultados con
+            // la misma clave); fallback al t0 propio si no vino.
+            MARIA_TURN_START_TS:   String(audit.turnStartTs || _t0),
+            MARIA_TURN_CHAT_KEY:   String(audit.chatKey || ''),
           },
         } } };
         _mcpActionsTmp = path.join(os.tmpdir(), `maria-mcpcfg-${audit.usuarioId}-${_t0}.json`);
