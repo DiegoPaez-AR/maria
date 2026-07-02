@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13426  2026-07-02 01:54:56  whatsapp  saliente   5491165286555@c.us  Listo! Mañana jueves a las 10:00hs te recuerdo que llames a Celeste Anson por la diplomatura de IA 📞                                                                                                    
+
+13425  2026-07-02 01:54:56  sistema   interno                        claude_call whatsapp: 23693ms prompt=6130c raw=10756c in=6t(cache_read=318550 new=5002) out=658t ttfb=2190ms api=15166ms turnos=3 $0.1242                                                               
+
+13424  2026-07-02 01:54:52  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13423  2026-07-02 01:54:52  sistema   interno                        claude_call moderacion: 5671ms prompt=1511c raw=5511c in=10t(cache_read=0 new=22454) out=227t ttfb=1614ms api=4651ms turnos=1 $0.0297                                                                   
+
+13422  2026-07-02 01:54:32  whatsapp  entrante   5491165286555@c.us  Que mañana me recuerdes a las 10 que llame a Celeste Anson por la diplomatura de ia                                                                                                                     
+
+13421  2026-07-02 01:54:05  whatsapp  saliente   5491165286555@c.us  Listo! Agendé el turno de dermatología para el viernes 03/07 a las 15:00hs en Ex. Piel. Ya está en tu calendario ✅                                                                                      
+
+13420  2026-07-02 01:54:05  sistema   interno                        claude_call whatsapp: 36775ms prompt=6086c raw=20673c in=8t(cache_read=304053 new=103325) out=2329t ttfb=2213ms api=32656ms turnos=4 $0.5136                                                            
+
 13419  2026-07-02 01:53:49  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
 
 13418  2026-07-02 01:53:49  calendar  saliente                       creado: Turno dermatología - Ex. Piel (2026-07-03T15:00:00-03:00 → 2026-07-03T15:30:00-03:00) · Meet: https://meet.google.com/rnr-smug-yma [en calendar de Maria]                                       
@@ -202,18 +216,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13328  2026-07-01 23:59:49  whatsapp  entrante   5491132317896@c.us  perfecto, lo pago cuando voy a retirar                                                                                                                                                                  
 
 13327  2026-07-01 23:57:23  sistema   interno                        claude_call whatsapp: 40603ms prompt=79418c raw=17505c in=28t(cache_read=84289 new=33679) out=1472t ttfb=2184ms api=33511ms turnos=3 $0.1837                                                            
-
-13326  2026-07-01 23:57:18  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13325  2026-07-01 23:57:18  whatsapp  saliente   34342575317160@lid  El total del pedido en Barra Chalaca es $62.000.                                                                                                                                                        
-
-13324  2026-07-01 23:57:18  sistema   interno                        claude_call moderacion: 5478ms prompt=1496c raw=5969c in=10t(cache_read=17396 new=5053) out=288t ttfb=1605ms api=4283ms turnos=1 $0.0100                                                                
-
-13323  2026-07-01 23:56:42  whatsapp  entrante   5491169594900@c.us  El total sería $62.000                                                                                                                                                                                  
-
-13322  2026-07-01 23:56:01  sistema   interno                        claude_call whatsapp: 28024ms prompt=79493c raw=14912c in=20t(cache_read=44613 new=33072) out=1163t ttfb=2172ms api=26842ms turnos=2 $0.1649                                                            
-
-13321  2026-07-01 23:55:32  whatsapp  entrante   5491169594900@c.us  Perfecto                                                                                                                                                                                                
-                                                                     Ya lo vamos marchando ni bien esté listo les avisamos                                                                                                                                                   
-
-13320  2026-07-01 23:55:22  sistema   interno                        claude_call whatsapp: 29996ms prompt=79551c raw=20486c in=36t(cache_read=123733 new=33919) out=1289t ttfb=2187ms api=28637ms turnos=4 $0.1938                                                           
