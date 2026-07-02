@@ -201,6 +201,41 @@ if ! git diff --cached --quiet; then
   fi
 fi
 
+# ───── 4b. Alerta de pushes fallidos (2026-07-02) ─────
+# El fallo conocido (token del remote perdido → "could not read Username") deja
+# de subir snapshots EN SILENCIO por días; fetch+deploy siguen andando así que
+# nada grita. Contador persistente + aviso WA al owner UNA vez al cruzar el
+# umbral (archivo .alerted evita spam; se limpia solo cuando vuelve a andar).
+PUSHFAIL_F=/root/secretaria/state/.cron-push-fails
+if [ "$PUSHED_OK" = 1 ]; then
+  if [ -f "$PUSHFAIL_F.alerted" ]; then
+    echo "push recuperado tras racha de fallos"
+  fi
+  rm -f "$PUSHFAIL_F" "$PUSHFAIL_F.alerted"
+elif ! git diff --quiet HEAD 2>/dev/null || [ -n "$(git log origin/main..HEAD --oneline 2>/dev/null | head -1)" ]; then
+  # solo cuenta si de verdad había algo para pushear y no salió
+  N=$(( $(cat "$PUSHFAIL_F" 2>/dev/null || echo 0) + 1 ))
+  echo "$N" > "$PUSHFAIL_F"
+  if [ "$N" -ge 10 ] && [ ! -f "$PUSHFAIL_F.alerted" ]; then
+    # 10 ticks = ~10min sin poder pushear. Aviso por la internal-api de la
+    # primera instancia (el .conf + secrets.conf ya están cargados si estamos
+    # dentro del loop; acá afuera los cargamos a mano de la primera instancia).
+    _cf=$(ls /root/secretaria/config/instances/*.conf 2>/dev/null | head -1)
+    if [ -n "$_cf" ]; then
+      _port=$(grep -E '^ASISTENTE_INTERNAL_PORT=' "$_cf" | cut -d= -f2- | tr -d '"')
+      _own=$(grep -E '^OWNER_WA=' "$_cf" | cut -d= -f2- | tr -d '"')
+      _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/secrets.conf 2>/dev/null | cut -d= -f2- | tr -d '"')
+      [ -z "$_sec" ] && _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$_cf" | cut -d= -f2- | tr -d '"')
+      if [ -n "$_port" ] && [ -n "$_own" ] && [ -n "$_sec" ]; then
+        curl -s -m 10 -X POST "http://127.0.0.1:$_port/send-wa" \
+          -H "x-intensa-secret: $_sec" -H 'Content-Type: application/json' \
+          -d "{\"to\":\"$_own\",\"body\":\"⚠️ cron: git push lleva $N ticks fallando — los snapshots/outbox NO están subiendo (¿token del remote?). fetch+deploy siguen OK. Fix: git remote set-url con el PAT.\"}" \
+          >/dev/null 2>&1 && touch "$PUSHFAIL_F.alerted"
+      fi
+    fi
+  fi
+fi
+
 # ───── 5. Consumir inbox: rm de inputs solo si fase 1 OK ─────
 for inst in "${INSTANCES[@]}"; do
   slug="${inst%%:*}"
