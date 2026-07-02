@@ -1,0 +1,43 @@
+# ejecutado: 2026-07-02T13:38:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "node $(node --version)"
+#   # env limpio: los tests setean su propio MARIA_DB/VAULT_KEY/OWNER_* — deshacemos
+#   # los del .conf que inyecta cron-master para no tocar NADA real.
+#   env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
+#     npm test 2>&1 | tail -25
+#   echo "exit=$?"
+
+# ───── output ─────
+node v18.19.1
+  ...
+# Subtest: fallback inverso: 549... prueba también 54...
+ok 21 - fallback inverso: 549... prueba también 54...
+  ---
+  duration_ms: 0.253894
+  ...
+# Subtest: sin client → error instructivo
+ok 22 - sin client → error instructivo
+  ---
+  duration_ms: 1.007312
+  ...
+# Subtest: sin dígitos → error
+ok 23 - sin dígitos → error
+  ---
+  duration_ms: 0.25701
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 22
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 921.150393
+exit=0
+
+# exit=0
