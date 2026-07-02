@@ -16,7 +16,18 @@ const PATRONES_INJECTION = [
   // Acceso a archivos del sistema
   { re: /\bcat\s+\/(etc|root|var|opt|home|sys|proc)\b/i, motivo: 'cat path sistema' },
   { re: /le[ée]\s+(el\s+)?(archivo\s+)?\/(etc|root|var|opt|home|sys|proc)/i, motivo: 'leer path sistema' },
-  { re: /\b(\/etc\/passwd|\/etc\/shadow|\/root\/\.ssh|id_rsa|id_ed25519|\.env|token\.json|credentials\.json)\b/i, motivo: 'mencionar archivo sensible' },
+  // Sin \b inicial (2026-07-02, bug encontrado por el primer unit test): \b
+  // exige un char de palabra adyacente y "/" precedido de espacio no lo tiene
+  // → el patrón viejo NUNCA matcheaba paths standalone.
+  { re: /(\/etc\/passwd|\/etc\/shadow|\/root\/\.ssh|\bid_rsa\b|\bid_ed25519\b|\.env\b|\btoken\.json\b|\bcredentials\.json\b)/i, motivo: 'mencionar archivo sensible' },
+  // Inglés (2026-07-02): los payloads de injection circulan mayormente en
+  // inglés y la lista era solo-español (review 0701).
+  { re: /ignore\s+(all\s+)?(previous|prior|above|earlier)\s+(instructions?|rules?|prompts?)/i, motivo: 'ignore instructions (en)' },
+  { re: /disregard\s+(all\s+|any\s+)?(previous|prior|your)\s+(instructions?|rules?|guidelines)/i, motivo: 'disregard instructions (en)' },
+  { re: /you\s+are\s+now\s+(in\s+)?(developer|debug|dan|god|jailbreak|unrestricted)\s*mode/i, motivo: 'special mode (en)' },
+  { re: /(reveal|show|print|repeat|output)\s+(me\s+)?(your|the)\s+(system\s+prompt|hidden\s+(prompt|instructions)|initial\s+instructions)/i, motivo: 'exfiltrar prompt (en)' },
+  { re: /act\s+as\s+(an?\s+)?(unrestricted|uncensored|unfiltered|jailbroken)/i, motivo: 'act as unrestricted (en)' },
+  { re: /new\s+instructions?\s*:/i, motivo: 'new instructions (en)' },
   // Exfiltración de secretos
   { re: /(mostrame|dame|env[íi]ame|mand[áa]me|pas[áa]me)\s+(el\s+)?(token|password|api\s*key|credenciales|credentials|secret|clave\s+secreta|env\s+var)/i, motivo: 'pedir credenciales' },
   // Ejecución de shell
