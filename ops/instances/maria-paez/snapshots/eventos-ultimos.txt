@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13539  2026-07-02 03:12:02  sistema   interno                        acción FALLÓ: accion_inexistente — Acción desconocida: "accion_inexistente". El campo se llama "tipo" y debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, env
+
+13538  2026-07-02 03:12:02  sistema   interno                        acción ejecutada: olvidar_hecho                                                                                                                                                                         
+
+13537  2026-07-02 03:12:02  sistema   interno                        acción ejecutada: recordar_hecho                                                                                                                                                                        
+
 13536  2026-07-02 03:10:09  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 13535  2026-07-02 03:10:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
@@ -232,9 +238,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13441  2026-07-02 01:58:35  sistema   interno                        claude_call moderacion: 6098ms prompt=1558c raw=6661c in=10t(cache_read=17396 new=5074) out=340t ttfb=1618ms api=5067ms turnos=1 $0.0103                                                                
 
 13440  2026-07-02 01:58:20  whatsapp  entrante   5491165286555@c.us  Mañana 9.30 recordame pagar los aparatos de Eloísa de ortodoncia! Jeje y mandar el comprobante que ya pagué una parte                                                                                   
-
-13439  2026-07-02 01:56:52  whatsapp  saliente   5491165286555@c.us  Dale! Mañana a las 10:30 te recuerdo las dos cosas juntas: chequear el material de la muestra y revisar la primera circular 👍                                                                           
-
-13438  2026-07-02 01:56:52  sistema   interno                        claude_call whatsapp: 20030ms prompt=5846c raw=8777c in=4t(cache_read=237534 new=3979) out=563t ttfb=2069ms api=11687ms turnos=2 $0.0946                                                                
-
-13437  2026-07-02 01:56:47  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
