@@ -9,8 +9,6 @@ CREATE TABLE IF NOT EXISTS clientes_archivados (
   wa                  TEXT,
   instancia_slug      TEXT,
   instancia_usuario_id INTEGER,
-  lemon_customer_id   TEXT,
-  lemon_subscription_id TEXT,
   creado_original     DATETIME,
   cancelado_en        DATETIME,
   archivado_en        DATETIME DEFAULT CURRENT_TIMESTAMP,

@@ -338,13 +338,15 @@ function _migrarPendientesDuenoDisparador() {
 }
 _migrarPendientesDuenoDisparador();
 
-// Suscripciones (intensa-api / LemonSqueezy):
+// Suscripciones (intensa-api):
 //   - bienvenida_enviada: el loop de bienvenida de Maria dispara el primer WA cuando
-//     un usuario fue insertado por el webhook de LS. Default 1 para usuarios pre-existentes
-//     (no re-saludar a Diego et al).
-//   - lemon_customer_id / lemon_subscription_id: trazabilidad cross-DB con control.sqlite
+//     un usuario fue insertado por el webhook de pagos. Default 1 para usuarios
+//     pre-existentes (no re-saludar a Diego et al).
 //   - cliente_id: FK soft a control.clientes.id (no enforceable, cross-DB)
-function _migrarUsuariosLemonFields() {
+// Nota 2026-07-01: se eliminaron las columnas lemon_* de esta migración (Lemon
+// nunca operó; Stripe es el sistema vigente). Las DBs existentes conservan las
+// columnas lemon_* vacías — inertes, nadie las lee.
+function _migrarUsuariosSubsFields() {
   let cambios = false;
   if (!_tieneColumna('usuarios', 'bienvenida_enviada')) {
     db.exec(`ALTER TABLE usuarios ADD COLUMN bienvenida_enviada INTEGER NOT NULL DEFAULT 0`);
@@ -352,21 +354,13 @@ function _migrarUsuariosLemonFields() {
     console.log('[memory] migración: usuarios.bienvenida_enviada agregado, backfilled a 1 para usuarios existentes');
     cambios = true;
   }
-  if (!_tieneColumna('usuarios', 'lemon_customer_id')) {
-    db.exec(`ALTER TABLE usuarios ADD COLUMN lemon_customer_id TEXT`);
-    cambios = true;
-  }
-  if (!_tieneColumna('usuarios', 'lemon_subscription_id')) {
-    db.exec(`ALTER TABLE usuarios ADD COLUMN lemon_subscription_id TEXT`);
-    cambios = true;
-  }
   if (!_tieneColumna('usuarios', 'cliente_id')) {
     db.exec(`ALTER TABLE usuarios ADD COLUMN cliente_id INTEGER`);
     cambios = true;
   }
-  if (cambios) console.log('[memory] migración: usuarios.bienvenida_enviada/lemon_*/cliente_id agregados');
+  if (cambios) console.log('[memory] migración: usuarios.bienvenida_enviada/cliente_id agregados');
 }
-_migrarUsuariosLemonFields();
+_migrarUsuariosSubsFields();
 
 // brief_activo: opt-out del morning-brief por usuario. Default 1 (recibe el
 // brief matutino). Cuando un usuario pide "no me mandes mas el resumen diario"

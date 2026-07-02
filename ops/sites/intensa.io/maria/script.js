@@ -267,10 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // CTAs con data-lemon-product → flujo de signup (/maria/signup/), que valida
+  // CTAs con data-product → flujo de signup (/maria/signup/), que valida
   // email+WA con código y lleva al checkout. Antes esto abría un mailto
   // placeholder (de cuando no existía el signup); ya no.
-  document.querySelectorAll('[data-lemon-product]').forEach(btn => {
+  document.querySelectorAll('[data-product]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       window.location.href = '/maria/signup/';

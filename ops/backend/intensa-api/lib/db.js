@@ -33,9 +33,9 @@ function _migrarControl(db) {
     console.log(`[db] migración: signup_pending.reenviado_en agregada`);
   }
 
-  // Migración a Stripe: columnas stripe_* en clientes (las lemon_* quedan para
-  // registros viejos/archive). El UNIQUE va por índice parcial porque SQLite no
-  // permite ALTER ADD COLUMN ... UNIQUE.
+  // Migración a Stripe: columnas stripe_* en clientes. Las lemon_* de DBs
+  // existentes quedan inertes (Lemon nunca operó; limpiadas del schema 2026-07-01).
+  // El UNIQUE va por índice parcial porque SQLite no permite ALTER ADD COLUMN ... UNIQUE.
   const colsCli = db.prepare(`PRAGMA table_info(clientes)`).all().map(c => c.name);
   if (!colsCli.includes('stripe_customer_id')) {
     db.exec(`ALTER TABLE clientes ADD COLUMN stripe_customer_id TEXT`);

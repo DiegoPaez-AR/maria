@@ -460,7 +460,7 @@ function statsFunnel() {
     if (fs.existsSync(dbp)) {
       const db = new Database(dbp, { readonly: true });
       try {
-        f.pagos = db.prepare("SELECT COUNT(*) c FROM webhook_events WHERE event_name IN ('checkout.session.completed','subscription_created') AND recibido_en >= datetime('now','-1 day')").get().c;
+        f.pagos = db.prepare("SELECT COUNT(*) c FROM webhook_events WHERE event_name = 'checkout.session.completed' AND recibido_en >= datetime('now','-1 day')").get().c;
         f.altas = db.prepare("SELECT COUNT(*) c FROM clientes WHERE creado >= datetime('now','-1 day')").get().c;
         for (const r of db.prepare("SELECT estado, COUNT(*) c FROM clientes GROUP BY estado").all()) {
           f.totalClientes += r.c;

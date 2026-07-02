@@ -34,13 +34,11 @@ function archivarCliente(cliente) {
     a.prepare(`
       INSERT INTO clientes_archivados (
         cliente_id_original, nombre, email, wa, instancia_slug, instancia_usuario_id,
-        lemon_customer_id, lemon_subscription_id,
         creado_original, cancelado_en,
         eventos_json, contactos_json, hechos_json, pendientes_json, programados_json, notas_contacto_json
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       cliente.id, cliente.nombre, cliente.email, cliente.wa, cliente.instancia_slug, uid,
-      cliente.lemon_customer_id || null, cliente.lemon_subscription_id || null,
       cliente.creado || null, cliente.cancelado_en || null,
       JSON.stringify(eventos), JSON.stringify(contactos), JSON.stringify(hechos),
       JSON.stringify(pendientes), JSON.stringify(programados), JSON.stringify(notas)

@@ -36,10 +36,6 @@ CREATE TABLE IF NOT EXISTS clientes (
   instancia_slug          TEXT NOT NULL,                  -- FK a instances.slug
   instancia_usuario_id    INTEGER,                        -- id del usuario en la DB de su instancia
   estado                  TEXT NOT NULL DEFAULT 'active' CHECK(estado IN ('active','inactive','cancelled')),
-  -- LemonSqueezy
-  lemon_customer_id       TEXT,
-  lemon_subscription_id   TEXT UNIQUE,
-  lemon_customer_portal   TEXT,                           -- URL del customer portal de LS (legacy)
   -- Stripe (sistema de pagos vigente)
   stripe_customer_id      TEXT,
   stripe_subscription_id  TEXT UNIQUE,
@@ -121,11 +117,12 @@ CREATE TABLE IF NOT EXISTS portal_otp (
 );
 CREATE INDEX IF NOT EXISTS idx_portal_otp_cliente ON portal_otp(cliente_id, expira_en);
 
--- Webhook events recibidos de LemonSqueezy.
--- Idempotencia: dedupe por event_id de LS.
+-- Webhook events recibidos de Stripe.
+-- Idempotencia: dedupe por event id (columna ls_event_id: nombre legacy de la
+-- era LemonSqueezy; renombrarla seria una migracion sin beneficio).
 CREATE TABLE IF NOT EXISTS webhook_events (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
-  ls_event_id     TEXT NOT NULL UNIQUE,           -- el `X-Event-Name` + body hash o un id propio de LS
+  ls_event_id     TEXT NOT NULL UNIQUE,           -- event id de Stripe (evt_...)
   event_name      TEXT NOT NULL,                  -- subscription_created, etc.
   payload         TEXT NOT NULL,                  -- JSON crudo
   procesado       INTEGER NOT NULL DEFAULT 0,
