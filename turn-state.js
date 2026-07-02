@@ -69,3 +69,5 @@ function takeTurnResults(chatKey, turnStartTs) {
 }
 
 module.exports = { setLastInbound, getLastInbound, addTurnResult, takeTurnResults };
+
+// canary-bump 2026-07-02: trigger de re-evaluación post-drill (inofensivo)
