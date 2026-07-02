@@ -26,9 +26,29 @@ shopt -s nullglob
 
 cd /root/secretaria || exit 1
 PASS_FILE=/root/secretaria/.backup-pass
+
+# Aviso WA al owner vía internal-api (best-effort, para fallos del backup).
+_avisar_wa() {
+  local _msg="$1"
+  local _cf; _cf=$(ls /root/secretaria/config/instances/*.conf 2>/dev/null | head -1)
+  [ -z "$_cf" ] && return 0
+  local _port _own _sec
+  _port=$(grep -E '^ASISTENTE_INTERNAL_PORT=' "$_cf" | cut -d= -f2- | tr -d '"')
+  _own=$(grep -E '^OWNER_WA=' "$_cf" | cut -d= -f2- | tr -d '"')
+  _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/secrets.conf 2>/dev/null | cut -d= -f2- | tr -d '"')
+  [ -z "$_sec" ] && _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$_cf" | cut -d= -f2- | tr -d '"')
+  [ -n "$_port" ] && [ -n "$_own" ] && [ -n "$_sec" ] && curl -s -m 10 -X POST "http://127.0.0.1:$_port/send-wa" \
+    -H "x-intensa-secret: $_sec" -H 'Content-Type: application/json' \
+    -d "{\"to\":\"$_own\",\"body\":\"$_msg\"}" >/dev/null 2>&1 || true
+}
+
 if [ ! -f "$PASS_FILE" ]; then
-  ( umask 077; openssl rand -hex 32 > "$PASS_FILE" )
-  echo "[backup] passphrase nueva generada en $PASS_FILE — guardala FUERA del VPS"
+  # NO auto-generar (2026-07-02): una pass nueva silenciosa produce backups que
+  # la copia externa de la pass no puede descifrar — inútiles en el restore de
+  # emergencia, que es exactamente cuando importan.
+  echo "[backup] FATAL: falta $PASS_FILE — NO hago backup con pass desconocida"
+  _avisar_wa "🔴 backup semanal ABORTADO: falta /root/secretaria/.backup-pass. Restaurala de tu copia externa (NO se auto-genera más)."
+  exit 1
 fi
 
 TS=$(date +%Y%m%d-%H%M)
@@ -71,6 +91,22 @@ PYEOF
       "state/$slug/" "$dest/state/" 2>/dev/null \
       || cp -r "state/$slug" "$dest/state" 2>/dev/null || true
   fi
+
+  # Sesión WA (2026-07-02): SÍ se backupea el perfil de auth (sin caches
+  # Chromium, que son lo pesado y regenerable). Restaurarla evita el re-scan
+  # de QR = RTO sin intervención humana. Best-effort: copiar un perfil vivo
+  # puede quedar inconsistente; si el restore de sesión falla, el fallback
+  # sigue siendo el QR.
+  if [ -d "state/$slug/.wwebjs_auth" ]; then
+    rsync -a \
+      --exclude 'Cache' --exclude 'Code Cache' --exclude 'GPUCache' \
+      --exclude 'DawnGraphiteCache' --exclude 'DawnWebGPUCache' --exclude 'GrShaderCache' \
+      --exclude 'ShaderCache' --exclude 'component_crx_cache' --exclude 'Crashpad' \
+      --exclude 'Service Worker/CacheStorage' --exclude 'Service Worker/ScriptCache' \
+      --exclude '*.log' --exclude 'BrowserMetrics*' \
+      "state/$slug/.wwebjs_auth/" "$dest/wwebjs_auth/" 2>/dev/null || true
+    echo "[backup] $slug: sesión WA $(du -sh "$dest/wwebjs_auth" 2>/dev/null | cut -f1 || echo '?')"
+  fi
 done
 
 # ── Extras fuera de state/: control DB de intensa-api, .env, etc. ─────────
@@ -93,6 +129,17 @@ while IFS= read -r f; do
   mkdir -p "$WORK/extras/$(dirname "$rel")"
   cp "$f" "$WORK/extras/$rel"
 done < <(find /root/secretaria/ops/backend -maxdepth 3 -name '.env*' -not -path '*/node_modules/*' 2>/dev/null)
+
+# Secrets canónicos (2026-07-02): sin esto el restore queda con keys stale
+# después de cualquier rotación hecha en secrets.conf.
+for f in /root/secretaria/config/secrets.conf /root/secretaria/.env-intensa-api /root/secretaria/config/instances.bootstrap.json; do
+  if [ -f "$f" ]; then
+    rel=${f#/root/secretaria/}
+    mkdir -p "$WORK/extras/$(dirname "$rel")"
+    cp "$f" "$WORK/extras/$rel"
+    echo "[backup] extra: $rel"
+  fi
+done
 
 # ── Empaquetar + cifrar ────────────────────────────────────────────────────
 TAR=/tmp/maria-backup-$TS.tar.gz
@@ -120,7 +167,7 @@ cp "$ENC" "$GITDIR/"
   echo "size: $SIZE"
   echo "sha256: $SHA"
   echo "instancias: ${SLUGS[*]:-ninguna}"
-  echo "nota: cifrado AES-256-CBC pbkdf2 iter=200000. Pass en /root/secretaria/.backup-pass del VPS (y copia en la maquina de Diego). NO incluye sesion de WhatsApp (re-scan QR al restaurar)."
+  echo "nota: cifrado AES-256-CBC pbkdf2 iter=200000. Pass en /root/secretaria/.backup-pass del VPS (y copia en la maquina de Diego). Incluye sesion WhatsApp (best-effort, fallback QR) + config/secrets.conf + .env-intensa-api."
 } > "$GITDIR/MANIFEST.txt"
 git -C "$GITDIR" add -A
 git -C "$GITDIR" -c user.email=backup@maria-vps -c user.name=maria-backup commit -qm "backup $TS"
@@ -128,5 +175,30 @@ if git -C "$GITDIR" push -q --force "$ORIGIN" backups:backups; then
   echo "[backup] OK — pusheado a branch backups ($SIZE)"
 else
   echo "[backup] ERROR — push a branch backups FALLO (queda copia local en /root/backups/)"
+  _avisar_wa "⚠️ backup semanal: el push a la branch backups FALLÓ (hay copia local en /root/backups/)."
+fi
+
+# ── Restore-test (2026-07-02): nadie testeaba que el backup se pueda abrir ──
+# Descifra la copia recién hecha, desempaqueta, y corre integrity_check en cada
+# sqlite. Si algo falla, WA al owner — un backup que no restaura no existe.
+RT=$(mktemp -d)
+RT_OK=1
+if openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in "$ENC" -out "$RT/b.tar.gz" -pass "file:$PASS_FILE" 2>/dev/null \
+   && tar -C "$RT" -xzf "$RT/b.tar.gz" 2>/dev/null; then
+  while IFS= read -r dbf; do
+    r=$(python3 -c "import sqlite3,sys; print(sqlite3.connect(sys.argv[1]).execute('PRAGMA integrity_check').fetchone()[0])" "$dbf" 2>/dev/null)
+    if [ "$r" != "ok" ]; then RT_OK=0; echo "[restore-test] FALLO integrity: $dbf → $r"; fi
+  done < <(find "$RT" -name '*.sqlite' 2>/dev/null)
+  [ -f "$RT/extras/config/secrets.conf" ] || { RT_OK=0; echo "[restore-test] FALTA secrets.conf en el backup"; }
+  ls "$RT"/instances/*/maria.sqlite >/dev/null 2>&1 || { RT_OK=0; echo "[restore-test] FALTA maria.sqlite de instancias"; }
+else
+  RT_OK=0
+  echo "[restore-test] FALLO descifrado/desempaquetado"
+fi
+rm -rf "$RT"
+if [ "$RT_OK" = 1 ]; then
+  echo "[restore-test] OK — el backup descifra y las DBs pasan integrity_check"
+else
+  _avisar_wa "🔴 backup semanal: el RESTORE-TEST falló — el backup de hoy puede no ser restaurable. Revisar log del cron."
 fi
 rm -rf "$GITDIR" "$ENC"

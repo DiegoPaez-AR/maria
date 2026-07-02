@@ -269,10 +269,25 @@ async function _onSubscriptionUpdated(sub) {
   `).run(stripe.unixToIso(_subPeriodEnd(sub)), subId);
 }
 
+// La API nueva de Stripe puede NO traer invoice.subscription top-level: cae en
+// parent.subscription_details o en el line item (2026-07-02, review 0701 — el
+// return silencioso dejaba un pago exitoso sin marcar al cliente activo).
+function _subIdDeInvoice(invoice) {
+  const cand = invoice.subscription
+    || invoice.parent?.subscription_details?.subscription
+    || invoice.lines?.data?.[0]?.parent?.subscription_item_details?.subscription
+    || invoice.lines?.data?.[0]?.subscription
+    || null;
+  return cand ? String(cand) : null;
+}
+
 async function _onPaymentSuccess(invoice) {
   const c = db.control();
-  const subId = invoice.subscription ? String(invoice.subscription) : null;
-  if (!subId) return;
+  const subId = _subIdDeInvoice(invoice);
+  if (!subId) {
+    console.warn(`[webhook] invoice ${invoice.id || '?'} pagada SIN subscription id resoluble (customer=${invoice.customer || '?'}) — cliente NO marcado activo, revisar a mano`);
+    return;
+  }
   let proximo = stripe.unixToIso(invoice.lines?.data?.[0]?.period?.end || invoice.period_end);
   if (!proximo) {
     try { proximo = stripe.unixToIso(_subPeriodEnd(await stripe.api('GET', `/subscriptions/${subId}`))); }
@@ -292,8 +307,11 @@ async function _onPaymentSuccess(invoice) {
 
 async function _onPaymentFailed(invoice) {
   const c = db.control();
-  const subId = invoice.subscription ? String(invoice.subscription) : null;
-  if (!subId) return;
+  const subId = _subIdDeInvoice(invoice);
+  if (!subId) {
+    console.warn(`[webhook] invoice ${invoice.id || '?'} FALLIDA sin subscription id resoluble (customer=${invoice.customer || '?'})`);
+    return;
+  }
   c.prepare(`
     UPDATE clientes SET estado='inactive', inactivado_en=datetime('now'),
       ultimo_evento='payment_failed', ultimo_evento_en=datetime('now'), actualizado=datetime('now')
