@@ -1,0 +1,24 @@
+# ejecutado: 2026-07-02T18:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── marker de commit malo ──"
+#   cat /root/secretaria/state/.canary-bad-commit 2>/dev/null || echo "(sin marker)"
+#   echo "── pm2 (restart_time NO debe haber subido) ──"
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo "── cola del cron log ──"
+#   tail -8 /root/secretaria/ops/.cron.log 2>/dev/null | grep -iE "canary|reload" || tail -4 /root/secretaria/ops/.cron.log
+#   echo FIN
+
+# ───── output ─────
+── marker de commit malo ──
+(sin marker)
+── pm2 (restart_time NO debe haber subido) ──
+maria-paez online restarts=2
+── cola del cron log ──
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
+[maria-paez exec] ops/instances/maria-paez/inbox/check-canary-fail.sh → ops/instances/maria-paez/outbox/check-canary-fail.out
+FIN
+
+# exit=0

@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13686  2026-07-02 21:57:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
+
+13685  2026-07-02 21:56:05  sistema   interno                                                   claude_call whatsapp: 6104ms prompt=6400c raw=4437c in=2t(cache_read=87968 new=3928) out=61t ttfb=1502ms api=4047ms turnos=1 $0.0420                                                                    
+
 13684  2026-07-02 21:55:59  whatsapp  entrante   5491165286555@c.us                             Genial!                                                                                                                                                                                                 
 
 13683  2026-07-02 21:55:19  whatsapp  saliente   5491165286555@c.us                             No, por ahora no tengo forma de editar archivos de Drive, Excel ni similares directamente. Lo que sí puedo hacer es manejar tu calendario, WhatsApp, mails, contactos, recordatorios y tareas/pendientes
@@ -218,7 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13588  2026-07-02 14:28:34  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
 
 13587  2026-07-02 14:28:34  calendar  saliente                                                  creado: Turno por el pie (2026-07-06T15:30:00-03:00 → 2026-07-06T16:00:00-03:00) · Meet: https://meet.google.com/bfe-jnbf-kxz [en calendar de Maria]                                                    
-
-13586  2026-07-02 14:28:16  whatsapp  entrante   5491165286555@c.us                             Alo, podés agendarme turno por el pie el lunes a las 15.30?                                                                                                                                             
-
-13585  2026-07-02 14:20:45  sistema   interno                                                   claude_call maria-worker: 96299ms prompt=60338c raw=49790c in=26t(cache_read=521338 new=94842) out=6146t ttfb=2124ms api=95534ms turnos=13 $0.6088                                                      
