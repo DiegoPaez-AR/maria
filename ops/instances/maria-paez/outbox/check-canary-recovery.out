@@ -1,0 +1,24 @@
+# ejecutado: 2026-07-02T19:00:05-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── marker (debe estar VACÍO) ──"
+#   cat /root/secretaria/state/.canary-bad-commit 2>/dev/null || echo "(sin marker — OK)"
+#   echo "── pm2 (restarts debe haber SUBIDO = reload post-fix) ──"
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo "── canary en cron log ──"
+#   grep -iE "canary (OK|FALLÓ)" /root/secretaria/ops/.cron.log | tail -3
+#   echo FIN
+
+# ───── output ─────
+── marker (debe estar VACÍO) ──
+82695d85e7bb6804906e6ce36cc5f6cc61c66b9e
+── pm2 (restarts debe haber SUBIDO = reload post-fix) ──
+maria-paez online restarts=2
+── canary en cron log ──
+canary FALLÓ (b0f96c993001f13d0180db215ef69180dac230c4) — NO recargo pm2, prod sigue con la versión anterior en memoria
+canary FALLÓ (82695d85e7bb6804906e6ce36cc5f6cc61c66b9e) — NO recargo pm2, prod sigue con la versión anterior en memoria
+FIN
+
+# exit=0
