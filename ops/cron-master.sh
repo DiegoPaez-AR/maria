@@ -90,10 +90,19 @@ _canary() {
   done
   local tdb=/tmp/canary-db.sqlite
   rm -f "$tdb"
-  if ! timeout 60 env MARIA_DB="$tdb" MARIA_VAULT_KEY=$(printf 'c%.0s' $(seq 64)) \
-       OWNER_NOMBRE='Canary' OWNER_WA='5491100000009' OWNER_EMAIL='canary@test.local' \
-       GOOGLE_TOKEN_PATH=/tmp/canary-token.json GOOGLE_CRED_PATH=/tmp/canary-cred.json \
-       node -e "
+  # Env realista: sourcear el .conf de la primera instancia + secrets (google.js
+  # y otros exigen vars de identidad al REQUIRE), pisando todo path con side
+  # effects (DB, tokens, sesion WA) con scratch descartable (2026-07-02).
+  local _cfc; _cfc=$(ls /root/secretaria/config/instances/*.conf 2>/dev/null | head -1)
+  if ! ( set -a
+         [ -n "$_cfc" ] && . "$_cfc"
+         [ -f /root/secretaria/config/secrets.conf ] && . /root/secretaria/config/secrets.conf
+         set +a
+         export MARIA_DB="$tdb" \
+                GOOGLE_TOKEN_PATH=/tmp/canary-token.json \
+                GOOGLE_CRED_PATH=/tmp/canary-cred.json \
+                WA_AUTH_DIR=/tmp/canary-wa-auth
+         timeout 60 node -e "
          ['./memory','./usuarios','./seguridad','./executor','./prompt-builder',
           './claude-client','./whatsapp-handler','./gmail-handler','./internal-api',
           './morning-brief','./meeting-prep','./follow-ups','./recordatorios',
@@ -103,7 +112,7 @@ _canary() {
           './memoria-curada','./clima','./providers','./google','./context-fetcher',
           './net-retry','./wa-send'].forEach(m => require(m));
          console.log('requires OK');
-       " >> "$out" 2>&1; then
+       " >> "$out" 2>&1 ); then
     echo "canary FALLO require-smoke/migración:"; tail -8 "$out"; rm -f "$tdb"; return 1
   fi
   rm -f "$tdb"
