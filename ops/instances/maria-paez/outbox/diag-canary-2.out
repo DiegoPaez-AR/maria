@@ -1,0 +1,29 @@
+# ejecutado: 2026-07-02T19:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── canary-tick.log cola ──"
+#   tail -15 /tmp/canary-tick.log 2>/dev/null
+#   echo FIN
+
+# ───── output ─────
+── canary-tick.log cola ──
+                 ^
+
+Error: [google.js] ASISTENTE_FROM_EMAIL no seteado en el .conf de la instancia
+    at Object.<anonymous> (/root/secretaria/google.js:46:24)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Module.require (node:internal/modules/cjs/loader:1527:12)
+    at require (node:internal/modules/helpers:147:16)
+    at Object.<anonymous> (/root/secretaria/executor.js:13:13)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+
+Node.js v22.23.1
+FIN
+
+# exit=0
