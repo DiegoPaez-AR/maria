@@ -59,6 +59,77 @@ if [ ${#INSTANCES[@]} -eq 0 ]; then
   INSTANCES=("maria:LEGACY")
 fi
 
+# ───── 1b. CANARY (2026-07-02): validar el código nuevo ANTES de recargar ─────
+# Si los checks fallan: NO se recarga (pm2 sigue corriendo la versión buena en
+# memoria), se avisa por WA, y se marca el commit malo para no re-checkear ni
+# re-avisar cada minuto. El disco queda en origin/main (necesario para que los
+# snapshots sigan pusheando sin conflictos) — riesgo residual documentado: un
+# autorestart de pm2 o un lazy-require en la ventana mala levantaría código
+# roto; el WA lo dice explícito. Se sale solo: al pushear un fix, el canary
+# corre de nuevo y si pasa, recarga.
+CANARY_BAD_F=/root/secretaria/state/.canary-bad-commit
+_wa_owner() {
+  local _msg="$1"
+  local _cf; _cf=$(ls /root/secretaria/config/instances/*.conf 2>/dev/null | head -1)
+  [ -z "$_cf" ] && return 0
+  local _port _own _sec
+  _port=$(grep -E '^ASISTENTE_INTERNAL_PORT=' "$_cf" | cut -d= -f2- | tr -d '"')
+  _own=$(grep -E '^OWNER_WA=' "$_cf" | cut -d= -f2- | tr -d '"')
+  _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/secrets.conf 2>/dev/null | cut -d= -f2- | tr -d '"')
+  [ -z "$_sec" ] && _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$_cf" | cut -d= -f2- | tr -d '"')
+  [ -n "$_port" ] && [ -n "$_own" ] && [ -n "$_sec" ] && curl -s -m 10 -X POST "http://127.0.0.1:$_port/send-wa" \
+    -H "x-intensa-secret: $_sec" -H 'Content-Type: application/json' \
+    -d "{\"to\":\"$_own\",\"body\":\"$_msg\"}" >/dev/null 2>&1 || true
+}
+_canary() {
+  local out=/tmp/canary-tick.log
+  : > "$out"
+  local f
+  for f in *.js; do
+    node --check "$f" >> "$out" 2>&1 || { echo "canary FALLO sintaxis: $f"; tail -4 "$out"; return 1; }
+  done
+  local tdb=/tmp/canary-db.sqlite
+  rm -f "$tdb"
+  if ! timeout 60 env MARIA_DB="$tdb" MARIA_VAULT_KEY=$(printf 'c%.0s' $(seq 64)) \
+       OWNER_NOMBRE='Canary' OWNER_WA='5491100000009' OWNER_EMAIL='canary@test.local' \
+       GOOGLE_TOKEN_PATH=/tmp/canary-token.json GOOGLE_CRED_PATH=/tmp/canary-cred.json \
+       node -e "
+         ['./memory','./usuarios','./seguridad','./executor','./prompt-builder',
+          './claude-client','./whatsapp-handler','./gmail-handler','./internal-api',
+          './morning-brief','./meeting-prep','./follow-ups','./recordatorios',
+          './programados','./maria-worker','./turn-state','./action-schemas',
+          './moderacion','./loop-guard','./wa-validate','./vault','./i18n',
+          './calendar-watch','./cumple-avisos','./diferidos-drainer','./poda-eventos',
+          './memoria-curada','./clima','./providers','./google','./context-fetcher',
+          './net-retry','./wa-send'].forEach(m => require(m));
+         console.log('requires OK');
+       " >> "$out" 2>&1; then
+    echo "canary FALLO require-smoke/migración:"; tail -8 "$out"; rm -f "$tdb"; return 1
+  fi
+  rm -f "$tdb"
+  if ! timeout 120 env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
+       npm test >> "$out" 2>&1; then
+    echo "canary FALLO npm test:"; grep -E "^not ok" "$out" | head -5; return 1
+  fi
+  return 0
+}
+
+if [ "$CODE_CHANGED" = 1 ]; then
+  HEAD_NOW=$(git rev-parse HEAD)
+  if [ -f "$CANARY_BAD_F" ] && [ "$(cat "$CANARY_BAD_F" 2>/dev/null)" = "$HEAD_NOW" ]; then
+    echo "canary: commit $HEAD_NOW ya marcado malo — SIN reload, esperando fix"
+    CODE_CHANGED=0
+  elif _canary; then
+    echo "canary OK ($HEAD_NOW) → reload"
+    rm -f "$CANARY_BAD_F"
+  else
+    echo "canary FALLÓ ($HEAD_NOW) — NO recargo pm2, prod sigue con la versión anterior en memoria"
+    echo "$HEAD_NOW" > "$CANARY_BAD_F"
+    _wa_owner "🔴 canary: el deploy ${HEAD_NOW:0:10} falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). Detalle en ops/.cron.log"
+    CODE_CHANGED=0
+  fi
+fi
+
 if [ "$CODE_CHANGED" = 1 ]; then
   for inst in "${INSTANCES[@]}"; do
     slug="${inst%%:*}"
