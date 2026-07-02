@@ -1,0 +1,19 @@
+#!/bin/bash
+cd /root/secretaria
+sleep 3  # dar aire al reload post-canary del mismo tick
+SECRET=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+OTRO=$(node -e "
+const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB || '/root/secretaria/state/maria-paez/db/maria.sqlite', {readonly:true});
+const u = db.prepare(\"SELECT email FROM usuarios WHERE activo=1 AND id != 1 AND email IS NOT NULL LIMIT 1\").get();
+console.log(u ? u.email : '');
+")
+[ -z "$OTRO" ] && { echo "sin otro usuario con email — SKIP"; exit 0; }
+echo "destino de prueba: (email de otro usuario activo, len=${#OTRO})"
+R=$(curl -s -m 25 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' \
+  -d "{\"usuarioId\":1,\"accion\":{\"tipo\":\"enviar_email\",\"to\":\"$OTRO\",\"asunto\":\"x\",\"texto\":\"x\"},\"canalOrigen\":\"whatsapp\",\"turnoTercero\":true}")
+echo "turnoTercero=true → $(echo "$R" | python3 -c 'import json,sys; d=json.load(sys.stdin); print("ok:", d.get("ok"), "| error:", (d.get("error") or "")[:110])')"
+# el guard de canary/reload no debe haber tocado nada más:
+pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+grep -E "canary (OK|FALLÓ)" /root/secretaria/ops/.cron.log | tail -1
+echo LISTO
