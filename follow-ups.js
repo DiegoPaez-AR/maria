@@ -55,17 +55,22 @@ async function tick(waClient) {
 
       const texto = `⏰ Follow-up vencido — ${f.descripcion}\n\n${f.esperando_de} no respondió todavía. ¿Querés que le mande un recordatorio o lo dejamos?`;
 
+      // CLAIM antes del send (2026-07-02, patrón de programados): si el envío
+      // se cuelga >5min sin resolver, el tick siguiente veía el follow-up
+      // todavía 'abierto' y re-avisaba. Claim primero; si el send falla de
+      // verdad (throw), revertimos y el próximo tick reintenta.
+      mem.setFollowUpEstado(f.id, 'disparado');
       try {
         await waSend.enviarWAUsuario(waClient, usuario, texto, {
           tag: `follow-ups/${usuario.nombre}`,
           metadata: { tipo: 'follow_up_disparado', followUpId: f.id, esperando_de: f.esperando_de },
           diferible: true, tz: usuario.tz,
         });
-        mem.setFollowUpEstado(f.id, 'disparado');
         console.log(`[follow-ups] #${f.id} disparado → ${usuario.nombre} (${f.esperando_de} no respondió)`);
       } catch (err) {
         console.error(`[follow-ups] #${f.id} fallo enviar al user ${usuario.nombre}: ${err.message}`);
-        // No marcamos disparado para que se reintente en el próximo tick.
+        try { mem.setFollowUpEstado(f.id, 'abierto'); } catch {}
+        // Revertido a 'abierto' para que se reintente en el próximo tick.
       }
     } catch (err) {
       console.error(`[follow-ups] tick #${f.id} fallo:`, err.message);

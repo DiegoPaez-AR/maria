@@ -30,10 +30,13 @@ async function tickUsuario(usuario) {
   try {
     const provider = await providers.forUser(usuario);
     detectado = await provider.chequearAccesoCalendar(usuario.calendar_id);
-    loopGuard.reportar('acceso_google', true);
+    loopGuard.reportar(`acceso_google:${usuario.nombre}`, true);
   } catch (err) {
     console.warn(`[calendar-watch/${usuario.nombre}] chequeo falló: ${err.message}`);
-    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar('acceso_google', false, err);
+    // Clave por USUARIO (2026-07-02): con clave compartida, los éxitos de los
+    // usuarios sanos reseteaban el contador del que tiene el token roto y su
+    // alerta no disparaba nunca (mordió 2 veces en incidentes OAuth).
+    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar(`acceso_google:${usuario.nombre}`, false, err);
     return null;
   }
   const actual = usuario.calendar_acceso || 'none';

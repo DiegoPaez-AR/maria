@@ -18,13 +18,19 @@ const qTodosIncl     = db.prepare(`SELECT * FROM usuarios ORDER BY id ASC`);
 const qPorId         = db.prepare(`SELECT * FROM usuarios WHERE id = ?`);
 const qPorNombre     = db.prepare(`SELECT * FROM usuarios WHERE nombre = ? COLLATE NOCASE AND activo = 1`);
 // Match de identidad contra usuarios DESACTIVADOS (para reactivación en crear()).
+// SOLO identidad fuerte (wa/email). El match por nombre se separó (2026-07-02):
+// reactivar por coincidencia de nombre le daba al homónimo NUEVO todo el
+// historial del dado-de-baja (eventos, hechos, contactos, calendar) — fuga
+// de privacidad entre personas distintas con el mismo nombre.
 const qInactivoMatch = db.prepare(`
   SELECT * FROM usuarios WHERE activo = 0 AND (
     (@cus IS NOT NULL AND wa_cus = @cus) OR
     (@lid IS NOT NULL AND wa_lid = @lid) OR
-    (@email IS NOT NULL AND email = @email) OR
-    nombre = @nombre COLLATE NOCASE
+    (@email IS NOT NULL AND email = @email)
   ) LIMIT 1
+`);
+const qInactivoPorNombre = db.prepare(`
+  SELECT * FROM usuarios WHERE activo = 0 AND nombre = ? COLLATE NOCASE LIMIT 1
 `);
 const reactivarStmt = db.prepare(`UPDATE usuarios SET activo = 1 WHERE id = ?`);
 const qPorWaLid      = db.prepare(`SELECT * FROM usuarios WHERE wa_lid = ? AND activo = 1`);
@@ -118,6 +124,7 @@ function _resolverPorDigitos(from) {
   const d = String(from).replace(/\D/g, '');
   if (d.length < 8) return null;
   for (const u of qTodosIncl.all()) {
+    if (Number(u.activo) !== 1) continue; // dados de baja NO rutean (2026-07-02): iban a su bucket salteando unknown-flow
     if (!u.wa_cus) continue;
     const dc = String(u.wa_cus).replace(/\D/g, '');
     if (dc.length >= 8 && (dc.endsWith(d) || d.endsWith(dc))) return u;
@@ -246,7 +253,21 @@ function crear({ nombre, wa_lid = null, wa_cus = null, email = null, calendar_id
   // lo reactivamos con su historial intacto en vez de explotar con
   // SQLITE_CONSTRAINT (los UNIQUE de la tabla son globales, los prechecks de
   // abajo solo miran activo=1). El caller ve `reactivado: true` en el retorno.
-  const inactivo = qInactivoMatch.get({ cus: cusN, lid: lidN, email: emailN, nombre: nombreN });
+  const inactivo = qInactivoMatch.get({ cus: cusN, lid: lidN, email: emailN });
+  // Match SOLO por nombre (sin wa/email coincidente) → NO reactivar: puede ser
+  // otra persona. Como usuarios.nombre es UNIQUE global, tampoco se puede crear
+  // limpio con ese nombre — error instructivo, decide el owner (2026-07-02).
+  if (!inactivo) {
+    const tocayo = qInactivoPorNombre.get(nombreN);
+    if (tocayo) {
+      throw new Error(
+        `existe un usuario DADO DE BAJA llamado "${tocayo.nombre}" (id=${tocayo.id}). ` +
+        `Si es la MISMA persona, reactivalo pasando su mismo whatsapp o email. ` +
+        `Si es OTRA persona, usá un nombre que lo distinga (apellido, apodo) — ` +
+        `no se puede reusar el nombre porque heredaría el historial del anterior.`
+      );
+    }
+  }
   if (inactivo) {
     reactivarStmt.run(inactivo.id);
     const patch = {};

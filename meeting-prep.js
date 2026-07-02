@@ -128,10 +128,10 @@ async function _tickUsuario(usuario) {
       dias: Math.max(1, Math.ceil(VENTANA_HORAS / 24)),
       max: 30,
     });
-    loopGuard.reportar('acceso_google', true);
+    loopGuard.reportar(`acceso_google:${usuario.nombre}`, true);
   } catch (err) {
     console.warn(`[meeting-prep/${usuario.nombre}] listar cal falló:`, err.message);
-    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar('acceso_google', false, err);
+    if (loopGuard.esErrorAccesoGoogle(err)) loopGuard.reportar(`acceso_google:${usuario.nombre}`, false, err); // clave por usuario (2026-07-02)
     return 0;
   }
   if (!eventos.length) return 0;
@@ -162,6 +162,15 @@ async function _tickUsuario(usuario) {
       if (delta < 60_000) continue; // misma hora → nada que hacer
       mem.cancelarProgramado(progExistente.id);
       console.log(`[meeting-prep/${usuario.nombre}] evento ${e.summary} se movió — reagendando alerta (era ${progExistente.cuando})`);
+    }
+    // Si la alerta de este evento YA SALIÓ y el corrimiento es chico (<30min),
+    // no re-avisar — duplicaba el aviso por micro-movidas del evento
+    // (2026-07-02). Si se movió en serio, una alerta nueva con la hora nueva
+    // es información útil y se programa igual.
+    const progEnviado = mem.ultimoProgramadoEnviadoPorRazon(razon);
+    if (progEnviado) {
+      const deltaEnv = Math.abs(new Date(progEnviado.cuando).getTime() - cuandoAlerta.getTime());
+      if (deltaEnv < 30 * 60_000) continue;
     }
 
     try {

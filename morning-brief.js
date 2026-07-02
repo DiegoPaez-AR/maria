@@ -68,15 +68,20 @@ async function _cumplesHoy(usuario) {
   const items = [];
 
   // 1) Cumples desde el calendar de Maria (calendario de cumpleaños).
-  //    No depende del provider del usuario — siempre es el calendar de Maria.
-  try {
-    const mariaProvider = await providers.forMaria();
-    const lista = await mariaProvider.listarCumples({ dias: 2 });
-    for (const e of lista) {
-      if ((e.start || '').startsWith(hoy.yyyymmdd)) items.push(`🎂 ${e.summary}`);
+  //    SOLO para el owner (2026-07-02): ese calendar es data histórica del
+  //    owner sin atribución por usuario — mostrarlo a todos filtraba los
+  //    cumpleaños de unos en el brief de otros. Los cumples por usuario
+  //    salen de la libreta (paso 2, ya filtrada).
+  if (usuario.rol === 'owner') {
+    try {
+      const mariaProvider = await providers.forMaria();
+      const lista = await mariaProvider.listarCumples({ dias: 2 });
+      for (const e of lista) {
+        if ((e.start || '').startsWith(hoy.yyyymmdd)) items.push(`🎂 ${e.summary}`);
+      }
+    } catch (err) {
+      console.warn(`[morning-brief/${usuario.nombre}] cumples Google falló:`, err.message);
     }
-  } catch (err) {
-    console.warn(`[morning-brief/${usuario.nombre}] cumples Google falló:`, err.message);
   }
 
   // 2) Cumples desde la libreta de Maria (privados del usuario + públicos).
@@ -247,11 +252,19 @@ async function tickUsuario(waClient, usuario) {
   }
 }
 
+let _enCurso = false; // guard de solape (2026-07-02): un tick lento (16 usuarios,
+// llamadas LLM) no debe pisarse con el siguiente — mandaba el brief dos veces.
 async function tick(waClient) {
-  const activos = usuarios.listarServidos();
-  for (const u of activos) {
-    try { await tickUsuario(waClient, u); }
-    catch (err) { console.error(`[morning-brief/${u.nombre}] tick:`, err.message); }
+  if (_enCurso) return;
+  _enCurso = true;
+  try {
+    const activos = usuarios.listarServidos();
+    for (const u of activos) {
+      try { await tickUsuario(waClient, u); }
+      catch (err) { console.error(`[morning-brief/${u.nombre}] tick:`, err.message); }
+    }
+  } finally {
+    _enCurso = false;
   }
 }
 

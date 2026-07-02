@@ -702,7 +702,7 @@ function existeEmailEntrante(messageId, usuarioId = null) {
 const qRecientesUsuario = db.prepare(`
   SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
-  WHERE usuario_id = ? OR (usuario_id IS NULL AND canal = 'sistema')
+  WHERE usuario_id = ? -- eventos sistema sin dueño EXCLUIDOS del contexto de usuario (2026-07-02, fuga cross-user)
   ORDER BY timestamp DESC, id DESC
   LIMIT ?
 `);
@@ -713,7 +713,7 @@ function recientes(usuarioId, { limit = 20 } = {}) {
 const qPorCanalUsuario = db.prepare(`
   SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
-  WHERE canal = ? AND (usuario_id = ? OR (usuario_id IS NULL AND canal = 'sistema'))
+  WHERE canal = ? AND usuario_id = ? -- idem: sin eventos sistema NULL (2026-07-02)
   ORDER BY timestamp DESC, id DESC
   LIMIT ?
 `);
@@ -735,7 +735,7 @@ function porContacto(usuarioId, identificador, { limit = 20 } = {}) {
 const qDesdeHorasUsuario = db.prepare(`
   SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
-  WHERE (usuario_id = ? OR (usuario_id IS NULL AND canal = 'sistema'))
+  WHERE usuario_id = ? -- idem: sin eventos sistema NULL (2026-07-02)
     AND timestamp >= datetime('now', ?)
   ORDER BY timestamp ASC, id ASC
 `);
@@ -1692,6 +1692,11 @@ const qProgramadosProximosUsuario = db.prepare(`
 const qProgramadoPorRazonDesde = db.prepare(`
   SELECT * FROM programados WHERE razon = ? AND cuando >= ? AND enviado = 0 ORDER BY cuando ASC LIMIT 1
 `);
+// Último YA ENVIADO con esta razón — para que meeting-prep no re-avise el mismo
+// evento si se movió apenas (2026-07-02).
+const qUltimoEnviadoPorRazon = db.prepare(`
+  SELECT * FROM programados WHERE razon = ? AND enviado = 1 ORDER BY cuando DESC LIMIT 1
+`);
 const updProgramadoEnviado   = db.prepare(`UPDATE programados SET enviado = 1 WHERE id = ?`);
 const updProgramadoCancelado = db.prepare(`UPDATE programados SET enviado = -1 WHERE id = ?`);
 const updProgramadoPausado   = db.prepare(`UPDATE programados SET enviado = -2 WHERE id = ?`);
@@ -1736,6 +1741,10 @@ function existeProgramadoFuturo(razon, desde = new Date()) {
 function programadoFuturoPorRazon(razon, desde = new Date()) {
   const iso = desde instanceof Date ? desde.toISOString() : new Date(desde).toISOString();
   const r = qProgramadoPorRazonDesde.get(razon, iso);
+  return r ? hidratar(r) : null;
+}
+function ultimoProgramadoEnviadoPorRazon(razon) {
+  const r = qUltimoEnviadoPorRazon.get(razon);
   return r ? hidratar(r) : null;
 }
 // Al desactivar un usuario: sus envíos diferidos y follow-ups no deben salir.
@@ -1915,6 +1924,7 @@ module.exports = {
   statsSemana,
   podarEventos,
   programadoFuturoPorRazon,
+  ultimoProgramadoEnviadoPorRazon,
   cancelarPendientesDeUsuario,
   // contactos
   upsertContacto,

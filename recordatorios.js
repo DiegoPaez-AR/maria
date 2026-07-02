@@ -100,13 +100,15 @@ async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waC
     return { enviado: false, motivo: 'cooldown-global' };
   }
 
-  const ahoraMs = Date.now();
   const candidatos = pendientes.filter(p => {
     if (p.dueno !== 'usuario') return false;
     if (p.disparador !== disparador) return false;
     if (p.recordar_desde) {
-      const t = new Date(p.recordar_desde).getTime();
-      if (!isNaN(t) && t > ahoraMs) return false;
+      // _horasDesde normaliza timestamps sin zona a UTC (mismo criterio que el
+      // resto del archivo); negativo = fecha futura. El parse crudo anterior
+      // interpretaba ISO-sin-zona como hora local → corrimiento de 3h (ART)
+      // en postpones escritos sin Z (2026-07-02).
+      if (_horasDesde(p.recordar_desde) < 0) return false;
     }
     const edad = _horasDesde(p.creado);
     if (edad < cfg.umbralH) return false;
