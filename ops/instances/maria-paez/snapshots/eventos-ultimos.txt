@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                             
 -----  -------------------  --------  ---------  ------------------  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13335  2026-07-02 00:04:22  whatsapp  saliente   34342575317160@lid  Listo, les avisé que el pago es al retirar.                                                                                                                                                        
+
+13334  2026-07-02 00:04:22  sistema   interno                        claude_call whatsapp: 17813ms prompt=7453c raw=8839c in=18t(cache_read=56295 new=3896) out=307t ttfb=2186ms api=8783ms turnos=2 $0.0362                                                            
+
+13333  2026-07-02 00:04:17  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
+
+13332  2026-07-02 00:04:17  whatsapp  saliente   5491169594900@c.us  Perfecto, y el pago lo hacen al retirar. ¡Gracias!                                                                                                                                                 
+
+13331  2026-07-02 00:04:17  sistema   interno                        claude_call moderacion: 6021ms prompt=1498c raw=6029c in=10t(cache_read=0 new=22454) out=305t ttfb=1592ms api=5177ms turnos=1 $0.0300                                                              
+
+13330  2026-07-02 00:04:03  whatsapp  entrante   5491132317896@c.us  avisales                                                                                                                                                                                           
+
 13329  2026-07-02 00:00:00  sistema   interno                        claude_call whatsapp: 9921ms prompt=7491c raw=6449c in=10t(cache_read=0 new=26329) out=183t ttfb=2125ms api=7173ms turnos=1 $0.1015                                                                
 
 13328  2026-07-01 23:59:49  whatsapp  entrante   5491132317896@c.us  perfecto, lo pago cuando voy a retirar                                                                                                                                                             
@@ -230,15 +242,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13237  2026-07-01 23:18:13  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                
 
 13236  2026-07-01 23:18:08  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                        
-
-13235  2026-07-01 23:18:08  whatsapp  saliente   5491169594900@c.us  Hola! Me podrían mandar la carta? Gracias                                                                                                                                                          
-
-13234  2026-07-01 23:18:08  sistema   interno                        claude_call moderacion: 6391ms prompt=1489c raw=5692c in=10t(cache_read=0 new=22447) out=257t ttfb=2347ms api=4847ms turnos=1 $0.0298                                                              
-
-13233  2026-07-01 23:18:03  whatsapp  saliente   5491165286555@c.us  Perfecto! Cuando tu papá vea y diga algo, me contás y seguimos filtrando o buscamos más info de los que le gusten. 🙌                                                                               
-
-13232  2026-07-01 23:18:03  sistema   interno                        claude_call whatsapp: 8815ms prompt=5371c raw=6244c in=10t(cache_read=35443 new=3645) out=186t ttfb=2490ms api=5475ms turnos=1 $0.0271                                                             
-
-13231  2026-07-01 23:17:53  whatsapp  entrante   5491165286555@c.us  Se los voy a enviar a mi papá  ver qué dice                                                                                                                                                        
-
-13230  2026-07-01 23:17:52  whatsapp  entrante   5491132317896@c.us  Perfecto, agéndalo y escribirles para pedirles que te manden la carta pf                                                                                                                           
