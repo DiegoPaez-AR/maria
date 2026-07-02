@@ -1,0 +1,19 @@
+# ejecutado: 2026-07-01T21:16:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="$MARIA_DB"
+#   sqlite3 "$DB" "UPDATE contactos SET notas = 'Número confirmado: atendieron y tomaron un pedido el 01/07/2026 (se identifican como Barra Chalaca San Telmo, Av. Caseros 467). Pago al retirar.', actualizado = CURRENT_TIMESTAMP WHERE id = 352 AND whatsapp = '5491169594900@c.us';" 2>&1
+#   echo "rows changed: $(sqlite3 "$DB" 'SELECT changes();' 2>/dev/null)"
+#   sqlite3 -readonly "$DB" -line "SELECT id, nombre, whatsapp, notas, actualizado FROM contactos WHERE id = 352;" 2>&1
+
+# ───── output ─────
+rows changed: 0
+         id = 352
+     nombre = Barra Chalaca Caseros
+   whatsapp = 5491169594900@c.us
+      notas = Número confirmado: atendieron y tomaron un pedido el 01/07/2026 (se identifican como Barra Chalaca San Telmo, Av. Caseros 467). Pago al retirar.
+actualizado = 2026-07-02 00:16:01
+
+# exit=0
