@@ -1,0 +1,61 @@
+#!/bin/bash
+# Migración Node 18 → 22 LTS. Con guardas: cada paso verifica antes de seguir.
+# Rollback manual: /usr/bin/node18.bak + npm rebuild + pm2 kill/start.
+set -u
+cd /root/secretaria
+echo "── estado previo ──"
+node -v; npm -v; which node
+pm2 -v 2>/dev/null
+
+echo ""
+echo "── 1. backup del binario viejo ──"
+cp /usr/bin/node /usr/bin/node18.bak && echo "node18.bak OK: $(/usr/bin/node18.bak -v)"
+
+echo ""
+echo "── 2. instalar Node 22 (nodesource) ──"
+curl -fsSL https://deb.nodesource.com/setup_22.x 2>/dev/null | bash - >/dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs >/dev/null 2>&1
+NEWV=$(node -v)
+echo "node ahora: $NEWV"
+case "$NEWV" in
+  v22*) echo "instalación OK";;
+  *) echo "FATAL: node no es v22 — ABORTO sin tocar pm2 (prod sigue en el proceso viejo)"; exit 1;;
+esac
+
+echo ""
+echo "── 3. rebuild módulos nativos ──"
+npm rebuild better-sqlite3 2>&1 | tail -2
+node -e "const db=require('better-sqlite3')(':memory:'); db.exec('CREATE TABLE t(x)'); db.prepare('INSERT INTO t VALUES (1)').run(); console.log('better-sqlite3 OK con', process.version)" || { echo "FATAL: better-sqlite3 no funciona con node22 — rollback: cp /usr/bin/node18.bak /usr/bin/node && npm rebuild better-sqlite3"; exit 1; }
+if [ -d ops/backend/intensa-api/node_modules ]; then
+  (cd ops/backend/intensa-api && npm rebuild 2>&1 | tail -1)
+fi
+
+echo ""
+echo "── 4. reiniciar pm2 con el node nuevo ──"
+pm2 kill >/dev/null 2>&1
+sleep 2
+pm2 start ecosystem.config.js >/dev/null 2>&1
+pm2 save >/dev/null 2>&1
+sleep 12
+
+echo ""
+echo "── 5. verificación ──"
+pm2 jlist 2>/dev/null | python3 -c "
+import json,sys
+for p in json.load(sys.stdin):
+    e=p['pm2_env']
+    print(f\"{p['name']}: {e.get('status')} node_version={e.get('node_version','?')}\")
+"
+SECRET=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+for i in 1 2 3 4; do
+  H=$(curl -s -m 5 -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/reload-usuarios" -H "x-intensa-secret: $SECRET")
+  echo "internal-api intento $i: HTTP $H"
+  [ "$H" = "200" ] && break
+  sleep 5
+done
+echo ""
+echo "── 6. tests bajo node 22 ──"
+env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
+  npm test 2>&1 | grep -E "^# (tests|pass|fail)|^not ok"
+echo "LISTO — chequear en el próximo snapshot que WA llegue a ready"
