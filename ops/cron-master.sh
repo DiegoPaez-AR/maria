@@ -114,6 +114,8 @@ for inst in "${INSTANCES[@]}"; do
         if [ "$cf" != "LEGACY" ] && [ -f "$cf" ]; then
           set -a
           . "$cf"
+          # secrets consolidados: ganan sobre el .conf (mismo criterio que ecosystem)
+          [ -f /root/secretaria/config/secrets.conf ] && . /root/secretaria/config/secrets.conf
           set +a
         fi
         bash "$cmd_file" 2>&1

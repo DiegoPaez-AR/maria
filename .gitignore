@@ -62,3 +62,5 @@ state/
 # tener secretos (MARIA_VAULT_KEY, etc.). Solo el template queda en git.
 config/instances/*.conf
 !config/instances/_template.conf.example
+# secrets consolidados — NUNCA a git
+config/secrets.conf

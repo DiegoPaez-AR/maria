@@ -38,6 +38,15 @@ function _parseConf(file) {
   return env;
 }
 
+// Secrets consolidados: config/secrets.conf (untracked, 600). Si existe,
+// sus valores GANAN sobre los .conf de instancia y el .env-intensa-api.
+// Racional: un solo lugar canónico para rotar secretos (2026-07-01).
+const SECRETS_FILE = path.join(ROOT, 'config', 'secrets.conf');
+function _secrets() {
+  try { return fs.existsSync(SECRETS_FILE) ? _parseConf(SECRETS_FILE) : {}; }
+  catch (e) { console.warn('[ecosystem] no pude leer secrets.conf:', e.message); return {}; }
+}
+
 function _confs() {
   if (!fs.existsSync(INSTANCES_DIR)) return [];
   return fs.readdirSync(INSTANCES_DIR)
@@ -79,6 +88,7 @@ if (!confs.length) {
           NODE_ENV: 'production',
           TZ: env.ASISTENTE_TZ || 'America/Argentina/Buenos_Aires',
           ...env,
+          ..._secrets(),
         },
       };
     }),
@@ -103,6 +113,7 @@ function _intensaApiEnv() {
       env[k] = v;
     }
   }
+  Object.assign(env, _secrets());
   return env;
 }
 
