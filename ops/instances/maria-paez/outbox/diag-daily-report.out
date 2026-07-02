@@ -12,7 +12,7 @@
 #   
 #   echo ""
 #   echo "=== .conf: OWNER_EMAIL / ASISTENTE_FROM_EMAIL / VAULT (presencia) ==="
-#   grep -nE "OWNER_EMAIL|ASISTENTE_FROM_EMAIL|MARIA_VAULT_KEY|OWNER_NOMBRE|DIEGO_EMAIL" "$cf" | sed -E 's/(VAULT_KEY=).*/\1<oculto>/' 
+#   grep -nE "OWNER_EMAIL|ASISTENTE_FROM_EMAIL|MARIA_VAULT_KEY|OWNER_NOMBRE|DIEGO_EMAIL" "$cf" | sed -E 's/(VAULT_KEY=<REDACTED>' 
 #   
 #   echo ""
 #   echo "=== log del cron daily-report si existe ==="
@@ -34,7 +34,7 @@
 8:ASISTENTE_FROM_EMAIL=maria.paez@intensa.io
 12:OWNER_NOMBRE=Diego
 13:OWNER_EMAIL=diego@paez.is
-37:MARIA_VAULT_KEY=<oculto>
+37:MARIA_VAULT_KEY=<REDACTED>
 
 === log del cron daily-report si existe ===
 -- /root/secretaria/ops/.daily-report.log (tail) --

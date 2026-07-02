@@ -35,7 +35,7 @@
 #   
 #   echo
 #   echo "═══ 5. Smoke test del internal-api (send-email a casilla real con un código fake) ═══"
-#   INTERNAL_SECRET=$(grep '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   INTERNAL_SECRET=<REDACTED> '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
 #   echo "  send-email a diego@paez.is:"
 #   curl -s -X POST -H "Content-Type: application/json" -H "X-Intensa-Secret: $INTERNAL_SECRET" \
 #     -d '{"to":"diego@paez.is","subject":"[Maria test] verificación de mailing","html":"<p>Soy María. Si te llegó este mail, el internal-api send-email anda 👋</p>"}' \
@@ -56,8 +56,8 @@
 
 # ───── output ─────
 ═══ 1. Verificar .env-intensa-api tiene Turnstile keys ═══
-TURNSTILE_SITE_KEY=***
-TURNSTILE_SECRET_KEY=***
+TURNSTILE_SITE_KEY=<REDACTED>
+TURNSTILE_SECRET_KEY=<REDACTED>
 
 ═══ 2. pm2 delete intensa-api + start fresh (forzar re-lectura del .env) ═══
 ├────┼───────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤

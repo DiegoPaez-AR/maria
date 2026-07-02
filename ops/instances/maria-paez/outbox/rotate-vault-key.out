@@ -21,12 +21,12 @@
 #     echo "ERROR: $CONF no existe"; exit 1
 #   fi
 #   
-#   OLD_KEY=$(grep -E '^MARIA_VAULT_KEY=' "$CONF" | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
+#   OLD_KEY=<REDACTED> -E '^MARIA_VAULT_KEY=' "$CONF" | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
 #   if [ -z "$OLD_KEY" ]; then
 #     echo "ERROR: no encuentro MARIA_VAULT_KEY en el .conf"; exit 1
 #   fi
 #   
-#   NEW_KEY=$(openssl rand -hex 32)
+#   NEW_KEY=<REDACTED> rand -hex 32)
 #   if [ -z "$NEW_KEY" ] || [ ${#NEW_KEY} -ne 64 ]; then
 #     echo "ERROR: openssl rand falló o key inválida"; exit 1
 #   fi
@@ -88,7 +88,7 @@
 #   cp "$CONF" "$BACKUP_CONF"
 #   echo "  backup: $BACKUP_CONF"
 #   # sed con / como delimitador no funciona porque la key puede contener barras (no en hex pero por las dudas)
-#   sed -i "s|^MARIA_VAULT_KEY=.*|MARIA_VAULT_KEY=$NEW_KEY|" "$CONF"
+#   sed -i "s|^MARIA_VAULT_KEY=<REDACTED>" "$CONF"
 #   NEW_IN_CONF=$(grep -E '^MARIA_VAULT_KEY=' "$CONF" | head -1 | cut -d= -f2-)
 #   if [ "$NEW_IN_CONF" != "$NEW_KEY" ]; then
 #     echo "ERROR: sed no actualizó el .conf correctamente — abortando"; exit 1

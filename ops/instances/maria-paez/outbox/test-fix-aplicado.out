@@ -7,7 +7,7 @@
 #   echo "═══ env actual (debería estar propagado) ═══"
 #   echo "MARIA_DB=$MARIA_DB"
 #   echo "ASISTENTE_SLUG=$ASISTENTE_SLUG"
-#   echo "MARIA_VAULT_KEY=${MARIA_VAULT_KEY:+SETEADO}${MARIA_VAULT_KEY:-NO SETEADO}"
+#   echo "MARIA_VAULT_KEY=<REDACTED> SETEADO}"
 #   
 #   echo ""
 #   echo "═══ ¿se recreó la DB legacy? ═══"
@@ -48,7 +48,7 @@
 ═══ env actual (debería estar propagado) ═══
 MARIA_DB=/root/secretaria/state/maria-paez/db/maria.sqlite
 ASISTENTE_SLUG=maria-paez
-MARIA_VAULT_KEY=SETEADO[REDACTED]
+MARIA_VAULT_KEY=<REDACTED>
 
 ═══ ¿se recreó la DB legacy? ═══
 total 172

@@ -27,7 +27,7 @@
 #     echo "── $label ──"
 #     t0=$(date +%s.%N)
 #     if [ -n "$cap" ]; then
-#       J=$( timeout "$to" env "MAX_THINKING_TOKENS=$cap" claude "${args[@]}" < "$P" 2>/tmp/_e || true )
+#       J=$( timeout "$to" env "MAX_THINKING_TOKENS=<REDACTED>" claude "${args[@]}" < "$P" 2>/tmp/_e || true )
 #     else
 #       J=$( timeout "$to" claude "${args[@]}" < "$P" 2>/tmp/_e || true )
 #     fi

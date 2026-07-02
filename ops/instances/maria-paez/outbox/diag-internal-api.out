@@ -52,14 +52,14 @@
 #   
 #   echo
 #   echo "═══ Final smoke ═══"
-#   INTERNAL_SECRET=$(grep '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   INTERNAL_SECRET=<REDACTED> '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
 #   curl -s -H "X-Intensa-Secret: $INTERNAL_SECRET" -o /dev/null -w "internal-api/health → %{http_code}\n" http://127.0.0.1:4501/health
 
 # ───── output ─────
 ═══ .conf de maria-paez ═══
 ASISTENTE_SLUG=maria-paez
 ASISTENTE_INTERNAL_PORT=4501
-ASISTENTE_INTERNAL_SECRET=ab6bab3365ef2f9941224367633c5d51bc1816d4ce25cefb875691767b4e38e9
+ASISTENTE_INTERNAL_SECRET=<REDACTED>
 
 ═══ pm2 describe maria-paez (env) ═══
   ASISTENTE_INTERNAL_PORT = 4501

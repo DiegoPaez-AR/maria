@@ -16,7 +16,7 @@
 #   
 #   echo
 #   echo "═══ 3. Test webhook con firma válida (HMAC-SHA256 del body con secret real) ═══"
-#   SECRET=$(grep '^LEMON_WEBHOOK_SECRET=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
+#   SECRET=<REDACTED> '^LEMON_WEBHOOK_SECRET=' /root/secretaria/.env-intensa-api | cut -d= -f2-)
 #   BODY='{"meta":{"event_name":"test_event","webhook_id":"test-manual-001"},"data":{"id":"42","attributes":{}}}'
 #   SIG=$(printf '%s' "$BODY" | openssl dgst -sha256 -hmac "$SECRET" | awk '{print $2}')
 #   echo "  secret=${SECRET:0:8}... sig=${SIG:0:12}..."

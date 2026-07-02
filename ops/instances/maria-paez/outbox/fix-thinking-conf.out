@@ -15,7 +15,7 @@
 #   grep -v -E '^(CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING|MAX_THINKING_TOKENS)=' "$CONF" > "$CONF.tmp"
 #   {
 #     echo 'CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1'
-#     echo 'MAX_THINKING_TOKENS=1024'
+#     echo 'MAX_THINKING_TOKENS=<REDACTED>'
 #   } >> "$CONF.tmp"
 #   mv "$CONF.tmp" "$CONF"
 #   
@@ -39,7 +39,7 @@
 # ───── output ─────
 lineas de thinking en el conf:
 CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
-MAX_THINKING_TOKENS=1024
+MAX_THINKING_TOKENS=<REDACTED>
 reload de la instancia via ecosystem:
 [PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 0 ])
 [PM2] [maria-paez](0) ✓

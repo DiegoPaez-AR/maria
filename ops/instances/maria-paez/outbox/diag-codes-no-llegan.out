@@ -13,7 +13,7 @@
 #   
 #   echo
 #   echo "═══ Test internal-api directo: send-wa a 5491132317896 ═══"
-#   INTERNAL_SECRET=$(grep '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   INTERNAL_SECRET=<REDACTED> '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
 #   curl -s -X POST -H "Content-Type: application/json" -H "X-Intensa-Secret: $INTERNAL_SECRET" \
 #     -d '{"to":"5491132317896","body":"[diag] test de send-wa desde internal-api — '"$(date +%H:%M:%S)"'"}' \
 #     http://127.0.0.1:4501/send-wa

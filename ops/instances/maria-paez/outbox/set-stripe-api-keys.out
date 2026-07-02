@@ -12,12 +12,12 @@
 #   
 #   [ -f "$ENV" ] || { echo "ERROR no existe $ENV"; exit 1; }
 #   cp -a "$ENV" "${ENV}.bak.$(date +%s)"
-#   grep -vE '^STRIPE_SECRET_KEY=|^STRIPE_PUBLISHABLE_KEY=' "$ENV" > "${ENV}.tmp"
+#   grep -vE '^STRIPE_SECRET_KEY=<REDACTED>' "$ENV" > "${ENV}.tmp"
 #   {
 #     echo ""
 #     echo "# Stripe — API keys LIVE (deploy $(date -Iseconds))"
-#     echo "STRIPE_SECRET_KEY=${SK}"
-#     echo "STRIPE_PUBLISHABLE_KEY=${PK}"
+#     echo "STRIPE_SECRET_KEY=<REDACTED>"
+#     echo "STRIPE_PUBLISHABLE_KEY=<REDACTED>"
 #   } >> "${ENV}.tmp"
 #   mv "${ENV}.tmp" "$ENV"; chmod 600 "$ENV"
 #   
@@ -59,22 +59,22 @@ INTENSA_API_PORT=<set>
 INTENSA_API_HOST=<set>
 CONTROL_DB=<set>
 ARCHIVE_DB=<set>
-INTENSA_API_SECRET=<set>
+INTENSA_API_SECRET=<REDACTED>
 INTENSA_LANDING_BASE=<set>
-LEMON_API_KEY=<set>
-LEMON_WEBHOOK_SECRET=<set>
+LEMON_API_KEY=<REDACTED>
+LEMON_WEBHOOK_SECRET=<REDACTED>
 LEMON_BUY_BASE=<set>
 LEMON_TEST_MODE=<set>
-TURNSTILE_SITE_KEY=<set>
-TURNSTILE_SECRET_KEY=<set>
+TURNSTILE_SITE_KEY=<REDACTED>
+TURNSTILE_SECRET_KEY=<REDACTED>
 INSTANCES_BOOTSTRAP_FILE=<set>
 
 # Stripe — webhook signing secret (deploy 2026-06-28T01:40:02-03:00)
-STRIPE_WEBHOOK_SECRET=<set>
+STRIPE_WEBHOOK_SECRET=<REDACTED>
 
 # Stripe — API keys LIVE (deploy 2026-06-28T01:50:02-03:00)
-STRIPE_SECRET_KEY=<set>
-STRIPE_PUBLISHABLE_KEY=<set>
+STRIPE_SECRET_KEY=<REDACTED>
+STRIPE_PUBLISHABLE_KEY=<REDACTED>
 
 ## valido SECRET KEY contra Stripe API (/v1/balance, read-only):
 http_code=200
@@ -85,11 +85,11 @@ object= balance livemode= True
 [PM2] Applying action reloadProcessId on app [intensa-api](ids: [ 1 ])
 [PM2] [intensa-api](1) ✓
 pid=1776265  vars en environ:
-  STRIPE_SECRET_KEY=PRESENTE
-  STRIPE_PUBLISHABLE_KEY=PRESENTE
-  STRIPE_WEBHOOK_SECRET=PRESENTE
-  LEMON_WEBHOOK_SECRET=PRESENTE
-  INTENSA_API_SECRET=PRESENTE
+  STRIPE_SECRET_KEY=<REDACTED>
+  STRIPE_PUBLISHABLE_KEY=<REDACTED>
+  STRIPE_WEBHOOK_SECRET=<REDACTED>
+  LEMON_WEBHOOK_SECRET=<REDACTED>
+  INTENSA_API_SECRET=<REDACTED>
 status= online restarts= 3
 puerto 4080 OK
 

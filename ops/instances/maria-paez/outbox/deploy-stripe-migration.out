@@ -74,13 +74,13 @@
 # ───── output ─────
 ===== 1) STRIPE_PRICE_ID en el .env =====
 keys (masked):
-LEMON_API_KEY=<set>
-LEMON_WEBHOOK_SECRET=<set>
+LEMON_API_KEY=<REDACTED>
+LEMON_WEBHOOK_SECRET=<REDACTED>
 LEMON_BUY_BASE=<set>
 LEMON_TEST_MODE=<set>
-STRIPE_SECRET_KEY=<set>
-STRIPE_PUBLISHABLE_KEY=<set>
-STRIPE_WEBHOOK_SECRET=<set>
+STRIPE_SECRET_KEY=<REDACTED>
+STRIPE_PUBLISHABLE_KEY=<REDACTED>
+STRIPE_WEBHOOK_SECRET=<REDACTED>
 STRIPE_PRICE_ID=<set>
 
 ===== 2) syntax-check del código ya reseteado en el VPS =====
@@ -97,8 +97,8 @@ STRIPE_PRICE_ID=<set>
 
 ===== 4) verificaciones =====
 pid=1783059
-  env STRIPE_SECRET_KEY=PRESENTE
-  env STRIPE_WEBHOOK_SECRET=PRESENTE
+  env STRIPE_SECRET_KEY=<REDACTED>
+  env STRIPE_WEBHOOK_SECRET=<REDACTED>
   env STRIPE_PRICE_ID=PRESENTE
 columnas stripe en clientes:
 21|stripe_customer_id|TEXT|0||0

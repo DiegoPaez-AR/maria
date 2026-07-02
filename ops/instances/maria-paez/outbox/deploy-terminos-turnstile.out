@@ -11,8 +11,8 @@
 #   ENV=/root/secretaria/.env-intensa-api
 #   if [ -f "$ENV" ]; then
 #     # Reemplazar las líneas TURNSTILE_*= con valores reales
-#     sed -i 's|^TURNSTILE_SITE_KEY=.*|TURNSTILE_SITE_KEY=0x4AAAAAADSjZdSiOLo4gIGt|' "$ENV"
-#     sed -i 's|^TURNSTILE_SECRET_KEY=.*|TURNSTILE_SECRET_KEY=0x4AAAAAADSjZXlXB7nFffvozg4teJUck4I|' "$ENV"
+#     sed -i 's|^TURNSTILE_SITE_KEY=<REDACTED>' "$ENV"
+#     sed -i 's|^TURNSTILE_SECRET_KEY=<REDACTED>' "$ENV"
 #     echo "  ✓ Turnstile keys actualizadas en $ENV"
 #     grep -E "^TURNSTILE" "$ENV" | sed 's/=.*/=***SET***/'
 #   else
@@ -25,8 +25,8 @@
 #   INTENSA_LANDING_BASE=https://intensa.io/maria
 #   LEMON_BUY_BASE=https://intensa.lemonsqueezy.com/checkout/buy/10c60c3c-40a0-4c6d-9259-0646be3777a4
 #   LEMON_TEST_MODE=true
-#   TURNSTILE_SITE_KEY=0x4AAAAAADSjZdSiOLo4gIGt
-#   TURNSTILE_SECRET_KEY=0x4AAAAAADSjZXlXB7nFffvozg4teJUck4I
+#   TURNSTILE_SITE_KEY=<REDACTED>
+#   TURNSTILE_SECRET_KEY=<REDACTED>
 #   INSTANCES_BOOTSTRAP_FILE=/root/secretaria/config/instances.bootstrap.json
 #   EOFENV
 #     chmod 600 "$ENV"
@@ -83,8 +83,8 @@
 # ───── output ─────
 ═══ 1. Update .env-intensa-api con Turnstile keys ═══
   ✓ Turnstile keys actualizadas en /root/secretaria/.env-intensa-api
-TURNSTILE_SITE_KEY=***SET***
-TURNSTILE_SECRET_KEY=***SET***
+TURNSTILE_SITE_KEY=<REDACTED>
+TURNSTILE_SECRET_KEY=<REDACTED>
 
 ═══ 2. Migración schema control.sqlite (ALTER TABLE para terminos) ═══
   signup_pending tiene terminos_aceptados_en: no, agregando…
