@@ -1,0 +1,116 @@
+# ejecutado: 2026-07-01T21:10:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="$MARIA_DB"
+#   echo "== schema =="
+#   sqlite3 -readonly "$DB" ".schema eventos" 2>&1
+#   sqlite3 -readonly "$DB" ".schema contactos" 2>&1
+#   echo "== eventos 8031 (full) =="
+#   sqlite3 -readonly "$DB" -line "SELECT * FROM eventos WHERE rowid IN (SELECT rowid FROM eventos WHERE CAST(quote(quien) AS TEXT) LIKE '%1123348031%' OR texto LIKE '%1123348031%') ORDER BY id;" 2>&1 | head -c 20000
+#   echo "== contactos full =="
+#   sqlite3 -readonly "$DB" -line "SELECT * FROM contactos WHERE nombre LIKE '%caseros%' COLLATE NOCASE OR nombre LIKE '%chalaca%' COLLATE NOCASE;" 2>&1
+
+# ───── output ─────
+== schema ==
+CREATE TABLE eventos (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
+  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
+  direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
+  de             TEXT,
+  nombre         TEXT,
+  asunto         TEXT,
+  cuerpo         TEXT,
+  tipo_original  TEXT,
+  metadata_json  TEXT
+, usuario_id INTEGER REFERENCES usuarios(id));
+CREATE INDEX idx_eventos_ts       ON eventos(timestamp DESC);
+CREATE INDEX idx_eventos_canal_ts ON eventos(canal, timestamp DESC);
+CREATE INDEX idx_eventos_de       ON eventos(de);
+CREATE INDEX idx_eventos_usuario     ON eventos(usuario_id, timestamp DESC);
+CREATE TABLE IF NOT EXISTS "contactos" (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
+        nombre      TEXT NOT NULL,
+        whatsapp    TEXT,
+        email       TEXT,
+        notas       TEXT,
+        visibilidad TEXT NOT NULL DEFAULT 'privada' CHECK (visibilidad IN ('privada','publica')),
+        cumple      TEXT,
+        creado      DATETIME DEFAULT CURRENT_TIMESTAMP,
+        actualizado DATETIME DEFAULT CURRENT_TIMESTAMP
+      , perfil_web TEXT);
+CREATE INDEX idx_contactos_whatsapp    ON contactos(whatsapp);
+CREATE INDEX idx_contactos_email       ON contactos(email);
+CREATE INDEX idx_contactos_usuario     ON contactos(usuario_id, nombre);
+CREATE INDEX idx_contactos_visibilidad ON contactos(visibilidad, nombre);
+CREATE UNIQUE INDEX uniq_contactos_priv ON contactos(usuario_id, nombre) WHERE visibilidad = 'privada';
+CREATE UNIQUE INDEX uniq_contactos_pub  ON contactos(nombre)             WHERE visibilidad = 'publica';
+== eventos 8031 (full) ==
+Error: in prepare, no such column: quien
+  id IN (SELECT rowid FROM eventos WHERE CAST(quote(quien) AS TEXT) LIKE '%11233
+                                      error here ---^
+== contactos full ==
+         id = 22
+ usuario_id = 1
+     nombre = Caseros Restaurante
+   whatsapp = 5491136621659@c.us
+      email = 
+      notas = 
+visibilidad = privada
+     cumple = 
+     creado = 2026-04-19 03:16:21
+actualizado = 2026-04-19 03:16:21
+ perfil_web = 
+
+         id = 240
+ usuario_id = 1
+     nombre = Barra Chalaca Belgrano
+   whatsapp = 5491166431877@c.us
+      email = 
+      notas = 
+visibilidad = privada
+     cumple = 
+     creado = 2026-05-16 17:04:57
+actualizado = 2026-05-16 17:04:57
+ perfil_web = 
+
+         id = 241
+ usuario_id = 1
+     nombre = Barra Chalaca Bulnes
+   whatsapp = 5491123348031@c.us
+      email = 
+      notas = 
+visibilidad = privada
+     cumple = 
+     creado = 2026-05-16 17:14:12
+actualizado = 2026-05-16 17:14:12
+ perfil_web = 
+
+         id = 242
+ usuario_id = 1
+     nombre = Barra Chalaca Arevalo
+   whatsapp = 5491132350755@c.us
+      email = 
+      notas = 
+visibilidad = privada
+     cumple = 
+     creado = 2026-05-16 17:14:12
+actualizado = 2026-05-16 17:14:12
+ perfil_web = 
+
+         id = 352
+ usuario_id = 1
+     nombre = Barra Chalaca Caseros
+   whatsapp = 5491169594900@c.us
+      email = 
+      notas = Confirmado por Barra Chalaca Bulnes el 01/07/2026: el local de Caseros por el momento NO tiene WhatsApp propio (acaban de abrir). El número guardado podría no corresponderles. Verificar si tienen email o web para consultar la carta.
+visibilidad = privada
+     cumple = 
+     creado = 2026-07-01 23:11:36
+actualizado = 2026-07-01 23:27:15
+ perfil_web = 
+
+# exit=0
