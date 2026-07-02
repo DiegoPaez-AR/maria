@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13688  2026-07-02 21:59:04  whatsapp  saliente   34342575317160@lid                             🔴 canary: el deploy b0f96c9930 falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
+
 13687  2026-07-02 21:57:08  sistema   interno                                                   Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 13686  2026-07-02 21:57:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
@@ -220,5 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13590  2026-07-02 14:28:39  whatsapp  saliente   5491165286555@c.us                             Listo, te agendé el turno por el pie para el lunes 6/7 a las 15:30 hs 👣                                                                                                                                 
 
 13589  2026-07-02 14:28:39  sistema   interno                                                   claude_call whatsapp: 22576ms prompt=5922c raw=12130c in=6t(cache_read=36623 new=72636) out=889t ttfb=2179ms api=18664ms turnos=3 $0.2967                                                               
-
-13588  2026-07-02 14:28:34  sistema   interno                                                   acción ejecutada: crear_evento                                                                                                                                                                          
