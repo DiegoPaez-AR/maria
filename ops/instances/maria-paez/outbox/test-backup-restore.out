@@ -1,0 +1,24 @@
+# ejecutado: 2026-07-02T13:48:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only intensa-api --update-env >/dev/null 2>&1 && echo "intensa-api reload OK"
+#   echo "── corriendo backup-weekly.sh completo (con restore-test) ──"
+#   bash ops/scripts/backup-weekly.sh 2>&1 | grep -vE "^\s*$" | tail -25
+
+# ───── output ─────
+intensa-api reload OK
+── corriendo backup-weekly.sh completo (con restore-test) ──
+[backup] 20260702-1348 — armando backup multi-instancia
+[backup] maria-paez: DB 9.7M
+[backup] maria-paez: sesión WA 90M
+[backup] extra: config/secrets.conf
+[backup] extra: .env-intensa-api
+[backup] extra: config/instances.bootstrap.json
+[backup] cifrado: 49M sha256=935422e8c68f31db40a7a15a137bf22b990f3313ff39f33113ec4bbe66cd84ac
+[backup] OK — pusheado a branch backups (49M)
+[restore-test] OK — el backup descifra y las DBs pasan integrity_check
+
+# exit=0
