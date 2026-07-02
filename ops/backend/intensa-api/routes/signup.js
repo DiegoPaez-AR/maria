@@ -105,7 +105,7 @@ router.post('/verify', async (req, res, next) => {
         customer_email: row?.email || undefined,
         client_reference_id: r.signup_token,
         metadata: { signup_token: r.signup_token },
-        subscription_data: { metadata: { signup_token: r.signup_token } },
+        subscription_data: { trial_period_days: 7, metadata: { signup_token: r.signup_token } },
         allow_promotion_codes: true,
         success_url: `${landing}/signup/?status=ok`,
         cancel_url: `${landing}/signup/?status=cancel`,
