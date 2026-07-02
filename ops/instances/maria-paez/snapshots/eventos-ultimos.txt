@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13709  2026-07-02 22:32:42  whatsapp  saliente   5491165286555@c.us                             Contame de nuevo de qué se trata la búsqueda para tu papá, no tengo ese contexto a mano en esta conversación 🙏                                                                                          
+
+13708  2026-07-02 22:32:42  sistema   interno                                                   claude_call whatsapp: 6679ms prompt=460c raw=6096c in=2t(cache_read=105386 new=660) out=227t ttfb=1500ms api=4591ms turnos=1 $0.0375                                                                    
+
+13707  2026-07-02 22:32:35  sistema   interno                                                   claude_call whatsapp: 16878ms prompt=6483c raw=11926c in=6t(cache_read=208902 new=105386) out=662t ttfb=1397ms api=14951ms turnos=3 $0.4678                                                             
+
+13706  2026-07-02 22:32:18  whatsapp  entrante   5491165286555@c.us                             Bueno seguimos con l búsqueda para mi papá?                                                                                                                                                             
+
 13705  2026-07-02 22:22:04  sistema   interno                                                   acción FALLÓ: enviar_email — enviar_email: este turno lo inició un tercero — solo puedo enviar a Diego. Si el pedido es legítimo, consultale primero al usuario (respuesta_a_usuario) y que él lo pida. 
 
 13704  2026-07-02 22:22:04  sistema   interno                                                   [SEGURIDAD] gate_tercero: enviar_email hacia "hernan.fulco@sondeosglobal.com" bloqueado en turno de tercero:                                                                                            
@@ -217,11 +225,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13611  2026-07-02 15:20:39  whatsapp  entrante   5491165286555@c.us                             No déjalo privado                                                                                                                                                                                       
 
 13610  2026-07-02 15:20:39  whatsapp  entrante   5491165286555@c.us                             Le mandas ahora un mensaje a Ceci que ayer te di el contacto y le das la bienvenida para trabajar juntas?                                                                                               
-
-13609  2026-07-02 15:20:22  sistema   interno                                                   claude_call whatsapp: 24113ms prompt=6207c raw=10129c in=6t(cache_read=144830 new=4365) out=500t ttfb=2361ms api=12772ms turnos=3 $0.0673                                                               
-
-13608  2026-07-02 15:20:18  sistema   interno                                                   acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13607  2026-07-02 15:20:18  whatsapp  saliente   5491161980549@c.us                             Hola Ceci! Te escribo de parte de Gabriela Echaniz. Qué lindo poder empezar a trabajar juntas, bienvenida! Cualquier cosa que necesites coordinar con Gabi, podés escribirme por aquí 😊                 
-
-13606  2026-07-02 15:20:18  sistema   interno                                                   claude_call moderacion: 8257ms prompt=1632c raw=6787c in=10t(cache_read=0 new=22497) out=360t ttfb=1736ms api=8954ms turnos=1 $0.0304                                                                   
