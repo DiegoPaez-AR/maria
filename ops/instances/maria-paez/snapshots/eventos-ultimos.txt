@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13444  2026-07-02 01:58:40  whatsapp  saliente   5491165286555@c.us  Anotado! Mañana a las 9:30 te recuerdo pagar los aparatos de Eloísa y mandar el comprobante de lo que ya pagaste 🦷                                                                                      
+
+13443  2026-07-02 01:58:40  sistema   interno                        claude_call whatsapp: 19247ms prompt=6224c raw=8726c in=4t(cache_read=245651 new=4176) out=594t ttfb=2097ms api=10326ms turnos=2 $0.0983                                                                
+
+13442  2026-07-02 01:58:35  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13441  2026-07-02 01:58:35  sistema   interno                        claude_call moderacion: 6098ms prompt=1558c raw=6661c in=10t(cache_read=17396 new=5074) out=340t ttfb=1618ms api=5067ms turnos=1 $0.0103                                                                
+
+13440  2026-07-02 01:58:20  whatsapp  entrante   5491165286555@c.us  Mañana 9.30 recordame pagar los aparatos de Eloísa de ortodoncia! Jeje y mandar el comprobante que ya pagué una parte                                                                                   
+
 13439  2026-07-02 01:56:52  whatsapp  saliente   5491165286555@c.us  Dale! Mañana a las 10:30 te recuerdo las dos cosas juntas: chequear el material de la muestra y revisar la primera circular 👍                                                                           
 
 13438  2026-07-02 01:56:52  sistema   interno                        claude_call whatsapp: 20030ms prompt=5846c raw=8777c in=4t(cache_read=237534 new=3979) out=563t ttfb=2069ms api=11687ms turnos=2 $0.0946                                                                
@@ -210,13 +220,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 13346  2026-07-02 00:30:05  whatsapp  saliente   34342575317160@lid  El pedido en Barra Chalaca Caseros (Av. Caseros 467) ya está listo para retirar. ¡A buscarlo cuando quieras!                                                                                            
 
 13345  2026-07-02 00:30:05  sistema   interno                        claude_call moderacion: 5737ms prompt=1556c raw=5751c in=10t(cache_read=17396 new=5079) out=268t ttfb=1822ms api=4345ms turnos=1 $0.0099                                                                
-
-13344  2026-07-02 00:29:45  whatsapp  entrante   5491169594900@c.us  Ya pueden venir a buscarlo                                                                                                                                                                              
-
-13343  2026-07-02 00:27:19  whatsapp  saliente   34342575317160@lid  Les pregunté, te aviso cuando respondan.                                                                                                                                                                
-
-13342  2026-07-02 00:27:19  sistema   interno                        claude_call whatsapp: 19460ms prompt=7368c raw=8924c in=18t(cache_read=33816 new=34081) out=316t ttfb=2203ms api=9218ms turnos=2 $0.1427                                                                
-
-13341  2026-07-02 00:27:14  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
-
-13340  2026-07-02 00:27:14  whatsapp  saliente   5491169594900@c.us  ¡Hola! ¿Cómo viene el pedido? ¿Tienen estimación de cuándo está listo?                                                                                                                                  
