@@ -162,6 +162,26 @@ done
 # ───── 3. Housekeeping global ─────
 find /tmp -maxdepth 1 -name 'maria-attach-*' -mmin +60 -delete 2>/dev/null
 
+# ───── 3b. Scrubbing de secretos (antes de CUALQUIER git add) ─────
+# Causa raíz del leak 2026-07-01: un .out del outbox con ASISTENTE_INTERNAL_SECRET
+# y whsec_ en claro terminó en git history. Redactamos patrones de secretos en
+# todo lo que el cron va a commitear (outbox + snapshots).
+_scrub_secretos() {
+  local f="$1"
+  [ -f "$f" ] || return 0
+  sed -E -i \
+    -e 's/([A-Za-z0-9_]*(SECRET|_KEY|PASS|TOKEN)[A-Za-z0-9_]*=)[^[:space:]"'"'"']+/\1<REDACTED>/g' \
+    -e 's/whsec_[A-Za-z0-9]+/whsec_<REDACTED>/g' \
+    -e 's/[srp]k_(live|test)_[A-Za-z0-9]+/kk_\1_<REDACTED>/g' \
+    -e 's/gh[ps]_[A-Za-z0-9]{20,}/ghX_<REDACTED>/g' \
+    -e 's/eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/<REDACTED_JWT>/g' \
+    "$f" 2>/dev/null || true
+}
+for _sf in ops/instances/*/outbox/*.out ops/instances/*/snapshots/*.txt ops/instances/*/snapshots/*.tsv; do
+  [ -f "$_sf" ] || continue
+  _scrub_secretos "$_sf"
+done
+
 # ───── 4. Commit + push ─────
 git add -A ops/
 PUSHED_OK=0
