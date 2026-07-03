@@ -1,0 +1,72 @@
+# ejecutado: 2026-07-03T09:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   SECRET=<REDACTED> -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   for i in 1 2 3; do
+#     R=$(curl -s -m 10 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' \
+#       -d '{"usuarioId":1,"accion":{"tipo":"enviar_whatsapp","a":"x","texto":"x"},"canalOrigen":"whatsapp"}')
+#     [ -n "$R" ] && break; sleep 5
+#   done
+#   echo "enviar_whatsapp → $(echo "$R" | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("error") or "")[:75])' 2>/dev/null || echo "(sin respuesta)")"
+#   echo ""
+#   echo "── test wip: salida cruda ──"
+#   env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL \
+#     node --test test/executor-routing.wip 2>&1 | head -45
+#   echo LISTO
+
+# ───── output ─────
+enviar_whatsapp → Acción desconocida: "enviar_whatsapp". Debe ser EXACTAMENTE uno de: crear_e
+
+── test wip: salida cruda ──
+TAP version 13
+# [memory] owner creado: Owner Test (id=1, servido=1)
+# [memory] migración: usuarios.calendar_acceso agregado (backfill write para users con calendar_id)
+# [memory] migración: usuarios.calendar_provider agregado (default 'google')
+# [memory] migración: usuarios.calendar_auth_json agregado (NULL para Google)
+# [memory] migración: pendientes.dueno/disparador/recordar_desde agregados
+# [memory] migración: usuarios.bienvenida_enviada agregado, backfilled a 1 para usuarios existentes
+# [memory] migración: usuarios.bienvenida_enviada/cliente_id agregados
+# [memory] migracion: usuarios.brief_activo agregado (default 1)
+# [memory] migracion: usuarios.ubicacion agregado (backfill Buenos Aires en 1 usuarios)
+# [memory] migracion: usuarios.ubicacion/lat/lon listos
+# [memory] migración: eventos.tipo agregada, backfill de 0 filas desde metadata_json
+# [memory] migración: contactos.perfil_web agregado
+# [executor] acción \#0 (enviar_whatsapp) falló: Acción desconocida: "enviar_whatsapp". Debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenviar_wa, agregar_pendiente, quitar_pendiente, posponer_pendiente, programar_mensaje, cancelar_programado, crear_follow_up, cerrar_follow_up, recordar_hecho, olvidar_hecho, upsert_contacto, cambiar_visibilidad_contacto, set_cumple_contacto, crear_usuario, actualizar_usuario, borrar_usuario, set_calendar_acceso, buscar_contacto_global, buscar_slots_comunes, confirmar_prospecto_pendiente, rechazar_prospecto_pendiente, configurar_brief, configurar_ubicacion, configurar_caldav, iniciar_microsoft_auth, configurar_microsoft.
+# Subtest: paridad de nombres: switch del executor ↔ tools de action-schemas
+ok 1 - paridad de nombres: switch del executor ↔ tools de action-schemas
+  ---
+  duration_ms: 2.188672
+  type: 'test'
+  ...
+# Subtest: upsert_contacto llega a SU handler (anti fall-through)
+ok 2 - upsert_contacto llega a SU handler (anti fall-through)
+  ---
+  duration_ms: 1.457438
+  type: 'test'
+  ...
+# Subtest: recordar_hecho / olvidar_hecho rutean bien
+ok 3 - recordar_hecho / olvidar_hecho rutean bien
+  ---
+  duration_ms: 0.637886
+  type: 'test'
+  ...
+# Subtest: tipo inexistente → error "Acción desconocida" (sin alias ni levenshtein)
+ok 4 - tipo inexistente → error "Acción desconocida" (sin alias ni levenshtein)
+  ---
+  duration_ms: 0.728589
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+LISTO
+
+# exit=0
