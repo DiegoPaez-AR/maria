@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13794  2026-07-03 11:12:38  whatsapp  saliente   5491165286555@c.us                        Listo, ya le escribí a Ana Clara confirmando el lunes para la reunión ✅ ¡Buen día!                                                                                                                      
+
+13793  2026-07-03 11:12:38  sistema   interno                                              claude_call whatsapp: 36526ms prompt=7080c raw=20758c in=10t(cache_read=156866 new=7274) out=1800t ttfb=1602ms api=28680ms turnos=6 $0.1014                                                             
+
+13792  2026-07-03 11:12:32  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+13791  2026-07-03 11:12:32  sistema   interno                                              acción ejecutada: enviar_email                                                                                                                                                                          
+
+13790  2026-07-03 11:12:32  gmail     saliente                                             Hola Ana Clara, ¿cómo estás?                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                   
+                                                                                           Te escribo de parte de Gabriela para confirmar que el lunes de la semana que viene les queda bien para la reunión, en el horario de 9 a 12hs que habías propuesto.                                      
+                                                                                                                                                                                                                                                                                                   
+                                                                                           Cualqu                                                                                                                                                                                                  
+
+13789  2026-07-03 11:12:32  sistema   interno                                              claude_call moderacion: 5423ms prompt=1773c raw=6147c in=10t(cache_read=0 new=22543) out=319t ttfb=1076ms api=5324ms turnos=1 $0.0303                                                                   
+
 13788  2026-07-03 11:12:01  whatsapp  entrante   5491165286555@c.us                        Gracias!                                                                                                                                                                                                
 
 13787  2026-07-03 11:12:01  whatsapp  entrante   5491165286555@c.us                        Buen día! Decile a Ana Clara que el lunes. Así arrancamos con la ddjj                                                                                                                                   
@@ -291,15 +307,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13696  2026-07-02 22:07:05  sistema   interno                                              shutdown por SIGINT                                                                                                                                                                                     
 
 13695  2026-07-02 22:06:12  whatsapp  saliente   5491165286555@c.us                        Listo, te lo recuerdo mañana a las 10 hs 📋                                                                                                                                                              
-
-13694  2026-07-02 22:06:12  sistema   interno                                              claude_call whatsapp: 16272ms prompt=6420c raw=7222c in=4t(cache_read=95508 new=95873) out=295t ttfb=1525ms api=7317ms turnos=2 $0.3926                                                                 
-
-13693  2026-07-02 22:06:08  sistema   interno                                              acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-13692  2026-07-02 22:06:08  sistema   interno                                              claude_call moderacion: 6705ms prompt=1494c raw=6799c in=10t(cache_read=0 new=22448) out=318t ttfb=1632ms api=5762ms turnos=1 $0.0301                                                                   
-
-13691  2026-07-02 22:05:55  whatsapp  entrante   5491165286555@c.us                        Por favor mañana a las 10 recordame que empiece la declaración jurada                                                                                                                                   
-
-13690  2026-07-02 22:04:04  whatsapp  saliente   34342575317160@lid                        🔴 canary: el deploy 4ab7e8d30b falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
-
-13689  2026-07-02 22:00:05  whatsapp  saliente   34342575317160@lid                        🔴 canary: el deploy 82695d85e7 falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
