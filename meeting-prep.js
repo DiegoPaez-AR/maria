@@ -13,7 +13,7 @@ const mem = require('./memory');
 const g   = require('./google');
 const usuarios = require('./usuarios');
 const providers = require('./providers');
-const { invocarClaude } = require('./claude-client');
+const { enriquecerContacto } = require('./enriquecer-contacto');
 const i18n = require('./i18n');
 
 const MINUTOS_ANTES = Number(process.env.MEETING_PREP_MIN_ANTES || 15);
@@ -42,31 +42,11 @@ function _empresaDesdeEmail(email) {
   return dom;
 }
 
-// Approach B (2026-06-17): al PROGRAMAR el aviso, por cada asistente buscamos en
-// la web su rol/empresa para darle contexto al usuario (LinkedIn no se puede
-// consultar por email — perfiles cerrados/sin API —, pero una búsqueda
-// nombre+empresa suele traer el cargo). Best-effort: si no hay datos confiables
-// o falla, devuelve null y el aviso sigue sin esa línea.
-async function _enriquecerAsistente({ email, nombre, usuario }) {
-  const nom = nombre || _nombreDesdeEmail(email);
-  if (!nom) return null;
-  const empresa = _empresaDesdeEmail(email);
-  const prompt = `Buscá en la web quién es esta persona, para darle contexto a ${usuario.nombre} antes de una reunión.
-Persona: ${nom}${empresa ? ` (empresa probable según su email: ${empresa})` : ''}
-Email: ${email}
-
-Devolvé UNA sola línea corta (máx ~110 caracteres) con su ROL/CARGO y EMPRESA actuales si los encontrás con confianza razonable (ej: "Director Comercial en Acme" o "Founder & CEO, Acme"). Si no encontrás info confiable de ESTA persona, devolvé EXACTAMENTE: sin datos
-No inventes ni completes con suposiciones. Sin comillas ni explicaciones: solo la línea.`;
-  try {
-    let r = await invocarClaude(prompt, { timeoutMs: 60_000, audit: { usuarioId: usuario.id, canal: 'meeting-prep-enrich' } });
-    r = String(r || '').replace(/\s+/g, ' ').trim();
-    if (!r || /^sin datos\.?$/i.test(r)) return null;
-    return r.slice(0, 140);
-  } catch (err) {
-    console.warn(`[meeting-prep enrich] ${email} falló: ${err.message}`);
-    return null;
-  }
-}
+// Approach B v2 (2026-07-03, pedido de Diego): los asistentes que NO están en
+// la libreta se PERSISTEN como contacto privado del usuario (con su email) y
+// se enriquecen con búsqueda web via enriquecerContacto (guarda perfil_web).
+// Antes la investigación se hacía y se tiraba (la v1 _enriquecerAsistente
+// quedó muerta y se eliminó). Cap 2 contactos nuevos por evento.
 
 async function _componerTexto(e, usuario) {
   const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
@@ -86,9 +66,34 @@ async function _componerTexto(e, usuario) {
   // si no hay, las notas de libreta. Máx 2 asistentes para no inflar el aviso.
   try {
     let agregadas = 0;
+    let creados = 0;
     for (const em of attendees) {
       if (agregadas >= 2) break;
-      const c = mem.buscarContacto({ usuarioId: usuario.id, email: String(em).trim().toLowerCase() });
+      const emailNorm = String(em).trim().toLowerCase();
+      let c = mem.buscarContacto({ usuarioId: usuario.id, email: emailNorm });
+      // Asistente desconocido → contacto privado nuevo + perfil web persistido.
+      if (!c && creados < 2) {
+        try {
+          let nombreNuevo = _nombreDesdeEmail(em) || emailNorm.split('@')[0];
+          // upsertContacto mergea por NOMBRE: si ya hay un contacto visible con
+          // ese nombre (otra persona), desambiguar con el dominio para no
+          // pisarlo ni shadowearlo (privada gana sobre pública en lookups).
+          if (mem.buscarContacto({ usuarioId: usuario.id, nombre: nombreNuevo })) {
+            nombreNuevo = `${nombreNuevo} (${emailNorm.split('@')[1] || 'ext'})`;
+          }
+          c = mem.upsertContacto({
+            usuarioId: usuario.id, nombre: nombreNuevo, email: emailNorm,
+            visibilidad: 'privada',
+            notas: `asistente de "${e.summary}" (agregado automáticamente por meeting-prep)`,
+          });
+          creados++;
+          const perfil = await enriquecerContacto(usuario.id, c); // best-effort, persiste perfil_web
+          if (perfil) c = { ...c, perfil_web: perfil };
+          console.log(`[meeting-prep/${usuario.nombre}] contacto nuevo: ${nombreNuevo} <${emailNorm}>${perfil ? ` — ${perfil}` : ''}`);
+        } catch (err) {
+          console.warn(`[meeting-prep/${usuario.nombre}] no pude crear contacto para ${emailNorm}:`, err.message);
+        }
+      }
       const nombre = c ? c.nombre : (_nombreDesdeEmail(em) || em);
       const nota = c ? mem.getNotaContacto(usuario.id, c.id) : null;
       const fuente = (nota && nota.nota) ? nota.nota : (c && c.notas) || null;
