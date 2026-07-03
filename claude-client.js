@@ -601,6 +601,18 @@ async function invocarClaudeJSONConConsultas(prompt, consultaCtx, opts = {}) {
           seccionesResultado.push(`${header}\n${lineas.join('\n')}`);
         }
         console.log(`[claude-client] consulta buscar_contacto("${c.query}") → ${matches.length} matches`);
+      } else if (c.tipo === 'verificar_respuesta') {
+        const dias = Math.min(Math.max(1, Number(c.dias) || 30), 180);
+        const desde = new Date(Date.now() - dias * 24 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 19);
+        const filas = mem.listarEntrantesDe({ usuarioId, de: c.de, desde, max: 5 });
+        const header = `[CONSULTA: verificar_respuesta de="${c.de}" dias=${dias}]`;
+        if (!filas.length) {
+          seccionesResultado.push(`${header}\nVEREDICTO DEL SISTEMA (calculado por código sobre la base, NO opinable): "${c.de}" NO mandó NINGÚN mensaje entrante en los últimos ${dias} días, por ningún canal. Esa persona NO respondió. Respondé en consecuencia — no afirmes que respondió/confirmó/propuso algo.`);
+        } else {
+          const lineas = filas.map(f => `[${String(f.timestamp).slice(0, 16)} UTC · ${f.canal}] ${(f.asunto ? f.asunto + ' — ' : '')}${String(f.cuerpo || '').replace(/\s+/g, ' ').slice(0, 300)}`);
+          seccionesResultado.push(`${header}\nVEREDICTO DEL SISTEMA: SÍ hay ${filas.length} mensaje(s) entrante(s) de "${c.de}" (más recientes primero, textuales):\n${lineas.join('\n')}`);
+        }
+        console.log(`[claude-client] consulta verificar_respuesta("${c.de}") → ${filas.length} entrantes`);
       } else {
         seccionesResultado.push(`[CONSULTA: tipo desconocido "${c.tipo}" — ignorada]`);
         console.warn(`[claude-client] tipo de consulta desconocido: ${c.tipo}`);

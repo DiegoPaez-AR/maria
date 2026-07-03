@@ -14,9 +14,14 @@
 //      Gabi/Ana Clara): mensaje corto generado por LLM con la conversación
 //      reciente como contexto, destino validado + moderación outbound.
 //      Se reprograma vence_en (+2 días) y NO se molesta al dueño.
-//   3) Si ya insistimos una vez, o el re-ping no es viable (canal gmail,
-//      destino que no valida, LLM sin contexto claro, moderación bloquea,
-//      envío falla) → marcar disparado y avisar al dueño (comportamiento v1).
+//   3) Si ya insistimos una vez, o el re-ping no es viable (destino que no
+//      valida, LLM sin contexto claro, moderación bloquea, envío falla) →
+//      marcar disparado y avisar al dueño (comportamiento v1).
+//
+// 2026-07-03 (mismo día, pedido de Diego): re-ping también para canal gmail
+// (caso follow-up #24 Ana Clara). El contexto sale de eventosGmailCon (los
+// salientes de enviar_email guardan el destino solo en metadata_json) y el
+// envío va por google.enviarEmail con asunto "Re: <último asunto>".
 
 const mem = require('./memory');
 const usuarios = require('./usuarios');
@@ -27,10 +32,10 @@ const { invocarClaudeJSON } = require('./claude-client');
 
 const REPING_DIAS = 2; // ventana antes de escalar al dueño tras insistir
 
-const SYSTEM_REPING = `Sos Maria, una asistente personal. Tenés que escribir UN mensaje corto de WhatsApp para insistirle amablemente a alguien que todavía no respondió un pedido que vos ya le hiciste (en nombre del usuario al que asistís).
+const SYSTEM_REPING = `Sos Maria, una asistente personal. Tenés que escribir UN mensaje corto (el encabezado del pedido te dice si es WhatsApp o email) para insistirle amablemente a alguien que todavía no respondió un pedido que vos ya le hiciste (en nombre del usuario al que asistís).
 
 Reglas:
-- Máximo 2-3 oraciones, tono cordial y natural, consistente con tus mensajes previos de la conversación y en el mismo idioma.
+- WhatsApp: máximo 2-3 oraciones. Email: máximo 4-6 oraciones, con saludo inicial y cierre firmado "Maria". Tono cordial y natural, consistente con tus mensajes previos de la conversación y en el mismo idioma.
 - Referí SOLO a lo que ya se pidió en la conversación; no inventes datos, fechas ni compromisos nuevos.
 - No menciones sistemas internos, pendientes ni que sos un bot.
 - Si la conversación NO muestra un pedido pendiente claro al que valga la pena insistir, devolvé mensaje null.
@@ -41,27 +46,31 @@ Respondé SOLO con JSON válido, sin markdown:
 // Genera el texto del re-ping con el LLM. Devuelve string o null (null =
 // no hay contexto suficiente / el modelo prefirió no insistir).
 async function _generarReping(f, usuario) {
+  const canal = f.esperando_canal || 'whatsapp';
   let historial = [];
   try {
-    historial = mem.eventosConContactoDesde({
-      usuarioId: f.usuario_id,
-      contacto: { whatsapp: f.esperando_de },
-      max: 500,
-    }).slice(-15);
+    historial = canal === 'gmail'
+      ? mem.eventosGmailCon({ usuarioId: f.usuario_id, email: f.esperando_de, max: 15 })
+      : mem.eventosConContactoDesde({
+          usuarioId: f.usuario_id,
+          contacto: { whatsapp: f.esperando_de },
+          max: 500,
+        }).slice(-15);
   } catch (err) {
     console.warn(`[follow-ups] #${f.id} historial para re-ping falló: ${err.message}`);
     return null;
   }
   const conv = historial
-    .filter(e => e.canal === 'whatsapp' && String(e.cuerpo || '').trim())
-    .map(e => `[${String(e.timestamp).slice(0, 16)} UTC] ${e.direccion === 'entrante' ? 'LA OTRA PERSONA' : 'MARIA'}: ${String(e.cuerpo).slice(0, 400)}`)
+    .filter(e => (canal === 'gmail' ? e.canal === 'gmail' : e.canal === 'whatsapp') && String(e.cuerpo || '').trim())
+    .map(e => `[${String(e.timestamp).slice(0, 16)} UTC] ${e.direccion === 'entrante' ? 'LA OTRA PERSONA' : 'MARIA'}: ${e.asunto ? '(asunto: ' + String(e.asunto).slice(0, 80) + ') ' : ''}${String(e.cuerpo).slice(0, 400)}`)
     .join('\n');
   if (!conv.trim()) return null;
 
   const user = [
+    `Canal del recordatorio: ${canal === 'gmail' ? 'EMAIL' : 'WhatsApp'}`,
     `Usuario al que asistís: ${usuario.nombre}`,
     `Recordatorio interno del pedido (contexto, NO citar textual): ${f.descripcion}`,
-    `Conversación reciente por WhatsApp con la persona que no respondió:`,
+    `Conversación reciente (${canal === 'gmail' ? 'emails' : 'WhatsApp'}) con la persona que no respondió:`,
     '"""',
     conv,
     '"""',
@@ -82,11 +91,16 @@ async function _generarReping(f, usuario) {
 // follow-up quedó reprogramado, NO avisar al dueño); false si el caller debe
 // caer al aviso v1.
 async function _intentarReping(waClient, f, usuario) {
-  if ((f.esperando_canal || 'whatsapp') !== 'whatsapp') return false;
+  const canal = f.esperando_canal || 'whatsapp';
+  if (canal !== 'whatsapp' && canal !== 'gmail') return false;
   const meta = f.metadata || {};
   if ((Number(meta.re_pings) || 0) >= 1) return false;
 
-  const v = seguridad.validarDestinatario({ usuario, canal: 'wa', destino: f.esperando_de });
+  const v = seguridad.validarDestinatario({
+    usuario,
+    canal: canal === 'gmail' ? 'email' : 'wa',
+    destino: f.esperando_de,
+  });
   if (!v.ok) {
     console.warn(`[follow-ups] #${f.id} re-ping: destino ${f.esperando_de} no valida (${v.motivo}) — aviso al dueño`);
     return false;
@@ -122,12 +136,33 @@ async function _intentarReping(waClient, f, usuario) {
   });
 
   try {
-    await waSend.enviarWADirecto(waClient, f.esperando_de, msg, {
-      tag: `follow-ups/re-ping`,
-      usuarioId: f.usuario_id,
-      metadata: { tipo: 'follow_up_reping', followUpId: f.id, esperando_de: f.esperando_de },
-      diferible: true, // horas de silencio del destino (o default) aplican
-    });
+    if (canal === 'gmail') {
+      // Asunto: "Re:" del último email del hilo con esa persona (si hay).
+      let asunto = 'Seguimiento';
+      try {
+        const evs = mem.eventosGmailCon({ usuarioId: f.usuario_id, email: f.esperando_de, max: 15 });
+        const conAsunto = evs.filter(e => String(e.asunto || '').trim()).pop();
+        if (conAsunto) {
+          const a = String(conAsunto.asunto).trim();
+          asunto = /^re:/i.test(a) ? a : `Re: ${a}`;
+        }
+      } catch { /* asunto default */ }
+      const g = require('./google'); // lazy: google.js exige env de identidad al require
+      const r = await g.enviarEmail({ to: f.esperando_de, asunto, texto: msg });
+      mem.log({
+        usuarioId: f.usuario_id,
+        canal: 'gmail', direccion: 'saliente',
+        asunto, cuerpo: msg,
+        metadata: { tipo: 'follow_up_reping', followUpId: f.id, to: f.esperando_de, messageId: r?.id || null },
+      });
+    } else {
+      await waSend.enviarWADirecto(waClient, f.esperando_de, msg, {
+        tag: `follow-ups/re-ping`,
+        usuarioId: f.usuario_id,
+        metadata: { tipo: 'follow_up_reping', followUpId: f.id, esperando_de: f.esperando_de },
+        diferible: true, // horas de silencio del destino (o default) aplican
+      });
+    }
   } catch (err) {
     console.error(`[follow-ups] #${f.id} re-ping: envío falló (${err.message}) — aviso al dueño`);
     return false;
@@ -139,7 +174,7 @@ async function _intentarReping(waClient, f, usuario) {
     cuerpo: `follow-up #${f.id} re-ping automático a ${f.esperando_de} — reprogramado a ${nuevoVence} (${f.descripcion})`,
     metadata: { tipo: 'follow_up_reping', followUpId: f.id, esperando_de: f.esperando_de },
   });
-  console.log(`[follow-ups] #${f.id} re-ping → ${f.esperando_de} (nuevo vencimiento ${nuevoVence} UTC)`);
+  console.log(`[follow-ups] #${f.id} re-ping (${canal}) → ${f.esperando_de} (nuevo vencimiento ${nuevoVence} UTC)`);
   return true;
 }
 

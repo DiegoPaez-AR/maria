@@ -970,6 +970,59 @@ function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
   });
 }
 
+// ── Verificación dura de respuestas de terceros (anti-confabulación, 2026-07-03) ──
+// Lista mensajes ENTRANTES de una persona (wa o email) desde una fecha.
+// Mismo matching flexible que huboRespuesta (9-móvil AR, últimos 10 dígitos).
+const qEntrantesUsuarioDesde = db.prepare(`
+  SELECT id, timestamp, canal, direccion, de, nombre, asunto, cuerpo
+  FROM eventos
+  WHERE usuario_id = ? AND direccion = 'entrante' AND timestamp >= ?
+  ORDER BY id DESC LIMIT 500
+`);
+function listarEntrantesDe({ usuarioId, de, desde, max = 5 }) {
+  const target = String(de || '').trim().toLowerCase();
+  if (!target || !usuarioId) return [];
+  const rows = qEntrantesUsuarioDesde.all(usuarioId, String(desde));
+  const esEmail = target.includes('@') && !/@c\.us$|@lid$/.test(target);
+  const _ult10 = (x) => {
+    const d = String(x || '').replace(/\D+/g, '');
+    return d.length >= 10 ? d.slice(-10) : null;
+  };
+  const out = [];
+  for (const r of rows) {
+    const rde = String(r.de || '').toLowerCase();
+    let match = false;
+    if (esEmail) {
+      const m = target.match(/<([^>]+)>/);
+      const emailEsp = (m ? m[1] : target).trim();
+      match = !!emailEsp && rde.includes(emailEsp);
+    } else {
+      const a = _ult10(r.de), b = _ult10(target);
+      match = rde === target || _matchNumeroFlex(r.de, de) || !!(a && b && a === b);
+    }
+    if (match) { out.push(hidratar(r)); if (out.length >= max) break; }
+  }
+  return out;
+}
+
+// Historial gmail con una dirección (para re-ping por email): los salientes
+// de enviar_email guardan el destino SOLO en metadata_json (de=NULL), así que
+// eventosConContactoDesde no los ve — esta query mira de + metadata_json.
+const qEventosGmailCon = db.prepare(`
+  SELECT id, timestamp, canal, direccion, de, nombre, asunto, cuerpo, metadata_json
+  FROM eventos
+  WHERE usuario_id = @usuarioId AND canal = 'gmail'
+    AND (LOWER(COALESCE(de,'')) LIKE '%' || @email || '%'
+         OR LOWER(COALESCE(metadata_json,'')) LIKE '%' || @email || '%')
+  ORDER BY id DESC LIMIT @max
+`);
+function eventosGmailCon({ usuarioId, email, max = 15 }) {
+  const e = String(email || '').toLowerCase().trim();
+  if (!e || !usuarioId) return [];
+  return qEventosGmailCon.all({ usuarioId, email: e, max: Math.min(Math.max(1, max), 50) })
+    .map(hidratar).reverse(); // cronológico ascendente
+}
+
 // ─── Memoria curada: notas por (usuario × contacto) ───────────────────────
 //
 // Sintetiza interacciones de un usuario con un contacto en una nota acumulativa.
@@ -1938,6 +1991,8 @@ module.exports = {
   followUpsAbiertos,
   setFollowUpEstado,
   huboRespuesta,
+  listarEntrantesDe,
+  eventosGmailCon,
   // memoria curada
   getNotaContacto,
   listarNotasContactoDeUsuario,
