@@ -1,5 +1,31 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13747  2026-07-03 02:18:59  whatsapp  saliente   5491165286555@c.us                             Anotado: contestarle a Joaquín del Museo de la Carcoba. ¿A qué hora te lo recuerdo?                                                                                                                     
+
+13746  2026-07-03 02:18:59  sistema   interno                                                   claude_call whatsapp: 6585ms prompt=6466c raw=6073c in=2t(cache_read=158618 new=3770) out=229t ttfb=1365ms api=4650ms turnos=1 $0.0652                                                                  
+
+13745  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us                             Recordame contestarle el mensaje a Joaquín del Museo de la Carcoba.                                                                                                                                     
+
+13744  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us                             Eso recordáme lo a las 9.45.                                                                                                                                                                            
+
+13743  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us                             Recordame pagar las cuentas de mi casa.                                                                                                                                                                 
+
+13742  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us                             Hola María, bueno, antes dírme a dormir, quiero pedirte algunos recordatorios para mañana.                                                                                                              
+
+13741  2026-07-03 02:18:42  sistema   interno                                                   claude_call whatsapp: 16648ms prompt=6312c raw=7485c in=4t(cache_read=312589 new=4270) out=355t ttfb=1432ms api=8068ms turnos=2 $0.1151                                                                 
+
+13740  2026-07-03 02:18:37  sistema   interno                                                   acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13739  2026-07-03 02:18:37  sistema   interno                                                   claude_call moderacion: 6669ms prompt=1493c raw=5593c in=10t(cache_read=0 new=22449) out=254t ttfb=2235ms api=5111ms turnos=1 $0.0298                                                                   
+
+13738  2026-07-03 02:18:25  whatsapp  entrante   5491165286555@c.us                             Eso recordáme lo a las 9.45.                                                                                                                                                                            
+
+13737  2026-07-03 02:18:25  whatsapp  entrante   5491165286555@c.us                             Recordame pagar las cuentas de mi casa.                                                                                                                                                                 
+
+13736  2026-07-03 02:18:25  whatsapp  entrante   5491165286555@c.us                             Hola María, bueno, antes dírme a dormir, quiero pedirte algunos recordatorios para mañana.                                                                                                              
+
+13735  2026-07-03 02:18:15  sistema   interno                                                   claude_call whatsapp: 17480ms prompt=6597c raw=10740c in=4t(cache_read=153470 new=154348) out=897t ttfb=1448ms api=15559ms turnos=2 $0.6383                                                             
+
 13734  2026-07-03 02:17:57  whatsapp  entrante   5491165286555@c.us                             Recordame pagar las cuentas de mi casa.                                                                                                                                                                 
 
 13733  2026-07-03 02:17:57  whatsapp  entrante   5491165286555@c.us                             Hola María, bueno, antes dírme a dormir, quiero pedirte algunos recordatorios para mañana.                                                                                                              
@@ -204,30 +230,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 13649  2026-07-02 17:17:19  sistema   interno                                                   claude_call unknown-flow: 7558ms prompt=80442c raw=5075c in=2t(cache_read=0 new=61886) out=261t ttfb=1822ms api=7245ms turnos=1 $0.2755                                                                 
 
 13648  2026-07-02 17:11:25  whatsapp  saliente   5491165286555@c.us                             Listo, te lo mando mañana a las 16 hs con el link incluido 👍                                                                                                                                            
-
-13647  2026-07-02 17:11:25  sistema   interno                                                   claude_call whatsapp: 23432ms prompt=6251c raw=11401c in=6t(cache_read=190308 new=5120) out=686t ttfb=2877ms api=14572ms turnos=4 $0.0866                                                               
-
-13646  2026-07-02 17:11:21  sistema   interno                                                   acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-13645  2026-07-02 17:11:21  sistema   interno                                                   claude_call moderacion: 5358ms prompt=1554c raw=5621c in=10t(cache_read=0 new=22475) out=253t ttfb=1640ms api=4986ms turnos=1 $0.0298                                                                   
-
-13644  2026-07-02 17:11:14  sistema   interno                                                   acción ejecutada: cancelar_programado                                                                                                                                                                   
-
-13643  2026-07-02 17:11:01  whatsapp  entrante   5491165286555@c.us                             este enlace es para la reunion de mañana de imaginarios del arte podes mandarmelo a las 16?                                                                                                             
-
-13642  2026-07-02 17:10:46  whatsapp  saliente   5491165286555@c.us                             Listo, actualicé el evento de Imaginarios del Arte Hoy con el link correcto de la reunión 🎨                                                                                                             
-
-13641  2026-07-02 17:10:45  sistema   interno                                                   claude_call whatsapp: 18392ms prompt=6393c raw=10828c in=6t(cache_read=120045 new=60659) out=638t ttfb=2236ms api=14519ms turnos=3 $0.2731                                                              
-
-13640  2026-07-02 17:10:41  sistema   interno                                                   acción ejecutada: modificar_evento                                                                                                                                                                      
-
-13639  2026-07-02 17:10:41  calendar  saliente                                                  modificado: Imaginarios del Arte Hoy (2026-07-03T16:00:00-03:00 → 2026-07-03T17:00:00-03:00)                                                                                                            
-
-13638  2026-07-02 17:10:26  whatsapp  entrante   5491165286555@c.us                             unirse a la reunión virtual de mañana, viernes 3 de julio, a las 16 hs: https://meet.google.com/wuu-bfnz-iti.                                                                                           
-
-13637  2026-07-02 17:02:15  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
-
-13636  2026-07-02 16:45:17  whatsapp  saliente   137456250806423@lid                            ⏰ *En 15min*: Revisión de hallazgos (02:00 p. m.)                                                                                                                                                       
-                                                                                                Con: cristian.incarnato@sondeosglobal.com, gustavo.garcia@sondeosglobal.com, alejandra.carvajal@sondeosglobal.com, eduardo.ligocki@sondeosglobal.com,                                                   
-
-13635  2026-07-02 16:45:10  whatsapp  saliente   34342575317160@lid                             ⏰ *En 15min*: Mónaco (02:00 p. m.)                                                                                                                                                                      
