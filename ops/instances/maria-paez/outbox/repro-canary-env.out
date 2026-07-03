@@ -1,0 +1,49 @@
+# ejecutado: 2026-07-03T09:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── npm test con env PELADO (como el canary) ──"
+#   env -i PATH="$PATH" HOME=/root TZ=America/Argentina/Buenos_Aires \
+#     npm test 2>&1 | grep -B3 -A22 "^not ok" | head -60
+#   echo "── resumen ──"
+#   env -i PATH="$PATH" HOME=/root TZ=America/Argentina/Buenos_Aires \
+#     npm test 2>&1 | grep -E "^# (tests|pass|fail)"
+#   echo LISTO
+
+# ───── output ─────
+── npm test con env PELADO (como el canary) ──
+#     at Module._compile (node:internal/modules/cjs/loader:1781:14)
+# Node.js v22.23.1
+# Subtest: test/executor-routing.test.js
+not ok 1 - test/executor-routing.test.js
+  ---
+  duration_ms: 909.426633
+  type: 'test'
+  location: '/root/secretaria/test/executor-routing.test.js:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# [memory] owner creado: Owner Test (id=1, servido=1)
+# [memory] migración: usuarios.calendar_acceso agregado (backfill write para users con calendar_id)
+# [memory] migración: usuarios.calendar_provider agregado (default 'google')
+# [memory] migración: usuarios.calendar_auth_json agregado (NULL para Google)
+# [memory] migración: pendientes.dueno/disparador/recordar_desde agregados
+# [memory] migración: usuarios.bienvenida_enviada agregado, backfilled a 1 para usuarios existentes
+# [memory] migración: usuarios.bienvenida_enviada/cliente_id agregados
+# [memory] migracion: usuarios.brief_activo agregado (default 1)
+# [memory] migracion: usuarios.ubicacion agregado (backfill Buenos Aires en 1 usuarios)
+# [memory] migracion: usuarios.ubicacion/lat/lon listos
+# [memory] migración: eventos.tipo agregada, backfill de 0 filas desde metadata_json
+# [memory] migración: contactos.perfil_web agregado
+── resumen ──
+# tests 26
+# pass 25
+# fail 1
+LISTO
+
+# exit=0
