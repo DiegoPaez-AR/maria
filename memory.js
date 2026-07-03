@@ -895,6 +895,22 @@ function followUpsVencidos() {
 function followUpsAbiertos(usuarioId) {
   return qFollowUpsAbiertosUsuario.all(usuarioId).map(hidratar);
 }
+const updReprogramarFollowUp = db.prepare(`
+  UPDATE follow_ups SET vence_en = @vence_en, metadata_json = @metadata_json
+  WHERE id = @id AND estado = 'abierto'
+`);
+// Re-programa el vencimiento de un follow-up abierto (re-ping v2, 2026-07-03).
+// metadata reemplaza el metadata_json completo (el caller trae el merge hecho).
+function reprogramarFollowUp(id, { venceEn, metadata = null }) {
+  if (!id || !venceEn) throw new Error('reprogramarFollowUp: id y venceEn requeridos');
+  const info = updReprogramarFollowUp.run({
+    id,
+    vence_en: String(venceEn),
+    metadata_json: metadata ? JSON.stringify(metadata) : null,
+  });
+  return info.changes > 0;
+}
+
 const qFollowUpPorId = db.prepare(`SELECT id, usuario_id FROM follow_ups WHERE id = ?`);
 // usuarioId opcional: si viene, solo opera sobre follow-ups de ese usuario
 // (ids secuenciales y adivinables — aislamiento multi-user, fix 2026-06-09).
@@ -1918,6 +1934,7 @@ module.exports = {
   // follow-ups
   crearFollowUp,
   followUpsVencidos,
+  reprogramarFollowUp,
   followUpsAbiertos,
   setFollowUpEstado,
   huboRespuesta,
