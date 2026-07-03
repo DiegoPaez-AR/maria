@@ -1,0 +1,15 @@
+# ejecutado: 2026-07-03T09:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   CF=/root/secretaria/config/instances/maria-paez.conf
+#   sed -i 's|^MARIA_MCP_ACTIONS=.*|# MARIA_MCP_ACTIONS retirado 2026-07-03 — tools MCP es el único camino (killswitch eliminado del código)|' "$CF"
+#   grep -n "MCP_ACTIONS" "$CF"
+#   echo LISTO
+
+# ───── output ─────
+69:# MARIA_MCP_ACTIONS retirado 2026-07-03 — tools MCP es el único camino (killswitch eliminado del código)
+LISTO
+
+# exit=0
