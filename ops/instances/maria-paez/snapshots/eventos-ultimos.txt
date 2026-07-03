@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13918  2026-07-03 13:10:17  whatsapp  saliente   5491165286555@c.us   Listo, lo actualicé: lunes 06/07 14 a 15hs, "Relevamiento de sala - Museo de la Carcova", presencial 📅                                                                                                  
+
+13917  2026-07-03 13:10:17  sistema   interno                         claude_call whatsapp: 11382ms prompt=6587c raw=7462c in=4t(cache_read=216712 new=4043) out=348t ttfb=1472ms api=8419ms turnos=2 $0.0854                                                                 
+
+13916  2026-07-03 13:10:13  sistema   interno                         acción ejecutada: modificar_evento                                                                                                                                                                      
+
+13915  2026-07-03 13:10:13  calendar  saliente                        modificado: Relevamiento de sala - Museo de la Carcova (2026-07-06T14:00:00-03:00 → 2026-07-06T15:00:00-03:00)                                                                                          
+
+13914  2026-07-03 13:10:05  whatsapp  entrante   5491165286555@c.us   En realidad voy a hacer relevamiento de sala, si Queres agéndalo así                                                                                                                                    
+
 13913  2026-07-03 13:09:55  sistema   interno                         Claude falló en WA (Gabriela Echaniz): No se pudo extraer JSON de la respuesta de Claude:                                                                                                               
                                                                       Llegó un mensaje nuevo mientras procesaba, así que no ejecuté el cambio. Necesito ver el mensaje nuevo antes d                                                                                          
 
@@ -203,13 +213,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13820  2026-07-03 12:18:14  whatsapp  saliente   5491141981886@c.us   Hola Ana Clara! Te escribo de parte de Gabriela para confirmarte que el lunes que viene les queda bien para la reunión, en el horario de 9 a 12hs que habías propuesto. Te mandé también un mail por si 
 
 13819  2026-07-03 12:18:14  sistema   interno                         claude_call moderacion: 6245ms prompt=1742c raw=6126c in=10t(cache_read=0 new=22523) out=314t ttfb=1214ms api=8328ms turnos=1 $0.0303                                                                   
-
-13818  2026-07-03 12:17:57  whatsapp  entrante   5491165286555@c.us   privada                                                                                                                                                                                                 
-
-13817  2026-07-03 12:17:39  sistema   interno                         contacto vcard (privado): Ana Clara Zamora → 5491141981886@c.us                                                                                                                                         
-
-13816  2026-07-03 12:17:35  whatsapp  saliente   5491165286555@c.us   Dale, quedo esperando el teléfono de Ana Clara así lo guardo y le mando el mensaje por WhatsApp también 👍                                                                                               
-
-13815  2026-07-03 12:17:35  sistema   interno                         claude_call whatsapp: 6369ms prompt=6476c raw=5202c in=2t(cache_read=42280 new=3667) out=224t ttfb=1437ms api=4382ms turnos=1 $0.0298                                                                   
-
-13814  2026-07-03 12:17:27  whatsapp  entrante   5491165286555@c.us   te vot a pasar su telefono, ella trabaja conmigo y hablamos bastante                                                                                                                                    
