@@ -110,7 +110,7 @@ _canary() {
           './moderacion','./loop-guard','./wa-validate','./vault','./i18n',
           './calendar-watch','./cumple-avisos','./diferidos-drainer','./poda-eventos',
           './memoria-curada','./clima','./providers','./google','./context-fetcher',
-          './net-retry','./wa-send'].forEach(m => require(m));
+          './net-retry','./wa-send','./telegram-vinculos','./telegram-handler'].forEach(m => require(m));
          console.log('requires OK');
        " >> "$out" 2>&1 ); then
     echo "canary FALLO require-smoke/migración:"; tail -8 "$out"; rm -f "$tdb"; return 1

@@ -39,6 +39,7 @@ const { iniciarCumpleAvisos } = require('./cumple-avisos');
 const { iniciarResumenSemanal } = require('./resumen-semanal');
 const { iniciarPodaEventos } = require('./poda-eventos');
 const { iniciarDiferidosDrainer } = require('./diferidos-drainer');
+const { iniciarTelegram } = require('./telegram-handler');
 
 const GMAIL_POLL_MS   = Number(process.env.GMAIL_POLL_MS   || 300_000);
 const RECORDATORIO_MS = Number(process.env.RECORDATORIO_MS || 30 * 60_000);
@@ -103,9 +104,16 @@ async function main() {
     }
   }
 
+  // 3a) Telegram de respaldo — arranca ANTES de WhatsApp a propósito: si WA
+  //     no llega a ready (sesión caída, QR pendiente), el respaldo tiene que
+  //     estar vivo para avisar a los usuarios vinculados y atenderlos.
+  const waEstado = { ready: false };
+  iniciarTelegram({ waEstado });
+
   // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
   waClient = crearClienteWA({
     onReady: (client) => {
+      waEstado.ready = true;
       loopGuard.setWaClient(client); // canal WA para avisos de loops caídos (sobrevive a OAuth down)
       console.log(`▸ arrancando poll de Gmail (cada ${GMAIL_POLL_MS/1000}s)`);
       gmailInterval = iniciarPoll({ waClient: client, intervaloMs: GMAIL_POLL_MS });

@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   tz           TEXT DEFAULT 'America/Argentina/Buenos_Aires',
   brief_hora   TEXT DEFAULT '07',
   brief_minuto TEXT DEFAULT '00',
+  telegram_chat_id TEXT,          -- canal Telegram de respaldo (bot oficial, 2026-07-03)
   activo       INTEGER NOT NULL DEFAULT 1,
   creado       DATETIME DEFAULT CURRENT_TIMESTAMP,
   actualizado  DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS eventos (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP,
   usuario_id     INTEGER REFERENCES usuarios(id),
-  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema')),
+  canal          TEXT NOT NULL CHECK(canal IN ('whatsapp','gmail','calendar','sistema','telegram')),
   direccion      TEXT NOT NULL CHECK(direccion IN ('entrante','saliente','interno')),
   de             TEXT,
   nombre         TEXT,
@@ -400,6 +401,39 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_prog_usuario        ON programados(usuario_id, enviado);
   CREATE INDEX IF NOT EXISTS idx_pendientes_usuario  ON pendientes(usuario_id, estado, creado);
 `);
+
+// Migración 2026-07-03: canal 'telegram' en el CHECK de eventos. SQLite no
+// permite alterar un CHECK → rebuild de la tabla (13.6k filas, <1s). Se
+// preservan columnas (INSERT SELECT *, el sql real incluye los ALTER previos)
+// e índices (se capturan y recrean). foreign_keys OFF durante el swap.
+(function _migrarCanalTelegram() {
+  const row = db.prepare(`SELECT sql FROM sqlite_master WHERE type='table' AND name='eventos'`).get();
+  if (!row || /telegram/.test(row.sql)) return; // fresh schema ya lo trae
+  console.log('[memory] migración: rebuild de eventos para canal telegram…');
+  const idxSqls = db.prepare(`SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name='eventos' AND sql IS NOT NULL`).all().map(r => r.sql);
+  const nuevoSql = row.sql.replace(`'whatsapp','gmail','calendar','sistema'`, `'whatsapp','gmail','calendar','sistema','telegram'`);
+  if (nuevoSql === row.sql) throw new Error('migración telegram: no encontré el CHECK esperado en eventos');
+  db.pragma('foreign_keys = OFF');
+  try {
+    const tx = db.transaction(() => {
+      db.exec(nuevoSql.replace(/^CREATE TABLE eventos\b/, 'CREATE TABLE eventos_nueva'));
+      db.exec(`INSERT INTO eventos_nueva SELECT * FROM eventos`);
+      db.exec(`DROP TABLE eventos`);
+      db.exec(`ALTER TABLE eventos_nueva RENAME TO eventos`);
+      for (const s of idxSqls) db.exec(s);
+    });
+    tx();
+    console.log('[memory] migración telegram: rebuild OK');
+  } finally {
+    db.pragma('foreign_keys = ON');
+  }
+})();
+
+if (!_tieneColumna('usuarios', 'telegram_chat_id')) {
+  db.exec(`ALTER TABLE usuarios ADD COLUMN telegram_chat_id TEXT`);
+  console.log('[memory] migración: usuarios.telegram_chat_id agregada');
+}
+db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_tg ON usuarios(telegram_chat_id) WHERE telegram_chat_id IS NOT NULL`);
 
 // Migración 2026-07-02: eventos.tipo como COLUMNA (era solo metadata.tipo en el
 // JSON). Las queries calientes filtraban con LIKE '%"tipo":"..."%' = full scan
@@ -792,6 +826,7 @@ function contextoCompacto(usuarioId, { waMax = 5, gmailMax = 1, accionesMax = 3,
   const evs = [
     ...qUltimosCanalUsuario.all(usuarioId, 'whatsapp', ventana, waMax),
     ...qUltimosCanalUsuario.all(usuarioId, 'gmail', ventana, gmailMax),
+    ...qUltimosCanalUsuario.all(usuarioId, 'telegram', ventana, 3),
     ...(accionesMax > 0 ? qUltimasAccionesUsuario.all(usuarioId, ventana, accionesMax) : []),
   ];
   const porId = new Map();

@@ -36,6 +36,8 @@ const reactivarStmt = db.prepare(`UPDATE usuarios SET activo = 1 WHERE id = ?`);
 const qPorWaLid      = db.prepare(`SELECT * FROM usuarios WHERE wa_lid = ? AND activo = 1`);
 const qPorWaCus      = db.prepare(`SELECT * FROM usuarios WHERE wa_cus = ? AND activo = 1`);
 const qPorEmail      = db.prepare(`SELECT * FROM usuarios WHERE email = ? COLLATE NOCASE AND activo = 1`);
+const qPorTelegram   = db.prepare(`SELECT * FROM usuarios WHERE telegram_chat_id = ? AND activo = 1`);
+const updTelegram    = db.prepare(`UPDATE usuarios SET telegram_chat_id = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
 const qOwner         = db.prepare(`SELECT * FROM usuarios WHERE rol = 'owner' AND activo = 1 LIMIT 1`);
 
 const insertUsuario = db.prepare(`
@@ -478,6 +480,16 @@ function setUbicacionCoords(usuarioId, lat, lon) {
   return obtener(usuarioId);
 }
 
+// ── Telegram de respaldo (2026-07-03) ─────────────────────────────────────
+function obtenerPorTelegram(chatId) {
+  if (chatId == null) return null;
+  return qPorTelegram.get(String(chatId)) || null;
+}
+function setTelegramChatId(usuarioId, chatId) {
+  updTelegram.run(chatId == null ? null : String(chatId), usuarioId);
+  return obtener(usuarioId);
+}
+
 module.exports = {
   listarActivos,
   listarServidos,
@@ -499,4 +511,6 @@ module.exports = {
   cantidadActivos,
   maxUsuarios,
   puedeCrearMas,
+  obtenerPorTelegram,
+  setTelegramChatId,
 };

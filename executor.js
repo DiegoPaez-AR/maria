@@ -174,6 +174,16 @@ async function ejecutarUna(accion, ctx) {
     case 'cerrar_follow_up':   return _cerrarFollowUp(accion, ctx);
     case 'recordar_hecho':     return _recordarHecho(accion, ctx);
     case 'olvidar_hecho':      return _olvidarHecho(accion, ctx);
+    case 'vincular_telegram': {
+      // Canal Telegram de respaldo (2026-07-03): genera código one-shot 15min.
+      const _vinc = require('./telegram-vinculos');
+      if (!process.env.TELEGRAM_BOT_TOKEN) {
+        throw new Error('vincular_telegram: el canal Telegram no está configurado en esta instancia');
+      }
+      const _cod = _vinc.generar(ctx.usuario.id);
+      const _bot = process.env.TELEGRAM_BOT_USERNAME ? `@${String(process.env.TELEGRAM_BOT_USERNAME).replace(/^@/, '')}` : 'el bot de Telegram de Maria';
+      return { codigo: _cod, instrucciones: `Mandale el código ${_cod} a ${_bot} en Telegram dentro de los próximos 15 minutos. Con eso quedás vinculado al canal de respaldo.` };
+    }
     case 'configurar_brief':  return _configurarBrief(accion, ctx);
     case 'configurar_ubicacion': return _configurarUbicacion(accion, ctx);
     case 'crear_usuario':      return _crearUsuario(accion, ctx);
