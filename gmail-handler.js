@@ -32,7 +32,7 @@ const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-c
 // SINTÉTICAS del handler (responder_email desde respuesta_a_remitente, enviar_wa
 // desde respuesta_a_usuario) sí se ejecutan: son el delivery de los slots de
 // respuesta, no acciones del modelo. Espejo del tratamiento en whatsapp-handler.
-const MCP_ACTIONS = process.env.MARIA_MCP_ACTIONS === '1';
+// MARIA_MCP_ACTIONS retirado 2026-07-03: las acciones del modelo van SIEMPRE por tools.
 const turnState = require('./turn-state');
 const sesiones = require('./session-manager');
 const { ejecutarAcciones } = require('./executor');
@@ -411,7 +411,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     }
     acciones     = Array.isArray(json.acciones) ? json.acciones : [];
     razonamiento = json.razonamiento || null;
-    if (MCP_ACTIONS && acciones.length) {
+    if (acciones.length) {
       // Telemetría del trial: miss de adopción (emitió array en modo MCP).
       // No se ejecutan: las que quiso hacer ya corrieron en vivo por tool.
       console.warn(`[GMAIL/${usuario.nombre}] MCP: modelo emitió ${acciones.length} acción(es) en array en vez de tools — NO ejecutadas`);
@@ -441,7 +441,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
   // (responder_email en vivo), NO sintetizar otro responder_email desde el
   // slot respuesta_a_remitente — sería doble reply (2026-07-02).
   let _respondioPorTool = false;
-  if (MCP_ACTIONS) {
+  {
     const _resTurno = turnState.takeTurnResults(_chatKeyGmail, _turnT0);
     if (_resTurno.length) {
       const okMcp = _resTurno.filter(r => r.ok).length;

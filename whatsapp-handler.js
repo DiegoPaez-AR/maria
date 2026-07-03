@@ -21,7 +21,7 @@ const qrcode = require('qrcode-terminal');
 
 const mem = require('./memory');
 const turnState = require('./turn-state');
-const MCP_ACTIONS = process.env.MARIA_MCP_ACTIONS === '1';
+// MARIA_MCP_ACTIONS retirado 2026-07-03: las acciones van SIEMPRE por tools MCP.
 const usuarios = require('./usuarios');
 const unknownFlow = require('./unknown-flow');
 const seguridad = require('./seguridad');
@@ -30,7 +30,7 @@ const { transcribirAudio } = require('./transcribir');
 const { construirPrompt, construirTurnoSesion } = require('./prompt-builder');
 const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
 const sesiones = require('./session-manager');
-const { ejecutarAcciones } = require('./executor');
+// (ejecutarAcciones ya no se importa: el array legacy no se ejecuta más acá)
 const waSend = require('./wa-send');
 
 const CHROME_BIN = process.env.CHROME_BIN || '/usr/bin/google-chrome';
@@ -917,13 +917,13 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
   // send, en un solo punto.
   if (_hayMsgNuevoDesdeStart()) {
     outFlags.abortado = true;
-    if (MCP_ACTIONS) turnState.takeTurnResults(_chatKeyTurno, startTs); // descarte: que no los herede otro turno
+    turnState.takeTurnResults(_chatKeyTurno, startTs); // descarte: que no los herede otro turno
     console.log(`[WA →usr] ABORTADO ${usuario.nombre} (${destinoUsuario}): llegó msg nuevo durante procesamiento — el próximo lote responde${acciones.length ? ` (${acciones.length} acción/es salteadas)` : ''}`);
   } else {
     // 1) Acciones PRIMERO: sabemos qué se concretó ANTES de confirmarle al
     //    usuario. Evita el "ya les escribo" seguido de "no pude escribirles".
     let fallasVisibles = [];
-    if (MCP_ACTIONS && acciones.length) {
+    if (acciones.length) {
       // Telemetría del trial: en modo MCP las acciones van por tools. Si el
       // modelo igual emitió el array, es un MISS de adopción — lo registramos
       // (no lo ejecutamos: las que sí quiso hacer ya corrieron en vivo por tool).
@@ -936,7 +936,7 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
     // corrieron en vivo vía /accion; acá tomamos sus resultados y aplicamos
     // lo mismo que legacy aplica post-ejecución — aviso honesto en vez de
     // confirmación optimista + cancelar trigger_externo huérfanos (Kona/Evelia).
-    if (MCP_ACTIONS && _chatKeyTurno && startTs) {
+    if (_chatKeyTurno && startTs) {
       const _resTurno = turnState.takeTurnResults(_chatKeyTurno, startTs);
       if (_resTurno.length) {
         const okMcp = _resTurno.filter(r => r.ok).length;
@@ -958,38 +958,8 @@ async function _procesarComoUsuario({ client, usuario, entrada, msgOriginal, sta
         }
       }
     }
-    if (acciones.length && !MCP_ACTIONS) {
-      const resultados = await ejecutarAcciones(acciones, {
-        usuario,
-        waClient: client,
-        canalOrigen: 'whatsapp',
-        turnoDeTercero: !_esTurnoDeUsuario,
-      });
-      const ok = resultados.filter(r => r.ok).length;
-      console.log(`[WA acciones/${usuario.nombre}] ${ok}/${resultados.length} ejecutadas`);
-      if (ok < resultados.length) {
-        console.warn(`[WA acciones/${usuario.nombre}] FALLARON: ` +
-          resultados.filter(r => !r.ok).map(r => `${r.accion?.tipo || '?'}: ${r.error}`).join(' | '));
-        fallasVisibles = resultados.filter(r => !r.ok && ACCIONES_VISIBLES.has(r.accion?.tipo));
-
-        // Backstop: si un envío visible falló, cancelar los pendientes
-        // "esperando respuesta" (trigger_externo) creados en ESTE turno —
-        // esperan respuesta a un mensaje que NO salió, y harían creer en turnos
-        // futuros que ya se mandó (caso Kona/Evelia: "ya les mandé" falso).
-        if (fallasVisibles.length) {
-          for (const r of resultados) {
-            if (r.ok && r.accion?.tipo === 'agregar_pendiente'
-                && r.accion?.disparador === 'trigger_externo' && r.resultado?.id) {
-              try {
-                mem.quitarPendiente(usuario.id, r.resultado.id);
-                if (r.resultado.follow_up?.id) mem.setFollowUpEstado(r.resultado.follow_up.id, 'cancelado');
-                console.log(`[WA backstop] cancelé pendiente trigger_externo #${r.resultado.id} (un envío del turno falló)`);
-              } catch (e) { console.warn('[WA backstop] cancelar pendiente falló:', e.message); }
-            }
-          }
-        }
-      }
-    }
+    // (bloque de ejecución legacy del array `acciones` eliminado 2026-07-03 —
+    //  las acciones corren en vivo por tools; sus backstops viven arriba.)
 
     // 2) Mensaje al usuario atendido. Si una acción visible falló, mandamos el
     //    aviso honesto (redactado por Maria) EN LUGAR de la confirmación

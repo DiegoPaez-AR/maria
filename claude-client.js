@@ -209,13 +209,15 @@ function _invocarClaudeCrudo(prompt, {
     // El path se va a bind-mountear más abajo si bwrap está activo.
     const path = require('path');
 
-    // ─── Fase 2: acciones como tools MCP (killswitch MARIA_MCP_ACTIONS) ──────
+    // ─── Acciones como tools MCP (ÚNICO camino desde 2026-07-03) ─────────────
+    // Killswitch MARIA_MCP_ACTIONS retirado tras el trial (adopción 100%, 0
+    // fallback en 48h). Rollback = branch pre-legacy-cleanup + revert.
     // Genera un mcp-config por TURNO apuntando al mcp-actions-server, con el
     // usuarioId/canal/start_ts del turno inyectados por env. El server pega a
     // la internal-api /accion → el executor corre en el proceso principal con
     // el runtime vivo. Default OFF: no toca el flujo JSON actual.
     let _mcpActionsTmp = null;
-    const _mcpActionsOn = process.env.MARIA_MCP_ACTIONS === '1' && audit && audit.usuarioId;
+    const _mcpActionsOn = !!(audit && audit.usuarioId);
     if (_mcpActionsOn) {
       try {
         const os = require('os');

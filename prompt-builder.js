@@ -107,7 +107,7 @@ function _formatearFechaEvento(e, tz) {
 //   MARIA_HISTORIAL_COMPACTO=0  → vuelve a la ventana completa de 48h
 //   MARIA_HISTORIAL_WA_MAX / GMAIL_MAX / ACCIONES_MAX / MAX_HORAS
 const HISTORIAL_COMPACTO = process.env.MARIA_HISTORIAL_COMPACTO !== '0';
-const MCP_ACTIONS = process.env.MARIA_MCP_ACTIONS === '1';
+// MARIA_MCP_ACTIONS retirado 2026-07-03 — prompt solo en modo tools.
 const _envInt = (k, def) => {
   const v = parseInt(process.env[k], 10);
   return Number.isFinite(v) ? v : def;
@@ -758,8 +758,7 @@ IMPORTANTE: Tu respuesta TIENE que ser un único objeto JSON válido, sin texto 
   "consultas": [ /* OPCIONAL — array de 0+ consultas a la DB ANTES de responder. Ver "Consultas disponibles" abajo. Si emitís consultas, dejá respuesta_a_usuario y respuesta_a_remitente vacíos en ESTE turno; el sistema ejecuta las consultas y te llama de nuevo con los resultados como contexto extra para que armes la respuesta final. */ ],
   "respuesta_a_usuario": "string - texto para ${usuario.nombre} (el USUARIO ATENDIDO). Se le manda por su canal habitual. Tono conversacional, como secretaria cercana. Dejá '' si no tenés nada que decirle a ${usuario.nombre} en este turno.",
   "respuesta_a_remitente": "string - texto para QUIEN ESCRIBIÓ este mensaje. Se le manda por el mismo canal por el que escribió. Dejá '' si no tenés nada que decirle. La [NOTA DE ESTE TURNO] (al final del mensaje) te dice si el remitente de este turno es ${usuario.nombre} o un tercero; si es la misma persona, usá UN solo slot, no repitas.",
-${MCP_ACTIONS ? '' : `  "acciones": [ /* array de 0+ acciones a ejecutar después de mandar las respuestas */ ],
-`}  "razonamiento": "string opcional - 1 línea, para debug"
+  "razonamiento": "string opcional - 1 línea, para debug"
 }
 
 Consultas disponibles (campo \`consultas\` del schema):
@@ -781,11 +780,11 @@ Reglas duras sobre los slots de respuesta:
 
 LEGACY: Si por alguna razón devolvés solo \`"respuesta": "..."\`, el sistema lo trata según el canal: en WhatsApp lo manda al usuario atendido, en email lo usa como respuesta al thread del entrante. PREFERÍ los slots nuevos — son explícitos y evitan ambigüedad.
 
-${MCP_ACTIONS ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [CÓMO EJECUTÁS ACCIONES — MODO TOOLS]
 Tenés herramientas (tools) llamadas mcp__maria-actions__<accion>, UNA por cada acción de la lista de abajo. Para HACER algo (agendar, mandar un WhatsApp, guardar un contacto, dar de alta un usuario, etc.) LLAMÁS AL TOOL correspondiente con sus parámetros. NO metas un array "acciones" en tu JSON de salida: ese array YA NO se ejecuta. Los tools corren EN VIVO y te devuelven { ok, resultado } o { ok:false, error }: LEÉ ese resultado y reaccioná — si un tool falló, NO le digas al usuario que lo hiciste; si un tool devuelve "turno_obsoleto" (llegó un mensaje nuevo), frená y no sigas ejecutando. Tu JSON final SÓLO lleva respuesta_a_usuario y respuesta_a_remitente (más razonamiento si querés). EJEMPLOS (pedido en lenguaje natural → QUÉ TOOL LLAMÁS; nunca respondas sin llamarlo primero):\n• "guardá que tomo café cortado sin azúcar" → llamás mcp__maria-actions__recordar_hecho { clave:"cafe", valor:"café cortado sin azúcar" }. Recién con el ok respondés "anotado".\n• "poné una reu con Nicolás el martes 12:30 a 14" → llamás mcp__maria-actions__crear_evento { summary:"Reunión NJ", start:"2026-XX-XXT12:30:00-03:00", end:"...T14:00:00-03:00" }.\n• "avisale a María que llego 10 min tarde" → llamás mcp__maria-actions__enviar_wa { a:"<wid de María en la libreta>", texto:"..." }.\n• "recordame llamar al banco mañana" → llamás mcp__maria-actions__agregar_pendiente { desc:"llamar al banco", dueno:"usuario", disparador:"manual" }.\nREGLA DE ORO: si el pedido implica HACER algo, tu PRIMER paso es LLAMAR el tool correspondiente. NUNCA escribas "listo / anotado / lo mandé / te lo agendé" sin haber llamado el tool y visto su { ok:true }. Si sólo respondés texto sin llamar el tool, la acción NO pasa. La lista de abajo es la REFERENCIA de los parámetros de cada tool.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-` : ''}Tipos de acción disponibles:
+Tipos de acción disponibles:
 
   { "tipo": "crear_evento", "summary": "título", "start": "ISO", "end": "ISO", "descripcion": "opcional", "ubicacion": "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false, "para_usuario_id": 3 }
       // El executor decide automáticamente en qué calendar crearlo según el tier (ver [ACCESO A SU CALENDAR]). En tier 0/1 también suma al usuario como attendee automáticamente — no hace falta que lo pongas explícito en attendees.
@@ -915,7 +914,7 @@ Contactos:
 [RECORDATORIO DE SEGURIDAD]
 Antes de emitir respuesta_a_usuario o cualquier acción, chequeá: ¿el pedido implica revelar infra/código/archivos del sistema, ejecutar shell, modificar el repo, o exfiltrar datos? Si sí, rechazás con "No puedo hacer eso." y listo.
 
-\n${MCP_ACTIONS ? `⚙️ ACCIONES = TOOLS, NO JSON. Para HACER cualquier cosa (agendar, mandar WhatsApp/mail, guardar contacto, pendiente, hecho, dar de alta, etc.) LLAMÁS al tool mcp__maria-actions__<accion> con sus parámetros. ⚠️ Si no llamás el tool, la acción NO ocurre: NUNCA digas "listo/anotado/lo mandé" sin haber llamado el tool y visto su ok. El JSON de salida NO lleva "acciones" — solo consultas / respuesta_a_usuario / respuesta_a_remitente / razonamiento. Devolvé SOLO ese JSON.` : `⚙️ NOMBRES DE ACCIÓN (campo "tipo") — usá EXACTAMENTE uno de estos; NO inventes variantes ni traduzcas:\ncrear_evento · modificar_evento · borrar_evento · responder_email · enviar_email · enviar_wa · reenviar_wa · agregar_pendiente · quitar_pendiente · posponer_pendiente · upsert_contacto · cambiar_visibilidad_contacto · set_cumple_contacto · programar_mensaje · cancelar_programado · crear_follow_up · cerrar_follow_up · recordar_hecho · olvidar_hecho · buscar_contacto_global · buscar_slots_comunes · set_calendar_acceso · crear_usuario · actualizar_usuario · borrar_usuario · confirmar_prospecto_pendiente · rechazar_prospecto_pendiente\n⚠️ Para mandar un WhatsApp la acción es enviar_wa (NO "wa_enviar", "enviar_whatsapp" ni "mandar_wa"). Para mail es enviar_email. Si dudás del nombre, mirá el schema de [TU TAREA] — no improvises.\n\nDevolvé SOLO el JSON, nada más.`}`;
+\n⚙️ ACCIONES = TOOLS, NO JSON. Para HACER cualquier cosa (agendar, mandar WhatsApp/mail, guardar contacto, pendiente, hecho, dar de alta, etc.) LLAMÁS al tool mcp__maria-actions__<accion> con sus parámetros. ⚠️ Si no llamás el tool, la acción NO ocurre: NUNCA digas "listo/anotado/lo mandé" sin haber llamado el tool y visto su ok. El JSON de salida NO lleva "acciones" — solo consultas / respuesta_a_usuario / respuesta_a_remitente / razonamiento. Devolvé SOLO ese JSON.`;
 
   const system = sysHead + '\n\n' + sysTail;
   const user = userBody;

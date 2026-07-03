@@ -138,125 +138,22 @@ async function ejecutarAcciones(acciones = [], ctx = {}, _opts = {}) {
     }
   }
 
-  // ─── Repair round-trip (2026-06-20) ──────────────────────────────────────
-  // Si alguna acción falló porque el "tipo" no existe (drift de nombre que ni
-  // el auto-ruteo ni la inferencia por payload pudieron resolver), re-llamamos
-  // al modelo UNA sola vez para que la re-emita con el nombre correcto y la
-  // ejecutamos. Fail-safe: cualquier error del repair NO rompe el camino
-  // principal — se sigue con los resultados originales. Con el auto-ruteo
-  // puesto, esto casi nunca dispara; es el último escalón de la red.
-  if (!_opts.reparando && !_opts.skipRepair) {
-    const esFallaNombre = r => !r.ok && /^Acci[oó]n desconocida/.test(r.error || '');
-    const fallasNombre = resultados.filter(esFallaNombre);
-    if (fallasNombre.length) {
-      try {
-        const { invocarClaudeJSON } = require('./claude-client'); // lazy: evita ciclo
-        const payloads = fallasNombre.map(r => r.accion);
-        const prompt =
-          `Emitiste estas acciones con un campo "tipo" que NO existe:\n` +
-          `${JSON.stringify(payloads, null, 2)}\n\n` +
-          `Los únicos nombres de "tipo" válidos son: ${ACCIONES_VALIDAS.join(', ')}.\n` +
-          `Devolvé SOLO un JSON {"acciones":[...]} con las MISMAS acciones, cambiando ` +
-          `únicamente el campo "tipo" al nombre válido correcto (mismo payload, mismo ` +
-          `destino, mismo texto). No agregues ni quites acciones, no expliques nada.`;
-        const { json } = await invocarClaudeJSON(prompt, { audit: null });
-        const corregidas = Array.isArray(json && json.acciones) ? json.acciones : [];
-        if (corregidas.length) {
-          console.warn(`[executor] repair: re-emitiendo ${corregidas.length} acción(es) corregida(s)`);
-          const repResultados = await ejecutarAcciones(corregidas, ctx, { reparando: true });
-          const sinFallasNombre = resultados.filter(r => !esFallaNombre(r));
-          return [...sinFallasNombre, ...repResultados];
-        }
-      } catch (err) {
-        console.warn('[executor] repair falló, sigo con resultados originales:', err.message);
-      }
-    }
-  }
+  // Repair round-trip eliminado 2026-07-03: con acciones como tools MCP el
+  // nombre lo garantiza el schema — el drift que reparaba es imposible.
 
   return resultados;
 }
 
-// Lista canónica de tipos de acción que entiende ejecutarUna(). Se usa para
-// dar un error AUTO-CORRECTIVO cuando el LLM erra el nombre (drift de acción).
-// MANTENER SINCRONIZADA con el switch de abajo (TODO: unificar en una fuente).
-const ACCIONES_VALIDAS = [
-  'crear_evento','modificar_evento','borrar_evento',
-  'responder_email','enviar_email','enviar_wa','reenviar_wa',
-  'agregar_pendiente','quitar_pendiente','posponer_pendiente',
-  'upsert_contacto','cambiar_visibilidad_contacto','set_cumple_contacto',
-  'programar_mensaje','cancelar_programado',
-  'crear_follow_up','cerrar_follow_up','recordar_hecho','olvidar_hecho',
-  'crear_usuario','actualizar_usuario','borrar_usuario',
-  'set_calendar_acceso','buscar_contacto_global','buscar_slots_comunes',
-  'confirmar_prospecto_pendiente','rechazar_prospecto_pendiente',
-  'configurar_brief','configurar_ubicacion','configurar_caldav',
-  'configurar_microsoft','iniciar_microsoft_auth',
-];
+// Fuente ÚNICA de nombres de acción: action-schemas.js (los tools MCP).
+// Paridad verificada 32=32 con el switch el 2026-07-03 al derivarla.
+const ACCIONES_VALIDAS = require('./action-schemas').TOOLS.map(t => t.name);
 
-function _levenshtein(a, b) {
-  a = String(a); b = String(b);
-  const m = a.length, n = b.length;
-  if (!m) return n; if (!n) return m;
-  let prev = Array.from({ length: n + 1 }, (_, i) => i);
-  for (let i = 1; i <= m; i++) {
-    const cur = [i];
-    for (let j = 1; j <= n; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
-    }
-    prev = cur;
-  }
-  return prev[n];
-}
-
-// Devuelve la acción válida más parecida (o null si nada se acerca).
-function _accionMasParecida(tipo) {
-  const t = String(tipo || '').toLowerCase();
-  let best = null, bestD = Infinity;
-  for (const a of ACCIONES_VALIDAS) {
-    const d = _levenshtein(t, a);
-    if (d < bestD) { bestD = d; best = a; }
-  }
-  return bestD <= 6 ? best : null;
-}
-
-// Sinónimos conocidos → acción canónica. El LLM driftea el nombre de la acción
-// (send_wa, enviar_whatsapp, mandar_wa, ...). En vez de fallar, normalizamos.
-const SINONIMOS_ACCION = {
-  enviar_whatsapp:'enviar_wa', enviar_wsp:'enviar_wa', enviar_wpp:'enviar_wa',
-  wa_enviar:'enviar_wa', send_wa:'enviar_wa', wa_send:'enviar_wa', sendwa:'enviar_wa',
-  mandar_wa:'enviar_wa', mandar_whatsapp:'enviar_wa', enviar_mensaje_wa:'enviar_wa',
-  mensaje_wa:'enviar_wa', wa_mensaje:'enviar_wa', enviar_mensaje:'enviar_wa',
-  enviar_mail:'enviar_email', mandar_mail:'enviar_email', mandar_email:'enviar_email',
-  send_email:'enviar_email', enviar_correo:'enviar_email',
-};
-
-// Resuelve accion.tipo a su forma canónica. Devuelve el tipo (posiblemente
-// corregido). NO auto-rutea acciones destructivas ni ambiguas: ante la duda,
-// devuelve el crudo y el default del switch tira el error auto-correctivo.
-function _normalizarTipo(accion) {
-  const raw = String(accion && accion.tipo || '');
-  const t = raw.toLowerCase().trim();
-  const aliasSwitch = ['agregar_contacto','crear_contacto','guardar_contacto'];
-  if (ACCIONES_VALIDAS.includes(t) || aliasSwitch.includes(t)) return raw;
-  // 1) sinónimo explícito
-  if (SINONIMOS_ACCION[t]) return SINONIMOS_ACCION[t];
-  // 2) inferencia por forma del payload — WhatsApp: { a:'...@c.us|@lid', texto }
-  const a = accion || {};
-  if (typeof a.a === 'string' && /@(c\.us|lid)$/.test(a.a) && typeof a.texto === 'string') {
-    return 'enviar_wa';
-  }
-  // 3) inferencia — email: { to|para, asunto|subject }
-  if ((a.to || a.para) && (a.asunto || a.subject)) return 'enviar_email';
-  return raw; // sin match seguro → que falle con el error auto-correctivo
-}
+// Toda la maquinaria de tolerancia a drift de nombres (levenshtein, sinónimos,
+// auto-ruteo por payload, alias) se eliminó el 2026-07-03: con tools MCP el
+// nombre viene del schema y no puede driftear. Historia en git (branch
+// pre-legacy-cleanup) y en [[project_maria_action_drift]].
 
 async function ejecutarUna(accion, ctx) {
-  const _canon = _normalizarTipo(accion);
-  if (_canon !== accion.tipo) {
-    console.warn(`[executor] auto-ruteo de acción "${accion.tipo}" → "${_canon}"`);
-    accion = { ...accion, tipo: _canon };
-  }
   switch (accion.tipo) {
     case 'crear_evento':       return await _crearEvento(accion, ctx);
     case 'modificar_evento':   return await _modificarEvento(accion, ctx);
@@ -273,9 +170,7 @@ async function ejecutarUna(accion, ctx) {
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
     case 'posponer_pendiente': return _posponerPendiente(accion, ctx);
     case 'upsert_contacto':
-    case 'agregar_contacto':   // alias: el LLM a veces generaliza 'agregar_*'
-    case 'crear_contacto':
-    case 'guardar_contacto':   return _upsertContacto(accion, ctx);
+
     case 'cambiar_visibilidad_contacto': return _cambiarVisibilidadContacto(accion, ctx);
     case 'set_cumple_contacto':          return _setCumpleContacto(accion, ctx);
     case 'programar_mensaje':  return await _programarMensaje(accion, ctx);
@@ -299,14 +194,10 @@ async function ejecutarUna(accion, ctx) {
       return _confirmarProspectoPendiente(accion, ctx);
     case 'rechazar_prospecto_pendiente':
       return _rechazarProspectoPendiente(accion, ctx);
-    default: {
-      const _sug = _accionMasParecida(accion.tipo);
+    default:
       throw new Error(
-        `Acción desconocida: "${accion.tipo}".` +
-        (_sug ? ` ¿Quisiste decir "${_sug}"?` : '') +
-        ` El campo se llama "tipo" y debe ser EXACTAMENTE uno de: ${ACCIONES_VALIDAS.join(', ')}.`
+        `Acción desconocida: "${accion.tipo}". Debe ser EXACTAMENTE uno de: ${ACCIONES_VALIDAS.join(', ')}.`
       );
-    }
   }
 }
 

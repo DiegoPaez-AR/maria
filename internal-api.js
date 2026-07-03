@@ -170,7 +170,7 @@ function start({ waClient } = {}) {
           }
         }
         try {
-          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen, turnoDeTercero: !!turnoTercero }, { skipRepair: true });
+          const [r] = await ejecutarAcciones([accion], { usuario, waClient, canalOrigen, turnoDeTercero: !!turnoTercero });
           const res = r || { ok: false, accion, error: 'sin_resultado' };
           // Acumular para los backstops del cierre de turno (aviso honesto +
           // cancelar trigger_externo) — el handler los toma con takeTurnResults.
