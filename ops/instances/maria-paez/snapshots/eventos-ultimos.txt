@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13989  2026-07-03 17:44:19  whatsapp  saliente   5491165286555@c.us   Listo, agendado el turno de dermatología para el viernes 07/08 a las 15hs en Ex. Piel 📅                                                                                                                 
+
+13988  2026-07-03 17:44:19  sistema   interno                         claude_call whatsapp: 10924ms prompt=7235c raw=7785c in=4t(cache_read=152117 new=152611) out=336t ttfb=1495ms api=7775ms turnos=2 $0.6230                                                               
+
+13987  2026-07-03 17:44:15  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+
+13986  2026-07-03 17:44:15  calendar  saliente                        creado: Turno dermatología - Ex. Piel (2026-08-07T15:00:00-03:00 → 2026-08-07T15:30:00-03:00) · Meet: https://meet.google.com/muw-grma-nbz [en calendar de Maria]                                       
+
+13985  2026-07-03 17:44:07  whatsapp  entrante   5491165286555@c.us   Hola María ¿Podrías agendarme un turno para el 7 de agosto a las 3 de la tarde en dermatología piel?                                                                                                    
+
 13984  2026-07-03 17:00:17  sistema   interno                         meeting-prep: 3 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
 
 13983  2026-07-03 16:30:17  sistema   interno                         meeting-prep: 1 alerta(s) agendada(s) (16 usuarios)                                                                                                                                                     
@@ -206,13 +216,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13891  2026-07-03 13:00:41  sistema   interno                         claude_call moderacion: 7432ms prompt=1545c raw=6446c in=10t(cache_read=0 new=22468) out=370t ttfb=1200ms api=7262ms turnos=1 $0.0304                                                                   
 
 13890  2026-07-03 13:00:33  whatsapp  saliente   5491165286555@c.us   Mecha respondió: puede el *lunes a las 10hs* y propone que sea *presencial en la facultad*, para llevar el material físico y digital del curso. Encaja con la franja que le dijiste (antes de las 11). ¿
-
-13889  2026-07-03 13:00:33  sistema   interno                         claude_call whatsapp: 24663ms prompt=61827c raw=14819c in=6t(cache_read=62847 new=71928) out=1479t ttfb=1464ms api=23962ms turnos=4 $0.3158                                                             
-
-13888  2026-07-03 13:00:29  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-13887  2026-07-03 13:00:27  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-13886  2026-07-03 13:00:12  whatsapp  saliente   5491165286555@c.us   Recordatorio: 📋 Empezar la declaración jurada                                                                                                                                                           
-
-13885  2026-07-03 13:00:12  whatsapp  saliente   5491140793225@c.us   Hola Caterina, buen día! Te escribo para saber si ya tuvieron novedades sobre las medidas y los ajustes de la biblioteca de Gabriela. Quedamos a la espera. Gracias!                                    
