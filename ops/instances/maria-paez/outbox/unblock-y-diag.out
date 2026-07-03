@@ -1,0 +1,43 @@
+# ejecutado: 2026-07-03T09:21:04-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary de este tick ──"
+#   grep -E "canary (OK|FALLÓ)" ops/.cron.log | tail -1
+#   sleep 5
+#   echo "── prod: enviar_whatsapp debe dar 'Acción desconocida' ──"
+#   SECRET=<REDACTED> -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   R=$(curl -s -m 20 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' \
+#     -d "{\"usuarioId\":1,\"accion\":{\"tipo\":\"enviar_whatsapp\",\"a\":\"x\",\"texto\":\"x\"},\"canalOrigen\":\"whatsapp\"}")
+#   echo "→ $(echo "$R" | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("error") or "")[:70])')"
+#   echo "── detalle del test que falla (temp DB, no toca nada) ──"
+#   env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL \
+#     node --test test/executor-routing.wip 2>&1 | grep -B2 -A18 "not ok\|Error\|error:" | head -50
+#   echo LISTO
+
+# ───── output ─────
+── canary de este tick ──
+canary OK (190046c70667efee1da5abb209939b943a2abe8c) → reload
+── prod: enviar_whatsapp debe dar 'Acción desconocida' ──
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/lib/python3.12/json/__init__.py", line 293, in load
+    return loads(fp.read(),
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 2 column 1 (char 1)
+→ 
+── detalle del test que falla (temp DB, no toca nada) ──
+LISTO
+
+# exit=0
