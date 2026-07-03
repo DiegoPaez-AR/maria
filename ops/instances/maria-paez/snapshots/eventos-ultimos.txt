@@ -1,5 +1,22 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13846  2026-07-03 12:35:51  whatsapp  entrante   5491165286555@c.us   María, te voy a pasar el contacto de Mecha Invernisi para que                                                                                                                                           
+                                                                       coordine salgo con ella, te voy a explicar, pedile por favor que                                                                                                                                       
+                                                                       también el material del taller que dio en el instituto del grano para                                                                                                                                  
+                                                                                                                                                                                                                                                                              
+
+13845  2026-07-03 12:35:46  sistema   interno                         contacto vcard (privado): Mecha Invernizzi → 5491140310367@c.us                                                                                                                                         
+
+13844  2026-07-03 12:35:38  sistema   interno                         claude_call whatsapp: 21096ms prompt=79241c raw=10032c in=6t(cache_read=52620 new=104792) out=690t ttfb=1418ms api=15686ms turnos=3 $0.4294                                                             
+
+13843  2026-07-03 12:35:34  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+13842  2026-07-03 12:35:34  whatsapp  saliente   5491134838324@c.us   Buenos días! Sí, confirmamos la reserva para 2 personas hoy viernes 3/07 a las 13 hs, a nombre de Diego Paez. Gracias!                                                                                  
+
+13841  2026-07-03 12:35:34  sistema   interno                         claude_call moderacion: 5923ms prompt=1566c raw=6286c in=10t(cache_read=0 new=22477) out=349t ttfb=1088ms api=5326ms turnos=1 $0.0303                                                                   
+
+13840  2026-07-03 12:35:16  whatsapp  entrante   5491134838324@c.us   Buenos días, me comunico de restaurante Iñaki para confirmar su reserva de este mediodía para 2 comensales 13 hs                                                                                        
+
 13839  2026-07-03 12:34:11  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 13838  2026-07-03 12:34:05  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -287,17 +304,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13748  2026-07-03 02:20:07  whatsapp  entrante   5491165286555@c.us   La carcova recordame entre mi lista de tareas del trabajo.                                                                                                                                              
 
 13747  2026-07-03 02:18:59  whatsapp  saliente   5491165286555@c.us   Anotado: contestarle a Joaquín del Museo de la Carcoba. ¿A qué hora te lo recuerdo?                                                                                                                     
-
-13746  2026-07-03 02:18:59  sistema   interno                         claude_call whatsapp: 6585ms prompt=6466c raw=6073c in=2t(cache_read=158618 new=3770) out=229t ttfb=1365ms api=4650ms turnos=1 $0.0652                                                                  
-
-13745  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us   Recordame contestarle el mensaje a Joaquín del Museo de la Carcoba.                                                                                                                                     
-
-13744  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us   Eso recordáme lo a las 9.45.                                                                                                                                                                            
-
-13743  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us   Recordame pagar las cuentas de mi casa.                                                                                                                                                                 
-
-13742  2026-07-03 02:18:52  whatsapp  entrante   5491165286555@c.us   Hola María, bueno, antes dírme a dormir, quiero pedirte algunos recordatorios para mañana.                                                                                                              
-
-13741  2026-07-03 02:18:42  sistema   interno                         claude_call whatsapp: 16648ms prompt=6312c raw=7485c in=4t(cache_read=312589 new=4270) out=355t ttfb=1432ms api=8068ms turnos=2 $0.1151                                                                 
-
-13740  2026-07-03 02:18:37  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
