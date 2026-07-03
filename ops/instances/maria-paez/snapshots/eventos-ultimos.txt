@@ -1,5 +1,20 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13954  2026-07-03 14:48:47  whatsapp  saliente   5491165286555@c.us   Listo, programé el recordatorio a Ceci para el lunes 06/07 a las 10hs ✅                                                                                                                                 
+
+13953  2026-07-03 14:48:47  sistema   interno                         claude_call whatsapp: 15721ms prompt=6505c raw=7123c in=4t(cache_read=251861 new=4073) out=357t ttfb=1613ms api=7929ms turnos=2 $0.0962                                                                 
+
+13952  2026-07-03 14:48:43  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+
+13951  2026-07-03 14:48:43  sistema   interno                         claude_call moderacion: 5580ms prompt=1624c raw=6206c in=10t(cache_read=0 new=22486) out=317t ttfb=1175ms api=5408ms turnos=1 $0.0302                                                                   
+
+13950  2026-07-03 14:48:31  whatsapp  entrante   5491165286555@c.us   Recordáselo a las 10 de la mañana.                                                                                                                                                                      
+
+13949  2026-07-03 14:48:21  sistema   interno                         Claude falló en WA (Gabriela Echaniz): No se pudo extraer JSON de la respuesta de Claude:                                                                                                               
+                                                                      Llegó un mensaje nuevo mientras procesaba, así que no programé el mensaje todavía. Necesito ver el contenido n                                                                                          
+
+13948  2026-07-03 14:48:21  sistema   interno                         claude_call whatsapp: 19751ms prompt=6616c raw=10021c in=6t(cache_read=246736 new=124121) out=587t ttfb=3900ms api=15263ms turnos=3 $0.5483                                                             
+
 13947  2026-07-03 14:48:00  whatsapp  entrante   5491165286555@c.us   Hola María, por favor recordale a CECI el día lunes que le escriba a Mecha Invernizi a ver si pudieron hacer el vídeo de promoción de la diplomatura de IA.                                             
 
 13946  2026-07-03 14:45:19  whatsapp  saliente   105171031949561@lid  ⏰ *En 15min*: Tommy (12:00 p. m.)                                                                                                                                                                       
@@ -199,20 +214,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13856  2026-07-03 12:38:57  whatsapp  entrante   5491165286555@c.us   presentate y decile que te envie el material del curso que dió en el instituto Belgrano, que necesitamos seleccionarlo para la muestra.                                                                 
 
 13855  2026-07-03 12:37:40  whatsapp  saliente   5491165286555@c.us   Dale, te leo 👀                                                                                                                                                                                          
-
-13854  2026-07-03 12:37:40  sistema   interno                         claude_call whatsapp: 5664ms prompt=6778c raw=4860c in=2t(cache_read=70015 new=4032) out=150t ttfb=1404ms api=3690ms turnos=1 $0.0384                                                                   
-
-13853  2026-07-03 12:37:33  whatsapp  entrante   5491165286555@c.us   te escribo por acá:                                                                                                                                                                                     
-
-13852  2026-07-03 12:36:49  whatsapp  saliente   5491165286555@c.us   Perfecto, la dejo privada (así queda 👍). Sigo esperando que me confirmes el nombre del instituto y qué es "la fita" para poder escribirle bien a Mecha.                                                 
-
-13851  2026-07-03 12:36:49  sistema   interno                         claude_call whatsapp: 9240ms prompt=6934c raw=6842c in=2t(cache_read=65957 new=4058) out=391t ttfb=1394ms api=7210ms turnos=1 $0.0409                                                                   
-
-13850  2026-07-03 12:36:39  whatsapp  entrante   5491165286555@c.us   Privada                                                                                                                                                                                                 
-
-13849  2026-07-03 12:36:39  whatsapp  entrante   5491165286555@c.us   María, te voy a pasar el contacto de Mecha Invernisi para que                                                                                                                                           
-                                                                       coordine salgo con ella, te voy a explicar, pedile por favor que                                                                                                                                       
-                                                                       también el material del taller que dio en el instituto del grano para                                                                                                                                  
-                                                                                                                                                                                                                                                                              
-
-13848  2026-07-03 12:36:29  sistema   interno                         claude_call whatsapp: 7761ms prompt=461c raw=6795c in=2t(cache_read=65048 new=909) out=359t ttfb=1454ms api=5647ms turnos=1 $0.0283                                                                     
