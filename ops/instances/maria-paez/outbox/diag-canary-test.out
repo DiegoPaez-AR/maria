@@ -1,0 +1,27 @@
+# ejecutado: 2026-07-03T09:19:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── historia canary reciente ──"
+#   grep -E "canary (OK|FALLÓ|FALLO)" ops/.cron.log | tail -5
+#   echo "── detalle del fallo ──"
+#   grep -A3 "not ok" /tmp/canary-tick.log 2>/dev/null | head -25
+#   echo LISTO
+
+# ───── output ─────
+── historia canary reciente ──
+canary OK (78fbe14148a253f3ac9d2a10d05906c1ca971850) → reload
+canary OK (b2e99c540c5dca5898764e82cd62c644670486a4) → reload
+canary OK (1705208808aaa27e34feb73db596d30da944e910) → reload
+canary FALLO npm test:
+canary FALLÓ (9da2bdc07fab16b2917c41d0824892d3bed52857) — NO recargo pm2, prod sigue con la versión anterior en memoria
+── detalle del fallo ──
+not ok 1 - test/executor-routing.test.js
+  ---
+  duration_ms: 862.145064
+  type: 'test'
+LISTO
+
+# exit=0
