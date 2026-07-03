@@ -97,7 +97,7 @@ const TOOLS = [
       properties: { nombre: s(''), whatsapp: s('wid, ej 5491...@c.us'), email: s(''), notas: s(''), cumple: s('YYYY-MM-DD o --MM-DD') } },
   },
   { name: 'cambiar_visibilidad_contacto', description: 'Cambia visibilidad de un contacto (privada|publica). Identificá por contactoId | nombre | whatsapp | email.',
-    inputSchema: { type: 'object', additionalProperties: true, required: ['visibilidad'], properties: { visibilidad: s('privada|publica', { enum: ['privada', 'publica'] }), contactoId: { type: 'integer' }, nombre: s(''), whatsapp: s(''), email: s('') } } },
+    inputSchema: { type: 'object', additionalProperties: true, required: ['visibilidad'], properties: { visibilidad: s('privada|publica', { enum: ['privada', 'publica'] }), contactoId: { type: 'integer' }, nombre: s(''), whatsapp: s(''), email: s('') }, forzar_nuevo: { type: 'boolean', description: 'true SOLO si el usuario confirmó que es OTRA persona distinta de un contacto parecido existente' } } },
   { name: 'set_cumple_contacto', description: 'Fija el cumpleaños de un contacto. cumple = YYYY-MM-DD o --MM-DD.',
     inputSchema: { type: 'object', additionalProperties: true, required: ['cumple'], properties: { cumple: s(''), contactoId: { type: 'integer' }, nombre: s(''), whatsapp: s(''), email: s('') } } },
   {

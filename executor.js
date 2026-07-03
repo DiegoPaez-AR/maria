@@ -850,6 +850,40 @@ function _olvidarHecho(a, ctx) {
 
 async function _upsertContacto(a, ctx) {
   _requerir(a, ['nombre']);
+  // Detección de candidatos a duplicado (2026-07-03, pedido Diego: "que no
+  // deje subir duplicados, que pregunte"). El match por nombre EXACTO sigue
+  // siendo el camino legítimo de actualización (silencioso). Lo que se frena:
+  // mismo email/teléfono bajo OTRO nombre, o mismo nombre con tildes/espacios
+  // distintos (el caso Rubén/Ruben Ward). forzar_nuevo:true saltea el check.
+  if (!a.forzar_nuevo) {
+    const _norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+    const _dig = s => String(s || '').replace(/\D/g, '');
+    const nombreNorm = _norm(a.nombre);
+    const emailNorm = a.email ? String(a.email).toLowerCase().trim() : null;
+    const telSuf = _dig(a.whatsapp).slice(-10) || null;
+    const sospechosos = [];
+    for (const c of mem.todosLosContactos(ctx.usuario.id)) {
+      const esExacto = String(c.nombre).toLowerCase() === String(a.nombre).toLowerCase();
+      if (esExacto) continue; // update legítimo, lo maneja el upsert
+      const motivos = [];
+      if (emailNorm && c.email && String(c.email).toLowerCase().trim() === emailNorm) motivos.push('mismo email');
+      if (telSuf && telSuf.length >= 8 && _dig(c.whatsapp).slice(-10) === telSuf) motivos.push('mismo teléfono');
+      if (_norm(c.nombre) === nombreNorm) motivos.push('mismo nombre (variante de tildes/espacios)');
+      if (motivos.length) sospechosos.push({ c, motivos });
+    }
+    if (sospechosos.length) {
+      const detalle = sospechosos.slice(0, 3).map(({ c, motivos }) =>
+        `"${c.nombre}" (${[c.whatsapp, c.email, c.cumple ? `cumple ${c.cumple}` : null].filter(Boolean).join(', ') || 'sin datos'}) — ${motivos.join(' + ')}`
+      ).join(' · ');
+      throw new Error(
+        `upsert_contacto: posible DUPLICADO de un contacto existente: ${detalle}. ` +
+        `NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ` +
+        `¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? ` +
+        `— para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; ` +
+        `(2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).`
+      );
+    }
+  }
   // Si viene whatsapp, validar con getNumberId antes de guardar — evita
   // guardar wids armados con prefijo país errado (caso Enrique 2026-05-10).
   // El validador devuelve el wid resuelto por WA Web (puede ser @c.us o @lid).

@@ -54,6 +54,26 @@ test('recordar_hecho / olvidar_hecho rutean bien', async () => {
   assert.equal(r2.ok, true);
 });
 
+test('upsert_contacto: variante de tilde / mismo tel bajo otro nombre → pregunta, no duplica', async () => {
+  const owner = usuarios.obtenerOwner();
+  const [r0] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Rubén Prueba', whatsapp: '5491144445555', email: 'ruben@prueba.com' }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r0.ok, true, `alta inicial falló: ${r0.error}`);
+  // misma persona sin tilde → debe frenar y pedir decisión
+  const [r1] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Ruben Prueba', email: 'otro@x.com' }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r1.ok, false);
+  assert.match(r1.error, /DUPLICADO/);
+  // mismo teléfono bajo otro nombre → frena
+  const [r2] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Persona Nueva', whatsapp: '54 9 11 4444-5555' }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r2.ok, false);
+  assert.match(r2.error, /DUPLICADO/);
+  // forzar_nuevo → crea aparte
+  const [r3] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Ruben Prueba (otro)', email: 'otro@x.com', forzar_nuevo: true }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r3.ok, true, `forzar_nuevo falló: ${r3.error}`);
+  // nombre EXACTO → update legítimo sin frenar
+  const [r4] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Rubén Prueba', notas: 'nota nueva' }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r4.ok, true, `update exacto falló: ${r4.error}`);
+});
+
 test('tipo inexistente → error "Acción desconocida" (sin alias ni levenshtein)', async () => {
   const owner = usuarios.obtenerOwner();
   const [r] = await ejecutarAcciones([{ tipo: 'enviar_whatsapp', a: 'x', texto: 'x' }], { usuario: owner, canalOrigen: 'whatsapp' });
