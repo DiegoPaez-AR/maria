@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13818  2026-07-03 12:17:57  whatsapp  entrante   5491165286555@c.us   privada                                                                                                                                                                                                 
+
+13817  2026-07-03 12:17:39  sistema   interno                         contacto vcard (privado): Ana Clara Zamora → 5491141981886@c.us                                                                                                                                         
+
+13816  2026-07-03 12:17:35  whatsapp  saliente   5491165286555@c.us   Dale, quedo esperando el teléfono de Ana Clara así lo guardo y le mando el mensaje por WhatsApp también 👍                                                                                               
+
+13815  2026-07-03 12:17:35  sistema   interno                         claude_call whatsapp: 6369ms prompt=6476c raw=5202c in=2t(cache_read=42280 new=3667) out=224t ttfb=1437ms api=4382ms turnos=1 $0.0298                                                                   
+
+13814  2026-07-03 12:17:27  whatsapp  entrante   5491165286555@c.us   te vot a pasar su telefono, ella trabaja conmigo y hablamos bastante                                                                                                                                    
+
+13813  2026-07-03 12:17:11  whatsapp  saliente   5491165286555@c.us   Se lo mandé hoy viernes 3/7 a las 8:12 de la mañana ✉️                                                                                                                                                  
+
+13812  2026-07-03 12:17:11  sistema   interno                         claude_call whatsapp: 5930ms prompt=6398c raw=4661c in=2t(cache_read=0 new=42280) out=120t ttfb=1758ms api=3574ms turnos=1 $0.1604                                                                      
+
 13811  2026-07-03 12:17:05  sistema   interno                         acción FALLÓ: enviar_whatsapp — enviar_wa: WA "x" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                                
 
 13810  2026-07-03 12:17:05  whatsapp  saliente   34342575317160@lid   🔴 canary: el deploy 9da2bdc07f falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
@@ -286,22 +300,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13720  2026-07-02 22:38:17  whatsapp  entrante   5491165286555@c.us   Otra búsqueda serían las mismas características pero en San Telmo/ parque patricios/ san Cristóbal/ Barracas/                                                                                           
 
 13719  2026-07-02 22:38:07  sistema   interno                         claude_call whatsapp: 34085ms prompt=6586c raw=25574c in=10t(cache_read=642681 new=7790) out=829t ttfb=1492ms api=32086ms turnos=5 $0.2911                                                              
-
-13718  2026-07-02 22:37:32  whatsapp  entrante   5491165286555@c.us   Si filtra porfa                                                                                                                                                                                         
-
-13717  2026-07-02 22:37:32  whatsapp  entrante   5491165286555@c.us   Otra búsqueda serían las mismas características pero en San Telmo/ parque patricios/ san Cristóbal/ Barracas/                                                                                           
-
-13716  2026-07-02 22:37:00  whatsapp  saliente   5491165286555@c.us   Dale! Busqué en varios portales con esos filtros (PH/casa con jardín, terraza o patio, 60m²+, hasta USD 165.000) en Florida, Saavedra y Núñez. Te comparto los mejores links para que explores:         
-                                                                                                                                                                                                                                                                              
-                                                                      1️⃣ Zon                                                                                                                                                                                                 
-
-13715  2026-07-02 22:36:53  sistema   interno                         claude_call whatsapp: 41063ms prompt=6679c raw=24788c in=8t(cache_read=480454 new=7198) out=2141t ttfb=1484ms api=39016ms turnos=4 $0.2372                                                              
-
-13714  2026-07-02 22:36:19  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-13713  2026-07-02 22:36:11  whatsapp  entrante   5491165286555@c.us   Podes buscar en zonaprop/ argenprop/ remax/ mercado libre/ mudify o donde a vos te parezca también                                                                                                      
-
-13712  2026-07-02 22:36:11  whatsapp  entrante   5491165286555@c.us   Busquemos ph o casa con jardín o terraza o patio                                                                                                                                                        
-                                                                      Zona: Florida/ Saavedra/ Nuñez                                                                                                                                                                          
-                                                                      Mínimo 60 mts                                                                                                                                                                                           
-                                                                      Máximo 165.000 dólares                                                                                                                                                                                  
