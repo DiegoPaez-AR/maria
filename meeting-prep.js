@@ -96,7 +96,9 @@ async function _componerTexto(e, usuario) {
       }
       const nombre = c ? c.nombre : (_nombreDesdeEmail(em) || em);
       const nota = c ? mem.getNotaContacto(usuario.id, c.id) : null;
-      const fuente = (nota && nota.nota) ? nota.nota : (c && c.notas) || null;
+      let fuente = (nota && nota.nota) ? nota.nota : (c && c.notas) || null;
+      // la nota de origen auto-generada es útil en la libreta, no en el aviso
+      if (fuente && /agregado automáticamente por meeting-prep/.test(fuente)) fuente = null;
       // Perfil web (rol/empresa) ya enriquecido al crear el contacto.
       const web = c ? (c.perfil_web || null) : null;
       if (!fuente && !web) continue; // nada útil para este asistente
