@@ -1,5 +1,12 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13913  2026-07-03 13:09:55  sistema   interno                         Claude falló en WA (Gabriela Echaniz): No se pudo extraer JSON de la respuesta de Claude:                                                                                                               
+                                                                      Llegó un mensaje nuevo mientras procesaba, así que no ejecuté el cambio. Necesito ver el mensaje nuevo antes d                                                                                          
+
+13912  2026-07-03 13:09:55  sistema   interno                         claude_call whatsapp: 13665ms prompt=6332c raw=9711c in=6t(cache_read=313975 new=4451) out=418t ttfb=1441ms api=11494ms turnos=3 $0.1172                                                                
+
+13911  2026-07-03 13:09:41  whatsapp  entrante   5491165286555@c.us   Esa reunión en la carcova que es un museo es presencial                                                                                                                                                 
+
 13910  2026-07-03 13:08:28  whatsapp  saliente   5491165286555@c.us   Listo, agendada: lunes 06/07 de 14 a 15hs, reunión en la Carcova 📅                                                                                                                                      
 
 13909  2026-07-03 13:08:28  sistema   interno                         claude_call whatsapp: 13086ms prompt=6324c raw=8765c in=4t(cache_read=198792 new=4462) out=574t ttfb=1413ms api=10140ms turnos=2 $0.0850                                                                
@@ -206,9 +213,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13815  2026-07-03 12:17:35  sistema   interno                         claude_call whatsapp: 6369ms prompt=6476c raw=5202c in=2t(cache_read=42280 new=3667) out=224t ttfb=1437ms api=4382ms turnos=1 $0.0298                                                                   
 
 13814  2026-07-03 12:17:27  whatsapp  entrante   5491165286555@c.us   te vot a pasar su telefono, ella trabaja conmigo y hablamos bastante                                                                                                                                    
-
-13813  2026-07-03 12:17:11  whatsapp  saliente   5491165286555@c.us   Se lo mandé hoy viernes 3/7 a las 8:12 de la mañana ✉️                                                                                                                                                  
-
-13812  2026-07-03 12:17:11  sistema   interno                         claude_call whatsapp: 5930ms prompt=6398c raw=4661c in=2t(cache_read=0 new=42280) out=120t ttfb=1758ms api=3574ms turnos=1 $0.1604                                                                      
-
-13811  2026-07-03 12:17:05  sistema   interno                         acción FALLÓ: enviar_whatsapp — enviar_wa: WA "x" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                                
