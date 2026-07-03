@@ -12,6 +12,7 @@ process.env.OWNER_NOMBRE = 'Owner Test';
 process.env.OWNER_WA = '5491100000001';
 process.env.OWNER_EMAIL = 'owner@test.local';
 process.env.ASISTENTE_FROM_EMAIL = 'maria@test.local';
+process.env.ASISTENTE_NOMBRE = 'Maria Test';
 process.env.GOOGLE_TOKEN_PATH = path.join(os.tmpdir(), 'test-token.json');
 process.env.GOOGLE_CRED_PATH = path.join(os.tmpdir(), 'test-cred.json');
 
