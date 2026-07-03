@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13806  2026-07-03 12:15:02  sistema   interno                         acción FALLÓ: enviar_whatsapp — Faltan campos requeridos: a, texto                                                                                                                                      
+
+13805  2026-07-03 12:15:02  sistema   interno                         acción ejecutada: olvidar_hecho                                                                                                                                                                         
+
+13804  2026-07-03 12:15:02  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
+
 13803  2026-07-03 12:13:11  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 13802  2026-07-03 12:13:05  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -296,9 +302,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13708  2026-07-02 22:32:42  sistema   interno                         claude_call whatsapp: 6679ms prompt=460c raw=6096c in=2t(cache_read=105386 new=660) out=227t ttfb=1500ms api=4591ms turnos=1 $0.0375                                                                    
 
 13707  2026-07-02 22:32:35  sistema   interno                         claude_call whatsapp: 16878ms prompt=6483c raw=11926c in=6t(cache_read=208902 new=105386) out=662t ttfb=1397ms api=14951ms turnos=3 $0.4678                                                             
-
-13706  2026-07-02 22:32:18  whatsapp  entrante   5491165286555@c.us   Bueno seguimos con l búsqueda para mi papá?                                                                                                                                                             
-
-13705  2026-07-02 22:22:04  sistema   interno                         acción FALLÓ: enviar_email — enviar_email: este turno lo inició un tercero — solo puedo enviar a Diego. Si el pedido es legítimo, consultale primero al usuario (respuesta_a_usuario) y que él lo pida. 
-
-13704  2026-07-02 22:22:04  sistema   interno                         [SEGURIDAD] gate_tercero: enviar_email hacia "hernan.fulco@sondeosglobal.com" bloqueado en turno de tercero:                                                                                            
