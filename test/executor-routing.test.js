@@ -13,6 +13,7 @@ process.env.OWNER_WA = '5491100000001';
 process.env.OWNER_EMAIL = 'owner@test.local';
 process.env.ASISTENTE_FROM_EMAIL = 'maria@test.local';
 process.env.ASISTENTE_NOMBRE = 'Maria Test';
+process.env.ASISTENTE_TZ = 'America/Argentina/Buenos_Aires'; // google.js exige FROM_EMAIL + FROM_NAME + TZ al require
 process.env.GOOGLE_TOKEN_PATH = path.join(os.tmpdir(), 'test-token.json');
 process.env.GOOGLE_CRED_PATH = path.join(os.tmpdir(), 'test-cred.json');
 
