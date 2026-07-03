@@ -1,0 +1,21 @@
+# ejecutado: 2026-07-03T09:24:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   grep -E "canary (OK|FALLÓ)" ops/.cron.log | tail -1
+#   env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
+#     npm test 2>&1 | grep -E "^# (tests|pass|fail)"
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo LISTO
+
+# ───── output ─────
+canary FALLÓ (10c6869cdff7dfdba372958a7fc6c468b13a9054) — NO recargo pm2, prod sigue con la versión anterior en memoria
+# tests 29
+# pass 29
+# fail 0
+maria-paez online restarts=7
+LISTO
+
+# exit=0
