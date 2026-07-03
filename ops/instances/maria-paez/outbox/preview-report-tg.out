@@ -1,0 +1,18 @@
+# ejecutado: 2026-07-03T18:29:21-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   DRY_RUN=1 node daily-report.js 2>&1 | grep -A3 -B1 "Telegram" | head -15
+#   echo LISTO
+
+# ───── output ─────
+Gmail:    1↓ / 1↑
+Telegram: 1↓ / 1↑ · vinculados 1/16 (+1 hoy) · bot OK
+Calendar: 4 creados · 3 modificados · 1 borrados
+Latencia Claude 24h (77 llamadas):
+   · whatsapp: p50 16.6s · p95 41.1s · máx 132.5s  (58)
+LISTO
+
+# exit=0
