@@ -1,0 +1,23 @@
+#!/bin/bash
+# Corrección honesta a Gabi: la reunión con Ana Clara NO está confirmada (pedido de Diego)
+set -u
+DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+row=$(sqlite3 "$DB" "SELECT id||'|'||COALESCE(wa_cus,'') FROM usuarios WHERE nombre LIKE 'Gabriela%' AND activo=1 LIMIT 1")
+USRID="${row%%|*}"; WA="${row#*|}"
+[ "$WA" = "5491165286555@c.us" ] || { echo "ABORT wa inesperado: $WA"; exit 1; }
+
+python3 - "$USRID" "$WA" <<'PYEOF'
+import json, sys, urllib.request, os
+uid, wa = sys.argv[1], sys.argv[2]
+texto = ("Gaby, te tengo que corregir algo importante: me confundí antes — Ana Clara todavía NO "
+         "confirmó la reunión del lunes. Le escribí por mail el 1/7 y hoy de nuevo, y hoy también "
+         "por WhatsApp, pero aún no me respondió por ningún lado. La franja de lunes o martes de "
+         "9 a 12 salió de ustedes, no de ella. Perdón por la confusión 🙏 Te aviso apenas conteste.")
+req = urllib.request.Request(
+    f"http://127.0.0.1:{os.environ['ASISTENTE_INTERNAL_PORT']}/send-wa",
+    data=json.dumps({"to": wa, "body": texto, "usuarioId": int(uid), "nombre": "Gabriela Echaniz"}).encode(),
+    headers={"x-intensa-secret": os.environ.get("ASISTENTE_INTERNAL_SECRET",""),
+             "Content-Type": "application/json"}, method="POST")
+with urllib.request.urlopen(req, timeout=30) as r:
+    print("send-wa:", r.status, r.read().decode())
+PYEOF
