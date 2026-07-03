@@ -1,0 +1,55 @@
+# ejecutado: 2026-07-03T12:28:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # 1) Recordatorio a Gabi por el turno de dermatología (follow-up #21, pedido de Diego)
+#   # 2) Diagnóstico follow-up #24 (Ana Clara / gmail)
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   
+#   echo "== usuarios: Gabriela =="
+#   row=$(sqlite3 "$DB" "SELECT id||'|'||COALESCE(wa_cus,'') FROM usuarios WHERE nombre LIKE 'Gabriela%' AND activo=1 LIMIT 1")
+#   USRID="${row%%|*}"; WA="${row#*|}"
+#   echo "id=$USRID wa=$WA"
+#   if [ "$WA" != "5491165286555@c.us" ]; then echo "ABORT wa inesperado"; exit 1; fi
+#   
+#   python3 - "$USRID" "$WA" <<'PYEOF'
+#   import json, sys, urllib.request, os
+#   uid, wa = sys.argv[1], sys.argv[2]
+#   texto = ("Gaby, ¿al final cancelás el turno de dermatología de hoy a las 18hs? "
+#            "Si me confirmás, lo borro del calendario 👍")
+#   req = urllib.request.Request(
+#       f"http://127.0.0.1:{os.environ['ASISTENTE_INTERNAL_PORT']}/send-wa",
+#       data=json.dumps({"to": wa, "body": texto, "usuarioId": int(uid), "nombre": "Gabriela Echaniz"}).encode(),
+#       headers={"x-intensa-secret": os.environ.get("ASISTENTE_INTERNAL_SECRET",""),
+#                "Content-Type": "application/json"}, method="POST")
+#   with urllib.request.urlopen(req, timeout=30) as r:
+#       print("send-wa:", r.status, r.read().decode())
+#   PYEOF
+#   
+#   echo "== follow_ups 19-24 =="
+#   sqlite3 -header "$DB" "SELECT id, usuario_id, estado, esperando_de, esperando_canal, creado, vence_en, metadata_json FROM follow_ups WHERE id>=19;"
+#   echo "== eventos gmail con a.zamora =="
+#   sqlite3 "$DB" "SELECT id, timestamp, canal, direccion, de, substr(COALESCE(asunto,''),1,60), substr(cuerpo,1,200) FROM eventos WHERE (de LIKE '%zamora%' OR cuerpo LIKE '%zamora%' OR asunto LIKE '%zamora%') AND canal='gmail' ORDER BY id DESC LIMIT 6;"
+
+# ───── output ─────
+== usuarios: Gabriela ==
+id=18 wa=5491165286555@c.us
+send-wa: 200 {"ok":true,"sent_to":"17699644153872@lid"}
+== follow_ups 19-24 ==
+id|usuario_id|estado|esperando_de|esperando_canal|creado|vence_en|metadata_json
+19|1|disparado|5491165286555@c.us|whatsapp|2026-07-01 13:21:34|2026-07-03 13:21:34|{"origen":"auto_pendiente"}
+20|1|disparado|5491165286555@c.us|whatsapp|2026-07-01 13:26:46|2026-07-03 13:26:46|{"origen":"auto_pendiente"}
+21|1|disparado|5491165286555@c.us|whatsapp|2026-07-01 13:59:54|2026-07-03 13:59:54|{"origen":"auto_pendiente"}
+22|1|cerrado|5491140793225@c.us|whatsapp|2026-07-01 14:27:42|2026-07-02 14:27:42|{"origen":"auto_pendiente"}
+23|18|disparado|5491157276026@c.us|whatsapp|2026-07-01 14:55:24|2026-07-02 14:55:24|{"origen":"auto_pendiente"}
+24|1|disparado|a.zamora@una.edu.ar|gmail|2026-07-01 14:56:40|2026-07-03 14:56:40|{"origen":"auto_pendiente"}
+25|18|abierto|5491140793225@c.us|whatsapp|2026-07-01 17:16:46|2026-07-04 17:16:46|{"origen":"auto_pendiente"}
+26|1|abierto|5491123348031@c.us|whatsapp|2026-07-01 23:31:30|2026-07-03 23:31:30|{"origen":"auto_pendiente"}
+27|1|abierto|5491169594900@c.us|whatsapp|2026-07-01 23:55:17|2026-07-03 23:55:17|{"origen":"auto_pendiente"}
+28|18|abierto|5491140310367@c.us|whatsapp|2026-07-03 12:39:15|2026-07-05 12:39:15|{"origen":"auto_pendiente"}
+29|18|abierto|5491140310367@c.us|whatsapp|2026-07-03 12:42:09|2026-07-05 12:42:09|{"origen":"auto_pendiente"}
+== eventos gmail con a.zamora ==
+
+# exit=0
