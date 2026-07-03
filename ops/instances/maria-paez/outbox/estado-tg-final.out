@@ -1,0 +1,22 @@
+# ejecutado: 2026-07-03T17:24:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   grep -E "canary (OK|FALLÓ)" ops/.cron.log | tail -3
+#   cat /root/secretaria/state/.canary-bad-commit 2>/dev/null || echo "(sin marker — OK)"
+#   grep -E "arrancando telegram|\[TG\]" ~/.pm2/logs/maria-paez-out.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+canary OK (006b5b5c31e340ae5df3b14a3b0a7c0a611cb517) → reload
+canary OK (3284cf6cc2718397e821832044ba03efc2f1f272) → reload
+canary OK (566f891091fd201b7865606c39df944dc84faf75) → reload
+(sin marker — OK)
+2026-07-03 17:09:07: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+2026-07-03 17:14:05: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+2026-07-03 17:23:07: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+LISTO
+
+# exit=0
