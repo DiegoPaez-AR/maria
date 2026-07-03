@@ -1,0 +1,27 @@
+# ejecutado: 2026-07-03T09:27:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   env -i PATH="$PATH" HOME=/root TZ=America/Argentina/Buenos_Aires \
+#     node --test test/executor-routing.test.js 2>&1 | grep -B4 "at Object" | head -20
+#   echo LISTO
+
+# ───── output ─────
+# /root/secretaria/google.js:47
+# if (!FROM_NAME)  throw new Error('[google.js] ASISTENTE_FROM_NAME o ASISTENTE_NOMBRE no seteado en el .conf de la instancia');
+#                  ^
+# Error: [google.js] ASISTENTE_FROM_NAME o ASISTENTE_NOMBRE no seteado en el .conf de la instancia
+#     at Object.<anonymous> (/root/secretaria/google.js:47:24)
+#     at Module._compile (node:internal/modules/cjs/loader:1781:14)
+#     at Object..js (node:internal/modules/cjs/loader:1913:10)
+--
+#     at Function._load (node:internal/modules/cjs/loader:1309:12)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Module.require (node:internal/modules/cjs/loader:1527:12)
+#     at require (node:internal/modules/helpers:147:16)
+#     at Object.<anonymous> (/root/secretaria/executor.js:13:13)
+LISTO
+
+# exit=0
