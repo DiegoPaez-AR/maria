@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13855  2026-07-03 12:37:40  whatsapp  saliente   5491165286555@c.us   Dale, te leo 👀                                                                                                                                                                                          
+
+13854  2026-07-03 12:37:40  sistema   interno                         claude_call whatsapp: 5664ms prompt=6778c raw=4860c in=2t(cache_read=70015 new=4032) out=150t ttfb=1404ms api=3690ms turnos=1 $0.0384                                                                   
+
+13853  2026-07-03 12:37:33  whatsapp  entrante   5491165286555@c.us   te escribo por acá:                                                                                                                                                                                     
+
 13852  2026-07-03 12:36:49  whatsapp  saliente   5491165286555@c.us   Perfecto, la dejo privada (así queda 👍). Sigo esperando que me confirmes el nombre del instituto y qué es "la fita" para poder escribirle bien a Mecha.                                                 
 
 13851  2026-07-03 12:36:49  sistema   interno                         claude_call whatsapp: 9240ms prompt=6934c raw=6842c in=2t(cache_read=65957 new=4058) out=391t ttfb=1394ms api=7210ms turnos=1 $0.0409                                                                   
@@ -298,10 +304,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 13756  2026-07-03 02:28:28  whatsapp  entrante   5491165286555@c.us   También recordame que en el grupo de multi extensión les recuerde que arme en una reunión                                                                                                               
                                                                        con el grupo del seminario de prácticas de extensión para el día martes a las 11.                                                                                                                      
-
-13755  2026-07-03 02:23:40  sistema   interno                         Claude falló en WA (Gabriela Echaniz): No se pudo extraer JSON de la respuesta de Claude:                                                                                                               
-                                                                      No tengo un contacto guardado que coincida con "asesi" (probablemente el audio no transcribió bien el nombre),                                                                                          
-
-13754  2026-07-03 02:23:40  sistema   interno                         claude_call whatsapp: 132489ms prompt=6951c raw=33827c in=10t(cache_read=92772 new=14412) out=1442t ttfb=1377ms api=130431ms turnos=6 $0.3339                                                           
-
-13753  2026-07-03 02:23:26  sistema   interno                         acción FALLÓ: buscar_contacto_global — buscar_contacto_global: solo el owner                                                                                                                            
