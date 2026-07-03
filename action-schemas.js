@@ -129,7 +129,7 @@ const TOOLS = [
     inputSchema: { type: 'object', additionalProperties: true, required: ['canal', 'remitente_id'], properties: { canal: s('whatsapp|gmail'), remitente_id: s(''), nombre: s(''), wa_cus: s(''), email: s(''), calendar_id: s('') } } },
   { name: 'rechazar_prospecto_pendiente', description: 'SOLO OWNER. Descarta un prospecto pendiente. canal + remitente_id.',
     inputSchema: { type: 'object', additionalProperties: true, required: ['canal', 'remitente_id'], properties: { canal: s('whatsapp|gmail'), remitente_id: s('') } } },
-  { name: 'vincular_telegram', description: 'Genera el código de 6 dígitos para que el usuario que escribe vincule su Telegram (canal de respaldo). El usuario debe mandarle ese código al bot de Telegram de Maria en menos de 15 minutos.',
+  { name: 'vincular_telegram', description: 'Da las instrucciones para que el usuario que escribe vincule su Telegram (canal de respaldo): link al bot + botón Compartir mi número (un tap), con código de 6 dígitos como alternativa si su Telegram usa otro número. Usala cuando pida vincular/conectar Telegram. Respondele con las `instrucciones` del resultado.',
     inputSchema: { type: 'object', additionalProperties: true, properties: {} } },
   { name: 'configurar_brief', description: 'Activa/pausa el brief matutino del usuario que escribe (self-service).',
     inputSchema: { type: 'object', additionalProperties: true, properties: { activo: { type: 'boolean' } } } },

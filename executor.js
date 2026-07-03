@@ -181,8 +181,15 @@ async function ejecutarUna(accion, ctx) {
         throw new Error('vincular_telegram: el canal Telegram no está configurado en esta instancia');
       }
       const _cod = _vinc.generar(ctx.usuario.id);
-      const _bot = process.env.TELEGRAM_BOT_USERNAME ? `@${String(process.env.TELEGRAM_BOT_USERNAME).replace(/^@/, '')}` : 'el bot de Telegram de Maria';
-      return { codigo: _cod, instrucciones: `Mandale el código ${_cod} a ${_bot} en Telegram dentro de los próximos 15 minutos. Con eso quedás vinculado al canal de respaldo.` };
+      const _uname = String(process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
+      const _link = _uname ? `https://t.me/${_uname}` : null;
+      return {
+        codigo: _cod,
+        link: _link,
+        instrucciones: (_link
+          ? `Entrá a ${_link}, tocá "Iniciar" y después el botón "📱 Compartir mi número" — un tap y quedás vinculado (tiene que ser el mismo número que tu WhatsApp). Si tu Telegram usa OTRO número, mandale este código en su lugar: ${_cod} (vale 15 minutos).`
+          : `Mandale el código ${_cod} al bot de Telegram de Maria dentro de los próximos 15 minutos.`),
+      };
     }
     case 'configurar_brief':  return _configurarBrief(accion, ctx);
     case 'configurar_ubicacion': return _configurarUbicacion(accion, ctx);

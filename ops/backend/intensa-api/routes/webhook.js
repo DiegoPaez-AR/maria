@@ -219,9 +219,12 @@ async function _onCheckoutCompleted(session) {
 
   if (debeBienvenida) {
     const asistente = instance.asistente || 'Maria';
+    const tgUser = String(process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
+    const tgLineaEs = tgUser ? `\n\nUn último tip: tengo un canal de respaldo en Telegram por si WhatsApp alguna vez falla. Vinculate en 10 segundos: entrá a https://t.me/${tgUser} y tocá "Compartir mi número".` : '';
+    const tgLineaEn = tgUser ? `\n\nOne last tip: I keep a backup channel on Telegram in case WhatsApp ever goes down. Link it in 10 seconds: open https://t.me/${tgUser} and tap "Share my number".` : '';
     const msg = (pending.idioma === 'en')
-      ? `Hi ${pending.nombre}! I'm ${asistente}, your new personal assistant. Your sign-up is confirmed ✅\n\nYou can message me right here for whatever you need: scheduling meetings, reminders, coordinating with others, transcribing audio and more.\n\nTo get started: which calendar do you use? (Google / Outlook / iCloud / other) I'll walk you through connecting it and start taking care of your agenda.`
-      : `¡Hola ${pending.nombre}! Soy ${asistente}, tu nueva secretaria personal. Tu alta quedó confirmada ✅\n\nYa podés escribirme por acá para lo que necesites: agendar reuniones, recordatorios, coordinar con terceros, transcribir audios y más.\n\nPara arrancar: ¿qué calendario usás? (Google / Outlook / iCloud / otro) Así te paso los pasos para conectarlo y empiezo a cuidarte la agenda.`;
+      ? `Hi ${pending.nombre}! I'm ${asistente}, your new personal assistant. Your sign-up is confirmed ✅\n\nYou can message me right here for whatever you need: scheduling meetings, reminders, coordinating with others, transcribing audio and more.\n\nTo get started: which calendar do you use? (Google / Outlook / iCloud / other) I'll walk you through connecting it and start taking care of your agenda.${tgLineaEn}`
+      : `¡Hola ${pending.nombre}! Soy ${asistente}, tu nueva secretaria personal. Tu alta quedó confirmada ✅\n\nYa podés escribirme por acá para lo que necesites: agendar reuniones, recordatorios, coordinar con terceros, transcribir audios y más.\n\nPara arrancar: ¿qué calendario usás? (Google / Outlook / iCloud / otro) Así te paso los pasos para conectarlo y empiezo a cuidarte la agenda.${tgLineaEs}`;
     try {
       await mariaRpc.sendWa(instance, { to: pending.wa, body: msg });
       const idb2 = new Database(`/root/secretaria/state/${instance.slug}/db/maria.sqlite`);

@@ -47,12 +47,44 @@ async function _api(metodo, params = {}) {
   return j.result;
 }
 
-async function enviarTG(chatId, texto) {
+async function enviarTG(chatId, texto, extra = {}) {
   // Telegram capea 4096 chars por mensaje
   const partes = [];
   let t = String(texto || '');
   while (t.length > 0) { partes.push(t.slice(0, 4000)); t = t.slice(4000); }
-  for (const p of partes) await _api('sendMessage', { chat_id: chatId, text: p });
+  for (let i = 0; i < partes.length; i++) {
+    // el reply_markup va solo en el último mensaje
+    await _api('sendMessage', { chat_id: chatId, text: partes[i], ...(i === partes.length - 1 ? extra : {}) });
+  }
+}
+
+const _KB_COMPARTIR = { reply_markup: { keyboard: [[{ text: '📱 Compartir mi número', request_contact: true }]], resize_keyboard: true, one_time_keyboard: true } };
+const _KB_QUITAR = { reply_markup: { remove_keyboard: true } };
+
+// Vinculación por teléfono compartido (2026-07-03, pedido de Diego: un tap en
+// vez de código). Telegram verifica el número de la cuenta; solo aceptamos el
+// contact del PROPIO remitente (contact.user_id === from.id — si no, alguien
+// podría mandar el contacto de otro). Match contra wa_cus con la lógica de
+// resolverPorWa (banca la variante 9-móvil AR).
+async function _vincularPorContacto(msg) {
+  const chatId = String(msg.chat.id);
+  const c = msg.contact;
+  if (!c || !c.phone_number) return;
+  if (!c.user_id || String(c.user_id) !== String(msg.from?.id)) {
+    await enviarTG(chatId, 'Ese contacto no es el tuyo — tocá el botón "📱 Compartir mi número" para mandar el de tu propia cuenta.', _KB_COMPARTIR);
+    return;
+  }
+  const digitos = String(c.phone_number).replace(/\D/g, '');
+  const u = digitos.length >= 8 ? usuarios.resolverPorWa(`${digitos}@c.us`) : null;
+  if (!u) {
+    await enviarTG(chatId, 'No encontré ese número entre los usuarios de Maria (¿tu Telegram usa otro número que tu WhatsApp?). Pedile a Maria por WhatsApp "quiero vincular telegram" y mandame acá el código de 6 dígitos que te dé.', _KB_QUITAR);
+    return;
+  }
+  usuarios.setTelegramChatId(u.id, chatId);
+  console.log(`[TG] vinculado por teléfono: ${u.nombre} (id=${u.id}) ↔ chat ${chatId}`);
+  mem.log({ usuarioId: u.id, canal: 'sistema', direccion: 'interno',
+    cuerpo: `telegram vinculado por teléfono compartido (chat ${chatId})`, metadata: { tipo: 'tg_vinculo', chatId, via: 'contact' } });
+  await enviarTG(chatId, `✅ Listo, ${u.nombre} — quedamos conectados también por acá.\n\nEste canal es de respaldo: si WhatsApp se cae, te aviso y seguimos por acá. Igual me podés escribir cuando quieras.`, _KB_QUITAR);
 }
 
 function _leerOffset() {
@@ -129,7 +161,7 @@ async function _procesarNoVinculado(chatId, texto) {
       console.log(`[TG] vinculado: ${u.nombre} (id=${u.id}) ↔ chat ${chatId}`);
       mem.log({ usuarioId, canal: 'sistema', direccion: 'interno',
         cuerpo: `telegram vinculado (chat ${chatId})`, metadata: { tipo: 'tg_vinculo', chatId } });
-      await enviarTG(chatId, `✅ Listo, ${u.nombre} — quedamos conectados también por acá.\n\nEste canal es de respaldo: si WhatsApp se cae, te aviso y seguimos por acá. Igual me podés escribir cuando quieras.`);
+      await enviarTG(chatId, `✅ Listo, ${u.nombre} — quedamos conectados también por acá.\n\nEste canal es de respaldo: si WhatsApp se cae, te aviso y seguimos por acá. Igual me podés escribir cuando quieras.`, _KB_QUITAR);
       return;
     }
     await enviarTG(chatId, 'Ese código no es válido o expiró. Pedime uno nuevo por WhatsApp ("quiero vincular telegram") y mandámelo acá en menos de 15 minutos.');
@@ -138,7 +170,7 @@ async function _procesarNoVinculado(chatId, texto) {
   const ultimo = _avisadosNoVinculados.get(chatId) || 0;
   if (Date.now() - ultimo > 3600_000) {
     _avisadosNoVinculados.set(chatId, Date.now());
-    await enviarTG(chatId, 'Hola 👋 Este es el canal de respaldo de Maria para sus usuarios. Si sos usuario, pedile a Maria por WhatsApp "quiero vincular telegram" y mandame acá el código de 6 dígitos que te dé.');
+    await enviarTG(chatId, 'Hola 👋 Este es el canal de respaldo de Maria para sus usuarios.\n\nSi sos usuario, tocá el botón de acá abajo y quedamos vinculados al toque (tiene que ser el mismo número que usás en WhatsApp). Si tu Telegram usa otro número, pedile a Maria por WhatsApp "quiero vincular telegram" y mandame el código.', _KB_COMPARTIR);
   }
 }
 
@@ -192,6 +224,10 @@ async function _loop(waEstado) {
         const msg = up.message;
         if (!msg || !msg.chat || msg.chat.type !== 'private') continue; // solo DMs
         const chatId = String(msg.chat.id);
+        if (msg.contact && !usuarios.obtenerPorTelegram(chatId)) {
+          try { await _vincularPorContacto(msg); } catch (e) { console.error('[TG] vincular por contacto:', e.message); }
+          continue;
+        }
         const texto = msg.text || msg.caption || '';
         if (!texto.trim()) continue; // v1: solo texto
         const u = usuarios.obtenerPorTelegram(chatId);
