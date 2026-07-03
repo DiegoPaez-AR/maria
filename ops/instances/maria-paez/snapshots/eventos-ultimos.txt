@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13828  2026-07-03 12:23:06  whatsapp  saliente   34342575317160@lid   🔴 canary: el deploy 10c6869cdf falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
+
+13827  2026-07-03 12:22:56  whatsapp  entrante   5491165286555@c.us   tengo una duda, quien te respondió que ana clara podia de 9 a 123 lunes o martes? seguro le mandaste a ella?                                                                                            
+
 13826  2026-07-03 12:22:02  sistema   interno                         acción FALLÓ: enviar_whatsapp — Acción desconocida: "enviar_whatsapp". Debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenviar_wa
 
 13825  2026-07-03 12:21:11  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
@@ -296,7 +300,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13730  2026-07-02 22:39:30  sistema   interno                         claude_call whatsapp: 23137ms prompt=6511c raw=13257c in=4t(cache_read=291648 new=4527) out=1661t ttfb=1402ms api=21075ms turnos=2 $0.1294                                                              
 
 13729  2026-07-02 22:39:16  sistema   interno                         acción ejecutada: recordar_hecho                                                                                                                                                                        
-
-13728  2026-07-02 22:39:06  whatsapp  entrante   5491165286555@c.us   Si hay muchas escaleras havria que evaluar                                                                                                                                                              
-
-13727  2026-07-02 22:39:06  whatsapp  entrante   5491165286555@c.us   No importa si está medio destruido mientras tenga buena estructura, eso hace que se pueda bajar el precio y después lo arreglamos                                                                       
