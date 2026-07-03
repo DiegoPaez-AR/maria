@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13834  2026-07-03 12:28:05  whatsapp  saliente   34342575317160@lid   🔴 canary: el deploy bac06d9ecf falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
+
 13833  2026-07-03 12:23:49  whatsapp  saliente   5491165286555@c.us   Dale 🙌                                                                                                                                                                                                  
 
 13832  2026-07-03 12:23:49  sistema   interno                         claude_call whatsapp: 5747ms prompt=6799c raw=4503c in=2t(cache_read=54398 new=4683) out=76t ttfb=1445ms api=3707ms turnos=1 $0.0350                                                                    
@@ -298,5 +300,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13736  2026-07-03 02:18:25  whatsapp  entrante   5491165286555@c.us   Hola María, bueno, antes dírme a dormir, quiero pedirte algunos recordatorios para mañana.                                                                                                              
 
 13735  2026-07-03 02:18:15  sistema   interno                         claude_call whatsapp: 17480ms prompt=6597c raw=10740c in=4t(cache_read=153470 new=154348) out=897t ttfb=1448ms api=15559ms turnos=2 $0.6383                                                             
-
-13734  2026-07-03 02:17:57  whatsapp  entrante   5491165286555@c.us   Recordame pagar las cuentas de mi casa.                                                                                                                                                                 
