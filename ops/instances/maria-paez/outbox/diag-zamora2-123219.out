@@ -1,0 +1,26 @@
+# ejecutado: 2026-07-03T12:33:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="${MARIA_DB:-/root/secretaria/state/maria-paez/db/maria.sqlite}"
+#   echo "== gmail salientes con zamora en metadata (emails A ella) =="
+#   sqlite3 -header "$DB" "SELECT id, timestamp, direccion, substr(COALESCE(asunto,''),1,60) a, substr(COALESCE(metadata_json,''),1,150) m FROM eventos WHERE canal='gmail' AND metadata_json LIKE '%zamora%' ORDER BY id;"
+#   echo "== gmail entrantes DE zamora (respuestas de ella) =="
+#   sqlite3 "$DB" "SELECT COUNT(*) FROM eventos WHERE canal='gmail' AND direccion='entrante' AND de LIKE '%zamora%';"
+#   echo "== entrantes WA de Ana Clara (5491141981886) =="
+#   sqlite3 -header "$DB" "SELECT id, timestamp, direccion, substr(cuerpo,1,150) c FROM eventos WHERE de LIKE '%1141981886%' ORDER BY id DESC LIMIT 5;"
+
+# ───── output ─────
+== gmail salientes con zamora en metadata (emails A ella) ==
+id|timestamp|direccion|a|m
+12839|2026-07-01 14:56:40|saliente|Coordinación de reunión con Gabriela Echaniz|{"to":"a.zamora@una.edu.ar","cc":null,"bcc":null,"messageId":"19f1e2ea03095bbb","threadId":"19f1e2ea03095bbb"}
+13790|2026-07-03 11:12:32|saliente|Confirmación reunión - lunes|{"to":"a.zamora@una.edu.ar","cc":null,"bcc":null,"messageId":"19f27ae266e63489","threadId":"19f27ae266e63489"}
+== gmail entrantes DE zamora (respuestas de ella) ==
+0
+== entrantes WA de Ana Clara (5491141981886) ==
+id|timestamp|direccion|c
+13820|2026-07-03 12:18:14|saliente|Hola Ana Clara! Te escribo de parte de Gabriela para confirmarte que el lunes que viene les queda bien para la reunión, en el horario de 9 a 12hs que 
+
+# exit=0
