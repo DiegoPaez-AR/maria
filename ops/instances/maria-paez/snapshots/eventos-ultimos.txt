@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+13811  2026-07-03 12:17:05  sistema   interno                         acción FALLÓ: enviar_whatsapp — enviar_wa: WA "x" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                                
+
+13810  2026-07-03 12:17:05  whatsapp  saliente   34342575317160@lid   🔴 canary: el deploy 9da2bdc07f falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). D
+
+13809  2026-07-03 12:17:04  whatsapp  entrante   5491165286555@c.us   cuando se lo mandaste?                                                                                                                                                                                  
+
 13808  2026-07-03 12:15:12  whatsapp  saliente   5491126406612@c.us   ☀️ *Buen día, Cristian Ruiz.* viernes, 3 de julio.                                                                                                                                                      
                                                                                                                                                                                                                                                                               
                                                                       *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
@@ -299,12 +305,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       Zona: Florida/ Saavedra/ Nuñez                                                                                                                                                                          
                                                                       Mínimo 60 mts                                                                                                                                                                                           
                                                                       Máximo 165.000 dólares                                                                                                                                                                                  
-
-13711  2026-07-02 22:36:01  sistema   interno                         claude_call whatsapp: 63479ms prompt=6478c raw=41660c in=14t(cache_read=783912 new=10255) out=1998t ttfb=1471ms api=61541ms turnos=7 $0.4255                                                            
-
-13710  2026-07-02 22:34:57  whatsapp  entrante   5491165286555@c.us   Busquemos ph o casa con jardín o terraza o patio                                                                                                                                                        
-                                                                      Zona: Florida/ Saavedra/ Nuñez                                                                                                                                                                          
-                                                                      Mínimo 60 mts                                                                                                                                                                                           
-                                                                      Máximo 165.000 dólares                                                                                                                                                                                  
-
-13709  2026-07-02 22:32:42  whatsapp  saliente   5491165286555@c.us   Contame de nuevo de qué se trata la búsqueda para tu papá, no tengo ese contexto a mano en esta conversación 🙏                                                                                          
