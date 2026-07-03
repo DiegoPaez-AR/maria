@@ -1,0 +1,20 @@
+# ejecutado: 2026-07-03T09:31:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   grep -E "canary (OK|FALLÓ)" ops/.cron.log | tail -1
+#   cat /root/secretaria/state/.canary-bad-commit 2>/dev/null || echo "(sin marker — OK)"
+#   env -i PATH="$PATH" HOME=/root TZ=America/Argentina/Buenos_Aires npm test 2>&1 | grep -E "^# (tests|pass|fail)"
+#   echo LISTO
+
+# ───── output ─────
+canary OK (5cc68354753f070762e4c53d5dde050e0681f9c7) → reload
+(sin marker — OK)
+# tests 29
+# pass 29
+# fail 0
+LISTO
+
+# exit=0
