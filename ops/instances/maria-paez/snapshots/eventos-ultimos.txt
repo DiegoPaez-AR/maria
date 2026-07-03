@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14052  2026-07-03 23:34:44  sistema   interno                         follow-up #26 re-ping automático a 5491123348031@c.us — reprogramado a 2026-07-05 23:34:44 (Cuando Barra Chalaca Bulnes mande la carta, reenviarla a Diego.)                                            
+
+14051  2026-07-03 23:34:44  whatsapp  saliente   5491123348031@c.us   ¡Hola! ¿Tu supervisor te pudo pasar el contacto para consultar la carta de Barra Chalaca? Quedo atenta, gracias!                                                                                        
+
+14050  2026-07-03 23:34:44  sistema   interno                         claude_call moderacion: 5474ms prompt=1560c raw=6465c in=10t(cache_read=0 new=22472) out=357t ttfb=1133ms api=4785ms turnos=1 $0.0304                                                                   
+
+14049  2026-07-03 23:34:38  sistema   interno                         claude_call follow-ups: 9398ms prompt=2263c raw=9000c in=4t(cache_read=0 new=33126) out=441t ttfb=1457ms api=9033ms turnos=2 $0.1319                                                                    
+
 14048  2026-07-03 23:14:29  whatsapp  saliente   34342575317160@lid   🎂 *Mañana cumple años:*                                                                                                                                                                                 
                                                                       • Franco Ruggerio (sin WhatsApp en libreta)                                                                                                                                                             
                                                                                                                                                                                                                                                                               
@@ -220,12 +228,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13954  2026-07-03 14:48:47  whatsapp  saliente   5491165286555@c.us   Listo, programé el recordatorio a Ceci para el lunes 06/07 a las 10hs ✅                                                                                                                                 
 
 13953  2026-07-03 14:48:47  sistema   interno                         claude_call whatsapp: 15721ms prompt=6505c raw=7123c in=4t(cache_read=251861 new=4073) out=357t ttfb=1613ms api=7929ms turnos=2 $0.0962                                                                 
-
-13952  2026-07-03 14:48:43  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-13951  2026-07-03 14:48:43  sistema   interno                         claude_call moderacion: 5580ms prompt=1624c raw=6206c in=10t(cache_read=0 new=22486) out=317t ttfb=1175ms api=5408ms turnos=1 $0.0302                                                                   
-
-13950  2026-07-03 14:48:31  whatsapp  entrante   5491165286555@c.us   Recordáselo a las 10 de la mañana.                                                                                                                                                                      
-
-13949  2026-07-03 14:48:21  sistema   interno                         Claude falló en WA (Gabriela Echaniz): No se pudo extraer JSON de la respuesta de Claude:                                                                                                               
-                                                                      Llegó un mensaje nuevo mientras procesaba, así que no programé el mensaje todavía. Necesito ver el contenido n                                                                                          
