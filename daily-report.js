@@ -76,7 +76,8 @@ function statsInstancia(env) {
     nombre: env.ASISTENTE_NOMBRE || slug,
     pm2: null,
     db: null,
-    eventos: { wa_in: 0, wa_out: 0, audios: 0, gmail_in: 0, gmail_out: 0,
+    telegram: null, // canal de respaldo (2026-07-03): {vinculados,total,tg_in,tg_out,vinculos_24h,bot_ok}
+    eventos: { wa_in: 0, wa_out: 0, audios: 0, gmail_in: 0, gmail_out: 0, tg_in: 0, tg_out: 0,
                 cal_creados: 0, cal_modificados: 0, cal_borrados: 0 },
     errores: { wa_disconnect: [], claude_fail: 0, fallaron: 0,
                 invalid_grant: 0,
@@ -258,6 +259,10 @@ function statsInstancia(env) {
           if (r.direccion === 'entrante') stats.eventos.gmail_in += r.n;
           if (r.direccion === 'saliente') stats.eventos.gmail_out += r.n;
         }
+        if (r.canal === 'telegram') {
+          if (r.direccion === 'entrante') stats.eventos.tg_in += r.n;
+          if (r.direccion === 'saliente') stats.eventos.tg_out += r.n;
+        }
         if (r.canal === 'calendar' && r.direccion === 'saliente') {
           // El cuerpo dice "creado: ..." / "modificado: ..." / "borrado: ..."
           // Necesitamos detalle por verbo:
@@ -272,6 +277,30 @@ function statsInstancia(env) {
         if (/^creado:/i.test(r.cuerpo))      stats.eventos.cal_creados++;
         if (/^modificado:/i.test(r.cuerpo))  stats.eventos.cal_modificados++;
         if (/^borrado:/i.test(r.cuerpo))     stats.eventos.cal_borrados++;
+      }
+
+      // ── Canal Telegram de respaldo (2026-07-03) ──
+      try {
+        const _cols = db.prepare(`PRAGMA table_info(usuarios)`).all().map(c => c.name);
+        if (_cols.includes('telegram_chat_id')) {
+          const vinc = db.prepare(`SELECT COUNT(*) c FROM usuarios WHERE activo=1 AND servido=1 AND telegram_chat_id IS NOT NULL`).get().c;
+          const tot  = db.prepare(`SELECT COUNT(*) c FROM usuarios WHERE activo=1 AND servido=1`).get().c;
+          const vinc24 = db.prepare(`SELECT COUNT(*) c FROM eventos WHERE tipo='tg_vinculo' AND timestamp >= ?`).get(desde).c;
+          // salud del bot: getMe con el token de secrets.conf (curl, timeout corto)
+          let botOk = null;
+          try {
+            const tk = String(require('child_process').execSync(
+              `grep -E '^TELEGRAM_BOT_TOKEN=' /root/secretaria/config/secrets.conf 2>/dev/null | cut -d= -f2- | tr -d '"'`,
+              { timeout: 5000 })).trim();
+            if (tk) {
+              const r = require('child_process').execSync(`curl -s -m 8 https://api.telegram.org/bot${tk}/getMe`, { timeout: 12000 });
+              botOk = JSON.parse(String(r)).ok === true;
+            }
+          } catch { botOk = false; }
+          stats.telegram = { vinculados: vinc, total: tot, vinculos_24h: vinc24, bot_ok: botOk };
+        }
+      } catch (err) {
+        stats.notas.push(`stats telegram fallaron: ${err.message}`);
       }
 
       // ── Latencia de claude_call (24h) ──
@@ -496,6 +525,7 @@ function renderTexto(allStats, fechaStr, funnel) {
     }
     lines.push(`WhatsApp: ${s.eventos.wa_in}↓ / ${s.eventos.wa_out}↑ (${s.eventos.audios} audios)`);
     lines.push(`Gmail:    ${s.eventos.gmail_in}↓ / ${s.eventos.gmail_out}↑`);
+    if (s.telegram) lines.push(`Telegram: ${s.eventos.tg_in}↓ / ${s.eventos.tg_out}↑ · vinculados ${s.telegram.vinculados}/${s.telegram.total}${s.telegram.vinculos_24h ? ` (+${s.telegram.vinculos_24h} hoy)` : ''} · bot ${s.telegram.bot_ok === false ? '🔴 NO RESPONDE' : 'OK'}`);
     lines.push(`Calendar: ${s.eventos.cal_creados} creados · ${s.eventos.cal_modificados} modificados · ${s.eventos.cal_borrados} borrados`);
     if (e.wa_disconnect.length) lines.push(`⚠️ WA disconnect x${e.wa_disconnect.length}`);
     if (e.claude_fail)          lines.push(`⚠️ Claude falló: ${e.claude_fail}`);
@@ -692,6 +722,9 @@ function renderHTML(allStats, fechaStr, funnel) {
     <tr><td style="padding:6px 0;"><span style="color:#2563eb;">●</span> Gmail</td>
         <td style="padding:6px 8px;">${_bar(s.eventos.gmail_in + s.eventos.gmail_out, maxTraf, '#2563eb')}</td>
         <td align="right" style="padding:6px 0;font-variant-numeric:tabular-nums;"><strong>${s.eventos.gmail_in}</strong>↓ / <strong>${s.eventos.gmail_out}</strong>↑</td></tr>
+    ${s.telegram ? `<tr><td style="padding:6px 0;"><span style="color:#0ea5e9;">●</span> Telegram</td>
+        <td style="padding:6px 8px;">${_bar(s.eventos.tg_in + s.eventos.tg_out, maxTraf, '#0ea5e9')}</td>
+        <td align="right" style="padding:6px 0;font-variant-numeric:tabular-nums;"><strong>${s.eventos.tg_in}</strong>↓ / <strong>${s.eventos.tg_out}</strong>↑ <span style="color:#64748b;font-size:12px;">· ${s.telegram.vinculados}/${s.telegram.total} vinculados${s.telegram.vinculos_24h ? ` (+${s.telegram.vinculos_24h})` : ''} · bot ${s.telegram.bot_ok === false ? '<span style="color:#dc2626;font-weight:bold;">NO RESPONDE</span>' : 'OK'}</span></td></tr>` : ''}
     <tr><td style="padding:6px 0;"><span style="color:#7c3aed;">●</span> Calendar</td>
         <td style="padding:6px 8px;">${_bar(s.eventos.cal_creados + s.eventos.cal_modificados + s.eventos.cal_borrados, maxTraf, '#7c3aed')}</td>
         <td align="right" style="padding:6px 0;font-variant-numeric:tabular-nums;"><strong>${s.eventos.cal_creados}</strong>+ <strong>${s.eventos.cal_modificados}</strong>✏ <strong>${s.eventos.cal_borrados}</strong>🗑</td></tr>

@@ -206,8 +206,12 @@ async function _broadcast(texto) {
   const vinculados = usuarios.listarActivos().filter(u => u.telegram_chat_id);
   console.log(`[TG] broadcast a ${vinculados.length} vinculado(s): ${texto.slice(0, 60)}`);
   for (const u of vinculados) {
-    try { await enviarTG(u.telegram_chat_id, texto); }
-    catch (e) { console.warn(`[TG] broadcast a ${u.nombre} falló:`, e.message); }
+    try {
+      await enviarTG(u.telegram_chat_id, texto);
+      mem.log({ usuarioId: u.id, canal: 'telegram', direccion: 'saliente',
+        de: 'telegram:' + u.telegram_chat_id, nombre: u.nombre, cuerpo: texto,
+        metadata: { tipo: 'tg_broadcast' } });
+    } catch (e) { console.warn(`[TG] broadcast a ${u.nombre} falló:`, e.message); }
   }
 }
 
