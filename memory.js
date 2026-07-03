@@ -996,14 +996,10 @@ function upsertNotaContacto({ usuarioId, contactoId, nota, hasta }) {
 // Eventos en el bucket del usuario asociables a un contacto desde un id
 // determinado en adelante. Asocia por: whatsapp (LIKE digits) o email (LIKE).
 // Devuelve filas hidratadas, ordenadas asc por id.
-function eventosConContactoDesde({ usuarioId, contacto, desdeEventId = 0, max = 200 }) {
-  const wa = contacto && contacto.whatsapp ? String(contacto.whatsapp).replace(/\D/g, '') : null;
-  const email = contacto && contacto.email ? String(contacto.email).toLowerCase() : null;
-  if (!wa && !email) return [];
-
-  // Armamos LIKE sobre `de` por dígitos (cubre @c.us y @lid si el LID
-  // contiene dígitos del número). Para email, LIKE case-insensitive.
-  const stmt = db.prepare(`
+// Preparado UNA vez a nivel módulo (2026-07-03 — antes se re-preparaba en
+// cada llamada). El triple-LIKE queda: corre solo sobre el slice del usuario
+// (usuario_id + id > desde van por índice) y lo consume memoria-curada 1/día.
+const qEventosConContacto = db.prepare(`
     SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, metadata_json
     FROM eventos
     WHERE usuario_id = @usuarioId
@@ -1016,7 +1012,11 @@ function eventosConContactoDesde({ usuarioId, contacto, desdeEventId = 0, max = 
     ORDER BY id ASC
     LIMIT @max
   `);
-  const filas = stmt.all({
+function eventosConContactoDesde({ usuarioId, contacto, desdeEventId = 0, max = 200 }) {
+  const wa = contacto && contacto.whatsapp ? String(contacto.whatsapp).replace(/\D/g, '') : null;
+  const email = contacto && contacto.email ? String(contacto.email).toLowerCase() : null;
+  if (!wa && !email) return [];
+  const filas = qEventosConContacto.all({
     usuarioId,
     desde: desdeEventId,
     wa,
@@ -1328,7 +1328,16 @@ const delArchivados = db.prepare(`
   DELETE FROM eventos WHERE id IN (SELECT id FROM eventos_archivo)
     AND timestamp < datetime('now', ?)
 `);
-function podarEventos({ telemetriaDias = 60, archivoDias = 540, batch = 5000 } = {}) {
+// Purga del archivo (2026-07-03, review 0701): eventos_archivo crecía para
+// siempre. Retención default 3 años desde el timestamp ORIGINAL del evento
+// (a esa edad ya está en varios backups semanales cifrados si hiciera falta).
+const delArchivoViejo = db.prepare(`
+  DELETE FROM eventos_archivo WHERE id IN (
+    SELECT id FROM eventos_archivo WHERE timestamp < datetime('now', ?) LIMIT ?
+  )
+`);
+
+function podarEventos({ telemetriaDias = 60, archivoDias = 540, archivoRetencionDias = 1095, batch = 5000 } = {}) {
   const vTele = `-${Number(telemetriaDias)} days`;
   const vArch = `-${Number(archivoDias)} days`;
   const borrados = delTelemetriaVieja.run(vTele, batch).changes;
@@ -1338,7 +1347,8 @@ function podarEventos({ telemetriaDias = 60, archivoDias = 540, batch = 5000 } =
     return ins;
   });
   const archivados = archivar();
-  return { telemetriaBorrada: borrados, archivados };
+  const purgados = delArchivoViejo.run(`-${Number(archivoRetencionDias)} days`, batch).changes;
+  return { telemetriaBorrada: borrados, archivados, archivoPurgado: purgados };
 }
 
 // ── Stats de la semana (para resumen-semanal.js, 2026-06-10) ──────────────

@@ -12,15 +12,16 @@ const mem = require('./memory');
 const TELEMETRIA_DIAS = Number(process.env.PODA_TELEMETRIA_DIAS || 60);
 const ARCHIVO_DIAS    = Number(process.env.PODA_ARCHIVO_DIAS || 540);
 const BATCH           = Number(process.env.PODA_BATCH || 5000);
+const ARCHIVO_RETENCION_DIAS = Number(process.env.PODA_ARCHIVO_RETENCION_DIAS || 1095); // purga del archivo (3 años)
 
 function tick() {
   try {
-    const r = mem.podarEventos({ telemetriaDias: TELEMETRIA_DIAS, archivoDias: ARCHIVO_DIAS, batch: BATCH });
-    if (r.telemetriaBorrada || r.archivados) {
+    const r = mem.podarEventos({ telemetriaDias: TELEMETRIA_DIAS, archivoDias: ARCHIVO_DIAS, archivoRetencionDias: ARCHIVO_RETENCION_DIAS, batch: BATCH });
+    if (r.telemetriaBorrada || r.archivados || r.archivoPurgado) {
       console.log(`[poda-eventos] telemetría borrada: ${r.telemetriaBorrada} · archivados: ${r.archivados}`);
       mem.log({
         canal: 'sistema', direccion: 'interno',
-        cuerpo: `poda-eventos: ${r.telemetriaBorrada} telemetría borrada (>${TELEMETRIA_DIAS}d), ${r.archivados} archivados (>${ARCHIVO_DIAS}d)`,
+        cuerpo: `poda-eventos: ${r.telemetriaBorrada} telemetría borrada (>${TELEMETRIA_DIAS}d), ${r.archivados} archivados (>${ARCHIVO_DIAS}d), ${r.archivoPurgado} purgados del archivo (>${ARCHIVO_RETENCION_DIAS}d)`,
         metadata: { tipo: 'poda_eventos', ...r },
       });
     }
