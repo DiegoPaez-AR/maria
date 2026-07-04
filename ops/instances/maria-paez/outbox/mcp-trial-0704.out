@@ -1,0 +1,60 @@
+# ejecutado: 2026-07-04T09:17:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -u
+#   DB="$MARIA_DB"
+#   echo "== mcp_fallback 24h =="
+#   sqlite3 "$DB" "SELECT COUNT(*) FROM eventos WHERE (tipo='mcp_fallback' OR json_extract(metadata_json,'\$.tipo')='mcp_fallback') AND timestamp >= datetime('now','-24 hours');"
+#   echo "-- detalle (si hay) --"
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'localtime')||' | '||de||' | '||substr(cuerpo,1,250) FROM eventos WHERE (tipo='mcp_fallback' OR json_extract(metadata_json,'\$.tipo')='mcp_fallback') AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp DESC LIMIT 10;"
+#   echo "== acciones 24h (OK vs FALLO) =="
+#   sqlite3 "$DB" "SELECT CASE WHEN cuerpo LIKE 'acción ejecutada%' THEN 'OK' ELSE 'FALLO' END, COUNT(*) FROM eventos WHERE (cuerpo LIKE 'acción ejecutada%' OR cuerpo LIKE 'acción FALLÓ%') AND timestamp >= datetime('now','-24 hours') GROUP BY 1;"
+#   echo "-- tipos de acción ejecutados --"
+#   sqlite3 "$DB" "SELECT substr(cuerpo,1,60), COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción ejecutada%' AND timestamp >= datetime('now','-24 hours') GROUP BY 1 ORDER BY 2 DESC;"
+#   echo "-- fallas detalle --"
+#   sqlite3 "$DB" "SELECT datetime(timestamp,'localtime')||' | '||substr(cuerpo,1,250) FROM eventos WHERE cuerpo LIKE 'acción FALLÓ%' AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp DESC LIMIT 10;"
+#   echo "== flag MARIA_MCP_ACTIONS en .conf =="
+#   grep MARIA_MCP_ACTIONS /root/secretaria/config/instances/maria-paez.conf || echo "(ausente — esperado post legacy-cleanup 2026-07-03: MCP es el único camino)"
+#   echo "== claude_call whatsapp 24h =="
+#   sqlite3 "$DB" "SELECT COUNT(*) FROM eventos WHERE (tipo='claude_call' OR json_extract(metadata_json,'\$.tipo')='claude_call') AND (json_extract(metadata_json,'\$.canal')='whatsapp' OR json_extract(metadata_json,'\$.canal_origen')='whatsapp') AND timestamp >= datetime('now','-24 hours');"
+#   echo "-- claude_call por canal --"
+#   sqlite3 "$DB" "SELECT COALESCE(json_extract(metadata_json,'\$.canal'),json_extract(metadata_json,'\$.canal_origen'),'?'), COUNT(*) FROM eventos WHERE (tipo='claude_call' OR json_extract(metadata_json,'\$.tipo')='claude_call') AND timestamp >= datetime('now','-24 hours') GROUP BY 1;"
+#   echo "== fin =="
+
+# ───── output ─────
+== mcp_fallback 24h ==
+1
+-- detalle (si hay) --
+
+== acciones 24h (OK vs FALLO) ==
+FALLO|2
+OK|27
+-- tipos de acción ejecutados --
+acción ejecutada: enviar_wa|8
+acción ejecutada: modificar_evento|4
+acción ejecutada: crear_evento|4
+acción ejecutada: agregar_pendiente|4
+acción ejecutada: quitar_pendiente|2
+acción ejecutada: programar_mensaje|2
+acción ejecutada: vincular_telegram|1
+acción ejecutada: cerrar_follow_up|1
+acción ejecutada: borrar_evento|1
+-- fallas detalle --
+2026-07-03 09:22:02 | acción FALLÓ: enviar_whatsapp — Acción desconocida: "enviar_whatsapp". Debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenviar_wa, agregar_pendiente, quitar_pendiente, posponer_pe
+2026-07-03 09:17:05 | acción FALLÓ: enviar_whatsapp — enviar_wa: WA "x" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+== flag MARIA_MCP_ACTIONS en .conf ==
+# MARIA_MCP_ACTIONS retirado 2026-07-03 — tools MCP es el único camino (killswitch eliminado del código)
+== claude_call whatsapp 24h ==
+46
+-- claude_call por canal --
+enriquecer-contacto|1
+follow-ups|1
+memoria-curada|6
+moderacion|14
+telegram|4
+whatsapp|46
+== fin ==
+
+# exit=0
