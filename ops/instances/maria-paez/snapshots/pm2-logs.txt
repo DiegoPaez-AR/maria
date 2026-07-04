@@ -1,200 +1,200 @@
-0|maria-pa | 2026-07-02 14:23:30:     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
-0|maria-pa | 2026-07-02 14:23:30:     at Module.<anonymous> (node:internal/modules/cjs/loader:1527:12)
-0|maria-pa | 2026-07-02 14:23:30:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-07-02 14:23:30:     at require (node:internal/modules/helpers:147:16)
-0|maria-pa | 2026-07-02 14:23:30:     at bindings (/root/secretaria/node_modules/bindings/bindings.js:112:48)
-0|maria-pa | 2026-07-02 14:23:30:     at new Database (/root/secretaria/node_modules/better-sqlite3/lib/database.js:48:64)
-0|maria-pa | 2026-07-02 14:23:30:     at Object.<anonymous> (/root/secretaria/memory.js:31:12) {
-0|maria-pa | 2026-07-02 14:23:30:   code: 'ERR_DLOPEN_FAILED'
-0|maria-pa | 2026-07-02 14:23:30: }
-0|maria-pa | 2026-07-02 14:23:30: Error: libnode.so.109: cannot open shared object file: No such file or directory
-0|maria-pa | 2026-07-02 14:23:30:     at Object..node (node:internal/modules/cjs/loader:1939:18)
-0|maria-pa | 2026-07-02 14:23:30:     at Module.load (node:internal/modules/cjs/loader:1505:32)
-0|maria-pa | 2026-07-02 14:23:30:     at Function._load (node:internal/modules/cjs/loader:1309:12)
-0|maria-pa | 2026-07-02 14:23:30:     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
-0|maria-pa | 2026-07-02 14:23:30:     at Module.<anonymous> (node:internal/modules/cjs/loader:1527:12)
-0|maria-pa | 2026-07-02 14:23:30:     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
-0|maria-pa | 2026-07-02 14:23:30:     at require (node:internal/modules/helpers:147:16)
-0|maria-pa | 2026-07-02 14:23:30:     at bindings (/root/secretaria/node_modules/bindings/bindings.js:112:48)
-0|maria-pa | 2026-07-02 14:23:30:     at new Database (/root/secretaria/node_modules/better-sqlite3/lib/database.js:48:64)
-0|maria-pa | 2026-07-02 14:23:30:     at Object.<anonymous> (/root/secretaria/memory.js:31:12) {
-0|maria-pa | 2026-07-02 14:23:30:   code: 'ERR_DLOPEN_FAILED'
-0|maria-pa | 2026-07-02 14:23:30: }
-0|maria-pa | 2026-07-02 19:22:04: [executor] acción #0 (enviar_email) falló: enviar_email: este turno lo inició un tercero — solo puedo enviar a Diego. Si el pedido es legítimo, consultale primero al usuario (respuesta_a_usuario) y que él lo pida.
-0|maria-pa | 2026-07-02 19:32:35: [claude-client] tipo de consulta desconocido: pregunta
-0|maria-pa | 2026-07-02 23:23:26: [executor] acción #0 (buscar_contacto_global) falló: buscar_contacto_global: solo el owner
-0|maria-pa | 2026-07-02 23:23:40: [WA/Gabriela Echaniz] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-0|maria-pa | 2026-07-02 23:23:40: No tengo un contacto guardado que coincida con "asesi" (probablemente el audio no transcribió bien el nombre), así que antes de agendar nada necesito que me confirmes:
-0|maria-pa | 2026-07-02 23:23:40: 
-0|maria-pa | 2026-07-02 23:23:40: 1. ¿Cómo se llama la persona a la que querés que contacte a las 9:30? (¿Asistente? ¿Un nombre propio?)
-0|maria-pa | 2026-07-02 23:23:40: 2. ¿Tenés su WhatsApp o mail para poder escribirle?
-0|maria-pa | 2026-07-02 23:23:40: 3. ¿Querés que yo le escriba directamente a esa persona a las 9:30, o preferís que te lo recuerde a vos para que se lo pidas vos misma?
-0|maria-pa | 2026-07-02 23:23:40: 
-0|maria-pa | 2026-07-02 23:23:40: Mientras tanto, ¿algún otro recordatori
-0|maria-pa | 2026-07-03 09:15:02: [executor] acción #0 (enviar_whatsapp) falló: Faltan campos requeridos: a, texto
-0|maria-pa | 2026-07-03 09:17:05: [executor] acción #0 (enviar_whatsapp) falló: enviar_wa: WA "x" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-0|maria-pa | 2026-07-03 09:22:02: [executor] acción #0 (enviar_whatsapp) falló: Acción desconocida: "enviar_whatsapp". Debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenviar_wa, agregar_pendiente, quitar_pendiente, posponer_pendiente, programar_mensaje, cancelar_programado, crear_follow_up, cerrar_follow_up, recordar_hecho, olvidar_hecho, upsert_contacto, cambiar_visibilidad_contacto, set_cumple_contacto, crear_usuario, actualizar_usuario, borrar_usuario, set_calendar_acceso, buscar_contacto_global, buscar_slots_comunes, confirmar_prospecto_pendiente, rechazar_prospecto_pendiente, configurar_brief, configurar_ubicacion, configurar_caldav, iniciar_microsoft_auth, configurar_microsoft.
-0|maria-pa | 2026-07-03 09:36:21: [claude-client] tipo de consulta desconocido: undefined
-0|maria-pa | 2026-07-03 10:09:55: [WA/Gabriela Echaniz] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-0|maria-pa | 2026-07-03 10:09:55: Llegó un mensaje nuevo mientras procesaba, así que no ejecuté el cambio. Necesito ver el mensaje nuevo antes de continuar.
-0|maria-pa | 2026-07-03 11:48:21: [WA/Gabriela Echaniz] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-0|maria-pa | 2026-07-03 11:48:21: Llegó un mensaje nuevo mientras procesaba, así que no programé el mensaje todavía. Necesito ver el contenido nuevo antes de continuar.
-0|maria-pa | 2026-07-03 16:44:28: [WA/Diego] MCP: modelo emitió 1 acción(es) en array en vez de tools — NO ejecutadas
-0|maria-pa | 2026-07-03 17:09:07: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:09:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:09:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:09:53: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:10:08: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:10:23: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:10:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:10:53: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:11:08: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:11:23: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:11:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:11:53: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:12:08: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:12:23: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:12:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:12:53: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:13:08: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:13:23: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:13:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 17:13:54: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":404,"description":"Not Found"}
-0|maria-pa | 2026-07-03 21:21:51: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-07-03 23:37:58: [WA disconnected] LOGOUT
-0|maria-pa | 2026-07-03 23:39:23: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-03 23:48:00: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-03 23:49:26: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-03 23:58:01: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-03 23:59:26: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 00:08:03: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 00:09:28: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 00:18:05: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 00:19:30: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 00:28:07: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 00:29:32: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 00:38:09: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 00:39:33: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 00:48:11: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 00:49:35: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 00:58:12: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 00:59:37: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 01:08:14: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 01:09:39: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 01:18:16: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 01:19:41: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 01:28:18: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 01:29:42: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 01:38:19: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 01:39:44: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 01:48:21: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 01:49:46: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 01:58:23: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 01:59:48: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 02:08:25: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 02:09:49: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 02:18:26: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 02:19:51: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 02:28:28: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 02:29:53: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 02:38:30: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 02:39:55: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 02:48:32: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 02:49:57: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 02:58:34: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 02:59:58: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 03:08:35: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 03:10:00: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 03:18:37: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 03:20:02: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 03:28:39: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 03:30:04: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 03:38:41: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 03:40:05: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 03:48:42: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 03:50:07: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 03:58:44: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 04:00:16: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 04:08:46: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 04:10:11: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 04:18:48: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 04:20:12: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 04:28:50: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 04:30:14: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 04:31:36: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-07-04 04:38:51: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 04:40:16: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 04:48:53: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 04:50:18: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 04:58:55: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 05:00:20: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 05:08:57: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 05:10:21: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 05:18:58: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 05:20:24: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 05:29:00: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 05:30:25: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 05:39:02: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 05:40:27: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 05:49:04: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 05:50:29: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 05:59:06: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 06:00:31: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 06:09:08: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 06:10:33: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 06:19:10: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 06:20:34: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 06:29:11: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 06:30:36: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 06:39:13: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 06:40:45: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 06:49:15: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 06:50:40: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 06:59:17: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 07:00:41: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 07:09:18: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 07:10:50: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 07:19:20: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 07:20:45: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 07:29:22: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 07:30:47: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 07:39:24: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 07:40:49: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 07:49:26: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 07:50:58: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 07:59:49: [WA disconnected] LOGOUT
-0|maria-pa | 2026-07-04 07:59:49: Error: Execution context was destroyed, most likely because of a navigation.
-0|maria-pa | 2026-07-04 07:59:49:     at rewriteError (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:457:15)
-0|maria-pa | 2026-07-04 07:59:49:     at async #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:389:60)
-0|maria-pa | 2026-07-04 07:59:49:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-07-04 07:59:49:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-07-04 07:59:49:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-07-04 07:59:49:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-07-04 07:59:49:     at async Client.getWWebVersion (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1310:16)
-0|maria-pa | 2026-07-04 07:59:49:     at async Client.inject (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:142:25)
-0|maria-pa | 2026-07-04 07:59:49:     at async /root/secretaria/node_modules/whatsapp-web.js/src/Client.js:503:13
-0|maria-pa | 2026-07-04 07:59:49: [unhandledRejection] Error: Execution context was destroyed, most likely because of a navigation.
-0|maria-pa | 2026-07-04 07:59:49:     at rewriteError (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:457:15)
-0|maria-pa | 2026-07-04 07:59:49:     at async #evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:389:60)
-0|maria-pa | 2026-07-04 07:59:49:     at async ExecutionContext.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/ExecutionContext.js:277:16)
-0|maria-pa | 2026-07-04 07:59:49:     at async IsolatedWorld.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/cdp/IsolatedWorld.js:100:16)
-0|maria-pa | 2026-07-04 07:59:49:     at async CdpFrame.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Frame.js:362:20)
-0|maria-pa | 2026-07-04 07:59:49:     at async CdpPage.evaluate (/root/secretaria/node_modules/puppeteer-core/lib/cjs/puppeteer/api/Page.js:830:20)
-0|maria-pa | 2026-07-04 07:59:49:     at async Client.getWWebVersion (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:1310:16)
-0|maria-pa | 2026-07-04 07:59:49:     at async Client.inject (/root/secretaria/node_modules/whatsapp-web.js/src/Client.js:142:25)
-0|maria-pa | 2026-07-04 07:59:49:     at async /root/secretaria/node_modules/whatsapp-web.js/src/Client.js:503:13
-0|maria-pa | 2026-07-04 08:01:14: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 08:09:51: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 08:11:16: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 08:19:52: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 08:21:17: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 08:29:54: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 08:31:19: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 08:39:56: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 08:41:21: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 08:49:58: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 08:51:24: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 09:00:00: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
-0|maria-pa | 2026-07-04 09:01:26: [WA] sesión expirada — 3 QRs en 120s
-0|maria-pa | 2026-07-04 09:10:02: [WA boot] sin ready en 10min — saliendo para que pm2 reinicie
+0|maria-pa | 2026-07-04 09:07:07: ████▄██▄▄  █▄ ▀▄ ▀  ▀▀█▀█ ▄▄▄ █▀▀▀ ▀ ▄ ▀██▀ ▀ ▄▄▄ ▄█  █
+0|maria-pa | 2026-07-04 09:07:07: █ ▄▄▄▄▄ █ ▀█ ▄█▄▄▀▄▀█▀ ▄  █▄█  ▀ ▄▀▀▄ ██ █▄█▄ █▄█  ██▀█
+0|maria-pa | 2026-07-04 09:07:07: █ █   █ ██▄ █▀▄ ▄▄ ▄▀▄▀    ▄    █▄▀▄█▄ ▄▀▄▀   ▄   ▄█ ▄█
+0|maria-pa | 2026-07-04 09:07:07: █ █▄▄▄█ █▀█▄▄▀ ▄█▀▄ ▄▀▄ ▀▄█▀ █▀  ████▄▄▄▀▄█ █▀▀ ▄▄▄▀█ █
+0|maria-pa | 2026-07-04 09:07:07: █▄▄▄▄▄▄▄█▄█▄██▄█▄█▄▄▄████▄█▄▄█▄█████▄▄█▄▄█▄▄█▄▄▄█▄▄▄███
+0|maria-pa | 2026-07-04 09:07:07: 
+0|maria-pa | 2026-07-04 09:08:07: [WA qr] escaneá este QR:
+0|maria-pa | 2026-07-04 09:08:07: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-07-04 09:08:07: █ ▄▄▄▄▄ █▀▀███▄█▄██  ██▄   █▄█▄  ▄██▀▀ ▀██▀ ▀██ ▄▄▄▄▄ █
+0|maria-pa | 2026-07-04 09:08:07: █ █   █ █▀██▀  █▄▀▀▀▄ ███▄▄█▀▀ ▄▄▄▄▀▀ █▀█▄▀▀▄▀█ █   █ █
+0|maria-pa | 2026-07-04 09:08:07: █ █▄▄▄█ █▀  ▀█ ▀█▀▀  █▄█▄ ▄▄▄ ▄  █▀▀▄▄▄▀▄█▄ ███ █▄▄▄█ █
+0|maria-pa | 2026-07-04 09:08:07: █▄▄▄▄▄▄▄█▄█ █▄█ ▀ █▄█▄▀▄█ █▄█ ▀ █▄█▄▀ ▀▄█ ▀ ▀▄█▄▄▄▄▄▄▄█
+0|maria-pa | 2026-07-04 09:08:07: █▄ ▄▄▄▀▄▄▄▄ █ ▄▄▄▀  ▀▄▀█▀▄▄▄▄    ███ ▄▀▄█▀   █▄█▄▀▄▀▄▀█
+0|maria-pa | 2026-07-04 09:08:07: █▄█▀▄▄█▄▄▀█  █▀▄▄ █▀▄██▀ ▀ █▀█▀ ▀▀  ▀▀▀██▄ ██ ▄▄█▀▀▄▀▀█
+0|maria-pa | 2026-07-04 09:08:07: █▀ ▀ ▀ ▄ ▄██▄▀▀▀▄█ ▄▀▄▀█▄▀█▄▄ █▀▄▀▄█   ▄██▀  ███  █▄ ██
+0|maria-pa | 2026-07-04 09:08:07: █▀ ▄█▀ ▄ ▄▄ ▄▄▀█▀▄█▄ ▄▀▄█▀ █▀█▀█▀▄▄▀█ █▄▀▄▀ ▄██▀▀█ █▀██
+0|maria-pa | 2026-07-04 09:08:07: █    ██▄▄▀█  ▄▀█▀█▄▄ ▄▀█ ▄▀▀▀█  ▄███▄▄▀▄▀▀  ▀█▄▄▀ ▄▄ ▄█
+0|maria-pa | 2026-07-04 09:08:07: ██▄ ▄█ ▄ ▀▀▄▄█▀█▀█▄▄▄▄ ▄ ▀▀█▀█▄▄▀▄ ▄▀█▄▀▀██ ▀█   █▀▄▀██
+0|maria-pa | 2026-07-04 09:08:07: ███▄█▀▄▄███ ▀  ▀██  ▀█▄▀█▀ █▄█ ▀▄█▄▄  ██▀█   █▄▄▄ █▄ ▄█
+0|maria-pa | 2026-07-04 09:08:07: ████ ▄▄▄▄▄ ▀█▄▄  ▄ ██▀▄ ▄▀ █▀█▀▀█▀▄▀▀▄▄▄▄ ███▄ ▀▄▀▄▄███
+0|maria-pa | 2026-07-04 09:08:07: █▀▀▄▄ ▄▄▄ ▀██▄▄▄▄▀▄  ███▄ ▄▄▄ ▀▀▄█▄▄ ▄▀██▀█▀▀ ▄▄▄  ▄▀██
+0|maria-pa | 2026-07-04 09:08:07: █▄  █ █▄█ ▄ ▄█▀▄▄ █ █▄██  █▄█    █    ██▀▀ ▀▄ █▄█ ▀█▀██
+0|maria-pa | 2026-07-04 09:08:07: █▄▀▄  ▄▄  ▄█ ▀▄███ ▄▄▄▀█▀▄▄▄ ▄  ▄▀██▄ ███▀▀ █  ▄   ▄▄██
+0|maria-pa | 2026-07-04 09:08:07: █ █▄█▀▀▄█▀█  █▀███ ▀██ ▀▀▀▀████▄ ▀▄▀█▄▄ █▀█▀▀▄▀█▄▀ █▀██
+0|maria-pa | 2026-07-04 09:08:07: ██ ▀█ ▀▄▀▄█ █▄▀█▀█▀▄▀███▀▀▄█▀██ █▀▄█▄  █▀▀▀ ███ █▀▀█ ▄█
+0|maria-pa | 2026-07-04 09:08:07: █▄█  █▀▄  ▄  █▄▀▀██▄▄▄█▀▀█▄███ █▀▀█ ▀█▄█    █ ▀█ ▄█▄▀▀█
+0|maria-pa | 2026-07-04 09:08:07: █  ▀▄█▄▄▄██▄▀  ███▄  ▄▀█▀█▄█ █▀ ███▄▄▄ ▄██▀ █▀▀█ ▀▄▄▄▀█
+0|maria-pa | 2026-07-04 09:08:07: █  █▄  ▄▄ ▄▀▄▄▄ █▄ ▀ ▀ ██ ▀█▄█▀ ▄▄ ▄█▀ ▄█▄██▄ ▀█▄▀▀▄ ██
+0|maria-pa | 2026-07-04 09:08:07: █▄▄▄█▀█▄▄█▀ ▀▄▄▄▄▀█▄ ▄▀█ ▄ █▀█▀  ▀▄▄ ▄ ▄█▀▄ █▄▄ ▄▀ ▄▄ █
+0|maria-pa | 2026-07-04 09:08:07: █▄ ▀▄▄▄▄▀▄█▄▄▄▄▄▄ ██▀█ ▀█  ██▄▀ █ █▀▄▄▄▄ █▄█ ▀███▄ █▄▀█
+0|maria-pa | 2026-07-04 09:08:07: ████▄██▄▄ ▀▀██ ▀▄█  ▀█▀█▄ ▄▄▄ █▀▀█▄█ ▄ █▀▀▀ ▀ ▄▄▄  █▄▄█
+0|maria-pa | 2026-07-04 09:08:07: █ ▄▄▄▄▄ █▄██▀▀█▄ ▀▄▀█▀▄▄  █▄█  █▄▄▀█  ██ ▀▄█▄ █▄█ ▀█▀▀█
+0|maria-pa | 2026-07-04 09:08:07: █ █   █ █  ▀▄▀█▀ █▀▄ ██▀▀  ▄▄▄ ▀ ███▄▄ █▀▀    ▄ ▄▄▄█▄██
+0|maria-pa | 2026-07-04 09:08:07: █ █▄▄▄█ █ ▄▄▄▀ █▀█▄ ▄█ ▄▀▄██▄ ▀▀ ▀▀▀█▄█▀█▀█▀████ ▄▄█▀▄█
+0|maria-pa | 2026-07-04 09:08:07: █▄▄▄▄▄▄▄█▄████▄█▄█▄▄▄████▄█▄▄█▄█████▄▄█▄▄█▄▄█▄▄▄█▄▄▄███
+0|maria-pa | 2026-07-04 09:08:07: 
+0|maria-pa | 2026-07-04 09:08:27: [WA qr] escaneá este QR:
+0|maria-pa | 2026-07-04 09:08:27: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-07-04 09:08:27: █ ▄▄▄▄▄ ███ ▄██▄ ▄▄ ▀▄▀█▀ ▀▄▀▄█▄ ██   ▀▄▄█  ▀██ ▄▄▄▄▄ █
+0|maria-pa | 2026-07-04 09:08:27: █ █   █ █▀▄ █▄ ▀ █▀▀▄▄▀▀█▄▄▀▀  ▄▄  █▀ ██▀ ▀▀▄▀█ █   █ █
+0|maria-pa | 2026-07-04 09:08:27: █ █▄▄▄█ █▄▄ █▀ ▀▀▀▀  █ █▄ ▄▄▄ ▄  ██▀▄▄▄▀ █▄ ███ █▄▄▄█ █
+0|maria-pa | 2026-07-04 09:08:27: █▄▄▄▄▄▄▄█▄▀ █▄█ █ █▄█▄█▄█ █▄█ █ █▄▀▄█▄█▄▀ █ ▀▄█▄▄▄▄▄▄▄█
+0|maria-pa | 2026-07-04 09:08:27: █▄ ▀▀▀ ▄▄█ ▄█ ▄  █  ▀ █▀▀▄   ▄█▀▄▀▀ ▄ ▀  ▀   ▀▀▀▀ ▄█▀██
+0|maria-pa | 2026-07-04 09:08:27: █▄▀▀ ▄▄▄█▀▀  █▀▄  █▀▄█▀▀ ▀ ███ ▀  ▄ ▀▀▀▄ █ █   ██▀▀▄▀▀█
+0|maria-pa | 2026-07-04 09:08:27: █ ▄ █ ▀▄▀█ ▀█▀   ▄▀▄ ██▄█▀██▄█▄▀█  ▄▀ ▀█▀▄  ▀▄▀▄▀  ████
+0|maria-pa | 2026-07-04 09:08:27: █▀ ▀█▀▄▄▄▄ ▄▄▄▀▀█ █▄  █ █▀ ▀▀▀█▀█▄▄█▀▄▀ ▀ █▄▄▀▀▀▀█ ▀█▀█
+0|maria-pa | 2026-07-04 09:08:27: █   ▄█ ▄ █▀  ▄▀███▄▄ ▄██ ▄███▄▀▀▄▀▀██▄ █▀█▀▀▀█ █▀ █▄▄ █
+0|maria-pa | 2026-07-04 09:08:27: ██▄▀ █▀▄  █ ██ ▄█▄█▄██▄█▀▀▀▄█▄▄█▀▄▄█ ██▀▄▄▄▀▀▀▄ ▀▄ █ ▄█
+0|maria-pa | 2026-07-04 09:08:27: █▀▀▀▀█▄▄█▀ ▄▄▀ █▀▀  ▀▀ ██▀  ▄█ ▀▄▀    █▀█▀   ▀  ▄ ▀▄█▀█
+0|maria-pa | 2026-07-04 09:08:27: ███▀▄ ▄▄▄ ▄▀▄▀▄ ▄▄ ██▀  ▄▀ ██▀████ ▀█ ▄▄  ███▄ █ █▀█▀██
+0|maria-pa | 2026-07-04 09:08:27: █▀ █  ▄▄▄ █▄▄▄██  █ ▀▄▀▄█ ▄▄▄ ▀▀▀  ▄█  █▀▄  ▄ ▄▄▄  ██ █
+0|maria-pa | 2026-07-04 09:08:27: █▀ ▄▀ █▄█ ▀ ▄█▀  ▄█ █ ▀▀  █▄█ ▀▀  ▄█ ▀▄ ▄█▀▀▄ █▄█ ▀▀█▀█
+0|maria-pa | 2026-07-04 09:08:27: ███▄ ▄ ▄▄ ▄▀▄█▄█▀█ ▄▄▄██▀▄▄▄    ▄▀▀█▄ ██▀▀▀  ▄▄ ▄ ▄  ██
+0|maria-pa | 2026-07-04 09:08:27: █ ▄▀▄█▀▄▀█▀▀▄█ ▄▀▄▀▀▄▄▄  ▀ ▄▀▄ ▄█▄  ▄ ▀█▀▄▄█ █▀ ▀▀ ▄█▄█
+0|maria-pa | 2026-07-04 09:08:27: ██ █▀▄▀▄▀ ▀▄█▄▀▀█▀▀▄▀▀▀▀▀▀▄▀█▀ ▀▄█▄ ▄  ▀▀█▀ █▀▀▄█▀▀▀▄ █
+0|maria-pa | 2026-07-04 09:08:27: █▀▄ ▄█▀▄  ▄▄ █▄▀███▄▄▄▀▀█▀▄█ ▄▀▄▀    ▄███▀▀▀█ ██ ▄█▄█▀█
+0|maria-pa | 2026-07-04 09:08:27: █ █▀▀▀▀▄ ▀   ▀▀▄▀▄█ ▀██▄ ██▄    ▄▄▀██▄▀█▀▄   ▄█ ▀ ██  █
+0|maria-pa | 2026-07-04 09:08:27: █  ▄ ▄▄▄ ▄ ██▄▄▄▀  ▀ █▄▀█ ▄  ▀█▄ ▄▄▄▀█  ▀ ▀▀▄▄▀▀▄▀ ▀▄▀█
+0|maria-pa | 2026-07-04 09:08:27: █▄▄▄▀▀█▄▄██ ▀▄▄▄ ▀█▄ ▄██▄█▄███▀ ▄█▀▄▀▄▀▄▀█▀ █▄  ▄▀▀▄  █
+0|maria-pa | 2026-07-04 09:08:27: █▄ ▀▄▄▄▄ █ ██▄▀  ▀▄█ ▄▄ ▄▀▀▄ ▄  ▄ ▀ ▄▄▄██▄█▄█▀▀▄▄▄▀▄  █
+0|maria-pa | 2026-07-04 09:08:27: ████▄██▄▄   ██▄▀ ▀  ▀▀█▀▄ ▄▄▄ █▀▀▀ ▀ ▄ ▀██▀ ▀ ▄▄▄  █  █
+0|maria-pa | 2026-07-04 09:08:27: █ ▄▄▄▄▄ █ ▀█ ▀█▄▄▀▄▀█▀ ▄  █▄█  █  ▀█  ▀█▄▀ ▀▀ █▄█  ▄█▀█
+0|maria-pa | 2026-07-04 09:08:27: █ █   █ ██▄ █▀▄ ▄▄ ▄▀▄▀    ▄▄▄▀▀█▄█▄█ ▀▄█  ▀▀ ▄▄▄▄█▄ ▄█
+0|maria-pa | 2026-07-04 09:08:27: █ █▄▄▄█ █▀▄ ▄▀ ▀█▀▄ ▄▀▄ ▀▄▀▀▀█▀▀ ██▄█▄▄▄ ██ █▀ ▀  ▄▀█ █
+0|maria-pa | 2026-07-04 09:08:27: █▄▄▄▄▄▄▄█▄▄▄██▄█▄█▄▄▄████▄▄▄▄█▄█████▄▄█▄▄█▄▄█▄▄▄██▄▄███
+0|maria-pa | 2026-07-04 09:08:27: 
+0|maria-pa | 2026-07-04 09:08:47: [WA qr] escaneá este QR:
+0|maria-pa | 2026-07-04 09:08:47: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-07-04 09:08:47: █ ▄▄▄▄▄ ██▀ ▄██▄ ▄▄ ▀▄▀█▀ ▀▄▀▄ ▄█▄▀ ▀▀█▄ ▄  ▀██ ▄▄▄▄▄ █
+0|maria-pa | 2026-07-04 09:08:47: █ █   █ █▀ ▄█▄ ▀ █▀▀▄▄▀▀█▄▄▀▀▀ ▄▄  █▀ ██▀ ▀▀▄▀█ █   █ █
+0|maria-pa | 2026-07-04 09:08:47: █ █▄▄▄█ █▄█ ▄▀ ▀▀▀▀  █ █▄ ▄▄▄ ▄  ██▀▄▄▄▀ █▄ ███ █▄▄▄█ █
+0|maria-pa | 2026-07-04 09:08:47: █▄▄▄▄▄▄▄█▄▀ █▄█ █ █▄█▄█▄█ █▄█ █ █ █▄▀▄█▄▀▄█▄▀▄█▄▄▄▄▄▄▄█
+0|maria-pa | 2026-07-04 09:08:47: █▄ ▀▀▀ ▄▄▀ ▄█ ▄  █  ▀ █▀▀▄▄▄ ▄█ ▄█   ▄▄▀▀▀ ▀▀ ▀▀█▄▄████
+0|maria-pa | 2026-07-04 09:08:47: █ █▀ █▄▄▄ ▄▄ █▀▄  █▀▄█▀▀ ▀▀▄██ ▀ ▀▄▀▀  ▄ █ ▄█▀ ▄▄ ▀▄ ██
+0|maria-pa | 2026-07-04 09:08:47: █▀▄ ▀ ▀▄▀█▀▀▀▀   ▄▀▄ ██▄█▀▄█▄▀▄▀█  ▄▀ ▀█▀▄  ▀▄▀▄▀ ▄▀█▄█
+0|maria-pa | 2026-07-04 09:08:47: █▀ █▀▀ ▄ ▄ ▄▀█▀▀█ █▄  █ █▀ ▀▀██▀▀▄▄██ █ ▀▄▀ ▄▀████  █▀█
+0|maria-pa | 2026-07-04 09:08:47: █   ▄█▀▄▀▄▀  ▄▀███▄▄ ▄██ ▄██▄█▀▀█▀▀█▄▄ ▄ █ ▀ █▀▄▄▄█▄▄▄█
+0|maria-pa | 2026-07-04 09:08:47: █ ▀▀ █▀▄  ▀ ██ ▄█▄█▄██▄█▀▀███▄▄▄▀▄▄█ █▄ ▄▄█  ▄█ ▀█ ██ █
+0|maria-pa | 2026-07-04 09:08:47: █▀▀█ █▄▄█▀ ▄▀▀ █▀▀  ▀▀ ██▀▀ ▄█ ▀▄▀    █▀█▀   ▀  ▄ ▀▄▄ █
+0|maria-pa | 2026-07-04 09:08:47: ███▄   ▄  ▄▀ ▄▄ ▄▄ ██▀  ▄▀ █▀█▀▀██ █▀▄  ▄ ▀▀█▄▄█▄▀▀▄▀██
+0|maria-pa | 2026-07-04 09:08:47: █▀ █  ▄▄▄ █▄▄▄██  █ ▀▄▀▄█ ▄▄▄ ▀ ▀▄█▄▀ ▀██▄█▀▀ ▄▄▄ ▀█▀▄█
+0|maria-pa | 2026-07-04 09:08:47: █▀ ▄▀ █▄█ ▄▄▄█▀  ▄█ █ ▀▀  █▄█ ▀  ▀█▄▀ ▄ ██ ▀█ █▄█ ▀▀█▀█
+0|maria-pa | 2026-07-04 09:08:47: █▀ █▄▄ ▄  ▄▀█ ▄█▀█ ▄▄▄██▀▄▄▄▄▄  ▄▀▀█▄ ██▀▀▀ ▀     ▄▄ ██
+0|maria-pa | 2026-07-04 09:08:47: █ ▄▄▀▀▄▄▀█▀▀▀▀ ▄▀▄▀▀▄▄▄  ▀ ▀▀▄▄▄▀ ▄▄  ▀█▀ ▄▀ █  ▀▄ ▄█▄█
+0|maria-pa | 2026-07-04 09:08:47: ██ █▀▄▀▄▀ ▀▄█▄▀▀█▀▀▄▀▀▀▀▀▀ ██▀  ▄▀  ▄▄▀▀ ▀  █▀▀▄█▀▀ ▄ █
+0|maria-pa | 2026-07-04 09:08:47: █▀  ▄█▀▄  ▄  █▄▀███▄▄▄▀▀▀█▄█▀▄▀▄▀ ▀  ▄█▄█▀  █▀██ ▄█▄█▀█
+0|maria-pa | 2026-07-04 09:08:47: █  ▀▀▄█▄▄███  ▀▄▀▄█ ▀██▄ ██▄▀▀  ▄▄▀██▄▀█▀▄  ▄▀ ▄  █▀  █
+0|maria-pa | 2026-07-04 09:08:47: █  █▀█▀▄ ▀ █ █▄▄▀  ▀ █▄▀█ █▄ ▀█▄ ▄▄▄▀▀  ▀▄█▀█▄██▄▄█▀▄▀█
+0|maria-pa | 2026-07-04 09:08:47: █▄▄▄▀▀█▄▄██ ▀▄▄▄ ▀█▄ ▄██ █▄███▀▀▀▀ ▄▄ ██ ▀▀▀█▄  ▄▀ ▄  █
+0|maria-pa | 2026-07-04 09:08:47: █▄ ▀▄▄▄▄ ████▄██ ▀▄█ ▄▄ ▄ ▀▄▄█  █   █▄██▄▄▄█▀▀▀▄▄▄▀▄  █
+0|maria-pa | 2026-07-04 09:08:47: ████▄██▄█▀▄▀ ▄   ▀  ▀▀█▀█ ▄▄▄ █▀▀▀ ▀ ▄ ▀██▀ ▀ ▄▄▄ ▄▀  █
+0|maria-pa | 2026-07-04 09:08:47: █ ▄▄▄▄▄ █ ▀█▀ █▄▄▀▄▀█▀ ▄  █▄█  █ ▄██ ▄█▀▄▀▄▀█ █▄█ ███▀█
+0|maria-pa | 2026-07-04 09:08:47: █ █   █ ██▄ █▀▄ ▄▄ ▄▀▄▀    ▄▄▄ ▀█ ▀▄█▄▀▄█  ▀▀ ▄ ▄ ██ ▄█
+0|maria-pa | 2026-07-04 09:08:47: █ █▄▄▄█ █▀█▄▄▀▄▄█▀▄ ▄▀▄ ▀▄▀▀ ▄▀▀ █▄█▄███ ▄█ █▀█▀▄ ▄▀█ █
+0|maria-pa | 2026-07-04 09:08:47: █▄▄▄▄▄▄▄█▄█▄███▄▄█▄▄▄███▄▄█▄▄█▄█████▄▄█▄▄█▄▄█▄█▄█▄▄▄███
+0|maria-pa | 2026-07-04 09:08:47: 
+0|maria-pa | 2026-07-04 09:09:07: [WA qr] escaneá este QR:
+0|maria-pa | 2026-07-04 09:09:07: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-07-04 09:09:07: █ ▄▄▄▄▄ █▀████▄█▄██  ██▄   █▀▄▄▄▄ ███▀▄██ ▀ ▀██ ▄▄▄▄▄ █
+0|maria-pa | 2026-07-04 09:09:07: █ █   █ █▀█▄█▄ █▄▀▀▀▄ ███▄▄█ ▄ ▄▄▄▄▀▀ █▀█▄▀▀▄▀█ █   █ █
+0|maria-pa | 2026-07-04 09:09:07: █ █▄▄▄█ █▀  ▄█ ▀█▀▀  █▄█▄ ▄▄▄ ▄  █▀▀▄▄▄▀▄█▄ ███ █▄▄▄█ █
+0|maria-pa | 2026-07-04 09:09:07: █▄▄▄▄▄▄▄█▄█ ▀ █ ▀ █▄█▄▀▄█ █▄█ █▄█▄▀▄▀▄█▄▀ ▀ ▀▄█▄▄▄▄▄▄▄█
+0|maria-pa | 2026-07-04 09:09:07: █▄ ▄▄ ▀▄▄▄▄ █ ▄▄▄▀  ▀▄▀█▀▄▄▄▄ ▄ ▄█ ▄▀  █▀▀ ▀ █▄█ ▀▄▀ ▀█
+0|maria-pa | 2026-07-04 09:09:07: ██ ▀▄▄█▄█ ▄▄ █▀▄▄ █▀▄██▀ ▀ █▀█▀▀  ▀ ▀▀▀▄▄█▀▄▄█▄▄█ ▀▄▀▀█
+0|maria-pa | 2026-07-04 09:09:07: █▀▄▄▄▀ ▄ ▄ █ ▀▀▀▄█ ▄▀▄▀█▄▀▄▄▄ █▀▄▀▄█   ▄██▀  ███  █▄▀▄█
+0|maria-pa | 2026-07-04 09:09:07: █▀ ▄ ▀ ▄▄ ▄  ▀▀█▀▄█▄ ▄▀▄█▀ █ ████  ▀█ █ █ ▀▄▄█▀███ ▄▀██
+0|maria-pa | 2026-07-04 09:09:07: █    █ ▄ ▀█  ▄▀█▀█▄▄ ▄▀█ ▄▀█ █ ▀ ███ ▄ ▄ █▄  █▄▄  █▄  █
+0|maria-pa | 2026-07-04 09:09:07: █ ▄ ▄█▀▄▀ ▄▄▄█▀█▀█▄▄▄▄ ▄ ▀ █▀██▄▀█▀█ ██▀▀▄▄▀█▀▀▀ █▀▄█▀█
+0|maria-pa | 2026-07-04 09:09:07: █▀▀ ▀▀▄▄██▄██▀ ▀██  ▀█▄▀█▀▀▄▄▀ ▀▄█▄▄  ██▀█   █▄▄▄ █▄ ▄█
+0|maria-pa | 2026-07-04 09:09:07: ███ ▄  ▄   ▀▀ ▄  ▄ ██▀▄ ▄▀ █▄███▀█ ██  ▄ ▄███▄ █▄▀ ▄███
+0|maria-pa | 2026-07-04 09:09:07: █▀▀▄▄ ▄▄▄ ▀██▄▄▄▄▀▄  ███▄ ▄▄▄  ▀ ▀█▄ ▄▀███  █ ▄▄▄ ▀█▀██
+0|maria-pa | 2026-07-04 09:09:07: ██▄ █ █▄█ ▄█▄█▀▄▄ █ █▄██  █▄█ ▀▀ ▄ ▀  █▄  ▀ ▄ █▄█ ▀█▀██
+0|maria-pa | 2026-07-04 09:09:07: ██ ██ ▄▄▄ ██ █▄███ ▄▄▄▀█▀▄▄▄ ▄  ▄▀██▄ ███▀▀ █▄ ▄   ▄▄██
+0|maria-pa | 2026-07-04 09:09:07: █ █ ▄▄█▄▄██  ▄▀███ ▀██ ▀▀▀▀▀███ ▄▀▄▀▀ ▄ ▀███ ▄█▀  █▄▀██
+0|maria-pa | 2026-07-04 09:09:07: ██ ▀█ ▀▄▀▄█ █▄▀█▀█▀▄▀███▀▀▄▀▀█▀▀ ▀██▄ ▀▄█▀  ███ █▀ ▄ ▄█
+0|maria-pa | 2026-07-04 09:09:07: █▀▄  █▀▄   █ █▄▀▀██▄▄▄█▀█▀▄█▀▄▀█▀ █▀▀██▄ ▀ ▀▀▀▀█ ▄█▄▀▀█
+0|maria-pa | 2026-07-04 09:09:07: ██▀▀▄ ▀▄▀██ ▀█ ███▄  ▄▀█▀█▄█ █▀ ███▄▄▄ ▄██▀ █▀ █  ▄▄▄▀█
+0|maria-pa | 2026-07-04 09:09:07: █  ▀  ▀▄▄▀▄▀ █▄ █▄ ▀ ▀ ██   ▄██ ▄  ▄██ ▄█▄▀▀▄ ▀▀   ▄ ██
+0|maria-pa | 2026-07-04 09:09:07: █▄▄▄█▀█▄▄█▀ ▀▄▄▄▄▀█▄ ▄▀█▄█ █▀█▀▀▀▀▄█ ▄▀▄██  █▄▄ ▄▀▀▄▄ █
+0|maria-pa | 2026-07-04 09:09:07: █▄ ▀▄▄▄▄▀▄ ▀▄▄█▄▄ ██▀█ ▀▀▄ ███▀ █ █▀█▄▄█▀█▄█▄▀███▄ █▄▀█
+0|maria-pa | 2026-07-04 09:09:07: ████▄██▄▄▀ ▄██▄ ▄█  ▀█▀██ ▄▄▄ █▀▀█▄█ ▄ █▀▀▀ █ ▄▄▄  ▀▄▄█
+0|maria-pa | 2026-07-04 09:09:07: █ ▄▄▄▄▄ █▄██▀▀█▄ ▀▄▀█▀▄▄  █▄█ ▄▀▄ ██  ██▄▀ ▀▄ █▄█ ██▀▀█
+0|maria-pa | 2026-07-04 09:09:07: █ █   █ █  ▀▄▀█▀ █▀▄ ██▀▀  ▄▄▄  ▄▀██▄▄ ▄ ▀▀▀  ▄  ▄▄▄▄██
+0|maria-pa | 2026-07-04 09:09:07: █ █▄▄▄█ █ ▄▄▄▀ ▄▀█▄ ▄█ ▄█▄▀██▀▀▀▀▀▀ ▄██ █ █▀████▄ ▄█▀▄█
+0|maria-pa | 2026-07-04 09:09:07: █▄▄▄▄▄▄▄█▄▄▄█▄▄▄▄█▄▄▄███▄▄▄▄▄█▄█████▄▄█▄▄█▄▄█▄▄██▄▄▄███
+0|maria-pa | 2026-07-04 09:09:07: 
+0|maria-pa | 2026-07-04 09:09:27: [WA qr] escaneá este QR:
+0|maria-pa | 2026-07-04 09:09:27: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-07-04 09:09:27: █ ▄▄▄▄▄ █▄▀▀▀▀▄▀ █▀▄ ▀▀▄▄▄ ▀▀█  ▄▄▀▀▄▄▄▀▄▄█ ▀██ ▄▄▄▄▄ █
+0|maria-pa | 2026-07-04 09:09:27: █ █   █ █ ▀ ▀▀▀██ ▀ █ ▄▄█████▀ ██▄█ ▀▀▄▀▄█▀▀▄▀█ █   █ █
+0|maria-pa | 2026-07-04 09:09:27: █ █▄▄▄█ █▄▄▄▀█▄  █ █▄▄▀▀█ ▄▄▄ ██▄▄▄██▀  ▀▀█ ███ █▄▄▄█ █
+0|maria-pa | 2026-07-04 09:09:27: █▄▄▄▄▄▄▄█▄▀ ▀ █▄█ ▀ █ █▄▀ █▄█ ▀▄█▄▀▄█ █▄▀ ▀▄▀ █▄▄▄▄▄▄▄█
+0|maria-pa | 2026-07-04 09:09:27: █▄ ▄▄██▄▀ █▀█▀█▄█  ▀ ▄ ▄▀▄▄▄▄ ▄▀ █████▄██▄  ▀█▄██ ▄ █ █
+0|maria-pa | 2026-07-04 09:09:27: █▄  ▀ ▄▄▀ ▀ ▀ ██▀▄▄▄ ▄ █▀▄▄█▄▀▀▄█ ▄▄ ▄██ ▀ ▀ █ ▀████▄▀█
+0|maria-pa | 2026-07-04 09:09:27: █▀ ▀▄▀▄▄  ▄█▄ ▀█ █▄ ▀ ██ ██ ▄ ▀█▄█ █▄▄  ▀██▄ ▀▀█▄▄█ ███
+0|maria-pa | 2026-07-04 09:09:27: █ ▀██ ▄▄█ █▀▄▀ █ ███▀▄ ██ ▀█  █ ▄ ▀▄██   ▀▀▀██ ▄█▄ █ ▄█
+0|maria-pa | 2026-07-04 09:09:27: ██▄▀█ ▀▄ ▀ ▄▀▀█▄▄▀█▀▄█▄▀▀▀█▄▄▀▀█▄▄ ▀▀█▄█ ▀ ▄▄▄▀ ▀▀▀▄▀▄█
+0|maria-pa | 2026-07-04 09:09:27: ███▄ ▄▄▄ ▄ ▀ ▀▀▀██  ▄ ▄▄▄█▄▀██▀▀▀▀▄██▀█▄██▀▄▀▀▄▀▄ ▀ ▀██
+0|maria-pa | 2026-07-04 09:09:27: █ ▄▄▀ ▄▄▄█   █▀▀▄▄ ▀ ██ █ ▀▄▀▄  ████ ▀▄█ ▄ ▀▀███▄▀▄  ▄█
+0|maria-pa | 2026-07-04 09:09:27: █ ▀ ▀▄▀▄▄▀██▄█ ▀█ ▀ ▀ ▀▄█▄▄▄ ▀  ▀ ██ ▀ █▀▄▄▄▀█▀▀▀▄██ ▀█
+0|maria-pa | 2026-07-04 09:09:27: ██▀   ▄▄▄ ██▀ ▄  ▀ ▄ ▀▀█  ▄▄▄ █▄▄█▀█▀   █▀██  ▄▄▄   █▀█
+0|maria-pa | 2026-07-04 09:09:27: ███ ▄ █▄█ ▄█▄▄ ▄█▀█▀▄▄▄▄  █▄█ ▀ ▀▄▀▀▀ ▄▄  ▀▀█ █▄█  █ ▄█
+0|maria-pa | 2026-07-04 09:09:27: █▄█▄▄ ▄▄     ▄ ▄ ▀▀▀ █▄▀   ▄  ▀█   ▀██▀▄ █ █▄▄▄  ▄ █▀▀█
+0|maria-pa | 2026-07-04 09:09:27: █▄██▄▀▄▄██▀ ▀ ▀▀▀█▄██▀▄▀██▄▀▀██ ▄▀ ██▄▄▄▀█▀█▀ ▀█▀▄▀ ███
+0|maria-pa | 2026-07-04 09:09:27: █▄▀▀▄▀▀▄ ▄▄▀██ █ ▄▀█ █▄▄▀ ██ ▄▀ ▀▀▀█▄█▄▄   ▀▄█▄▀█  █▀██
+0|maria-pa | 2026-07-04 09:09:27: █▀█▀█▀ ▄▄▀ ▀▀   ▄▀▄▀ █ █▄▄ ▄ ▀▀ ▄  ▄   █▄█▀▄▀ ▄▀▀▀▀█▄██
+0|maria-pa | 2026-07-04 09:09:27: ██ ▄ ▄ ▄█ ▄█▄▄ ▀▀█ ▄  ███▀▄▀█▄█▄█▀▀▄    ▀██▄█▄▄▄ █ ▄ ▀█
+0|maria-pa | 2026-07-04 09:09:27: █▀▀▀ ██▄█▄█ ▄▀█ ▄█  ▀▀▀▄█▀▀▀█▄██▀ ██▀▄▀▄ ▀▀ ▄   ▀█▀█▀▄█
+0|maria-pa | 2026-07-04 09:09:27: █▀ █ █▄▄ ▄▄▄ ▀ █▀█▄▀▄█▄▀█ █ ▄▀▄▄▄ ▀ ██▄█▄▀▄▄▀█▀▄█▄██▀▄█
+0|maria-pa | 2026-07-04 09:09:27: █▄ ▀▄▄▄▄▀ ▀▀   ▄  ▀▀▀▀▄▀▀▄ ▀▀▄▄█▄▄ ▀▀▀▄▀██▀▀  ▀█▀  ▀ ▀█
+0|maria-pa | 2026-07-04 09:09:27: ████▄██▄▄▀▀█ ▀▀██▄ ▀ █ ▄▄ ▄▄▄ █  ██▄ █▀█  ▀▀  ▄▄▄ █▀███
+0|maria-pa | 2026-07-04 09:09:27: █ ▄▄▄▄▄ ██ ▀█▄▀████▄▀ ▀ ▀ █▄█ ▀▄ ▀▄▀▀▀█▄█▀█ ▀ █▄█  ▄▄██
+0|maria-pa | 2026-07-04 09:09:27: █ █   █ █▀▄▀ ███▄██  ▀▀▀█▄   ▄▄▄█▀███▄▀▀▀▀▄█▀▄▄  ▄▄  ██
+0|maria-pa | 2026-07-04 09:09:27: █ █▄▄▄█ █ █▄▄ ▀▄ ▄▄▀██▀█▀▀▄██▀▀  ▀ ▀▄█▄ █ ▄ ▄███▄▀██ ██
+0|maria-pa | 2026-07-04 09:09:27: █▄▄▄▄▄▄▄█▄█▄▄▄▄▄████▄▄▄███▄▄███▄█▄▄█████████████▄▄▄█▄██
+0|maria-pa | 2026-07-04 09:09:27: 
+0|maria-pa | 2026-07-04 09:10:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-07-04 09:10:04: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-07-04 09:10:04:   Owner:      Diego (id=1)
+0|maria-pa | 2026-07-04 09:10:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+0|maria-pa | 2026-07-04 09:10:04:   Gmail poll: cada 300s
+0|maria-pa | 2026-07-04 09:10:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-07-04 09:10:04: ✓ whisper OK
+0|maria-pa | 2026-07-04 09:10:04: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+0|maria-pa | 2026-07-04 09:10:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+0|maria-pa | 2026-07-04 09:10:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+0|maria-pa | 2026-07-04 09:10:04: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+0|maria-pa | 2026-07-04 09:10:07: [WA qr] escaneá este QR:
+0|maria-pa | 2026-07-04 09:10:07: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+0|maria-pa | 2026-07-04 09:10:07: █ ▄▄▄▄▄ █▄█▄▄▀████▄▄▄▀▄█▄  █▄█   ▀██▀▄▄▀██▄ ▀█ ▄ ██ ▄▄▄▄▄ █
+0|maria-pa | 2026-07-04 09:10:07: █ █   █ █  ▀   ▄▄▄▀ ████   ███▄▀ ▄▄▀▀▀▀  █▀▀█▄▀▄ ██ █   █ █
+0|maria-pa | 2026-07-04 09:10:07: █ █▄▄▄█ █▄▄ ▀ ▀▄▀▀█▄ ▀▀▀ █▀ ▄▄▄ █▄▀█ ▄  █▀▀▀▄▀▄▀▄██ █▄▄▄█ █
+0|maria-pa | 2026-07-04 09:10:07: █▄▄▄▄▄▄▄█▄▀ █▄█▄█▄▀ ▀▄█ ▀▄█ █▄█ ▀ ▀ █ █▄▀▄▀▄▀▄█▄█ █▄▄▄▄▄▄▄█
+0|maria-pa | 2026-07-04 09:10:07: █▄▄▄ █▀▄▀▄▀▀▄ █▀▄▄▄██▄   ▀█▄     █ ▄▀█ █ ▄▀▀▄▀▀█▄ ▄█▀ ▄ ▀▄█
+0|maria-pa | 2026-07-04 09:10:07: ██ █ ▄█▄ █ ██▀ ▀█▀ ██ ▄▄▄ ▄▄▀ ▀ █ ▀ █▄▄▄█  █▄▀█▄▄▀▄█▄█ ▄▄ █
+0|maria-pa | 2026-07-04 09:10:07: █▀▀██▄▀▄▄█▀ ▄▄▄ ▀▄█▄  █▄███▄█▀█▀ ▀▄█ ▄█▀▀█▄▄ █ ██▄▀▀▀█▀ ▀██
+0|maria-pa | 2026-07-04 09:10:07: █▀█▀ ▄█▄▄▄▀▄ █  ████ ▄█▄▀ ▀▄▀▄█▀  ▄█ ▀█▄▀▄█ ▄█▀▄▄▀▄█▄▄▀ ███
+0|maria-pa | 2026-07-04 09:10:07: █▄ █▄ ▄▄█▀▄▀▀▀ ▄  ▀█ █ █ █▄█▄▄▀▄█ ▄▀▀▀ ▄▄▀██ ▄  █▄██ █ ████
+0|maria-pa | 2026-07-04 09:10:07: █▄█▀▀ ▄▄▄█ █▀▀▀▀▀▀██ ▀ ▀ ▀█▀▀▄ ▀ ██  █▄  ▄ ██▄▀ █▄▀▀▄▀ █ ██
+0|maria-pa | 2026-07-04 09:10:07: █▀▀█▀██▄▄█ ▄██ ██ ▄███▄▄▀█  ▄▄ ▀██▄▄▄█ ▄▄ ▀  ██▄▄ ▀▄▄ █ ▀ █
+0|maria-pa | 2026-07-04 09:10:07: █ ██  █▄█▀███▄  ▀▄▀▀ ▄ ▀  █▀▄▀█▄ ▄▀▄█▀▀█ ▀█▄▀ ▄▄██▀▄▄▄▀██ █
+0|maria-pa | 2026-07-04 09:10:07: █ ██▄▄▀▄▄  █ ▄█▀▀▄▄ █ ▀█▄█▀▀▀▀██▄▄▄█▄▄  ▀▀ ▄▄█▀▄▄▄▀▀██▀█▄▄█
+0|maria-pa | 2026-07-04 09:10:07: ███ ▄ ▄▄▄  █▄▄▀  ▄▄▄▀▀█▄▄▀  ▄▄▄ █  █▀ ███    ▀▀▄  ▄▄▄ ▀▀███
+0|maria-pa | 2026-07-04 09:10:07: █▀███ █▄█ ██▀  ▄▀ █▄▄▄▀▀▀█▀ █▄█    ▀█▀█▄▀▀▀▄█   █ █▄█  ██▀█
+0|maria-pa | 2026-07-04 09:10:07: █▄██▄▄ ▄▄  █▄ ▄██   █  ▀▄   ▄▄  ▀█  ▀▄█  ▀ █ ▄█▄▄▄▄ ▄▄▄█▄██
+0|maria-pa | 2026-07-04 09:10:07: █ █▀█▄ ▄ ▄▄▀▄█▀▄██▄▀ ▄▄ ▀▀████▀▀▀▀ ▄ █ ▄▄▄ ▀▀██▄█▄▄▀▄██▄▄▄█
+0|maria-pa | 2026-07-04 09:10:07: █  ▀▀▀█▄  ▀  ▀█▄▄█ █▀▀ ▀ █▄██▄ ██▄█▄▀█▀█▀▀█▀ ▀█▀▄   ▄▄▀▄  █
+0|maria-pa | 2026-07-04 09:10:07: ██▄▀██▀▄▀▀▀ ▄█▄███▄ ▀██▀ ▄▄▄██▀▄▄▀ █▄   ▀█▄▄▄▀ ▄█ █  ▄  ███
+0|maria-pa | 2026-07-04 09:10:07: █ █  █ ▄▀▄  ▄▀██ ▄ ▀  ▀▄▄▀▄  ▄██ ▄ ▄▀▀ █  █  ▄█▄▄█▀█ █▀ █▄█
+0|maria-pa | 2026-07-04 09:10:07: █  ▄▀▀▄▄█▄▄▄▄▄▄▄ ▀▀▀ █▄██▄▀  ▀▀██▄▄▀▀███▄█ █  ▀▀ ▄███  ▀█ █
+0|maria-pa | 2026-07-04 09:10:07: █▄▀██  ▄ █▄▄ ▄ ▀ ▀█▄ ▄█ ▀▄▀█ ▄▄▄▀▀▄█ ▄▀▀██▀█▄▀█▄▄█▄█▄████▀█
+0|maria-pa | 2026-07-04 09:10:07: █▀▀▀  █▄▄█▄▀▀▄▄█▀█▀▀ ▄ █▀▀█ ▄█▀▀▀█▄▄ █ █  ▄ █▀▄█▀▄▀ ▄█▄█  █
+0|maria-pa | 2026-07-04 09:10:07: █ ▀ ▀▀▄▄▄ █▀█▀▄██▄█▄█▄██▄██▀▄ █▀ ▄▀█▄ ▄  ▄ ▄  ▀▄▀▀▀ ▄█▀█▄▄█
+0|maria-pa | 2026-07-04 09:10:07: ███████▄▄ ▄ ▀▄▀  ▄ ▄  ▀▀▄▄  ▄▄▄  ▀ █▄  ▀██▄█▄▀ ▄█ ▄▄▄   █▀█
+0|maria-pa | 2026-07-04 09:10:07: █ ▄▄▄▄▄ ███ ▄█▄ ▄ ██▄▄▄█▀ ▄ █▄█ ▀▄██▄█ ▀█▀█▄▄▀▄   █▄█  ▀█▀█
+0|maria-pa | 2026-07-04 09:10:07: █ █   █ █▀▄▀▀▄▀▀▀███ ▄▄▀ ▀▄ ▄   ▄▄  █▀▄█▀█▀█▄ ▄▀█▄▄▄▄▄▀▄ ██
+0|maria-pa | 2026-07-04 09:10:07: █ █▄▄▄█ █  ▀█▄█▀  █ ▄▀▀▀█▀▀▀▀▀█▀█  ▀▄▄█▀█▄▀▀█ ▀▄▄▄▀ ▄████▀█
+0|maria-pa | 2026-07-04 09:10:07: █▄▄▄▄▄▄▄█▄▄▄███▄█▄▄█▄▄▄▄▄███▄████▄██▄█▄▄▄▄█████▄██▄▄▄▄▄████
+0|maria-pa | 2026-07-04 09:10:07: 
 
