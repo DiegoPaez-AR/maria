@@ -1,5 +1,20 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14073  2026-07-04 01:14:29  whatsapp  saliente   34342575317160@lid   Poch confirmó tu pedido (only cheese con aros + hamburguesa sola con papas): son *$36.000* y va a estar en 35/45 min aprox. Te aviso o directo pasás a buscarlo en ese rango.                           
+
+14072  2026-07-04 01:14:29  sistema   interno                         claude_call whatsapp: 23176ms prompt=80815c raw=10870c in=6t(cache_read=53248 new=105770) out=872t ttfb=1443ms api=18306ms turnos=3 $0.4357                                                             
+
+14071  2026-07-04 01:14:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+14070  2026-07-04 01:14:24  whatsapp  saliente   5491137646922@c.us   Genial, muchas gracias!                                                                                                                                                                                 
+
+14069  2026-07-04 01:14:24  sistema   interno                         claude_call moderacion: 4879ms prompt=1471c raw=5543c in=10t(cache_read=17396 new=5044) out=251t ttfb=1088ms api=4386ms turnos=1 $0.0097                                                                
+
+14068  2026-07-04 01:14:05  whatsapp  entrante   5491137646922@c.us   Buenassssss                                                                                                                                                                                             
+                                                                      Anotado tu pedido! Seria $36000                                                                                                                                                                         
+                                                                      En 35/45min aprox esta!                                                                                                                                                                                 
+                                                                      Te esperamos!                                                                                                                                                                                           
+
 14067  2026-07-04 01:11:22  whatsapp  saliente   34342575317160@lid   Listo, ya le mandé el pedido a Poch: 1 only cheese simple con aros y 1 hamburguesa sola (pan y carne) simple con papas. Avisá cuando esté para ir a buscarlo.                                           
 
 14066  2026-07-04 01:11:22  sistema   interno                         claude_call whatsapp: 19277ms prompt=7785c raw=9735c in=6t(cache_read=66658 new=33890) out=608t ttfb=1452ms api=12102ms turnos=3 $0.1562                                                                
@@ -221,17 +236,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13975  2026-07-03 15:39:16  whatsapp  entrante   5491140793225@c.us   Hola Maria, feliz tarde, solicito informacion al area de diseño quienes son los encargados de definir los ajustes y te informo                                                                          
 
 13974  2026-07-03 15:38:09  whatsapp  saliente   5491165286555@c.us   Jaja no hay drama, tranquila 😊                                                                                                                                                                          
-
-13973  2026-07-03 15:38:08  sistema   interno                         claude_call whatsapp: 6486ms prompt=7590c raw=4654c in=2t(cache_read=143767 new=4339) out=108t ttfb=1846ms api=4080ms turnos=1 $0.0610                                                                  
-
-13972  2026-07-03 15:38:01  whatsapp  entrante   5491165286555@c.us   Si María sus una genia me confundí, era un chat para Eva y me di cuenta que se estaba hablando a vos, perdón.                                                                                           
-
-13971  2026-07-03 15:36:57  whatsapp  saliente   5491165286555@c.us   Che, este audio parece que era para Eva y no para mí (arranca "Eva, bueno..." hablando de las mesas redondas y lo de Catalina) 😅 ¿Se te fue a este chat por error? Decime si querés que haga algo puntua
-
-13970  2026-07-03 15:36:57  sistema   interno                         claude_call whatsapp: 28637ms prompt=7596c raw=15826c in=6t(cache_read=421868 new=6307) out=1694t ttfb=1438ms api=26513ms turnos=3 $0.1756                                                              
-
-13969  2026-07-03 15:36:50  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-13968  2026-07-03 15:36:28  whatsapp  entrante   5491165286555@c.us   Eva, bueno, todos estos son cosas que tenemos que definir antes las vacaciones de invierno.                                                                                                             
-                                                                       Yo pensé, acá estamos pensando con las chicas, lo siguiente.                                                                                                                                           
-                                                                       Tema catalina, lo que te puso CECI para desar                                                                                                                                                          
