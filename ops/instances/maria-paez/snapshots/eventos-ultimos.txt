@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                       
 -----  -------------------  --------  ---------  ------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14172  2026-07-04 09:50:40  sistema   interno                        WA sesión expirada — 3 QRs en 120s, requiere scan manual                                                                                                                     
+
 14171  2026-07-04 09:49:15  sistema   interno                        WA boot timeout 10min sin ready — exit para pm2 restart                                                                                                                      
 
 14170  2026-07-04 09:40:45  sistema   interno                        WA sesión expirada — 3 QRs en 120s, requiere scan manual                                                                                                                     
@@ -198,5 +200,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 14074  2026-07-04 01:18:51  whatsapp  entrante   5491132317896@c.us  Pago cuando retiro el pedido                                                                                                                                                 
 
 14073  2026-07-04 01:14:29  whatsapp  saliente   34342575317160@lid  Poch confirmó tu pedido (only cheese con aros + hamburguesa sola con papas): son *$36.000* y va a estar en 35/45 min aprox. Te aviso o directo pasás a buscarlo en ese rango.
-
-14072  2026-07-04 01:14:29  sistema   interno                        claude_call whatsapp: 23176ms prompt=80815c raw=10870c in=6t(cache_read=53248 new=105770) out=872t ttfb=1443ms api=18306ms turnos=3 $0.4357                                  
