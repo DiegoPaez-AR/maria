@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+14067  2026-07-04 01:11:22  whatsapp  saliente   34342575317160@lid   Listo, ya le mandé el pedido a Poch: 1 only cheese simple con aros y 1 hamburguesa sola (pan y carne) simple con papas. Avisá cuando esté para ir a buscarlo.                                           
+
+14066  2026-07-04 01:11:22  sistema   interno                         claude_call whatsapp: 19277ms prompt=7785c raw=9735c in=6t(cache_read=66658 new=33890) out=608t ttfb=1452ms api=12102ms turnos=3 $0.1562                                                                
+
+14065  2026-07-04 01:11:18  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
+
+14064  2026-07-04 01:11:18  whatsapp  saliente   5491137646922@c.us   Hola! Quiero hacer un pedido para retirar:                                                                                                                                                              
+                                                                      1 only cheese simple con aros                                                                                                                                                                           
+                                                                      1 hamburguesa sola (pan y carne) simple con papas                                                                                                                                                       
+                                                                                                                                                                                                                                                                              
+                                                                      Lo pasa a buscar Diego. Gracias!                                                                                                                                                                        
+
+14063  2026-07-04 01:11:18  sistema   interno                         claude_call moderacion: 5227ms prompt=1604c raw=6134c in=10t(cache_read=0 new=22487) out=323t ttfb=1124ms api=4787ms turnos=1 $0.0302                                                                   
+
 14062  2026-07-04 01:11:02  whatsapp  entrante   5491132317896@c.us   Maria, me haces un pedido en Poch, lo paso a buscar cuando esté.                                                                                                                                        
                                                                                                                                                                                                                                                                               
                                                                       1 only cheese simple con aros                                                                                                                                                                           
@@ -221,13 +235,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 13968  2026-07-03 15:36:28  whatsapp  entrante   5491165286555@c.us   Eva, bueno, todos estos son cosas que tenemos que definir antes las vacaciones de invierno.                                                                                                             
                                                                        Yo pensé, acá estamos pensando con las chicas, lo siguiente.                                                                                                                                           
                                                                        Tema catalina, lo que te puso CECI para desar                                                                                                                                                          
-
-13967  2026-07-03 15:36:02  whatsapp  saliente   17699644153872@lid   Gaby, te tengo que corregir algo importante: me confundí antes — Ana Clara todavía NO confirmó la reunión del lunes. Le escribí por mail el 1/7 y hoy de nuevo, y hoy también por WhatsApp, pero aún no 
-
-13966  2026-07-03 15:32:11  whatsapp  saliente   5491165286555@c.us   Listo, borré el turno de dermatología de hoy del calendario ✅                                                                                                                                           
-
-13965  2026-07-03 15:32:10  sistema   interno                         claude_call whatsapp: 15532ms prompt=6888c raw=9129c in=6t(cache_read=274080 new=137460) out=515t ttfb=1500ms api=12516ms turnos=3 $0.6054                                                              
-
-13964  2026-07-03 15:32:07  sistema   interno                         acción ejecutada: borrar_evento                                                                                                                                                                         
-
-13963  2026-07-03 15:32:07  calendar  saliente                        borrado: evento obl7fh40hua8qtbiqi1urskfq8 [del calendar de Maria]                                                                                                                                      
