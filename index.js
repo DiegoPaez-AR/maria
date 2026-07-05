@@ -19,6 +19,7 @@
 //   MARIA_DB          → path de sqlite (default ./db/maria.sqlite)
 
 const path = require('path');
+const fs = require('fs');
 
 const mem = require('./memory');
 const usuarios = require('./usuarios');
@@ -110,12 +111,18 @@ async function main() {
   const waEstado = { ready: false };
   iniciarTelegram({ waEstado });
 
-  // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
-  waClient = crearClienteWA({
-    onReady: (client) => {
-      waEstado.ready = true;
-      loopGuard.setWaClient(client); // canal WA para avisos de loops caídos (sobrevive a OAuth down)
-      console.log(`▸ arrancando poll de Gmail (cada ${GMAIL_POLL_MS/1000}s)`);
+  // ── Arranque de loops (extraído de onReady, 2026-07-05) ──────────────────
+  // Idempotente: puede llamarse desde onReady (modo normal, client vivo) o
+  // desde el MODO DEGRADADO (client=null: WA caído/en revisión — los envíos a
+  // usuarios salen por el fallback TG→email de wa-send; las acciones enviar_wa
+  // a terceros fallan honesto).
+  let _loopsArrancados = false;
+  let _modoDegradado = false;
+  const arrancarLoops = (client) => {
+    if (_loopsArrancados) return;
+    _loopsArrancados = true;
+    if (client) loopGuard.setWaClient(client);
+            console.log(`▸ arrancando poll de Gmail (cada ${GMAIL_POLL_MS/1000}s)`);
       gmailInterval = iniciarPoll({ waClient: client, intervaloMs: GMAIL_POLL_MS });
 
       console.log(`▸ arrancando loop de recordatorios (cada ${RECORDATORIO_MS/60_000}min)`);
@@ -184,7 +191,43 @@ async function main() {
         canal: 'sistema', direccion: 'interno',
         cuerpo: `Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (${activos.length} usuarios)`,
       });
-    },
+  };
+
+  // MODO DEGRADADO (2026-07-05, incidente WA-en-revisión): si el marker de
+  // WA-caído (lo escribe el loop de Telegram) tiene >5 min al boot, WhatsApp
+  // no va a volver solo — arrancamos gmail + loops SIN esperar el ready para
+  // que Maria siga operando por email/Telegram. Cuando WA finalmente conecte,
+  // onReady hace exit(0) → pm2 reinicia limpio en modo normal.
+  const WA_DEGRADADO_MS = Number(process.env.WA_DEGRADADO_MS || 5 * 60 * 1000);
+  try {
+    const _mk = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'tg-wa-down');
+    if (fs.existsSync(_mk)) {
+      const _desde = Number(String(fs.readFileSync(_mk, 'utf8')).split(' ')[0]) || 0;
+      if (_desde && Date.now() - _desde > WA_DEGRADADO_MS) {
+        _modoDegradado = true;
+        waEstado.degradado = true;
+        console.warn(`⚠️ [MODO DEGRADADO] WA caído hace ${Math.round((Date.now() - _desde) / 60000)} min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)`);
+        mem.log({ canal: 'sistema', direccion: 'interno',
+          cuerpo: `MODO DEGRADADO: loops arrancados sin WA (caído hace ${Math.round((Date.now() - _desde) / 60000)} min)`,
+          metadata: { tipo: 'wa_degradado' } });
+        arrancarLoops(null);
+      }
+    }
+  } catch (e) { console.warn('[degradado] check falló:', e.message); }
+
+  // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
+  waClient = crearClienteWA({
+    waEstado,
+    onReady: (client) => {
+      waEstado.ready = true;
+      if (_modoDegradado) {
+        // Los loops corren con client=null — reinicio limpio a modo normal.
+        console.log('✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA');
+        mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: 'WA recuperado en modo degradado — reinicio limpio' });
+        setTimeout(() => process.exit(0), 1500);
+        return;
+      }
+      arrancarLoops(client);    },
   });
 
   waClient.initialize();

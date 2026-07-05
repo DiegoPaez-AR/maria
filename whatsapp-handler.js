@@ -58,7 +58,7 @@ function _limpiarSingletonLockViejo() {
   }
 }
 
-function crearClienteWA({ onReady } = {}) {
+function crearClienteWA({ onReady, waEstado = null } = {}) {
   _limpiarSingletonLockViejo();
 
   const client = new Client({
@@ -120,6 +120,13 @@ function crearClienteWA({ onReady } = {}) {
     _alertaWA('no logró autenticarse en 3 min desde el boot');
   }, BOOT_ALERT_MS);
   let _suicideTimeout = setTimeout(() => {
+    if (waEstado && waEstado.degradado) {
+      // MODO DEGRADADO (2026-07-05): el proceso corre los loops sin WA — NO
+      // suicidarse (era el ciclo de 289 restarts durante la revisión de la
+      // cuenta). El QR sigue emitiéndose para el re-scan cuando se libere.
+      console.warn(`[WA boot] sin ready en ${BOOT_SUICIDE_MS/60000}min — modo degradado: sigo vivo sin WA`);
+      return;
+    }
     console.error(`[WA boot] sin ready en ${BOOT_SUICIDE_MS/60000}min — saliendo para que pm2 reinicie`);
     mem.log({
       canal: 'sistema', direccion: 'interno',
