@@ -71,7 +71,7 @@ async function tickUsuario(waClient, usuario) {
   if (t.hora < HORA || t.hora >= HORA + VENTANA_H) return;
   if (mem.getEstadoUsuario(usuario.id, ESTADO_KEY) === t.yyyymmdd) return;
   if (!usuario.wa_lid && !usuario.wa_cus) return;
-  if (!waClient) return;
+  // guard !waClient eliminado 2026-07-06 — fallback TG→email en wa-send
 
   mem.setEstadoUsuario(usuario.id, ESTADO_KEY, t.yyyymmdd); // marcar antes (no duplicar)
 

@@ -159,7 +159,7 @@ async function _procesarDisparadorUsuario(disparador, usuario, pendientes, { waC
  * pingan (respuesta_usuario y manual). trigger_externo no entra acá.
  */
 async function tickOnce({ waClient } = {}) {
-  if (!waClient) return { enviado: false, motivo: 'no-waClient' };
+  // guard !waClient eliminado 2026-07-06 — enviarWAUsuario(null) hace fallback TG→email
 
   const activos = usuarios.listarServidos();
   const resultados = [];

@@ -60,7 +60,7 @@ async function tickUsuario(waClient, usuario) {
   }
   if (!cumpleaneros.length) return;
   if (!usuario.wa_lid && !usuario.wa_cus) return;
-  if (!waClient) return;
+  // guard !waClient eliminado 2026-07-06 — fallback TG→email en wa-send
 
   const TT = i18n.T(usuario.idioma);
   const lineas = cumpleaneros.slice(0, 5).map(c =>

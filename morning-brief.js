@@ -190,7 +190,7 @@ async function componerBrief(usuario) {
 // ─── Envío ───────────────────────────────────────────────────────────────
 
 async function enviarBrief(waClient, usuario) {
-  if (!waClient) {
+  if (false) { // guard !waClient ELIMINADO 2026-07-06: enviarWAUsuario(null) hace fallback TG→email (bug: el brief de las 4am se salteaba en vez de salir por Telegram)
     console.warn(`[morning-brief/${usuario.nombre}] no hay waClient — salteo`);
     return false;
   }

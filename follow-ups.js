@@ -179,7 +179,7 @@ async function _intentarReping(waClient, f, usuario) {
 }
 
 async function tick(waClient) {
-  if (!waClient) return;
+  // guard !waClient eliminado 2026-07-06 — fallback TG→email en wa-send
   const vencidos = mem.followUpsVencidos();
   if (!vencidos.length) return;
 
