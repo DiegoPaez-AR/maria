@@ -1,0 +1,21 @@
+# ejecutado: 2026-07-06T09:56:25-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && DRY_RUN=1 node daily-report.js 2>&1 | grep -A2 -B2 -i "gasto\|error" | head -40
+
+# ───── output ─────
+
+Instancias activas: 1
+Gasto Claude total 24h: $2.97 USD
+
+═══════════════════════════════════════════
+--
+   ⚠️ 2 llamada(s) >30s · 0 >60s
+Programados en cola: 5
+💵 Gasto Claude 24h: $2.97 USD (27 llamadas)
+WA reconexiones (change_state): 1
+⚠️ Anomalías sin clasificar: 1
+
+# exit=0
