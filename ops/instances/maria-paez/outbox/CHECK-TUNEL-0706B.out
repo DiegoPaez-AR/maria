@@ -1,0 +1,29 @@
+# ejecutado: 2026-07-06T15:49:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== 1080 =="
+#   ss -tlnp | grep 1080 || echo "(nadie escucha en 1080)"
+#   echo; echo "== ultima conexion aceptada =="
+#   grep -i "accepted" /var/log/auth.log | tail -3
+#   echo; echo "== estado WA en logs =="
+#   grep -iE "WA túnel|WA ready|qr" /root/.pm2/logs/maria-paez-out.log | tail -5
+
+# ───── output ─────
+== 1080 ==
+(nadie escucha en 1080)
+
+== ultima conexion aceptada ==
+2026-07-05T23:24:20.424721-03:00 ubuntu-4gb-nbg1-2 sshd[3040631]: Accepted publickey for root from 181.26.34.95 port 50158 ssh2: ED25519 SHA256:7nNfmh+XAu7NpnRsPhx35FUOuDECd0dLIGleMfWGCc4
+2026-07-05T23:30:43.294265-03:00 ubuntu-4gb-nbg1-2 sshd[3045078]: Accepted publickey for root from 181.26.34.95 port 50164 ssh2: ED25519 SHA256:7nNfmh+XAu7NpnRsPhx35FUOuDECd0dLIGleMfWGCc4
+2026-07-06T06:44:35.347266-03:00 ubuntu-4gb-nbg1-2 sshd[3363506]: Accepted password for root from 181.26.34.95 port 54670 ssh2
+
+== estado WA en logs ==
+2026-07-06 07:12:02: [WA ready] re-emitido (reconexión) — loops ya activos, no re-inicializo
+2026-07-06 08:15:24: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
+2026-07-06 08:15:35: ✅ [WA ready] Maria conectada
+2026-07-06 09:56:26: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
+2026-07-06 09:56:37: ✅ [WA ready] Maria conectada
+
+# exit=0
