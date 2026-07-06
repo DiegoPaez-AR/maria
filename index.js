@@ -215,6 +215,20 @@ async function main() {
     }
   } catch (e) { console.warn('[degradado] check falló:', e.message); }
 
+  // WA APAGADO (2026-07-05, re-bloqueo de la cuenta): con el marker presente,
+  // CERO intentos de conexión a WhatsApp — ni cliente, ni QR, ni señales a
+  // Meta. Maria opera por email/Telegram. Para reactivar cuando la cuenta se
+  // libere: rm state/<slug>/wa-apagado && pm2 restart maria-paez.
+  const _waApagadoF = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'wa-apagado');
+  if (fs.existsSync(_waApagadoF)) {
+    console.warn('⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.');
+    mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: 'WA APAGADO por marker — cero intentos de conexión; loops en modo degradado', metadata: { tipo: 'wa_apagado' } });
+    _modoDegradado = true;
+    waEstado.degradado = true;
+    arrancarLoops(null);
+    return; // sin crearClienteWA — el proceso vive solo con gmail/TG/loops
+  }
+
   // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
   waClient = crearClienteWA({
     waEstado,
