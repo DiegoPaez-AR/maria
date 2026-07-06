@@ -96,7 +96,7 @@ async function procesarUno(waClient, prog) {
     const intentos = (prevFallos.errorKey === errKey) ? (prevFallos.count || 0) + 1 : 1;
     try {
       mem.actualizarMetadataProgramado(prog.id, {
-        fallos: { count: intentos, errorKey, ultimo_ts: new Date().toISOString() },
+        fallos: { count: intentos, errorKey: errKey, ultimo_ts: new Date().toISOString() },
       });
     } catch (mErr) {
       console.warn(`[programados] no pude persistir metadata de fallo para id=${prog.id}:`, mErr.message);
