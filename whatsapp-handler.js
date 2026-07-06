@@ -145,9 +145,18 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
   const _qrTimestamps = [];
   let _qrLoopAlertado = false;
 
+  let _qrCount = 0;
   client.on('qr', (qr) => {
-    console.log('[WA qr] escaneá este QR:');
-    qrcode.generate(qr, { small: true });
+    _qrCount++;
+    // En modo degradado el QR rota cada ~20s por horas/días: imprimir TODOS
+    // inunda logs y snapshots (2026-07-05). Imprimimos 1 de cada 5 (~2-4 min);
+    // para escanear alcanza con esperar el próximo completo.
+    if (waEstado && waEstado.degradado && _qrCount % 5 !== 1) {
+      if (_qrCount % 5 === 2) console.log('[WA qr] rotando en silencio (modo degradado) — próximo QR completo en ~2-4 min');
+    } else {
+      console.log('[WA qr] escaneá este QR:');
+      qrcode.generate(qr, { small: true });
+    }
     const ahora = Date.now();
     _qrTimestamps.push(ahora);
     while (_qrTimestamps.length && ahora - _qrTimestamps[0] > QR_LOOP_WINDOW_MS) {
