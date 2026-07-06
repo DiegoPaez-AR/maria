@@ -1,0 +1,40 @@
+# ejecutado: 2026-07-06T14:44:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== restart maria-paez =="
+#   pm2 restart maria-paez --update-env
+#   sleep 45
+#   echo "== logs post-restart =="
+#   grep -i "ready\|authenticated\|qr\|error" /root/.pm2/logs/maria-paez-out.log | tail -8
+#   tail -5 /root/.pm2/logs/maria-paez-error.log
+#   pm2 jlist | python3 -c "import sys,json; [print(p['name'],p['pm2_env']['status'],'restarts:',p['pm2_env']['restart_time']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+
+# ───── output ─────
+== restart maria-paez ==
+[PM2] Applying action restartProcessId on app [maria-paez](ids: [ 3 ])
+[PM2] [maria-paez](3) ✓
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 2  │ intensa-api    │ default     │ 1.0.0   │ fork    │ 3940304  │ 3D     │ 0    │ online    │ 0%       │ 90.1mb   │ root     │ disabled │
+│ 3  │ maria-paez     │ default     │ 1.0.0   │ fork    │ 3715728  │ 0s     │ 176  │ online    │ 0%       │ 28.1mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+== logs post-restart ==
+2026-07-06 07:12:02: [WA authenticated]
+2026-07-06 07:12:02: ✅ [WA ready] Maria conectada
+2026-07-06 07:12:02: [WA ready] re-emitido (reconexión) — loops ya activos, no re-inicializo
+2026-07-06 07:38:16: [WA ←] Diego (5491132317896@c.us): Olvídate de ese tema, no era para vos, te lo mandé por error
+2026-07-06 08:15:35: [WA authenticated]
+2026-07-06 08:15:35: ✅ [WA ready] Maria conectada
+2026-07-06 09:56:37: [WA authenticated]
+2026-07-06 09:56:37: ✅ [WA ready] Maria conectada
+2026-07-06 14:44:04: [programados] 2 programado(s) quedaron "en vuelo" de un proceso anterior — devueltos a pendiente
+2026-07-06 14:44:04: [programados] ✗ id=841 falló: waClient no disponible
+2026-07-06 14:44:04: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:44:04: [programados] ✗ id=842 falló: waClient no disponible
+2026-07-06 14:44:04: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+maria-paez online restarts: 176
+
+# exit=0
