@@ -1,0 +1,48 @@
+# ejecutado: 2026-07-05T22:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── cron log: ¿reloads en loop? ──"
+#   grep -cE "reloadProcessId|Applying action" ops/.cron.log
+#   tail -5 ops/.cron.log
+#   echo "── pm2 CLI colgados (fuera del daemon) ──"
+#   ps aux | grep "pm2" | grep -v grep | grep -v "PM2" | awk '{print $2, $9, $11, $12, $13}'
+#   # matar CLIs de pm2 colgados (el daemon es 'PM2 v...' en el nombre del proceso, no lo tocamos)
+#   for pid in $(ps aux | grep "node /usr/local/bin/pm2" | grep -v grep | awk '{print $2}'); do
+#     echo "matando pm2 CLI colgado pid=$pid ($(ps -o etime= -p $pid 2>/dev/null | tr -d ' '))"
+#     kill -9 $pid 2>/dev/null
+#   done
+#   sleep 2
+#   echo "── restart limpio ──"
+#   pm2 delete maria-paez >/dev/null 2>&1
+#   sleep 2
+#   pm2 start ecosystem.config.js --only maria-paez >/dev/null 2>&1
+#   pm2 save >/dev/null 2>&1
+#   sleep 20
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time']), 'uptime_s='+str(int((__import__('time').time()*1000-p['pm2_env']['pm_uptime'])/1000))) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   sleep 20
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print('a los 40s:', p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   grep -E "maria-paez.*(exited|SIGINT)" /root/.pm2/pm2.log | tail -2
+#   echo LISTO
+
+# ───── output ─────
+── cron log: ¿reloads en loop? ──
+193
+═══ 2026-07-05T22:07:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-07-05T22:08:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/matar-reload-storm.sh → ops/instances/maria-paez/outbox/matar-reload-storm.out
+── pm2 CLI colgados (fuera del daemon) ──
+2933652 21:57 node /usr/local/bin/pm2 logs
+matando pm2 CLI colgado pid=2933652 (10:21)
+── restart limpio ──
+maria-paez online restarts=2 uptime_s=5
+a los 40s: maria-paez online restarts=5
+2026-07-05T22:08:37: PM2 log: App [maria-paez:3] exited with code [0] via signal [SIGINT]
+2026-07-05T22:08:45: PM2 log: App [maria-paez:3] exited with code [0] via signal [SIGINT]
+LISTO
+
+# exit=0
