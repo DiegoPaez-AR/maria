@@ -345,21 +345,44 @@ function statsInstancia(env) {
       `).get(_nowIso);
       stats.programados = { pendientes: _prog.pendientes || 0, atrasados: _prog.atrasados || 0 };
 
-      // ── Gasto Claude del día (cost_usd del audit claude_call, 24h) ──
-      // cost_usd viene del stream-json de la CLI; algunos calls viejos o
-      // fallidos no lo traen → con_costo permite ver la cobertura real.
-      const _gasto = db.prepare(`
-        SELECT COUNT(*) AS calls,
-               COUNT(json_extract(metadata_json, '$.cost_usd')) AS con_costo,
-               COALESCE(SUM(json_extract(metadata_json, '$.cost_usd')), 0) AS total
+      // ── Gasto Claude del día (24h) ──
+      // OJO: el cost_usd de la CLI usa SIEMPRE su tabla de precios estándar.
+      // sonnet-5 tiene precio introductorio (2/10 por Mtok) hasta 2026-08-31
+      // → la CLI sobreestima ~50% vs lo que factura Anthropic. Recalculamos
+      // el costo desde los tokens con el precio vigente por fecha (UTC, como
+      // factura Anthropic). Moderación corre haiku; el resto ANTHROPIC_MODEL
+      // (sonnet-5). Fallback: calls sin tokens usan el cost_usd de la CLI.
+      const _precios = (d) => ({
+        main: d <= '2026-08-31'
+          ? { in: 2, out: 10, cr: 0.20, cw: 2.50 }   // sonnet-5 intro
+          : { in: 3, out: 15, cr: 0.30, cw: 3.75 },  // sonnet estándar
+        haiku: { in: 1, out: 5, cr: 0.10, cw: 1.25 },
+      });
+      const _rows = db.prepare(`
+        SELECT date(timestamp) AS d,
+               json_extract(metadata_json, '$.canal') AS canal,
+               json_extract(metadata_json, '$.tokens_in') AS tin,
+               json_extract(metadata_json, '$.tokens_out') AS tout,
+               json_extract(metadata_json, '$.cache_read') AS cr,
+               json_extract(metadata_json, '$.cache_creation') AS cw,
+               json_extract(metadata_json, '$.cost_usd') AS cli
         FROM eventos
         WHERE canal = 'sistema' AND timestamp >= ?
           AND tipo = 'claude_call'
-      `).get(desde);
+      `).all(desde);
+      let _tot = 0, _con = 0;
+      for (const r of _rows) {
+        if (r.tin != null || r.tout != null) {
+          const p = _precios(r.d)[r.canal === 'moderacion' ? 'haiku' : 'main'];
+          _tot += ((r.tin || 0) * p.in + (r.tout || 0) * p.out
+                 + (r.cr || 0) * p.cr + (r.cw || 0) * p.cw) / 1e6;
+          _con++;
+        } else if (r.cli != null) { _tot += Number(r.cli); _con++; }
+      }
       stats.gasto = {
-        total_usd: Number(_gasto.total || 0),
-        calls: _gasto.calls || 0,
-        con_costo: _gasto.con_costo || 0,
+        total_usd: _tot,
+        calls: _rows.length,
+        con_costo: _con,
       };
 
       // ── No ruteado / rebotes (copia operador del catch-all, 24h) ──
