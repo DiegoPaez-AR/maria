@@ -1,0 +1,40 @@
+# ejecutado: 2026-07-06T15:48:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== listeners 1080 =="
+#   ss -tlnp | grep 1080 || echo "(nadie escucha en 1080)"
+#   echo; echo "== sshd de tuneles (notty) =="
+#   ps aux | grep -E "sshd.*notty" | grep -v grep || echo "(ninguno)"
+#   echo; echo "== conexiones ssh recientes =="
+#   grep -iE "accepted|disconnect" /var/log/auth.log 2>/dev/null | tail -12 || journalctl -u ssh --since "-6 hours" 2>/dev/null | grep -iE "accepted|disconnect" | tail -12
+#   echo; echo "== sshd keepalive config =="
+#   grep -iE "clientalive" /etc/ssh/sshd_config /etc/ssh/sshd_config.d/* 2>/dev/null || echo "(sin ClientAlive configurado)"
+
+# ───── output ─────
+== listeners 1080 ==
+(nadie escucha en 1080)
+
+== sshd de tuneles (notty) ==
+(ninguno)
+
+== conexiones ssh recientes ==
+2026-07-06T15:36:52.052725-03:00 ubuntu-4gb-nbg1-2 sshd[3755037]: Received disconnect from 187.216.224.85 port 53628:11: Bye Bye [preauth]
+2026-07-06T15:36:52.052867-03:00 ubuntu-4gb-nbg1-2 sshd[3755037]: Disconnected from invalid user dev 187.216.224.85 port 53628 [preauth]
+2026-07-06T15:37:41.037962-03:00 ubuntu-4gb-nbg1-2 sshd[3755765]: Received disconnect from 122.177.241.118 port 20729:11: Bye Bye [preauth]
+2026-07-06T15:37:41.038095-03:00 ubuntu-4gb-nbg1-2 sshd[3755765]: Disconnected from authenticating user root 122.177.241.118 port 20729 [preauth]
+2026-07-06T15:39:54.539843-03:00 ubuntu-4gb-nbg1-2 sshd[3757210]: Received disconnect from 187.216.224.85 port 40220:11: Bye Bye [preauth]
+2026-07-06T15:39:54.539968-03:00 ubuntu-4gb-nbg1-2 sshd[3757210]: Disconnected from invalid user ec2-user 187.216.224.85 port 40220 [preauth]
+2026-07-06T15:42:21.790551-03:00 ubuntu-4gb-nbg1-2 sshd[3759437]: Received disconnect from 122.177.241.118 port 12610:11: Bye Bye [preauth]
+2026-07-06T15:42:21.790648-03:00 ubuntu-4gb-nbg1-2 sshd[3759437]: Disconnected from authenticating user root 122.177.241.118 port 12610 [preauth]
+2026-07-06T15:42:50.726704-03:00 ubuntu-4gb-nbg1-2 sshd[3759445]: Received disconnect from 187.216.224.85 port 51932:11: Bye Bye [preauth]
+2026-07-06T15:42:50.726860-03:00 ubuntu-4gb-nbg1-2 sshd[3759445]: Disconnected from authenticating user root 187.216.224.85 port 51932 [preauth]
+2026-07-06T15:45:43.798826-03:00 ubuntu-4gb-nbg1-2 sshd[3761744]: Received disconnect from 187.216.224.85 port 41002:11: Bye Bye [preauth]
+2026-07-06T15:45:43.798938-03:00 ubuntu-4gb-nbg1-2 sshd[3761744]: Disconnected from invalid user ubuntu 187.216.224.85 port 41002 [preauth]
+
+== sshd keepalive config ==
+/etc/ssh/sshd_config:#ClientAliveInterval 0
+/etc/ssh/sshd_config:#ClientAliveCountMax 3
+
+# exit=0
