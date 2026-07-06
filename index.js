@@ -252,6 +252,32 @@ async function main() {
     }
   } catch (e) { console.warn('[WA reposo] check falló:', e.message); }
 
+  // Guard del túnel (2026-07-05): si WA_PROXY está configurado pero el túnel
+  // está caído (la Mac de Diego apagada/sin internet), NO intentamos conectar
+  // WA — sería salir por la IP alemana justo cuando queremos evitarla. Reposo
+  // de 10min y reintento (el túnel tiene KeepAlive del lado de la Mac).
+  if (process.env.WA_PROXY) {
+    const _m = process.env.WA_PROXY.match(/([\d.]+):(\d+)/);
+    if (_m) {
+      const _tunelVivo = await new Promise((res) => {
+        const s = require('net').connect({ host: _m[1], port: Number(_m[2]), timeout: 3000 },
+          () => { s.destroy(); res(true); });
+        s.on('error', () => res(false));
+        s.on('timeout', () => { s.destroy(); res(false); });
+      });
+      if (!_tunelVivo) {
+        console.warn(`⏸ [WA túnel] proxy ${process.env.WA_PROXY} no responde — sin conexión WA hasta que vuelva (chequeo en 10min)`);
+        mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `WA_PROXY caído (${process.env.WA_PROXY}) — no intento conectar WA`, metadata: { tipo: 'wa_tunel_caido' } });
+        _modoDegradado = true;
+        waEstado.degradado = true;
+        arrancarLoops(null);
+        setTimeout(() => process.exit(0), 10 * 60 * 1000);
+        return;
+      }
+      console.log(`✓ [WA túnel] proxy ${process.env.WA_PROXY} responde — Chromium saldrá por ahí`);
+    }
+  }
+
   // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
   waClient = crearClienteWA({
     waEstado,

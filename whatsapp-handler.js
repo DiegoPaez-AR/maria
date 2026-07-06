@@ -130,6 +130,11 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
         '--disable-setuid-sandbox',
         '--disable-blink-features=AutomationControlled',
         '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36',
+        // Salida por IP argentina (2026-07-05, teoría del mismatch de IP):
+        // si WA_PROXY está seteado (ej. socks5://127.0.0.1:1080 = túnel SSH
+        // inverso desde la Mac de Diego), SOLO el Chromium de WhatsApp sale
+        // por ahí. El resto de Maria sigue por la IP del VPS.
+        ...(process.env.WA_PROXY ? [`--proxy-server=${process.env.WA_PROXY}`] : []),
       ],
       executablePath: CHROME_BIN,
     },
