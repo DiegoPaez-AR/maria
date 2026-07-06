@@ -1,0 +1,16 @@
+# ejecutado: 2026-07-06T15:53:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pm2 restart maria-paez --update-env >/dev/null 2>&1
+#   sleep 50
+#   grep -iE "WA túnel|WA ready|qr" /root/.pm2/logs/maria-paez-out.log | tail -4
+
+# ───── output ─────
+2026-07-06 15:53:03: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
+2026-07-06 15:53:13: ✅ [WA ready] Maria conectada
+2026-07-06 15:53:16: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
+2026-07-06 15:53:25: ✅ [WA ready] Maria conectada
+
+# exit=0
