@@ -1,0 +1,11 @@
+#!/bin/bash
+command -v auditctl >/dev/null || { DEBIAN_FRONTEND=noninteractive apt-get install -y auditd >/dev/null 2>&1; }
+command -v auditctl >/dev/null || { echo "auditd no disponible"; exit 1; }
+auditctl -D -k caza 2>/dev/null
+auditctl -a exit,always -F arch=b64 -S kill -k caza
+echo "regla puesta — esperando 25s para cazar al que manda SIGINT…"
+sleep 25
+echo "── señales capturadas (kill syscalls) ──"
+ausearch -k caza --start recent 2>/dev/null | grep -E "^type=SYSCALL" | grep -oE "a1=[0-9a-f]+|exe=\"[^\"]+\"|comm=\"[^\"]+\"|pid=[0-9]+|ppid=[0-9]+" | paste - - - - - 2>/dev/null | sort | uniq -c | sort -rn | head -15
+auditctl -D -k caza 2>/dev/null
+echo LISTO
