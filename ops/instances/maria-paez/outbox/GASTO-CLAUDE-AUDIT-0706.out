@@ -1,0 +1,77 @@
+# ejecutado: 2026-07-06T09:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== claude CLI =="
+#   command -v claude; claude --version 2>&1
+#   echo "ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-unset}"
+#   if [ -n "${ANTHROPIC_API_KEY:-}" ]; then echo "API_KEY=<REDACTED> (${#ANTHROPIC_API_KEY} chars, prefix ${ANTHROPIC_API_KEY:0:12}...)"; else echo "API_KEY=<REDACTED>"; fi
+#   
+#   for db in /root/secretaria/state/*/db/maria.sqlite; do
+#     slug=$(basename "$(dirname "$(dirname "$db")")")
+#     echo; echo "== instancia: $slug =="
+#     sqlite3 -header -column "$db" "
+#       SELECT date(timestamp) AS dia_utc,
+#              COUNT(*) AS calls,
+#              COUNT(json_extract(metadata_json,'\$.cost_usd')) AS con_costo,
+#              ROUND(COALESCE(SUM(json_extract(metadata_json,'\$.cost_usd')),0),4) AS cost_usd,
+#              SUM(COALESCE(json_extract(metadata_json,'\$.tokens_in'),0)) AS tok_in,
+#              SUM(COALESCE(json_extract(metadata_json,'\$.tokens_out'),0)) AS tok_out,
+#              SUM(COALESCE(json_extract(metadata_json,'\$.cache_read'),0)) AS cache_read,
+#              SUM(COALESCE(json_extract(metadata_json,'\$.cache_creation'),0)) AS cache_new
+#       FROM eventos
+#       WHERE canal='sistema' AND tipo='claude_call'
+#         AND timestamp >= datetime('now','-14 days')
+#       GROUP BY 1 ORDER BY 1;"
+#     echo "-- por canal (14d) --"
+#     sqlite3 -header -column "$db" "
+#       SELECT COALESCE(json_extract(metadata_json,'\$.canal'),'?') AS canal,
+#              COUNT(*) AS calls,
+#              ROUND(COALESCE(SUM(json_extract(metadata_json,'\$.cost_usd')),0),4) AS cost_usd,
+#              SUM(COALESCE(json_extract(metadata_json,'\$.tokens_out'),0)) AS tok_out
+#       FROM eventos
+#       WHERE canal='sistema' AND tipo='claude_call'
+#         AND timestamp >= datetime('now','-14 days')
+#       GROUP BY 1 ORDER BY 3 DESC;"
+#   done
+
+# ───── output ─────
+== claude CLI ==
+/usr/local/bin/claude
+2.1.110 (Claude Code)
+ANTHROPIC_MODEL=claude-sonnet-5
+API_KEY=<REDACTED>
+
+== instancia: maria-paez ==
+dia_utc     calls  con_costo  cost_usd  tok_in  tok_out  cache_read  cache_new
+----------  -----  ---------  --------  ------  -------  ----------  ---------
+2026-06-22  8      8          0.9939    98      7165     93525       223839   
+2026-06-23  20     20         2.3253    210     16193    134077      544412   
+2026-06-24  19     19         1.9788    190     14381    98904       451910   
+2026-06-25  2      2          0.284     20      1293     0           60052    
+2026-06-26  8      8          1.0618    132     15299    185936      209805   
+2026-06-27  1      1          0.3832    62      5372     233367      42143    
+2026-06-28  7      7          0.871     70      4884     25084       212033   
+2026-06-29  17     17         1.9392    170     16228    73830       453118   
+2026-06-30  15     15         1.7444    166     15429    119409      408397   
+2026-07-01  250    250        30.1288   6367    248337   10262257    5963751  
+2026-07-02  92     92         12.7671   6901    70074    10452055    2163367  
+2026-07-03  70     70         11.6679   384     57821    6655941     2424912  
+2026-07-04  16     16         2.4847    896     8104     335476      599801   
+2026-07-05  6      6          1.3989    16      1879     78580       342671   
+2026-07-06  21     21         3.6227    5934    11689    538915      753455   
+-- por canal (14d) --
+canal                calls  cost_usd  tok_out
+-------------------  -----  --------  -------
+whatsapp             389    61.0462   397079 
+telegram             12     2.6778    3386   
+memoria-curada       38     2.0861    39588  
+unknown-flow         9      2.0225    5237   
+enriquecer-contacto  13     1.8161    4018   
+moderacion           78     1.7622    28064  
+maria-worker         5      1.2487    12972  
+gmail                6      0.8293    3277   
+follow-ups           2      0.1628    527    
+
+# exit=0
