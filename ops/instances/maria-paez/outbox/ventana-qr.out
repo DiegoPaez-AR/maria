@@ -1,0 +1,28 @@
+# ejecutado: 2026-07-06T07:04:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── estado actual ──"
+#   ls state/maria-paez/wa-retry-after 2>/dev/null && echo "EN REPOSO (marker presente) — lo saco" || echo "sin reposo"
+#   rm -f state/maria-paez/wa-retry-after state/maria-paez/tg-wa-down
+#   IP=$(curl -s -m 12 --socks5-hostname 127.0.0.1:1080 https://ifconfig.me 2>/dev/null)
+#   [ -z "$IP" ] && { echo "🔴 túnel caído — ABORTO"; exit 1; }
+#   echo "túnel OK: $IP — reinicio para ventana de QR fresca (10 min)"
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 25
+#   grep -E "WA qr|WA túnel|WA ready" ~/.pm2/logs/maria-paez-out.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+── estado actual ──
+state/maria-paez/wa-retry-after
+EN REPOSO (marker presente) — lo saco
+túnel OK: 181.26.34.95 — reinicio para ventana de QR fresca (10 min)
+2026-07-06 07:00:48: [WA qr] escaneá este QR:
+2026-07-06 07:04:06: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
+2026-07-06 07:04:16: [WA qr] escaneá este QR:
+LISTO
+
+# exit=0
