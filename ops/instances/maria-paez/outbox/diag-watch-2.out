@@ -1,0 +1,26 @@
+# ejecutado: 2026-07-05T22:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── watch en pm2? ──"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   for p in json.load(sys.stdin):
+#       e=p['pm2_env']
+#       print(p['name'], '→ watch:', e.get('watch'), '| autorestart:', e.get('autorestart'), '| exec_mode:', e.get('exec_mode'))
+#   "
+#   echo "── pm2.log: 'Change detected' (firma del watch) ──"
+#   grep -c "Change detected" /root/.pm2/pm2.log
+#   grep "Change detected" /root/.pm2/pm2.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+── watch en pm2? ──
+intensa-api → watch: None | autorestart: True | exec_mode: fork_mode
+maria-paez → watch: None | autorestart: True | exec_mode: fork_mode
+── pm2.log: 'Change detected' (firma del watch) ──
+0
+LISTO
+
+# exit=0
