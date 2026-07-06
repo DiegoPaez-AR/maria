@@ -1,0 +1,50 @@
+# ejecutado: 2026-07-05T22:10:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── crontab ──"
+#   crontab -l | grep -v "^#"
+#   echo "── healthcheck script (si existe) ──"
+#   for f in /root/secretaria/ops/scripts/healthcheck*.sh /root/secretaria/ops/healthcheck*; do
+#     [ -f "$f" ] && echo "=== $f ===" && grep -nE "restart|reload|kill|SIGINT|sleep|while|for" "$f" | head -15
+#   done
+#   echo "── procesos healthcheck/bash apilados ──"
+#   ps aux | grep -cE "healthcheck"
+#   ps aux | grep -E "healthcheck|watchdog" | grep -v grep | head -8
+#   echo "── cuántos bash sueltos ──"
+#   ps aux | grep -c "bash"
+#   echo LISTO
+
+# ───── output ─────
+── crontab ──
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/veritas && bash ops/cron.sh >> /root/veritas/ops/.cron.log 2>&1
+0 6 * * * cd /root/secretaria && /usr/bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+0 4 * * * /root/secretaria/ops/scripts/borrar-cancelled.sh >> /root/secretaria/ops/.borrar-cancelled.log 2>&1
+* * * * * cd /root/vendedora && bash ops/cron-master.sh >> /root/vendedora/ops/.cron.log 2>&1
+0 3 * * 0 cd /root/secretaria && bash ops/scripts/backup-weekly.sh >> /var/log/maria-backup.log 2>&1
+*/5 * * * * cd /root/secretaria && bash ops/scripts/healthcheck-notify.sh >> /var/log/maria-healthcheck.log 2>&1
+── healthcheck script (si existe) ──
+=== /root/secretaria/ops/scripts/healthcheck-notify.sh ===
+18:for cf in config/instances/*.conf; do
+67:    bad = [k for k, v in d.get("checks", {}).items() if v.get("ok") is False]
+=== /root/secretaria/ops/healthcheck.sh ===
+58:    for p in ps:
+61:        print(f\"{e.get('status','unknown')}|{p.get('pid','-')}|{e.get('restart_time',0)}\")
+73:  _check pm2_online true "{\"pid\":${PM2_PID:-0},\"restarts\":${PM2_RESTARTS:-0}}"
+149:for name in pm2_online snapshot_recent db_writable google_oauth vault; do
+── procesos healthcheck/bash apilados ──
+7
+root          49  0.0  0.0      0     0 ?        S    Jun10   0:00 [watchdogd]
+root     2957930  0.0  0.0   2800  1852 ?        Ss   22:10   0:00 /bin/sh -c cd /root/secretaria && bash ops/scripts/healthcheck-notify.sh >> /var/log/maria-healthcheck.log 2>&1
+root     2957932  0.0  0.0   7340  3760 ?        S    22:10   0:00 bash ops/scripts/healthcheck-notify.sh
+root     2957954  0.0  0.0   7340  2052 ?        S    22:10   0:00 bash ops/scripts/healthcheck-notify.sh
+root     2957955  0.0  0.0   7472  3704 ?        S    22:10   0:00 bash ops/healthcheck.sh
+root     2957996  0.0  0.0   7472  2000 ?        S    22:10   0:00 bash ops/healthcheck.sh
+root     2958066  0.0  0.0   7340  3656 ?        S    22:10   0:00 bash ops/instances/maria-paez/inbox/diag-healthcheck.sh
+── cuántos bash sueltos ──
+15
+LISTO
+
+# exit=0
