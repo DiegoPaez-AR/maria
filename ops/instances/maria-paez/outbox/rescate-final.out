@@ -1,0 +1,24 @@
+# ejecutado: 2026-07-05T22:29:33-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   rm -f /root/secretaria/state/maria-paez/tg-wa-down && echo "marker borrado"
+#   sleep 25
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   grep -E "WA ready|MODO DEGRADADO|arrancando poll" /root/.pm2/logs/maria-paez-out.log | tail -4
+#   sleep 20
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print('a los 45s:', p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time']))for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo LISTO
+
+# ───── output ─────
+marker borrado
+maria-paez online restarts=165
+2026-07-05 22:29:18: ✅ [WA ready] Maria conectada
+2026-07-05 22:29:18: ▸ arrancando poll de Gmail (cada 300s)
+2026-07-05 22:29:39: ✅ [WA ready] Maria conectada
+2026-07-05 22:29:39: ▸ arrancando poll de Gmail (cada 300s)
+a los 45s: maria-paez online restarts=165
+LISTO
+
+# exit=0
