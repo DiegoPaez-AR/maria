@@ -1,200 +1,200 @@
-3|maria-pa | 2026-07-05 22:09:25: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-05 22:09:25:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-05 22:09:25:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-05 22:09:25:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-05 22:09:25: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:25: ✓ whisper OK
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-07-05 22:09:25: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-07-05 22:09:25: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-07-05 22:09:25: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-07-05 22:09:25: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-07-05 22:09:25: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-07-05 22:09:25: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-07-05 22:09:25: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-07-05 22:09:25: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-07-05 22:09:25: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-07-05 22:09:25: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-07-05 22:09:25: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-05 22:09:25: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-05 22:09:25: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-05 22:09:25: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-07-05 22:09:26: [GMAIL poll] 1 email(s) nuevo(s)
-3|maria-pa | 2026-07-05 22:09:26: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
-3|maria-pa | 2026-07-05 22:09:29: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-05 22:09:29: [WA authenticated]
-3|maria-pa | 2026-07-05 22:09:30: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-05 22:09:30: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
-3|maria-pa | 2026-07-05 22:09:32: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:32: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-05 22:09:32:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-05 22:09:32:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-05 22:09:32:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-05 22:09:32: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:32: ✓ whisper OK
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-07-05 22:09:32: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-07-05 22:09:32: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-07-05 22:09:32: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-07-05 22:09:32: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-07-05 22:09:32: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-07-05 22:09:32: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-07-05 22:09:32: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-07-05 22:09:32: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-07-05 22:09:32: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-07-05 22:09:32: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-07-05 22:09:32: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-05 22:09:32: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-05 22:09:32: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-05 22:09:32: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-07-05 22:09:34: [GMAIL poll] 1 email(s) nuevo(s)
-3|maria-pa | 2026-07-05 22:09:34: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
-3|maria-pa | 2026-07-05 22:09:37: [WA authenticated]
-3|maria-pa | 2026-07-05 22:09:37: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-05 22:09:37: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-05 22:09:37: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
-3|maria-pa | 2026-07-05 22:09:40: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:40: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-05 22:09:40:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-05 22:09:40:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-05 22:09:40:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-05 22:09:40: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:40: ✓ whisper OK
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-07-05 22:09:40: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-07-05 22:09:40: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-07-05 22:09:40: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-07-05 22:09:40: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-07-05 22:09:40: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-07-05 22:09:40: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-07-05 22:09:40: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-07-05 22:09:40: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-07-05 22:09:40: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-07-05 22:09:40: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-07-05 22:09:40: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-05 22:09:40: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-05 22:09:40: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-05 22:09:40: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-07-05 22:09:41: [GMAIL poll] 1 email(s) nuevo(s)
-3|maria-pa | 2026-07-05 22:09:41: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
-3|maria-pa | 2026-07-05 22:09:44: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-05 22:09:44: [WA authenticated]
-3|maria-pa | 2026-07-05 22:09:45: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-05 22:09:45: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
-3|maria-pa | 2026-07-05 22:09:47: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:47: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-05 22:09:47:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-05 22:09:47:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-05 22:09:47:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-05 22:09:47: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:47: ✓ whisper OK
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-07-05 22:09:47: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-07-05 22:09:47: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-07-05 22:09:47: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-07-05 22:09:47: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-07-05 22:09:47: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-07-05 22:09:47: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-07-05 22:09:47: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-07-05 22:09:47: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-07-05 22:09:47: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-07-05 22:09:47: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-07-05 22:09:47: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-05 22:09:47: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-05 22:09:47: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-05 22:09:47: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-07-05 22:09:49: [GMAIL poll] 1 email(s) nuevo(s)
-3|maria-pa | 2026-07-05 22:09:49: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
-3|maria-pa | 2026-07-05 22:09:52: [WA authenticated]
-3|maria-pa | 2026-07-05 22:09:52: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-05 22:09:53: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-05 22:09:53: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
-3|maria-pa | 2026-07-05 22:09:55: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:55: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-05 22:09:55:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-05 22:09:55:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-05 22:09:55:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-05 22:09:55: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-05 22:09:55: ✓ whisper OK
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-07-05 22:09:55: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-07-05 22:09:55: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-07-05 22:09:55: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-07-05 22:09:55: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-07-05 22:09:55: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-07-05 22:09:55: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-07-05 22:09:55: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-07-05 22:09:55: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-07-05 22:09:55: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-07-05 22:09:55: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-07-05 22:09:55: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-05 22:09:55: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-05 22:09:55: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-05 22:09:55: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-07-05 22:09:57: [GMAIL poll] 1 email(s) nuevo(s)
-3|maria-pa | 2026-07-05 22:09:57: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
-3|maria-pa | 2026-07-05 22:09:59: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-05 22:10:00: [WA authenticated]
-3|maria-pa | 2026-07-05 22:10:00: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-05 22:10:00: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
+3|maria-pa | 2026-07-05 22:10:26: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-07-05 22:10:26:   Owner:      Diego (id=1)
+3|maria-pa | 2026-07-05 22:10:26:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-07-05 22:10:26:   Gmail poll: cada 300s
+3|maria-pa | 2026-07-05 22:10:26: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:26: ✓ whisper OK
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-07-05 22:10:26: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-07-05 22:10:26: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-07-05 22:10:26: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-07-05 22:10:26: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-07-05 22:10:26: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-07-05 22:10:26: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-07-05 22:10:26: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-07-05 22:10:26: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-07-05 22:10:26: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-07-05 22:10:26: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-07-05 22:10:26: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+3|maria-pa | 2026-07-05 22:10:26: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+3|maria-pa | 2026-07-05 22:10:26: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+3|maria-pa | 2026-07-05 22:10:26: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-07-05 22:10:28: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-07-05 22:10:28: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
+3|maria-pa | 2026-07-05 22:10:30: [WA loading] 100% - WhatsApp
+3|maria-pa | 2026-07-05 22:10:31: [WA authenticated]
+3|maria-pa | 2026-07-05 22:10:31: ✅ [WA ready] Maria conectada
+3|maria-pa | 2026-07-05 22:10:31: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
+3|maria-pa | 2026-07-05 22:10:34: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:34: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-07-05 22:10:34:   Owner:      Diego (id=1)
+3|maria-pa | 2026-07-05 22:10:34:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-07-05 22:10:34:   Gmail poll: cada 300s
+3|maria-pa | 2026-07-05 22:10:34: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:34: ✓ whisper OK
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-07-05 22:10:34: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-07-05 22:10:34: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-07-05 22:10:34: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-07-05 22:10:34: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-07-05 22:10:34: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-07-05 22:10:34: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-07-05 22:10:34: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-07-05 22:10:34: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-07-05 22:10:34: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-07-05 22:10:34: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-07-05 22:10:34: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+3|maria-pa | 2026-07-05 22:10:34: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+3|maria-pa | 2026-07-05 22:10:34: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+3|maria-pa | 2026-07-05 22:10:34: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-07-05 22:10:36: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-07-05 22:10:36: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
+3|maria-pa | 2026-07-05 22:10:38: [WA authenticated]
+3|maria-pa | 2026-07-05 22:10:38: [WA loading] 100% - WhatsApp
+3|maria-pa | 2026-07-05 22:10:39: ✅ [WA ready] Maria conectada
+3|maria-pa | 2026-07-05 22:10:39: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
+3|maria-pa | 2026-07-05 22:10:41: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:41: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-07-05 22:10:41:   Owner:      Diego (id=1)
+3|maria-pa | 2026-07-05 22:10:41:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-07-05 22:10:41:   Gmail poll: cada 300s
+3|maria-pa | 2026-07-05 22:10:41: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:41: ✓ whisper OK
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-07-05 22:10:41: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-07-05 22:10:41: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-07-05 22:10:41: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-07-05 22:10:41: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-07-05 22:10:41: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-07-05 22:10:41: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-07-05 22:10:41: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-07-05 22:10:41: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-07-05 22:10:41: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-07-05 22:10:41: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-07-05 22:10:41: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+3|maria-pa | 2026-07-05 22:10:41: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+3|maria-pa | 2026-07-05 22:10:41: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+3|maria-pa | 2026-07-05 22:10:41: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-07-05 22:10:43: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-07-05 22:10:43: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
+3|maria-pa | 2026-07-05 22:10:45: [WA loading] 100% - WhatsApp
+3|maria-pa | 2026-07-05 22:10:46: [WA authenticated]
+3|maria-pa | 2026-07-05 22:10:46: ✅ [WA ready] Maria conectada
+3|maria-pa | 2026-07-05 22:10:46: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
+3|maria-pa | 2026-07-05 22:10:49: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:49: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-07-05 22:10:49:   Owner:      Diego (id=1)
+3|maria-pa | 2026-07-05 22:10:49:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-07-05 22:10:49:   Gmail poll: cada 300s
+3|maria-pa | 2026-07-05 22:10:49: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:49: ✓ whisper OK
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-07-05 22:10:49: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-07-05 22:10:49: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-07-05 22:10:49: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-07-05 22:10:49: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-07-05 22:10:49: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-07-05 22:10:49: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-07-05 22:10:49: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-07-05 22:10:49: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-07-05 22:10:49: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-07-05 22:10:49: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-07-05 22:10:49: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+3|maria-pa | 2026-07-05 22:10:49: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+3|maria-pa | 2026-07-05 22:10:49: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+3|maria-pa | 2026-07-05 22:10:49: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-07-05 22:10:51: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-07-05 22:10:51: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
+3|maria-pa | 2026-07-05 22:10:53: [WA loading] 100% - WhatsApp
+3|maria-pa | 2026-07-05 22:10:53: [WA authenticated]
+3|maria-pa | 2026-07-05 22:10:54: ✅ [WA ready] Maria conectada
+3|maria-pa | 2026-07-05 22:10:54: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
+3|maria-pa | 2026-07-05 22:10:56: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:56: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-07-05 22:10:56:   Owner:      Diego (id=1)
+3|maria-pa | 2026-07-05 22:10:56:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-07-05 22:10:56:   Gmail poll: cada 300s
+3|maria-pa | 2026-07-05 22:10:56: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-07-05 22:10:56: ✓ whisper OK
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-07-05 22:10:56: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-07-05 22:10:56: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-07-05 22:10:56: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-07-05 22:10:56: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-07-05 22:10:56: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-07-05 22:10:56: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-07-05 22:10:56: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-07-05 22:10:56: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-07-05 22:10:56: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-07-05 22:10:56: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-07-05 22:10:56: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
+3|maria-pa | 2026-07-05 22:10:56: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
+3|maria-pa | 2026-07-05 22:10:56: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
+3|maria-pa | 2026-07-05 22:10:56: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-07-05 22:10:58: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-07-05 22:10:58: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria — cómo contactarme mientras WhatsApp está en mantenimiento"
+3|maria-pa | 2026-07-05 22:11:00: [WA loading] 100% - WhatsApp
+3|maria-pa | 2026-07-05 22:11:01: [WA authenticated]
+3|maria-pa | 2026-07-05 22:11:01: ✅ [WA ready] Maria conectada
+3|maria-pa | 2026-07-05 22:11:01: ✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA
 
