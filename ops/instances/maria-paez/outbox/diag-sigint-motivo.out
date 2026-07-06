@@ -1,0 +1,46 @@
+# ejecutado: 2026-07-05T22:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── pm2.log: motivo de los kills ──"
+#   grep -B2 "maria-paez.*SIGINT" /root/.pm2/pm2.log | grep -vE "^\-\-" | tail -12
+#   grep -iE "memory|1024|exceeded" /root/.pm2/pm2.log | tail -5
+#   echo "── memoria actual del proceso ──"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   for p in json.load(sys.stdin):
+#       if p['name']=='maria-paez':
+#           print('monit:', p.get('monit'))
+#           print('max_memory_restart:', p['pm2_env'].get('max_memory_restart'))
+#   "
+#   echo "── vendedora: ¿toca pm2 apps ajenas? ──"
+#   grep -nE "pm2 (reload|restart|delete|stop)" /root/vendedora/ops/cron-master.sh 2>/dev/null | head -5
+#   ls /root/vendedora/config/instances/ 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+── pm2.log: motivo de los kills ──
+2026-07-05T22:11:26: PM2 log: App [maria-paez:3] starting in -fork mode-
+2026-07-05T22:11:26: PM2 log: App [maria-paez:3] online
+2026-07-05T22:11:34: PM2 log: App [maria-paez:3] exited with code [0] via signal [SIGINT]
+2026-07-05T22:11:34: PM2 log: App [maria-paez:3] starting in -fork mode-
+2026-07-05T22:11:34: PM2 log: App [maria-paez:3] online
+2026-07-05T22:11:41: PM2 log: App [maria-paez:3] exited with code [0] via signal [SIGINT]
+2026-07-05T22:11:41: PM2 log: App [maria-paez:3] starting in -fork mode-
+2026-07-05T22:11:41: PM2 log: App [maria-paez:3] online
+2026-07-05T22:11:49: PM2 log: App [maria-paez:3] exited with code [0] via signal [SIGINT]
+2026-07-05T22:11:49: PM2 log: App [maria-paez:3] starting in -fork mode-
+2026-07-05T22:11:49: PM2 log: App [maria-paez:3] online
+2026-07-05T22:11:56: PM2 log: App [maria-paez:3] exited with code [0] via signal [SIGINT]
+── memoria actual del proceso ──
+monit: {'memory': 213831680, 'cpu': 0}
+max_memory_restart: 1073741824
+── vendedora: ¿toca pm2 apps ajenas? ──
+71:    pm2 reload ecosystem.config.js --only "$slug" --update-env 2>/dev/null \
+72:      || echo "pm2 reload $slug omitido — la instancia no está levantada"
+natalia-fernandez.conf
+_template.conf.example
+LISTO
+
+# exit=0
