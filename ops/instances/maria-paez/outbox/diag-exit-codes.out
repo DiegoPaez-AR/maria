@@ -1,0 +1,59 @@
+# ejecutado: 2026-07-05T22:06:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── pm2 daemon log (exits) ──"
+#   grep -E "maria-paez.*(exited|restart|signal)" /root/.pm2/pm2.log | tail -8
+#   echo "── procesos node vivos (¿zombie?) ──"
+#   ps aux | grep -E "node|chrom" | grep -v grep | awk '{print $2, $11, $12}' | head -10
+#   echo "── puerto 4501 ──"
+#   ss -ltnp 2>/dev/null | grep 4501
+#   echo "── unhandled en error log (sin las líneas degradado) ──"
+#   grep -vE "MODO DEGRADADO" /root/.pm2/logs/maria-paez-error.log | tail -20
+#   echo LISTO
+
+# ───── output ─────
+── pm2 daemon log (exits) ──
+2026-07-05T22:05:07: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:05:15: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:05:22: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:05:30: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:05:37: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:05:45: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:05:53: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+2026-07-05T22:06:00: PM2 log: App [maria-paez:0] exited with code [0] via signal [SIGINT]
+── procesos node vivos (¿zombie?) ──
+2933652 node /usr/local/bin/pm2
+2949356 /usr/bin/bwrap --unshare-all
+2949357 /usr/bin/bwrap --unshare-all
+2949384 /usr/bin/node /root/secretaria/mcp-actions-server.mjs
+2949402 node /root/secretaria/index.js
+2949489 node /usr/local/bin/pm2
+3940304 node /root/secretaria/ops/backend/intensa-api/index.js
+── puerto 4501 ──
+LISTEN 0      511        127.0.0.1:4501      0.0.0.0:*    users:(("node /root/secr",pid=2949402,fd=26))                                             
+── unhandled en error log (sin las líneas degradado) ──
+2026-07-05 20:39:47: [WA] sesión expirada — 3 QRs en 120s
+2026-07-05 20:43:45: [WA] sesión expirada — 3 QRs en 120s
+2026-07-05 20:52:22: [WA boot] sin ready en 10min — modo degradado: sigo vivo sin WA
+2026-07-05 20:55:56: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-07-05 20:55:56: Buen día Diego! Acá va el brief de hoy, domingo 5 de julio:
+2026-07-05 20:55:56: 
+2026-07-05 20:55:56: Clima en Buenos Aires: entre 7 y 12°, con neblina a la mañana y probabilidad de lluvias aisladas después del mediodía (10%). Viento del este 7-12 km/h, humedad 79%.
+2026-07-05 20:55:56: 
+2026-07-05 20:55:56: Agenda de hoy: no tenés eventos.
+2026-07-05 20:55:56: 
+2026-07-05 20:55:56: Cumpleaños hoy: ninguno.
+2026-07-05 20:55:56: 
+2026-07-05 20:55:56: Pendientes abiertos:
+2026-07-05 20:55:56: 1. iProt Seguridad
+2026-07-05 20:55:56: 2. DDJJ 2025
+2026-07-05 20:55:56: 3. Llamar a Juan de la Cruz
+2026-07-05 20:55:56: 4. Llamar a Poggetti
+2026-07-05 20:55:56: 5. Presentaciones a Eliza
+2026-07-05 20:55:56: 
+2026-07-05 20:55:56: Cualquier cosa me decís.
+LISTO
+
+# exit=0
