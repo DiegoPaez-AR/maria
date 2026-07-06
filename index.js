@@ -222,6 +222,11 @@ async function main() {
       waEstado.ready = true;
       if (_modoDegradado) {
         // Los loops corren con client=null — reinicio limpio a modo normal.
+        // CRÍTICO (bug 2026-07-05, loop de ~8s post-liberación de la cuenta):
+        // borrar el marker ANTES del exit — si queda, el próximo boot re-entra
+        // en degradado, WA reconecta, exit(0), y así al infinito (el loop de
+        // Telegram que lo limpiaba nunca llegaba a su segundo ciclo).
+        try { fs.unlinkSync(path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'tg-wa-down')); } catch {}
         console.log('✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA');
         mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: 'WA recuperado en modo degradado — reinicio limpio' });
         setTimeout(() => process.exit(0), 1500);
