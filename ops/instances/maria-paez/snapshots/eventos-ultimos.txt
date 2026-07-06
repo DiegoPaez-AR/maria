@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15815  2026-07-06 16:48:37  sistema   interno                         programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
+
 15814  2026-07-06 16:47:37  whatsapp  saliente   5491165286555@c.us   ⏰ *En 15min*: Relevamiento de sala - Museo de la Carcova (02:00 p. m.) @Museo de la Carcova (presencial)                                                                                                
 
 15813  2026-07-06 16:46:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
@@ -306,6 +308,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www                                                                                                                                        
 
 15716  2026-07-06 10:07:30  whatsapp  entrante   5491132317896@c.us   ssh -N -R 1080 root@178.104.166.91                                                                                                                                                                      
-
-15715  2026-07-06 10:07:30  whatsapp  entrante   5491132317896@c.us   ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519   # enter si pregunta; salteá si ya tenés llave                                                                                                        
-                                                                      ssh-copy-id root@178.104.166.91                     # te pide la password del VPS una única vez                                                                                                         
