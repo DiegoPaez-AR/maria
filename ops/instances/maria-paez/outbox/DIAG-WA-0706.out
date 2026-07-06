@@ -1,0 +1,105 @@
+# ejecutado: 2026-07-06T14:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "== hora VPS =="; date
+#   echo; echo "== ultimos 8 eventos =="
+#   sqlite3 "$DB" "SELECT id, timestamp, canal, direccion, substr(replace(cuerpo,char(10),' '),1,90) FROM eventos ORDER BY id DESC LIMIT 8;"
+#   echo; echo "== ultimo WA entrante =="
+#   sqlite3 "$DB" "SELECT id, timestamp, de, substr(replace(cuerpo,char(10),' '),1,80) FROM eventos WHERE canal='whatsapp' AND direccion='entrante' ORDER BY id DESC LIMIT 3;"
+#   echo; echo "== markers / estado =="
+#   ls -la /root/secretaria/state/maria-paez/ | grep -iv "^d.*\.$" | head -20
+#   ls /root/secretaria/state/maria-paez/.wwebjs_auth/ 2>/dev/null
+#   echo; echo "== pm2 err log (ultimas 30) =="
+#   tail -30 /root/.pm2/logs/maria-paez-error.log 2>/dev/null
+#   echo; echo "== out log: ready/auth/disconnect/qr =="
+#   grep -i "ready\|authenticated\|disconnect\|qr\|change_state\|CONFLICT" /root/.pm2/logs/maria-paez-out.log 2>/dev/null | tail -15
+
+# ───── output ─────
+== hora VPS ==
+Mon Jul  6 02:42:02 PM -03 2026
+
+== ultimos 8 eventos ==
+15852|2026-07-06 17:41:37|sistema|interno|programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15851|2026-07-06 17:40:37|sistema|interno|programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15850|2026-07-06 17:38:37|sistema|interno|programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15849|2026-07-06 17:37:37|sistema|interno|programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15848|2026-07-06 17:35:37|sistema|interno|programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15847|2026-07-06 17:34:37|sistema|interno|programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15846|2026-07-06 17:32:37|sistema|interno|programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+15845|2026-07-06 17:31:37|sistema|interno|programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'prot
+
+== ultimo WA entrante ==
+15787|2026-07-06 14:53:26|5491140793225@c.us|Gracias a vos, buen inicio de semana!
+15780|2026-07-06 14:49:10|5491140793225@c.us|Hola Maria, Quería comentarte que el área de Diseño ya evaluó todas las modifica
+15773|2026-07-06 13:10:56|5491161980549@c.us|Hola! gracias por recordarmelo
+
+== markers / estado ==
+total 60
+-rw-r--r--+ 1 root root  408 Apr 15 20:41 credentials.json
+drwxr-xr-x+ 2 root root 4096 Jul  5 22:34 db
+-rw-r--r--  1 root root    9 Jul  6 01:43 tg-offset
+-rw-r--r--  1 root root  561 Jun 13 00:20 token.json.bak.2026-06-13T0323
+-rw-------  1 root root  760 Jun 13 00:23 token.json.enc
+-rw-------  1 root root  760 May 17 21:19 token.json.enc.bak.20260526T093602
+-rw-------  1 root root  760 May 26 09:36 token.json.enc.bak.20260526T100602
+-rw-------  1 root root  760 May 26 09:36 token.json.enc.bak.2026-05-26T1236
+-rw-------  1 root root  760 May 26 10:06 token.json.enc.bak.2026-05-26T1306
+-rw-------  1 root root  760 Jun 13 00:20 token.json.enc.bak.2026-06-13T0320
+-rw-------  1 root root  760 May 26 10:06 token.json.enc.revoked.2026-06-13T002301
+drwxr-xr-x+ 3 root root 4096 Jul  5 22:34 .wwebjs_auth
+drwxr-xr-x+ 2 root root 4096 May  8 22:11 .wwebjs_cache
+session
+
+== pm2 err log (ultimas 30) ==
+2026-07-06 14:20:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:20:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:22:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:22:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:23:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:23:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:25:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:25:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:26:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:26:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:28:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:28:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:29:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:29:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:31:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:31:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:32:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:32:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:34:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:34:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:35:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:35:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:37:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:37:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:38:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:38:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+2026-07-06 14:40:37: [programados] ✗ id=842 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:40:37: [programados] no pude persistir metadata de fallo para id=842: errorKey is not defined
+2026-07-06 14:41:37: [programados] ✗ id=841 falló: Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.
+2026-07-06 14:41:37: [programados] no pude persistir metadata de fallo para id=841: errorKey is not defined
+
+== out log: ready/auth/disconnect/qr ==
+2026-07-06 07:05:16: [WA qr] escaneá este QR:
+2026-07-06 07:05:36: [WA qr] escaneá este QR:
+2026-07-06 07:05:56: [WA qr] escaneá este QR:
+2026-07-06 07:06:16: [WA qr] escaneá este QR:
+2026-07-06 07:06:36: [WA qr] escaneá este QR:
+2026-07-06 07:06:52: [WA authenticated]
+2026-07-06 07:06:53: ✅ [WA ready] Maria conectada
+2026-07-06 07:12:02: [WA authenticated]
+2026-07-06 07:12:02: ✅ [WA ready] Maria conectada
+2026-07-06 07:12:02: [WA ready] re-emitido (reconexión) — loops ya activos, no re-inicializo
+2026-07-06 08:15:35: [WA authenticated]
+2026-07-06 08:15:35: ✅ [WA ready] Maria conectada
+2026-07-06 09:56:37: [WA authenticated]
+2026-07-06 09:56:37: ✅ [WA ready] Maria conectada
+2026-07-06 12:17:48: [WA change_state] OPENING
+
+# exit=0
