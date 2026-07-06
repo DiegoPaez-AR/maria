@@ -1,0 +1,28 @@
+# ejecutado: 2026-07-05T22:43:23-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   touch /root/secretaria/state/maria-paez/wa-apagado && echo "marker wa-apagado puesto"
+#   rm -f /root/secretaria/state/maria-paez/tg-wa-down
+#   cd /root/secretaria && pm2 restart maria-paez >/dev/null 2>&1 && echo "restart OK"
+#   sleep 15
+#   grep -E "WA APAGADO|arrancando poll" /root/.pm2/logs/maria-paez-out.log | tail -3
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   sleep 20
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys; [print('a los 35s:', p['pm2_env']['status'], 'restarts='+str(p['pm2_env']['restart_time'])) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   ps aux | grep -c "wwebjs\|chrom" 
+#   echo LISTO
+
+# ───── output ─────
+marker wa-apagado puesto
+restart OK
+2026-07-05 22:29:18: ▸ arrancando poll de Gmail (cada 300s)
+2026-07-05 22:29:39: ▸ arrancando poll de Gmail (cada 300s)
+2026-07-05 22:43:24: ▸ arrancando poll de Gmail (cada 300s)
+maria-paez online restarts=168
+a los 35s: online restarts=168
+1
+LISTO
+
+# exit=0
