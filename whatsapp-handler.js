@@ -58,6 +58,60 @@ function _limpiarSingletonLockViejo() {
   }
 }
 
+// ── Catch-up post-reconexión (pedido Diego 2026-07-05) ─────────────────────
+// Al reconectar, buscar los mensajes que llegaron mientras WA estuvo caído y
+// procesarlos desde el último entrante registrado. Dedupe contra la DB (el Map
+// en memoria no sobrevive restarts): un mensaje ya logueado NO se reprocesa.
+// Caps: ventana máx 72h, 60 mensajes, solo chats 1a1 (grupos fuera).
+async function recuperarMensajesPerdidos(client) {
+  const MAX_H = Number(process.env.WA_CATCHUP_MAX_H || 72);
+  const MAX_MSGS = Number(process.env.WA_CATCHUP_MAX_MSGS || 60);
+  try {
+    const row = mem.db.prepare(`SELECT MAX(timestamp) ts FROM eventos WHERE canal='whatsapp' AND direccion='entrante'`).get();
+    if (!row || !row.ts) return;
+    const ultimoMs = new Date(String(row.ts).replace(' ', 'T') + 'Z').getTime();
+    const corteMs = Math.max(ultimoMs, Date.now() - MAX_H * 3600e3);
+    if (Date.now() - corteMs < 3 * 60e3) { console.log('[WA catch-up] sin hueco significativo — nada que recuperar'); return; }
+    console.log(`[WA catch-up] buscando entrantes desde ${new Date(corteMs).toISOString()}…`);
+    const qYaVisto = mem.db.prepare(`
+      SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='entrante'
+        AND timestamp >= datetime(?, '-2 hours')
+        AND metadata_json LIKE '%' || ? || '%' LIMIT 1`);
+    const chats = await client.getChats();
+    const candidatos = [];
+    for (const chat of chats) {
+      try {
+        if (chat.isGroup) continue;
+        const lastTs = ((chat.lastMessage && chat.lastMessage.timestamp) || 0) * 1000;
+        if (lastTs <= corteMs) continue;
+        const msgs = await chat.fetchMessages({ limit: 30 });
+        for (const m of msgs) {
+          if (m.fromMe) continue;
+          if (m.timestamp * 1000 <= corteMs) continue;
+          const mid = m.id && m.id._serialized;
+          if (mid && qYaVisto.get(new Date(corteMs).toISOString().replace('T', ' ').slice(0, 19), `"messageId":"${mid}"`)) continue;
+          candidatos.push(m);
+        }
+      } catch (e) { console.warn(`[WA catch-up] chat falló:`, e.message); }
+    }
+    candidatos.sort((a, b) => a.timestamp - b.timestamp);
+    const lote = candidatos.slice(0, MAX_MSGS);
+    if (!lote.length) { console.log('[WA catch-up] 0 mensajes nuevos sin procesar'); return; }
+    console.log(`[WA catch-up] ${candidatos.length} candidatos → proceso ${lote.length} (viejo→nuevo)`);
+    mem.log({ canal: 'sistema', direccion: 'interno',
+      cuerpo: `WA catch-up: recuperando ${lote.length} mensaje(s) llegados durante la caída`,
+      metadata: { tipo: 'wa_catchup', total: lote.length } });
+    for (const m of lote) {
+      try { await handleMessage(client, m); }
+      catch (e) { console.error('[WA catch-up] procesando msg:', e.message); }
+      await new Promise(r => setTimeout(r, 2000)); // secuencial, sin ráfaga
+    }
+    console.log('[WA catch-up] terminado');
+  } catch (err) {
+    console.error('[WA catch-up] falló:', err.message);
+  }
+}
+
 function crearClienteWA({ onReady, waEstado = null } = {}) {
   _limpiarSingletonLockViejo();
 
@@ -93,7 +147,10 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
       if (!owner?.email) return; // sin email del owner no hay a quién avisar
       const ahora = Date.now();
       const lastTs = mem.getEstadoUsuario(owner.id, 'wa_alert_last_ts') || 0;
-      if (!opts.forzar && ahora - lastTs < 60 * 60 * 1000) return; // cooldown 1h salvo forzado
+      // Cooldown 2h SIN bypass (pedido Diego 2026-07-05: el `forzar` del QR-loop
+      // spameaba un mail por cada ciclo de restart durante los incidentes).
+      const _COOLDOWN = Number(process.env.WA_ALERTA_COOLDOWN_MS || 2 * 60 * 60 * 1000);
+      if (ahora - lastTs < _COOLDOWN) return;
       const g = require('./google');
       await g.enviarEmail({
         to: owner.email,
@@ -120,17 +177,20 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
     _alertaWA('no logró autenticarse en 3 min desde el boot');
   }, BOOT_ALERT_MS);
   let _suicideTimeout = setTimeout(() => {
-    if (waEstado && waEstado.degradado) {
-      // MODO DEGRADADO (2026-07-05): el proceso corre los loops sin WA — NO
-      // suicidarse (era el ciclo de 289 restarts durante la revisión de la
-      // cuenta). El QR sigue emitiéndose para el re-scan cuando se libere.
-      console.warn(`[WA boot] sin ready en ${BOOT_SUICIDE_MS/60000}min — modo degradado: sigo vivo sin WA`);
-      return;
-    }
-    console.error(`[WA boot] sin ready en ${BOOT_SUICIDE_MS/60000}min — saliendo para que pm2 reinicie`);
+    // Reintentos espaciados (pedido Diego 2026-07-05): sin ready en 10min →
+    // anotar reposo de 30min (wa-retry-after) y salir. El próximo boot ve el
+    // marker, corre los loops SIN tocar WhatsApp (cero señales a Meta), y
+    // recién al vencer el reposo reinicia para UN nuevo intento. Ciclo neto:
+    // intento 10min → reposo 30min → intento…
+    try {
+      const RETRY_MS = Number(process.env.WA_RETRY_COOLDOWN_MS || 30 * 60 * 1000);
+      const _stateDir = path.dirname(path.dirname(process.env.MARIA_DB || './db/x'));
+      fs.writeFileSync(path.join(_stateDir, 'wa-retry-after'), String(Date.now() + RETRY_MS));
+    } catch (e) { console.warn('[WA boot] no pude escribir wa-retry-after:', e.message); }
+    console.error(`[WA boot] sin ready en ${BOOT_SUICIDE_MS/60000}min — reposo de conexión y exit (reintento en ~30min)`);
     mem.log({
       canal: 'sistema', direccion: 'interno',
-      cuerpo: `WA boot timeout ${BOOT_SUICIDE_MS/60000}min sin ready — exit para pm2 restart`,
+      cuerpo: `WA boot timeout ${BOOT_SUICIDE_MS/60000}min sin ready — reposo 30min antes del próximo intento`,
     });
     setTimeout(() => process.exit(1), 500);
   }, BOOT_SUICIDE_MS);
@@ -1178,4 +1238,4 @@ async function _avisoOwnerContenidoInbound({ canal, categoria, severidad, motivo
   }
 }
 
-module.exports = { crearClienteWA, handleMessage };
+module.exports = { crearClienteWA, recuperarMensajesPerdidos, handleMessage };

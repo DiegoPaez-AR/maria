@@ -24,7 +24,7 @@ const fs = require('fs');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const { verificarDependencias } = require('./transcribir');
-const { crearClienteWA } = require('./whatsapp-handler');
+const { crearClienteWA, recuperarMensajesPerdidos } = require('./whatsapp-handler');
 const { iniciarPoll } = require('./gmail-handler');
 const { iniciarRecordatorios } = require('./recordatorios');
 const { iniciarProgramados } = require('./programados');
@@ -229,6 +229,29 @@ async function main() {
     return; // sin crearClienteWA — el proceso vive solo con gmail/TG/loops
   }
 
+  // WA EN REPOSO (2026-07-05): tras un intento fallido de conexión, el
+  // whatsapp-handler anota wa-retry-after (+30min). Mientras no venza:
+  // loops sin WA, CERO conexiones, y reinicio programado para reintentar.
+  const _waRetryF = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'wa-retry-after');
+  try {
+    if (fs.existsSync(_waRetryF)) {
+      const hasta = Number(fs.readFileSync(_waRetryF, 'utf8').trim()) || 0;
+      if (Date.now() < hasta) {
+        const min = Math.ceil((hasta - Date.now()) / 60000);
+        console.warn(`⏸ [WA REPOSO] próximo intento de conexión en ~${min} min — loops sin WA mientras tanto`);
+        _modoDegradado = true;
+        waEstado.degradado = true;
+        arrancarLoops(null);
+        setTimeout(() => {
+          console.log('[WA REPOSO] cumplido — reinicio para reintentar la conexión');
+          process.exit(0);
+        }, Math.min(hasta - Date.now() + 5000, 2 ** 31 - 1));
+        return;
+      }
+      fs.unlinkSync(_waRetryF); // venció — intento normal
+    }
+  } catch (e) { console.warn('[WA reposo] check falló:', e.message); }
+
   // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
   waClient = crearClienteWA({
     waEstado,
@@ -246,7 +269,10 @@ async function main() {
         setTimeout(() => process.exit(0), 1500);
         return;
       }
-      arrancarLoops(client);    },
+      arrancarLoops(client);
+      // Catch-up de mensajes llegados durante la caída (pedido Diego
+      // 2026-07-05): a los 15s del ready, secuencial y con dedupe por DB.
+      setTimeout(() => { recuperarMensajesPerdidos(client).catch(e => console.error('[catch-up]', e.message)); }, 15_000);    },
   });
 
   waClient.initialize();
