@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15813  2026-07-06 16:46:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
+
 15812  2026-07-06 16:43:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
 
 15811  2026-07-06 16:40:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
@@ -308,5 +310,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 
 15714  2026-07-06 10:07:14  sistema   interno                         [SEGURIDAD] injection_attempt: mencionar archivo sensible: ssh-keygen -t ed25519 -N "" -f ~/.ssh/id_ed25519   # enter si pregunta; salteá si ya tenés llave                                             
                                                                       ssh-copy-id root@178.104.166.91                                                                                                                                                                         
-
-15713  2026-07-06 10:07:08  sistema   interno                         WA catch-up: recuperando 9 mensaje(s) llegados durante la caída                                                                                                                                         
