@@ -1,0 +1,73 @@
+# ejecutado: 2026-07-06T09:55:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Gasto claude 30d: por dia-reporte (ventana 06:00 ART = 09:00 UTC) y modelo
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   sqlite3 -header -column "$DB" "
+#     SELECT date(datetime(timestamp,'-9 hours')) AS dia_rep,
+#            CASE WHEN json_extract(metadata_json,'\$.canal')='moderacion' THEN 'haiku' ELSE 'main' END AS modelo,
+#            COUNT(*) AS calls,
+#            ROUND(COALESCE(SUM(json_extract(metadata_json,'\$.cost_usd')),0),4) AS cli_usd,
+#            SUM(COALESCE(json_extract(metadata_json,'\$.tokens_in'),0)) AS tin,
+#            SUM(COALESCE(json_extract(metadata_json,'\$.tokens_out'),0)) AS tout,
+#            SUM(COALESCE(json_extract(metadata_json,'\$.cache_read'),0)) AS cr,
+#            SUM(COALESCE(json_extract(metadata_json,'\$.cache_creation'),0)) AS cw
+#     FROM eventos
+#     WHERE canal='sistema' AND tipo='claude_call'
+#       AND timestamp >= datetime('now','-31 days')
+#     GROUP BY 1,2 ORDER BY 1,2;"
+
+# ───── output ─────
+dia_rep     modelo  calls  cli_usd  tin    tout    cr        cw     
+----------  ------  -----  -------  -----  ------  --------  -------
+2026-06-06  main    5      0.0      0      0       0         0      
+2026-06-07  main    1      0.0      0      0       0         0      
+2026-06-08  main    7      0.0      0      0       0         0      
+2026-06-09  main    44     0.0      0      0       0         0      
+2026-06-10  main    22     4.0642   4090   35159   517500    655304 
+2026-06-11  main    18     2.3094   188    24943   71428     479534 
+2026-06-12  main    19     2.8401   214    27844   183668    577443 
+2026-06-13  haiku   6      0.0811   60     2104    86980     47718  
+2026-06-13  main    1      0.0639   10     1043    0         12329  
+2026-06-14  haiku   1      0.0309   10     436     0         22526  
+2026-06-14  main    14     2.2698   158    10015   101350    497740 
+2026-06-15  main    7      0.9117   70     7657    108059    198018 
+2026-06-16  haiku   7      0.2131   70     2520    0         157554 
+2026-06-16  main    46     7.4152   484    44609   1769615   1600369
+2026-06-17  haiku   5      0.1528   50     1901    0         112547 
+2026-06-17  main    42     5.1689   548    38090   1080974   1056760
+2026-06-18  main    46     5.8925   4479   30860   2032084   540643 
+2026-06-19  haiku   1      0.0306   10     414     0         22459  
+2026-06-19  main    152    16.1815  20928  90110   6156143   1473251
+2026-06-20  haiku   4      0.0813   40     1384    34792     55184  
+2026-06-20  main    32     4.3263   372    20331   1713835   903410 
+2026-06-21  main    1      0.0582   10     906     0         11572  
+2026-06-22  haiku   1      0.0298   10     262     0         22458  
+2026-06-22  main    7      0.964    88     6903    93525     201381 
+2026-06-23  haiku   5      0.1105   50     1518    34792     77635  
+2026-06-23  main    27     3.5975   280    24063   173120    790258 
+2026-06-24  main    7      0.596    70     4993    25069     128429 
+2026-06-25  main    2      0.284    20     1293    0         60052  
+2026-06-26  haiku   2      0.0631   20     929     0         45537  
+2026-06-26  main    6      0.9987   112    14370   185936    164268 
+2026-06-27  main    1      0.3832   62     5372    233367    42143  
+2026-06-28  haiku   1      0.0301   10     315     0         22461  
+2026-06-28  main    6      0.8409   60     4569    25084     189572 
+2026-06-29  haiku   3      0.0746   30     1364    17396     50953  
+2026-06-29  main    14     1.8646   140    14864   56434     402165 
+2026-06-30  haiku   4      0.1049   40     1875    17396     73246  
+2026-06-30  main    24     2.9587   282    22491   252750    624056 
+2026-07-01  haiku   39     0.8153   390    14404   323268    553479 
+2026-07-01  main    255    33.9095  7143   261124  15251315  6054206
+2026-07-02  haiku   6      0.1607   60     1857    17396     117449 
+2026-07-02  main    37     8.4799   5567   39379   6178794   1417111
+2026-07-03  haiku   15     0.333    150    4812    104376    232878 
+2026-07-03  main    54     10.7266  230    49099   5619533   2185120
+2026-07-04  main    9      1.3044   852    4724    60310     302683 
+2026-07-05  haiku   2      0.0402   20     728     17396     27539  
+2026-07-05  main    12     2.7326   36     4446    200974    668695 
+2026-07-06  main    13     2.2488   5894   8394    399125    399892 
+
+# exit=0
