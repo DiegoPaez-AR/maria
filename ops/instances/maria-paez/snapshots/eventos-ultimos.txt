@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15795  2026-07-06 16:01:52  sistema   interno                         claude_call enriquecer-contacto: 14297ms prompt=693c raw=17953c in=1030t(cache_read=16327 new=32751) out=272t ttfb=1389ms api=17803ms turnos=4 $0.1815                                                  
+
 15794  2026-07-06 16:00:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
 
 15793  2026-07-06 15:57:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
@@ -316,5 +318,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       Por ahora no tengo ninguna gestión propia corriendo por vos.                                                                                                                                            
 
 15696  2026-07-06 04:42:58  sistema   interno                         claude_call telegram: 8137ms prompt=77146c raw=6296c in=2t(cache_read=0 new=50822) out=259t ttfb=1402ms api=8341ms turnos=1 $0.2032                                                                     
-
-15695  2026-07-06 04:42:49  telegram  entrante   telegram:590589920   Y pásame mi lista de pendientes                                                                                                                                                                         
