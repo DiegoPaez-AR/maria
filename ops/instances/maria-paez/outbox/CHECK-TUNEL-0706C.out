@@ -1,0 +1,19 @@
+# ejecutado: 2026-07-06T15:51:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   ss -tlnp | grep 1080 || echo "(nadie escucha en 1080)"
+#   grep -iE "accepted publickey" /var/log/auth.log | tail -2
+#   grep -iE "WA túnel|WA ready" /root/.pm2/logs/maria-paez-out.log | tail -3
+
+# ───── output ─────
+LISTEN 0      128        127.0.0.1:1080      0.0.0.0:*    users:(("sshd",pid=3764689,fd=7))                                                         
+LISTEN 0      128            [::1]:1080         [::]:*    users:(("sshd",pid=3764689,fd=5))                                                         
+2026-07-05T23:30:43.294265-03:00 ubuntu-4gb-nbg1-2 sshd[3045078]: Accepted publickey for root from 181.26.34.95 port 50164 ssh2: ED25519 SHA256:7nNfmh+XAu7NpnRsPhx35FUOuDECd0dLIGleMfWGCc4
+2026-07-06T15:50:03.661657-03:00 ubuntu-4gb-nbg1-2 sshd[3764689]: Accepted publickey for root from 181.26.34.95 port 49175 ssh2: ED25519 SHA256:7nNfmh+XAu7NpnRsPhx35FUOuDECd0dLIGleMfWGCc4
+2026-07-06 08:15:35: ✅ [WA ready] Maria conectada
+2026-07-06 09:56:26: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
+2026-07-06 09:56:37: ✅ [WA ready] Maria conectada
+
+# exit=0
