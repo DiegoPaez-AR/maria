@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+15817  2026-07-06 16:51:37  sistema   interno                         programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
+
 15816  2026-07-06 16:49:37  sistema   interno                         programado id=841 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
 
 15815  2026-07-06 16:48:37  sistema   interno                         programado id=842 falló (intento #1): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
@@ -302,9 +304,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
                                                                       Me decís que restos están populares en my fair London?                                                                                                                                                  
 
 15718  2026-07-06 10:07:30  whatsapp  entrante   5491132317896@c.us   launchctl list | grep maria                                                                                                                                                                             
-
-15717  2026-07-06 10:07:30  whatsapp  entrante   5491132317896@c.us   sudo pmset -a sleep 0 disablesleep 1                                                                                                                                                                    
-                                                                                                                                                                                                                                                                              
-                                                                      cat > ~/Library/LaunchAgents/com.maria.tunel.plist <<'EOF'                                                                                                                                              
-                                                                      <?xml version="1.0" encoding="UTF-8"?>                                                                                                                                                                  
-                                                                      <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www                                                                                                                                        
