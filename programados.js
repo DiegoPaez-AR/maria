@@ -34,13 +34,26 @@ const waSend = require('./wa-send');
 // el helper porque acá ya logueamos con metadata específica de
 // `programados` (programadoId, razon, etc.) después de marcar enviado.
 async function _enviarWA(waClient, prog) {
+  // Automáticos sin WA (política 2026-07-07 v2): si el destino es el PROPIO
+  // usuario del programado, delegamos en enviarWAUsuario (TG → email → WA
+  // último recurso). Si el destino es OTRA persona, sigue por WA directo
+  // (delegar mandaría el mensaje al usuario equivocado).
+  const u = prog.usuario_id ? usuarios.obtener(prog.usuario_id) : null;
+  const esElUsuario = u && (prog.destino === u.wa_lid || prog.destino === u.wa_cus);
+  if (esElUsuario) {
+    const r = await waSend.enviarWAUsuario(waClient, u, prog.texto, {
+      tag: `programados/${prog.id}`,
+      logSaliente: false,
+    });
+    return { destinoFinal: r.destinoFinal, canal: r.canal || 'whatsapp' };
+  }
   if (!waClient) throw new Error('waClient no disponible');
   const { destinoFinal } = await waSend.enviarWADirecto(waClient, prog.destino, prog.texto, {
     tag: `programados/${prog.id}`,
     logSaliente: false,
     usuarioId: prog.usuario_id || null,
   });
-  return destinoFinal;
+  return { destinoFinal, canal: 'whatsapp' };
 }
 
 async function _enviarGmail(prog) {
@@ -64,8 +77,11 @@ async function procesarUno(waClient, prog) {
   }
   try {
     let destinoFinal = prog.destino;
+    let canalFinal = prog.canal;
     if (prog.canal === 'whatsapp') {
-      destinoFinal = await _enviarWA(waClient, prog);
+      const r = await _enviarWA(waClient, prog);
+      destinoFinal = r.destinoFinal;
+      canalFinal = r.canal;
     } else if (prog.canal === 'gmail') {
       await _enviarGmail(prog);
     } else {
@@ -75,7 +91,7 @@ async function procesarUno(waClient, prog) {
     mem.marcarProgramadoEnviado(prog.id);
     mem.log({
       usuarioId: prog.usuario_id || null,
-      canal: prog.canal, direccion: 'saliente',
+      canal: canalFinal, direccion: 'saliente',
       de: destinoFinal, asunto: prog.asunto || null, cuerpo: prog.texto,
       metadata: {
         programadoId: prog.id,
@@ -84,7 +100,7 @@ async function procesarUno(waClient, prog) {
         destinoFinal,
       },
     });
-    console.log(`[programados] ✓ id=${prog.id} (${prog.canal}/${destinoFinal}) [${prog.razon || 'sin-razon'}]`);
+    console.log(`[programados] ✓ id=${prog.id} (${canalFinal}/${destinoFinal}) [${prog.razon || 'sin-razon'}]`);
   } catch (err) {
     console.error(`[programados] ✗ id=${prog.id} falló:`, err.message);
 
@@ -114,8 +130,7 @@ async function procesarUno(waClient, prog) {
     if (intentos >= 2) {
       try {
         const owner = usuarios.obtenerOwner();
-        const dest = owner && (owner.wa_lid || owner.wa_cus);
-        if (dest && waClient) {
+        if (owner) {
           const previewTexto = (prog.texto || '').slice(0, 140) + ((prog.texto || '').length > 140 ? '…' : '');
           const aviso = [
             `⚠️ Tu programado #${prog.id} falla repetidamente (${intentos} intentos).`,
@@ -127,15 +142,14 @@ async function procesarUno(waClient, prog) {
             ``,
             `Lo pausé para no seguir intentando. Para retomarlo decime "cancelá el programado ${prog.id}" o pasame el destino correcto y lo re-armo.`,
           ].join('\n');
-          await waSend.enviarWADirecto(waClient, dest, aviso, {
+          await waSend.enviarWAUsuario(waClient, owner, aviso, {
             tag: `programados/${prog.id}/fallo-repetido`,
             logSaliente: true,
-            usuarioId: owner.id,
           });
           mem.pausarProgramado(prog.id);
           console.log(`[programados] ⚠ id=${prog.id} pausado tras ${intentos} fallos consecutivos — owner notificado`);
         } else {
-          console.warn(`[programados] no pude notificar owner sobre id=${prog.id}: owner sin WA o waClient no disponible`);
+          console.warn(`[programados] no pude notificar owner sobre id=${prog.id}: no hay owner`);
         }
       } catch (notifErr) {
         console.error(`[programados] notificación al owner falló para id=${prog.id}:`, notifErr.message);

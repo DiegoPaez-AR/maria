@@ -85,19 +85,21 @@ function resolverPorPersistencia(destinoCrudo) {
 // Cadena pedida por Diego: WhatsApp → Telegram (si vinculado) → email.
 // Aplica a los envíos AUTOMÁTICOS a usuarios (brief, recordatorios, cumples,
 // follow-ups, alertas). opts.fallback=false lo desactiva para un caller puntual.
-async function _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA }) {
+async function _enviarTGoEmail(usuario, texto, { tag, metadata, motivo = 'fallback_wa', logSaliente = true }) {
+  const esFallback = motivo === 'fallback_wa';
+  const metaVia = esFallback ? { fallback_de: 'whatsapp' } : { via: motivo };
   // 1) Telegram
   if (usuario.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
     try {
       const { enviarTG } = require('./telegram-handler'); // lazy: evita ciclos
       await enviarTG(usuario.telegram_chat_id, texto);
-      mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'saliente',
+      if (logSaliente) mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'saliente',
         de: 'telegram:' + usuario.telegram_chat_id, nombre: usuario.nombre, cuerpo: texto,
-        metadata: { ...(metadata || {}), tag, fallback_de: 'whatsapp' } });
-      console.log(`[wa-send] ${tag}: entregado por TELEGRAM (fallback) a ${usuario.nombre}`);
-      return { destinoFinal: usuario.telegram_chat_id, enviado: true, canal: 'telegram', fallback: true };
+        metadata: { ...(metadata || {}), tag, ...metaVia } });
+      console.log(`[wa-send] ${tag}: entregado por TELEGRAM (${motivo}) a ${usuario.nombre}`);
+      return { destinoFinal: usuario.telegram_chat_id, enviado: true, canal: 'telegram', fallback: esFallback };
     } catch (e) {
-      console.warn(`[wa-send] ${tag}: fallback telegram falló para ${usuario.nombre}:`, e.message);
+      console.warn(`[wa-send] ${tag}: telegram (${motivo}) falló para ${usuario.nombre}:`, e.message);
     }
   }
   // 2) email
@@ -107,17 +109,24 @@ async function _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA }) {
       const NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
       const TAGS_ASUNTO = { 'morning-brief': 'tu brief de hoy', 'recordatorio': 'recordatorio', 'follow-ups': 'seguimiento pendiente', 'cumple': 'cumpleaños', 'resumen': 'tu resumen semanal' };
       const base = Object.keys(TAGS_ASUNTO).find(k => String(tag).startsWith(k));
-      const asunto = `${NOMBRE} — ${base ? TAGS_ASUNTO[base] : 'mensaje'} (WhatsApp no disponible)`;
-      await g.enviarEmail({ to: usuario.email, asunto, texto: `${texto}\n\n—\n(Te escribo por acá porque WhatsApp no está disponible en este momento.)` });
-      mem.log({ usuarioId: usuario.id, canal: 'gmail', direccion: 'saliente',
+      const asunto = `${NOMBRE} — ${base ? TAGS_ASUNTO[base] : 'mensaje'}${esFallback ? ' (WhatsApp no disponible)' : ''}`;
+      const cuerpo = esFallback ? `${texto}\n\n—\n(Te escribo por acá porque WhatsApp no está disponible en este momento.)` : texto;
+      await g.enviarEmail({ to: usuario.email, asunto, texto: cuerpo });
+      if (logSaliente) mem.log({ usuarioId: usuario.id, canal: 'gmail', direccion: 'saliente',
         de: usuario.email, nombre: usuario.nombre, asunto, cuerpo: texto,
-        metadata: { ...(metadata || {}), tag, fallback_de: 'whatsapp' } });
-      console.log(`[wa-send] ${tag}: entregado por EMAIL (fallback) a ${usuario.nombre}`);
-      return { destinoFinal: usuario.email, enviado: true, canal: 'gmail', fallback: true };
+        metadata: { ...(metadata || {}), tag, ...metaVia } });
+      console.log(`[wa-send] ${tag}: entregado por EMAIL (${motivo}) a ${usuario.nombre}`);
+      return { destinoFinal: usuario.email, enviado: true, canal: 'gmail', fallback: esFallback };
     } catch (e) {
-      console.warn(`[wa-send] ${tag}: fallback email falló para ${usuario.nombre}:`, e.message);
+      console.warn(`[wa-send] ${tag}: email (${motivo}) falló para ${usuario.nombre}:`, e.message);
     }
   }
+  return null; // ninguno disponible/funcionó
+}
+
+async function _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA }) {
+  const r = await _enviarTGoEmail(usuario, texto, { tag, metadata, motivo: 'fallback_wa' });
+  if (r) return r;
   throw new Error(`${tag}: WA falló (${errorWA}) y no hubo fallback posible para ${usuario.nombre} (telegram: ${usuario.telegram_chat_id ? 'sí' : 'no'}, email: ${usuario.email ? 'sí' : 'no'})`);
 }
 
@@ -141,23 +150,17 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
     return { destinoFinal: null, enviado: false, diferido: true, diferidoId: _id };
   }
 
-  // TG-FIRST usuarios (política 2026-07-07, post-bloqueo de la línea): si el
-  // usuario está vinculado a Telegram, los envíos automáticos salen por TG
-  // antes que por WhatsApp — menos volumen saliente por wwebjs. Si TG falla,
-  // sigue el camino WA normal (y su fallback a email).
-  if (usuario.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
-    try {
-      const { enviarTG } = require('./telegram-handler'); // lazy: evita ciclos
-      await enviarTG(usuario.telegram_chat_id, texto);
-      if (logSaliente) {
-        mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'saliente',
-          de: 'telegram:' + usuario.telegram_chat_id, nombre: usuario.nombre, cuerpo: texto,
-          metadata: { ...(metadata || {}), tag, via: 'tg_first' } });
-      }
-      console.log(`[wa-send] ${tag}: entregado por TELEGRAM (tg-first) a ${usuario.nombre}`);
-      return { destinoFinal: usuario.telegram_chat_id, enviado: true, canal: 'telegram' };
-    } catch (e) {
-      console.warn(`[wa-send] ${tag}: tg-first falló para ${usuario.nombre} (${e.message}) — sigo por WA`);
+  // AUTOMÁTICOS SIN WA (política 2026-07-07 v2, pedido de Diego tras el 2do
+  // bloqueo): TODO envío automático a usuarios sale FIJO por Telegram y, si
+  // no está vinculado, por email. WhatsApp queda como ÚLTIMO recurso (usuario
+  // sin TG ni email, o ambos fallaron) — y aún así pasa por el embudo.
+  // El chat conversacional NO pasa por acá: responde por el canal de origen.
+  // opts.fallback=false es el escape hatch para forzar WA directo.
+  if (fallback) {
+    const r = await _enviarTGoEmail(usuario, texto, { tag, metadata, motivo: 'automaticos_sin_wa', logSaliente });
+    if (r) return r;
+    if (usuario.telegram_chat_id || usuario.email) {
+      console.warn(`[wa-send] ${tag}: TG/email fallaron para ${usuario.nombre} — último recurso: WhatsApp`);
     }
   }
 
@@ -189,7 +192,7 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
           metadata: { ...(metadata || {}), destinoFinal: destino, tag },
         });
       }
-      return { destinoFinal: destino, enviado: true };
+      return { destinoFinal: destino, enviado: true, canal: 'whatsapp' };
     } catch (err) {
       lastErr = err;
       const esLidErr = LID_ERR_RE.test(err.message || '');
