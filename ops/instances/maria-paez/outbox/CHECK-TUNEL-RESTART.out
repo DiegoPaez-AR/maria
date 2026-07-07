@@ -1,0 +1,31 @@
+# ejecutado: 2026-07-07T08:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Diagnóstico túnel WA + restart si corresponde (Chromium colgado desde ~07:48)
+#   echo "== puerto 1080 =="
+#   ss -tlnp | grep 1080 || echo "NO ESCUCHA — túnel caído"
+#   echo "== egreso via socks5 =="
+#   IP=$(curl -s -m 10 --socks5 127.0.0.1:1080 https://api.ipify.org || echo FALLO)
+#   echo "IP saliente: $IP"
+#   if [ "$IP" != "FALLO" ] && [ -n "$IP" ]; then
+#     echo "túnel OK → restart maria-paez (Chromium colgado)"
+#     cd /root/secretaria && pm2 restart maria-paez --update-env >/dev/null 2>&1 && echo "restart OK"
+#     sleep 8
+#     pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts=', p['pm2_env']['restart_time']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   else
+#     echo "túnel CAÍDO — no reinicio (el guard del boot entraría en degradado igual); hay que revivir el lado Mac"
+#   fi
+
+# ───── output ─────
+== puerto 1080 ==
+LISTEN 0      128        127.0.0.1:1080       0.0.0.0:*    users:(("sshd",pid=4109147,fd=7))                                                         
+LISTEN 0      128            [::1]:1080          [::]:*    users:(("sshd",pid=4109147,fd=5))                                                         
+== egreso via socks5 ==
+IP saliente: 181.26.17.80
+túnel OK → restart maria-paez (Chromium colgado)
+restart OK
+maria-paez online restarts= 191
+
+# exit=0
