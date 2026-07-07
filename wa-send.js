@@ -90,15 +90,11 @@ async function _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA }) {
 async function enviarWAUsuario(client, usuario, texto, opts = {}) {
   const { tag = 'wa-send', metadata = null, logSaliente = true, diferible = false, tz = null, fallback = true } = opts;
   if (!usuario) throw new Error(`${tag}: usuario requerido`);
-  if (!client) {
-    if (!fallback) throw new Error(`${tag}: waClient requerido`);
-    return _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA: 'sin cliente WA' });
-  }
 
-  // Horas de silencio: si el envío es diferible y estamos en la franja del
-  // usuario (0-8 por defecto, su tz), lo encolamos en vez de mandarlo. El
-  // drainer lo larga a las 8 hora local. No se pierde. Default (diferible
-  // false) → comportamiento original sin cambios.
+  // Horas de silencio ANTES que cualquier canal (2026-07-07: antes solo
+  // aplicaba al camino WA; con TG-first también Telegram respeta la franja,
+  // y en modo degradado ya no pingueamos por TG/email de madrugada). El
+  // drainer lo larga a las 8 hora local por el canal que corresponda.
   const _tzU = tz || usuario.tz || null;
   if (diferible && silencio.enSilencio(_tzU)) {
     const _id = mem.encolarWADiferido({
@@ -109,6 +105,31 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
     });
     console.log(`[wa-send] ${tag}: en silencio (${_tzU}) → diferido #${_id} hasta las ${silencio.HASTA}h`);
     return { destinoFinal: null, enviado: false, diferido: true, diferidoId: _id };
+  }
+
+  // TG-FIRST usuarios (política 2026-07-07, post-bloqueo de la línea): si el
+  // usuario está vinculado a Telegram, los envíos automáticos salen por TG
+  // antes que por WhatsApp — menos volumen saliente por wwebjs. Si TG falla,
+  // sigue el camino WA normal (y su fallback a email).
+  if (usuario.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
+    try {
+      const { enviarTG } = require('./telegram-handler'); // lazy: evita ciclos
+      await enviarTG(usuario.telegram_chat_id, texto);
+      if (logSaliente) {
+        mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'saliente',
+          de: 'telegram:' + usuario.telegram_chat_id, nombre: usuario.nombre, cuerpo: texto,
+          metadata: { ...(metadata || {}), tag, via: 'tg_first' } });
+      }
+      console.log(`[wa-send] ${tag}: entregado por TELEGRAM (tg-first) a ${usuario.nombre}`);
+      return { destinoFinal: usuario.telegram_chat_id, enviado: true, canal: 'telegram' };
+    } catch (e) {
+      console.warn(`[wa-send] ${tag}: tg-first falló para ${usuario.nombre} (${e.message}) — sigo por WA`);
+    }
+  }
+
+  if (!client) {
+    if (!fallback) throw new Error(`${tag}: waClient requerido`);
+    return _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA: 'sin cliente WA' });
   }
 
   // Orden de preferencia: @lid primero (formato moderno, no requiere
