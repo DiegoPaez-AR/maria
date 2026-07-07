@@ -1,0 +1,42 @@
+# ejecutado: 2026-07-06T22:51:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Pendiente 229 (Paraná Muebles): esperando_de era el nombre, no el WA.
+#   # Corrige a 5491140793225@c.us (mismo contacto que pendiente 227) y crea
+#   # el follow_up de seguridad que agregar_pendiente no pudo crear.
+#   set -e
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   
+#   echo "== antes =="
+#   sqlite3 "$DB" "SELECT id, estado, usuario_id, meta_json FROM pendientes WHERE id=229;"
+#   
+#   ESTADO=$(sqlite3 "$DB" "SELECT estado FROM pendientes WHERE id=229;")
+#   if [ "$ESTADO" != "abierto" ]; then echo "pendiente 229 no está abierto ($ESTADO) — no toco nada"; exit 0; fi
+#   
+#   YA=$(sqlite3 "$DB" "SELECT json_extract(meta_json,'\$.follow_up_id') FROM pendientes WHERE id=229;")
+#   if [ -n "$YA" ] && [ "$YA" != "null" ]; then echo "ya tiene follow_up_id=$YA — no duplico"; exit 0; fi
+#   
+#   FU_ID=$(sqlite3 "$DB" "
+#   INSERT INTO follow_ups (usuario_id, descripcion, esperando_de, esperando_canal, vence_en, metadata_json)
+#   SELECT usuario_id, desc, '5491140793225@c.us', 'whatsapp',
+#          strftime('%Y-%m-%d %H:%M:%S', 'now', '+2 days'),
+#          '{\"origen\":\"auto_pendiente\",\"backfill\":\"cowork 2026-07-06\"}'
+#   FROM pendientes WHERE id=229;
+#   SELECT last_insert_rowid();")
+#   
+#   sqlite3 "$DB" "UPDATE pendientes SET meta_json = json_set(meta_json, '\$.esperando_de', '5491140793225@c.us', '\$.follow_up_id', $FU_ID) WHERE id=229;"
+#   
+#   echo "== después =="
+#   sqlite3 "$DB" "SELECT id, estado, meta_json FROM pendientes WHERE id=229;"
+#   sqlite3 "$DB" "SELECT id, esperando_de, esperando_canal, vence_en, estado FROM follow_ups WHERE id=$FU_ID;"
+
+# ───── output ─────
+== antes ==
+229|abierto|18|{"esperando_de":"Paraná Muebles Logística","esperando_canal":"whatsapp"}
+== después ==
+229|abierto|{"esperando_de":"5491140793225@c.us","esperando_canal":"whatsapp","follow_up_id":32}
+32|5491140793225@c.us|whatsapp|2026-07-09 01:51:02|abierto
+
+# exit=0
