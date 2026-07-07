@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+16338  2026-07-07 11:04:49  sistema   interno                         claude_call enriquecer-contacto: 14631ms prompt=691c raw=18716c in=6t(cache_read=16310 new=33784) out=392t ttfb=1368ms api=19381ms turnos=4 $0.1869                                                     
+
+16337  2026-07-07 11:04:34  sistema   interno                         programado id=852 falló (intento #4): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
+
 16336  2026-07-07 11:03:34  sistema   interno                         programado id=851 falló (intento #4): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
 
 16335  2026-07-07 10:58:34  sistema   interno                         programado id=852 falló (intento #3): Runtime.callFunctionOn timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.                                  
@@ -308,7 +312,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 16240  2026-07-06 18:53:03  sistema   interno                         programado id=848 falló (intento #1): waClient no disponible                                                                                                                                            
 
 16239  2026-07-06 18:53:03  sistema   interno                         programado id=847 falló (intento #1): waClient no disponible                                                                                                                                            
-
-16238  2026-07-06 18:53:03  sistema   interno                         programado id=846 falló (intento #1): waClient no disponible                                                                                                                                            
-
-16237  2026-07-06 18:53:03  sistema   interno                         programado id=845 falló (intento #1): waClient no disponible                                                                                                                                            
