@@ -1,68 +1,3 @@
-3|maria-pa | 2026-07-06 18:45:34: [programados] 1 mensaje(s) debidos, despachando…
-3|maria-pa | 2026-07-06 18:45:34: [programados] ✓ id=850 (whatsapp/105171031949561@lid) [meeting_prep:6:88j2esm1vksldf0bp0nsmh835s]
-3|maria-pa | 2026-07-06 22:54:21: 
-3|maria-pa | 2026-07-06 22:54:21: ▸ SIGINT recibido, cerrando…
-3|maria-pa | 2026-07-06 22:54:23: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-06 22:54:23: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-06 22:54:23:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-06 22:54:23:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-06 22:54:23:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-06 22:54:23: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-06 22:54:23: ✓ whisper OK
-3|maria-pa | 2026-07-06 22:54:23: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-06 22:54:23: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
-3|maria-pa | 2026-07-06 22:54:23: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-06 22:54:23: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-06 22:54:23: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-06 22:55:01: [WA authenticated]
-3|maria-pa | 2026-07-06 22:55:01: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-06 22:55:02: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-07-06 22:55:02: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-07-06 22:55:02: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-07-06 22:55:02: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-07-06 22:55:02: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-07-06 22:55:02: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-07-06 22:55:02: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-07-06 22:55:02: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-07-06 22:55:02: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-07-06 22:55:02: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-07-06 22:55:02: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-07-06 22:55:02: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-07-06 22:55:17: [WA catch-up] buscando entrantes desde 2026-07-06T21:01:44.000Z…
-3|maria-pa | 2026-07-06 22:55:17: [WA catch-up] 0 mensajes nuevos sin procesar
-3|maria-pa | 2026-07-06 22:59:21: 
-3|maria-pa | 2026-07-06 22:59:21: ▸ SIGINT recibido, cerrando…
-3|maria-pa | 2026-07-06 22:59:23: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-06 22:59:23: ▸ Maria Paez [maria-paez] iniciando…
-3|maria-pa | 2026-07-06 22:59:23:   Owner:      Diego (id=1)
-3|maria-pa | 2026-07-06 22:59:23:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-3|maria-pa | 2026-07-06 22:59:23:   Gmail poll: cada 300s
-3|maria-pa | 2026-07-06 22:59:23: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-07-06 22:59:23: ✓ whisper OK
-3|maria-pa | 2026-07-06 22:59:23: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-07-06 22:59:23: ✓ [WA túnel] proxy socks5://127.0.0.1:1080 responde — Chromium saldrá por ahí
-3|maria-pa | 2026-07-06 22:59:23: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonLock
-3|maria-pa | 2026-07-06 22:59:23: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonCookie
-3|maria-pa | 2026-07-06 22:59:23: [WA boot] borré lock viejo: /root/secretaria/state/maria-paez/.wwebjs_auth/session/SingletonSocket
-3|maria-pa | 2026-07-06 22:59:33: [WA loading] 100% - WhatsApp
-3|maria-pa | 2026-07-06 22:59:33: [WA authenticated]
-3|maria-pa | 2026-07-06 22:59:34: ✅ [WA ready] Maria conectada
-3|maria-pa | 2026-07-06 22:59:34: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-07-06 22:59:34: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-07-06 22:59:34: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-07-06 22:59:34: ▸ arrancando morning-brief (por usuario, ventana 4h)
 3|maria-pa | 2026-07-06 22:59:34: [morning-brief] activo, ventana 4h, cada usuario en su tz
 3|maria-pa | 2026-07-06 22:59:34: ▸ arrancando meeting-prep (cada 5min)
 3|maria-pa | 2026-07-06 22:59:34: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
@@ -197,4 +132,69 @@
 3|maria-pa | 2026-07-07 08:32:37: █ █▄▄▄█ █ ▄▀ ██ ▄   ▄█  ▀███▀█▀███▄  ▄▀▄▄  ▀▄▄▀▄█ ▀███ ▀███
 3|maria-pa | 2026-07-07 08:32:37: █▄▄▄▄▄▄▄█▄▄█▄▄█▄█▄█▄▄▄▄███▄██▄█▄▄▄▄▄▄▄▄▄██▄█▄█▄▄█▄█▄▄▄▄█▄██
 3|maria-pa | 2026-07-07 08:32:37: 
+3|maria-pa | 2026-07-07 08:33:36: [WA qr] escaneá este QR:
+3|maria-pa | 2026-07-07 08:33:36: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+3|maria-pa | 2026-07-07 08:33:36: █ ▄▄▄▄▄ █▀▀  ▀▀█▀▀▄█▀▀▀█   ███▀▄▀▄▄▀▄▀▄█ ▄  ▀█▄▄ ██ ▄▄▄▄▄ █
+3|maria-pa | 2026-07-07 08:33:36: █ █   █ █▀ ▀▀▀█▄▄█▀▀████▀ ▀█▀▄   ▄█▀▄▀ █▀▄█▀ ▄ ▄ ██ █   █ █
+3|maria-pa | 2026-07-07 08:33:36: █ █▄▄▄█ █▀▄▄█▄▄▄▄█▄▀▄ ▀▀▀ █ ▄▄▄ ▄▄▄▀▄█▄▀▀   █▀▀▀▄██ █▄▄▄█ █
+3|maria-pa | 2026-07-07 08:33:36: █▄▄▄▄▄▄▄█▄█ ▀ ▀ ▀▄▀▄▀ ▀▄█ █ █▄█ ▀▄█ ▀▄▀ ▀▄█▄█ █▄▀▄█▄▄▄▄▄▄▄█
+3|maria-pa | 2026-07-07 08:33:36: █ ▄▄▄ ▀▄ ▄█ ▄█▀▀▄█▄▄▀█▀█   ▄▄   ▀█▀█▀  ▄██ ▀ ▀ ▄▀▀▄█ █▄▀▄▀█
+3|maria-pa | 2026-07-07 08:33:36: ███▄ ▄▀▄▀▀▀▀▀▀▄ ▀▀▀ ▀▀▀ ▄▀▀█▀▀ ▄██ ▄ ██▀▀ █▀▀▄▀  ▀▄ ▄█▀▀▄██
+3|maria-pa | 2026-07-07 08:33:36: ██▀█▄ ▀▄▀▄▀▄▄█▄▄▄▄▀  ▄▀▄ ▀▄ ▀▀▀█ ▀▄▄█ ▀██▀▄▀ ▀██ ▀▀▄█▀█ █ █
+3|maria-pa | 2026-07-07 08:33:36: █▄█▄██▀▄▄█▄▄█ ▀▀▄█▀  █ ▄ ▀▀█▀█▀    █▀█▀█ ▄▄▀   ▄   █▄ ▀▀▄██
+3|maria-pa | 2026-07-07 08:33:36: █▄▀█▀▄█▄▀█▄▀▀ ▀▀▄▄▄ ▀██▀  ▄ ▀ ▄  ▀ █▀▄▀▄▀█▀▀ █▄▄▀  █▀█▀ ▀ █
+3|maria-pa | 2026-07-07 08:33:36: █▄██▄█ ▄███▄█▀▀█▀█▄ ▄▄▄██ ▀█▀▄ ▀ ▀▀▄█▀ ▄▀█▀ ▀▄▄ ▄ █▄▀█▀▀ ▀█
+3|maria-pa | 2026-07-07 08:33:36: █▀▀▄▀▀ ▄ ▄▀███▀█▄▀ ▄▄█▀█▀▄  █▀ ▀▀█ ▄ ▄ ██▀▀▀▄█▄█▄▀▄▄▀█ ▀▀▀█
+3|maria-pa | 2026-07-07 08:33:36: █▀ ▄▀▀█▄█▄ ▄█▀ ▄▄ ▀▄▄█▀▀▀█▀ ▄   █▄▄ █  ▄▀▄ ▀█  ▄▄▄▄ ▄█  ▀▀█
+3|maria-pa | 2026-07-07 08:33:36: █▀▀▀██ ▄▀   ▄▀  ▄▄▄▄█▄▀█▀ ▀█▀▀▀▀▄  █   █▀█ ▀ ██▄▀  ████▀▄▄█
+3|maria-pa | 2026-07-07 08:33:36: ███▄▀ ▄▄▄ ▀ ██▄ ▀█▄█ ▀▄██▄  ▄▄▄ ▄▄▀  █ █  █▀█▄▀▀█ ▄▄▄ ▀ ▄▀█
+3|maria-pa | 2026-07-07 08:33:36: █▀▀ ▄ █▄█ ▀ ▄▄▄█▀▄▄▀▀█▄█▀▀▀ █▄█  ██▄▄▄▀█▀▀ ▀▄▀██▄ █▄█  ▀▀▀█
+3|maria-pa | 2026-07-07 08:33:36: █     ▄▄▄ ▀▄ ▀▄ ▄▄▀█▀▄▀█▀█▄▄▄  ▄▀ ▄ █▀▄   ▀▄▄  ▀█▄▄▄ ▄  ███
+3|maria-pa | 2026-07-07 08:33:36: ███▀ ▄▄▄▀▄██ █▄ ██▀▄▀█▀▀▄▀█ ▀▄▀ ▀▀▀█▄ ▀█▀▀▀▀▄█▄▄█▀▀▄▄██▄▀▄█
+3|maria-pa | 2026-07-07 08:33:36: █▄▀ ▀▀▄▄▀▀██▄▀▀ ▄▄▀  ▄▀█  ▄  ▀▀ ▄▀  ▀█▄ ▀ ██ ▀▄█ ▀▄██   ▄▀█
+3|maria-pa | 2026-07-07 08:33:36: ██ ▀ ▄▀▄ ▀▄ ▄█▄█▀█  ▀▀██▄ █▀▀██▀ ██▄▀ █▄██▀  ▀ ▄█▀ ██▄▀▄▄▀█
+3|maria-pa | 2026-07-07 08:33:36: █▄ ▀  █▄█▀▀  ▀▄█▀█▀ ▀ ▄▀▄ ▄▀▀█▄ ▀▄ ▄██▄▄▀█▀▄ ▀█▄█▄ █▄▄▀▀▄▄█
+3|maria-pa | 2026-07-07 08:33:36: ██  ██▀▄▄███▀█▄▀█▄▄ ▄▄█▀▄▀█▀ ▄ ▄▀█▀█▄ █▄██▀ █▀▄▄██▀▄███ █▀█
+3|maria-pa | 2026-07-07 08:33:36: █ ▄▀█ █▄▀▀█ ▄▀▄██▄▀ ▀█▀ █▄▀▀▄█▄ ▀█▄█▀ ▄ ▀██ █▄▄█▄▄ █▀ ▀  ██
+3|maria-pa | 2026-07-07 08:33:36: █▄█▀ ▄▄▄▄ ▄ █ ▄█▄█▀  █▀▄▀ ▄▄▄█▀  ▀▄▄▄▄▄██▀▀▀▄█▄▄▀▄▄█▀▄▀▀ ██
+3|maria-pa | 2026-07-07 08:33:36: █ ▀ ▀▀▄▄▄▄█▀▄▄▄ ▀▄█▀▄█▀▄▀ ▄ ▄▀▄▄  █▀▀ ▄▄ ▀█ ██▀ █▄ ▀▀▄▀▀ ██
+3|maria-pa | 2026-07-07 08:33:36: ███████▄█▀█▀  ▀▀██▄▄▀▄▀█ ▀▀ ▄▄▄ █▀▄█▄▄▀▄▀█▀▀ ██▄█ ▄▄▄ ▀  ██
+3|maria-pa | 2026-07-07 08:33:36: █ ▄▄▄▄▄ █▄█▄ ▄▀█ ▀▄      ▀▄ █▄█ ▀▄█▀ ▄▄▀██▀ █▄▄█▄ █▄█ ▄▀▄██
+3|maria-pa | 2026-07-07 08:33:36: █ █   █ █ █▄▀ █▀▄▀▄ ▄█▄▀▀▄▀ ▄▄ ▄ █▄█▀  █▀▀█▀▄█ █ ▄    ▀▀█▄█
+3|maria-pa | 2026-07-07 08:33:36: █ █▄▄▄█ █ ▀  ▀▀▄▄   ▄█  ▀███▀▀▀███▄  ▄▀▄▄  ▀█▄▀▄█ ▀█▀█ ▀███
+3|maria-pa | 2026-07-07 08:33:36: █▄▄▄▄▄▄▄█▄▄█▄█▄██▄█▄▄▄▄███▄████▄▄▄▄▄▄▄▄▄██▄█▄█▄▄█▄█▄██▄█▄██
+3|maria-pa | 2026-07-07 08:33:36: 
+3|maria-pa | 2026-07-07 08:33:56: [WA qr] escaneá este QR:
+3|maria-pa | 2026-07-07 08:33:56: ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+3|maria-pa | 2026-07-07 08:33:56: █ ▄▄▄▄▄ █▀▀  ▀▀█▀▀▄▄▄█ ▄▄  ███▀▄▀▄█▀ █▄▀█▄▄▄ ▀▄▄ ██ ▄▄▄▄▄ █
+3|maria-pa | 2026-07-07 08:33:56: █ █   █ █▀ ▀███▄██▀▀▄███  ▀█▀▄   ██▀▀  ████▀▀█ ▄ ██ █   █ █
+3|maria-pa | 2026-07-07 08:33:56: █ █▄▄▄█ █▀▄▄▄█▄▄▄█▄▀▄ ▀▀▀ █ ▄▄▄ ▄▄▄▀▄▀▄▀ ▄  ▀ ▀▀▄██ █▄▄▄█ █
+3|maria-pa | 2026-07-07 08:33:56: █▄▄▄▄▄▄▄█▄█▄█ ▀ ▀▄▀▄▀ ▀▄█ █ █▄█ ▀▄█ ▀▄▀ ▀▄█▄█ █▄▀▄█▄▄▄▄▄▄▄█
+3|maria-pa | 2026-07-07 08:33:56: █ ▄▄▄▄█▄▄▄▄▄▀▀▀▀▄█▄▄▀█▀█  ▄▄▄   ▀█▀█▀  ▄██ ▀ ▀ ▄   █▄█▄▀▄▀█
+3|maria-pa | 2026-07-07 08:33:56: ███▄ █▀▄▀ ▀▀▄ ▄ ▀▀▀ ▀▀▀ ▄▀▀██▀ ▄██   ███▀ ▀▀▀▄▀▄▀▄▄▀▄ ▀▀▄██
+3|maria-pa | 2026-07-07 08:33:56: ██▀▄▄ ▀▄██▀▄▄█▄▄▄▄▀  ▄▀▄ ▀█ ▄▀▀█ ▀▄██ ███▀ ▀ ▀▄▄▀ ▀▄ ▀█▄█ █
+3|maria-pa | 2026-07-07 08:33:56: █▀   █▀▄██▄▄█ ▀▀▄█▄▄ █▄▄ ▀▀█▀▄█    ▄█▀█ ▄ ▄ ▄▄ ▄▄█ █▄ ▄▀▄██
+3|maria-pa | 2026-07-07 08:33:56: █▀▀██▄█▄▀█▄▀▀ ▀▀▀▄▄ ▄▄▄▀▀ ▄ ▀ ▀▀ ▀▀▄▄▄▀▄█▀▄  ▀ ▄▀  █▀█ ▀█▄█
+3|maria-pa | 2026-07-07 08:33:56: █  █▄▀ ▄███▄█▀▀███▄ █ ▄█▀▄▀█▀▄▀  ▀▀▄█▀▀▄▄ ▀▀▄▀█ ▄ █ ▀█▀▀▄▀█
+3|maria-pa | 2026-07-07 08:33:56: ██ ▄▀▀▄▄ ▄▀███▀█▄▀ ▄▄█▀█▀▄  █▀ ▀ ▀ ▄ ▄ █ ▀▀▀ ▀▄█▄▀▄█▀█ ▀▀▀█
+3|maria-pa | 2026-07-07 08:33:56: █▀ ▄▀  ▄█▄ ▄█▀▄█▄ ▀▄▄█▀▀▀█▀ ▄   ██▄ ▄▀ ▄ █ ▀█  ▄▄▄ ▄ ▀  ▀▀█
+3|maria-pa | 2026-07-07 08:33:56: █▀▀▀█  ▄█▄ ▀▀█ ▄▄▄▄▄█▄▀█▀ █▀▀▀▀▀▄  █   █▀█ ▀ ██▄▀▀▀██▀█▀▄▄█
+3|maria-pa | 2026-07-07 08:33:56: ███▄▀ ▄▄▄ ▀███▀█▀█▄█ ▀▄██▄█ ▄▄▄ ▄▄█▄ █ ▀  ▀▀█▄█▀▀ ▄▄▄ ▀ ▄▀█
+3|maria-pa | 2026-07-07 08:33:56: █▀▀█▀ █▄█ ▄▄▄▄█▀▀▄▄▀▀█▄█▀▀▀ █▄█  ██▄▄▄▄▄▀▀ ▀▄▀██▄ █▄█ █ ▀▀█
+3|maria-pa | 2026-07-07 08:33:56: ██▀ ▄▄ ▄  ▀▄ ▀▄ ▄▄ ▀▀▄▀▀▀█▄ ▄  ▄▀ █▀██    ██   █▀   ▄▄ ▀███
+3|maria-pa | 2026-07-07 08:33:56: █▀ ▄▄▄▄▄▀███ █▄ ▀▄   ▄▀▀▀▀█  ▄▀ ▀▀▀█▄▄▀█ █ ▀█▀▄▄█▄▀▄█▄██▀ █
+3|maria-pa | 2026-07-07 08:33:56: █▀ ▀ ▀▄▄ ▄██▄▀▀  ▀▀ █▄▀█▀█▄ ▀▄▀ ▄▀  ▄ ▄▀ ▄█▄█▀▄█ ▀▄█▀▀  █▀█
+3|maria-pa | 2026-07-07 08:33:56: █▄▀▀ ▄▀▄ ▀▄  ▄▄█▀█  ▀▀██▄ █▀▀█▄  ▀█▄  █▄▀█▀ ██ ▄█▀ ██▄▀▄▄ █
+3|maria-pa | 2026-07-07 08:33:56: █▄ ▀  █▄█▀▄▀▀▄ █▀█▀ ▀ ▄▀▄ ▄▀▀█▄ ▀█ ▄▄▄▄▄ █▀▄  █▄█▄ █▄▄▀▀▄▄█
+3|maria-pa | 2026-07-07 08:33:56: ██  █▀▄▄▄█▄█▄▀▄▄█▄▄ ▄▄█▀▄▀█▀ ▄ ▄▀█▀█▄ █▄██▀ █▀▄▄██████▀▄█▀█
+3|maria-pa | 2026-07-07 08:33:56: █ ▄▀█ ▄▄▀▀▀▄  █▀█▄▀ ▀█▀ █▄█▀▄█▄ ▀█▄█▀  ▄▀██▄█▄ █ ▀█▀▀    ██
+3|maria-pa | 2026-07-07 08:33:56: █▄█▀█ ▄▄▄█▀ █ ▀▀▄█▀  █▀▄▀ █▀▄█▀  ▀▄█▄▄ ▄█▀ ▀▄███▀█▄█▄██▄ ██
+3|maria-pa | 2026-07-07 08:33:56: █ ▀ ▀▀▄▄▀██▀▄▄▄ ▀▄▀ ▄█▄█▀ ▄▄▄▀▄▄  ▄▀▀▄█▄▄▀▄ ██▀█▄▄▄█ ▀▀  ██
+3|maria-pa | 2026-07-07 08:33:56: ███████▄█▀█▀  ▀▀█▄ ▄▀▄▄▀▀ ▀ ▄▄▄ █▀▄█▀  ▄▄▀█▀ ██▄▀ ▄▄▄ ▀ ▄██
+3|maria-pa | 2026-07-07 08:33:56: █ ▄▄▄▄▄ █▄█▄ ▄▀█▀▄▄ █▄  ▄ ▄ █▄█ ▀▄█▀▀▄█ ▄▀ ▀▄█▄█  █▄█ ▄▀▄██
+3|maria-pa | 2026-07-07 08:33:56: █ █   █ █ █▄▀██▀▄▀▄ ▄█▄▀▀▄▀  ▄ ▄▄█▄██▄ █ ██▀▄█ █ ▄  ▄ ▀▀▄██
+3|maria-pa | 2026-07-07 08:33:56: █ █▄▄▄█ █   ██▀▀▄   ▄█  ▀███▀▀▀█▄▄▄ ▀▄▀▄▄▀ ▀▄█▀▄█ ▀█▀█ ▀███
+3|maria-pa | 2026-07-07 08:33:56: █▄▄▄▄▄▄▄█▄▄▄▄████▄█▄▄▄▄███▄█▄▄█▄▄▄▄▄▄▄▄▄██▄█▄█▄▄█▄█▄▄▄▄█▄██
+3|maria-pa | 2026-07-07 08:33:56: 
+3|maria-pa | 2026-07-07 08:33:57: [WA alert] email enviado a diego@paez.is (motivo: sesión EXPIRADA — 3 QRs en 120s. Restartear NO sirve, hace falta scan manual del QR. Corré: pm2 logs maria-paez --lines 60 y escaneá desde WhatsApp → Dispositivos vinculados.)
 
