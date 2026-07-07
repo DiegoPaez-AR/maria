@@ -1,0 +1,28 @@
+# ejecutado: 2026-07-07T08:57:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Cuenta WA bloqueada por Meta (2026-07-07) — apagar WA (cero señales a Meta)
+#   set -e
+#   ST=/root/secretaria/state/maria-paez
+#   touch "$ST/wa-apagado"
+#   rm -f "$ST/wa-retry-after"
+#   cd /root/secretaria && pm2 restart maria-paez --update-env >/dev/null 2>&1
+#   sleep 6
+#   echo "marker: $(ls -la $ST/wa-apagado)"
+#   echo "tg-wa-down: $(cat $ST/tg-wa-down 2>/dev/null || echo 'no existe')"
+#   pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   tail -5 /root/.pm2/logs/maria-pa*out*.log 2>/dev/null | tail -5
+
+# ───── output ─────
+marker: -rw-r--r-- 1 root root 0 Jul  7 08:57 /root/secretaria/state/maria-paez/wa-apagado
+tg-wa-down: 1783423926259 avisado
+maria-paez online
+2026-07-07 08:57:03: ▸ arrancando poda-eventos (diario)
+2026-07-07 08:57:03: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+2026-07-07 08:57:03: ▸ arrancando drainer de diferidos (horas de silencio)
+2026-07-07 08:57:03: [diferidos] drainer activo (cada 5min)
+2026-07-07 08:57:03: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+
+# exit=0
