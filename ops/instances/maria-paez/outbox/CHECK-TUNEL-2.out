@@ -1,0 +1,32 @@
+# ejecutado: 2026-07-07T19:05:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== puerto 1080 =="
+#   ss -tlnp | grep 1080 || echo "NO ESCUCHA"
+#   echo "== conexiones ssh del túnel (edad) =="
+#   ps -o pid,etime,cmd -C sshd | grep -v grep | tail -5
+#   IP=$(curl -s -m 10 --socks5 127.0.0.1:1080 https://api.ipify.org || echo FALLO)
+#   echo "egreso socks5: $IP"
+#   if [ "$IP" != "FALLO" ] && [ -n "$IP" ]; then
+#     echo "túnel responde → restart (Chromium colgado)"
+#     cd /root/secretaria && pm2 restart maria-paez --update-env >/dev/null 2>&1 && echo "restart OK"
+#   else
+#     echo "túnel CAÍDO — revisar lado Mac"
+#   fi
+
+# ───── output ─────
+== puerto 1080 ==
+LISTEN 0      128        127.0.0.1:1080       0.0.0.0:*    users:(("sshd",pid=4109147,fd=7))                                                       
+LISTEN 0      128            [::1]:1080          [::]:*    users:(("sshd",pid=4109147,fd=5))                                                       
+== conexiones ssh del túnel (edad) ==
+    PID     ELAPSED CMD
+ 240931 26-12:22:36 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+ 785544       13:13 sshd: root@pts/0
+4109147    19:40:05 sshd: root
+egreso socks5: 181.26.17.80
+túnel responde → restart (Chromium colgado)
+restart OK
+
+# exit=0
