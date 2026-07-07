@@ -62,11 +62,11 @@ async function enviarTG(chatId, texto, extra = {}) {
 // ── Audio/voz → texto (2026-07-06, pedido de Diego) ────────────────────────
 // Reusa el mismo whisper.cpp local que WhatsApp (transcribir.js). Solo para
 // usuarios vinculados: es canal de respaldo, no gastamos CPU en desconocidos.
-const TG_AUDIO_MAX_BYTES = 20 * 1024 * 1024; // límite de getFile en la Bot API
+const TG_FILE_MAX_BYTES = 20 * 1024 * 1024; // límite de getFile en la Bot API (audio y adjuntos)
 
 async function _transcribirAudioTG(msg) {
   const a = msg.voice || msg.audio;
-  if ((a.file_size || 0) > TG_AUDIO_MAX_BYTES) throw new Error('audio supera 20MB (límite Bot API)');
+  if ((a.file_size || 0) > TG_FILE_MAX_BYTES) throw new Error('audio supera 20MB (límite Bot API)');
   const f = await _api('getFile', { file_id: a.file_id });
   if (!f.file_path) throw new Error('getFile sin file_path');
   const res = await fetch(`https://api.telegram.org/file/bot${TOKEN}/${f.file_path}`);
@@ -75,6 +75,38 @@ async function _transcribirAudioTG(msg) {
   const mime = a.mime_type || '';
   const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('mp4') ? 'm4a' : 'ogg';
   return await transcribirBuffer(buf, ext);
+}
+
+// Foto / documento (imagen o PDF) → /tmp para visión multimodal, igual que
+// WA (prompt-builder ya banca entrada.attachmentPath en cualquier canal).
+async function _descargarAdjuntoTG(msg) {
+  let fileId = null, mime = '', nombre = null, size = 0, desc = 'archivo';
+  if (msg.photo && msg.photo.length) {
+    const p = msg.photo[msg.photo.length - 1]; // última = mayor resolución
+    fileId = p.file_id; size = p.file_size || 0; mime = 'image/jpeg'; desc = 'foto';
+  } else if (msg.document) {
+    const d = msg.document;
+    mime = d.mime_type || '';
+    if (!/^image\//i.test(mime) && !/^application\/pdf$/i.test(mime)) return null;
+    fileId = d.file_id; size = d.file_size || 0; nombre = d.file_name || null;
+    desc = nombre || (/pdf/i.test(mime) ? 'PDF' : 'imagen');
+  }
+  if (!fileId) return null;
+  if (size > TG_FILE_MAX_BYTES) throw new Error('adjunto supera 20MB (límite Bot API)');
+  const f = await _api('getFile', { file_id: fileId });
+  if (!f.file_path) throw new Error('getFile sin file_path');
+  const res = await fetch(`https://api.telegram.org/file/bot${TOKEN}/${f.file_path}`);
+  if (!res.ok) throw new Error(`descarga de adjunto: HTTP ${res.status}`);
+  const buf = Buffer.from(await res.arrayBuffer());
+  let ext = nombre && /\.[a-z0-9]+$/i.test(nombre) ? nombre.match(/\.[a-z0-9]+$/i)[0]
+          : /pdf/i.test(mime)  ? '.pdf'
+          : /png/i.test(mime)  ? '.png'
+          : /webp/i.test(mime) ? '.webp'
+          : '.jpg';
+  const tmpPath = path.join('/tmp', `maria-attach-tg-${Date.now()}-${Math.random().toString(16).slice(2, 8)}${ext}`);
+  fs.writeFileSync(tmpPath, buf);
+  console.log(`[TG] adjunto → ${tmpPath} (${Math.round(buf.length / 1024)} KB)`);
+  return { path: tmpPath, desc };
 }
 
 const _KB_COMPARTIR = { reply_markup: { keyboard: [[{ text: '📱 Compartir mi número', request_contact: true }]], resize_keyboard: true, one_time_keyboard: true } };
@@ -114,7 +146,7 @@ function _guardarOffset(o) {
 }
 
 // ── Turno de usuario vinculado: pipeline completo ─────────────────────────
-async function _procesarTurno(usuario, chatId, texto) {
+async function _procesarTurno(usuario, chatId, texto, attachmentPath = null) {
   const startTs = Date.now();
   const chatKey = 'telegram:' + chatId;
   turnState.setLastInbound(chatKey, startTs);
@@ -131,7 +163,7 @@ async function _procesarTurno(usuario, chatId, texto) {
     // no bloquea (telemetría, mismo criterio que WA)
   }
 
-  const entrada = { de: chatKey, nombre: usuario.nombre, cuerpo: texto };
+  const entrada = { de: chatKey, nombre: usuario.nombre, cuerpo: texto, ...(attachmentPath ? { attachmentPath } : {}) };
   mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'entrante',
     de: chatKey, nombre: usuario.nombre, cuerpo: texto });
 
@@ -268,12 +300,23 @@ async function _loop(waEstado) {
             continue;
           }
         }
-        if (!texto.trim()) continue; // otros media (foto/video/doc) siguen ignorados
+        let adjunto = null;
+        if (u && (msg.photo || msg.document)) {
+          try {
+            adjunto = await _descargarAdjuntoTG(msg);
+            if (adjunto && !texto.trim()) texto = `(adjuntó ${adjunto.desc})`;
+          } catch (e) {
+            console.warn('[TG] descarga de adjunto falló:', e.message);
+          }
+        }
+        if (!texto.trim()) continue; // resto de media (video/otros docs) sigue ignorado
         try {
-          if (u) await _procesarTurno(u, chatId, texto);
+          if (u) await _procesarTurno(u, chatId, texto, adjunto ? adjunto.path : null);
           else await _procesarNoVinculado(chatId, texto);
         } catch (e) {
           console.error(`[TG] procesando chat ${chatId}:`, e.message);
+        } finally {
+          if (adjunto) { try { fs.unlinkSync(adjunto.path); } catch {} }
         }
       }
     } catch (err) {

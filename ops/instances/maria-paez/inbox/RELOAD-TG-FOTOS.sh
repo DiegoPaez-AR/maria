@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+cd /root/secretaria
+pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+sleep 3
+pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts=', p['pm2_env']['restart_time']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+grep -c "_descargarAdjuntoTG" /root/secretaria/telegram-handler.js
