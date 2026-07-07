@@ -13,6 +13,40 @@ const mem = require('./memory');
 const usuarios = require('./usuarios');
 const silencio = require('./silencio');
 
+// ── EMBUDO WA (2026-07-07, tras el 2do bloqueo de Meta) ────────────────────
+// Cola FIFO global: entre un client.sendMessage y el siguiente pasan como
+// mínimo WA_EMBUDO_MS (default 15s) + jitter aleatorio 0-WA_EMBUDO_JITTER_MS
+// (default 5s), para que el intervalo no sea robóticamente exacto. La ráfaga
+// post-desbloqueo (10 msgs en 3min) fue casi seguro lo que re-voló la cuenta.
+// Se aplica ENVOLVIENDO client.sendMessage en crearClienteWA (un solo punto:
+// nada puede saltearse el embudo, ni los callers directos del handler).
+const EMBUDO_MS = Number(process.env.WA_EMBUDO_MS || 15_000);
+const EMBUDO_JITTER_MS = Number(process.env.WA_EMBUDO_JITTER_MS || 5_000);
+let _colaEmbudo = Promise.resolve();
+let _ultimoEnvioWA = 0;
+
+function embudoWA(fn) {
+  const p = _colaEmbudo.then(async () => {
+    const gap = EMBUDO_MS + Math.floor(Math.random() * Math.max(0, EMBUDO_JITTER_MS));
+    const espera = Math.max(0, _ultimoEnvioWA + gap - Date.now());
+    if (espera > 500) console.log(`[wa-embudo] espero ${Math.round(espera / 1000)}s (cola de envíos)`);
+    if (espera > 0) await new Promise(r => setTimeout(r, espera));
+    try { return await fn(); } finally { _ultimoEnvioWA = Date.now(); }
+  });
+  _colaEmbudo = p.then(() => {}, () => {}); // un fallo no rompe la cola
+  return p;
+}
+
+/** Envuelve client.sendMessage con el embudo. Llamar UNA vez al crear el cliente. */
+function aplicarEmbudo(client) {
+  if (!client || client._embudoAplicado) return client;
+  const orig = client.sendMessage.bind(client);
+  client.sendMessage = (...args) => embudoWA(() => orig(...args));
+  client._embudoAplicado = true;
+  console.log(`[wa-embudo] activo: min ${EMBUDO_MS / 1000}s + jitter ${EMBUDO_JITTER_MS / 1000}s entre envíos WA`);
+  return client;
+}
+
 // Errores que sugieren "el wid no resolvió" — incluye el "t" minificado
 // que vimos en whatsapp-web.js cuando le pasás un LID con sufijo @c.us.
 const LID_ERR_RE = /No LID for user|invalid wid|not.{0,10}registered|^t$/i;
@@ -297,4 +331,6 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
   return { destinoFinal, enviado: true };
 }
 
-module.exports = { enviarWAUsuario, enviarWADirecto, resolverPorPersistencia, LID_ERR_RE };
+module.exports = {
+  aplicarEmbudo,
+  embudoWA, enviarWAUsuario, enviarWADirecto, resolverPorPersistencia, LID_ERR_RE };

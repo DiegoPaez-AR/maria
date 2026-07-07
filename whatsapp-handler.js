@@ -140,6 +140,9 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
     },
   });
 
+  // Embudo global de envíos (ver wa-send.js): min WA_EMBUDO_MS entre mensajes.
+  require('./wa-send').aplicarEmbudo(client);
+
   // ─── Eventos de ciclo de vida ──────────────────────────────────────────
   // Alerta por email al owner cuando WA está caído (disconnected / mucho
   // tiempo sin autenticar). Rate-limit por proceso: max 1 alerta por hora,
