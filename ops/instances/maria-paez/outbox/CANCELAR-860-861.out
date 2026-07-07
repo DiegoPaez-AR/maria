@@ -1,0 +1,16 @@
+# ejecutado: 2026-07-07T19:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -e
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   sqlite3 "$DB" "UPDATE programados SET enviado=1, metadata_json=json_set(COALESCE(metadata_json,'{}'),'\$.cancelado','vencido durante bloqueo WA 2026-07-07') WHERE enviado=0 AND id IN (860,861);"
+#   echo "quedan pendientes:"
+#   sqlite3 "$DB" "SELECT id, cuando, substr(texto,1,40) FROM programados WHERE enviado=0;"
+
+# ───── output ─────
+quedan pendientes:
+761|2026-08-06T12:00:00.000Z|🎭 Recordatorio: mañana tenés *Teatro* de
+
+# exit=0
