@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+16360  2026-07-07 11:42:59  sistema   interno                         claude_call memoria-curada: 20639ms prompt=5333c raw=11775c in=2t(cache_read=0 new=17479) out=1369t ttfb=1400ms api=20166ms turnos=1 $0.0883                                                            
+
+16359  2026-07-07 11:42:08  telegram  saliente   telegram:590589920   ⚠️ Se me cayó WhatsApp (estamos trabajando para recuperarlo). Mientras tanto seguime escribiendo por acá — funciono igual.                                                                              
+
+16358  2026-07-07 11:42:08  sistema   interno                         programado id=852 falló (intento #1): waClient no disponible                                                                                                                                            
+
+16357  2026-07-07 11:42:08  sistema   interno                         programado id=851 falló (intento #1): waClient no disponible                                                                                                                                            
+
+16356  2026-07-07 11:42:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+
+16355  2026-07-07 11:42:08  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 10 min)                                                                                                                                             
+
+16354  2026-07-07 11:42:06  sistema   interno                         WA boot timeout 10min sin ready — reposo 30min antes del próximo intento                                                                                                                                
+
 16353  2026-07-07 11:33:56  sistema   interno                         WA sesión expirada — 3 QRs en 120s, requiere scan manual                                                                                                                                                
 
 16352  2026-07-07 11:32:04  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
@@ -281,22 +295,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 16262  2026-07-06 18:54:25  sistema   interno                         claude_call whatsapp: 27888ms prompt=81447c raw=13031c in=6t(cache_read=53889 new=107184) out=1322t ttfb=1472ms api=27415ms turnos=3 $0.4481                                                            
 
 16261  2026-07-06 18:54:24  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-16260  2026-07-06 18:54:24  sistema   interno                         acción ejecutada: enviar_wa                                                                                                                                                                             
-
-16259  2026-07-06 18:54:24  whatsapp  saliente   5491140793225@c.us   Hola! Te escribo de parte de Gabriela. Quería consultarles de qué forma piensan corregir los desajustes de la biblioteca a medida: ¿la van a rehacer o de qué manera piensan resolverlo? Puntualmente le
-
-16258  2026-07-06 18:54:24  sistema   interno                         claude_call moderacion: 6350ms prompt=1760c raw=6977c in=10t(cache_read=0 new=22533) out=436t ttfb=1162ms api=6148ms turnos=1 $0.0309                                                                   
-
-16257  2026-07-06 18:54:20  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-16256  2026-07-06 18:54:05  whatsapp  saliente   34342575317160@lid   Tus pendientes:                                                                                                                                                                                         
-                                                                      1️⃣ iProt Seguridad                                                                                                                                                                                     
-                                                                      2️⃣ DDJJ 2025                                                                                                                                                                                           
-                                                                      3️⃣ Llamar a Juan de la Cruz                                                                                                                                                                            
-                                                                      4️⃣ Llamar a Poggetti                                                                                                                                                                                   
-                                                                      5️⃣ Presentar a Nico y Carlitos                                                                                                                                                                         
-
-16255  2026-07-06 18:54:05  sistema   interno                         claude_call whatsapp: 9961ms prompt=6988c raw=5925c in=2t(cache_read=0 new=82573) out=230t ttfb=1448ms api=7880ms turnos=1 $0.3131                                                                      
-
-16254  2026-07-06 18:53:57  whatsapp  entrante   5491167859758@c.us   Queria saber si Diego pudo evaluar la propuesta                                                                                                                                                         
