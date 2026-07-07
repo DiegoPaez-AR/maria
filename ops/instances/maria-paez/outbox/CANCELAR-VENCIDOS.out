@@ -1,0 +1,25 @@
+# ejecutado: 2026-07-07T19:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Cancelar recordatorios "En 15min" ya vencidos antes del re-scan del QR
+#   # (la ráfaga post-reconexión probablemente mató la sesión nueva).
+#   set -e
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== vencidos pendientes =="
+#   sqlite3 "$DB" "SELECT id, cuando, substr(texto,1,50) FROM programados WHERE enviado=0 AND cuando <= datetime('now');"
+#   sqlite3 "$DB" "UPDATE programados SET enviado=1, metadata_json=json_set(COALESCE(metadata_json,'{}'),'\$.cancelado','vencido durante bloqueo WA 2026-07-07') WHERE enviado=0 AND cuando <= datetime('now');"
+#   echo "== cancelados: $(sqlite3 "$DB" "SELECT changes();") =="
+#   echo "== quedan pendientes =="
+#   sqlite3 "$DB" "SELECT id, cuando, substr(texto,1,50) FROM programados WHERE enviado=0;"
+
+# ───── output ─────
+== vencidos pendientes ==
+== cancelados: 0 ==
+== quedan pendientes ==
+761|2026-08-06T12:00:00.000Z|🎭 Recordatorio: mañana tenés *Teatro* de 20 a 23 h
+860|2026-07-07T15:45:00.000Z|⏰ *En 15min*: guillermina (01:00 p. m.)
+861|2026-07-07T18:15:00.000Z|⏰ *En 15min*: Personal (03:30 p. m.)
+
+# exit=0
