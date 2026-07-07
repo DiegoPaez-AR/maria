@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+ST=/root/secretaria/state/maria-paez
+touch "$ST/wa-apagado"
+rm -f "$ST/wa-retry-after"
+rm -rf "$ST/.wwebjs_auth/session" 2>/dev/null
+cd /root/secretaria && pm2 restart maria-paez --update-env >/dev/null 2>&1
+sleep 5
+pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+echo "wa-apagado: $(ls $ST/wa-apagado)"
