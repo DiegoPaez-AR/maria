@@ -683,10 +683,31 @@ async function buscarMensajesCon(email, { dias = 14, max = 50 } = {}) {
  *
  * Devuelve { id, threadId } del mensaje enviado.
  */
+// ── Firma con canal Telegram (2026-07-07, pedido Diego) ────────────────────
+// Va en TODOS los emails salientes: es la vía para que un tercero (que por
+// Telegram no podemos iniciar nosotros) abra el chat con el bot él mismo.
+function _conFirmaTG(texto) {
+  const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
+  if (!user) return texto;
+  const link = `https://t.me/${user}`;
+  if (String(texto).includes(link)) return texto; // no duplicar
+  return `${texto}\n\n—\n💬 Telegram: ${link}`;
+}
+function _conFirmaTGHtml(html) {
+  const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
+  if (!user) return html;
+  const link = `https://t.me/${user}`;
+  if (String(html).includes(link)) return html;
+  const firma = `<p style="color:#777;font-size:13px">—<br>💬 Telegram: <a href="${link}">${link}</a></p>`;
+  return /<\/body>/i.test(html) ? html.replace(/<\/body>/i, firma + '</body>') : html + firma;
+}
+
 async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
   if (!to)                                      throw new Error('enviarEmail: falta "to"');
   if (asunto === undefined || asunto === null)  throw new Error('enviarEmail: falta "asunto"');
   if (texto  === undefined || texto  === null)  throw new Error('enviarEmail: falta "texto"');
+  texto = _conFirmaTG(texto);
+  if (html) html = _conFirmaTGHtml(html);
 
   const auth = await autenticar();
 
@@ -751,6 +772,7 @@ async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
  */
 async function responderEmail(messageId, textoRespuesta, opts = {}) {
   const { replyAll = false, cc: ccOverride } = opts;
+  textoRespuesta = _conFirmaTG(textoRespuesta);
   const auth = await autenticar();
   const original = await leerEmail(messageId);
 

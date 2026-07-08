@@ -22,7 +22,7 @@ const seguridad = require('./seguridad');
 const turnState = require('./turn-state');
 const vinculos = require('./telegram-vinculos');
 const { construirPrompt } = require('./prompt-builder');
-const { invocarClaudeJSONConConsultas } = require('./claude-client');
+const { invocarClaudeJSONConConsultas, invocarClaudeJSON } = require('./claude-client');
 const { transcribirBuffer } = require('./transcribir');
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -201,9 +201,124 @@ async function _procesarTurno(usuario, chatId, texto, attachmentPath = null) {
   }
 }
 
+// ── Terceros por Telegram (2026-07-07, pedido Diego) ───────────────────────
+// Un no-vinculado puede ser un TERCERO con quien Maria coordina (le llegó el
+// link t.me por la firma de email). Pre-pass LLM barato decide si el mensaje
+// encaja con alguna gestión abierta; si sí, el turno corre por el pipeline
+// del usuario correspondiente con marca de tercero. Bot API no permite
+// iniciar chats: esto cubre SOLO el sentido tercero→Maria.
+const _prepassPorChat = new Map(); // chatId -> { ts último, cuentaDia, dia }
+const PREPASS_MIN_MS = 60_000;
+const PREPASS_MAX_DIA = 10;
+
+function _prepassPermitido(chatId) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  const e = _prepassPorChat.get(chatId) || { ts: 0, cuenta: 0, dia: hoy };
+  if (e.dia !== hoy) { e.cuenta = 0; e.dia = hoy; }
+  if (Date.now() - e.ts < PREPASS_MIN_MS || e.cuenta >= PREPASS_MAX_DIA) return false;
+  e.ts = Date.now(); e.cuenta++;
+  _prepassPorChat.set(chatId, e);
+  return true;
+}
+
+async function _prepassTercero(chatId, remitente, texto) {
+  if (!_prepassPermitido(chatId)) return null;
+  const activos = usuarios.listarActivos();
+  const lineasPend = [];
+  for (const u of activos) {
+    let pends = [];
+    try { pends = mem.listarPendientes(u.id); } catch {}
+    for (const p of pends) {
+      if (p.disparador === 'trigger_externo' && p.estado === 'abierto') {
+        lineasPend.push(`- usuario_id=${u.id} (${u.nombre}): "${String(p.desc).slice(0, 160)}"`);
+      }
+    }
+  }
+  const nombreTG = [remitente?.first_name, remitente?.last_name].filter(Boolean).join(' ') || '(sin nombre)';
+  const userTG = remitente?.username ? '@' + remitente.username : '(sin username)';
+  const prompt = [
+    `Sos el clasificador de remitentes desconocidos del bot de Telegram de ${process.env.ASISTENTE_NOMBRE || 'Maria'} (asistente ejecutiva).`,
+    `Alguien que NO es usuario vinculado escribió al bot. Puede ser: (a) un tercero con quien Maria está coordinando algo a pedido de un usuario (le llegó el link del bot por email), (b) uno de los usuarios activos que todavía no se vinculó, o (c) alguien sin relación.`,
+    ``,
+    `Remitente Telegram: nombre "${nombreTG}", username ${userTG}.`,
+    `Mensaje: """${String(texto).slice(0, 800)}"""`,
+    ``,
+    `Usuarios activos: ${activos.map(u => `id=${u.id} ${u.nombre}`).join(' · ') || '(ninguno)'}`,
+    `Gestiones abiertas esperando respuesta de un tercero:`,
+    lineasPend.length ? lineasPend.join('\n') : '(ninguna)',
+    ``,
+    `Respondé SOLO un JSON:`,
+    `{"tipo":"tercero_de_usuario","usuario_id":<id>,"razon":"<por qué encaja, 1 frase>"} — si el mensaje o la identidad del remitente encaja CLARAMENTE con una gestión abierta o con algo que dice venir a coordinar con un usuario concreto.`,
+    `{"tipo":"posible_usuario"} — si el remitente parece SER uno de los usuarios activos.`,
+    `{"tipo":"desconocido"} — sin señal clara. ANTE LA DUDA, "desconocido". No adivines.`,
+  ].join('\n');
+  try {
+    const { json } = await invocarClaudeJSON(prompt, { timeoutMs: 60_000, audit: { usuarioId: null, canal: 'tg-prepass' } });
+    if (json && json.tipo === 'tercero_de_usuario' && json.usuario_id) {
+      const u = usuarios.obtener(Number(json.usuario_id));
+      if (u) return { tipo: 'tercero_de_usuario', usuario: u, razon: json.razon || null };
+      return null;
+    }
+    return json || null;
+  } catch (e) {
+    console.warn('[TG] pre-pass tercero falló:', e.message);
+    return null;
+  }
+}
+
+async function _procesarTurnoTercero(usuario, chatId, remitente, texto, razon) {
+  const startTs = Date.now();
+  const chatKey = 'telegram:' + chatId;
+  turnState.setLastInbound(chatKey, startTs);
+  const nombreTG = [remitente?.first_name, remitente?.last_name].filter(Boolean).join(' ') || chatKey;
+
+  const rl = seguridad.verificarRateLimit({ usuarioId: usuario.id });
+  if (!rl.ok) return;
+  const motivoInj = seguridad.detectarInjection(texto);
+  if (motivoInj) {
+    mem.logSecurityEvent({ usuarioId: usuario.id, canal: 'telegram',
+      motivo: `injection_attempt (tercero): ${motivoInj}`, body: texto, extra: { chatId } });
+  }
+
+  mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'entrante',
+    de: chatKey, nombre: nombreTG, cuerpo: texto,
+    metadata: { tipo: 'tg_tercero', razon, chatId } });
+
+  const entrada = { de: chatKey, nombre: nombreTG, cuerpo: texto,
+    contextoRemitente: { esTercero: true, razon, via: 'llm', identificadoComo: 'tercero_de_usuario' } };
+  const prompt = await construirPrompt({ usuario, canal: 'telegram', entrada });
+  let json;
+  try {
+    ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, {
+      audit: { usuarioId: usuario.id, canal: 'telegram', chatKey, turnStartTs: startTs, turnoTercero: true },
+      sesion: 'off',
+    }));
+  } catch (err) {
+    console.error(`[TG/tercero→${usuario.nombre}] Claude falló:`, err.message);
+    return;
+  }
+
+  const alTercero = (json?.respuesta_a_remitente || '').trim();
+  const alUsuario = (json?.respuesta_a_usuario || '').trim();
+  if (alTercero) {
+    await enviarTG(chatId, alTercero);
+    mem.log({ usuarioId: usuario.id, canal: 'telegram', direccion: 'saliente',
+      de: chatKey, nombre: nombreTG, cuerpo: alTercero, metadata: { tipo: 'tg_tercero_respuesta' } });
+  }
+  if (alUsuario) {
+    try {
+      const waSend = require('./wa-send'); // lazy: evita ciclos
+      await waSend.enviarWAUsuario(null, usuario, alUsuario, { tag: `tg-tercero/${usuario.nombre}` });
+    } catch (e) {
+      console.warn(`[TG/tercero] no pude avisar a ${usuario.nombre}:`, e.message);
+    }
+  }
+  console.log(`[TG] turno tercero (${nombreTG}) en contexto de ${usuario.nombre} — razón: ${razon || 's/d'}`);
+}
+
 // ── Mensajes de chats no vinculados ────────────────────────────────────────
 const _avisadosNoVinculados = new Map(); // chatId -> ts último aviso (anti-spam 1h)
-async function _procesarNoVinculado(chatId, texto) {
+async function _procesarNoVinculado(chatId, texto, remitente = null) {
   const codigo = String(texto || '').trim();
   if (/^\d{6}$/.test(codigo)) {
     const usuarioId = vinculos.consumir(codigo);
@@ -218,10 +333,18 @@ async function _procesarNoVinculado(chatId, texto) {
     await enviarTG(chatId, 'Ese código no es válido o expiró. Pedime uno nuevo por WhatsApp ("quiero vincular telegram") y mandámelo acá en menos de 15 minutos.');
     return;
   }
+  // ¿Tercero de una gestión abierta? (2026-07-07)
+  const decision = await _prepassTercero(chatId, remitente, texto);
+  if (decision && decision.tipo === 'tercero_de_usuario' && decision.usuario) {
+    await _procesarTurnoTercero(decision.usuario, chatId, remitente, texto, decision.razon);
+    return;
+  }
+
   const ultimo = _avisadosNoVinculados.get(chatId) || 0;
   if (Date.now() - ultimo > 3600_000) {
     _avisadosNoVinculados.set(chatId, Date.now());
-    await enviarTG(chatId, 'Hola 👋 Este es el canal de respaldo de Maria para sus usuarios.\n\nSi sos usuario, tocá el botón de acá abajo y quedamos vinculados al toque (tiene que ser el mismo número que usás en WhatsApp). Si tu Telegram usa otro número, pedile a Maria por WhatsApp "quiero vincular telegram" y mandame el código.', _KB_COMPARTIR);
+    const NOMBRE = process.env.ASISTENTE_NOMBRE || 'Maria';
+    await enviarTG(chatId, `Hola 👋 Soy ${NOMBRE}, asistente.\n\n· Si sos usuario mío, tocá el botón de acá abajo y quedamos vinculados al toque (mismo número que usás en WhatsApp). Si tu Telegram usa otro número, pedime el código por WhatsApp ("quiero vincular telegram") y mandámelo acá.\n\n· Si venís a coordinar algo con alguno de mis usuarios, contame quién sos y de qué se trata, y sigo yo.`, _KB_COMPARTIR);
   }
 }
 
@@ -312,7 +435,7 @@ async function _loop(waEstado) {
         if (!texto.trim()) continue; // resto de media (video/otros docs) sigue ignorado
         try {
           if (u) await _procesarTurno(u, chatId, texto, adjunto ? adjunto.path : null);
-          else await _procesarNoVinculado(chatId, texto);
+          else await _procesarNoVinculado(chatId, texto, msg.from || null);
         } catch (e) {
           console.error(`[TG] procesando chat ${chatId}:`, e.message);
         } finally {

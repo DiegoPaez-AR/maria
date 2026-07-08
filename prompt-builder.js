@@ -366,6 +366,13 @@ function _remitenteEsUsuarioAtendido({ canal, entrada, usuario }) {
     if (!remEmail || !usrEmail) return true;
     return remEmail === usrEmail;
   }
+  if (canal === 'telegram') {
+    // entrada.de = 'telegram:<chat_id>'. Si no coincide con el chat vinculado
+    // del usuario, es un TERCERO escribiendo al bot (2026-07-07).
+    const de = entrada.de || '';
+    if (!de) return true;
+    return de === `telegram:${usuario.telegram_chat_id || ''}`;
+  }
   return true;
 }
 
