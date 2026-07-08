@@ -1,0 +1,57 @@
+# ejecutado: 2026-07-07T22:53:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   node - <<'NODE'
+#   (async () => {
+#     const g = require('/root/secretaria/google');
+#     const auth = await g.autenticar();
+#     const { google } = require('googleapis');
+#     const gm = google.gmail({ version: 'v1', auth });
+#     const list = await gm.users.messages.list({ userId: 'me', q: 'in:sent to:diego@paez.is newer_than:1d', maxResults: 3 });
+#     for (const m of (list.data.messages || [])) {
+#       const full = await gm.users.messages.get({ userId: 'me', id: m.id, format: 'full' });
+#       const h = Object.fromEntries(full.data.payload.headers.map(x => [x.name.toLowerCase(), x.value]));
+#       let body = '';
+#       const p = full.data.payload;
+#       const part = p.parts ? p.parts.find(x => x.mimeType === 'text/plain') : p;
+#       if (part && part.body && part.body.data) body = Buffer.from(part.body.data, 'base64').toString('utf8');
+#       console.log('---', h.subject, '|', h.date);
+#       console.log('tiene t.me:', body.includes('t.me') ? 'SÍ' : 'NO');
+#       console.log('últimas líneas:'); console.log(body.trim().split('\n').slice(-6).join('\n'));
+#     }
+#   })().catch(e => { console.error('FALLO:', e.message); process.exit(1); });
+#   NODE
+
+# ───── output ─────
+--- Re: pedido | Tue, 7 Jul 2026 20:49:40 -0500
+tiene t.me: SÍ
+últimas líneas:
+Email: maria.paez@intensa.io
+
+THIS MESSAGE IS CONFIDENTIAL. It may also contain information that is privileged or otherwise legally exempt from disclosure. If you have received it by mistake please let us know by e-mail immediately and delete it from your system; should also not copy the message nor disclose its contents to anyone. Many thanks.
+
+—
+💬 Telegram: https://t.me/MariaPaezAI_bot
+--- ⚠️ Maria Paez: WhatsApp desconectado | Tue, 7 Jul 2026 16:54:59 -0500
+tiene t.me: NO
+últimas líneas:
+2) Cuando aparezca un QR, escaneá desde tu celular en WhatsApp → Dispositivos vinculados → Vincular dispositivo.
+
+Mientras tanto no recibís ni respondés mensajes por WhatsApp.
+
+--
+Maria Paez
+--- ⚠️ Maria Paez: WhatsApp desconectado | Tue, 7 Jul 2026 06:33:57 -0500
+tiene t.me: NO
+últimas líneas:
+2) Cuando aparezca un QR, escaneá desde tu celular en WhatsApp → Dispositivos vinculados → Vincular dispositivo.
+
+Mientras tanto no recibís ni respondés mensajes por WhatsApp.
+
+--
+Maria Paez
+
+# exit=0
