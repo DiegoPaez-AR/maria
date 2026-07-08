@@ -1,0 +1,28 @@
+#!/bin/bash
+# Reporte diario trial MCP actions — 2026-07-08
+OUT="ops/instances/maria-paez/outbox/trial-mcp-0708.out"
+{
+echo "=== fecha VPS: $(date -Is) ==="
+echo "=== MARIA_DB: $MARIA_DB ==="
+echo "--- flag en .conf ---"
+grep -n MARIA_MCP_ACTIONS /root/secretaria/config/instances/maria-paez.conf || echo "(sin línea MARIA_MCP_ACTIONS)"
+echo "--- mcp_fallback 24h ---"
+sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='mcp_fallback' AND timestamp >= datetime('now','-24 hours');"
+echo "--- mcp_fallback detalle ---"
+sqlite3 "$MARIA_DB" "SELECT timestamp, de, substr(cuerpo,1,300) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='mcp_fallback' AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp;"
+echo "--- acciones OK 24h ---"
+sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción ejecutada%' AND timestamp >= datetime('now','-24 hours');"
+echo "--- acciones OK por tipo ---"
+sqlite3 "$MARIA_DB" "SELECT substr(cuerpo,1,60), COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción ejecutada%' AND timestamp >= datetime('now','-24 hours') GROUP BY 1 ORDER BY 2 DESC;"
+echo "--- acciones FALLÓ 24h ---"
+sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción FALLÓ%' AND timestamp >= datetime('now','-24 hours');"
+echo "--- fallas detalle ---"
+sqlite3 "$MARIA_DB" "SELECT timestamp, de, substr(cuerpo,1,300) FROM eventos WHERE cuerpo LIKE 'acción FALLÓ%' AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp;"
+echo "--- claude_call WA 24h ---"
+sqlite3 "$MARIA_DB" "SELECT COUNT(*) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='claude_call' AND json_extract(metadata_json,'\$.canal')='whatsapp' AND timestamp >= datetime('now','-24 hours');"
+echo "--- claude_call por canal 24h ---"
+sqlite3 "$MARIA_DB" "SELECT COALESCE(json_extract(metadata_json,'\$.canal'),'?'), COUNT(*) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='claude_call' AND timestamp >= datetime('now','-24 hours') GROUP BY 1;"
+echo "--- marker wa-apagado ---"
+ls -la /root/secretaria/state/maria-paez/wa-apagado 2>/dev/null || echo "(no existe)"
+echo "=== fin ==="
+} > "$OUT" 2>&1
