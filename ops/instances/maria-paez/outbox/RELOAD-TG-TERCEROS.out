@@ -1,0 +1,23 @@
+# ejecutado: 2026-07-07T22:39:20-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -e
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 6
+#   pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status'], 'restarts=', p['pm2_env']['restart_time']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   grep -c "_prepassTercero" /root/secretaria/telegram-handler.js
+#   grep -c "_conFirmaTG" /root/secretaria/google.js
+#   grep -c "telegram_chat_id" /root/secretaria/prompt-builder.js
+#   echo "TELEGRAM_BOT_USERNAME en conf: $(grep -c TELEGRAM_BOT_USERNAME /root/secretaria/config/secrets.conf 2>/dev/null || echo 0)"
+
+# ───── output ─────
+maria-paez online restarts= 205
+2
+5
+1
+TELEGRAM_BOT_USERNAME en conf: 2
+
+# exit=0
