@@ -690,8 +690,14 @@ function _conFirmaTG(texto) {
   const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
   if (!user) return texto;
   const link = `https://t.me/${user}`;
-  if (String(texto).includes(link)) return texto; // no duplicar
-  return `${texto}\n\n—\n💬 Telegram: ${link}`;
+  const t = String(texto);
+  if (t.includes(link)) return t; // no duplicar
+  // Preferencia (pedido Diego 2026-07-07): pegada a la línea "Email: ..." de
+  // la firma que redacta el LLM — al final del mail Gmail la colapsa tras
+  // los "···" y nadie la ve. Fallback: al final.
+  const reEmailLinea = new RegExp(`^(.*Email:\\s*${FROM_EMAIL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*)$`, 'mi');
+  if (reEmailLinea.test(t)) return t.replace(reEmailLinea, `$1\n💬 Telegram: ${link}`);
+  return `${t}\n\n—\n💬 Telegram: ${link}`;
 }
 function _conFirmaTGHtml(html) {
   const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
