@@ -1,0 +1,64 @@
+# ejecutado: 2026-07-09T09:04:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Reporte diario trial MCP actions — últimas 24h
+#   DB="$MARIA_DB"
+#   echo "== DB: $DB =="
+#   [ -f "$DB" ] || { echo "ERROR: DB no existe"; exit 1; }
+#   Q(){ sqlite3 "$DB" "$1"; }
+#   
+#   echo "== mcp_fallback 24h =="
+#   Q "SELECT COUNT(*) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='mcp_fallback' AND timestamp >= datetime('now','-24 hours');"
+#   echo "-- detalle (si hay) --"
+#   Q "SELECT timestamp, substr(cuerpo,1,300) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='mcp_fallback' AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp DESC LIMIT 10;"
+#   
+#   echo "== acciones ejecutadas OK 24h =="
+#   Q "SELECT COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción ejecutada%' AND timestamp >= datetime('now','-24 hours');"
+#   echo "-- por tipo --"
+#   Q "SELECT substr(cuerpo,1,80), COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción ejecutada%' AND timestamp >= datetime('now','-24 hours') GROUP BY substr(cuerpo,1,80);"
+#   
+#   echo "== acciones FALLÓ 24h =="
+#   Q "SELECT COUNT(*) FROM eventos WHERE cuerpo LIKE 'acción FALLÓ%' AND timestamp >= datetime('now','-24 hours');"
+#   echo "-- detalle --"
+#   Q "SELECT timestamp, substr(cuerpo,1,300) FROM eventos WHERE cuerpo LIKE 'acción FALLÓ%' AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp DESC LIMIT 10;"
+#   
+#   echo "== flag en .conf =="
+#   grep -n MARIA_MCP_ACTIONS /root/secretaria/config/instances/maria-paez.conf || echo "(sin línea MARIA_MCP_ACTIONS en el .conf)"
+#   
+#   echo "== claude_call 24h por canal =="
+#   Q "SELECT COALESCE(json_extract(metadata_json,'\$.canal'),'?'), COUNT(*) FROM eventos WHERE json_extract(metadata_json,'\$.tipo')='claude_call' AND timestamp >= datetime('now','-24 hours') GROUP BY 1;"
+#   
+#   echo "== wa-apagado marker =="
+#   ls -la /root/secretaria/state/maria-paez/wa-apagado 2>/dev/null || echo "(sin marker wa-apagado)"
+
+# ───── output ─────
+== DB: /root/secretaria/state/maria-paez/db/maria.sqlite ==
+== mcp_fallback 24h ==
+0
+-- detalle (si hay) --
+== acciones ejecutadas OK 24h ==
+5
+-- por tipo --
+acción ejecutada: agregar_pendiente|1
+acción ejecutada: crear_evento|1
+acción ejecutada: quitar_pendiente|1
+acción ejecutada: responder_email|2
+== acciones FALLÓ 24h ==
+0
+-- detalle --
+== flag en .conf ==
+69:# MARIA_MCP_ACTIONS retirado 2026-07-03 — tools MCP es el único camino (killswitch eliminado del código)
+== claude_call 24h por canal ==
+enriquecer-contacto|12
+follow-ups|1
+gmail|3
+maria-worker|2
+moderacion|3
+telegram|3
+tg-prepass|1
+== wa-apagado marker ==
+-rw-r--r-- 1 root root 0 Jul  7 19:12 /root/secretaria/state/maria-paez/wa-apagado
+
+# exit=0
