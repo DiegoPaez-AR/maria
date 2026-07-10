@@ -214,12 +214,19 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
   let _qrLoopAlertado = false;
 
   let _qrCount = 0;
+  // ¿Hay sesión cacheada? Si NO la hay, alguien está esperando escanear un
+  // QR nuevo YA: silenciar rotaciones ahí es garantizar QRs vencidos en el
+  // log (incidente 2026-07-10: Diego escaneando QRs de 3 min). El anti-spam
+  // 1-de-5 queda solo para el caso sesión-cacheada-muerta en degradado.
+  const _authDir = process.env.WA_AUTH_DIR || '.wwebjs_auth';
+  const _sesionCacheada = fs.existsSync(path.join(_authDir, 'session'));
+
   client.on('qr', (qr) => {
     _qrCount++;
     // En modo degradado el QR rota cada ~20s por horas/días: imprimir TODOS
     // inunda logs y snapshots (2026-07-05). Imprimimos 1 de cada 5 (~2-4 min);
     // para escanear alcanza con esperar el próximo completo.
-    if (waEstado && waEstado.degradado && _qrCount % 5 !== 1) {
+    if (waEstado && waEstado.degradado && _sesionCacheada && _qrCount % 5 !== 1) {
       if (_qrCount % 5 === 2) console.log('[WA qr] rotando en silencio (modo degradado) — próximo QR completo en ~2-4 min');
     } else {
       console.log('[WA qr] escaneá este QR:');
