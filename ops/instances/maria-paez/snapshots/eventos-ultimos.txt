@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+23465  2026-07-10 15:53:43  sistema   interno                                    claude_call whatsapp: 66340ms prompt=8741c raw=23769c in=10t(cache_read=165450 new=43937) out=3206t ttfb=2096ms api=46016ms turnos=5 $0.2625                                                            
+
+23464  2026-07-10 15:53:39  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
+
+23463  2026-07-10 15:53:39  whatsapp  saliente   5491132317896@c.us              Hola! Soy Maria, la secretaria virtual de Diego Paez. No tengo tu contacto registrado — ¿con quién tengo el gusto y en qué te puedo ayudar?                                                             
+
+23462  2026-07-10 15:53:28  sistema   interno                                    claude_call moderacion: 6311ms prompt=1587c raw=6705c in=10t(cache_read=17396 new=5085) out=374t ttfb=1231ms api=5888ms turnos=1 $0.0104                                                                
+
+23461  2026-07-10 15:53:21  whatsapp  saliente   5491140793225@c.us              Hola! Gracias por el detalle, quedamos atentas entonces a que nos avisen cuando esté listo para coordinar la entrega e instalación. Cualquier novedad de su equipo hoy también la recibimos por acá. Sal
+
+23460  2026-07-10 15:53:11  sistema   interno                                    claude_call moderacion: 7122ms prompt=1653c raw=6570c in=10t(cache_read=0 new=22494) out=374t ttfb=1484ms api=6642ms turnos=1 $0.0305                                                                   
+
+23459  2026-07-10 15:53:04  whatsapp  saliente   5491165286555@c.us              Te cuento novedad de Paraná Muebles: Caterina (logística) me escribió detallando los ajustes que va a hacer Diseño en la biblioteca:                                                                    
+                                                                                                                                                                                                                                                                                         
+                                                                                 • Van a alinear la estantería con el mueble inferior para que no s                                                                                                                                      
+
 23458  2026-07-10 15:52:58  sistema   interno                                    acción ejecutada: buscar_contacto_global                                                                                                                                                                
 
 23457  2026-07-10 15:52:55  sistema   interno                                    acción FALLÓ: buscar_contacto_global — buscar_contacto_global: pasá al menos uno de nombre/whatsapp/email                                                                                               
@@ -190,17 +206,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 23367  2026-07-10 12:56:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
 
 23366  2026-07-10 12:55:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23365  2026-07-10 12:54:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23364  2026-07-10 12:53:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23363  2026-07-10 12:52:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23362  2026-07-10 12:51:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23361  2026-07-10 12:50:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23360  2026-07-10 12:49:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
-
-23359  2026-07-10 12:48:32  sistema   interno                                    morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)                                  
