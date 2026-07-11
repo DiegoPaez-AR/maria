@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-DB="${MARIA_DB:?falta MARIA_DB}"
-echo "== salientes junio con entrante del MISMO usuario_id en 24h previas (ventana aprox) =="
-sqlite3 "$DB" "SELECT COUNT(*) FROM eventos s WHERE s.canal='whatsapp' AND s.direccion='saliente' AND s.timestamp >= '2026-06-01' AND s.timestamp < '2026-07-01' AND s.usuario_id IS NOT NULL AND EXISTS (SELECT 1 FROM eventos e WHERE e.canal='whatsapp' AND e.direccion='entrante' AND e.usuario_id = s.usuario_id AND e.timestamp <= s.timestamp AND e.timestamp > datetime(s.timestamp,'-24 hours'));"
-echo "== 'sin tipo' con entrante mismo usuario en 1h previa (respuestas conversacionales) =="
-sqlite3 "$DB" "SELECT COUNT(*) FROM eventos s WHERE s.canal='whatsapp' AND s.direccion='saliente' AND s.timestamp >= '2026-06-01' AND s.timestamp < '2026-07-01' AND s.tipo IS NULL AND EXISTS (SELECT 1 FROM eventos e WHERE e.canal='whatsapp' AND e.direccion='entrante' AND e.usuario_id = s.usuario_id AND e.timestamp <= s.timestamp AND e.timestamp > datetime(s.timestamp,'-1 hours'));"
