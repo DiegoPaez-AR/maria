@@ -299,7 +299,9 @@ function crearClienteWA({ onReady, waEstado = null } = {}) {
   // "detached Frame" / "Target closed" y forzamos exit — pm2 levanta.
   function _esFrameMuerto(err) {
     const m = String(err?.message || err || '');
-    return /detached Frame|Target closed|Session closed|Execution context was destroyed|Protocol error.*\b(Runtime|Page)\b/i.test(m);
+    // + callFunctionOn/protocolTimeout (2026-07-11): la firma de los 3 cuelgues
+    // de Chromium sobre el túnel — antes no matcheaba y WA quedaba zombie horas.
+    return /detached Frame|Target closed|Session closed|Execution context was destroyed|Protocol error.*\b(Runtime|Page)\b|callFunctionOn timed out|protocolTimeout/i.test(m);
   }
   let _suicidandose = false;
   function _suicidarSiFrameMuerto(err, origen) {

@@ -37,11 +37,45 @@ function embudoWA(fn) {
   return p;
 }
 
+// ── OWNER 100% TELEGRAM (2026-07-11, pedido Diego) ─────────────────────────
+// Ningún TEXTO sale al WhatsApp del owner: todo lo que apunte a su wid se
+// re-rutea a Telegram (fallback email; WA queda como último recurso para no
+// dejarlo sin aviso). Media (no-string) sigue por WA: TG del bot no puede
+// recibir objetos MessageMedia de wwebjs.
+async function _reruteoOwner(destino, contenido) {
+  if (typeof contenido !== 'string') return null;
+  let owner = null;
+  try { owner = usuarios.obtenerOwner(); } catch { return null; }
+  if (!owner) return null;
+  if (destino !== owner.wa_lid && destino !== owner.wa_cus) return null;
+  if (owner.telegram_chat_id && process.env.TELEGRAM_BOT_TOKEN) {
+    try {
+      const { enviarTG } = require('./telegram-handler'); // lazy: evita ciclos
+      await enviarTG(owner.telegram_chat_id, contenido);
+      console.log('[owner→TG] mensaje al owner re-ruteado a Telegram');
+      return { id: null, _reruteado: 'telegram' };
+    } catch (e) { console.warn('[owner→TG] TG falló, pruebo email:', e.message); }
+  }
+  if (owner.email) {
+    try {
+      const g = require('./google'); // lazy
+      await g.enviarEmail({ to: owner.email, asunto: `${process.env.ASISTENTE_NOMBRE || 'Maria'} — aviso`, texto: contenido });
+      console.log('[owner→TG] re-ruteado a EMAIL (TG no disponible)');
+      return { id: null, _reruteado: 'gmail' };
+    } catch (e) { console.warn('[owner→TG] email también falló — sigue por WA:', e.message); }
+  }
+  return null;
+}
+
 /** Envuelve client.sendMessage con el embudo. Llamar UNA vez al crear el cliente. */
 function aplicarEmbudo(client) {
   if (!client || client._embudoAplicado) return client;
   const orig = client.sendMessage.bind(client);
-  client.sendMessage = (...args) => embudoWA(() => orig(...args));
+  client.sendMessage = async (...args) => {
+    const r = await _reruteoOwner(args[0], args[1]);
+    if (r) return r;
+    return embudoWA(() => orig(...args));
+  };
   client._embudoAplicado = true;
   console.log(`[wa-embudo] activo: min ${EMBUDO_MS / 1000}s + jitter ${EMBUDO_JITTER_MS / 1000}s entre envíos WA`);
   return client;
