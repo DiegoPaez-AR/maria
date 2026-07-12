@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo                                                                                                                                                                
 -----  -------------------  --------  ---------  --------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+23886  2026-07-12 14:22:37  sistema   interno                          claude_call enriquecer-contacto: 15934ms prompt=623c raw=18478c in=6t(cache_read=16301 new=33898) out=253t ttfb=1414ms api=19801ms turnos=4 $0.1845                   
+
+23885  2026-07-12 14:22:26  telegram  saliente   telegram:590589920    Le agregué también el mail a Anabel Fúnez en la libreta.                                                                                                              
+
+23884  2026-07-12 14:22:25  sistema   interno                          claude_call telegram: 14214ms prompt=77495c raw=9144c in=6t(cache_read=69165 new=85063) out=417t ttfb=1487ms api=13617ms turnos=3 $0.3547                             
+
+23883  2026-07-12 14:22:21  sistema   interno                          acción ejecutada: upsert_contacto                                                                                                                                     
+
+23882  2026-07-12 14:22:11  telegram  entrante   telegram:590589920    anabelfnz@gmail.com                                                                                                                                                   
+
+23881  2026-07-12 14:22:11  telegram  saliente   telegram:590589920    Le guardé ese número a Anabel Fúnez en la libreta.                                                                                                                    
+
+23880  2026-07-12 14:22:10  sistema   interno                          claude_call telegram: 22577ms prompt=77734c raw=11929c in=6t(cache_read=70082 new=86030) out=1227t ttfb=1421ms api=21834ms turnos=3 $0.3709                           
+
+23879  2026-07-12 14:22:07  sistema   interno                          acción ejecutada: upsert_contacto                                                                                                                                     
+
 23878  2026-07-12 14:21:48  telegram  entrante   telegram:590589920    +54 911 40269140                                                                                                                                                      
 
 23877  2026-07-12 14:21:47  telegram  saliente   telegram:590589920    Listo, le guardé el cumple de hoy (12/07) a Anabel Fúnez.                                                                                                             
@@ -184,19 +200,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo
 23788  2026-07-12 12:35:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
 23787  2026-07-12 12:34:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23786  2026-07-12 12:33:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23785  2026-07-12 12:32:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23784  2026-07-12 12:31:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23783  2026-07-12 12:30:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23782  2026-07-12 12:29:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23781  2026-07-12 12:28:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23780  2026-07-12 12:27:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
-
-23779  2026-07-12 12:26:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
