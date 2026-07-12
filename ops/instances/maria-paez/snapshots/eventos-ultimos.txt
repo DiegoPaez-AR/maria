@@ -1,202 +1,205 @@
-id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo                                                                                                                                                                
------  -------------------  --------  ---------  --------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-23888  2026-07-12 14:42:22  sistema   interno                          claude_call memoria-curada: 17941ms prompt=4918c raw=10472c in=2t(cache_read=0 new=17331) out=1224t ttfb=1399ms api=17477ms turnos=1 $0.0854                          
+id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                
+-----  -------------------  --------  ---------  ----------------------------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+23890  2026-07-12 15:12:36  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                    
 
-23887  2026-07-12 14:42:04  sistema   interno                          poda-eventos: 38 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                     
+23889  2026-07-12 15:12:06  gmail     entrante   gabriela echaniz <gabyechaniz@gmail.com>  Hola María, lo que gestionaste para mí ya está ok, me ha me dió el material                                                                                           
+                                                                                           y Paraná me respondió. Gracias!                                                                                                                                       
+                                                                                           Quería pedirte si me haces una búsqueda de casas para comprar en San Andrés                                                                                           
+                                                                                           o Ballester d                                                                                                                                                         
 
-23886  2026-07-12 14:22:37  sistema   interno                          claude_call enriquecer-contacto: 15934ms prompt=623c raw=18478c in=6t(cache_read=16301 new=33898) out=253t ttfb=1414ms api=19801ms turnos=4 $0.1845                   
+23888  2026-07-12 14:42:22  sistema   interno                                              claude_call memoria-curada: 17941ms prompt=4918c raw=10472c in=2t(cache_read=0 new=17331) out=1224t ttfb=1399ms api=17477ms turnos=1 $0.0854                          
 
-23885  2026-07-12 14:22:26  telegram  saliente   telegram:590589920    Le agregué también el mail a Anabel Fúnez en la libreta.                                                                                                              
+23887  2026-07-12 14:42:04  sistema   interno                                              poda-eventos: 38 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                     
 
-23884  2026-07-12 14:22:25  sistema   interno                          claude_call telegram: 14214ms prompt=77495c raw=9144c in=6t(cache_read=69165 new=85063) out=417t ttfb=1487ms api=13617ms turnos=3 $0.3547                             
+23886  2026-07-12 14:22:37  sistema   interno                                              claude_call enriquecer-contacto: 15934ms prompt=623c raw=18478c in=6t(cache_read=16301 new=33898) out=253t ttfb=1414ms api=19801ms turnos=4 $0.1845                   
 
-23883  2026-07-12 14:22:21  sistema   interno                          acción ejecutada: upsert_contacto                                                                                                                                     
+23885  2026-07-12 14:22:26  telegram  saliente   telegram:590589920                        Le agregué también el mail a Anabel Fúnez en la libreta.                                                                                                              
 
-23882  2026-07-12 14:22:11  telegram  entrante   telegram:590589920    anabelfnz@gmail.com                                                                                                                                                   
+23884  2026-07-12 14:22:25  sistema   interno                                              claude_call telegram: 14214ms prompt=77495c raw=9144c in=6t(cache_read=69165 new=85063) out=417t ttfb=1487ms api=13617ms turnos=3 $0.3547                             
 
-23881  2026-07-12 14:22:11  telegram  saliente   telegram:590589920    Le guardé ese número a Anabel Fúnez en la libreta.                                                                                                                    
+23883  2026-07-12 14:22:21  sistema   interno                                              acción ejecutada: upsert_contacto                                                                                                                                     
 
-23880  2026-07-12 14:22:10  sistema   interno                          claude_call telegram: 22577ms prompt=77734c raw=11929c in=6t(cache_read=70082 new=86030) out=1227t ttfb=1421ms api=21834ms turnos=3 $0.3709                           
+23882  2026-07-12 14:22:11  telegram  entrante   telegram:590589920                        anabelfnz@gmail.com                                                                                                                                                   
 
-23879  2026-07-12 14:22:07  sistema   interno                          acción ejecutada: upsert_contacto                                                                                                                                     
+23881  2026-07-12 14:22:11  telegram  saliente   telegram:590589920                        Le guardé ese número a Anabel Fúnez en la libreta.                                                                                                                    
 
-23878  2026-07-12 14:21:48  telegram  entrante   telegram:590589920    +54 911 40269140                                                                                                                                                      
+23880  2026-07-12 14:22:10  sistema   interno                                              claude_call telegram: 22577ms prompt=77734c raw=11929c in=6t(cache_read=70082 new=86030) out=1227t ttfb=1421ms api=21834ms turnos=3 $0.3709                           
 
-23877  2026-07-12 14:21:47  telegram  saliente   telegram:590589920    Listo, le guardé el cumple de hoy (12/07) a Anabel Fúnez.                                                                                                             
+23879  2026-07-12 14:22:07  sistema   interno                                              acción ejecutada: upsert_contacto                                                                                                                                     
 
-23876  2026-07-12 14:21:47  sistema   interno                          claude_call telegram: 27318ms prompt=78475c raw=14831c in=6t(cache_read=52877 new=104871) out=1665t ttfb=1420ms api=29162ms turnos=3 $0.4432                          
+23878  2026-07-12 14:21:48  telegram  entrante   telegram:590589920                        +54 911 40269140                                                                                                                                                      
 
-23875  2026-07-12 14:21:44  sistema   interno                          acción ejecutada: set_cumple_contacto                                                                                                                                 
+23877  2026-07-12 14:21:47  telegram  saliente   telegram:590589920                        Listo, le guardé el cumple de hoy (12/07) a Anabel Fúnez.                                                                                                             
 
-23874  2026-07-12 14:21:19  telegram  entrante   telegram:590589920    Hoy cumple Anabel Fúnez, agéndalo                                                                                                                                     
+23876  2026-07-12 14:21:47  sistema   interno                                              claude_call telegram: 27318ms prompt=78475c raw=14831c in=6t(cache_read=52877 new=104871) out=1665t ttfb=1420ms api=29162ms turnos=3 $0.4432                          
 
-23873  2026-07-12 13:59:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23875  2026-07-12 14:21:44  sistema   interno                                              acción ejecutada: set_cumple_contacto                                                                                                                                 
 
-23872  2026-07-12 13:58:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23874  2026-07-12 14:21:19  telegram  entrante   telegram:590589920                        Hoy cumple Anabel Fúnez, agéndalo                                                                                                                                     
 
-23871  2026-07-12 13:57:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23873  2026-07-12 13:59:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23870  2026-07-12 13:56:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23872  2026-07-12 13:58:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23869  2026-07-12 13:55:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23871  2026-07-12 13:57:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23868  2026-07-12 13:54:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23870  2026-07-12 13:56:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23867  2026-07-12 13:53:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23869  2026-07-12 13:55:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23866  2026-07-12 13:52:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23868  2026-07-12 13:54:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23865  2026-07-12 13:51:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23867  2026-07-12 13:53:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23864  2026-07-12 13:50:04  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23866  2026-07-12 13:52:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23863  2026-07-12 13:49:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23865  2026-07-12 13:51:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23862  2026-07-12 13:48:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23864  2026-07-12 13:50:04  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23861  2026-07-12 13:47:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23863  2026-07-12 13:49:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23860  2026-07-12 13:46:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23862  2026-07-12 13:48:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23859  2026-07-12 13:45:04  gmail     saliente   doris@capurro.com.ar  ⏰ *En 15min*:  Global AI - 3rd SESSION - Automatizaciones y Agentes #2 (11:00 a. m.)                                                                                  
-                                                                       Estimados/as participantes, Aquí encontrarán el link para la sesión del domingo. Les agradecemos sean puntuales. <a                                                   
+23861  2026-07-12 13:47:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23858  2026-07-12 13:45:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23860  2026-07-12 13:46:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23857  2026-07-12 13:44:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23859  2026-07-12 13:45:04  gmail     saliente   doris@capurro.com.ar                      ⏰ *En 15min*:  Global AI - 3rd SESSION - Automatizaciones y Agentes #2 (11:00 a. m.)                                                                                  
+                                                                                           Estimados/as participantes, Aquí encontrarán el link para la sesión del domingo. Les agradecemos sean puntuales. <a                                                   
 
-23856  2026-07-12 13:43:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23858  2026-07-12 13:45:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23855  2026-07-12 13:42:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23857  2026-07-12 13:44:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23854  2026-07-12 13:41:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23856  2026-07-12 13:43:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23853  2026-07-12 13:40:04  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23855  2026-07-12 13:42:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23852  2026-07-12 13:39:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23854  2026-07-12 13:41:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23851  2026-07-12 13:38:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23853  2026-07-12 13:40:04  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23850  2026-07-12 13:37:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23852  2026-07-12 13:39:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23849  2026-07-12 13:36:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23851  2026-07-12 13:38:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23848  2026-07-12 13:35:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23850  2026-07-12 13:37:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23847  2026-07-12 13:34:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23849  2026-07-12 13:36:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23846  2026-07-12 13:33:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23848  2026-07-12 13:35:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23845  2026-07-12 13:32:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23847  2026-07-12 13:34:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23844  2026-07-12 13:31:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23846  2026-07-12 13:33:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23843  2026-07-12 13:30:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23845  2026-07-12 13:32:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23842  2026-07-12 13:29:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23844  2026-07-12 13:31:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23841  2026-07-12 13:28:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23843  2026-07-12 13:30:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23840  2026-07-12 13:27:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23842  2026-07-12 13:29:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23839  2026-07-12 13:26:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23841  2026-07-12 13:28:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23838  2026-07-12 13:25:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23840  2026-07-12 13:27:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23837  2026-07-12 13:24:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23839  2026-07-12 13:26:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23836  2026-07-12 13:23:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23838  2026-07-12 13:25:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23835  2026-07-12 13:22:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23837  2026-07-12 13:24:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23834  2026-07-12 13:21:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23836  2026-07-12 13:23:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23833  2026-07-12 13:20:04  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23835  2026-07-12 13:22:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23832  2026-07-12 13:19:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23834  2026-07-12 13:21:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23831  2026-07-12 13:18:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23833  2026-07-12 13:20:04  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23830  2026-07-12 13:17:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23832  2026-07-12 13:19:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23829  2026-07-12 13:16:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23831  2026-07-12 13:18:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23828  2026-07-12 13:15:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23830  2026-07-12 13:17:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23827  2026-07-12 13:14:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23829  2026-07-12 13:16:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23826  2026-07-12 13:13:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23828  2026-07-12 13:15:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23825  2026-07-12 13:12:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23827  2026-07-12 13:14:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23824  2026-07-12 13:11:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23826  2026-07-12 13:13:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23823  2026-07-12 13:10:04  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23825  2026-07-12 13:12:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23822  2026-07-12 13:09:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23824  2026-07-12 13:11:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23821  2026-07-12 13:08:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23823  2026-07-12 13:10:04  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23820  2026-07-12 13:07:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23822  2026-07-12 13:09:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23819  2026-07-12 13:06:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23821  2026-07-12 13:08:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23818  2026-07-12 13:05:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23820  2026-07-12 13:07:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23817  2026-07-12 13:04:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23819  2026-07-12 13:06:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23816  2026-07-12 13:03:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23818  2026-07-12 13:05:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23815  2026-07-12 13:02:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23817  2026-07-12 13:04:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23814  2026-07-12 13:01:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23816  2026-07-12 13:03:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23813  2026-07-12 13:00:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23815  2026-07-12 13:02:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23812  2026-07-12 12:59:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23814  2026-07-12 13:01:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23811  2026-07-12 12:58:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23813  2026-07-12 13:00:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23810  2026-07-12 12:57:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23812  2026-07-12 12:59:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23809  2026-07-12 12:56:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23811  2026-07-12 12:58:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23808  2026-07-12 12:55:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23810  2026-07-12 12:57:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23807  2026-07-12 12:54:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23809  2026-07-12 12:56:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23806  2026-07-12 12:53:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23808  2026-07-12 12:55:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23805  2026-07-12 12:52:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23807  2026-07-12 12:54:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23804  2026-07-12 12:51:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23806  2026-07-12 12:53:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23803  2026-07-12 12:50:04  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23805  2026-07-12 12:52:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23802  2026-07-12 12:49:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23804  2026-07-12 12:51:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23801  2026-07-12 12:48:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23803  2026-07-12 12:50:04  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23800  2026-07-12 12:47:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23802  2026-07-12 12:49:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23799  2026-07-12 12:46:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23801  2026-07-12 12:48:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23798  2026-07-12 12:45:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23800  2026-07-12 12:47:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23797  2026-07-12 12:44:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23799  2026-07-12 12:46:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23796  2026-07-12 12:43:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23798  2026-07-12 12:45:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23795  2026-07-12 12:42:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23797  2026-07-12 12:44:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23794  2026-07-12 12:41:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23796  2026-07-12 12:43:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23793  2026-07-12 12:40:04  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23795  2026-07-12 12:42:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23792  2026-07-12 12:39:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23794  2026-07-12 12:41:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23791  2026-07-12 12:38:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23793  2026-07-12 12:40:04  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23790  2026-07-12 12:37:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23792  2026-07-12 12:39:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
 
-23789  2026-07-12 12:36:03  sistema   interno                          morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
+23791  2026-07-12 12:38:03  sistema   interno                                              morning-brief falló (Fernando Boero): morning-brief/Fernando Boero: WA falló (sin cliente WA) y no hubo fallback posible para Fernando Boero (telegram: no, email: no)
