@@ -64,6 +64,15 @@ function _limpiarSingletonLockViejo() {
 // en memoria no sobrevive restarts): un mensaje ya logueado NO se reprocesa.
 // Caps: ventana máx 72h, 60 mensajes, solo chats 1a1 (grupos fuera).
 async function recuperarMensajesPerdidos(client) {
+  // Warm-up post-desbloqueo: NADA de backlog — responder mensajes viejos en
+  // ráfaga fue lo que re-voló la cuenta el 7/7. Los usuarios ya fueron
+  // atendidos por TG/email durante la caída.
+  try {
+    if (require('./wa-send').warmupActivo()) {
+      console.log('[WA catch-up] warm-up activo — salteo backlog');
+      return;
+    }
+  } catch {}
   const MAX_H = Number(process.env.WA_CATCHUP_MAX_H || 72);
   const MAX_MSGS = Number(process.env.WA_CATCHUP_MAX_MSGS || 60);
   try {

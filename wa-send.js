@@ -9,9 +9,56 @@
 // sin fallback. Eso causó el spam de morning-brief de Doris durante 2
 // días: su wa_cus estaba corrupto y morning-brief no podía recuperarse.
 
+const fs = require('fs');
+const path = require('path');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const silencio = require('./silencio');
+
+// ── WARM-UP POST-DESBLOQUEO (2026-07-12, estrategia anti-bloqueo) ──────────
+// Con el marker state/<slug>/wa-warmup-hasta (epoch ms) presente y vigente:
+//   - SOLO se permite responder a chats con entrante en las últimas 24h
+//     (ventana natural de respuesta = tráfico legítimo). Envío iniciado →
+//     throw con mensaje claro (el executor reporta honesto, y el LLM tiene
+//     email/TG como alternativa).
+//   - El embudo se estira a mínimo 45s.
+//   - El catch-up del backlog se saltea (la ráfaga post-reconexión fue lo
+//     que voló la cuenta el 7/7).
+const WARMUP_F = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'wa-warmup-hasta');
+function _warmupHasta() {
+  try { return Number(fs.readFileSync(WARMUP_F, 'utf8').trim()) || 0; } catch { return 0; }
+}
+function warmupActivo() { return Date.now() < _warmupHasta(); }
+
+function _chequearWarmup(destino, contenido) {
+  if (!warmupActivo()) return;
+  const wids = [destino];
+  try {
+    const u = usuarios.listarActivos().find(x => x.wa_lid === destino || x.wa_cus === destino);
+    if (u) { if (u.wa_lid) wids.push(u.wa_lid); if (u.wa_cus) wids.push(u.wa_cus); }
+  } catch {}
+  const marcas = wids.map(() => '?').join(',');
+  const abierto = mem.db.prepare(
+    `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND de IN (${marcas}) AND timestamp > datetime('now','-24 hours') LIMIT 1`
+  ).get(...wids);
+  if (abierto) return;
+  const hasta = new Date(_warmupHasta()).toISOString().slice(0, 16).replace('T', ' ');
+  throw new Error(`wa-warmup: envío INICIADO por WA bloqueado hasta ${hasta} UTC (warm-up post-desbloqueo) — usá email o telegram`);
+}
+
+// Señales humanas (2026-07-12): marcar leído + "escribiendo…" proporcional
+// al largo antes de cada envío de texto. Best-effort: si falla, se manda igual.
+async function _simularPresencia(client, destino, contenido) {
+  if (typeof contenido !== 'string') return;
+  try {
+    const chat = await client.getChatById(destino);
+    await chat.sendSeen().catch(() => {});
+    await chat.sendStateTyping();
+    const ms = Math.min(1500 + contenido.length * 40, 6000);
+    await new Promise(r => setTimeout(r, ms));
+    await chat.clearState().catch(() => {});
+  } catch {} // presencia es cosmética — nunca bloquea el envío
+}
 
 // ── EMBUDO WA (2026-07-07, tras el 2do bloqueo de Meta) ────────────────────
 // Cola FIFO global: entre un client.sendMessage y el siguiente pasan como
@@ -27,7 +74,8 @@ let _ultimoEnvioWA = 0;
 
 function embudoWA(fn) {
   const p = _colaEmbudo.then(async () => {
-    const gap = EMBUDO_MS + Math.floor(Math.random() * Math.max(0, EMBUDO_JITTER_MS));
+    const base = warmupActivo() ? Math.max(EMBUDO_MS, 45_000) : EMBUDO_MS;
+    const gap = base + Math.floor(Math.random() * Math.max(0, EMBUDO_JITTER_MS));
     const espera = Math.max(0, _ultimoEnvioWA + gap - Date.now());
     if (espera > 500) console.log(`[wa-embudo] espero ${Math.round(espera / 1000)}s (cola de envíos)`);
     if (espera > 0) await new Promise(r => setTimeout(r, espera));
@@ -74,7 +122,11 @@ function aplicarEmbudo(client) {
   client.sendMessage = async (...args) => {
     const r = await _reruteoOwner(args[0], args[1]);
     if (r) return r;
-    return embudoWA(() => orig(...args));
+    _chequearWarmup(args[0], args[1]); // throw si warm-up y no hay ventana
+    return embudoWA(async () => {
+      await _simularPresencia(client, args[0], args[1]);
+      return orig(...args);
+    });
   };
   client._embudoAplicado = true;
   console.log(`[wa-embudo] activo: min ${EMBUDO_MS / 1000}s + jitter ${EMBUDO_JITTER_MS / 1000}s entre envíos WA`);
@@ -370,4 +422,5 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
 
 module.exports = {
   aplicarEmbudo,
-  embudoWA, enviarWAUsuario, enviarWADirecto, resolverPorPersistencia, LID_ERR_RE };
+  embudoWA,
+  warmupActivo, enviarWAUsuario, enviarWADirecto, resolverPorPersistencia, LID_ERR_RE };
