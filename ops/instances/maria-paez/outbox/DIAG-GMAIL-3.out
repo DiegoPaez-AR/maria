@@ -1,0 +1,49 @@
+# ejecutado: 2026-07-16T09:33:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   node - <<'NODE'
+#   (async () => {
+#     const g = require('/root/secretaria/google');
+#     const auth = await g.autenticar();
+#     const { google } = require('googleapis');
+#     const gm = google.gmail({ version: 'v1', auth });
+#     const q = async (query) => ((await gm.users.messages.list({ userId: 'me', q: query, maxResults: 20 })).data.messages || []).length;
+#     console.log('spam últimos 5d:', await q('in:spam newer_than:5d'));
+#     console.log('TODO (anywhere) recibido últimos 5d:', await q('in:anywhere -from:me newer_than:5d'));
+#     console.log('inbox recibido últimos 5d:', await q('in:inbox -from:me newer_than:5d'));
+#     console.log('enviados últimos 5d:', await q('from:me newer_than:5d'));
+#     const spam = await gm.users.messages.list({ userId: 'me', q: 'in:spam newer_than:5d', maxResults: 8 });
+#     for (const m of (spam.data.messages || [])) {
+#       const f = await gm.users.messages.get({ userId: 'me', id: m.id, format: 'metadata', metadataHeaders: ['From','Subject','Date'] });
+#       const h = Object.fromEntries(f.data.payload.headers.map(x => [x.name.toLowerCase(), x.value]));
+#       console.log('SPAM:', (h.date||'').slice(0,22), '|', (h.from||'').slice(0,40), '|', (h.subject||'').slice(0,40));
+#     }
+#     const todos = await gm.users.messages.list({ userId: 'me', q: 'in:anywhere -from:me newer_than:5d', maxResults: 10 });
+#     for (const m of (todos.data.messages || [])) {
+#       const f = await gm.users.messages.get({ userId: 'me', id: m.id, format: 'metadata', metadataHeaders: ['From','Subject','Date'] });
+#       const h = Object.fromEntries(f.data.payload.headers.map(x => [x.name.toLowerCase(), x.value]));
+#       console.log('RECIBIDO:', (h.date||'').slice(0,22), '|', (h.from||'').slice(0,40), '|', (h.subject||'').slice(0,40), '| labels:', (f.data.labelIds||[]).join(','));
+#     }
+#   })().catch(e => { console.error('FALLO:', e.message); process.exit(1); });
+#   NODE
+
+# ───── output ─────
+spam últimos 5d: 0
+TODO (anywhere) recibido últimos 5d: 20
+inbox recibido últimos 5d: 20
+enviados últimos 5d: 20
+RECIBIDO: Sun, 12 Jul 2026 19:43 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sun, 12 Jul 2026 12:08 | gabriela echaniz <gabyechaniz@gmail.com> | Re: Maria Paez — tu brief de hoy | labels: IMPORTANT,CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:37 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:32 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:27 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:22 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:17 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:12 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:07 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+RECIBIDO: Sat, 11 Jul 2026 19:02 | WhatsApp Messenger Support <support@supp | Servicio de atención al cliente de Whats | labels: CATEGORY_PERSONAL,INBOX
+
+# exit=0
