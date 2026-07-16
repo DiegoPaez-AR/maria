@@ -1,0 +1,30 @@
+# ejecutado: 2026-07-16T09:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   sqlite3 "$DB" "SELECT date(timestamp), canal, direccion, COUNT(*) FROM eventos WHERE timestamp > datetime('now','-6 days') AND canal IN ('telegram','whatsapp','gmail') GROUP BY 1,2,3 ORDER BY 1 DESC, 2;"
+
+# ───── output ─────
+2026-07-16|gmail|saliente|17
+2026-07-16|telegram|saliente|2
+2026-07-15|gmail|saliente|29
+2026-07-15|telegram|saliente|2
+2026-07-14|gmail|saliente|27
+2026-07-14|telegram|saliente|4
+2026-07-13|gmail|saliente|25
+2026-07-13|telegram|entrante|1
+2026-07-13|telegram|saliente|4
+2026-07-12|gmail|entrante|17
+2026-07-12|gmail|saliente|29
+2026-07-12|telegram|entrante|4
+2026-07-12|telegram|saliente|6
+2026-07-11|gmail|saliente|14
+2026-07-11|telegram|saliente|2
+2026-07-10|gmail|saliente|8
+2026-07-10|telegram|saliente|1
+2026-07-10|whatsapp|entrante|3
+2026-07-10|whatsapp|saliente|4
+
+# exit=0
