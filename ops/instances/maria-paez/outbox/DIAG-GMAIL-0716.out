@@ -1,0 +1,45 @@
+# ejecutado: 2026-07-16T09:07:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== gmail por día/dirección últimos 8 días =="
+#   sqlite3 "$DB" "SELECT date(timestamp), direccion, COUNT(*) FROM eventos WHERE canal='gmail' AND timestamp > datetime('now','-8 days') GROUP BY 1,2 ORDER BY 1 DESC;"
+#   echo "== último gmail entrante =="
+#   sqlite3 "$DB" "SELECT timestamp, de, substr(cuerpo,1,60) FROM eventos WHERE canal='gmail' AND direccion='entrante' ORDER BY id DESC LIMIT 3;"
+#   echo "== healthcheck oauth ahora =="
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   node -e "require('/root/secretaria/google').autenticar().then(()=>console.log('OAuth OK')).catch(e=>console.log('OAuth FALLO:', e.message))" 2>&1 | tail -2
+#   echo "== logs gmail-handler hoy =="
+#   grep -a "$(date +%Y-%m-%d)" /root/.pm2/logs/maria-paez-*.log 2>/dev/null | grep -aiE "gmail|inbox|poll" | tail -6
+
+# ───── output ─────
+== gmail por día/dirección últimos 8 días ==
+2026-07-16|saliente|15
+2026-07-15|saliente|29
+2026-07-14|saliente|27
+2026-07-13|saliente|25
+2026-07-12|entrante|17
+2026-07-12|saliente|29
+2026-07-11|saliente|14
+2026-07-10|entrante|1
+2026-07-10|saliente|26
+2026-07-09|saliente|24
+2026-07-08|entrante|3
+2026-07-08|saliente|18
+== último gmail entrante ==
+2026-07-12 15:12:06|gabriela echaniz <gabyechaniz@gmail.com>|Hola María, lo que gestionaste para mí ya está ok, me ha me 
+2026-07-12 02:42:17|WhatsApp Messenger Support <support@support.whatsapp.com>|No hay problema. Olvídalo. Volvamos a tu problema de acceso 
+2026-07-12 02:32:17|WhatsApp Messenger Support <support@support.whatsapp.com>|No hay problema. Olvídalo. Volvamos a tu problema de acceso 
+== healthcheck oauth ahora ==
+OAuth OK
+== logs gmail-handler hoy ==
+/root/.pm2/logs/maria-paez-error.log:2026-07-16 04:18:54: [TG] poll error (reintento en 15s): fetch failed
+/root/.pm2/logs/maria-paez-out.log:2026-07-16 07:00:33: [morning-brief/Gabriela Echaniz] ✓ enviado a gabyechaniz@gmail.com
+/root/.pm2/logs/maria-paez-out.log:2026-07-16 07:00:35: [morning-brief/Alfonso Amat] ✓ enviado a alfonso.amat@gmail.com
+/root/.pm2/logs/maria-paez-out.log:2026-07-16 07:45:24: [programados] ✓ id=959 (gmail/doris@capurro.com.ar) [meeting_prep:6:0lv3p4s5r15cvj4i1cascigk2f]
+/root/.pm2/logs/maria-paez-out.log:2026-07-16 08:45:24: [programados] ✓ id=960 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:16cklducgf75sis43ip694k5og]
+/root/.pm2/logs/maria-paez-out.log:2026-07-16 09:00:24: [programados] ✓ id=961 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260716T121500Z]
+
+# exit=0
