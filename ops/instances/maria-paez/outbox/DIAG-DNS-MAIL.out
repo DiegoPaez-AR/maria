@@ -1,0 +1,34 @@
+# ejecutado: 2026-07-16T09:31:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== MX intensa.io =="
+#   dig +short MX intensa.io
+#   echo "== SPF/TXT =="
+#   dig +short TXT intensa.io | head -4
+#   echo "== NS =="
+#   dig +short NS intensa.io
+#   echo "== test SMTP al MX principal (conexión) =="
+#   MX=$(dig +short MX intensa.io | sort -n | head -1 | awk '{print $2}')
+#   echo "MX principal: $MX"
+#   timeout 10 bash -c "echo QUIT | nc -w 5 ${MX%.} 25" 2>&1 | head -3
+
+# ───── output ─────
+== MX intensa.io ==
+5 alt1.aspmx.l.google.com.
+1 aspmx.l.google.com.
+10 alt4.aspmx.l.google.com.
+10 alt3.aspmx.l.google.com.
+5 alt2.aspmx.l.google.com.
+== SPF/TXT ==
+"google-site-verification=B0LctmZdHgKm9FqfnySkjFRitCWhaICg1_uiQPt_obg"
+"v=spf1 include:_spf.google.com ~all"
+"google-site-verification=sctmL4m3awXrVx0XTn1qcwKjz-RFoxzqMtwvVBlu6o8"
+== NS ==
+ns74.domaincontrol.com.
+ns73.domaincontrol.com.
+== test SMTP al MX principal (conexión) ==
+MX principal: aspmx.l.google.com.
+
+# exit=0
