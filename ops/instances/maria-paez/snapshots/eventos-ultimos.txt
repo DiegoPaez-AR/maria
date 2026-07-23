@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+25382  2026-07-23 00:57:53  telegram  saliente   telegram:590589920                        Te agendo el almuerzo en Iñaki el miércoles 5 de agosto de 13 a 15hs.                                                                                                                                   
+
+25381  2026-07-23 00:57:53  sistema   interno                                              claude_call telegram: 25047ms prompt=76970c raw=11936c in=6t(cache_read=52072 new=103187) out=1213t ttfb=1461ms api=23876ms turnos=3 $0.4293                                                            
+
+25380  2026-07-23 00:57:48  sistema   interno                                              acción ejecutada: crear_evento                                                                                                                                                                          
+
+25379  2026-07-23 00:57:48  calendar  saliente                                             creado: Almuerzo en Iñaki (2026-08-05T13:00:00-03:00 → 2026-08-05T15:00:00-03:00)                                                                                                                       
+
+25378  2026-07-23 00:57:27  telegram  entrante   telegram:590589920                        María, me agendas para el miércoles 5 de 13 a 15 un almuerzo en Iñaki                                                                                                                                   
+
 25377  2026-07-22 21:56:53  sistema   interno                                              claude_call gmail: 6819ms prompt=6747c raw=4724c in=2t(cache_read=68810 new=3797) out=110t ttfb=1409ms api=4822ms turnos=1 $0.0365                                                                      
 
 25376  2026-07-22 21:56:45  gmail     entrante   gabriela echaniz <gabyechaniz@gmail.com>  gabriela echaniz ha aceptado esta invitación.                                                                                                                                                           
@@ -277,19 +287,6 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                                                                                                                                                                                                                                    
                                                                                            *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
                                                                                            🌦️ llovizna intensa, mín 9° / máx 13° · 92% prob. de lluvia                                                                                                                                             
-                                                                                                                                                                                                                                                                                                   
-                                                                                           *📅 Agenda del día*                                                                                                                                                                                      
-                                                                                           (sin eventos hoy)                                                                                                                                                                                       
-
-25282  2026-07-22 12:01:09  sistema   interno                                              meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-25281  2026-07-22 11:01:09  sistema   interno                                              meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-25280  2026-07-22 10:45:07  gmail     saliente   santiago@capurro.com.ar                   ⏰ *En 15min*: Gimnasio (08:00 a. m.)                                                                                                                                                                    
-
-25279  2026-07-22 10:45:07  gmail     saliente   hernan.fulco@sondeosglobal.com            ⏰ *En 15min*: Cristian está de vacaciones (08:00 a. m.)                                                                                                                                                 
-
-25278  2026-07-22 10:00:17  gmail     saliente   alfonso.amat@gmail.com                    ☀️ *Buen día, Alfonso Amat.* miércoles, 22 de julio.                                                                                                                                                    
                                                                                                                                                                                                                                                                                                    
                                                                                            *📅 Agenda del día*                                                                                                                                                                                      
                                                                                            (sin eventos hoy)                                                                                                                                                                                       
