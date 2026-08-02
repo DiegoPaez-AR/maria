@@ -41,6 +41,18 @@ function start({ waClient } = {}) {
     };
 
     try {
+      // ── Webhook AutoResponder (2026-08-02): ruta PÚBLICA via nginx, con su
+      // propio secret en el path (el teléfono no conoce el internal secret).
+      const _hook = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})$/);
+      if (_hook) {
+        const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
+        if (!HOOK_SECRET || _hook[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
+        if (req.method !== 'POST') return send(405, { error: 'method_not_allowed' });
+        const cuerpo = await readJson(req);
+        const r = await require('./wa-hook').procesar(cuerpo);
+        return send(200, r);
+      }
+
       if (!_secretOk(req.headers['x-intensa-secret'])) {
         return send(401, { error: 'unauthorized' });
       }

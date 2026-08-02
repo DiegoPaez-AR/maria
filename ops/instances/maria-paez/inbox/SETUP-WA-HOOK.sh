@@ -1,0 +1,62 @@
+#!/bin/bash
+set -e
+# 1. secret
+CONF=/root/secretaria/config/secrets.conf
+if ! grep -q WA_HOOK_SECRET "$CONF"; then
+  SEC=$(head -c 24 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)
+  echo "WA_HOOK_SECRET=$SEC" >> "$CONF"
+  echo "secret generado"
+else
+  echo "secret ya existía"
+fi
+SEC=$(grep WA_HOOK_SECRET "$CONF" | cut -d= -f2)
+# 2. nginx: ubicar el server block de intensa.io
+NGCONF=$(grep -rl "server_name.*intensa.io" /etc/nginx/sites-enabled/ /etc/nginx/conf.d/ 2>/dev/null | head -1)
+echo "nginx conf: $NGCONF"
+if [ -n "$NGCONF" ] && ! grep -q "wa-hook" "$NGCONF"; then
+  # insertar location antes del último cierre del primer server block con intensa.io
+  python3 - "$NGCONF" <<'PY'
+import sys, re
+p = sys.argv[1]
+s = open(p).read()
+loc = """
+    # Webhook AutoResponder de Maria (2026-08-02)
+    location /hooks/wa-maria/ {
+        proxy_pass http://127.0.0.1:4501/wa-hook/;
+        proxy_read_timeout 90s;
+        proxy_http_version 1.1;
+    }
+"""
+# insertar antes del último '}' (cierre del server block); si hay varios server blocks, va en el primero que tenga intensa.io y listen 443
+blocks = s.split('server {')
+done = False
+for i, b in enumerate(blocks):
+    if 'intensa.io' in b and ('443' in b or 'ssl' in b) and not done:
+        idx = b.rfind('}')
+        blocks[i] = b[:idx] + loc + b[idx:]
+        done = True
+if not done:
+    for i, b in enumerate(blocks):
+        if 'intensa.io' in b and not done:
+            idx = b.rfind('}')
+            blocks[i] = b[:idx] + loc + b[idx:]
+            done = True
+open(p, 'w').write('server {'.join(blocks))
+print('location insertada' if done else 'NO ENCONTRE server block')
+PY
+  nginx -t && systemctl reload nginx && echo "nginx reloaded"
+else
+  echo "nginx: ya tenía wa-hook o no encontré conf"
+fi
+# 3. reload maria con el env nuevo
+cd /root/secretaria && pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+sleep 6
+pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+grep -c "wa-hook" /root/secretaria/internal-api.js
+# 4. smoke test end-to-end local
+curl -s -X POST "http://127.0.0.1:4501/wa-hook/$SEC" -H 'Content-Type: application/json' -d '{"appPackageName":"tkstudio.autoresponderforwa","messengerPackageName":"com.whatsapp","query":{"sender":"+1 555 000","message":"test","isGroup":false,"groupParticipant":"","ruleId":1,"isTestMessage":true}}'
+echo
+# 5. smoke test público via nginx
+curl -s -m 15 -X POST "https://intensa.io/hooks/wa-maria/$SEC" -H 'Content-Type: application/json' -d '{"query":{"sender":"+1 555 000","message":"test","isGroup":false,"isTestMessage":true},"appPackageName":"x","messengerPackageName":"x"}'
+echo
+echo "URL-PARA-AUTORESPONDER: https://intensa.io/hooks/wa-maria/$SEC"
