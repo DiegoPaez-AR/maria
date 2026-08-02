@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                             
 -----  -------------------  --------  ---------  ----------------------------------------  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+25821  2026-08-02 11:38:01  sistema   interno                                              claude_call gmail: 113320ms prompt=62503c raw=47842c in=14t(cache_read=255953 new=97585) out=7377t ttfb=1424ms api=108177ms turnos=7 $0.5579                       
+
+25820  2026-08-02 11:37:52  sistema   interno                                              acción ejecutada: agregar_pendiente                                                                                                                                
+
+25819  2026-08-02 11:37:37  sistema   interno                                              acción ejecutada: responder_email                                                                                                                                  
+
+25818  2026-08-02 11:37:37  gmail     saliente                                             Hola Gabriela,                                                                                                                                                     
+                                                                                                                                                                                                                                                              
+                                                                                           Que disfrutes tu último día de vacaciones, y mañana sin problema retomamos la lista.                                                                               
+                                                                                                                                                                                                                                                              
+                                                                                           Sobre lo que me pedís -que te recuerde la agenda el día anterior a cada evento-: eso sería un avis                                                                 
+
+25817  2026-08-02 11:37:36  sistema   interno                                              claude_call moderacion: 6313ms prompt=2477c raw=6397c in=10t(cache_read=0 new=22718) out=326t ttfb=1173ms api=5604ms turnos=1 $0.0307                              
+
 25816  2026-08-02 11:36:08  gmail     entrante   gabriela echaniz <gabyechaniz@gmail.com>  Gracias María, hoy es mi último día de vacaciones. Mañana retomo esa lista.                                                                                        
                                                                                            Quería pedirte que por favor me recuerdes mi agenda el día anterior al que                                                                                         
                                                                                            está cada evento. Si es posible                                                                                                                                    
@@ -470,14 +484,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                            👤 Pablo Verdina — Sales Manager LATAM en Sondeos Global                                                                                                            
 
 25722  2026-07-30 12:01:10  sistema   interno                                              meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                
-
-25721  2026-07-30 12:00:11  gmail     saliente   hernan.fulco@sondeosglobal.com            ⏰ *En 15min*: MC Daily (09:15 a. m.)                                                                                                                               
-                                                                                           Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgloba
-
-25720  2026-07-30 11:45:11  gmail     saliente   santiago@capurro.com.ar                   ⏰ *En 15min*: Spine (09:00 a. m.)                                                                                                                                  
-
-25719  2026-07-30 11:31:10  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                
-
-25718  2026-07-30 10:46:09  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                
-
-25717  2026-07-30 10:45:11  telegram  saliente   590589920                                 ⏰ *En 15min*: Yoga (08:00 a. m.)                                                                                                                                   
