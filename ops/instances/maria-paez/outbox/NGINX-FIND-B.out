@@ -1,0 +1,27 @@
+# ejecutado: 2026-08-02T19:47:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   nginx -T 2>/dev/null | grep -nE "configuration file|server_name" | head -20
+
+# ───── output ─────
+1:# configuration file /etc/nginx/nginx.conf:
+24:	# server_names_hash_bucket_size 64;
+25:	# server_name_in_redirect off;
+86:# configuration file /etc/nginx/mime.types:
+189:# configuration file /etc/nginx/sites-enabled/estacionamientosma:
+191:    server_name estacionamientosma.com www.estacionamientosma.com;
+222:    server_name estacionamientosma.com www.estacionamientosma.com;
+231:# configuration file /etc/letsencrypt/options-ssl-nginx.conf:
+247:# configuration file /etc/nginx/sites-enabled/intensa.io.conf:
+253:    server_name intensa.io www.intensa.io;
+312:    server_name intensa.io www.intensa.io;
+319:# configuration file /etc/nginx/sites-enabled/pmovil.conf:
+321:    server_name pmovilbet.com www.pmovilbet.com pmovil.ar www.pmovil.ar;
+368:    server_name pmovilbet.com www.pmovilbet.com pmovil.ar www.pmovil.ar;
+375:# configuration file /etc/nginx/sites-enabled/veritas-trace.conf:
+379:    server_name veritas-trace.com www.veritas-trace.com;
+438:    server_name veritas-trace.com www.veritas-trace.com;
+
+# exit=0
