@@ -1,0 +1,87 @@
+# ejecutado: 2026-08-02T19:19:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== tráfico por canal/día (desde 17/7) =="
+#   sqlite3 "$DB" "SELECT date(timestamp), canal, direccion, COUNT(*) FROM eventos WHERE timestamp > '2026-07-17' AND canal IN ('telegram','whatsapp','gmail') GROUP BY 1,2,3 ORDER BY 1;"
+#   echo "== entrantes por remitente (desde 17/7) =="
+#   sqlite3 "$DB" "SELECT canal, COALESCE(de,'?'), COUNT(*) FROM eventos WHERE timestamp > '2026-07-17' AND direccion='entrante' GROUP BY 1,2 ORDER BY 3 DESC LIMIT 10;"
+#   echo "== errores sistema (desde 17/7, agrupados) =="
+#   sqlite3 "$DB" "SELECT substr(cuerpo,1,70), COUNT(*) FROM eventos WHERE timestamp > '2026-07-17' AND canal='sistema' AND (cuerpo LIKE '%falló%' OR cuerpo LIKE '%error%' OR cuerpo LIKE '%FALLO%') GROUP BY 1 ORDER BY 2 DESC LIMIT 10;"
+#   echo "== pendientes abiertos =="
+#   sqlite3 "$DB" "SELECT COUNT(*) FROM pendientes WHERE estado='abierto';"
+#   echo "== programados pendientes =="
+#   sqlite3 "$DB" "SELECT id, cuando, substr(texto,1,40) FROM programados WHERE enviado=0 ORDER BY cuando LIMIT 5;"
+#   echo "== túnel =="
+#   ss -tlnp | grep -q 1080 && echo "puerto 1080: escucha" || echo "puerto 1080: NO ESCUCHA"
+#   IP=$(curl -s -m 10 --socks5 127.0.0.1:1080 https://api.ipify.org || echo FALLO)
+#   echo "egreso socks5: $IP"
+#   ps -o pid,etime -C sshd | grep -v PID | tail -2
+#   echo "== wa-apagado =="
+#   ls /root/secretaria/state/maria-paez/wa-apagado 2>/dev/null || echo "no está"
+
+# ───── output ─────
+== tráfico por canal/día (desde 17/7) ==
+2026-07-17|gmail|saliente|24
+2026-07-17|telegram|saliente|3
+2026-07-18|gmail|saliente|14
+2026-07-18|telegram|saliente|1
+2026-07-19|gmail|saliente|28
+2026-07-19|telegram|saliente|2
+2026-07-20|gmail|saliente|27
+2026-07-20|telegram|saliente|2
+2026-07-21|gmail|saliente|24
+2026-07-21|telegram|saliente|5
+2026-07-22|gmail|entrante|9
+2026-07-22|gmail|saliente|31
+2026-07-22|telegram|saliente|4
+2026-07-23|gmail|entrante|2
+2026-07-23|gmail|saliente|27
+2026-07-23|telegram|entrante|1
+2026-07-23|telegram|saliente|5
+2026-07-24|gmail|entrante|2
+2026-07-24|gmail|saliente|31
+2026-07-24|telegram|saliente|2
+2026-07-25|gmail|entrante|2
+2026-07-25|gmail|saliente|14
+2026-07-25|telegram|saliente|2
+2026-07-26|gmail|saliente|28
+2026-07-26|telegram|saliente|2
+2026-07-27|gmail|saliente|22
+2026-07-27|telegram|saliente|3
+2026-07-28|gmail|saliente|23
+2026-07-28|telegram|saliente|4
+2026-07-29|gmail|saliente|26
+2026-07-29|telegram|saliente|4
+2026-07-30|gmail|entrante|1
+2026-07-30|gmail|saliente|27
+2026-07-30|telegram|saliente|4
+2026-07-31|gmail|saliente|23
+2026-07-31|telegram|saliente|3
+2026-08-01|gmail|saliente|13
+2026-08-01|telegram|saliente|1
+2026-08-02|gmail|entrante|1
+2026-08-02|gmail|saliente|32
+2026-08-02|telegram|saliente|2
+== entrantes por remitente (desde 17/7) ==
+gmail|gabriela echaniz <gabyechaniz@gmail.com>|13
+gmail|Doris Capurro <doris@capurro.com.ar>|2
+gmail|El equipo de Google Workspace <workspace-noreply@google.com>|1
+gmail|Google Cloud <CloudPlatform-noreply@google.com>|1
+telegram|telegram:590589920|1
+== errores sistema (desde 17/7, agrupados) ==
+== pendientes abiertos ==
+13
+== programados pendientes ==
+761|2026-08-06T12:00:00.000Z|🎭 Recordatorio: mañana tenés *Teatro* de
+== túnel ==
+puerto 1080: NO ESCUCHA
+egreso socks5: FALLO
+ 642525       00:01
+2794523  5-12:38:57
+== wa-apagado ==
+/root/secretaria/state/maria-paez/wa-apagado
+
+# exit=0
