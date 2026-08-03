@@ -1,0 +1,350 @@
+# ejecutado: 2026-08-03T12:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   node auth-gmail.js exchange '4/0AXEQxIC3vRPUQtK9Ot3Z2pHrWKL_Pc3pvAoMfT03NKG1KPNuW-La4TabTLaC6jZ-DYis8A' 2>&1 | tail -2
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 8
+#   echo "== backfill libreta → Google Contacts =="
+#   node - <<'NODE'
+#   (async () => {
+#     const mem = require('/root/secretaria/memory');
+#     const usuarios = require('/root/secretaria/usuarios');
+#     const gc = require('/root/secretaria/google-contacts');
+#     const dormir = (ms) => new Promise(r => setTimeout(r, ms));
+#     let ok = 0, fail = 0;
+#     // usuarios primero (nombres en notificaciones WA)
+#     for (const u of usuarios.listarActivos()) {
+#       try { await gc.sincronizarUsuario(u); ok++; } catch (e) { fail++; console.log('✗ usuario', u.nombre, ':', e.message.slice(0, 80)); }
+#       await dormir(700);
+#     }
+#     // libretas de todos
+#     const rows = mem.db.prepare(`SELECT c.*, u.nombre AS dueno_nombre FROM contactos c JOIN usuarios u ON u.id = c.usuario_id ORDER BY c.id`).all();
+#     for (const c of rows) {
+#       try { await gc.sincronizarContacto(c, { dueno: c.dueno_nombre }); ok++; } catch (e) { fail++; console.log('✗', c.nombre, ':', e.message.slice(0, 80)); }
+#       await dormir(700);
+#     }
+#     console.log(`backfill: ${ok} ok, ${fail} fallidos, total ${usuarios.listarActivos().length} usuarios + ${rows.length} contactos`);
+#   })().catch(e => { console.error('FALLO:', e.message); process.exit(1); });
+#   NODE
+
+# ───── output ─────
+✅ Token nuevo guardado CIFRADO en /root/secretaria/state/maria-paez/token.json.enc
+   refresh_token: presente
+== backfill libreta → Google Contacts ==
+✗ usuario Diego : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Hernan Fulco : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Natali Funez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Fernando Boero : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Santiago Bignone : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Doris Capurro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Nicolas Kosinski : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Walter Vera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Cristian Ruiz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Sebastian Ameijeira : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Enrique Sosa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Santiago Capurro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Andres Neumann : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Gabriela Echaniz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Jaime Cibils : People API has not been used in project 905317715451 before or it is disabled. E
+✗ usuario Alfonso Amat : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Manuel Paez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Paloma Paez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago Paez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Caseros Restaurante : People API has not been used in project 905317715451 before or it is disabled. E
+✗ La Parolaccia Palermo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Poch Burgers : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nika Club Omakase : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Farinelli Arroyo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Diego Paez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Narda Comedor : People API has not been used in project 905317715451 before or it is disabled. E
+✗ nardacomedor : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carina Pubill : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Romina : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Agustina Acevedo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Doris Capurro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Romi Rios : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ana Carina : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago Capurro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Delta Airlines Argentina : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Marcos : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Matias Pacheco : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rubén Ward : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Hernan Fulco : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Petrillo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mariela Nigro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Incarnato : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Isabel Imperiale : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Juanjo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gustavo Raul Aragon : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolás Kosinski : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Walter Vera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Franco Contatece : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Lucas Capurro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Diego Ramirez Schrempp : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Natali Funez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago Bignone : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gustavo Dzugala : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Iñaki Restaurante : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fernando Boero : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mariano Clarath : People API has not been used in project 905317715451 before or it is disabled. E
+✗ María José Laiseca : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rodrigo Paez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rodrigo Paez Canosa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Daniel Salvucci : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Hernán Arcidiacono : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fico restaurante : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Santa Cruz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carlos Canosa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jose Milei : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Juan Ignacio Paez Maña : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Laura Noboa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fabiana Teubal : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Leo Ferran : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gabriel Isola : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Brigida Pacheco : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gabriel Pacheco : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ariana Fleitas : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Veronica Lascaray : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Oliver Erlich : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago Lopez Alfaro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Mariani : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Javier Guevara : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mariano Herrera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ana Gianini : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mario Miccelli : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fernanda Lascaray : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Casal : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pilar Spangenberg : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Veronica Ciccarelli : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Georgina Milei : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alfonso Amat : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Celeste Maneiro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gastón Ruggerio : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Juan de la Cruz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Julieta Picasso : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carlos Maidana : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carolina Modai : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Damian Lanatta : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Malena Ansalone : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Maira Yahia : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Eduaedo Canicoba : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gustavo Sorotski : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Dolores Spangenberg : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Lorena Gerattano : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Juliana Laurini : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolás Sgroi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Matias Israel : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Brunatti Carolina : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolas Jordan : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Javier Corraro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Bisceglia : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Maxigkunz Gonzalez Kunz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ana Vainman : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Daniela Ciavone : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Capurro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Andrea Kozameh : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Marino Bracamonte : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mónica Matto : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Barbara Grane : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Diego Perez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Bryan Tafel : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Martín Souza : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Huichaqueo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Andres Neumann : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Hernan Mantovani : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Victoria Frene : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ivan Erlich : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Franco Ruggerio : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Franco Israel : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolas Erlich : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Venecia Cezar : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fausto Ansalone : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carmen Paez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jorge Ravlich : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Adrián Duek : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Soledad Nakama : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mercedes Spangenberg : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Antonio Peña : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Dario Fainguersch : People API has not been used in project 905317715451 before or it is disabled. E
+✗ David Winograd : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carlos Rivera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carlos Krigun : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Roxana Stefani : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Enrique Sosa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fabio Boschetto : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Federico Goldenberg : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago Rodriguez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Marcela Carbajo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Daniela Alvarino : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gastón Girotti : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Florencia Funez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gabriela Echaniz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Ruiz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Damián Maldini : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Magda Pons : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Sebastian Ameijeira : People API has not been used in project 905317715451 before or it is disabled. E
+✗ La Cabrera Palermo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Barra Chalaca Belgrano : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Barra Chalaca Bulnes : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Barra Chalaca Arevalo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Espasa Concesionaria : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Subaru Concesionaria : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ariel Quiroga : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Volvo Concesionaria : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Honda Concesionaria : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago Bonfiglio : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Seba Pittaluga : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cholga : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Poyo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolas Sujoy : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Kichi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alejandro Saroka : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolas Abruj : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Daniel Abrantes : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jose Abreu : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Sergio Moreno Castro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Flavio Cairo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ezequiel Honda Briones : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Analia Frangi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Diego Teubal : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Esteban Mallea Gil : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Guillermo Bagnato : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Facundo Martin Diaz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Trocca : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ignacio Garcia : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Walter Vera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Nicolás Kosinski : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Andres Neumann : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ale Raich : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pichi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Leandro Groisman : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jose Valdes : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Local motos Niza : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Local motos Niza 2 : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alejandro Becerra : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Bruno Compa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Vizzotti : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Maximo Maderbuen : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Anafe Restaurante : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gustavo Rossi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Evelia Restaurante : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Kōnā Corner : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Sagardi San Telmo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Tomas Vallejos : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Martin Gagliano : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Maru Botana Retiro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jaime Cibils : People API has not been used in project 905317715451 before or it is disabled. E
+✗ OLI Café : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Dechecchi - Subaru : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ana Clara Zamora : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Paraná Muebles : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Paraná Muebles Logística : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Dodi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Roque : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Eloísa : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Barra Chalaca Caseros : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ceci FRAIESE : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mecha Invernizzi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Incarnato (sondeos.com.ar) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Elina Torello : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Agustin Escobar : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alejandro Furgeri : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Sgomez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alejandro Furgeri (sondeos.com.ar) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Bogdan Bedyukh : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Agustin Rodriguez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Lautaro Taretto : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Asanchez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Leky : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Verdina : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Victoria Britos : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Abril Krzisnik : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ibrahim Khan : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Dscheerle : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Lucas : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ckrigun : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Grichards : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Franco : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Petrillo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Moshiri : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mteubal : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ricardo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Incarnato (sondeosglobal.com) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Martin Gagliano : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gimena Maldonado : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gustavo Garcia : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Agustin Rodriguez (sondeosglobal.com) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ricardo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Andres : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alex Valdiviezo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Avocato : People API has not been used in project 905317715451 before or it is disabled. E
+✗ German Perezlindo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Claudiahilb : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Verahilb : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Pablo Petrillo : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Martin Sarsale : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Crivera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Diego : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Vivian : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carlos Martinez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Romina Rios : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Federico Dupuy : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Anabel Fúnez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Grey Uzcategui : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Bogdan Bedyukh (sondeosglobal.com) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Molas : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Angel : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Edgardo Zabala : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Psanchez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Galbrecht : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Osidoni : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jblanes : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mariela Nigro : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rsaune : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Matias Israel (moovingargentina.com.ar) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Jonas Gomez : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Roxana Stefani : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fabio Boschetto : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Carmen Albornoz : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Brian Hussey : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mateo Cuenca : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Martin Gagliano (sondeosglobal.com) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Facundo Escobar : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Monica Contreras : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Fabio Mangiafave : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Hernan Bourdieu : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Alejandra Balparda : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Federico Caceres : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Brunovenga : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Bruno : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Gustavo Girardi : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Aseidler : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ggoldszer : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Adaeze : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Mlg : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rrhh : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Ezequielsanromansincosky : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Malba - Restaurante Coronado : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Williams Pire : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Cristian Villalba : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Thomas Boytinck : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rpc : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rpc : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Rpc (sondeosglobal.com) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Elina Torello (sondeosglobal.com) : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Celeste Ramos : People API has not been used in project 905317715451 before or it is disabled. E
+✗ C : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Harrymancera : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Romina Rios : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Diego : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Santiago : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Andrew : People API has not been used in project 905317715451 before or it is disabled. E
+✗ Doris : People API has not been used in project 905317715451 before or it is disabled. E
+backfill: 0 ok, 311 fallidos, total 16 usuarios + 295 contactos
+
+# exit=0
