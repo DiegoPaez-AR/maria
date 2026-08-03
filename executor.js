@@ -970,6 +970,10 @@ function _setCumpleContacto(a, ctx) {
     cumple: a.cumple,
   });
   if (!c) throw new Error('set_cumple_contacto: no encontré ni pude crear el contacto');
+  // Réplica a Google Contacts (2026-08-03). Fire-and-forget.
+  require('./google-contacts').sincronizarContacto(c, { dueno: ctx.usuario.nombre })
+    .then(r => console.log(`[gcontacts] cumple de "${c.nombre}" ${r.creado ? 'creado' : 'actualizado'}`))
+    .catch(err => console.warn('[gcontacts] sync cumple falló:', err.message));
   return { id: c.id, nombre: c.nombre, cumple: c.cumple, visibilidad: c.visibilidad };
 }
 

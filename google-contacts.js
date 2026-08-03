@@ -22,19 +22,30 @@ mem.db.exec(`CREATE TABLE IF NOT EXISTS gcontacts_sync (
   actualizado   DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
 
-const CAMPOS = 'names,phoneNumbers,emailAddresses,biographies';
+const CAMPOS = 'names,phoneNumbers,emailAddresses,biographies,birthdays';
+
+function _cumpleADate(cumple) {
+  // Formatos de la libreta: YYYY-MM-DD o --MM-DD (sin año)
+  const m = String(cumple || '').match(/^(?:(\d{4})|-)?-?(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const date = { month: Number(m[2]), day: Number(m[3]) };
+  if (m[1]) date.year = Number(m[1]);
+  if (!date.month || !date.day || date.month > 12 || date.day > 31) return null;
+  return date;
+}
 
 function _cuerpo(c, dueno) {
   const notas = [];
   if (c.notas) notas.push(String(c.notas));
   if (c.perfil_web) notas.push('— Perfil: ' + String(c.perfil_web).slice(0, 600));
-  if (c.cumple) notas.push('Cumple: ' + c.cumple);
   if (dueno) notas.push(`(libreta de ${dueno})`);
   const digs = String(c.whatsapp || '').replace(/\D/g, '');
+  const cumpleDate = _cumpleADate(c.cumple);
   return {
     names: [{ givenName: String(c.nombre) }],
     ...(digs ? { phoneNumbers: [{ value: '+' + digs }] } : {}),
     ...(c.email ? { emailAddresses: [{ value: c.email }] } : {}),
+    ...(cumpleDate ? { birthdays: [{ date: cumpleDate }] } : {}),
     ...(notas.length ? { biographies: [{ value: notas.join('\n'), contentType: 'TEXT_PLAIN' }] } : {}),
   };
 }
