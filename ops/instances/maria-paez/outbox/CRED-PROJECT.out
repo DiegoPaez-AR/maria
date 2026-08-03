@@ -1,0 +1,22 @@
+# ejecutado: 2026-08-03T12:55:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; set +a
+#   CRED="${GOOGLE_CRED_PATH:-/root/secretaria/credentials.json}"
+#   echo "cred path: $CRED"
+#   python3 -c "
+#   import json
+#   d = json.load(open('$CRED'))
+#   info = d.get('installed') or d.get('web')
+#   print('project_id:', info.get('project_id'))
+#   print('client_id:', info.get('client_id', '')[:30] + '...')
+#   "
+
+# ───── output ─────
+cred path: /root/secretaria/state/maria-paez/credentials.json
+project_id: vast-zone-493523-f8
+client_id: 905317715451-rf38oafefftou68kb...
+
+# exit=0
