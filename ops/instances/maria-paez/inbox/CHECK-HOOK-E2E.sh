@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "== requests al hook (nginx access log) =="
+grep "wa-maria" /var/log/nginx/access.log 2>/dev/null | tail -5 | awk '{print $4, $6, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|/hooks/wa-maria/***|'
+echo "== eventos wa-hook recientes =="
+DB="${MARIA_DB:?falta MARIA_DB}"
+sqlite3 "$DB" "SELECT timestamp, canal, direccion, COALESCE(de,''), substr(cuerpo,1,70) FROM eventos WHERE (metadata_json LIKE '%autoresponder%' OR metadata_json LIKE '%wa_hook%') AND timestamp > datetime('now','-1 hour') ORDER BY id DESC LIMIT 10;"
+echo "== log maria =="
+grep -a "wa-hook" /root/.pm2/logs/maria-paez-*.log 2>/dev/null | tail -5
