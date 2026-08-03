@@ -220,9 +220,19 @@ async function procesar(body) {
       for (const r of rows) if (!porU.has(r.usuario_id)) porU.set(r.usuario_id, r);
       if (porU.size === 1) {
         const c = [...porU.values()][0];
-        const due = usuarios.obtener(c.usuario_id);
-        const deT = c.whatsapp ? `${_digitos(c.whatsapp)}@c.us` : `agenda:${n.replace(/\s+/g, '_')}`;
-        if (due) tercero = { usuario: due, contacto: c, de: deT };
+        // ¿El número del contacto es de un USUARIO? Entonces es el usuario
+        // escribiendo (su nombre de agenda no coincide con el de la DB —
+        // caso "Diego Paez" vs usuario "Diego", E2E 2/8). Resolver por
+        // número SIEMPRE le gana al ruteo como tercero.
+        const digsC = _digitos(c.whatsapp || '');
+        const uPorNumero = digsC.length >= 8 ? _matchUsuario(digsC) : null;
+        if (uPorNumero) {
+          u = uPorNumero;
+        } else {
+          const due = usuarios.obtener(c.usuario_id);
+          const deT = c.whatsapp ? `${_digitos(c.whatsapp)}@c.us` : `agenda:${n.replace(/\s+/g, '_')}`;
+          if (due) tercero = { usuario: due, contacto: c, de: deT };
+        }
       } else if (porU.size > 1) {
         mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: nombre "${q.sender}" en ${porU.size} libretas — no ruteo (candado homónimos)`, metadata: { tipo: 'wa_hook_ambiguo' } });
         return { replies: [] };
