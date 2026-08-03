@@ -1,0 +1,25 @@
+# ejecutado: 2026-08-02T21:30:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== eventos autoresponder (2h) =="
+#   sqlite3 "$DB" "SELECT timestamp, direccion, COALESCE(de,''), substr(cuerpo,1,60) FROM eventos WHERE metadata_json LIKE '%autoresponder%' AND timestamp > datetime('now','-2 hours') ORDER BY id DESC LIMIT 8;"
+#   echo "== wa_hook desconocidos/ambiguos (2h) =="
+#   sqlite3 "$DB" "SELECT timestamp, substr(cuerpo,1,80) FROM eventos WHERE metadata_json LIKE '%wa_hook%' AND timestamp > datetime('now','-2 hours') ORDER BY id DESC LIMIT 5;"
+#   echo "== nginx =="
+#   grep -h "wa-maria" /var/log/nginx/*.log 2>/dev/null | tail -5 | awk '{print $4, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|.../***|'
+
+# ───── output ─────
+== eventos autoresponder (2h) ==
+== wa_hook desconocidos/ambiguos (2h) ==
+2026-08-03 00:25:02|wa-hook: sender sin número ("Diego Paez") — ¿contacto guardado en el teléfono? B
+== nginx ==
+[02/Aug/2026:19:43:28 .../*** -> 405
+[02/Aug/2026:19:48:04 .../*** -> 200
+[02/Aug/2026:21:20:02 .../*** -> 200
+[02/Aug/2026:21:25:02 .../*** -> 200
+[02/Aug/2026:21:27:22 .../*** -> 200
+
+# exit=0
