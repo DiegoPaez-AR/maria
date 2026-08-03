@@ -1,0 +1,36 @@
+# ejecutado: 2026-08-02T22:40:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== nginx últimos requests =="
+#   grep -h "wa-maria" /var/log/nginx/*.log 2>/dev/null | tail -4 | awk '{print $4, "->", $9, "bytes:", $10}'
+#   echo "== eventos autoresponder (30min) =="
+#   sqlite3 "$DB" "SELECT timestamp, direccion, substr(cuerpo,1,60) FROM eventos WHERE metadata_json LIKE '%autoresponder%' AND timestamp > datetime('now','-30 minutes') ORDER BY id DESC LIMIT 6;"
+#   echo "== wa_hook logs sistema (30min) =="
+#   sqlite3 "$DB" "SELECT timestamp, substr(cuerpo,1,90) FROM eventos WHERE metadata_json LIKE '%wa_hook%' AND timestamp > datetime('now','-30 minutes') ORDER BY id DESC LIMIT 4;"
+#   echo "== pm2 log wa-hook/claude (30min) =="
+#   grep -aE "wa-hook|GMAIL|Claude" /root/.pm2/logs/maria-paez-*.log 2>/dev/null | grep -a "$(date +%Y-%m-%d)" | tail -8
+
+# ───── output ─────
+== nginx últimos requests ==
+[02/Aug/2026:21:20:02 -> 200 bytes: 102
+[02/Aug/2026:21:25:02 -> 200 bytes: 45
+[02/Aug/2026:21:27:22 -> 200 bytes: 102
+[02/Aug/2026:22:38:56 -> 200 bytes: 45
+== eventos autoresponder (30min) ==
+2026-08-03 01:38:38|entrante|hola maria, me pasas mi agenda de manana?
+== wa_hook logs sistema (30min) ==
+2026-08-03 01:39:01|Che, tengo un problema para leer tu calendario ahora mismo (me está fallando la conexión c
+== pm2 log wa-hook/claude (30min) ==
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 08:36:08: [GMAIL ←] gabriela echaniz <gabyechaniz@gmail.com> | "Re: Maria Paez — tu brief de hoy"
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 08:36:08: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=12, creada=2026-07-22T16:02:07.636Z)
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 08:38:01: [GMAIL acciones-mcp/Gabriela Echaniz] 2/2 ejecutadas en vivo
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 08:38:01: [GMAIL/Gabriela Echaniz] responder_email ya salió por tool — no duplico desde respuesta_a_remitente
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 08:38:01: [GMAIL/Gabriela Echaniz] 19fc23ebdb73404d — sin acciones ni respuesta, queda no-leído
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 16:36:07: [GMAIL poll] 1 email(s) nuevo(s)
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 16:36:08: [GMAIL ←] Google Payments <payments-noreply@google.com> | "Google Workspace: tu factura de intensa.io está disponible"
+/root/.pm2/logs/maria-paez-out.log:2026-08-02 22:39:01: [wa-send] wa-hook/3ro→Diego: entregado por TELEGRAM (automaticos_sin_wa) a Diego
+
+# exit=0
