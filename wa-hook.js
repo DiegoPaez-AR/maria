@@ -99,7 +99,7 @@ const _enProceso = new Map(); // digs -> Promise
 // ── Turno de usuario ───────────────────────────────────────────────────────
 async function _turnoUsuario(u, cuerpo) {
   const startTs = Date.now();
-  const de = u.wa_cus || u.wa_lid || 'wahook:?';
+  const de = u.wa_cus || u.wa_lid || `agenda:${String(u.nombre).toLowerCase().replace(/\s+/g, '_')}`;
   const chatKey = 'wahook:' + de;
   turnState.setLastInbound(chatKey, startTs);
 
@@ -135,9 +135,8 @@ async function _turnoUsuario(u, cuerpo) {
 }
 
 // ── Turno de tercero (match único en libreta) ──────────────────────────────
-async function _turnoTercero(u, contacto, digs, cuerpo) {
+async function _turnoTercero(u, contacto, de, cuerpo) {
   const startTs = Date.now();
-  const de = `${digs}@c.us`;
   const chatKey = 'wahook:' + de;
   turnState.setLastInbound(chatKey, startTs);
 
@@ -183,54 +182,79 @@ async function procesar(body) {
   if (q.isTestMessage) return { replies: [{ message: '✅ Webhook de Maria conectado. Todo listo.' }] };
   if (q.isGroup) return { replies: [] };
 
-  const digs = _digitos(q.sender);
-  if (!digs || digs.length < 8) {
-    // sender vino como NOMBRE (contacto guardado en el teléfono) — no podemos
-    // matchear por número. Log para que el operador lo vea.
-    mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: sender sin número ("${String(q.sender).slice(0, 40)}") — ¿contacto guardado en el teléfono? Borrarlo para que llegue el número`, metadata: { tipo: 'wa_hook_sender_nombre' } });
-    return { replies: [] };
-  }
-
   const hint = _hintMedia(q.message);
   const cuerpo = hint || q.message;
 
+  // Identidad del remitente: NÚMERO (contacto no guardado en el teléfono) o
+  // NOMBRE exacto (2026-08-02: Diego mantiene su agenda sincronizada en el
+  // teléfono — esa agenda es de confianza porque la maneja él; el nombre lo
+  // resuelve Android a partir del número real, no lo elige el remitente).
+  const digs = _digitos(q.sender);
+  const esNumero = digs && digs.length >= 8;
+  let u = null;
+  let tercero = null; // { usuario, contacto, de }
+
+  if (esNumero) {
+    u = _matchUsuario(digs);
+    if (!u) {
+      const ms = _matchLibreta(digs);
+      if (ms.length === 1) {
+        const due = usuarios.obtener(ms[0].usuario_id);
+        if (due) tercero = { usuario: due, contacto: ms[0], de: `${digs}@c.us` };
+      } else if (ms.length > 1) {
+        mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: +${digs} matchea ${ms.length} libretas — no ruteo (candado homónimos)`, metadata: { tipo: 'wa_hook_ambiguo' } });
+        return { replies: [] };
+      }
+    }
+  } else {
+    const n = String(q.sender).trim().toLowerCase();
+    const us = usuarios.listarActivos().filter(x => String(x.nombre || '').trim().toLowerCase() === n);
+    if (us.length === 1) {
+      u = us[0];
+    } else if (us.length > 1) {
+      mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: nombre "${q.sender}" matchea ${us.length} usuarios — no ruteo`, metadata: { tipo: 'wa_hook_ambiguo' } });
+      return { replies: [] };
+    } else {
+      const rows = mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) = ?`).all(n);
+      const porU = new Map();
+      for (const r of rows) if (!porU.has(r.usuario_id)) porU.set(r.usuario_id, r);
+      if (porU.size === 1) {
+        const c = [...porU.values()][0];
+        const due = usuarios.obtener(c.usuario_id);
+        const deT = c.whatsapp ? `${_digitos(c.whatsapp)}@c.us` : `agenda:${n.replace(/\s+/g, '_')}`;
+        if (due) tercero = { usuario: due, contacto: c, de: deT };
+      } else if (porU.size > 1) {
+        mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: nombre "${q.sender}" en ${porU.size} libretas — no ruteo (candado homónimos)`, metadata: { tipo: 'wa_hook_ambiguo' } });
+        return { replies: [] };
+      }
+    }
+  }
+
+  if (!u && !tercero) {
+    mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: desconocido ${esNumero ? '+' + digs : `"${String(q.sender).slice(0, 40)}"`}: "${String(q.message).slice(0, 80)}"`, metadata: { tipo: 'wa_hook_desconocido' } });
+    return { replies: [] };
+  }
+
+  const clave = esNumero ? digs : 'n:' + String(q.sender).trim().toLowerCase();
+
   // Serializar por remitente
-  const prev = _enProceso.get(digs) || Promise.resolve();
-  const turno = prev.catch(() => {}).then(async () => {
-    const u = _matchUsuario(digs);
-    if (u) return _turnoUsuario(u, cuerpo);
-    const matches = _matchLibreta(digs);
-    if (matches.length === 1) {
-      const c = matches[0];
-      const due = usuarios.obtener(c.usuario_id);
-      if (due) return _turnoTercero(due, c, digs, cuerpo);
-    }
-    if (matches.length > 1) {
-      // candado anti-homónimos: nunca auto-rutear con match múltiple
-      mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: +${digs} matchea ${matches.length} libretas — no ruteo (candado homónimos)`, metadata: { tipo: 'wa_hook_ambiguo' } });
-      return [];
-    }
-    mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: desconocido +${digs}: "${String(q.message).slice(0, 80)}"`, metadata: { tipo: 'wa_hook_desconocido' } });
-    return [];
-  });
-  _enProceso.set(digs, turno);
-  turno.finally(() => { if (_enProceso.get(digs) === turno) _enProceso.delete(digs); });
+  const prev = _enProceso.get(clave) || Promise.resolve();
+  const turno = prev.catch(() => {}).then(() => u ? _turnoUsuario(u, cuerpo) : _turnoTercero(tercero.usuario, tercero.contacto, tercero.de, cuerpo));
+  _enProceso.set(clave, turno);
+  turno.finally(() => { if (_enProceso.get(clave) === turno) _enProceso.delete(clave); });
 
   // Deadline: respondemos lo que llegue a tiempo; el resto va por TG/email o stash
   const timeout = new Promise(r => setTimeout(() => r(Symbol.for('deadline')), DEADLINE_MS));
   const resultado = await Promise.race([turno, timeout]);
 
-  const pendientes = _stashSacar(digs); // respuestas viejas que quedaron colgadas
+  const pendientes = _stashSacar(clave);
 
   if (resultado !== Symbol.for('deadline')) {
-    const replies = [...pendientes, ...(resultado || [])].map(m => ({ message: m }));
-    return { replies };
+    return { replies: [...pendientes, ...(resultado || [])].map(m => ({ message: m })) };
   }
 
-  // No llegó: cuando termine, TG/email si es usuario; si no, stash
   turno.then(async (textos) => {
     if (!textos || !textos.length) return;
-    const u = _matchUsuario(digs);
     if (u && (u.telegram_chat_id || u.email)) {
       try {
         await waSend.enviarWAUsuario(null, u, textos.join('\n\n'), { tag: 'wa-hook/deadline' });
@@ -238,8 +262,8 @@ async function procesar(body) {
         return;
       } catch {}
     }
-    _stashGuardar(digs, textos);
-    console.log(`[wa-hook] deadline: respuesta a +${digs} stasheada para su próximo mensaje`);
+    _stashGuardar(clave, textos);
+    console.log(`[wa-hook] deadline: respuesta a ${clave} stasheada para su próximo mensaje`);
   }).catch(e => console.error('[wa-hook] turno falló post-deadline:', e.message));
 
   return { replies: pendientes.map(m => ({ message: m })) };
