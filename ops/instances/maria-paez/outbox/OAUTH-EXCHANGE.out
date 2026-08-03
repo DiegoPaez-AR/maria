@@ -1,0 +1,30 @@
+# ejecutado: 2026-08-02T22:54:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   node auth-gmail.js exchange '4/0AXEQxIBtBk5RIpGq_yQB_Sp5mtVIdexnU3Zb0Ul47Xgre2Y-DsYl5XTwna1c3diQPhBJPw' 2>&1 | tail -3
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 8
+#   echo "== verificación =="
+#   node -e "
+#   const g = require('/root/secretaria/google');
+#   (async () => {
+#     await g.autenticar(); console.log('OAuth OK');
+#     const evs = await g.listarEventosDelUsuario ? 'skip' : null;
+#     const mails = await g.listarEmailsNoLeidos({ max: 3 }); console.log('Gmail OK,', mails.length, 'no leídos');
+#   })().catch(e => console.log('FALLO:', e.message));
+#   " 2>&1 | tail -3
+#   pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+
+# ───── output ─────
+Backup del token cifrado anterior: /root/secretaria/state/maria-paez/token.json.enc.bak.2026-08-03T0154
+✅ Token nuevo guardado CIFRADO en /root/secretaria/state/maria-paez/token.json.enc
+   refresh_token: presente
+== verificación ==
+OAuth OK
+Gmail OK, 3 no leídos
+maria-paez online
+
+# exit=0
