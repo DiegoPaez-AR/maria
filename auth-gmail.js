@@ -27,7 +27,8 @@ const readline = require('readline');
 
 const SCOPES = [
     'https://www.googleapis.com/auth/gmail.modify',
-    'https://www.googleapis.com/auth/calendar'
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/contacts' // 2026-08-03: réplica libreta → teléfono
 ];
 const CREDENTIALS_PATH = process.env.GOOGLE_CRED_PATH  || path.join(__dirname, 'credentials.json');
 const TOKEN_PATH       = process.env.GOOGLE_TOKEN_PATH || path.join(__dirname, 'token.json');

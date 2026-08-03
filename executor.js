@@ -916,6 +916,12 @@ async function _upsertContacto(a, ctx) {
     visibilidad,
     cumple: a.cumple || null,
   });
+  // Réplica a Google Contacts → teléfono WA v2 (2026-08-03). Fire-and-forget.
+  if (c && c.id) {
+    require('./google-contacts').sincronizarContacto(c, { dueno: ctx.usuario.nombre })
+      .then(r => console.log(`[gcontacts] "${c.nombre}" ${r.creado ? 'creado' : 'actualizado'} en Google Contacts`))
+      .catch(err => console.warn('[gcontacts] sync falló:', err.message));
+  }
   // Enriquecimiento web (rol/empresa) en background: NO bloquea el turno. Si el
   // contacto tiene email, buscamos su perfil y lo guardamos en perfil_web para
   // que el meeting-prep y el prompt lo tengan listo. Fire-and-forget.
