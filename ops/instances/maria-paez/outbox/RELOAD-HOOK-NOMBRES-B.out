@@ -1,0 +1,16 @@
+# ejecutado: 2026-08-02T22:36:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 6
+#   pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   grep -c "agenda:" /root/secretaria/wa-hook.js
+
+# ───── output ─────
+maria-paez online
+2
+
+# exit=0
