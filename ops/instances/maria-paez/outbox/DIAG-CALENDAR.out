@@ -1,0 +1,38 @@
+# ejecutado: 2026-08-02T22:48:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== errores calendar/google en logs (hoy) =="
+#   grep -aiE "calendar|agenda" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -a "$(date +%Y-%m-%d)" | tail -8
+#   grep -aiE "calendar" /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -a "$(date +%Y-%m-%d)" | tail -6
+#   echo "== test directo listarEventosProximos =="
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   node -e "
+#   const g = require('/root/secretaria/google');
+#   g.listarEventosProximos({ max: 3 }).then(evs => console.log('CALENDAR OK,', evs.length, 'eventos')).catch(e => console.log('CALENDAR FALLO:', e.message));
+#   " 2>&1 | tail -2
+#   echo "== consultas MCP en turnos wa-hook (contexto del error) =="
+#   grep -a "wahook" /root/.pm2/logs/maria-paez-*.log 2>/dev/null | tail -6
+
+# ───── output ─────
+== errores calendar/google en logs (hoy) ==
+2026-08-02 22:36:03: [calendar-watch/Gabriela Echaniz] chequeo falló: invalid_grant
+2026-08-02 22:38:56: [executor] acción #0 (set_calendar_acceso) falló: invalid_grant
+2026-08-02 22:42:27: [calendar-watch/Diego] chequeo falló: invalid_grant
+2026-08-02 22:42:27: [calendar-watch/Hernan Fulco] chequeo falló: invalid_grant
+2026-08-02 22:42:27: [calendar-watch/Santiago Bignone] chequeo falló: invalid_grant
+2026-08-02 22:42:27: [calendar-watch/Doris Capurro] chequeo falló: invalid_grant
+2026-08-02 22:42:27: [calendar-watch/Santiago Capurro] chequeo falló: invalid_grant
+2026-08-02 22:42:27: [calendar-watch/Gabriela Echaniz] chequeo falló: invalid_grant
+2026-08-02 19:43:23: ▸ arrancando calendar-watch (cada 8h)
+2026-08-02 19:43:23: [calendar-watch] activo, cada 8.0h
+2026-08-02 22:36:03: ▸ arrancando calendar-watch (cada 8h)
+2026-08-02 22:36:03: [calendar-watch] activo, cada 8.0h
+2026-08-02 22:42:27: ▸ arrancando calendar-watch (cada 8h)
+2026-08-02 22:42:27: [calendar-watch] activo, cada 8.0h
+== test directo listarEventosProximos ==
+CALENDAR FALLO: listarEventosProximos: calendarId requerido
+== consultas MCP en turnos wa-hook (contexto del error) ==
+
+# exit=0
