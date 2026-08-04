@@ -69,7 +69,8 @@ function _matchUsuario(digs) {
 function _matchLibreta(digs) {
   if (!digs) return [];
   const vs = _variantes(digs);
-  const marcas = vs.map(() => "replace(replace(replace(COALESCE(whatsapp,''),'+',''),'-',''),' ','') LIKE '%' || ? ").join(' OR ');
+  // OJO: whatsapp se guarda como '549...@c.us' → match por CONTAINS, no sufijo
+  const marcas = vs.map(() => "replace(replace(replace(COALESCE(whatsapp,''),'+',''),'-',''),' ','') LIKE '%' || ? || '%' ").join(' OR ');
   // match por sufijo (la libreta guarda formatos variados)
   const rows = mem.db.prepare(
     `SELECT usuario_id, nombre, whatsapp FROM contactos WHERE whatsapp IS NOT NULL AND (${marcas})`
@@ -181,6 +182,11 @@ async function procesar(body) {
   if (!q || typeof q.message !== 'string' || !q.sender) return { replies: [] };
   if (q.isTestMessage) return { replies: [{ message: '✅ Webhook de Maria conectado. Todo listo.' }] };
   if (q.isGroup) return { replies: [] };
+
+  // Placeholder de WA cuando la notificación llega antes del descifrado:
+  // no hay contenido real todavía — ignorar (el mensaje descifrado suele
+  // disparar otra notificación después).
+  if (/waiting for this message|esperando este mensaje/i.test(q.message)) return { replies: [] };
 
   const hint = _hintMedia(q.message);
   const cuerpo = hint || q.message;
