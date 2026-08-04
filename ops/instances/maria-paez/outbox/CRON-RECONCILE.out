@@ -1,0 +1,22 @@
+# ejecutado: 2026-08-04T20:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -e
+#   if ! crontab -l 2>/dev/null | grep -q gcontacts-reconcile; then
+#     (crontab -l 2>/dev/null; echo "0 4 * * 0 /root/secretaria/ops/scripts/gcontacts-reconcile.sh") | crontab -
+#     echo "crontab agregado (dom 04:00)"
+#   else
+#     echo "crontab ya existía"
+#   fi
+#   crontab -l | grep gcontacts
+#   bash /root/secretaria/ops/scripts/gcontacts-reconcile.sh &
+#   echo "primera corrida lanzada en background (tarda ~5min, queda en gcontacts-reconcile.log)"
+
+# ───── output ─────
+crontab agregado (dom 04:00)
+0 4 * * 0 /root/secretaria/ops/scripts/gcontacts-reconcile.sh
+primera corrida lanzada en background (tarda ~5min, queda en gcontacts-reconcile.log)
+
+# exit=0
