@@ -1,0 +1,48 @@
+# ejecutado: 2026-08-04T11:11:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== tráfico wa-hook por día =="
+#   sqlite3 "$DB" "SELECT date(timestamp), direccion, COUNT(*) FROM eventos WHERE canal='whatsapp' AND metadata_json LIKE '%autoresponder%' GROUP BY 1,2 ORDER BY 1;"
+#   echo "== por remitente =="
+#   sqlite3 "$DB" "SELECT COALESCE(nombre,de), direccion, COUNT(*) FROM eventos WHERE canal='whatsapp' AND metadata_json LIKE '%autoresponder%' GROUP BY 1,2 ORDER BY 3 DESC LIMIT 10;"
+#   echo "== desconocidos/ambiguos/sin-numero =="
+#   sqlite3 "$DB" "SELECT substr(cuerpo,1,70), COUNT(*) FROM eventos WHERE metadata_json LIKE '%wa_hook%' GROUP BY 1 ORDER BY 2 DESC LIMIT 8;"
+#   echo "== deadline hits (log) =="
+#   grep -ac "wa-hook] deadline" /root/.pm2/logs/maria-paez-out.log 2>/dev/null || echo 0
+#   grep -a "wa-hook] deadline" /root/.pm2/logs/maria-paez-out.log 2>/dev/null | tail -3
+#   echo "== requests nginx hoy/ayer =="
+#   grep -h "wa-maria" /var/log/nginx/access.log 2>/dev/null | awk '{print substr($4,2,11)}' | sort | uniq -c | tail -4
+
+# ───── output ─────
+== tráfico wa-hook por día ==
+2026-08-03|entrante|10
+2026-08-03|saliente|9
+2026-08-04|entrante|1
+2026-08-04|saliente|1
+== por remitente ==
+Diego|entrante|7
+Diego|saliente|7
+Diego Paez|entrante|1
+Enrique Sosa|entrante|1
+Enrique Sosa|saliente|1
+Paraná Muebles Logística|entrante|1
+Paraná Muebles Logística|saliente|1
+Santiago Paez|entrante|1
+Santiago Paez|saliente|1
+== desconocidos/ambiguos/sin-numero ==
+wa-hook: sender sin número ("Diego Paez") — ¿contacto guardado en el t|1
+wa-hook: desconocido +5491140793225: "Waiting for this message. This m|1
+Ya quedó resuelto con lo del título que le corregiste al evento del ju|1
+Justo ya entró en rango! Le acabo de corregir el título al evento del |1
+Che, tengo un problema para leer tu calendario ahora mismo (me está fa|1
+== deadline hits (log) ==
+4
+2026-08-03 11:30:22: [wa-hook] deadline: respuesta a Diego salió por TG/email
+2026-08-03 11:30:56: [wa-hook] deadline: respuesta a Diego salió por TG/email
+2026-08-03 22:55:47: [wa-hook] deadline: respuesta a n:paraná muebles logística stasheada para su próximo mensaje
+== requests nginx hoy/ayer ==
+
+# exit=0
