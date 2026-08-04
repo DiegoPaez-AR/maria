@@ -181,6 +181,15 @@ async function procesar(body) {
   const q = body && body.query;
   if (!q || typeof q.message !== 'string' || !q.sender) return { replies: [] };
   if (q.isTestMessage) return { replies: [{ message: '✅ Webhook de Maria conectado. Todo listo.' }] };
+  // Medición del timeout real de AutoResponder (2026-08-04): "!lentoN"
+  // espera N segundos y responde — si la respuesta llega al chat, la app
+  // banca N segundos. Para calibrar WA_HOOK_DEADLINE_MS con datos.
+  const _lento = String(q.message).trim().match(/^!lento(\d{1,3})$/i);
+  if (_lento) {
+    const seg = Math.min(Number(_lento[1]), 120);
+    await new Promise(r => setTimeout(r, seg * 1000));
+    return { replies: [{ message: `ok — respondí a los ${seg}s` }] };
+  }
   if (q.isGroup) return { replies: [] };
 
   // Placeholder de WA cuando la notificación llega antes del descifrado:
