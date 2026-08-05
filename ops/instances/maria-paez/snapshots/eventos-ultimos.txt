@@ -1,5 +1,12 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                              cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26165  2026-08-05 18:50:34  sistema   interno                                                 unhandledRejection: No se pudo extraer JSON de la respuesta de Claude:                                                                                                                                  
+                                                                                              No veo que se haya adjuntado ningún contacto ni número en tu mensaje — decís "te paso el contacto de Ulises" pero no me llegó nad                                                                       
+
+26164  2026-08-05 18:50:34  sistema   interno                                                 claude_call whatsapp: 21664ms prompt=63599c raw=11743c in=6t(cache_read=64129 new=74067) out=863t ttfb=1508ms api=22968ms turnos=3 $0.3149                                                              
+
+26163  2026-08-05 18:50:13  sistema   interno                                                 claude_call whatsapp: 72777ms prompt=62852c raw=39190c in=24t(cache_read=475355 new=94344) out=3462t ttfb=1468ms api=72403ms turnos=12 $0.5531                                                          
+
 26162  2026-08-05 18:49:59  sistema   interno                                                 acción ejecutada: olvidar_hecho                                                                                                                                                                         
 
 26161  2026-08-05 18:49:52  sistema   interno                                                 acción ejecutada: recordar_hecho                                                                                                                                                                        
@@ -311,13 +318,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26067  2026-08-04 16:30:55  sistema   interno                                                 claude_call enriquecer-contacto: 19484ms prompt=634c raw=19017c in=6t(cache_read=16303 new=33965) out=297t ttfb=1487ms api=23346ms turnos=4 $0.1849                                                     
 
 26066  2026-08-04 16:00:41  sistema   interno                                                 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26065  2026-08-04 15:50:35  sistema   interno                                                 [unknown-flow] descarté mail automático de mailer-daemon@googlemail.com (asunto: Re: Maria Paez — mensaje)                                                                                              
-
-26064  2026-08-04 15:45:34  gmail     saliente   santiago@capurro.com.ar                      ⏰ *En 15min*: Foro EO (01:00 p. m.) @Ocampo Propiedades, Av. Gral. Las Heras 3341, C1425 Cdad. Autónoma de Buenos Aires, Argentina                                                                      
-                                                                                              Con: ariel@cebrokers.com.ar, aseidler@wnsasociados.com, cuba@litebox.                                                                                                                                   
-
-26063  2026-08-04 15:45:34  gmail     saliente   doris@capurro.com.ar                         ⏰ *En 15min*: Almuerzo con DC- MM  (01:00 p. m.) @DASHI - Av Figueroa Alcorta 3399                                                                                                                      
-                                                                                              Con: martin.mandarano@ypfluz.com                                                                                                                                                                        
-                                                                                              👤 Martin Mandarano — CEO de YPF Luz                                                                                                                                                                     
-                                                                                               _______________________________________________                                                                                                                                                        
