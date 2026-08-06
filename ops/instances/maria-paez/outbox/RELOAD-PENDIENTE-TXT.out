@@ -1,0 +1,22 @@
+# ejecutado: 2026-08-06T17:35:28-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 6
+#   SEC=$(grep WA_HOOK_SECRET /root/secretaria/config/secrets.conf | cut -d= -f2)
+#   DB="${MARIA_DB:?}"
+#   # reencolar el de prueba si quedó vencido
+#   sqlite3 "$DB" "UPDATE wa_outbox SET estado='pendiente', intentos=0 WHERE id=2;"
+#   echo "== respuesta del endpoint nuevo =="
+#   curl -s -m 10 "https://intensa.io/hooks/wa-maria/$SEC/pendiente.txt"; echo
+#   echo "URL: https://intensa.io/hooks/wa-maria/$SEC/pendiente.txt"
+
+# ───── output ─────
+== respuesta del endpoint nuevo ==
+2|541132317896|Prueba%20del%20canal%20de%20salida%20%E2%80%94%20si%20ves%20esto%2C%20Tasker%20levant%C3%B3%20el%20mensaje%20de%20la%20cola.
+URL: https://intensa.io/hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/pendiente.txt
+
+# exit=0
