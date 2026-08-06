@@ -1,0 +1,23 @@
+# ejecutado: 2026-08-06T09:18:25-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 6
+#   pm2 jlist | python3 -c "import json,sys; [print(p['name'], p['pm2_env']['status']) for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   SEC=$(grep WA_HOOK_SECRET /root/secretaria/config/secrets.conf | cut -d= -f2)
+#   echo "== GET pendiente (debe dar {}) =="
+#   curl -s -m 10 "https://intensa.io/hooks/wa-maria/$SEC/pendiente"; echo
+#   echo "URL-TASKER-PENDIENTE: https://intensa.io/hooks/wa-maria/$SEC/pendiente"
+#   echo "URL-TASKER-CONFIRMAR: https://intensa.io/hooks/wa-maria/$SEC/confirmar"
+
+# ───── output ─────
+maria-paez online
+== GET pendiente (debe dar {}) ==
+{}
+URL-TASKER-PENDIENTE: https://intensa.io/hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/pendiente
+URL-TASKER-CONFIRMAR: https://intensa.io/hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar
+
+# exit=0
