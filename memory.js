@@ -1165,6 +1165,7 @@ function formatearParaPrompt(e, tz) {
   const flecha = e.direccion === 'entrante' ? '→' : (e.direccion === 'saliente' ? '←' : '·');
   const quien = e.nombre || e.de || '?';
   const cuerpo = (e.cuerpo || '').replace(/\s+/g, ' ').slice(0, 300);
+  if (e.canal === 'telegram') return `[${ts}] ${flecha} TG ${quien}: ${cuerpo}`; // (2026-08-05: sin esta rama, los TG se etiquetaban como WA y el modelo "no veía" Telegram)
   if (e.canal === 'gmail')    return `[${ts}] ${flecha} GMAIL ${quien} | "${e.asunto || ''}" | ${cuerpo}`;
   if (e.canal === 'calendar') return `[${ts}] ${flecha} CAL ${quien} | ${cuerpo}`;
   if (e.canal === 'sistema')  return `[${ts}] · SIS ${cuerpo}`;

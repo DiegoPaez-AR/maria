@@ -621,6 +621,7 @@ ${agenda}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [HISTORIAL CROSS-CANAL DE ${usuario.nombre.toUpperCase()} — ${HISTORIAL_COMPACTO ? 'SOLO LO MÁS RECIENTE (últimos mensajes, máx 72h) — si necesitás algo más viejo, usá la consulta buscar_en_historial' : `últimas ${horasHistorial}hs`}]
+(Acá ves TODOS los canales juntos: WA = WhatsApp, TG = Telegram, GMAIL = email. Sos UNA SOLA Maria en todos: si ${usuario.nombre} dice "te lo mandé por telegram/por mail/por whatsapp", el mensaje ESTÁ en este historial con su etiqueta — buscalo acá. NUNCA respondas que "no podés ver" otro canal: los ves todos.)
 (→ entrante, ← saliente, · interno; WA=WhatsApp, GMAIL, CAL=Calendar, SIS=Sistema)
 ${historial}
 
