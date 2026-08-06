@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26277  2026-08-06 13:09:22  sistema   interno                                              claude_call gmail: 49898ms prompt=7523c raw=25334c in=8t(cache_read=174461 new=49327) out=2435t ttfb=1402ms api=37721ms turnos=8 $0.2739                                                                
+
+26276  2026-08-06 13:09:17  sistema   interno                                              acción ejecutada: responder_email                                                                                                                                                                       
+
+26275  2026-08-06 13:09:17  gmail     saliente                                             Hola Gabriela,                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                   
+                                                                                           Ya guardé el contacto de Ulises y le escribí por WhatsApp: le pregunté si él y Esteban están libres esta semana para armar un plan con vos, y le pedí la receta del chipa. En cuanto res                
+
+26274  2026-08-06 13:09:16  sistema   interno                                              claude_call moderacion: 6519ms prompt=2022c raw=7358c in=10t(cache_read=17396 new=5189) out=433t ttfb=1265ms api=6556ms turnos=1 $0.0110                                                                
+
+26273  2026-08-06 13:09:10  sistema   interno                                              acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+26272  2026-08-06 13:09:10  sistema   interno                                              acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26271  2026-08-06 13:09:10  sistema   interno                                              claude_call moderacion: 7134ms prompt=1731c raw=6850c in=10t(cache_read=0 new=22539) out=437t ttfb=1324ms api=7694ms turnos=1 $0.0309                                                                   
+
 26270  2026-08-06 13:08:53  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 26269  2026-08-06 13:08:53  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -302,20 +318,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26179  2026-08-05 23:31:56  sistema   interno                                              claude_call telegram: 55736ms prompt=78650c raw=26997c in=10t(cache_read=170783 new=101262) out=3101t ttfb=1855ms api=53632ms turnos=5 $0.4868                                                          
 
 26178  2026-08-05 23:31:32  whatsapp  entrante   541132317896@c.us                         Ahí te mandé por tlg                                                                                                                                                                                    
-
-26177  2026-08-05 23:30:59  telegram  entrante   telegram:590589920                        María, ¿me podrás poner un almuerzo este viernes al lado de la tarde con sántica                                                                                                                        
-                                                                                            puro en gárdener de la costanera?                                                                                                                                                                      
-
-26176  2026-08-05 23:30:24  whatsapp  saliente   541132317896@c.us                         Diego, no puedo escuchar audios por WhatsApp todavía. ¿Me lo pasás en texto o por Telegram si lo tenés vinculado?                                                                                       
-
-26175  2026-08-05 23:30:24  sistema   interno                                              claude_call whatsapp: 10652ms prompt=82113c raw=4954c in=2t(cache_read=0 new=53113) out=128t ttfb=1489ms api=9948ms turnos=1 $0.2115                                                                    
-
-26174  2026-08-05 23:30:13  whatsapp  entrante   541132317896@c.us                         (el remitente mandó un AUDIO que no podés escuchar por este canal — pedile que te lo mande en texto, o por Telegram si es usuario vinculado)                                                            
-
-26173  2026-08-05 22:45:04  gmail     saliente   gabyechaniz@gmail.com                     ⏰ *En 15min*: Festejo ❤️ (08:00 p. m.)                                                                                                                                                                  
-                                                                                           Con: rpc@sondeosglobal.com                                                                                                                                                                              
-                                                                                           👤 Rpc — No hay información confiable de esta persona específica. sin datos                                                                                                                              
-
-26172  2026-08-05 21:01:26  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26171  2026-08-05 21:01:26  sistema   interno                                              claude_call enriquecer-contacto: 16903ms prompt=669c raw=18430c in=863t(cache_read=16348 new=32700) out=332t ttfb=1515ms api=21733ms turnos=4 $0.1799                                                   
