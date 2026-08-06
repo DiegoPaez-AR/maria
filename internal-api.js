@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|confirmar)$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar)$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -53,6 +53,14 @@ function start({ waClient } = {}) {
         if (_out[2] === 'pendiente') {
           const p = outbox.siguiente();
           return send(200, p || {});
+        }
+        // Variante texto plano para Tasker (2026-08-06): una línea
+        // "id|numero|texto-urlencoded" (o vacío). Evita depender del parseo
+        // de JSON de Tasker, que no resolvía %http_data.campo.
+        if (_out[2] === 'pendiente.txt') {
+          const p = outbox.siguiente();
+          res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+          return res.end(p ? `${p.id}|${p.numero}|${encodeURIComponent(p.texto)}` : '');
         }
         const b = await readJson(req).catch(() => ({}));
         const id = b && b.id ? b.id : (req.url.match(/id=(\d+)/) || [])[1];
