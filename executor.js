@@ -638,13 +638,24 @@ function _resolverDestinoWA(a) {
 async function _enviarWA(a, ctx) {
   _requerir(a, ['a', 'texto']);
   a.texto = _normNL(a.texto);
-  if (!ctx.waClient) throw new Error('enviar_wa: ctx.waClient no fue provisto al executor');
 
   // Validar destinatario contra libreta visible / usuarios activos.
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
   if (!_v.ok) throw new Error(`enviar_wa: ${_v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
 
   await _moderarSaliente(a.texto, a, ctx, 'enviar_wa', a.a);
+
+  // Canal WA v2 (2026-08-04): sin wwebjs, los mensajes INICIADOS van a una
+  // cola que el teléfono (Tasker) drena mandándolos por la app oficial.
+  if (!ctx.waClient) {
+    const id = require('./wa-outbox').encolar({
+      usuarioId: ctx.usuario.id,
+      numero: a.a,
+      texto: a.texto,
+      metadata: { destinoOriginal: a.a, canalOrigen: ctx.canalOrigen || null },
+    });
+    return { a: a.a, enviado: true, via: 'telefono', outboxId: id, nota: 'sale del teléfono en menos de 1 minuto' };
+  }
 
   let destinoFinal;
   try {

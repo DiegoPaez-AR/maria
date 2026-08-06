@@ -43,6 +43,22 @@ function start({ waClient } = {}) {
     try {
       // ── Webhook AutoResponder (2026-08-02): ruta PÚBLICA via nginx, con su
       // propio secret en el path (el teléfono no conoce el internal secret).
+      // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
+      // hay algo para iniciar y confirma cuando lo mandó.
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|confirmar)$/);
+      if (_out) {
+        const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
+        if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
+        const outbox = require('./wa-outbox');
+        if (_out[2] === 'pendiente') {
+          const p = outbox.siguiente();
+          return send(200, p || {});
+        }
+        const b = await readJson(req).catch(() => ({}));
+        const id = b && b.id ? b.id : (req.url.match(/id=(\d+)/) || [])[1];
+        return send(200, { ok: outbox.confirmar(id) });
+      }
+
       const _hook = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})$/);
       if (_hook) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
