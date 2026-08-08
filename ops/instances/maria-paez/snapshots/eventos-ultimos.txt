@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                              
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26380  2026-08-08 15:30:17  sistema   interno                                              Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                
+                                                                                           Listo, te agendo la reunión con Matías Israel el lunes 10/08 de 18:00 a 19:00 con Meet, y le mando la invitación a                                                  
+
+26379  2026-08-08 15:30:17  sistema   interno                                              claude_call telegram: 38635ms prompt=78586c raw=17827c in=6t(cache_read=54376 new=106393) out=2604t ttfb=1438ms api=36165ms turnos=3 $0.4636                        
+
+26378  2026-08-08 15:30:14  sistema   interno                                              acción ejecutada: crear_evento                                                                                                                                      
+
+26377  2026-08-08 15:30:14  calendar  saliente                                             creado: Reunion MI - DP (2026-08-10T18:00:00-03:00 → 2026-08-10T19:00:00-03:00) · Meet: https://meet.google.com/mjq-dsyw-qxw                                        
+
 26376  2026-08-08 15:29:38  telegram  entrante   telegram:590589920                        María me podrá poner una reunión para el lunes a las 18, con Matías Israel, creo que                                                                                
                                                                                             tenés el mail, mandale la invitación directamente, es por mí, la reunión.                                                                                          
 
@@ -393,16 +402,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26281  2026-08-06 14:45:27  telegram  saliente   590589920                                 ⏰ *En 15min*: GN + VR Weekly (12:00 p. m.)                                                                                                                          
                                                                                            Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com                                                                        
                                                                                            👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un                                                                                                    
-
-26280  2026-08-06 14:15:27  gmail     saliente   santiago@capurro.com.ar                   ⏰ *En 15min*: Noctua + Pumayna (11:30 a. m.)                                                                                                                        
-                                                                                           Con: mguyot@noctuapartners.com, fmarino@noctuapartners.com, lucas@capurro.com.ar                                                                                    
-                                                                                           👤 Mguyot — Founder & Owner en Noctua Partners                                                                                                                       
-                                                                                           👤 Fmarino — CEO en Noctua Pa                                                                                                                                        
-
-26279  2026-08-06 13:45:28  gmail     saliente   santiago@capurro.com.ar                   ⏰ *En 15min*: Segundo deposito Justison (11:00 a. m.)                                                                                                               
-                                                                                           Con: pablo.petrillo@luftlatam.com, federico.caceres@4caminos.co, dscheerle@c2scs.com, lucas@capurro.com.ar, omolina@rzllaw.com, vivian@rzllaw.com                   
-
-26278  2026-08-06 13:45:27  gmail     saliente   hernan.fulco@sondeosglobal.com            ⏰ *En 15min*: Seguimiento de Tickets/Ciberseguridad (11:00 a. m.)                                                                                                   
-                                                                                           Con: cristian.incarnato@sondeos.com.ar, martin.gagliano@sondeos.com.ar, lautaro.taretto@sondeos.com.ar, gustavo.garcia@sondeos.com.ar,                              
-
-26277  2026-08-06 13:09:22  sistema   interno                                              claude_call gmail: 49898ms prompt=7523c raw=25334c in=8t(cache_read=174461 new=49327) out=2435t ttfb=1402ms api=37721ms turnos=8 $0.2739                            
