@@ -1,5 +1,18 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26572  2026-08-12 13:23:50  sistema   interno                                      claude_call enriquecer-contacto: 18570ms prompt=631c raw=18158c in=6t(cache_read=16302 new=33878) out=282t ttfb=1681ms api=22029ms turnos=4 $0.1832                                                     
+
+26571  2026-08-12 13:23:40  sistema   interno                                      Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                                                    
+                                                                                   Guardé a Manuel Carrasco con el mail manucarrasco80@gmail.com — ojo que el teléfono no me llegó, solo el mail (revi                                                                                     
+
+26570  2026-08-12 13:23:40  sistema   interno                                      claude_call telegram: 46294ms prompt=78498c raw=19064c in=6t(cache_read=72246 new=89195) out=2749t ttfb=1547ms api=43544ms turnos=4 $0.4066                                                             
+
+26569  2026-08-12 13:23:34  sistema   interno                                      acción ejecutada: crear_evento                                                                                                                                                                          
+
+26568  2026-08-12 13:23:34  calendar  saliente                                     creado: Reunion MC - DP (2026-08-13T16:00:00-03:00 → 2026-08-13T17:00:00-03:00) · Meet: https://meet.google.com/pai-hgog-pnb                                                                            
+
+26567  2026-08-12 13:23:31  sistema   interno                                      acción ejecutada: upsert_contacto                                                                                                                                                                       
+
 26566  2026-08-12 13:22:54  sistema   interno                                      claude_call telegram: 123066ms prompt=77519c raw=65932c in=40t(cache_read=1066444 new=99976) out=6002t ttfb=1713ms api=121854ms turnos=20 $0.7938                                                       
 
 26565  2026-08-12 13:22:09  sistema   interno                                      acción ejecutada: buscar_contacto_global                                                                                                                                                                
@@ -383,19 +396,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                    👤 Federico Caceres — No hay coincidencia confiable entre ninguno de los perfiles encontrados y esta persona/empresa                                                                                     
 
 26473  2026-08-10 18:00:38  sistema   interno                                      meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26472  2026-08-10 17:45:32  gmail     saliente   santiago@capurro.com.ar           ⏰ *En 15min*: Admin interna + Base deudas, temas societarios, varios (03:00 p. m.) @Working Ocampo, Ortiz de Ocampo 3302, C1425 CABA, Argentina                                                         
-                                                                                   Con: romina.rios@ebuono.com.ar, federico.dupuy@ebuono.co                                                                                                                                                
-
-26471  2026-08-10 17:45:32  gmail     saliente   hernan.fulco@sondeosglobal.com    ⏰ *En 15min*: Revision de precios de sms (03:00 p. m.)                                                                                                                                                  
-                                                                                   Con: pablo.verdina@sondeosglobal.com                                                                                                                                                                    
-                                                                                   👤 Pablo Verdina — Sales Manager LATAM en Sondeos Global                                                                                                                                                 
-
-26470  2026-08-10 16:30:36  sistema   interno                                      meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26469  2026-08-10 16:00:37  sistema   interno                                      meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26468  2026-08-10 15:45:32  gmail     saliente   santiago@capurro.com.ar           ⏰ *En 15min*: Gatto (01:00 p. m.)                                                                                                                                                                       
-
-26467  2026-08-10 15:15:32  gmail     saliente   hernan.fulco@sondeosglobal.com    ⏰ *En 15min*: Contact Center (12:30 p. m.) @Brandsen 2070 (Brandsen 2070, Comuna 4  Ciudad Autónoma de Buenos Aires)                                                                                    
-                                                                                   Con: gimena.maldonado@sondeosglobal.com, gafernandez@correoargentino.com.ar, ggerez                                                                                                                     
