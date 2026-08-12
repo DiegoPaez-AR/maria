@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26562  2026-08-12 13:20:50  telegram  entrante   telegram:590589920                Te llegó el contacto, el teléfono y el mail de Manuel Carrasco. Guardalos y                                                                                                                             
+                                                                                    agendame una reunión con él para mañana jueves a las cuatro de la tarde. Gracias.                                                                                                                      
+
+26561  2026-08-12 13:20:45  telegram  saliente   telegram:590589920                Diego, me pasaste el mail manucarrasco80@gmail.com pero no tengo el contexto de para qué es. ¿Lo guardo como contacto (¿de quién es, Manu Carrasco?), lo sumo como invitado a alguna reunión, o es para 
+
+26560  2026-08-12 13:20:45  sistema   interno                                      claude_call telegram: 9425ms prompt=77803c raw=6913c in=2t(cache_read=8784 new=42446) out=342t ttfb=1672ms api=8353ms turnos=1 $0.1759                                                                  
+
+26559  2026-08-12 13:20:35  sistema   interno                                      claude_call telegram: 61957ms prompt=77256c raw=67254c in=22t(cache_read=545969 new=117593) out=2626t ttfb=1886ms api=60258ms turnos=11 $0.6529                                                         
+
 26558  2026-08-12 13:19:33  telegram  entrante   telegram:590589920                manucarrasco80@gmail.com                                                                                                                                                                                
 
 26557  2026-08-12 13:15:33  gmail     saliente   santiago@capurro.com.ar           ⏰ *En 15min*: August 12th "Webinar Wednesday" (10:30 a. m.) @https://us06web.zoom.us/w/81631646337?tk=IFO_uvlNUYUDAPopnd95T2r8ak8NClHkukW-ayJyak0.DQkAAAATAaASgRZvOVZIenNoTVRxLWVRZWtVaEZ5Q1BRAAAAAAAAAA
@@ -390,12 +399,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26464  2026-08-10 14:57:10  telegram  entrante   telegram:590589920                ¿Cuándo es el cumpleaños de Fabio Boscheto?                                                                                                                                                             
 
 26463  2026-08-10 14:15:32  gmail     saliente   hernan.fulco@sondeosglobal.com    ⏰ *En 15min*: Gabriel Fernandez Luquez - Correo (11:30 a. m.)                                                                                                                                           
-
-26462  2026-08-10 14:00:37  sistema   interno                                      meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26461  2026-08-10 13:45:32  gmail     saliente   hernan.fulco@sondeosglobal.com    ⏰ *En 15min*: Planning MC (11:00 a. m.)                                                                                                                                                                 
-                                                                                   Con: grey.uzcategui@sondeos.com.ar, bogdan.bedyukh@sondeosglobal.com, alejandro.furgeri@sondeos.com.ar, gustavo.garcia@sondeosglobal.com, lautaro.taretto@sondeo                                        
-
-26460  2026-08-10 13:30:57  sistema   interno                                      meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26459  2026-08-10 13:30:52  sistema   interno                                      claude_call enriquecer-contacto: 20534ms prompt=695c raw=16249c in=6t(cache_read=16306 new=33298) out=246t ttfb=1455ms api=25119ms turnos=4 $0.1772                                                     
