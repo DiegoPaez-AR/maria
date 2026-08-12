@@ -408,6 +408,18 @@ async function _loop(waEstado) {
         }
         let texto = msg.text || msg.caption || '';
         const u = usuarios.obtenerPorTelegram(chatId);
+        // Contacto compartido por un VINCULADO (2026-08-05, pedido Diego —
+        // antes se descartaba en silencio: msg.contact solo se usaba para la
+        // vinculación de no-vinculados). Entra como turno de texto → el modelo
+        // lo guarda con upsert_contacto, que trae el guard anti-duplicados.
+        if (u && msg.contact && !texto.trim()) {
+          const c = msg.contact;
+          const nombreC = [c.first_name, c.last_name].filter(Boolean).join(' ');
+          texto = `[CONTACTO COMPARTIDO] ${nombreC || '(sin nombre)'} — tel: ${c.phone_number || '(sin número)'}` +
+            (c.vcard ? `\n(vCard: ${String(c.vcard).replace(/\s+/g, ' ').slice(0, 400)})` : '') +
+            `\n(El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contacto salvo que el contexto diga otra cosa.)`;
+          console.log(`[TG] contacto compartido por ${u.nombre}: ${nombreC} ${c.phone_number || ''}`);
+        }
         if (!texto.trim() && u && (msg.voice || msg.audio)) {
           try {
             console.log('[TG] transcribiendo audio…');
