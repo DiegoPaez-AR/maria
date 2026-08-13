@@ -1,0 +1,60 @@
+# ejecutado: 2026-08-13T10:46:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== tráfico por canal (últimos 3 días) =="
+#   sqlite3 "$DB" "SELECT date(timestamp), canal, direccion, COUNT(*) FROM eventos WHERE timestamp > datetime('now','-3 days') AND canal IN ('whatsapp','telegram','gmail') GROUP BY 1,2,3 ORDER BY 1 DESC, 2;"
+#   echo "== fallas/errores registrados (48h) =="
+#   sqlite3 "$DB" "SELECT timestamp, substr(cuerpo,1,95) FROM eventos WHERE timestamp > datetime('now','-48 hours') AND canal='sistema' AND (cuerpo LIKE '%falló%' OR cuerpo LIKE '%error%' OR cuerpo LIKE '%FALLO%' OR cuerpo LIKE '%no pude%') ORDER BY id DESC LIMIT 12;"
+#   echo "== wa-hook: desconocidos/ambiguos (48h) =="
+#   sqlite3 "$DB" "SELECT timestamp, substr(cuerpo,1,80) FROM eventos WHERE metadata_json LIKE '%wa_hook%' AND timestamp > datetime('now','-48 hours') ORDER BY id DESC LIMIT 6;"
+#   echo "== cola de salientes =="
+#   sqlite3 "$DB" "SELECT id, estado, intentos, substr(texto,1,30) FROM wa_outbox ORDER BY id DESC LIMIT 5;"
+#   echo "== deadline hits (48h) =="
+#   grep -a "wa-hook] deadline" /root/.pm2/logs/maria-paez-out.log 2>/dev/null | tail -4
+#   echo "== errores pm2 recientes =="
+#   grep -aiE "error|falló|FALLO" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -8
+#   echo "== túnel oficina =="
+#   ss -tlnp | grep -qE ':1080' && echo "1080 OK" || echo "1080 CAÍDO"
+#   ss -tlnp | grep -qE ':2222' && echo "2222 OK" || echo "2222 CAÍDO"
+
+# ───── output ─────
+== tráfico por canal (últimos 3 días) ==
+2026-08-13|gmail|saliente|24
+2026-08-13|telegram|saliente|3
+2026-08-12|gmail|saliente|30
+2026-08-12|telegram|entrante|3
+2026-08-12|telegram|saliente|7
+2026-08-11|gmail|saliente|30
+2026-08-11|telegram|saliente|4
+2026-08-10|gmail|saliente|6
+2026-08-10|telegram|entrante|1
+2026-08-10|telegram|saliente|3
+== fallas/errores registrados (48h) ==
+2026-08-12 13:23:40|Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude:
+Guardé a M
+== wa-hook: desconocidos/ambiguos (48h) ==
+== cola de salientes ==
+2|vencido|3|Prueba del canal de salida — s
+1|vencido|0|Hola Ulises! Soy María, la asi
+== deadline hits (48h) ==
+2026-08-03 11:30:56: [wa-hook] deadline: respuesta a Diego salió por TG/email
+2026-08-03 22:55:47: [wa-hook] deadline: respuesta a n:paraná muebles logística stasheada para su próximo mensaje
+2026-08-05 08:52:18: [wa-hook] deadline: respuesta a n:gustavo dzugala stasheada para su próximo mensaje
+2026-08-05 08:53:35: [wa-hook] deadline: respuesta a n:gustavo dzugala stasheada para su próximo mensaje
+== errores pm2 recientes ==
+2026-08-12 10:23:40: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-12 13:41:28: [TG] poll error (reintento en 15s): fetch failed
+2026-08-12 18:53:18: [TG] poll error (reintento en 15s): fetch failed
+2026-08-12 22:43:10: [TG] poll error (reintento en 15s): fetch failed
+2026-08-12 23:00:22: [TG] poll error (reintento en 15s): fetch failed
+2026-08-13 02:18:37: [TG] poll error (reintento en 15s): fetch failed
+2026-08-13 03:02:55: [TG] poll error (reintento en 15s): fetch failed
+2026-08-13 04:12:41: [TG] poll error (reintento en 15s): fetch failed
+== túnel oficina ==
+1080 OK
+2222 OK
+
+# exit=0
