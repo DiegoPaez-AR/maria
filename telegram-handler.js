@@ -65,16 +65,38 @@ async function enviarTG(chatId, texto, extra = {}) {
 const TG_FILE_MAX_BYTES = 20 * 1024 * 1024; // límite de getFile en la Bot API (audio y adjuntos)
 
 async function _transcribirAudioTG(msg) {
-  const a = msg.voice || msg.audio;
-  if ((a.file_size || 0) > TG_FILE_MAX_BYTES) throw new Error('audio supera 20MB (límite Bot API)');
+  // 2026-08-05: también video y video_note (los "redondos") — ffmpeg extrae
+  // el audio del mp4 en el mismo pipeline; se transcribe solo el audio.
+  const a = msg.voice || msg.audio || msg.video_note || msg.video;
+  if ((a.file_size || 0) > TG_FILE_MAX_BYTES) throw new Error('audio/video supera 20MB (límite Bot API)');
   const f = await _api('getFile', { file_id: a.file_id });
   if (!f.file_path) throw new Error('getFile sin file_path');
   const res = await fetch(`https://api.telegram.org/file/bot${TOKEN}/${f.file_path}`);
   if (!res.ok) throw new Error(`descarga de audio: HTTP ${res.status}`);
   const buf = Buffer.from(await res.arrayBuffer());
+  const esVideo = !!(msg.video_note || msg.video);
   const mime = a.mime_type || '';
-  const ext = mime.includes('mpeg') ? 'mp3' : mime.includes('mp4') ? 'm4a' : 'ogg';
-  return await transcribirBuffer(buf, ext);
+  const ext = esVideo ? 'mp4' : mime.includes('mpeg') ? 'mp3' : mime.includes('mp4') ? 'm4a' : 'ogg';
+  const t = await transcribirBuffer(buf, ext);
+  return esVideo ? `(video — transcripción del audio): ${t}` : t;
+}
+
+// ── Archivos de texto plano (.txt/.csv/.md) → contenido inline (2026-08-05) ──
+const TG_TEXTO_MAX_CHARS = Number(process.env.TG_TEXTO_MAX_CHARS || 50_000);
+function _esDocTexto(d) {
+  const mime = d.mime_type || '';
+  const nombre = d.file_name || '';
+  return /^text\//i.test(mime) || /\.(txt|csv|md|log|tsv)$/i.test(nombre);
+}
+async function _leerDocTextoTG(msg) {
+  const d = msg.document;
+  if ((d.file_size || 0) > 512 * 1024) throw new Error('archivo de texto supera 512KB');
+  const f = await _api('getFile', { file_id: d.file_id });
+  const res = await fetch(`https://api.telegram.org/file/bot${TOKEN}/${f.file_path}`);
+  if (!res.ok) throw new Error(`descarga: HTTP ${res.status}`);
+  const contenido = Buffer.from(await res.arrayBuffer()).toString('utf8');
+  const truncado = contenido.length > TG_TEXTO_MAX_CHARS;
+  return { nombre: d.file_name || 'archivo.txt', contenido: contenido.slice(0, TG_TEXTO_MAX_CHARS), truncado };
 }
 
 // Foto / documento (imagen o PDF) → /tmp para visión multimodal, igual que
@@ -420,7 +442,27 @@ async function _loop(waEstado) {
             `\n(El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contacto salvo que el contexto diga otra cosa.)`;
           console.log(`[TG] contacto compartido por ${u.nombre}: ${nombreC} ${c.phone_number || ''}`);
         }
-        if (!texto.trim() && u && (msg.voice || msg.audio)) {
+        // Ubicación / venue compartida (2026-08-05)
+        if (u && (msg.location || msg.venue) && !texto.trim()) {
+          const v = msg.venue;
+          const l = (v && v.location) || msg.location;
+          texto = `[UBICACIÓN COMPARTIDA]${v ? ` ${v.title}${v.address ? ' — ' + v.address : ''}` : ''} (https://maps.google.com/?q=${l.latitude},${l.longitude})` +
+            `\n(El usuario te compartió esta ubicación por Telegram — usala según el contexto: dirección de un contacto, lugar de un evento, etc.)`;
+          console.log(`[TG] ubicación compartida por ${u.nombre}`);
+        }
+        // Archivo de texto plano (.txt/.csv/.md) → contenido inline (2026-08-05)
+        if (u && msg.document && _esDocTexto(msg.document) && !texto.trim()) {
+          try {
+            const doc = await _leerDocTextoTG(msg);
+            texto = `${msg.caption ? msg.caption + '\n' : ''}[ARCHIVO ${doc.nombre}]\n${doc.contenido}${doc.truncado ? '\n(…archivo truncado a ' + TG_TEXTO_MAX_CHARS + ' caracteres)' : ''}`;
+            console.log(`[TG] archivo de texto de ${u.nombre}: ${doc.nombre} (${doc.contenido.length} chars)`);
+          } catch (e) {
+            console.warn('[TG] archivo de texto falló:', e.message);
+            try { await enviarTG(chatId, `(no pude leer tu archivo: ${e.message})`); } catch {}
+            continue;
+          }
+        }
+        if (!texto.trim() && u && (msg.voice || msg.audio || msg.video_note || msg.video)) {
           try {
             console.log('[TG] transcribiendo audio…');
             texto = await _transcribirAudioTG(msg);
