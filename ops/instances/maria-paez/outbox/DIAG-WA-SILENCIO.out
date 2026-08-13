@@ -1,0 +1,46 @@
+# ejecutado: 2026-08-13T10:47:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== último evento WhatsApp =="
+#   sqlite3 "$DB" "SELECT timestamp, direccion, COALESCE(nombre,de), substr(cuerpo,1,40) FROM eventos WHERE canal='whatsapp' ORDER BY id DESC LIMIT 5;"
+#   echo "== requests del teléfono al hook (nginx, por día) =="
+#   for f in /var/log/nginx/access.log /var/log/nginx/access.log.1; do
+#     [ -f "$f" ] && grep -h "wa-maria" "$f" 2>/dev/null
+#   done | awk '{print substr($4,2,11)}' | sort | uniq -c | tail -8
+#   echo "== último request =="
+#   for f in /var/log/nginx/access.log /var/log/nginx/access.log.1; do
+#     [ -f "$f" ] && grep -h "wa-maria" "$f" 2>/dev/null
+#   done | tail -3 | awk '{print $4, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+#   echo "== falla telegram de ayer (contexto) =="
+#   grep -a -A 6 "No se pudo extraer JSON" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -14
+
+# ───── output ─────
+== último evento WhatsApp ==
+2026-08-09 21:47:48|saliente|Diego|Mañana lunes 10/08 tenés:
+🕔 17:00-18:00 
+2026-08-09 21:47:33|entrante|Diego|Pásame mi agenda de mañana
+2026-08-09 11:52:09|saliente|Santiago Paez|¿Nop a qué te referís? No tengo claro a 
+2026-08-09 11:51:38|entrante|Santiago Paez|Nop
+2026-08-07 11:15:35|saliente|Diego|Era Ezequiel — lo tengo anotado como "Ez
+== requests del teléfono al hook (nginx, por día) ==
+== último request ==
+== falla telegram de ayer (contexto) ==
+2026-08-08 12:30:17: Listo, te agendo la reunión con Matías Israel el lunes 10/08 de 18:00 a 19:00 con Meet, y le mando la invitación a matias.israel@gmail.com (era el mail que tenía anotado de él en la libreta — si es otro avisame y la corrijo).
+2026-08-10 05:24:43: [TG] poll error (reintento en 15s): fetch failed
+2026-08-10 08:00:55: [TG] poll error (reintento en 15s): fetch failed
+2026-08-10 09:44:33: [TG] poll error (reintento en 15s): fetch failed
+2026-08-10 10:43:52: [TG] poll error (reintento en 15s): fetch failed
+2026-08-10 11:03:19: [TG] poll error (reintento en 15s): fetch failed
+--
+2026-08-12 10:23:40: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-12 10:23:40: Guardé a Manuel Carrasco con el mail manucarrasco80@gmail.com — ojo que el teléfono no me llegó, solo el mail (revisé el historial y no lo veo por ningún canal), así que si me lo pasás lo sumo.
+2026-08-12 10:23:40: 
+2026-08-12 10:23:40: Te agendo la reunión para mañana jueves 13/08 de 16:00 a 17:00, con Meet y la invitación ya le sale a su mail.
+2026-08-12 10:41:26: ⚠️ [MODO DEGRADADO] WA caído hace 46035 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
+2026-08-12 10:41:26: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
+2026-08-12 13:41:28: [TG] poll error (reintento en 15s): fetch failed
+
+# exit=0
