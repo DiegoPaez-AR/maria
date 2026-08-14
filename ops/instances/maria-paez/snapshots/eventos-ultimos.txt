@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26760  2026-08-14 14:18:33  sistema   interno                                      claude_call whatsapp: 5978ms prompt=81662c raw=4850c in=2t(cache_read=8784 new=44020) out=96t ttfb=1454ms api=5065ms turnos=1 $0.1793                                                                   
+
+26759  2026-08-14 14:18:26  whatsapp  entrante   541132317896@c.us                 no hagas nada                                                                                                                                                                                           
+
+26758  2026-08-14 14:18:25  sistema   interno                                      unhandledRejection: No se pudo extraer JSON de la respuesta de Claude:                                                                                                                                  
+                                                                                   No voy a hacer nada con ese link — es el mismo hook de confirmación raro que ya me pediste frenar antes, y ahora encima llegó con                                                                       
+
+26757  2026-08-14 14:18:25  sistema   interno                                      claude_call whatsapp: 22682ms prompt=81832c raw=12558c in=6t(cache_read=53917 new=107242) out=1055t ttfb=1701ms api=22107ms turnos=3 $0.4444                                                            
+
 26756  2026-08-14 14:18:02  whatsapp  entrante   541132317896@c.us                 🔗 intensa.io | https://intensa.io/hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar/%http_data1                                                                                                 
 
 26755  2026-08-14 14:17:14  sistema   interno                                      claude_call memoria-curada: 19062ms prompt=4729c raw=10592c in=2t(cache_read=0 new=17189) out=1259t ttfb=1497ms api=18151ms turnos=1 $0.0853                                                            
@@ -298,11 +307,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26662  2026-08-13 14:03:24  sistema   interno                                      claude_call enriquecer-contacto: 31557ms prompt=669c raw=25533c in=8t(cache_read=51886 new=16914) out=804t ttfb=1340ms api=35245ms turnos=5 $0.1621                                                     
 
 26661  2026-08-13 14:02:52  sistema   interno                                      claude_call enriquecer-contacto: 26522ms prompt=657c raw=28467c in=628t(cache_read=33682 new=35349) out=539t ttfb=1497ms api=33108ms turnos=6 $0.2471                                                   
-
-26660  2026-08-13 13:57:25  sistema   interno                                      WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-26659  2026-08-13 13:57:25  sistema   interno                                      Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-26658  2026-08-13 13:57:25  sistema   interno                                      MODO DEGRADADO: loops arrancados sin WA (caído hace 47491 min)                                                                                                                                          
-
-26657  2026-08-13 13:57:24  sistema   interno                                      shutdown por SIGINT                                                                                                                                                                                     
