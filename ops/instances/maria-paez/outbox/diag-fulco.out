@@ -1,0 +1,26 @@
+# ejecutado: 2026-08-14T18:25:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const u = db.prepare(\"SELECT id, nombre, wa_cus FROM usuarios WHERE nombre LIKE '%Fulco%'\").get();
+#   console.log('usuario:', JSON.stringify(u));
+#   const rows = db.prepare(\"SELECT id, timestamp, direccion, substr(cuerpo,1,130) c FROM eventos WHERE usuario_id=? AND canal='whatsapp' ORDER BY id DESC LIMIT 6\").all(u.id);
+#   rows.reverse().forEach(r => console.log(r.id, r.timestamp, r.direccion, '|', String(r.c).replace(/\n/g,' ')));
+#   db.close();
+#   "
+#   echo LISTO
+
+# ───── output ─────
+usuario: {"id":2,"nombre":"Hernan Fulco","wa_cus":"5491126829596@c.us"}
+16245 2026-07-06 18:53:31 saliente | ⏰ *En 15min*: Sondeos - Análisis de estrategia para optimización de tableros redmine (03:00 p. m.) Con: lautaro.taretto@sondeosglo
+16249 2026-07-06 18:53:35 saliente | ⏰ *En 15min*: Temas varios (04:00 p. m.) Con: pablo.verdina@sondeosglobal.com 👤 Pablo Verdina — Sales Manager LATAM en Sondeos Glo
+16313 2026-07-07 10:00:34 saliente | ☀️ *Buen día, Hernan Fulco.* martes, 7 de julio.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, mín 3° / máx 15°  *📅 Agenda del día* 
+22355 2026-07-07 21:56:48 saliente | ⏰ *En 15min*: RAG: Apross (09:00 a. m.) Con: victoria.britos@sondeosglobal.com 👤 Victoria Britos — Project Manager en Sondeos Glob
+22356 2026-07-07 21:56:55 saliente | ⏰ *En 15min*: MC Daily (09:15 a. m.) Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeos
+26826 2026-08-14 21:12:21 entrante | Hola María. El viernes 21/8 de 9 a 12hs estaría perfecto.
+LISTO
+
+# exit=0
