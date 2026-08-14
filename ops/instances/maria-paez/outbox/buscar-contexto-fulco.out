@@ -1,0 +1,46 @@
+# ejecutado: 2026-08-14T18:32:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   console.log('── menciones de 21/8 o viernes (todo canal, 21 días) ──');
+#   const rows = db.prepare(\"SELECT id, timestamp, usuario_id, canal, direccion, substr(cuerpo,1,130) c FROM eventos WHERE (cuerpo LIKE '%21/8%' OR cuerpo LIKE '%21 de agosto%' OR (cuerpo LIKE '%viernes%' AND cuerpo LIKE '%9%')) AND timestamp >= datetime('now','-21 days') AND canal != 'sistema' ORDER BY id DESC LIMIT 10\").all();
+#   rows.reverse().forEach(r => console.log(r.id, r.timestamp, 'u'+r.usuario_id, r.canal, r.direccion, '|', String(r.c).replace(/\n/g,' ')));
+#   console.log('── pendientes/follow-ups abiertos de Fulco (u2) ──');
+#   const p = db.prepare(\"SELECT id, dueno, disparador, substr(COALESCE(\\\"desc\\\",descripcion,''),1,100) d FROM pendientes WHERE usuario_id=2 AND estado NOT IN ('cerrado','cancelado') LIMIT 6\").all().map(x=>x);
+#   console.log(JSON.stringify(p, null, 1));
+#   db.close();
+#   " 2>&1 | head -25
+#   echo LISTO
+
+# ───── output ─────
+── menciones de 21/8 o viernes (todo canal, 21 días) ──
+26320 2026-08-07 10:00:37 u13 gmail saliente | ☀️ *Buen día, Santiago Capurro.* viernes, 7 de agosto.  *🌡️ Clima en Buenos Aires, AR* ☀️ despejado, mín 5° / máx 13°  *📅 Agenda d
+26700 2026-08-14 10:00:27 u2 gmail saliente | ☀️ *Buen día, Hernan Fulco.* viernes, 14 de agosto.  *🌡️ Clima en Buenos Aires, AR* 🌦️ llovizna leve, mín 11° / máx 13°  *📅 Agenda
+26702 2026-08-14 10:00:29 u6 gmail saliente | ☀️ *Buen día, Doris Capurro.* viernes, 14 de agosto.  *🌡️ Clima en Buenos Aires, AR* 🌦️ llovizna leve, mín 11° / máx 13°  *📅 Agend
+26707 2026-08-14 10:00:35 u13 gmail saliente | ☀️ *Buen día, Santiago Capurro.* viernes, 14 de agosto.  *🌡️ Clima en Buenos Aires, AR* 🌦️ llovizna leve, mín 11° / máx 13°  *📅 Ag
+26809 2026-08-14 20:07:10 u1 telegram saliente | Revisé tu agenda para esos días (asumo que hablás de Manuel Carrasco y Hernán Fulco). Para una reunión de 3hs, esto es lo que tené
+26822 2026-08-14 20:11:07 u1 telegram saliente | Les escribí a Manuel y a Hernán por WhatsApp ofreciéndoles jueves 20/08 de 13 a 16hs, viernes 21/08 (bastante flexible entre 9 y 1
+26823 2026-08-14 21:02:20 u1 whatsapp saliente | Hola Manuel, soy Maria, la secretaria de Diego Paez. Te escribo para coordinar una reunión de 3 horas entre vos, Diego y Hernán Fu
+26825 2026-08-14 21:04:04 u1 whatsapp saliente | Hola Hernán! Te escribo para coordinar con vos y Manuel Carrasco una reunión de 3 horas.  Diego tiene estas ventanas libres: - Jue
+26826 2026-08-14 21:12:21 u2 whatsapp entrante | Hola María. El viernes 21/8 de 9 a 12hs estaría perfecto.
+26861 2026-08-14 21:27:02 u2 whatsapp entrante | Hola María. El viernes 21/8 de 9 a 12hs estaría perfecto.
+── pendientes/follow-ups abiertos de Fulco (u2) ──
+/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5
+	return this[cppdb].prepare(sql, this, false);
+	                   ^
+
+SqliteError: no such column: descripcion
+    at Database.prepare (/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at [eval]:7:14
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+LISTO
+
+# exit=0
