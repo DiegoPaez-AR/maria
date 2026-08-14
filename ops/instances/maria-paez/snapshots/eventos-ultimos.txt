@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26848  2026-08-14 21:18:55  sistema   interno                                    claude_call whatsapp: 9659ms prompt=63736c raw=7058c in=2t(cache_read=8784 new=35746) out=424t ttfb=1633ms api=8378ms turnos=1 $0.1479                                                                  
+
+26847  2026-08-14 21:18:45  whatsapp  entrante   5491141935177@c.us              De donde nos conocemos?                                                                                                                                                                                 
+
+26846  2026-08-14 21:18:45  sistema   interno                                    claude_call whatsapp: 53580ms prompt=63696c raw=23225c in=8t(cache_read=114028 new=75743) out=3684t ttfb=1486ms api=46633ms turnos=4 $0.3784                                                            
+
+26845  2026-08-14 21:18:41  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26844  2026-08-14 21:18:41  sistema   interno                                    claude_call moderacion: 5966ms prompt=1584c raw=6611c in=10t(cache_read=17396 new=5082) out=358t ttfb=1299ms api=5015ms turnos=1 $0.0104                                                                
+
+26843  2026-08-14 21:18:04  whatsapp  saliente   5491141935177@c.us              Todo bien Ulises! Te preguntaba si vos y Esteban tienen algo de tiempo esta semana para verse con Gabi, y si nos pasás la receta del chipa 😄                                                            
+
 26842  2026-08-14 21:17:51  whatsapp  entrante   5491141935177@c.us              Perdon                                                                                                                                                                                                  
 
 26841  2026-08-14 21:17:51  sistema   interno                                    claude_call whatsapp: 24214ms prompt=63718c raw=10910c in=6t(cache_read=62973 new=72486) out=765t ttfb=1514ms api=16769ms turnos=3 $0.3070                                                              
@@ -215,15 +227,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26750  2026-08-14 14:16:23  sistema   interno                                    shutdown por SIGINT                                                                                                                                                                                     
 
 26749  2026-08-14 14:05:05  sistema   interno                                    meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26748  2026-08-14 14:05:01  sistema   interno                                    claude_call enriquecer-contacto: 15649ms prompt=681c raw=19085c in=6t(cache_read=33942 new=16568) out=241t ttfb=1401ms api=19505ms turnos=4 $0.1261                                                     
-
-26747  2026-08-14 14:04:45  sistema   interno                                    claude_call enriquecer-contacto: 14627ms prompt=624c raw=14681c in=570t(cache_read=16305 new=32419) out=238t ttfb=1475ms api=17067ms turnos=4 $0.1747                                                   
-
-26746  2026-08-14 13:55:09  sistema   interno                                    claude_call whatsapp: 15125ms prompt=81756c raw=10205c in=6t(cache_read=53454 new=106476) out=553t ttfb=1696ms api=14079ms turnos=3 $0.4337                                                             
-
-26745  2026-08-14 13:54:53  whatsapp  entrante   541132317896@c.us               no hagas nada                                                                                                                                                                                           
-
-26744  2026-08-14 13:47:36  whatsapp  saliente   541132317896@c.us               Me llegó este link de confirmación: intensa.io/hooks/wa-maria/.../confirmar, sin ningún mensaje tuyo. ¿Qué es lo que confirma? No lo abro hasta que me digas de qué se trata, porque no sé qué acción di
-
-26743  2026-08-14 13:47:36  sistema   interno                                    claude_call whatsapp: 67184ms prompt=81897c raw=35265c in=18t(cache_read=412837 new=115256) out=3788t ttfb=1644ms api=66059ms turnos=9 $0.6231                                                          
