@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26867  2026-08-14 21:34:07  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26866  2026-08-14 21:34:07  sistema   interno                                    claude_call moderacion: 5778ms prompt=1584c raw=6392c in=10t(cache_read=0 new=22488) out=356t ttfb=1294ms api=5009ms turnos=1 $0.0304                                                                   
+
+26865  2026-08-14 21:34:01  sistema   interno                                    acción ejecutada: recordar_hecho                                                                                                                                                                        
+
 26864  2026-08-14 21:28:27  sistema   interno                                    unhandledRejection: No se pudo extraer JSON de la respuesta de Claude:                                                                                                                                  
                                                                                  No encuentro el contexto de a qué te referís con "el viernes 21/8 de 9 a 12hs estaría perfecto" — no tengo registrada ninguna pro                                                                       
 
@@ -220,9 +226,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26769  2026-08-14 15:12:35  sistema   interno                                    WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
 26768  2026-08-14 15:12:35  sistema   interno                                    Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-26767  2026-08-14 15:12:35  sistema   interno                                    MODO DEGRADADO: loops arrancados sin WA (caído hace 49006 min)                                                                                                                                          
-
-26766  2026-08-14 15:12:33  sistema   interno                                    shutdown por SIGINT                                                                                                                                                                                     
-
-26765  2026-08-14 15:02:06  sistema   interno                                    meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
