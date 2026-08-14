@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar)(?:\/(\d+))?$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo)(?:\/(\d+))?$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -62,6 +62,9 @@ function start({ waClient } = {}) {
           const p = outbox.siguiente();
           res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
           return res.end(p ? `${p.id}|${p.numero}|${encodeURIComponent(p.texto)}` : '');
+        }
+        if (_out[2] === 'confirmar-ultimo') {
+          return send(200, outbox.confirmarUltimo());
         }
         // confirmar: acepta GET .../confirmar/<id> (Tasker-friendly, sin body)
         // o POST con {id} en el body.

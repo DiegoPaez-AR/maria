@@ -69,4 +69,16 @@ function confirmar(id) {
   return true;
 }
 
-module.exports = { encolar, siguiente, confirmar };
+// Confirma el último mensaje TOMADO que sigue pendiente. Pensado para el
+// teléfono (Tasker), que es el único consumidor y procesa de a uno: así el
+// cliente no necesita mandar el id (las variables de Tasker daban problemas).
+function confirmarUltimo() {
+  const row = mem.db.prepare(
+    `SELECT * FROM wa_outbox WHERE estado='pendiente' AND tomado_en IS NOT NULL ORDER BY tomado_en DESC LIMIT 1`
+  ).get();
+  if (!row) return { ok: false, motivo: 'no hay pendientes tomados' };
+  confirmar(row.id);
+  return { ok: true, id: row.id };
+}
+
+module.exports = { encolar, siguiente, confirmar, confirmarUltimo };
