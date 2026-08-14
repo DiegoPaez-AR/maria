@@ -1,0 +1,21 @@
+# ejecutado: 2026-08-14T11:16:23-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1
+#   sleep 6
+#   SEC=$(grep WA_HOOK_SECRET /root/secretaria/config/secrets.conf | cut -d= -f2)
+#   echo "== confirmando el #7 a mano (el que ya salió) =="
+#   curl -s -m 10 "https://intensa.io/hooks/wa-maria/$SEC/confirmar/7"; echo
+#   DB="${MARIA_DB:?}"
+#   sqlite3 "$DB" "SELECT id, estado, COALESCE(entregado,'-') FROM wa_outbox ORDER BY id DESC LIMIT 2;"
+
+# ───── output ─────
+== confirmando el #7 a mano (el que ya salió) ==
+{"ok":true}
+7|entregado|2026-08-14 14:16:30
+6|vencido|-
+
+# exit=0
