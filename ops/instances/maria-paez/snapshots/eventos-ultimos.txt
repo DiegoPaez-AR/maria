@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26899  2026-08-14 21:52:42  whatsapp  saliente   5491141935177@c.us     Uy, no me llegó ninguna imagen ni link con la receta, solo el texto 😅 ¿me la reenviás de nuevo porfa?                                                                                                   
+
+26898  2026-08-14 21:52:42  sistema   interno                           claude_call moderacion: 6831ms prompt=1550c raw=6622c in=10t(cache_read=17396 new=5074) out=375t ttfb=1236ms api=5927ms turnos=1 $0.0104                                                                
+
+26897  2026-08-14 21:52:35  sistema   interno                           claude_call whatsapp: 35092ms prompt=63901c raw=15421c in=2t(cache_read=8784 new=35797) out=2567t ttfb=2010ms api=34690ms turnos=1 $0.1803                                                              
+
 26896  2026-08-14 21:52:00  whatsapp  entrante   5491141935177@c.us     esta es la receta Mary, esta en de instagram                                                                                                                                                            
 
 26895  2026-08-14 21:51:54  sistema   interno                           claude_call whatsapp: 5727ms prompt=64151c raw=4890c in=2t(cache_read=8784 new=35926) out=103t ttfb=1618ms api=4828ms turnos=1 $0.1439                                                                  
@@ -208,10 +214,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo
 26801  2026-08-14 20:02:36  telegram  saliente   telegram:590589920     Listo, le agregué el WhatsApp a Manuel Carrasco en tu libreta (ya tenía el mail cargado).                                                                                                               
 
 26800  2026-08-14 20:02:36  sistema   interno                           claude_call telegram: 13669ms prompt=78055c raw=9596c in=6t(cache_read=69486 new=85613) out=529t ttfb=1904ms api=14540ms turnos=3 $0.3587                                                               
-
-26799  2026-08-14 20:02:32  sistema   interno                           acción ejecutada: upsert_contacto                                                                                                                                                                       
-
-26798  2026-08-14 20:02:21  telegram  entrante   telegram:590589920     [CONTACTO COMPARTIDO] Manuel Carrasco — tel: 541155771290                                                                                                                                               
-                                                                        (El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contacto salvo que el contexto diga otra cosa.)                                                                 
-
-26797  2026-08-14 20:01:57  telegram  saliente   telegram:590589920     Te encontré a Manuel Carrasco en tu libreta: email manucarrasco80@gmail.com. No tengo WhatsApp ni notas cargadas de él.                                                                                 
