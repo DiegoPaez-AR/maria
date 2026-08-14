@@ -1,0 +1,18 @@
+# ejecutado: 2026-08-14T11:44:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?}"
+#   echo "== cola =="
+#   sqlite3 "$DB" "SELECT id, estado, intentos FROM wa_outbox ORDER BY id DESC LIMIT 2;"
+#   echo "== TODOS los requests recientes al hook (para ver si llega algo de confirmar) =="
+#   grep -h "wa-maria" /var/log/nginx/access.log 2>/dev/null | tail -8 | awk '{print $4, $6, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+
+# ───── output ─────
+== cola ==
+8|pendiente|2
+7|entregado|1
+== TODOS los requests recientes al hook (para ver si llega algo de confirmar) ==
+
+# exit=0
