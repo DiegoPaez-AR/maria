@@ -1,0 +1,22 @@
+# ejecutado: 2026-08-14T08:45:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   echo "== eventos WhatsApp últimas 2h =="
+#   sqlite3 "$DB" "SELECT timestamp, direccion, COALESCE(nombre,de), substr(cuerpo,1,45) FROM eventos WHERE canal='whatsapp' AND timestamp > datetime('now','-2 hours') ORDER BY id DESC LIMIT 8;"
+#   echo "== requests al hook (últimos) =="
+#   grep -h "wa-maria" /var/log/nginx/access.log 2>/dev/null | tail -6 | awk '{print $4, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+
+# ───── output ─────
+== eventos WhatsApp últimas 2h ==
+2026-08-14 11:41:57|saliente|Diego|Porque es un link de invitación de Temu para 
+2026-08-14 11:41:49|entrante|Diego|Por qué no lo podes abrir?
+2026-08-14 11:41:32|saliente|Diego|Ese mismo link de Temu ya te lo comenté hace 
+2026-08-14 11:41:26|entrante|Diego|🔗 Can you accept my invitation so that I can 
+2026-08-14 11:37:17|saliente|Diego|Ese link de Temu no lo puedo abrir ni gestion
+2026-08-14 11:37:09|entrante|Diego|🔗 Can you accept my invitation so that I can 
+== requests al hook (últimos) ==
+
+# exit=0
