@@ -1,0 +1,47 @@
+# ejecutado: 2026-08-14T18:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?}"
+#   echo "== cola completa (últimos) =="
+#   sqlite3 "$DB" "SELECT id, estado, intentos, numero, COALESCE(tomado_en,'-'), COALESCE(entregado,'-'), substr(texto,1,40) FROM wa_outbox ORDER BY id DESC LIMIT 6;"
+#   echo "== polls del teléfono (últimos, hora -03) =="
+#   tail -400 /var/log/nginx/intensa.io.access.log 2>/dev/null | grep "wa-maria" | tail -10 | awk '{print $4, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+#   echo "== eventos recientes (2h) =="
+#   sqlite3 "$DB" "SELECT timestamp, canal, direccion, COALESCE(nombre,de), substr(cuerpo,1,45) FROM eventos WHERE timestamp > datetime('now','-2 hours') AND canal IN ('whatsapp','telegram','gmail') ORDER BY id DESC LIMIT 12;"
+
+# ───── output ─────
+== cola completa (últimos) ==
+14|entregado|1|5491126829596|2026-08-14 21:04:00|2026-08-14 21:04:04|Hola Hernán! Te escribo para coordinar c
+13|entregado|1|541155771290|2026-08-14 21:02:16|2026-08-14 21:02:20|Hola Manuel, soy Maria, la secretaria de
+12|entregado|1|541132317896|2026-08-14 16:22:00|2026-08-14 16:22:04|Prueba autonoma 2: si esto llega sin que
+11|entregado|1|541132317896|2026-08-14 16:19:23|2026-08-14 16:19:28|Prueba autonoma: nadie toco el telefono.
+10|entregado|1|541132317896|2026-08-14 16:00:58|2026-08-14 16:01:03|Prueba 12 — coordenada sin espacio + con
+9|entregado|3|541132317896|2026-08-14 15:05:09|2026-08-14 15:12:40|Prueba final del canal de salida. Si est
+== polls del teléfono (últimos, hora -03) ==
+[14/Aug/2026:16:38:00 .../pendiente.txt -> 200
+[14/Aug/2026:16:40:00 .../pendiente.txt -> 200
+[14/Aug/2026:16:42:00 .../pendiente.txt -> 200
+[14/Aug/2026:16:44:00 .../pendiente.txt -> 200
+[14/Aug/2026:16:46:00 .../pendiente.txt -> 200
+[14/Aug/2026:16:47:40 ... -> 200
+[14/Aug/2026:18:02:16 .../pendiente.txt -> 200
+[14/Aug/2026:18:02:20 .../confirmar-ultimo -> 200
+[14/Aug/2026:18:04:00 .../pendiente.txt -> 200
+[14/Aug/2026:18:04:04 .../confirmar-ultimo -> 200
+== eventos recientes (2h) ==
+2026-08-14 21:04:04|whatsapp|saliente|5491126829596@c.us|Hola Hernán! Te escribo para coordinar con vo
+2026-08-14 21:02:20|whatsapp|saliente|541155771290@c.us|Hola Manuel, soy Maria, la secretaria de Dieg
+2026-08-14 20:11:07|telegram|saliente|Diego|Les escribí a Manuel y a Hernán por WhatsApp 
+2026-08-14 20:08:03|telegram|entrante|Diego|ofreceles la ventana de jueves viernes y lune
+2026-08-14 20:07:10|telegram|saliente|Diego|Revisé tu agenda para esos días (asumo que ha
+2026-08-14 20:05:07|telegram|entrante|Diego|Quisiera armar una reunión con Manuel Carraco
+2026-08-14 20:02:36|telegram|saliente|Diego|Listo, le agregué el WhatsApp a Manuel Carras
+2026-08-14 20:02:21|telegram|entrante|Diego|[CONTACTO COMPARTIDO] Manuel Carrasco — tel: 
+2026-08-14 20:01:57|telegram|saliente|Diego|Te encontré a Manuel Carrasco en tu libreta: 
+2026-08-14 20:01:36|telegram|entrante|Diego|Mostrame que datos tenés de contacto de manua
+2026-08-14 19:50:36|telegram|saliente|590589920|⏰ Recordatorio: llamar a Rappi
+2026-08-14 19:47:40|whatsapp|saliente|Diego|Dale, te aviso hoy *viernes 14/08 a las 16:50
+
+# exit=0
