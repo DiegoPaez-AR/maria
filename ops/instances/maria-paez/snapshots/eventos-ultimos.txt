@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26912  2026-08-14 22:02:01  sistema   interno                           acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+26911  2026-08-14 22:02:01  sistema   interno                           acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+26910  2026-08-14 22:01:18  whatsapp  entrante   541155771290@c.us      Jueves 20 de 13:00 a 16:00                                                                                                                                                                              
+
+26909  2026-08-14 22:01:18  sistema   interno                           claude_call whatsapp: 18835ms prompt=81017c raw=9373c in=6t(cache_read=53145 new=106277) out=494t ttfb=1744ms api=12479ms turnos=3 $0.4319                                                              
+
+26908  2026-08-14 22:01:15  sistema   interno                           acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26907  2026-08-14 22:01:15  sistema   interno                           claude_call moderacion: 5967ms prompt=1679c raw=6101c in=10t(cache_read=0 new=22528) out=326t ttfb=1258ms api=5154ms turnos=1 $0.0303                                                                   
+
 26906  2026-08-14 22:00:59  whatsapp  entrante   541155771290@c.us      Hola Maria, como estas?                                                                                                                                                                                 
 
 26905  2026-08-14 21:53:43  sistema   interno                           claude_call whatsapp: 22467ms prompt=63605c raw=11494c in=2t(cache_read=8784 new=35645) out=1719t ttfb=1603ms api=21280ms turnos=1 $0.1669                                                              
@@ -196,18 +208,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo
 26814  2026-08-14 20:09:49  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
 
 26813  2026-08-14 20:09:49  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
-
-26812  2026-08-14 20:09:27  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
-
-26811  2026-08-14 20:08:43  sistema   interno                           claude_call telegram: 40027ms prompt=78577c raw=25601c in=16t(cache_read=339887 new=88863) out=2211t ttfb=1820ms api=39258ms turnos=8 $0.4776                                                           
-
-26810  2026-08-14 20:08:03  telegram  entrante   telegram:590589920     ofreceles la ventana de jueves viernes y lunes, contactarlos a ambos por WhatsApp por favor.                                                                                                            
-
-26809  2026-08-14 20:07:10  telegram  saliente   telegram:590589920     Revisé tu agenda para esos días (asumo que hablás de Manuel Carrasco y Hernán Fulco). Para una reunión de 3hs, esto es lo que tenés libre:                                                              
-                                                                                                                                                                                                                                                                                
-                                                                        Semana que viene:                                                                                                                                                                                       
-                                                                        - Jueves 20/08: libre de 13:00 a 16:00 (te                                                                                                                                                              
-
-26808  2026-08-14 20:07:10  sistema   interno                           claude_call telegram: 121785ms prompt=78558c raw=61139c in=20t(cache_read=507507 new=102207) out=9264t ttfb=1598ms api=118511ms turnos=11 $0.6837                                                       
-
-26807  2026-08-14 20:06:38  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
