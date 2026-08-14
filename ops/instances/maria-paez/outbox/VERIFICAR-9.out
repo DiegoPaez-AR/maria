@@ -1,0 +1,23 @@
+# ejecutado: 2026-08-14T11:24:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?}"
+#   echo "== cola =="
+#   sqlite3 "$DB" "SELECT id, estado, intentos, COALESCE(entregado,'-') FROM wa_outbox ORDER BY id DESC LIMIT 3;"
+#   echo "== requests confirmar =="
+#   grep -h "confirmar" /var/log/nginx/access.log 2>/dev/null | tail -3 | awk '{print $4, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+#   echo "== evento registrado =="
+#   sqlite3 "$DB" "SELECT timestamp, substr(cuerpo,1,40) FROM eventos WHERE metadata_json LIKE '%tasker_outbox%' ORDER BY id DESC LIMIT 2;"
+
+# ───── output ─────
+== cola ==
+8|pendiente|1|-
+7|entregado|1|2026-08-14 14:16:30
+6|vencido|1|-
+== requests confirmar ==
+== evento registrado ==
+2026-08-14 14:16:30|Prueba 8: click por coordenadas. Si sale
+
+# exit=0
