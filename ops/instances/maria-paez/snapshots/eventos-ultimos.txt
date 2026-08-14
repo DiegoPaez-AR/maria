@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26905  2026-08-14 21:53:43  sistema   interno                           claude_call whatsapp: 22467ms prompt=63605c raw=11494c in=2t(cache_read=8784 new=35645) out=1719t ttfb=1603ms api=21280ms turnos=1 $0.1669                                                              
+
+26904  2026-08-14 21:53:21  whatsapp  entrante   5491141935177@c.us     si claro                                                                                                                                                                                                
+
+26903  2026-08-14 21:53:19  whatsapp  saliente   5491141935177@c.us     Un beso grande para los dos, que tengan un fin de semana hermoso! 🥰                                                                                                                                     
+
+26902  2026-08-14 21:53:19  sistema   interno                           claude_call moderacion: 6625ms prompt=1516c raw=6228c in=10t(cache_read=17396 new=5058) out=332t ttfb=1272ms api=6007ms turnos=1 $0.0102                                                                
+
+26901  2026-08-14 21:53:12  sistema   interno                           claude_call whatsapp: 6889ms prompt=63880c raw=5252c in=2t(cache_read=8784 new=35785) out=180t ttfb=1564ms api=5857ms turnos=1 $0.1444                                                                  
+
+26900  2026-08-14 21:53:05  whatsapp  entrante   5491141935177@c.us     Un beso muy grande Maria mio y de Esteban y que tengas un fin de semana excelente                                                                                                                       
+
 26899  2026-08-14 21:52:42  whatsapp  saliente   5491141935177@c.us     Uy, no me llegó ninguna imagen ni link con la receta, solo el texto 😅 ¿me la reenviás de nuevo porfa?                                                                                                   
 
 26898  2026-08-14 21:52:42  sistema   interno                           claude_call moderacion: 6831ms prompt=1550c raw=6622c in=10t(cache_read=17396 new=5074) out=375t ttfb=1236ms api=5927ms turnos=1 $0.0104                                                                
@@ -199,18 +211,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo
 26807  2026-08-14 20:06:38  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
 
 26806  2026-08-14 20:06:17  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
-
-26805  2026-08-14 20:06:16  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
-
-26804  2026-08-14 20:05:35  sistema   interno                           acción ejecutada: buscar_slots_comunes                                                                                                                                                                  
-
-26803  2026-08-14 20:05:07  telegram  entrante   telegram:590589920     Quisiera armar una reunión con Manuel Carraco y con Ornán Fulco de tres horas.                                                                                                                          
-                                                                         Fíjate en mi agenda y veamos qué opciones le puedo pasar para la semana que viene                                                                                                                      
-                                                                         y para la otra.                                                                                                                                                                                        
-                                                                         Podría ser jueves o                                                                                                                                                                                    
-
-26802  2026-08-14 20:02:50  sistema   interno                           claude_call enriquecer-contacto: 17930ms prompt=631c raw=18146c in=6t(cache_read=16302 new=33888) out=286t ttfb=1854ms api=21811ms turnos=4 $0.1835                                                     
-
-26801  2026-08-14 20:02:36  telegram  saliente   telegram:590589920     Listo, le agregué el WhatsApp a Manuel Carrasco en tu libreta (ya tenía el mail cargado).                                                                                                               
-
-26800  2026-08-14 20:02:36  sistema   interno                           claude_call telegram: 13669ms prompt=78055c raw=9596c in=6t(cache_read=69486 new=85613) out=529t ttfb=1904ms api=14540ms turnos=3 $0.3587                                                               
