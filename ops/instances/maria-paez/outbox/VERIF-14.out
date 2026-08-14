@@ -1,0 +1,30 @@
+# ejecutado: 2026-08-14T13:02:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?}"
+#   echo "== cola =="
+#   sqlite3 "$DB" "SELECT id, estado, intentos, COALESCE(entregado,'-') FROM wa_outbox ORDER BY id DESC LIMIT 3;"
+#   echo "== evento saliente =="
+#   sqlite3 "$DB" "SELECT timestamp, substr(cuerpo,1,45) FROM eventos WHERE metadata_json LIKE '%tasker_outbox%' ORDER BY id DESC LIMIT 3;"
+#   echo "== requests =="
+#   tail -300 /var/log/nginx/intensa.io.access.log 2>/dev/null | grep "wa-maria" | tail -5 | awk '{print $4, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+
+# ───── output ─────
+== cola ==
+10|entregado|1|2026-08-14 16:01:03
+9|entregado|3|2026-08-14 15:12:40
+8|vencido|2|-
+== evento saliente ==
+2026-08-14 16:01:03|Prueba 12 — coordenada sin espacio + confirma
+2026-08-14 15:12:40|Prueba final del canal de salida. Si esto lle
+2026-08-14 14:16:30|Prueba 8: click por coordenadas. Si sale solo
+== requests ==
+[14/Aug/2026:12:17:30 ...$SEC/confirmar/7 -> 401
+[14/Aug/2026:12:17:32 ...$SEC/confirmar/7 -> 401
+[14/Aug/2026:12:49:55 .../confirmar-ultimo -> 200
+[14/Aug/2026:13:00:58 .../pendiente.txt -> 200
+[14/Aug/2026:13:01:03 .../confirmar-ultimo -> 200
+
+# exit=0
