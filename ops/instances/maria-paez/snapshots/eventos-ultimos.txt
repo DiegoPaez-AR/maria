@@ -1,5 +1,24 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26836  2026-08-14 21:14:49  sistema   interno                                    claude_call whatsapp: 11054ms prompt=62229c raw=6812c in=2t(cache_read=8784 new=34992) out=395t ttfb=1485ms api=10589ms turnos=1 $0.1441                                                                
+
+26835  2026-08-14 21:14:37  whatsapp  entrante   5491165286555@c.us              El arregla por los dos, le avisa a esteban, son marido y marido                                                                                                                                         
+
+26834  2026-08-14 21:14:32  whatsapp  saliente   5491165286555@c.us              Le escribo ahora a Ulises para coordinar el encuentro y de paso le pido la receta del chipa 🙌 Apenas me conteste te aviso.                                                                              
+
+26833  2026-08-14 21:14:32  sistema   interno                                    claude_call whatsapp: 29759ms prompt=61906c raw=14107c in=6t(cache_read=62665 new=71733) out=1392t ttfb=1869ms api=22479ms turnos=3 $0.3128                                                             
+
+26832  2026-08-14 21:14:28  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26831  2026-08-14 21:14:28  sistema   interno                                    claude_call moderacion: 6012ms prompt=1588c raw=6334c in=10t(cache_read=0 new=22486) out=348t ttfb=1355ms api=6065ms turnos=1 $0.0304                                                                   
+
+26830  2026-08-14 21:14:02  whatsapp  entrante   5491165286555@c.us              Escribile para arreglar para vernos y pedirle la receta del chipa                                                                                                                                       
+
+26829  2026-08-14 21:13:14  sistema   interno                                    unhandledRejection: No se pudo extraer JSON de la respuesta de Claude:                                                                                                                                  
+                                                                                 No encuentro en el historial reciente a qué se refiere lo del viernes 21/8 de 9 a 12 — no veo ninguna consulta previa (mía a vos,                                                                       
+
+26828  2026-08-14 21:13:14  sistema   interno                                    claude_call whatsapp: 22216ms prompt=63290c raw=11087c in=4t(cache_read=17661 new=73456) out=1149t ttfb=1715ms api=20629ms turnos=2 $0.3036                                                             
+
 26827  2026-08-14 21:12:51  sistema   interno                                    claude_call whatsapp: 30242ms prompt=62532c raw=18349c in=8t(cache_read=92704 new=91136) out=1679t ttfb=1658ms api=29149ms turnos=4 $0.4000                                                             
 
 26826  2026-08-14 21:12:21  whatsapp  entrante   5491126829596@c.us              Hola María. El viernes 21/8 de 9 a 12hs estaría perfecto.                                                                                                                                               
@@ -217,22 +236,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                                                                                                                                                                                                                          
                                                                                  *📅 Agenda del día*                                                                                                                                                                                      
                                                                                  (sin eventos hoy)                                                                                                                                                                                       
-
-26736  2026-08-14 12:15:30  gmail     saliente   santiago@capurro.com.ar         ⏰ *En 15min*: Juan ganzabal (09:30 a. m.)                                                                                                                                                               
-
-26735  2026-08-14 12:00:30  gmail     saliente   hernan.fulco@sondeosglobal.com  ⏰ *En 15min*: MC Daily (09:15 a. m.)                                                                                                                                                                    
-                                                                                 Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgloba                                     
-
-26734  2026-08-14 11:54:29  sistema   interno                                    poda-eventos: 11 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
-
-26733  2026-08-14 11:50:19  sistema   interno                                    claude_call memoria-curada: 19387ms prompt=5369c raw=10405c in=2t(cache_read=0 new=17528) out=1219t ttfb=2373ms api=18445ms turnos=1 $0.0862                                                            
-
-26732  2026-08-14 11:49:29  sistema   interno                                    WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-26731  2026-08-14 11:49:29  sistema   interno                                    Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-26730  2026-08-14 11:49:29  sistema   interno                                    MODO DEGRADADO: loops arrancados sin WA (caído hace 48803 min)                                                                                                                                          
-
-26729  2026-08-14 11:49:28  sistema   interno                                    shutdown por SIGINT                                                                                                                                                                                     
-
-26728  2026-08-14 11:45:27  gmail     saliente   doris@capurro.com.ar            ⏰ *En 15min*: nico-doris (09:00 a. m.) @Racket Club, Av. Valentín Alsina 1450, C1425 Cdad. Autónoma de Buenos Aires, Argentina                                                                          

@@ -1,0 +1,50 @@
+# ejecutado: 2026-08-14T18:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   SECRET=<REDACTED> -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+#   HOOK=$(grep -hE '^WA_HOOK_SECRET=' config/secrets.conf config/instances/maria-paez.conf 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   [ -z "$HOOK" ] && { echo "sin WA_HOOK_SECRET"; exit 1; }
+#   GAB="5491165286555"
+#   
+#   replay() {
+#     local MSG="$1"
+#     echo "── replay: $MSG"
+#     R=$(curl -s -m 150 -X POST "http://127.0.0.1:$PORT/wa-hook/$HOOK" -H 'Content-Type: application/json' \
+#       -d "{\"query\":{\"sender\":\"$GAB\",\"message\":$(python3 -c "import json,sys; print(json.dumps(sys.argv[1]))" "$MSG")}}")
+#     echo "$R" | python3 -c "
+#   import json,sys
+#   d = json.load(sys.stdin)
+#   reps = [r.get('message','') for r in d.get('replies',[])]
+#   print(f'  respuestas: {len(reps)}')
+#   for r in reps: print('  →', r[:150].replace(chr(10),' '))
+#   import io
+#   open('/tmp/replay-replies.txt','w').write(chr(10).join(reps))
+#   "
+#     # entregar las respuestas a Gabriela por la salida real
+#     while IFS= read -r linea; do
+#       [ -z "$linea" ] && continue
+#       curl -s -m 60 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' \
+#         -d "{\"usuarioId\":18,\"accion\":{\"tipo\":\"enviar_wa\",\"a\":\"$GAB@c.us\",\"texto\":$(python3 -c "import json,sys; print(json.dumps(sys.argv[1]))" "$linea")},\"canalOrigen\":\"whatsapp\"}" \
+#         | python3 -c "import json,sys; d=json.load(sys.stdin); print('  entrega a Gabriela:', 'OK' if d.get('ok') else 'FALLO: '+str(d.get('error'))[:80])"
+#     done < /tmp/replay-replies.txt
+#     rm -f /tmp/replay-replies.txt
+#   }
+#   
+#   replay "Escribile para arreglar para vernos y pedirle la receta del chipa"
+#   sleep 5
+#   replay "El arregla por los dos, le avisa a esteban, son marido y marido"
+#   echo LISTO
+
+# ───── output ─────
+── replay: Escribile para arreglar para vernos y pedirle la receta del chipa
+  respuestas: 1
+  → Le escribo ahora a Ulises para coordinar el encuentro y de paso le pido la receta del chipa 🙌 Apenas me conteste te aviso.
+── replay: El arregla por los dos, le avisa a esteban, son marido y marido
+  respuestas: 0
+LISTO
+
+# exit=0
