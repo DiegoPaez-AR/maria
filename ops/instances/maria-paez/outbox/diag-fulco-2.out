@@ -1,0 +1,33 @@
+# ejecutado: 2026-08-14T18:31:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── wa-hook en logs 21:27-21:30 ──"
+#   grep -E "21:2[7-9]|21:3[0-1]" /root/.pm2/logs/maria-paez-out.log | grep -iE "wa-hook|fulco|deadline|stash|wa-send" | head -8
+#   echo "── ¿salió email? ──"
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const rows = db.prepare(\"SELECT id, timestamp, canal, direccion, usuario_id, substr(cuerpo,1,120) c, json_extract(metadata_json,'\$.tag') tag FROM eventos WHERE direccion='saliente' AND timestamp >= datetime('now','-25 minutes') ORDER BY id\").all();
+#   rows.forEach(r => console.log(r.id, r.timestamp, r.canal, 'u'+r.usuario_id, '|', String(r.tag||''), '|', String(r.c).replace(/\n/g,' ')));
+#   db.close();
+#   "
+#   echo LISTO
+
+# ───── output ─────
+── wa-hook en logs 21:27-21:30 ──
+2026-07-04 19:21:31:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+2026-07-04 21:31:54:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+2026-07-05 22:21:29:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+2026-08-13 07:21:27: [meeting-prep/Hernan Fulco] + id=1289 Turno con Dr. Pacheco, Rafael Alberto @ 2026-08-13T12:05:00.000Z
+── ¿salió email? ──
+26834 2026-08-14 21:14:32 whatsapp u18 |  | Le escribo ahora a Ulises para coordinar el encuentro y de paso le pido la receta del chipa 🙌 Apenas me conteste te avis
+26837 2026-08-14 21:16:04 whatsapp u18 |  | Hola Ulises! Te escribo de parte de Gabi para coordinar y verse pronto, ¿cómo andás de tiempo? Y de paso, ¿nos pasás la 
+26843 2026-08-14 21:18:04 whatsapp u18 |  | Todo bien Ulises! Te preguntaba si vos y Esteban tienen algo de tiempo esta semana para verse con Gabi, y si nos pasás l
+26850 2026-08-14 21:19:03 whatsapp u18 |  | Perdón la confusión, soy Maria, la secretaria de Gabi — le ayudo a coordinar sus cosas. Te escribía de su parte para ver
+26851 2026-08-14 21:20:04 whatsapp u18 |  | Todo bien! Te preguntaba si vos y Esteban andan libres esta semana para juntarse con Gabi, y de paso si nos pasás la rec
+26857 2026-08-14 21:24:05 whatsapp u18 |  | Perdón Ulises, se me duplicó el mensaje por error, ignorá el segundo 🙈 Te repregunto la única cosa: ¿vos y Esteban tiene
+26860 2026-08-14 21:24:57 whatsapp u18 |  | jajaja tal cual, me contó Gabi que hacés un chipa espectacular 😄 Che, retomando: ¿vos y Esteban andan libres esta semana
+LISTO
+
+# exit=0
