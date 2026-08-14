@@ -1,0 +1,21 @@
+# ejecutado: 2026-08-14T11:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   DB="${MARIA_DB:?}"
+#   sqlite3 "$DB" "UPDATE wa_outbox SET estado='vencido' WHERE estado='pendiente';"
+#   node -e "
+#   const ob = require('/root/secretaria/wa-outbox');
+#   const usuarios = require('/root/secretaria/usuarios');
+#   const owner = usuarios.obtenerOwner();
+#   const num = (owner.wa_cus || '').replace(/[^0-9]/g, '');
+#   console.log('encolado id=' + ob.encolar({ usuarioId: owner.id, numero: num, texto: 'Prueba final del canal de salida. Si esto llega una sola vez y el telefono vuelve al home, esta todo listo.' }));
+#   "
+
+# ───── output ─────
+[wa-outbox] #9 encolado → +541132317896 (Prueba final del canal de salida. Si est…)
+encolado id=9
+
+# exit=0
