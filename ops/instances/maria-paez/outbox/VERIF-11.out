@@ -1,0 +1,37 @@
+# ejecutado: 2026-08-14T11:45:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== logs de nginx existentes =="
+#   ls /var/log/nginx/ | head -10
+#   echo "== access_log configurado para intensa.io =="
+#   grep -n "access_log" /etc/nginx/sites-available/intensa.io.conf || echo "(usa el default)"
+#   echo "== buscar requests wa-maria en TODOS los logs =="
+#   grep -h "wa-maria" /var/log/nginx/*.log 2>/dev/null | tail -8 | awk '{print $4, $6, $7, "->", $9}' | sed 's|/hooks/wa-maria/[A-Za-z0-9]*|...|'
+
+# ───── output ─────
+== logs de nginx existentes ==
+access.log
+access.log.1
+access.log.10.gz
+access.log.11.gz
+access.log.12.gz
+access.log.13.gz
+access.log.14.gz
+access.log.2.gz
+access.log.3.gz
+access.log.4.gz
+== access_log configurado para intensa.io ==
+11:    access_log /var/log/nginx/intensa.io.access.log;
+== buscar requests wa-maria en TODOS los logs ==
+[14/Aug/2026:11:16:30 "GET .../confirmar/7 -> 200
+[14/Aug/2026:11:18:01 "GET .../confirmar/ -> 401
+[14/Aug/2026:11:18:25 "POST ... -> 500
+[14/Aug/2026:11:18:33 "POST ... -> 200
+[14/Aug/2026:11:22:37 "GET .../pendiente.txt -> 200
+[14/Aug/2026:11:22:42 "GET .../confirmar/ -> 401
+[14/Aug/2026:11:35:44 "GET .../pendiente.txt -> 200
+[14/Aug/2026:11:35:48 "GET .../confirmar/ -> 401
+
+# exit=0
