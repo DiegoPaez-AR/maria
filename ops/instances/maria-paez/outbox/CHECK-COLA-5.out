@@ -1,0 +1,14 @@
+# ejecutado: 2026-08-14T10:59:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?}"
+#   sqlite3 "$DB" "SELECT id, estado, intentos, COALESCE(tomado_en,'-'), COALESCE(entregado,'-') FROM wa_outbox ORDER BY id DESC LIMIT 3;"
+
+# ───── output ─────
+5|pendiente|1|2026-08-14 13:55:08|-
+4|vencido|1|2026-08-14 13:12:34|-
+3|vencido|3|2026-08-14 12:56:11|-
+
+# exit=0
