@@ -1,0 +1,20 @@
+# ejecutado: 2026-08-14T18:29:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const rows = db.prepare(\"SELECT id, timestamp, canal, direccion, substr(cuerpo,1,130) c FROM eventos WHERE usuario_id=2 AND timestamp >= datetime('now','-12 minutes') ORDER BY id\").all();
+#   rows.forEach(r => console.log(r.id, r.timestamp, r.canal, r.direccion, '|', String(r.c).replace(/\n/g,' ')));
+#   db.close();
+#   "
+#   echo LISTO
+
+# ───── output ─────
+26861 2026-08-14 21:27:02 whatsapp entrante | Hola María. El viernes 21/8 de 9 a 12hs estaría perfecto.
+26862 2026-08-14 21:28:05 sistema interno | claude_call whatsapp: 62395ms prompt=62628c raw=39457c in=22t(cache_read=456903 new=79322) out=3611t ttfb=1555ms api=61346ms turno
+26863 2026-08-14 21:28:27 sistema interno | claude_call whatsapp: 22277ms prompt=63584c raw=12935c in=6t(cache_read=64077 new=74337) out=1222t ttfb=1558ms api=21267ms turnos=
+LISTO
+
+# exit=0

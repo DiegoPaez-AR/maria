@@ -1,5 +1,10 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26864  2026-08-14 21:28:27  sistema   interno                                    unhandledRejection: No se pudo extraer JSON de la respuesta de Claude:                                                                                                                                  
+                                                                                 No encuentro el contexto de a qué te referís con "el viernes 21/8 de 9 a 12hs estaría perfecto" — no tengo registrada ninguna pro                                                                       
+
+26863  2026-08-14 21:28:27  sistema   interno                                    claude_call whatsapp: 22277ms prompt=63584c raw=12935c in=6t(cache_read=64077 new=74337) out=1222t ttfb=1558ms api=21267ms turnos=3 $0.3220                                                             
+
 26862  2026-08-14 21:28:05  sistema   interno                                    claude_call whatsapp: 62395ms prompt=62628c raw=39457c in=22t(cache_read=456903 new=79322) out=3611t ttfb=1555ms api=61346ms turnos=11 $0.4940                                                          
 
 26861  2026-08-14 21:27:02  whatsapp  entrante   5491126829596@c.us              Hola María. El viernes 21/8 de 9 a 12hs estaría perfecto.                                                                                                                                               
@@ -221,7 +226,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26766  2026-08-14 15:12:33  sistema   interno                                    shutdown por SIGINT                                                                                                                                                                                     
 
 26765  2026-08-14 15:02:06  sistema   interno                                    meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-26764  2026-08-14 15:02:01  sistema   interno                                    claude_call enriquecer-contacto: 15063ms prompt=626c raw=17389c in=704t(cache_read=33912 new=15196) out=377t ttfb=1484ms api=17223ms turnos=4 $0.1206                                                   
-
-26763  2026-08-14 15:01:44  sistema   interno                                    claude_call enriquecer-contacto: 17721ms prompt=699c raw=18390c in=958t(cache_read=16329 new=32974) out=273t ttfb=1532ms api=23362ms turnos=4 $0.1847                                                   
