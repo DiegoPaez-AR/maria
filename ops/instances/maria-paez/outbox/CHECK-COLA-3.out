@@ -1,0 +1,14 @@
+# ejecutado: 2026-08-14T09:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB="${MARIA_DB:?falta MARIA_DB}"
+#   sqlite3 "$DB" "SELECT id, estado, intentos, COALESCE(tomado_en,'-'), COALESCE(entregado,'-'), substr(texto,1,28) FROM wa_outbox ORDER BY id DESC LIMIT 4;"
+
+# ───── output ─────
+3|pendiente|3|2026-08-14 12:56:11|-|Prueba Tasker 2: si ves esto
+2|vencido|3|2026-08-06 20:37:04|-|Prueba del canal de salida —
+1|vencido|0|-|-|Hola Ulises! Soy María, la a
+
+# exit=0
