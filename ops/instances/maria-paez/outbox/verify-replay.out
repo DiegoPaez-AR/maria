@@ -1,0 +1,38 @@
+# ejecutado: 2026-08-14T18:17:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const rows = db.prepare(\"SELECT id, timestamp, canal, direccion, de, substr(cuerpo,1,110) c FROM eventos WHERE timestamp >= datetime('now','-15 minutes') AND (de LIKE '%4193517%' OR de LIKE '%6528655%' OR usuario_id=18) ORDER BY id\").all();
+#   rows.forEach(r => console.log(r.id, r.timestamp, r.canal, r.direccion, '|', String(r.de||'').slice(-16), '|', String(r.c).replace(/\n/g,' ')));
+#   // pendientes de seguimiento creados
+#   const p = db.prepare(\"SELECT id, substr(desc_,1,80) d FROM pendientes WHERE usuario_id=18 AND estado='abierto' ORDER BY id DESC LIMIT 3\").all().catch?.() || [];
+#   db.close();
+#   " 2>/dev/null || node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const rows = db.prepare(\"SELECT id, timestamp, canal, direccion, de, substr(cuerpo,1,110) c FROM eventos WHERE timestamp >= datetime('now','-15 minutes') AND usuario_id=18 ORDER BY id\").all();
+#   rows.forEach(r => console.log(r.id, r.timestamp, r.canal, r.direccion, '|', String(r.de||'').slice(-16), '|', String(r.c).replace(/\n/g,' ')));
+#   db.close();
+#   "
+#   echo LISTO
+
+# ───── output ─────
+26830 2026-08-14 21:14:02 whatsapp entrante | 91165286555@c.us | Escribile para arreglar para vernos y pedirle la receta del chipa
+26832 2026-08-14 21:14:28 sistema interno |  | acción ejecutada: enviar_wa
+26833 2026-08-14 21:14:32 sistema interno |  | claude_call whatsapp: 29759ms prompt=61906c raw=14107c in=6t(cache_read=62665 new=71733) out=1392t ttfb=1869ms
+26834 2026-08-14 21:14:32 whatsapp saliente | 91165286555@c.us | Le escribo ahora a Ulises para coordinar el encuentro y de paso le pido la receta del chipa 🙌 Apenas me contes
+26835 2026-08-14 21:14:37 whatsapp entrante | 91165286555@c.us | El arregla por los dos, le avisa a esteban, son marido y marido
+26836 2026-08-14 21:14:49 sistema interno |  | claude_call whatsapp: 11054ms prompt=62229c raw=6812c in=2t(cache_read=8784 new=34992) out=395t ttfb=1485ms ap
+26837 2026-08-14 21:16:04 whatsapp saliente | 91141935177@c.us | Hola Ulises! Te escribo de parte de Gabi para coordinar y verse pronto, ¿cómo andás de tiempo? Y de paso, ¿nos
+26830 2026-08-14 21:14:02 whatsapp entrante | 91165286555@c.us | Escribile para arreglar para vernos y pedirle la receta del chipa
+26832 2026-08-14 21:14:28 sistema interno |  | acción ejecutada: enviar_wa
+26833 2026-08-14 21:14:32 sistema interno |  | claude_call whatsapp: 29759ms prompt=61906c raw=14107c in=6t(cache_read=62665 new=71733) out=1392t ttfb=1869ms
+26834 2026-08-14 21:14:32 whatsapp saliente | 91165286555@c.us | Le escribo ahora a Ulises para coordinar el encuentro y de paso le pido la receta del chipa 🙌 Apenas me contes
+26835 2026-08-14 21:14:37 whatsapp entrante | 91165286555@c.us | El arregla por los dos, le avisa a esteban, son marido y marido
+26836 2026-08-14 21:14:49 sistema interno |  | claude_call whatsapp: 11054ms prompt=62229c raw=6812c in=2t(cache_read=8784 new=34992) out=395t ttfb=1485ms ap
+26837 2026-08-14 21:16:04 whatsapp saliente | 91141935177@c.us | Hola Ulises! Te escribo de parte de Gabi para coordinar y verse pronto, ¿cómo andás de tiempo? Y de paso, ¿nos
+LISTO
+
+# exit=0
