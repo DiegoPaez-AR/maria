@@ -1,0 +1,25 @@
+# ejecutado: 2026-08-14T09:42:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && set -a; . config/instances/maria-paez.conf 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
+#   node -e "
+#   const ob = require('/root/secretaria/wa-outbox');
+#   const usuarios = require('/root/secretaria/usuarios');
+#   const owner = usuarios.obtenerOwner();
+#   const num = (owner.wa_cus || '').replace(/[^0-9]/g, '');
+#   const id = ob.encolar({ usuarioId: owner.id, numero: num, texto: 'Prueba Tasker 2: si ves esto en tu WhatsApp, el canal de salida quedo listo.' });
+#   console.log('encolado id=' + id + ' -> +' + num);
+#   "
+#   SEC=$(grep WA_HOOK_SECRET /root/secretaria/config/secrets.conf | cut -d= -f2)
+#   echo "== lo que va a recibir Tasker =="
+#   curl -s -m 10 "https://intensa.io/hooks/wa-maria/$SEC/pendiente.txt"; echo
+
+# ───── output ─────
+[wa-outbox] #3 encolado → +541132317896 (Prueba Tasker 2: si ves esto en tu Whats…)
+encolado id=3 -> +541132317896
+== lo que va a recibir Tasker ==
+3|541132317896|Prueba%20Tasker%202%3A%20si%20ves%20esto%20en%20tu%20WhatsApp%2C%20el%20canal%20de%20salida%20quedo%20listo.
+
+# exit=0
