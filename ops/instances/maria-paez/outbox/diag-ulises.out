@@ -1,0 +1,35 @@
+# ejecutado: 2026-08-14T18:11:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const rows = db.prepare(\"SELECT id, usuario_id, nombre, whatsapp, email, visibilidad FROM contactos WHERE nombre LIKE '%Ulises%' OR nombre LIKE '%Esteban%'\").all();
+#   console.log(rows.length ? JSON.stringify(rows, null, 1) : 'NO existen Ulises ni Esteban en ninguna libreta');
+#   db.close();
+#   "
+#   echo LISTO
+
+# ───── output ─────
+[
+ {
+  "id": 274,
+  "usuario_id": 1,
+  "nombre": "Esteban Mallea Gil",
+  "whatsapp": null,
+  "email": null,
+  "visibilidad": "privada"
+ },
+ {
+  "id": 469,
+  "usuario_id": 18,
+  "nombre": "Ulises",
+  "whatsapp": "5491141935177@c.us",
+  "email": null,
+  "visibilidad": "privada"
+ }
+]
+LISTO
+
+# exit=0
