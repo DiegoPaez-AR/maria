@@ -20,6 +20,8 @@
 //     (SCOPE: Maria no chatea con cualquiera; anti-spam).
 //   - Serializado por remitente (cola por sender, sin solapes).
 
+const fs = require('fs');
+const path = require('path');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
@@ -177,7 +179,20 @@ async function _turnoTercero(u, contacto, de, cuerpo) {
 }
 
 // ── Entrada principal ──────────────────────────────────────────────────────
+// Latido del teléfono: TODO request (incluso vacío o de test) actualiza el
+// marker. El watchdog avisa si pasa demasiado tiempo sin señal — el canal WA
+// v2 no tiene heartbeat propio y un silencio puede ser "nadie escribió" o
+// "AutoResponder muerto" (ambiguo, incidente 9-14/08).
+const LATIDO_F = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'wa-hook-latido');
+function latir() {
+  try { fs.writeFileSync(LATIDO_F, String(Date.now())); } catch {}
+}
+function ultimoLatido() {
+  try { return Number(fs.readFileSync(LATIDO_F, 'utf8').trim()) || 0; } catch { return 0; }
+}
+
 async function procesar(body) {
+  latir();
   const q = body && body.query;
   if (!q || typeof q.message !== 'string' || !q.sender) return { replies: [] };
   if (q.isTestMessage) return { replies: [{ message: '✅ Webhook de Maria conectado. Todo listo.' }] };
@@ -294,4 +309,4 @@ async function procesar(body) {
   return { replies: pendientes.map(m => ({ message: m })) };
 }
 
-module.exports = { procesar };
+module.exports = { procesar, latir, ultimoLatido };

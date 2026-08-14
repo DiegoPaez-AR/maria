@@ -50,6 +50,7 @@ function start({ waClient } = {}) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
         const outbox = require('./wa-outbox');
+        try { require('./wa-hook').latir(); } catch {}
         if (_out[2] === 'pendiente') {
           const p = outbox.siguiente();
           return send(200, p || {});
