@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27008  2026-08-15 22:35:15  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
+
+27007  2026-08-15 22:35:15  sistema   interno                                      claude_call moderacion: 6152ms prompt=1602c raw=6534c in=10t(cache_read=17396 new=5092) out=368t ttfb=1195ms api=5254ms turnos=1 $0.0104                                                                
+
+27006  2026-08-15 22:35:09  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
+
+27005  2026-08-15 22:35:09  sistema   interno                                      claude_call moderacion: 6909ms prompt=1781c raw=7064c in=10t(cache_read=0 new=22550) out=450t ttfb=1594ms api=6134ms turnos=1 $0.0310                                                                   
+
+27004  2026-08-15 22:35:02  sistema   interno                                      acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
 27003  2026-08-15 20:44:20  sistema   interno                                      claude_call telegram: 5593ms prompt=79172c raw=4737c in=2t(cache_read=0 new=51779) out=78t ttfb=1565ms api=4735ms turnos=1 $0.2047                                                                      
 
 27002  2026-08-15 20:44:14  telegram  entrante   telegram:590589920                Ok                                                                                                                                                                                                      
@@ -284,13 +294,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26910  2026-08-14 22:01:18  whatsapp  entrante   541155771290@c.us                 Jueves 20 de 13:00 a 16:00                                                                                                                                                                              
 
 26909  2026-08-14 22:01:18  sistema   interno                                      claude_call whatsapp: 18835ms prompt=81017c raw=9373c in=6t(cache_read=53145 new=106277) out=494t ttfb=1744ms api=12479ms turnos=3 $0.4319                                                              
-
-26908  2026-08-14 22:01:15  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
-
-26907  2026-08-14 22:01:15  sistema   interno                                      claude_call moderacion: 5967ms prompt=1679c raw=6101c in=10t(cache_read=0 new=22528) out=326t ttfb=1258ms api=5154ms turnos=1 $0.0303                                                                   
-
-26906  2026-08-14 22:00:59  whatsapp  entrante   541155771290@c.us                 Hola Maria, como estas?                                                                                                                                                                                 
-
-26905  2026-08-14 21:53:43  sistema   interno                                      claude_call whatsapp: 22467ms prompt=63605c raw=11494c in=2t(cache_read=8784 new=35645) out=1719t ttfb=1603ms api=21280ms turnos=1 $0.1669                                                              
-
-26904  2026-08-14 21:53:21  whatsapp  entrante   5491141935177@c.us                si claro                                                                                                                                                                                                
