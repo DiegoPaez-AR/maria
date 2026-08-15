@@ -1,0 +1,29 @@
+# ejecutado: 2026-08-15T03:05:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node <<'NODE'
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, { readonly: true });
+#   console.log('── wa de Diego (usuarios id=1) ──');
+#   const d = db.prepare(`SELECT id, nombre, wa_cus, wa_lid FROM usuarios WHERE id=1`).get();
+#   console.log(JSON.stringify(d));
+#   console.log('── últimas filas del outbox ──');
+#   const rows = db.prepare(`SELECT id, creado, estado, numero, intentos, substr(texto,1,60) t FROM wa_outbox ORDER BY id DESC LIMIT 5`).all();
+#   rows.reverse().forEach(r => console.log(r.id, r.creado, r.estado, 'int:'+r.intentos, '|', r.numero, '|', String(r.t).replace(/\n/g,' ')));
+#   db.close();
+#   NODE
+#   echo LISTO
+
+# ───── output ─────
+── wa de Diego (usuarios id=1) ──
+{"id":1,"nombre":"Diego","wa_cus":"541132317896@c.us","wa_lid":"34342575317160@lid"}
+── últimas filas del outbox ──
+20 2026-08-14 21:46:57 entregado int:1 | 5491141935177 | Jaja no, soy la secretaria de Gabi nomás 😄 Te escribo por lo
+21 2026-08-14 21:48:41 entregado int:1 | 5491141935177 | Jaja me quedé esperando la receta en sí 😅 ¿me la pasás cuand
+22 2026-08-14 22:01:15 entregado int:1 | 541155771290 | Todo bien Manuel, gracias! Te escribía por lo de la reunión 
+23 2026-08-14 22:03:38 entregado int:1 | 5491126829596 | Hola Hernán! Te consulto por la reunión con Diego y Manuel C
+24 2026-08-15 05:57:09 entregado int:1 | 541132317896 | ✅ Prueba de canal de salida (Tasker) — 02:57. Si te llegó es
+LISTO
+
+# exit=0
