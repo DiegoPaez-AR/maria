@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26970  2026-08-15 12:31:24  telegram  saliente   telegram:590589920                ⚠️ Tu programado #1335 falla repetidamente (2 intentos).                                                                                                                                                
+                                                                                                                                                                                                                                                                                           
+                                                                                   Canal: whatsapp                                                                                                                                                                                         
+                                                                                   Destino: 541155771290@c.us                                                                                                                                                                              
+                                                                                   Mensaje: "¡Perfecto Manuel, anotado jueves 20/08 de 13 a 16hs! Y mil disculpas por el mensaje repet                                                                                                     
+
+26969  2026-08-15 12:31:24  sistema   interno                                      programado id=1335 falló (intento #2): waClient no disponible                                                                                                                                           
+
 26968  2026-08-15 12:30:24  sistema   interno                                      programado id=1335 falló (intento #1): waClient no disponible                                                                                                                                           
 
 26967  2026-08-15 12:15:25  gmail     saliente   cruiz@froneus.com                 ☀️ *Buen día, Cristian Ruiz.* sábado, 15 de agosto.                                                                                                                                                     
@@ -279,7 +287,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26872  2026-08-14 21:47:01  sistema   interno                                      claude_call whatsapp: 23727ms prompt=63884c raw=11980c in=6t(cache_read=45335 new=90351) out=781t ttfb=1449ms api=16044ms turnos=3 $0.3691                                                              
 
 26871  2026-08-14 21:46:57  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
-
-26870  2026-08-14 21:46:57  sistema   interno                                      claude_call moderacion: 6960ms prompt=1632c raw=6499c in=10t(cache_read=0 new=22501) out=402t ttfb=1275ms api=6593ms turnos=1 $0.0306                                                                   
-
-26869  2026-08-14 21:46:37  whatsapp  entrante   5491141935177@c.us                sos amiga de Esteban?                                                                                                                                                                                   
