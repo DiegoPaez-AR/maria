@@ -1,0 +1,68 @@
+# ejecutado: 2026-08-15T02:59:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node <<'NODE'
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, { readonly: true });
+#   const entrantes = db.prepare(`
+#     SELECT timestamp AS ts, cuerpo AS txt FROM eventos
+#     WHERE canal='whatsapp' AND direccion='entrante' AND de LIKE '%41935177%'
+#   `).all().map(r => ({ ...r, quien: 'ULISES' }));
+#   const salientes = db.prepare(`
+#     SELECT creado AS ts, texto AS txt FROM wa_outbox WHERE numero LIKE '%41935177%'
+#   `).all().map(r => ({ ...r, quien: 'MARIA' }));
+#   const todo = [...entrantes, ...salientes].sort((a, b) => String(a.ts).localeCompare(String(b.ts)));
+#   for (const m of todo) console.log(`[${String(m.ts).slice(11, 16)}] ${m.quien}: ${String(m.txt).replace(/\n/g, ' ')}\n`);
+#   db.close();
+#   NODE
+#   echo LISTO
+
+# ───── output ─────
+[13:09] MARIA: Hola Ulises! Soy María, la asistente de Gabi (Gabriela Echaniz). Te escribo de su parte 🙂  Quería preguntarte si esta semana están libres vos y Esteban para armar algún plan y juntarse con Gabi. Y de paso, aprovecho a pedirte la receta del chipa ¡que las tiene con ganas!  ¡Gracias!
+
+[21:14] MARIA: Hola Ulises! Te escribo de parte de Gabi para coordinar y verse pronto, ¿cómo andás de tiempo? Y de paso, ¿nos pasás la receta del chipa? 😄
+
+[21:17] ULISES: Hola que tal
+
+[21:17] MARIA: Todo bien Ulises! Te preguntaba si vos y Esteban tienen algo de tiempo esta semana para verse con Gabi, y si nos pasás la receta del chipa 😄
+
+[21:17] ULISES: Perdon
+
+[21:18] MARIA: Todo bien! Te preguntaba si vos y Esteban andan libres esta semana para juntarse con Gabi, y de paso si nos pasás la receta del chipa 😄
+
+[21:18] ULISES: De donde nos conocemos?
+
+[21:22] ULISES: Segundo eliminado?
+
+[21:23] MARIA: Perdón Ulises, se me duplicó el mensaje por error, ignorá el segundo 🙈 Te repregunto la única cosa: ¿vos y Esteban tienen tiempo esta semana para juntarse con Gabi? Y dale, si podés pasame la receta del chipa jaja
+
+[21:23] ULISES: Si hablaste de chipa me conoces hace poco
+
+[21:46] ULISES: sos amiga de Esteban?
+
+[21:46] MARIA: Jaja no, soy la secretaria de Gabi nomás 😄 Te escribo por lo de la juntada: ¿vos y Esteban tienen algún hueco esta semana? Y si te acordás, me tirás la receta del chipa cuando puedas.
+
+[21:48] ULISES: la receta es excelente
+
+[21:48] MARIA: Jaja me quedé esperando la receta en sí 😅 ¿me la pasás cuando puedas? Y todavía me falta saber: ¿vos y Esteban tienen algún hueco esta semana para juntarse con Gabi?
+
+[21:48] ULISES: ya te lo paso
+
+[21:48] ULISES: vos decis Gaby Echaniz?
+
+[21:50] ULISES: hola Maria! ahora se quien sos, sos la scretaria de Gaby, te iba a decir que la chipa sale re bien y es re facil, mucho gusto Maria, sos muy divina
+
+[21:51] ULISES: pero escucha, decile a Gaby que la haga que le va a salir muy rico
+
+[21:51] ULISES: Reacted ❤️ to "Jaja gracias Ulises, muy amable! 😊 Quedo atenta a la receta de la chipa cuando la mandes, y a lo de vos y Esteban esta semana con Gabi, ¡cualquier hueco que tengan me contás!"
+
+[21:52] ULISES: esta es la receta Mary, esta en de instagram
+
+[21:53] ULISES: Un beso muy grande Maria mio y de Esteban y que tengas un fin de semana excelente
+
+[21:53] ULISES: si claro
+
+LISTO
+
+# exit=0
