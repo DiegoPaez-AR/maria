@@ -1,8 +1,0 @@
-#!/bin/bash
-cd /root/secretaria
-SECRET=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
-PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
-curl -s -m 40 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' \
-  -d "{\"usuarioId\":1,\"accion\":{\"tipo\":\"enviar_wa\",\"a\":\"541132317896@c.us\",\"texto\":\"🅷 PRUEBA H — el examen final: pantalla dormida, cola con este único mensaje. Si llegó solo, el Tasker queda blindado: despierta únicamente cuando hay algo que decir, dispara, y vuelve a dormir. Capítulo cerrado. 🎓\"},\"canalOrigen\":\"whatsapp\"}" \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); print('encolado:', d.get('ok'))"
-echo LISTO
