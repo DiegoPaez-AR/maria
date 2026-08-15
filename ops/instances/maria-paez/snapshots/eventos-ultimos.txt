@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26973  2026-08-15 12:36:24  telegram  saliente   telegram:590589920                ⚠️ Tu programado #1336 falla repetidamente (2 intentos).                                                                                                                                                
+                                                                                                                                                                                                                                                                                           
+                                                                                   Canal: whatsapp                                                                                                                                                                                         
+                                                                                   Destino: 137456250806423@lid                                                                                                                                                                            
+                                                                                   Mensaje: "Hernán, ¿cómo va? Cambio de planes con la reunión: Manuel no puede el viernes — ¿te sir                                                                                                       
+
+26972  2026-08-15 12:36:24  sistema   interno                                      programado id=1336 falló (intento #2): waClient no disponible                                                                                                                                           
+
 26971  2026-08-15 12:35:24  sistema   interno                                      programado id=1336 falló (intento #1): waClient no disponible                                                                                                                                           
 
 26970  2026-08-15 12:31:24  telegram  saliente   telegram:590589920                ⚠️ Tu programado #1335 falla repetidamente (2 intentos).                                                                                                                                                
@@ -283,7 +291,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26875  2026-08-14 21:48:41  sistema   interno                                      claude_call moderacion: 7763ms prompt=1614c raw=7722c in=10t(cache_read=17396 new=5102) out=455t ttfb=1502ms api=6476ms turnos=1 $0.0109                                                                
 
 26874  2026-08-14 21:48:06  whatsapp  entrante   5491141935177@c.us                la receta es excelente                                                                                                                                                                                  
-
-26873  2026-08-14 21:48:04  whatsapp  saliente   5491141935177@c.us                Jaja no, soy la secretaria de Gabi nomás 😄 Te escribo por lo de la juntada: ¿vos y Esteban tienen algún hueco esta semana? Y si te acordás, me tirás la receta del chipa cuando puedas.                 
-
-26872  2026-08-14 21:47:01  sistema   interno                                      claude_call whatsapp: 23727ms prompt=63884c raw=11980c in=6t(cache_read=45335 new=90351) out=781t ttfb=1449ms api=16044ms turnos=3 $0.3691                                                              
