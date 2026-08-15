@@ -1,0 +1,39 @@
+# ejecutado: 2026-08-15T02:52:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── cola de salientes (wa-outbox) ──"
+#   node -e "
+#   const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+#   const tablas = db.prepare(\"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%outbox%' OR name LIKE '%salien%'\").all();
+#   console.log('tablas:', JSON.stringify(tablas));
+#   try {
+#     const rows = db.prepare(\"SELECT id, creado, estado, numero, substr(texto,1,60) t, intentos FROM wa_outbox ORDER BY id DESC LIMIT 8\").all();
+#     rows.reverse().forEach(r => console.log(r.id, r.creado, r.estado, 'int:'+(r.intentos??'-'), '|', String(r.numero).slice(-8), '|', String(r.t).replace(/\n/g,' ')));
+#     const pend = db.prepare(\"SELECT COUNT(*) c, MIN(creado) viejo FROM wa_outbox WHERE estado='pendiente'\").get();
+#     console.log('PENDIENTES sin confirmar:', pend.c, pend.viejo ? '(el más viejo: '+pend.viejo+')' : '');
+#   } catch(e) { console.log('schema distinto:', e.message); }
+#   db.close();
+#   "
+#   echo "── último latido del teléfono (accesos al hook en nginx) ──"
+#   grep "wa-hook" /var/log/nginx/access.log 2>/dev/null | tail -3 | sed -E 's/^([0-9.]+).*\[([^]]+)\].*"(GET|POST) ([^ ?]+)[^"]*".*/\2 \3 \4/' 
+#   echo LISTO
+
+# ───── output ─────
+── cola de salientes (wa-outbox) ──
+tablas: [{"name":"wa_outbox"}]
+16 2026-08-14 21:17:47 entregado int:1 | 41935177 | Todo bien Ulises! Te preguntaba si vos y Esteban tienen algo
+17 2026-08-14 21:18:41 entregado int:1 | 41935177 | Todo bien! Te preguntaba si vos y Esteban andan libres esta 
+18 2026-08-14 21:23:11 entregado int:1 | 41935177 | Perdón Ulises, se me duplicó el mensaje por error, ignorá el
+19 2026-08-14 21:34:07 entregado int:1 | 26829596 | ¡Buenísimo Hernán! Anoto viernes 21/8 de 9 a 12hs de tu lado
+20 2026-08-14 21:46:57 entregado int:1 | 41935177 | Jaja no, soy la secretaria de Gabi nomás 😄 Te escribo por lo
+21 2026-08-14 21:48:41 entregado int:1 | 41935177 | Jaja me quedé esperando la receta en sí 😅 ¿me la pasás cuand
+22 2026-08-14 22:01:15 entregado int:1 | 55771290 | Todo bien Manuel, gracias! Te escribía por lo de la reunión 
+23 2026-08-14 22:03:38 entregado int:1 | 26829596 | Hola Hernán! Te consulto por la reunión con Diego y Manuel C
+PENDIENTES sin confirmar: 0 
+── último latido del teléfono (accesos al hook en nginx) ──
+LISTO
+
+# exit=0
