@@ -1,5 +1,16 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26981  2026-08-15 20:30:31  whatsapp  entrante   541155771290@c.us                 Te acordas que ya te conteste?                                                                                                                                                                          
+
+26980  2026-08-15 20:30:31  sistema   interno                                      claude_call whatsapp: 46028ms prompt=83677c raw=18129c in=6t(cache_read=56591 new=111001) out=2738t ttfb=1791ms api=38788ms turnos=3 $0.4853                                                            
+
+26979  2026-08-15 20:30:27  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26978  2026-08-15 20:30:27  sistema   interno                                      claude_call moderacion: 6462ms prompt=1781c raw=6868c in=10t(cache_read=0 new=22550) out=417t ttfb=1448ms api=5286ms turnos=1 $0.0309                                                                   
+
+26977  2026-08-15 20:30:08  telegram  entrante   telegram:590589920                Hola María, recién saqué yo los mensajes de Whatsapp que se había trabado.                                                                                                                              
+                                                                                    Así que borrar esos petdos pendientes que te quedan porque ya te van a empezar a responder.                                                                                                            
+
 26976  2026-08-15 20:29:44  whatsapp  entrante   541155771290@c.us                 Hola Maria                                                                                                                                                                                              
 
 26975  2026-08-15 19:45:25  gmail     saliente   doris@capurro.com.ar              ⏰ *En 15min*: Salguero 2223 (05:00 p. m.)                                                                                                                                                               
@@ -281,13 +292,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26883  2026-08-14 21:49:08  whatsapp  saliente   5491141935177@c.us                Sí, de Gabi Echaniz 😊 ¿vos y Esteban tienen algún hueco esta semana para juntarse con ella? Y dale, esperá la receta cuando puedas 🙌                                                                    
 
 26882  2026-08-14 21:49:08  sistema   interno                                      claude_call moderacion: 7465ms prompt=1582c raw=7217c in=10t(cache_read=17396 new=5092) out=459t ttfb=1836ms api=6184ms turnos=1 $0.0109                                                                
-
-26881  2026-08-14 21:49:01  sistema   interno                                      claude_call whatsapp: 6873ms prompt=63665c raw=5167c in=2t(cache_read=8784 new=35713) out=177t ttfb=1558ms api=5868ms turnos=1 $0.1441                                                                  
-
-26880  2026-08-14 21:48:54  whatsapp  entrante   5491141935177@c.us                vos decis Gaby Echaniz?                                                                                                                                                                                 
-
-26879  2026-08-14 21:48:53  sistema   interno                                      claude_call whatsapp: 7577ms prompt=63822c raw=6529c in=2t(cache_read=8784 new=35778) out=278t ttfb=1546ms api=6924ms turnos=1 $0.1459                                                                  
-
-26878  2026-08-14 21:48:45  whatsapp  entrante   5491141935177@c.us                ya te lo paso                                                                                                                                                                                           
-
-26877  2026-08-14 21:48:45  sistema   interno                                      claude_call whatsapp: 38675ms prompt=64044c raw=15171c in=6t(cache_read=64151 new=73917) out=1872t ttfb=1462ms api=29988ms turnos=3 $0.3295                                                             
