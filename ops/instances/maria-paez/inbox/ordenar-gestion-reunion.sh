@@ -1,0 +1,12 @@
+#!/bin/bash
+cd /root/secretaria
+SECRET=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+acc() { curl -s -m 40 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' -d "$1" | python3 -c "import json,sys; d=json.load(sys.stdin); print('ok:', d.get('ok'), ('| '+str(d.get('error'))[:90]) if not d.get('ok') else '')"; }
+echo "── hecho actualizado ──"
+acc '{"usuarioId":1,"accion":{"tipo":"recordar_hecho","clave":"reunion_manuel_hernan_confirmaciones","valor":"ESTADO 15/08: Manuel eligió JUEVES 20/08 de 13 a 16hs (viernes NO puede). Hernán había dicho viernes 21 9-12 → se le está re-proponiendo jueves 20 o lunes 24 (mensajes programados 09:30/09:35). Cuando Hernán confirme jueves 20 (o acuerden lunes 24): crear_evento con los tres + invitaciones + avisar a Diego. A Manuel ya se le pidió disculpas por un mensaje duplicado nocturno (error técnico)."},"canalOrigen":"whatsapp"}'
+echo "── programado 09:30 → Manuel ──"
+acc '{"usuarioId":1,"accion":{"tipo":"programar_mensaje","cuando":"2026-08-15T09:30:00-03:00","canal":"whatsapp","destino":"541155771290@c.us","texto":"¡Perfecto Manuel, anotado jueves 20/08 de 13 a 16hs! Y mil disculpas por el mensaje repetido de anoche a cualquier hora — fue un error técnico mío 🙈 Ahora confirmo con Hernán y les mando la invitación.","razon":"reunion-diego-manuel-hernan: ack + disculpas"},"canalOrigen":"whatsapp"}'
+echo "── programado 09:35 → Hernán ──"
+acc '{"usuarioId":1,"accion":{"tipo":"programar_mensaje","cuando":"2026-08-15T09:35:00-03:00","canal":"whatsapp","destino":"5491126829596@c.us","texto":"Hernán, ¿cómo va? Cambio de planes con la reunión: Manuel no puede el viernes — ¿te sirve el JUEVES 20/08 de 13 a 16hs? Si no, también está libre el lunes 24. Apenas me digas cierro y les mando la invitación a los tres.","razon":"reunion-diego-manuel-hernan: re-proponer jueves"},"canalOrigen":"whatsapp"}'
+echo LISTO
