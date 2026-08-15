@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26989  2026-08-15 20:31:30  whatsapp  entrante   541155771290@c.us                 👆🏻                                                                                                                                                                                                      
+
+26988  2026-08-15 20:31:30  sistema   interno                                      claude_call whatsapp: 57878ms prompt=83338c raw=22604c in=6t(cache_read=75335 new=94244) out=4129t ttfb=1538ms api=49819ms turnos=3 $0.4488                                                             
+
+26987  2026-08-15 20:31:27  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26986  2026-08-15 20:31:27  sistema   interno                                      claude_call moderacion: 7120ms prompt=1692c raw=6211c in=10t(cache_read=17396 new=5123) out=332t ttfb=1298ms api=6547ms turnos=1 $0.0103                                                                
+
+26985  2026-08-15 20:31:21  telegram  saliente   telegram:590589920                Listo, cancelé los dos mensajes programados que se habían trabado (el de Manuel y el de Hernán) para que no vuelvan a intentar salir por las dudas. Como los mandaste vos directo, no hace falta que yo 
+
+26984  2026-08-15 20:31:21  sistema   interno                                      claude_call telegram: 72372ms prompt=79983c raw=29869c in=6t(cache_read=75448 new=92631) out=5737t ttfb=1616ms api=71900ms turnos=4 $0.4658                                                             
+
+26983  2026-08-15 20:31:14  sistema   interno                                      acción ejecutada: cancelar_programado                                                                                                                                                                   
+
+26982  2026-08-15 20:31:14  sistema   interno                                      acción ejecutada: cancelar_programado                                                                                                                                                                   
+
 26981  2026-08-15 20:30:31  whatsapp  entrante   541155771290@c.us                 Te acordas que ya te conteste?                                                                                                                                                                          
 
 26980  2026-08-15 20:30:31  sistema   interno                                      claude_call whatsapp: 46028ms prompt=83677c raw=18129c in=6t(cache_read=56591 new=111001) out=2738t ttfb=1791ms api=38788ms turnos=3 $0.4853                                                            
@@ -276,19 +292,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26891  2026-08-14 21:51:41  gmail     saliente   gabyechaniz@gmail.com             Che, Ulises te manda un mensaje re tierno: dice que le digas que HAGAS vos la chipa, que le va a salir muy rica 😊 Sigo esperando que él y Esteban confirmen si tienen un hueco esta semana para juntarse
 
 26890  2026-08-14 21:51:40  sistema   interno                                      claude_call whatsapp: 19539ms prompt=64133c raw=12134c in=6t(cache_read=63329 new=72922) out=1043t ttfb=1568ms api=19153ms turnos=3 $0.3131                                                             
-
-26889  2026-08-14 21:51:20  whatsapp  entrante   5491141935177@c.us                pero escucha, decile a Gaby que la haga que le va a salir muy rico                                                                                                                                      
-
-26888  2026-08-14 21:51:06  whatsapp  saliente   5491141935177@c.us                Jaja gracias Ulises, muy amable! 😊 Quedo atenta a la receta de la chipa cuando la mandes, y a lo de vos y Esteban esta semana con Gabi, ¡cualquier hueco que tengan me contás!                          
-
-26887  2026-08-14 21:51:06  sistema   interno                                      claude_call moderacion: 7544ms prompt=1623c raw=6598c in=10t(cache_read=17396 new=5103) out=384t ttfb=1408ms api=6406ms turnos=1 $0.0105                                                                
-
-26886  2026-08-14 21:50:58  sistema   interno                                      claude_call whatsapp: 11521ms prompt=64009c raw=7722c in=2t(cache_read=8784 new=35876) out=583t ttfb=1475ms api=11050ms turnos=1 $0.1509                                                                
-
-26885  2026-08-14 21:50:46  whatsapp  entrante   5491141935177@c.us                hola Maria! ahora se quien sos, sos la scretaria de Gaby, te iba a decir que la chipa sale re bien y es re facil, mucho gusto Maria, sos muy divina                                                     
-
-26884  2026-08-14 21:50:04  whatsapp  saliente   5491141935177@c.us                Jaja me quedé esperando la receta en sí 😅 ¿me la pasás cuando puedas? Y todavía me falta saber: ¿vos y Esteban tienen algún hueco esta semana para juntarse con Gabi?                                   
-
-26883  2026-08-14 21:49:08  whatsapp  saliente   5491141935177@c.us                Sí, de Gabi Echaniz 😊 ¿vos y Esteban tienen algún hueco esta semana para juntarse con ella? Y dale, esperá la receta cuando puedas 🙌                                                                    
-
-26882  2026-08-14 21:49:08  sistema   interno                                      claude_call moderacion: 7465ms prompt=1582c raw=7217c in=10t(cache_read=17396 new=5092) out=459t ttfb=1836ms api=6184ms turnos=1 $0.0109                                                                
