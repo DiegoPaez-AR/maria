@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27003  2026-08-15 20:44:20  sistema   interno                                      claude_call telegram: 5593ms prompt=79172c raw=4737c in=2t(cache_read=0 new=51779) out=78t ttfb=1565ms api=4735ms turnos=1 $0.2047                                                                      
+
+27002  2026-08-15 20:44:14  telegram  entrante   telegram:590589920                Ok                                                                                                                                                                                                      
+
 27001  2026-08-15 20:34:38  sistema   interno                                      claude_call whatsapp: 7844ms prompt=83259c raw=6892c in=2t(cache_read=8784 new=44787) out=377t ttfb=1562ms api=7101ms turnos=1 $0.1870                                                                  
 
 27000  2026-08-15 20:34:29  whatsapp  entrante   541155771290@c.us                 No te preocupes, ahi le voy a decir a Diego que te alimente con mas datos.                                                                                                                              
@@ -290,7 +294,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26905  2026-08-14 21:53:43  sistema   interno                                      claude_call whatsapp: 22467ms prompt=63605c raw=11494c in=2t(cache_read=8784 new=35645) out=1719t ttfb=1603ms api=21280ms turnos=1 $0.1669                                                              
 
 26904  2026-08-14 21:53:21  whatsapp  entrante   5491141935177@c.us                si claro                                                                                                                                                                                                
-
-26903  2026-08-14 21:53:19  whatsapp  saliente   5491141935177@c.us                Un beso grande para los dos, que tengan un fin de semana hermoso! 🥰                                                                                                                                     
-
-26902  2026-08-14 21:53:19  sistema   interno                                      claude_call moderacion: 6625ms prompt=1516c raw=6228c in=10t(cache_read=17396 new=5058) out=332t ttfb=1272ms api=6007ms turnos=1 $0.0102                                                                
