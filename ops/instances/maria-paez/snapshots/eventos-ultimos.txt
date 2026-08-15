@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27033  2026-08-15 22:52:28  whatsapp  saliente   5491165286555@c.us                Le escribo a Ulises para proponerle el finde del 22-23/08 en vez de esta semana. Apenas me confirme te aviso 🙌                                                                                          
+
+27032  2026-08-15 22:52:28  sistema   interno                                      claude_call whatsapp: 26700ms prompt=62611c raw=16172c in=6t(cache_read=54234 new=81768) out=1308t ttfb=2429ms api=19719ms turnos=5 $0.3470                                                             
+
+27031  2026-08-15 22:52:24  sistema   interno                                      acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+27030  2026-08-15 22:52:24  sistema   interno                                      acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+27029  2026-08-15 22:52:24  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
+
+27028  2026-08-15 22:52:24  sistema   interno                                      claude_call moderacion: 6466ms prompt=1612c raw=6304c in=10t(cache_read=0 new=22493) out=339t ttfb=1257ms api=6257ms turnos=1 $0.0303                                                                   
+
 27027  2026-08-15 22:52:01  whatsapp  entrante   5491165286555@c.us                Decile para el próximo finde porque estoy en corrientes                                                                                                                                                 
 
 27026  2026-08-15 22:51:52  sistema   interno                                      claude_call whatsapp: 5394ms prompt=62609c raw=4810c in=2t(cache_read=0 new=43982) out=90t ttfb=1443ms api=4592ms turnos=1 $0.1708                                                                      
@@ -282,15 +294,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26935  2026-08-15 06:09:24  sistema   interno                                      MODO DEGRADADO: loops arrancados sin WA (caído hace 49903 min)                                                                                                                                          
 
 26934  2026-08-15 06:09:22  sistema   interno                                      shutdown por SIGINT                                                                                                                                                                                     
-
-26933  2026-08-15 06:07:02  sistema   interno                                      acción FALLÓ: enviar_wa — enviar_wa: WA "5491132317896@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
-
-26932  2026-08-15 05:58:05  whatsapp  saliente   541132317896@c.us                 ✅ Prueba de canal de salida (Tasker) — 02:57. Si te llegó este mensaje, Maria→vos por WhatsApp está OK.                                                                                                 
-
-26931  2026-08-15 05:57:09  sistema   interno                                      acción ejecutada: enviar_wa                                                                                                                                                                             
-
-26930  2026-08-15 05:57:09  sistema   interno                                      claude_call moderacion: 6649ms prompt=1551c raw=6421c in=10t(cache_read=0 new=22471) out=365t ttfb=1289ms api=5821ms turnos=1 $0.0304                                                                   
-
-26929  2026-08-14 22:45:36  gmail     saliente   doris@capurro.com.ar              ⏰ *En 15min*: Teatro colon otello (08:00 p. m.)                                                                                                                                                         
-
-26928  2026-08-14 22:04:05  whatsapp  saliente   5491126829596@c.us                Hola Hernán! Te consulto por la reunión con Diego y Manuel Carrasco: Manuel no puede el viernes 21/08 que habías confirmado. ¿Te sirve en cambio el jueves 20/08 de 13 a 16hs, o el lunes 24/08 (tenés t
