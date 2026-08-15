@@ -1,0 +1,21 @@
+#!/bin/bash
+cd /root/secretaria
+SECRET=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+acc() { curl -s -m 40 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' -d "$1" | python3 -c "import json,sys; d=json.load(sys.stdin); print('ok:', d.get('ok'), ('| '+str(d.get('error'))[:90]) if not d.get('ok') else '', ('id:'+str((d.get('resultado') or {}).get('id')) if (d.get('resultado') or {}).get('id') else ''))"; }
+echo "── pendiente viejo (esperando a Hernán) ──"
+PID=$(node -e "
+const db = require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB, {readonly:true});
+const p = db.prepare(\"SELECT id FROM pendientes WHERE usuario_id=1 AND estado='abierto' AND \\\`desc\\\` LIKE '%Hernán Fulco confirme%' ORDER BY id DESC LIMIT 1\").get() || db.prepare(\"SELECT id FROM pendientes WHERE usuario_id=1 AND estado='abierto' AND desc LIKE '%Hern%confirme%' ORDER BY id DESC LIMIT 1\").get();
+console.log(p ? p.id : '');
+db.close();" 2>/dev/null)
+echo "pendiente Hernán: ${PID:-no encontrado}"
+[ -n "$PID" ] && acc "{\"usuarioId\":1,\"accion\":{\"tipo\":\"quitar_pendiente\",\"id\":$PID},\"canalOrigen\":\"whatsapp\"}"
+echo "── ack a Hernán ──"
+acc '{"usuarioId":1,"accion":{"tipo":"enviar_wa","a":"5491126829596@c.us","texto":"¡Hernán! Lunes 24 de 15 a 18 le queda perfecto a Diego 👌 Le consulto a Manuel (había elegido el jueves) y apenas me confirme les mando la invitación a los tres."},"canalOrigen":"whatsapp"}'
+echo "── consulta a Manuel ──"
+acc '{"usuarioId":1,"accion":{"tipo":"enviar_wa","a":"541155771290@c.us","texto":"Manuel, cambio de jugada: Hernán no puede el jueves y propone LUNES 24/08 de 15 a 18hs. ¿Te sirve? Diego está libre. Con tu ok mando la invitación y cerramos."},"canalOrigen":"whatsapp"}'
+echo "── estado + persecución a Manuel ──"
+acc '{"usuarioId":1,"accion":{"tipo":"recordar_hecho","clave":"reunion_manuel_hernan_confirmaciones","valor":"ESTADO 15/08 tarde: Hernán propuso LUNES 24/08 de 15 a 18hs (jueves no puede). Diego libre ese lunes. Se le consultó a Manuel (había elegido jueves; viernes no puede). CUANDO MANUEL CONFIRME el lunes 24 15-18: crear_evento con los tres (Diego + Manuel Carrasco + Hernán Fulco) + attendees + avisar a Diego. Si Manuel NO puede el lunes: avisar a Diego para que decida (no hay slot común obvio)."},"canalOrigen":"whatsapp"}'
+acc '{"usuarioId":1,"accion":{"tipo":"agregar_pendiente","desc":"Esperando que Manuel Carrasco confirme lunes 24/08 15-18hs para la reunión con Diego y Hernán. Al confirmar: crear_evento con los tres + invitaciones + avisar a Diego. Si no puede: avisar a Diego.","dueno":"maria","disparador":"trigger_externo","meta":{"esperando_de":"541155771290@c.us","esperando_canal":"whatsapp"}},"canalOrigen":"whatsapp"}'
+echo LISTO
