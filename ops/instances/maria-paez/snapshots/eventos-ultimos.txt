@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27001  2026-08-15 20:34:38  sistema   interno                                      claude_call whatsapp: 7844ms prompt=83259c raw=6892c in=2t(cache_read=8784 new=44787) out=377t ttfb=1562ms api=7101ms turnos=1 $0.1870                                                                  
+
+27000  2026-08-15 20:34:29  whatsapp  entrante   541155771290@c.us                 No te preocupes, ahi le voy a decir a Diego que te alimente con mas datos.                                                                                                                              
+
+26999  2026-08-15 20:34:05  whatsapp  saliente   541155771290@c.us                 Sí Manuel, tranquilo, me quedó anotada tu respuesta: jueves 20/08 de 13 a 16hs te viene bien, y el viernes no podés. Estoy esperando que Hernán confirme ese horario (o el lunes 24) para cerrar los tre
+
 26998  2026-08-15 20:33:39  telegram  saliente   telegram:590589920                Sí, fue por los mensajes duplicados de la madrugada (el error técnico que ya se resolvió). Manuel se quejó un poco pero le pedí disculpas y quedó tranquilo. Sigo esperando que Hernán confirme jueves 2
 
 26997  2026-08-15 20:33:39  sistema   interno                                      claude_call telegram: 13683ms prompt=79249c raw=8799c in=2t(cache_read=8784 new=43008) out=858t ttfb=1861ms api=12458ms turnos=1 $0.1862                                                                
@@ -288,9 +294,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26903  2026-08-14 21:53:19  whatsapp  saliente   5491141935177@c.us                Un beso grande para los dos, que tengan un fin de semana hermoso! 🥰                                                                                                                                     
 
 26902  2026-08-14 21:53:19  sistema   interno                                      claude_call moderacion: 6625ms prompt=1516c raw=6228c in=10t(cache_read=17396 new=5058) out=332t ttfb=1272ms api=6007ms turnos=1 $0.0102                                                                
-
-26901  2026-08-14 21:53:12  sistema   interno                                      claude_call whatsapp: 6889ms prompt=63880c raw=5252c in=2t(cache_read=8784 new=35785) out=180t ttfb=1564ms api=5857ms turnos=1 $0.1444                                                                  
-
-26900  2026-08-14 21:53:05  whatsapp  entrante   5491141935177@c.us                Un beso muy grande Maria mio y de Esteban y que tengas un fin de semana excelente                                                                                                                       
-
-26899  2026-08-14 21:52:42  whatsapp  saliente   5491141935177@c.us                Uy, no me llegó ninguna imagen ni link con la receta, solo el texto 😅 ¿me la reenviás de nuevo porfa?                                                                                                   
