@@ -51,7 +51,18 @@ function siguiente() {
   ).get();
   if (!row) return null;
   mem.db.prepare(`UPDATE wa_outbox SET intentos = intentos + 1, tomado_en = CURRENT_TIMESTAMP WHERE id = ?`).run(row.id);
-  return { id: row.id, numero: row.numero, texto: row.texto };
+  return { id: row.id, numero: _numeroEnvio(row.numero), texto: row.texto };
+}
+
+// Formato de ENVÍO para el teléfono (2026-08-15): los deep-links de WhatsApp
+// exigen el formato móvil AR completo (549...). Números guardados sin el "9"
+// (canónico viejo de wwebjs, ej. el wa_cus de Diego) fallaban en silencio:
+// Tasker confirmaba pero el mensaje no llegaba. Solo transforma la SALIDA,
+// lo guardado no se toca.
+function _numeroEnvio(n) {
+  const d = String(n).replace(/\D/g, '');
+  if (/^54\d{10}$/.test(d)) return '549' + d.slice(2);
+  return d;
 }
 
 function confirmar(id) {
