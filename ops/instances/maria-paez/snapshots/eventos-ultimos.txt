@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+26939  2026-08-15 06:10:09  sistema   interno                           acción ejecutada: enviar_wa                                                                                                                                                                             
+
+26938  2026-08-15 06:10:09  sistema   interno                           claude_call moderacion: 7255ms prompt=1533c raw=6548c in=10t(cache_read=0 new=22469) out=377t ttfb=1647ms api=6244ms turnos=1 $0.0304                                                                   
+
+26937  2026-08-15 06:09:24  sistema   interno                           WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+
+26936  2026-08-15 06:09:24  sistema   interno                           Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+
+26935  2026-08-15 06:09:24  sistema   interno                           MODO DEGRADADO: loops arrancados sin WA (caído hace 49903 min)                                                                                                                                          
+
 26934  2026-08-15 06:09:22  sistema   interno                           shutdown por SIGINT                                                                                                                                                                                     
 
 26933  2026-08-15 06:07:02  sistema   interno                           acción FALLÓ: enviar_wa — enviar_wa: WA "5491132317896@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                     
@@ -190,13 +200,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")        cuerpo
 26841  2026-08-14 21:17:51  sistema   interno                           claude_call whatsapp: 24214ms prompt=63718c raw=10910c in=6t(cache_read=62973 new=72486) out=765t ttfb=1514ms api=16769ms turnos=3 $0.3070                                                              
 
 26840  2026-08-14 21:17:47  sistema   interno                           acción ejecutada: enviar_wa                                                                                                                                                                             
-
-26839  2026-08-14 21:17:47  sistema   interno                           claude_call moderacion: 6690ms prompt=1589c raw=6253c in=10t(cache_read=17396 new=5081) out=323t ttfb=1331ms api=6327ms turnos=1 $0.0102                                                                
-
-26838  2026-08-14 21:17:26  whatsapp  entrante   5491141935177@c.us     Hola que tal                                                                                                                                                                                            
-
-26837  2026-08-14 21:16:04  whatsapp  saliente   5491141935177@c.us     Hola Ulises! Te escribo de parte de Gabi para coordinar y verse pronto, ¿cómo andás de tiempo? Y de paso, ¿nos pasás la receta del chipa? 😄                                                             
-
-26836  2026-08-14 21:14:49  sistema   interno                           claude_call whatsapp: 11054ms prompt=62229c raw=6812c in=2t(cache_read=8784 new=34992) out=395t ttfb=1485ms api=10589ms turnos=1 $0.1441                                                                
-
-26835  2026-08-14 21:14:37  whatsapp  entrante   5491165286555@c.us     El arregla por los dos, le avisa a esteban, son marido y marido                                                                                                                                         
