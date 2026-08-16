@@ -41,14 +41,30 @@ const RE_FOTO  = /📷|📸|^foto$|^photo$|imagen/i;
 const RE_VIDEO = /🎥|^video$|^vídeo$/i;
 const RE_DOC   = /📄|documento|\.pdf|\.docx?|\.xlsx?/i;
 
-function _hintMedia(texto) {
+// rol: 'usuario_vinculado' (tiene Telegram) | 'usuario_sin_tg' | 'tercero' | 'neutral'
+// (2026-08-16, pedido Diego: a TERCEROS pedirles TEXTO amablemente — no
+// ofrecerles Telegram, que es para usuarios; a usuarios sin TG, aprovechar
+// para invitarlos a vincularse.)
+function _hintMedia(texto, rol = 'neutral') {
   const t = String(texto || '').trim();
-  if (RE_AUDIO.test(t)) return '(el remitente mandó un AUDIO que no podés escuchar por este canal — pedile que te lo mande en texto, o por Telegram si es usuario vinculado)';
-  if (RE_FOTO.test(t) && t.length < 25) return '(el remitente mandó una FOTO que no podés ver por este canal — pedile que te cuente qué es, o que la mande por Telegram si es usuario vinculado)';
-  if (RE_VIDEO.test(t) && t.length < 25) return '(el remitente mandó un VIDEO que no podés ver por este canal)';
-  if (RE_DOC.test(t) && t.length < 40) return `(el remitente mandó un ARCHIVO que no podés abrir por este canal: "${t}" — pedile que te lo mande por email si lo necesitás)`;
-  return null;
+  const esAudio = RE_AUDIO.test(t);
+  const esFoto = RE_FOTO.test(t) && t.length < 25;
+  const esVideo = RE_VIDEO.test(t) && t.length < 25;
+  const esDoc = RE_DOC.test(t) && t.length < 40;
+  if (!esAudio && !esFoto && !esVideo && !esDoc) return null;
+  const que = esAudio ? 'un AUDIO que no podés escuchar' : esFoto ? 'una FOTO que no podés ver' : esVideo ? 'un VIDEO que no podés ver' : `un ARCHIVO que no podés abrir ("${t}")`;
+  if (rol === 'tercero') {
+    return `(el remitente mandó ${que} por este canal — decile amablemente que por acá no ${esAudio ? 'podés escuchar audios' : 'podés verlo'} y pedile que te lo mande en texto${esDoc ? ' o por email' : ''})`;
+  }
+  if (rol === 'usuario_vinculado') {
+    return `(${usuarioMandó(que)} — pedile que te lo mande por TELEGRAM, que ahí sí ${esAudio ? 'lo escuchás' : 'lo ves'} (ya está vinculado), o que te lo escriba en texto)`;
+  }
+  if (rol === 'usuario_sin_tg') {
+    return `(${usuarioMandó(que)} — pedile que te lo mande en texto, y aprovechá para contarle que por Telegram sí ${esAudio ? 'escuchás audios' : 'ves archivos y fotos'}: vincularse toma 1 minuto en t.me/${process.env.TELEGRAM_BOT_USERNAME || 'MariaPaezAI_bot'} tocando "compartir mi número")`;
+  }
+  return `(el remitente mandó ${que} por este canal — pedile que te lo mande en texto)`;
 }
+function usuarioMandó(que) { return `el usuario mandó ${que} por WhatsApp`; }
 
 // ── Identidad del remitente ────────────────────────────────────────────────
 function _digitos(s) { return String(s || '').replace(/\D/g, ''); }
@@ -225,7 +241,7 @@ async function procesar(body) {
   if (/waiting for this message|esperando este mensaje/i.test(q.message)) return { replies: [] };
 
   const hint = _hintMedia(q.message);
-  const cuerpo = hint || q.message;
+  let cuerpo = hint || q.message;
 
   // Identidad del remitente: NÚMERO (contacto no guardado en el teléfono) o
   // NOMBRE exacto (2026-08-02: Diego mantiene su agenda sincronizada en el
@@ -295,6 +311,12 @@ async function procesar(body) {
     } catch (err) {
       console.warn(`[wa-hook] chequeo gestión ajena falló (sigo como usuario): ${err.message}`);
     }
+  }
+
+  // Afinar el hint de media según el ROL del remitente (lo sabemos recién acá)
+  if (hint) {
+    const rol = u ? (u.telegram_chat_id ? 'usuario_vinculado' : 'usuario_sin_tg') : (tercero ? 'tercero' : 'neutral');
+    cuerpo = _hintMedia(q.message, rol) || cuerpo;
   }
 
   if (!u && !tercero) {
