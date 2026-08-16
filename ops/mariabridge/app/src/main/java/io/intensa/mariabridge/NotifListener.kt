@@ -26,6 +26,12 @@ class NotifListener : NotificationListenerService() {
         // nuestra respuesta como "You"/"Tú" → NO es un entrante, filtrar.
         val tNorm = titulo.trim().lowercase()
         if (tNorm in setOf("you", "tú", "tu", "vos", "yo")) return
+        // Notificaciones de SERVICIO de WhatsApp ("Checking for new messages",
+        // backups, llamadas perdidas) — no son mensajes.
+        if (tNorm == "whatsapp") return
+        // Reacciones ("Reacted ❤️ to ...", "Reaccionó ...") — no son texto útil
+        // para el hook; generan turnos basura.
+        if (texto.matches(Regex("^(Reacted|Reaccionó|Reagiu)\\b.*", RegexOption.IGNORE_CASE))) return
         var texto = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
 
         // Resumen agregado ("3 mensajes nuevos") → ignorar, no es contenido real.
