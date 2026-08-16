@@ -1,0 +1,15 @@
+# ejecutado: 2026-08-15T21:58:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep -E "\.kt:|\.xml:|error:|e: |FAILURE|What went wrong|> Task.*FAILED|Execution failed" /root/mariabridge-build.log | head -30
+#   echo LISTO
+
+# ───── output ─────
+	at org.jetbrains.kotlin.gradle.tasks.TasksUtilsKt.throwExceptionIfCompilationFailed(tasksUtils.kt:20)
+	at org.jetbrains.kotlin.compilerRunner.GradleKotlinCompilerWork.run(GradleKotlinCompilerWork.kt:141)
+	at org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction.execute(GradleCompilerRunnerWithWorkers.kt:73)
+LISTO
+
+# exit=0
