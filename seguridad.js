@@ -90,10 +90,18 @@ function _wasapMatch(a, b) {
   const db = _soloDigitos(b);
   if (!da || !db) return false;
   if (da === db) return true;
+  // Variante 9-móvil AR (2026-08-16, gap conocido desde el fix del outbox):
+  // 54911xxxx y 5411xxxx son el MISMO número — normalizar antes de comparar
+  // (igual criterio que resolverPorWa). Sin esto, un destino con "9" rebotaba
+  // contra un wa_cus guardado sin "9" (o viceversa) aunque fuera la misma
+  // persona.
+  const _sin9 = (d) => (d.startsWith('549') ? '54' + d.slice(3) : d);
+  if (_sin9(da) === _sin9(db)) return true;
   const corto = Math.min(da.length, db.length);
   if (corto < 10) return false;
   if (Math.abs(da.length - db.length) > 3) return false;
-  return da.endsWith(db) || db.endsWith(da);
+  const na = _sin9(da), nb = _sin9(db);
+  return da.endsWith(db) || db.endsWith(da) || na.endsWith(nb) || nb.endsWith(na);
 }
 
 /**
