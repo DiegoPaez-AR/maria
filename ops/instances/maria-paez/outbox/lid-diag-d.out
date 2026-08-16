@@ -1,0 +1,34 @@
+# ejecutado: 2026-08-16T20:52:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB);
+#   const rows=db.prepare(\"SELECT id,destino FROM programados WHERE texto LIKE '%Telegram%' ORDER BY cuando\").all();
+#   for (const r of rows) {
+#     const dig=String(r.destino).replace(/@.*/,'');
+#     const u=db.prepare(\"SELECT nombre,wa_cus,wa_lid FROM usuarios WHERE wa_cus LIKE '%'||?||'%' OR wa_lid LIKE '%'||?||'%'\").get(dig,dig);
+#     console.log('#'+r.id, r.destino.slice(0,26), '→', u?u.nombre:'???', u?('cus:'+String(u.wa_cus).slice(0,20)+' lid:'+String(u.wa_lid||'').slice(0,20)):'');
+#   }
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+#1341 137456250806423@lid → Hernan Fulco cus:5491126829596@c.us lid:137456250806423@lid
+#1342 232637088149596@lid → Natali Funez cus:5491150105262@c.us lid:232637088149596@lid
+#1343 5491134274828@c.us → Santiago Bignone cus:5491134274828@c.us lid:
+#1344 105171031949561@lid → Doris Capurro cus:5491144471264@c.us lid:105171031949561@lid
+#1345 227143674011812@lid → Nicolas Kosinski cus:5491150080522@c.us lid:227143674011812@lid
+#1346 5491138433288@c.us → Walter Vera cus:5491138433288@c.us lid:
+#1347 5491126406612@c.us → Cristian Ruiz cus:5491126406612@c.us lid:
+#1348 5491163004389@c.us → Sebastian Ameijeira cus:5491163004389@c.us lid:
+#1349 59899643028@c.us → Enrique Sosa cus:59899643028@c.us lid:
+#1350 134076010885285@lid → Santiago Capurro cus:5491166010010@c.us lid:134076010885285@lid
+#1351 5491164719969@c.us → Andres Neumann cus:5491164719969@c.us lid:
+#1352 5491165286555@c.us → Gabriela Echaniz cus:5491165286555@c.us lid:
+#1353 5491161991122@c.us → Jaime Cibils cus:5491161991122@c.us lid:
+#1354 5491161549534@c.us → Alfonso Amat cus:5491161549534@c.us lid:
+LISTO
+
+# exit=0
