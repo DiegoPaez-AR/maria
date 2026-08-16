@@ -151,6 +151,12 @@ if [ "$CODE_CHANGED" = 1 ]; then
   done
 fi
 
+# Lista de scripts REALMENTE ejecutados este tick (fix race 2026-08-16: un
+# push que llega durante el tick —via el pull de rescate de fase 4— aparecía
+# en el inbox a la hora del consume y se borraba SIN ejecutar; pasó 3 veces
+# el 16/8). El consume ahora borra SOLO lo que este tick ejecutó.
+EJECUTADOS_TICK=""
+
 # ───── 2. Por cada instancia: ejecutar inbox + dumpear snapshot ─────
 for inst in "${INSTANCES[@]}"; do
   slug="${inst%%:*}"
@@ -203,6 +209,7 @@ for inst in "${INSTANCES[@]}"; do
       echo ""
       echo "# exit=$?"
     } > "$out"
+    EJECUTADOS_TICK="$EJECUTADOS_TICK $cmd_file"
   done
 
   # 2b) Snapshots
@@ -325,8 +332,12 @@ for inst in "${INSTANCES[@]}"; do
   else
     INBOX="ops/instances/$slug/inbox"
   fi
-  if [ "$PUSHED_OK" = 1 ] || [ -z "$(ls "$INBOX"/*.sh 2>/dev/null)" ]; then
-    rm -f "$INBOX"/*.sh
+  if [ "$PUSHED_OK" = 1 ]; then
+    for _e in $EJECUTADOS_TICK; do
+      case "$_e" in
+        "$INBOX"/*) rm -f "$_e" ;;
+      esac
+    done
   fi
 done
 git add -A ops/
