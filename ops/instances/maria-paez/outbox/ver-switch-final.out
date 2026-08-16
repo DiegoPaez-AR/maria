@@ -1,0 +1,33 @@
+# ejecutado: 2026-08-16T12:17:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── logs [MB] últimos 10 min ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -20
+#   echo "── eventos WA de Diego últimos 10 min ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,direccion,substr(cuerpo,1,55) c FROM eventos WHERE usuario_id=1 AND canal='whatsapp' AND timestamp>=datetime('now','-10 minutes') ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11),r.direccion,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── logs [MB] últimos 10 min ──
+2026-08-16 12:09:07: [MB v2.1] 12:08:57 I [notif] listener conectado
+2026-08-16 12:09:07: [MB v2.1] 12:08:57 I [frio] accesibilidad conectada
+2026-08-16 12:09:56: [MB v2.1] 12:09:47 I [svc] OutboxService arrancó
+2026-08-16 12:14:00: [MB v2.1] 12:13:56 I [notif] entrante de "Diego Paez": hola Maria, que pendeintes tengo?
+2026-08-16 12:14:10: [MB v2.1] 12:14:06 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-16 12:14:10: [MB v2.1] 12:14:06 I [notif] entrante de "You": Dale, te resumo todo:
+2026-08-16 12:15:24: [MB v2.1] 12:15:20 I [notif] entrante de "Diego Paez": que paso con lo de natali? te respondio algo del cine?
+2026-08-16 12:15:57: [MB v2.1] 12:15:50 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-16 12:15:57: [MB v2.1] 12:15:50 I [notif] entrante de "You": Todavía no, Nati no me respondió nada. Apenas conteste te av
+── eventos WA de Diego últimos 10 min ──
+15:13:55 entrante | hola Maria, que pendeintes tengo?
+15:14:05 saliente | Dale, te resumo todo:  📝 *Tus tareas:* 1. iProt Segurid
+15:15:19 entrante | que paso con lo de natali? te respondio algo del cine?
+15:15:49 saliente | Todavía no, Nati no me respondió nada. Apenas conteste 
+LISTO
+
+# exit=0
