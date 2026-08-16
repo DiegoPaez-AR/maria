@@ -1,0 +1,16 @@
+# ejecutado: 2026-08-16T13:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep "versionName\|versionCode" /root/secretaria/ops/mariabridge/app/build.gradle | head -2
+#   if pgrep -f mb-build-worker >/dev/null; then echo corriendo; exit 0; fi
+#   nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 &
+#   echo "build 23b lanzado"
+
+# ───── output ─────
+        versionCode 8
+        versionName '2.3'
+build 23b lanzado
+
+# exit=0
