@@ -1,0 +1,40 @@
+# ejecutado: 2026-08-15T23:19:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   L=/var/log/nginx/intensa.io.access.log
+#   echo "── confirmaciones de MariaBridge (envíos concretados) ──"
+#   grep -E "wa-maria.*confirmar" "$L" 2>/dev/null | tail -4 | sed -E 's/.*\[([^]]+)\].*"GET ([^"]{0,55}).*/\1 | \2/'
+#   echo "── último outbox (debe estar 'entregado') ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare('SELECT id,creado,estado,intentos,substr(texto,1,45) t FROM wa_outbox ORDER BY id DESC LIMIT 3').all().forEach(r=>console.log(r.id,r.creado,r.estado,'int:'+r.intentos,'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── conversación de Diego con Maria (últimos 6) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,direccion,substr(cuerpo,1,60) c FROM eventos WHERE usuario_id=1 AND canal='whatsapp' ORDER BY id DESC LIMIT 6\").all().reverse().forEach(r=>console.log(r.timestamp.slice(11),r.direccion,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── confirmaciones de MariaBridge (envíos concretados) ──
+15/Aug/2026:20:06:05 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confir
+15/Aug/2026:20:12:04 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confir
+15/Aug/2026:20:32:09 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confir
+15/Aug/2026:20:52:09 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confir
+── último outbox (debe estar 'entregado') ──
+38 2026-08-15 23:51:08 entregado int:1 | 🅷 PRUEBA H — el examen final: pantalla dormid
+37 2026-08-15 23:30:09 entregado int:1 | 🅶 Prueba G — con Turn On en el task. Si esto 
+36 2026-08-15 23:11:08 entregado int:1 | 🅵 PRUEBA FINAL — enchufado, pantalla viva, ma
+── conversación de Diego con Maria (últimos 6) ──
+01:17:26 entrante | 🔗 intensa.io | no hagas nada con esto: URL del hook: https:/
+01:17:38 saliente | Recibido, no hice nada con ese link/secret como pediste.
+02:17:28 entrante | todo bien por ahi?
+02:17:36 saliente | Todo tranquilo por acá 👍 Nada nuevo urgente: sigo esperando 
+02:17:36 entrante | todo bien por ahi?
+02:17:46 saliente | Todo tranquilo, sin novedades nuevas. Sigo esperando que Her
+LISTO
+
+# exit=0
