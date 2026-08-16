@@ -1,0 +1,23 @@
+# ejecutado: 2026-08-15T22:03:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pgrep -f mb-build-worker >/dev/null && echo "aún corriendo" || echo "terminó"
+#   grep -E "^e: file://|error:|Unresolved reference|APK_OK|APK_FAIL" /root/mariabridge-build.log | head -25
+#   echo LISTO
+
+# ───── output ─────
+terminó
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/BootReceiver.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/MainActivity.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/Net.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/NotifListener.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/OutboxService.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/Prefs.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/ReplyRegistry.kt:1:9 Package name must be a '.'-separated identifier list
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/is/paez/mariabridge/ReplyRegistry.kt:28:74 Type mismatch: inferred type is android.app.RemoteInput! but androidx.core.app.RemoteInput was expected
+APK_FAIL
+LISTO
+
+# exit=0
