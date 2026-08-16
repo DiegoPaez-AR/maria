@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27678  2026-08-16 23:28:17  sistema   interno                                      claude_call whatsapp: 7294ms prompt=64419c raw=6453c in=2t(cache_read=8784 new=36271) out=285t ttfb=1588ms api=6023ms turnos=1 $0.1480                                                                  
+
+27677  2026-08-16 23:28:11  sistema   interno                                      claude_call whatsapp: 8527ms prompt=68789c raw=6299c in=2t(cache_read=8784 new=38156) out=249t ttfb=2813ms api=6291ms turnos=1 $0.1561                                                                  
+
+27676  2026-08-16 23:28:09  whatsapp  entrante   5491165286555@c.us                Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11                                                                                                                         
+
+27675  2026-08-16 23:28:09  sistema   interno                                      claude_call whatsapp-gestion-ajena: 7354ms prompt=761c raw=7627c in=10t(cache_read=27555 new=0) out=325t ttfb=2894ms api=4959ms turnos=1 $0.0051                                                        
+
 27674  2026-08-16 23:28:02  whatsapp  entrante   5491141935177@c.us                Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"                                                                                                                        
 
 27673  2026-08-16 23:28:01  sistema   interno                                      wa-hook: desconocido "WhatsApp": "Checking for new messages"                                                                                                                                            
@@ -248,17 +256,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                    💬 WhatsApp: 3 recibidos · 1 enviados                                                                                                                                                                    
                                                                                    📧 Emails: 0 recibidos · 44 enviados                                                                                                                                                                     
                                                                                    📝 Pendientes: 0 cerrados · 0 nuevos · 0 abiertos ahora                                                                                                                                                  
-
-27578  2026-08-16 22:21:05  telegram  saliente   telegram:590589920                📊 *Tu semana* (al 16/08)                                                                                                                                                                                
-                                                                                   💬 WhatsApp: 26 recibidos · 48 enviados                                                                                                                                                                  
-                                                                                   📅 Eventos agendados: 1                                                                                                                                                                                  
-                                                                                   📝 Pendientes: 5 cerrados · 8 nuevos · 6 abiertos ahora                                                                                                                                                  
-                                                                                   ⏳ Follow-ups: 2 resueltos · 2 disparados                                                                                                                                                                
-                                                                                                                                                                                                                                                                                           
-                                                                                   *Arrancás la sem                                                                                                                                                                                        
-
-27577  2026-08-16 22:06:14  telegram  saliente   telegram:590589920                ⏰ Follow-up vencido — Coordinar reunión 3hs entre Diego, Manuel Carrasco y Hernán Fulco — Manuel no puede el viernes 21/08 (que Hernán había confirmado). Le pregunté a Hernán si le sirve jueves 20/08 
-
-27576  2026-08-16 22:06:14  sistema   interno                                      claude_call follow-ups: 10096ms prompt=3307c raw=7368c in=2t(cache_read=0 new=16708) out=584t ttfb=1732ms api=9175ms turnos=1 $0.0728                                                                   
-
-27575  2026-08-16 22:06:04  sistema   interno                                      WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
