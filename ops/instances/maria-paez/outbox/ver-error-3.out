@@ -1,0 +1,19 @@
+# ejecutado: 2026-08-15T22:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── contexto del FAILURE ──"
+#   grep -n "FAILURE\|What went wrong\|> " /root/mariabridge-build.log | head -20
+#   echo "── 25 líneas alrededor de 'FAILED' ──"
+#   grep -n "FAILED" /root/mariabridge-build.log | head -3
+#   awk '/What went wrong/{f=1} f{print} /BUILD FAILED/{exit}' /root/mariabridge-build.log | head -30
+#   echo LISTO
+
+# ───── output ─────
+── contexto del FAILURE ──
+── 25 líneas alrededor de 'FAILED' ──
+140:BUILD FAILED in 1m 38s
+LISTO
+
+# exit=0
