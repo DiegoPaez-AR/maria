@@ -64,10 +64,15 @@ class OutboxService : Service() {
             Net.get("$base/$secret/confirmar/$id") { _, _ -> }   // confirmar SOLO tras enviar
             log("respondido (silencioso) → ${if (nombre.isNotBlank()) nombre else numero}")
         } else {
-            // Sin notif viva de ese chat: NO confirmamos. El mensaje ESPERA en la
-            // cola (tope de intentos alto) hasta que el chat tenga notif activa o
-            // venza el TTL. Envío en frío (chat sin ninguna notif) = v2.
-            log("sin notif viva de \"${if (nombre.isNotBlank()) nombre else numero}\" — #$id espera")
+            // Diagnóstico al VPS: qué buscó y qué chats tiene vivos (para ver el
+            // mismatch de nombre sin logcat). Se lee en el log del internal-api.
+            val vivos = ReplyRegistry.titulosVivos().joinToString(" ~ ")
+            val diag = org.json.JSONObject().apply {
+                put("buscaba_nombre", nombre); put("buscaba_numero", numero)
+                put("chats_vivos", vivos); put("pendiente", id)
+            }
+            Net.postJson("$base/$secret/mbdiag", diag.toString())
+            log("sin notif viva — #$id espera. buscaba='$nombre'/'$numero' vivos=[$vivos]")
         }
     }
 

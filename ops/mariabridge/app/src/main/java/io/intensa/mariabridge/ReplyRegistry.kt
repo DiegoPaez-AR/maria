@@ -32,9 +32,12 @@ object ReplyRegistry {
         }
     }
 
-    /** Responde al chat cuyo título (nombre del contacto) matchee. true si pudo. */
-    fun responder(c: Context, nombreChat: String, texto: String): Boolean {
-        val acc = porChat[normalizar(nombreChat)] ?: return false
+    fun titulosVivos(): List<String> = porChat.keys.toList()
+
+    /** Responde al chat que matchee por nombre/número. Flexible: exacto →
+     *  contains bidireccional → por dígitos. true si pudo. */
+    fun responder(c: Context, buscado: String, texto: String): Boolean {
+        val acc = buscarAccion(buscado) ?: return false
         return try {
             val intent = Intent()
             val bundle = Bundle()
@@ -45,7 +48,20 @@ object ReplyRegistry {
         } catch (e: Exception) { false }
     }
 
-    fun tieneChat(nombreChat: String) = porChat.containsKey(normalizar(nombreChat))
+    private fun buscarAccion(buscado: String): Accion? {
+        val b = normalizar(buscado)
+        porChat[b]?.let { return it }                                   // exacto
+        val bDig = b.filter { it.isDigit() }
+        for ((k, v) in porChat) {
+            if (k.contains(b) || b.contains(k)) return v                // contains bidireccional
+            val kDig = k.filter { it.isDigit() }
+            if (bDig.length >= 8 && kDig.length >= 8 &&
+                (kDig.endsWith(bDig.takeLast(10)) || bDig.endsWith(kDig.takeLast(10)))) return v  // por número
+        }
+        return null
+    }
 
-    private fun normalizar(s: String) = s.trim().lowercase()
+    private fun normalizar(s: String): String =
+        java.text.Normalizer.normalize(s.trim().lowercase(), java.text.Normalizer.Form.NFD)
+            .replace(Regex("\\p{Mn}+"), "")
 }

@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo)(?:\/(\d+))?$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag)(?:\/(\d+))?$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -82,6 +82,12 @@ function start({ waClient } = {}) {
         }
         if (_out[2] === 'confirmar-ultimo') {
           return send(200, outbox.confirmarUltimo());
+        }
+        if (_out[2] === 'mbdiag') {
+          const b = await readJson(req).catch(() => ({}));
+          console.log(`[MB-DIAG] buscaba nombre="${b.buscaba_nombre}" numero="${b.buscaba_numero}" pendiente=${b.pendiente} | chats_vivos=[${b.chats_vivos}]`);
+          try { mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `mbdiag: buscaba "${b.buscaba_nombre}"/"${b.buscaba_numero}" vivos=[${String(b.chats_vivos).slice(0,300)}]`, metadata: { tipo: 'mbdiag', ...b } }); } catch {}
+          return send(200, { ok: true });
         }
         // confirmar: acepta GET .../confirmar/<id> (Tasker-friendly, sin body)
         // o POST con {id} en el body.
