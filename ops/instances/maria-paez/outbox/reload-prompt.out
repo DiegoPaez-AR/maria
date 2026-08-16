@@ -1,0 +1,13 @@
+# ejecutado: 2026-08-16T18:53:22-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   [ -f state/.canary-bad-commit ] && { echo "CANARY BLOQUEÓ"; exit 0; }
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+
+# ───── output ─────
+reload OK
+
+# exit=0
