@@ -1,0 +1,54 @@
+# ejecutado: 2026-08-16T12:31:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── hilo completo con Nati (WA, hoy) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,direccion,de,substr(cuerpo,1,90) c FROM eventos WHERE canal='whatsapp' AND (de LIKE '%50105262%' OR de LIKE '%atali%' OR (direccion='saliente' AND cuerpo LIKE '%Nati%')) AND timestamp>=datetime('now','-8 hours') ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11),r.direccion,'de:'+String(r.de).slice(0,28),'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── pendientes tocados 13:56 (agregar/quitar) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,substr(cuerpo,1,120) c FROM eventos WHERE canal='sistema' AND timestamp BETWEEN '2026-08-16 13:56' AND '2026-08-16 13:58' ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11),'|',String(r.c).replace(/\n/g,' ')));
+#   db.prepare(\"SELECT id,dueno,estado,substr(descripcion,1,70) d,esperando_de FROM pendientes WHERE descripcion LIKE '%ine%' OR descripcion LIKE '%ati%' ORDER BY id DESC LIMIT 5\").all().forEach(r=>console.log('pend #'+r.id,r.dueno,r.estado,'|',r.d,'| esperando:',r.esperando_de));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── hilo completo con Nati (WA, hoy) ──
+13:51:53 saliente de:5491150105262@c.us | Hola Nati! Te escribo de parte de Diego para consultarte: ¿podés confirmarle si puede ir h
+13:56:03 entrante de:5491150105262@c.us | Hoy no puedo
+13:57:01 saliente de:5491150105262@c.us | ¿A qué te referís con que hoy no podés? No tengo nada agendado para hoy domingo ni ninguna
+13:57:01 entrante de:5491150105262@c.us | Hoy no puedo
+13:57:22 saliente de:5491150105262@c.us | Perdón, pero no tengo ninguna reunión ni gestión anotada a la que referirme — no veo nada 
+15:14:05 saliente de:541132317896@c.us | Dale, te resumo todo:  📝 *Tus tareas:* 1. iProt Seguridad 2. DDJJ 2025 3. Llamar a Poggett
+15:15:49 saliente de:541132317896@c.us | Todavía no, Nati no me respondió nada. Apenas conteste te aviso.  ⚠️ Ojo: no pude completa
+── pendientes tocados 13:56 (agregar/quitar) ──
+13:56:36 | acción ejecutada: agregar_pendiente
+13:56:41 | acción ejecutada: quitar_pendiente
+13:57:01 | claude_call whatsapp: 58113ms prompt=58954c raw=40379c in=24t(cache_read=476490 new=78471) out=3267t ttfb=1525ms api=574
+13:57:17 | acción ejecutada: agregar_pendiente
+13:57:22 | claude_call whatsapp: 21181ms prompt=59322c raw=13448c in=6t(cache_read=61064 new=68370) out=1250t ttfb=2187ms api=19885
+/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5
+	return this[cppdb].prepare(sql, this, false);
+	                   ^
+
+SqliteError: no such column: descripcion
+    at Database.prepare (/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:5:21)
+    at [eval]:4:4
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3 {
+  code: 'SQLITE_ERROR'
+}
+
+Node.js v22.23.1
+LISTO
+
+# exit=0
