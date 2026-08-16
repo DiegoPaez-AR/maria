@@ -1,0 +1,16 @@
+# ejecutado: 2026-08-15T23:08:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pgrep -f mb-build-worker >/dev/null && echo "compilando…" || echo terminó
+#   grep -E "APK_OK|APK_FAIL|BUILD (SUCCESSFUL|FAILED)|^e: file" /root/mariabridge-build.log | tail -5
+#   echo LISTO
+
+# ───── output ─────
+terminó
+BUILD SUCCESSFUL in 33s
+APK_OK url=https://intensa.io/_dl/mb-b2b609b92209c64a.apk size=3.1M
+LISTO
+
+# exit=0
