@@ -1,11 +1,11 @@
-package is.paez.mariabridge
+package io.intensa.mariabridge
 
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.app.RemoteInput
+import android.app.RemoteInput
 
 /**
  * Guarda, por chat de WhatsApp, la última acción "Responder" viva (su

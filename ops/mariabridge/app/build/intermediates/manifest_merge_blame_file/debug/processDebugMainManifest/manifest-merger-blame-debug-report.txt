@@ -1,6 +1,6 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="is.paez.mariabridge"
+3    package="io.intensa.mariabridge"
 4    android:versionCode="1"
 5    android:versionName="1.0" >
 6
@@ -29,12 +29,12 @@
 17
 18    <permission
 18-->[androidx.core:core:1.13.1] /root/.gradle/caches/transforms-4/eecbda8adc5521377f06f41deda43748/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
-19        android:name="is.paez.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+19        android:name="io.intensa.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
 19-->[androidx.core:core:1.13.1] /root/.gradle/caches/transforms-4/eecbda8adc5521377f06f41deda43748/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
 20        android:protectionLevel="signature" />
 20-->[androidx.core:core:1.13.1] /root/.gradle/caches/transforms-4/eecbda8adc5521377f06f41deda43748/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
 21
-22    <uses-permission android:name="is.paez.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+22    <uses-permission android:name="io.intensa.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 22-->[androidx.core:core:1.13.1] /root/.gradle/caches/transforms-4/eecbda8adc5521377f06f41deda43748/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
 22-->[androidx.core:core:1.13.1] /root/.gradle/caches/transforms-4/eecbda8adc5521377f06f41deda43748/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
 23
@@ -54,7 +54,7 @@
 31-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:15:9-35
 32        <activity
 32-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:17:9-22:20
-33            android:name="is.paez.mariabridge.MainActivity"
+33            android:name="io.intensa.mariabridge.MainActivity"
 33-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:17:19-47
 34            android:exported="true" >
 34-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:17:48-71
@@ -73,7 +73,7 @@
 42        <!-- Escucha las notificaciones de WhatsApp (recibir) -->
 43        <service
 43-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:25:9-33:19
-44            android:name="is.paez.mariabridge.NotifListener"
+44            android:name="io.intensa.mariabridge.NotifListener"
 44-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:26:13-42
 45            android:exported="false"
 45-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:29:13-37
@@ -92,7 +92,7 @@
 53        <!-- Poller de la cola de salientes (responder / iniciar) -->
 54        <service
 54-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:36:9-39:39
-55            android:name="is.paez.mariabridge.OutboxService"
+55            android:name="io.intensa.mariabridge.OutboxService"
 55-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:37:13-42
 56            android:exported="false"
 56-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:39:13-37
@@ -102,7 +102,7 @@
 59        <!-- Arranca solo al bootear el teléfono -->
 60        <receiver
 60-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:42:9-46:20
-61            android:name="is.paez.mariabridge.BootReceiver"
+61            android:name="io.intensa.mariabridge.BootReceiver"
 61-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:42:19-47
 62            android:exported="true" >
 62-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:42:48-71
@@ -118,7 +118,7 @@
 68-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
 69            android:name="androidx.startup.InitializationProvider"
 69-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
-70            android:authorities="is.paez.mariabridge.androidx-startup"
+70            android:authorities="io.intensa.mariabridge.androidx-startup"
 70-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
 71            android:exported="false" >
 71-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37

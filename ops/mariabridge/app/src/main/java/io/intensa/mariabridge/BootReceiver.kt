@@ -1,4 +1,4 @@
-package is.paez.mariabridge
+package io.intensa.mariabridge
 
 import android.content.BroadcastReceiver
 import android.content.Context

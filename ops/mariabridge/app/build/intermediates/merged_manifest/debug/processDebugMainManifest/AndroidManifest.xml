@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="is.paez.mariabridge"
+    package="io.intensa.mariabridge"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -16,10 +16,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <permission
-        android:name="is.paez.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        android:name="io.intensa.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="is.paez.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission android:name="io.intensa.mariabridge.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 
     <application
         android:allowBackup="false"
@@ -30,7 +30,7 @@
         android:label="MariaBridge"
         android:supportsRtl="true" >
         <activity
-            android:name="is.paez.mariabridge.MainActivity"
+            android:name="io.intensa.mariabridge.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
 
         <!-- Escucha las notificaciones de WhatsApp (recibir) -->
         <service
-            android:name="is.paez.mariabridge.NotifListener"
+            android:name="io.intensa.mariabridge.NotifListener"
             android:exported="false"
             android:label="MariaBridge — lectura de WhatsApp"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
@@ -52,13 +52,13 @@
 
         <!-- Poller de la cola de salientes (responder / iniciar) -->
         <service
-            android:name="is.paez.mariabridge.OutboxService"
+            android:name="io.intensa.mariabridge.OutboxService"
             android:exported="false"
             android:foregroundServiceType="dataSync" />
 
         <!-- Arranca solo al bootear el teléfono -->
         <receiver
-            android:name="is.paez.mariabridge.BootReceiver"
+            android:name="io.intensa.mariabridge.BootReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -67,7 +67,7 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            android:authorities="is.paez.mariabridge.androidx-startup"
+            android:authorities="io.intensa.mariabridge.androidx-startup"
             android:exported="false" >
             <meta-data
                 android:name="androidx.emoji2.text.EmojiCompatInitializer"

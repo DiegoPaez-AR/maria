@@ -1,4 +1,4 @@
-package is.paez.mariabridge
+package io.intensa.mariabridge
 
 import java.io.OutputStream
 import java.net.HttpURLConnection
