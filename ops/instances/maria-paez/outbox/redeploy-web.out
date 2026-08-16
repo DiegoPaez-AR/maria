@@ -1,0 +1,17 @@
+# ejecutado: 2026-08-16T18:46:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria && bash ops/sites/intensa.io/deploy.sh 2>&1 | tail -3
+#   curl -s https://intensa.io/maria/ | grep -o "Precio simple" | head -1
+#   echo LISTO
+
+# ───── output ─────
+veritas-trace (no se rompió) HTTPS 200
+
+═══ DONE ═══
+Precio simple
+LISTO
+
+# exit=0
