@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27382  2026-08-16 11:40:56  sistema   interno                                      claude_call telegram: 33637ms prompt=79471c raw=22911c in=12t(cache_read=233664 new=88959) out=2272t ttfb=1571ms api=32094ms turnos=6 $0.4473                                                           
+
+27381  2026-08-16 11:40:22  telegram  entrante   telegram:590589920                Y hablaste con Nati?                                                                                                                                                                                    
+
+27380  2026-08-16 11:40:22  telegram  saliente   telegram:590589920                Che, reviso el log de las 8:26: tengo registrada UNA sola ejecución de enviar_wa (con un agregar_pendiente al lado), pero salieron 3 "hola" seguidos a tu WhatsApp. No encuentro de mi lado tres llamado
+
+27379  2026-08-16 11:40:22  sistema   interno                                      claude_call telegram: 76584ms prompt=79480c raw=39931c in=16t(cache_read=357490 new=92782) out=5433t ttfb=1527ms api=75798ms turnos=8 $0.5462                                                           
+
 27378  2026-08-16 11:39:54  sistema   interno                                      mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                                 
 
 27377  2026-08-16 11:39:53  sistema   interno                                      mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                                 
@@ -271,11 +279,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 27284  2026-08-16 03:18:55  whatsapp  saliente   541132317896@c.us                 Hola Diego! Todo tranquilo por acá. Seguimos esperando que Manuel confirme el lunes 24/08 de 15 a 18hs para la reunión con Hernán — apenas responda armo el evento e invito a todos. ¿Necesitás algo pun
 
 27283  2026-08-16 03:18:55  sistema   interno                                      claude_call whatsapp: 6830ms prompt=82915c raw=5165c in=2t(cache_read=0 new=53354) out=172t ttfb=1661ms api=6121ms turnos=1 $0.2132                                                                     
-
-27282  2026-08-16 03:18:50  sistema   interno                                      wa-hook: desconocido "You": "🌉 Prueba v1.3 por la COLA — con matcheo flexible. Si llegó, MariaBridge reempla"                                                                                           
-
-27281  2026-08-16 03:18:50  sistema   interno                                      wa-hook: desconocido "You": "🌉 Prueba v1.3 por la COLA — con matcheo flexible. Si llegó, MariaBridge reempla"                                                                                           
-
-27280  2026-08-16 03:18:49  whatsapp  saliente   541132317896@c.us                 🌉 Prueba v1.3 por la COLA — con matcheo flexible. Si llegó, MariaBridge reemplaza al Tasker. Si no, la app ya me mandó el diagnóstico del mismatch.                                                     
-
-27279  2026-08-16 03:18:49  whatsapp  saliente   541132317896@c.us                 🌉 Prueba v1.3 por la COLA — con matcheo flexible. Si llegó, MariaBridge reemplaza al Tasker. Si no, la app ya me mandó el diagnóstico del mismatch.                                                     
