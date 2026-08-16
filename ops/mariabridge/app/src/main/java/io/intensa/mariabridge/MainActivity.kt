@@ -48,8 +48,22 @@ class MainActivity : Activity() {
             text = "② Quitar restricción de batería"
             setOnClickListener { startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)) }
         }
+        val bAcc = Button(this).apply {
+            text = "③ Permiso: accesibilidad (envío en frío)"
+            setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+        }
 
-        listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, estado).forEach { root.addView(it) }
+        // Aviso si el acceso a notificaciones se perdió (pasa al actualizar el APK).
+        val aviso = TextView(this).apply { textSize = 13f }
+        fun chequearNotif() {
+            val ok = Settings.Secure.getString(contentResolver, "enabled_notification_listeners")
+                ?.contains(packageName) == true
+            aviso.text = if (ok) "✔ Acceso a notificaciones activo"
+                         else "⚠ FALTA acceso a notificaciones — tocá ① (se desconecta al actualizar)"
+        }
+        chequearNotif()
+
+        listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, bAcc, aviso, estado).forEach { root.addView(it) }
         setContentView(ScrollView(this).apply { addView(root) })
     }
 }

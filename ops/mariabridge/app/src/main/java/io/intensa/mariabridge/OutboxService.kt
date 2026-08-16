@@ -64,15 +64,25 @@ class OutboxService : Service() {
             Net.get("$base/$secret/confirmar/$id") { _, _ -> }   // confirmar SOLO tras enviar
             log("respondido (silencioso) → ${if (nombre.isNotBlank()) nombre else numero}")
         } else {
-            // Diagnóstico al VPS: qué buscó y qué chats tiene vivos (para ver el
-            // mismatch de nombre sin logcat). Se lee en el log del internal-api.
-            val vivos = ReplyRegistry.titulosVivos().joinToString(" ~ ")
-            val diag = org.json.JSONObject().apply {
-                put("buscaba_nombre", nombre); put("buscaba_numero", numero)
-                put("chats_vivos", vivos); put("pendiente", id)
+            // Sin notif viva → ENVÍO EN FRÍO por accesibilidad (abre wa.me + tap
+            // por viewId + verifica). Un cold-send a la vez; si ya hay uno, espera.
+            val encolado = ColdSend.encolar(ColdSend.Target(id, numero, texto)) { doneId, okCold ->
+                if (okCold) {
+                    Net.get("$base/$secret/confirmar/$doneId") { _, _ -> }
+                    log("enviado EN FRÍO (accesibilidad) → $numero")
+                } else {
+                    log("cold-send #$doneId no verificado — queda en cola")
+                }
             }
-            Net.postJson("$base/$secret/mbdiag", diag.toString())
-            log("sin notif viva — #$id espera. buscaba='$nombre'/'$numero' vivos=[$vivos]")
+            if (!encolado) {
+                // otro cold-send en curso; reportar diag para visibilidad
+                val vivos = ReplyRegistry.titulosVivos().joinToString(" ~ ")
+                val diag = org.json.JSONObject().apply {
+                    put("buscaba_nombre", nombre); put("buscaba_numero", numero)
+                    put("chats_vivos", vivos); put("pendiente", id); put("nota", "coldsend ocupado")
+                }
+                Net.postJson("$base/$secret/mbdiag", diag.toString())
+            }
         }
     }
 

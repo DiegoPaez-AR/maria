@@ -46,9 +46,15 @@ function siguiente() {
   mem.db.prepare(
     `UPDATE wa_outbox SET estado='vencido' WHERE estado='pendiente' AND (creado <= datetime('now', ?) OR intentos >= ?)`
   ).run(`-${TTL_H} hours`, MAX_INTENTOS);
+  // Lease anti-duplicado (2026-08-16): no re-servir un mensaje ya entregado a un
+  // poller en los últimos LEASE_S segundos. Evita el triple-envío por polls
+  // concurrentes de MariaBridge (agarraban el mismo id antes de confirmar).
+  const LEASE_S = Number(process.env.WA_OUTBOX_LEASE_S || 20);
   const row = mem.db.prepare(
-    `SELECT * FROM wa_outbox WHERE estado='pendiente' ORDER BY id ASC LIMIT 1`
-  ).get();
+    `SELECT * FROM wa_outbox WHERE estado='pendiente'
+       AND (tomado_en IS NULL OR tomado_en <= datetime('now', ?))
+     ORDER BY id ASC LIMIT 1`
+  ).get(`-${LEASE_S} seconds`);
   if (!row) return null;
   mem.db.prepare(`UPDATE wa_outbox SET intentos = intentos + 1, tomado_en = CURRENT_TIMESTAMP WHERE id = ?`).run(row.id);
   return { id: row.id, numero: _numeroEnvio(row.numero), texto: row.texto };
