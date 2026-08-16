@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27487  2026-08-16 13:57:01  whatsapp  entrante   5491150105262@c.us    Hoy no puedo                                                                                                                                                                            
+
+27486  2026-08-16 13:57:01  whatsapp  saliente   5491150105262@c.us    ¿A qué te referís con que hoy no podés? No tengo nada agendado para hoy domingo ni ninguna gestión pendiente con alguien — contame un poco más y lo resuelvo.                           
+
+27485  2026-08-16 13:57:01  sistema   interno                          claude_call whatsapp: 58113ms prompt=58954c raw=40379c in=24t(cache_read=476490 new=78471) out=3267t ttfb=1525ms api=57427ms turnos=12 $0.4894                                          
+
+27484  2026-08-16 13:56:41  sistema   interno                          acción ejecutada: quitar_pendiente                                                                                                                                                      
+
+27483  2026-08-16 13:56:36  sistema   interno                          acción ejecutada: agregar_pendiente                                                                                                                                                     
+
+27482  2026-08-16 13:56:03  whatsapp  entrante   5491150105262@c.us    Hoy no puedo                                                                                                                                                                            
+
 27481  2026-08-16 13:51:53  whatsapp  saliente   5491150105262@c.us    Hola Nati! Te escribo de parte de Diego para consultarte: ¿podés confirmarle si puede ir hoy al cine?                                                                                   
 
 27480  2026-08-16 13:51:52  telegram  saliente   telegram:590589920    Le escribo ahora a Nati por WhatsApp para preguntarle si podés ir hoy al cine. Apenas me responda te aviso.                                                                             
@@ -194,15 +206,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo
 27389  2026-08-16 11:42:14  sistema   interno                          mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                 
 
 27388  2026-08-16 11:42:14  sistema   interno                          mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                 
-
-27387  2026-08-16 11:42:10  sistema   interno                          mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                 
-
-27386  2026-08-16 11:42:09  sistema   interno                          mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                 
-
-27385  2026-08-16 11:42:09  sistema   interno                          mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]                                                                                                                 
-
-27384  2026-08-16 11:41:13  telegram  saliente   telegram:590589920    Todavía no, le escribí a Nati preguntándole si podía ir al cine hoy pero no me contestó nada por ahora. Apenas responda te aviso.                                                       
-
-27383  2026-08-16 11:41:13  sistema   interno                          claude_call telegram: 16537ms prompt=80954c raw=12510c in=6t(cache_read=71136 new=88658) out=871t ttfb=1907ms api=15277ms turnos=3 $0.3769                                              
-
-27382  2026-08-16 11:40:56  sistema   interno                          claude_call telegram: 33637ms prompt=79471c raw=22911c in=12t(cache_read=233664 new=88959) out=2272t ttfb=1571ms api=32094ms turnos=6 $0.4473                                           
