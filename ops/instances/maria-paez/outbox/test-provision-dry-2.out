@@ -1,0 +1,25 @@
+# ejecutado: 2026-08-16T19:25:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   bash ops/provision/nueva-instancia.sh maria-demo "Maria Demo" maria.demo@gmail.com --dry-run 2>&1 | head -12
+#   echo LISTO
+
+# ───── output ─────
+═══ Alta de instancia: maria-demo (Maria Demo) ═══
+  gmail:    maria.demo@gmail.com
+  puerto:   4502
+  max_usu:  10
+  hook:     https://intensa.io/hooks/wa-maria-demo/<secret>
+  (DRY-RUN: no toco nada)
+── [dry] escribiría config/instances/maria-demo.conf
+── [dry] crearía state/maria-demo/db + copiaría credentials.json
+── [dry] insertaría en nginx:
+    location /hooks/wa-maria-demo/ {
+        proxy_pass http://127.0.0.1:4502/wa-hook/;
+        proxy_read_timeout 90s;
+LISTO
+
+# exit=0
