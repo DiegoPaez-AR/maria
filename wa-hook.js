@@ -29,7 +29,8 @@ const turnState = require('./turn-state');
 const moderacion = require('./moderacion');
 const waSend = require('./wa-send');
 const { construirPrompt } = require('./prompt-builder');
-const { invocarClaudeJSONConConsultas, invocarClaudeJSON } = require('./claude-client');
+const { invocarClaudeJSONConConsultas } = require('./claude-client');
+const gestionAjena = require('./gestion-ajena');
 
 const DEADLINE_MS = Number(process.env.WA_HOOK_DEADLINE_MS || 18_000);
 const STASH_TTL_MS = 24 * 3600 * 1000;
@@ -191,58 +192,15 @@ function ultimoLatido() {
   try { return Number(fs.readFileSync(LATIDO_F, 'utf8').trim()) || 0; } catch { return 0; }
 }
 
-// Busca gestiones abiertas de OTROS usuarios que esperan respuesta de este
-// número (pendientes.meta_json esperando_de + follow_ups.esperando_de) y usa
-// un clasificador Haiku para decidir si el mensaje las responde. Devuelve
-// { usuario, contacto, de } (shape de tercero) o null.
+// Adaptador WA del ruteo por identidad (gestion-ajena.js): si el módulo
+// dice que el mensaje responde una gestión ajena, armamos el shape de tercero
+// con el contacto de la libreta del dueño (o fallback mínimo).
 async function _gestionAjenaRelacionada(u, digsU, cuerpo) {
-  const vs = _variantes(digsU);
-  const likeP = vs.map(() => `meta_json LIKE '%' || ? || '%'`).join(' OR ');
-  const pend = mem.db.prepare(
-    `SELECT id, usuario_id, "desc" AS descTxt FROM pendientes
-      WHERE estado='abierto' AND usuario_id != ? AND meta_json IS NOT NULL AND (${likeP})
-      ORDER BY id DESC LIMIT 4`
-  ).all(u.id, ...vs);
-  const likeF = vs.map(() => `esperando_de LIKE '%' || ? || '%'`).join(' OR ');
-  const fus = mem.db.prepare(
-    `SELECT id, usuario_id, descripcion AS descTxt FROM follow_ups
-      WHERE estado IN ('abierto','disparado') AND usuario_id != ? AND (${likeF})
-      ORDER BY id DESC LIMIT 4`
-  ).all(u.id, ...vs);
-  // una gestión por dueño (la más reciente)
-  const porDueno = new Map();
-  for (const g of [...pend, ...fus]) if (!porDueno.has(g.usuario_id)) porDueno.set(g.usuario_id, g);
-  const gestiones = [...porDueno.values()].slice(0, 4);
-  if (!gestiones.length) return null;
-
-  const lista = gestiones.map((g, i) => `${i + 1}. ${String(g.descTxt).slice(0, 220)}`).join('\n');
-  const prompt = `Sos un clasificador de ruteo. ${u.nombre} mandó este mensaje por WhatsApp:
-"${String(cuerpo).slice(0, 400)}"
-
-Hay gestiones abiertas de OTRAS personas que esperan una respuesta de ${u.nombre}:
-${lista}
-
-¿El mensaje es una RESPUESTA a alguna de esas gestiones (confirma, rechaza, propone alternativa, o claramente habla de ESE tema)? ¿O es un pedido/tema propio de ${u.nombre} sin relación con esas gestiones?
-
-Respondé SOLO este JSON, sin nada más: {"relacionado": true|false, "n": <número de la gestión relacionada, o null>}
-Ante la MÍNIMA duda: {"relacionado": false, "n": null}.`;
-
-  const { json } = await invocarClaudeJSON(prompt, {
-    timeoutMs: 25000,
-    extraArgs: ['--model', process.env.MARIA_MOD_MODEL || 'haiku'],
-    audit: { usuarioId: u.id, canal: 'wa-gestion-ajena' },
-  });
-  if (!json || json.relacionado !== true || !json.n) return null;
-  const g = gestiones[Number(json.n) - 1];
-  if (!g) return null;
-  const due = usuarios.obtener(g.usuario_id);
-  if (!due || due.id === u.id) return null;
-  const c = _matchLibreta(digsU).find(x => x.usuario_id === due.id)
-    || { usuario_id: due.id, nombre: u.nombre, whatsapp: `${digsU}@c.us` };
-  mem.log({ usuarioId: due.id, canal: 'sistema', direccion: 'interno',
-    cuerpo: `wa-hook: mensaje de ${u.nombre} (usuario) ruteado como TERCERO a gestión de ${due.nombre} (#${g.id}: ${String(g.descTxt).slice(0, 80)})`,
-    metadata: { tipo: 'wa_hook_usuario_como_tercero', gestion: g.id, remitente_usuario: u.id } });
-  return { usuario: due, contacto: c, de: `${digsU}@c.us` };
+  const r = await gestionAjena.gestionAjenaRelacionada(u, cuerpo, { canal: 'whatsapp' });
+  if (!r) return null;
+  const c = _matchLibreta(digsU).find(x => x.usuario_id === r.due.id)
+    || { usuario_id: r.due.id, nombre: u.nombre, whatsapp: `${digsU}@c.us` };
+  return { usuario: r.due, contacto: c, de: `${digsU}@c.us` };
 }
 
 async function procesar(body) {

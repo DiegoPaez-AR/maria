@@ -23,6 +23,7 @@ const turnState = require('./turn-state');
 const vinculos = require('./telegram-vinculos');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSONConConsultas, invocarClaudeJSON } = require('./claude-client');
+const gestionAjena = require('./gestion-ajena');
 const { transcribirBuffer } = require('./transcribir');
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -488,7 +489,18 @@ async function _loop(waEstado) {
         }
         if (!texto.trim()) continue; // resto de media (video/otros docs) sigue ignorado
         try {
-          if (u) await _procesarTurno(u, chatId, texto, adjunto ? adjunto.path : null);
+          if (u) {
+            // Ruteo por identidad (Fase 1, 2026-08-16): si este usuario tiene
+            // gestiones ABIERTAS de OTROS usuarios esperándolo (por su WA o su
+            // email — la conversación sigue a la persona, no al canal), y el
+            // clasificador dice que este mensaje las responde → turno de
+            // TERCERO del dueño. Duda/error → turno propio (fail-open).
+            let ga = null;
+            try { ga = await gestionAjena.gestionAjenaRelacionada(u, texto, { canal: 'telegram' }); }
+            catch (e) { console.warn('[TG] gestion-ajena falló (sigo como usuario):', e.message); }
+            if (ga) await _procesarTurnoTercero(ga.due, chatId, msg.from || { first_name: u.nombre }, texto, `usuario ${u.nombre} respondiendo gestión ajena #${ga.gestion}`);
+            else await _procesarTurno(u, chatId, texto, adjunto ? adjunto.path : null);
+          }
           else await _procesarNoVinculado(chatId, texto, msg.from || null);
         } catch (e) {
           console.error(`[TG] procesando chat ${chatId}:`, e.message);
