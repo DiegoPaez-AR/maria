@@ -646,7 +646,7 @@ async function _enviarWA(a, ctx) {
   await _moderarSaliente(a.texto, a, ctx, 'enviar_wa', a.a);
 
   // Canal WA v2 (2026-08-04): sin wwebjs, los mensajes INICIADOS van a una
-  // cola que el teléfono (Tasker) drena mandándolos por la app oficial.
+  // cola que el teléfono (Tasker/MariaBridge) drena mandándolos por la app oficial.
   if (!ctx.waClient) {
     const id = require('./wa-outbox').encolar({
       usuarioId: ctx.usuario.id,
@@ -654,7 +654,8 @@ async function _enviarWA(a, ctx) {
       texto: a.texto,
       metadata: { destinoOriginal: a.a, canalOrigen: ctx.canalOrigen || null },
     });
-    return { a: a.a, enviado: true, via: 'telefono', outboxId: id, nota: 'sale del teléfono en menos de 1 minuto' };
+    const gestion = _autoGestionTercero(a, ctx);
+    return { a: a.a, enviado: true, via: 'telefono', outboxId: id, gestion_auto: gestion, nota: 'sale del teléfono en menos de 1 minuto' };
   }
 
   let destinoFinal;
@@ -674,7 +675,42 @@ async function _enviarWA(a, ctx) {
   } catch (err) {
     throw new Error(`No pude mandar WA a ${a.a}: ${err.message}`);
   }
-  return { a: destinoFinal, enviado: true };
+  const gestion = _autoGestionTercero(a, ctx);
+  return { a: destinoFinal, enviado: true, gestion_auto: gestion };
+}
+
+// Red de seguridad (2026-08-16, caso Nati/cine): todo enviar_wa a un NO-usuario
+// registra la gestión automáticamente. Sin esto, cuando el tercero responde,
+// el turno no tiene contexto de qué le preguntamos ("¿a qué te referís?") y el
+// dueño tampoco ve nada anotado ("no me respondió nada" siendo falso).
+// Determinístico a propósito: no depende de que el LLM emita agregar_pendiente.
+// SIN follow_up automático (un aviso tipo "llego tarde" no debe re-pingear al
+// tercero a los 2 días); si Maria quiere perseguir, crea el pendiente explícito
+// (el dedupe de acá lo respeta).
+function _autoGestionTercero(a, ctx) {
+  try {
+    const digs = String(a.a).replace(/\D/g, '');
+    if (digs.length < 8) return null;
+    if (usuarios.resolverPorWa(`${digs}@c.us`)) return null;          // es usuario → no es outreach
+    // dedupe: ya hay gestión abierta esperando a este mismo número (del LLM o previa)
+    const abierto = mem.db.prepare(
+      `SELECT id FROM pendientes WHERE usuario_id = ? AND estado = 'abierto'
+        AND (meta_json LIKE ? OR destino_wa LIKE ?) LIMIT 1`
+    ).get(ctx.usuario.id, `%${digs.slice(-10)}%`, `%${digs.slice(-10)}%`);
+    if (abierto) return null;
+    const desc = `Esperando respuesta de ${a.a} (WA): "${String(a.texto).slice(0, 140)}${a.texto.length > 140 ? '…' : ''}"`;
+    const id = mem.agregarPendiente(ctx.usuario.id, desc, {
+      dueno: 'maria',
+      disparador: 'trigger_externo',
+      esperando_de: `${digs}@c.us`,
+      origen: 'auto_enviar_wa',
+      sin_follow_up: true,
+    });
+    return { id, nota: 'gestión registrada automáticamente' };
+  } catch (err) {
+    console.warn(`[enviar_wa] auto-gestión falló (no bloquea el envío): ${err.message}`);
+    return null;
+  }
 }
 
 // ─── Memoria (pendientes + contactos + programados + hechos) ─────────────
