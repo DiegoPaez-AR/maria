@@ -1,0 +1,25 @@
+# ejecutado: 2026-08-16T19:59:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── log del cron-master (últimas 30 con campana/error) ──"
+#   grep -i "campana\|error\|fail" /root/secretaria/state/cron-master.log 2>/dev/null | tail -10
+#   ls /root/secretaria/state/*.log /var/log/maria-cron* 2>/dev/null | head -4
+#   echo "── ¿quedó el mjs? ──"; ls -la /tmp/campana-tg.mjs 2>/dev/null || echo "no está"
+#   echo "── programados con Telegram AHORA ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('total:', db.prepare(\"SELECT COUNT(*) n FROM programados WHERE texto LIKE '%Telegram%' AND enviado=0\").get().n);
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── log del cron-master (últimas 30 con campana/error) ──
+── ¿quedó el mjs? ──
+no está
+── programados con Telegram AHORA ──
+total: 0
+LISTO
+
+# exit=0
