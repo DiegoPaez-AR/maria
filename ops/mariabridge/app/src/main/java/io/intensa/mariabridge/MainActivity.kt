@@ -18,13 +18,24 @@ class MainActivity : Activity() {
         val eSec = EditText(this).apply { hint = "Secret del hook"; setText(Prefs.secret(this@MainActivity)) }
         val estado = TextView(this).apply { text = "" }
 
+        fun bloquear(b: Boolean) {
+            eBase.isEnabled = !b; eSec.isEnabled = !b
+        }
+        // Si ya estaba configurado, arrancar bloqueado.
+        if (Prefs.activo(this)) bloquear(true)
+
         val bGuardar = Button(this).apply {
             text = "Guardar y arrancar"
             setOnClickListener {
+                if (!eBase.isEnabled) {   // segundo tap = desbloquear para editar
+                    bloquear(false); estado.text = "Campos desbloqueados — editá y volvé a guardar"
+                    return@setOnClickListener
+                }
                 Prefs.guardar(this@MainActivity, eBase.text.toString(), eSec.text.toString())
                 val svc = Intent(this@MainActivity, OutboxService::class.java)
                 if (android.os.Build.VERSION.SDK_INT >= 26) startForegroundService(svc) else startService(svc)
-                estado.text = "Guardado. Servicio en marcha ✔"
+                bloquear(true)
+                estado.text = "Guardado. Servicio en marcha ✔ (tocá de nuevo para editar)"
             }
         }
         val bNotif = Button(this).apply {
