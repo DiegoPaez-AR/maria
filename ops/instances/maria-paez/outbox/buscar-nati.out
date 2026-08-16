@@ -1,0 +1,165 @@
+# ejecutado: 2026-08-16T12:28:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── 1. ¿el mensaje del cine (#42) salió alguna vez? ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT id,creado,estado,intentos,numero,substr(texto,1,50) t FROM wa_outbox WHERE numero LIKE '%50105262%' ORDER BY id\").all().forEach(r=>console.log('#'+r.id,r.creado,r.estado,'int:'+r.intentos,'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── 2. eventos con Nati (todos los canales, hoy) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,canal,direccion,de,substr(cuerpo,1,70) c FROM eventos WHERE (de LIKE '%50105262%' OR cuerpo LIKE '%atali%' OR de LIKE '%atali%') AND timestamp>=datetime('now','-24 hours') ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(5,16),r.canal,r.direccion,'de:'+String(r.de).slice(0,25),'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── 3. logs [MB] con Natali ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | grep -i "natali\|nati" | tail -6
+#   echo "── 4. descartes del hook (desconocidos/ambiguos hoy) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,substr(cuerpo,1,90) c FROM eventos WHERE canal='sistema' AND (cuerpo LIKE 'wa-hook:%') AND timestamp>=datetime('now','-6 hours') ORDER BY id DESC LIMIT 8\").all().forEach(r=>console.log(r.timestamp.slice(11),'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── 1. ¿el mensaje del cine (#42) salió alguna vez? ──
+#42 2026-08-16 11:26:12 cancelado int:114 | Hola Nati! Te escribe Maria, la secretaria de Dieg
+#44 2026-08-16 13:51:47 entregado int:1 | Hola Nati! Te escribo de parte de Diego para consu
+── 2. eventos con Nati (todos los canales, hoy) ──
+08-16 10:00 gmail saliente de:nfunez@iplan.com.ar | ☀️ *Buen día, Natali Funez.* domingo, 16 de agosto.  *🌡️ Clima en Buen
+08-16 11:25 telegram entrante de:telegram:590589920 | Pregúntale a natali si puede ir al cine hoy
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:26 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:27 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:27 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:27 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:28 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:29 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:29 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:29 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:29 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:29 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:29 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:30 sistema interno de:null | Claude falló en telegram (Diego): No se pudo extraer JSON de la respue
+08-16 11:31 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:31 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:31 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:36 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:36 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:36 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:39 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:39 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:39 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:42 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:49 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:49 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:49 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:51 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:51 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:51 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:51 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:51 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 11:51 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:00 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:01 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:01 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 12:01 sistema interno de:null | mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you
+08-16 13:51 telegram entrante de:telegram:590589920 | Natali Funez si lo tenes
+08-16 13:51 whatsapp saliente de:5491150105262@c.us | Hola Nati! Te escribo de parte de Diego para consultarte: ¿podés confi
+08-16 13:56 whatsapp entrante de:5491150105262@c.us | Hoy no puedo
+08-16 13:57 whatsapp saliente de:5491150105262@c.us | ¿A qué te referís con que hoy no podés? No tengo nada agendado para ho
+08-16 13:57 whatsapp entrante de:5491150105262@c.us | Hoy no puedo
+08-16 13:57 whatsapp saliente de:5491150105262@c.us | Perdón, pero no tengo ninguna reunión ni gestión anotada a la que refe
+08-16 15:15 whatsapp entrante de:541132317896@c.us | que paso con lo de natali? te respondio algo del cine?
+── 3. logs [MB] con Natali ──
+2026-08-16 12:15:24: [MB v2.1] 12:15:20 I [notif] entrante de "Diego Paez": que paso con lo de natali? te respondio algo del cine?
+2026-08-16 12:15:57: [MB v2.1] 12:15:50 I [notif] entrante de "You": Todavía no, Nati no me respondió nada. Apenas conteste te av
+── 4. descartes del hook (desconocidos/ambiguos hoy) ──
+15:15:50 | wa-hook: desconocido "You": "Todavía no, Nati no me respondió nada. Apenas conteste te avi
+15:14:05 | wa-hook: desconocido "You": "Dale, te resumo todo:  📝 Tus tareas: 1. iProt Seguridad 2. DD
+11:26:33 | wa-hook: desconocido "You": "hola"
+11:26:33 | wa-hook: desconocido "You": "hola"
+11:26:33 | wa-hook: desconocido "You": "hola"
+LISTO
+
+# exit=0
