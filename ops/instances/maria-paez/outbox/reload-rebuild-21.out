@@ -1,0 +1,14 @@
+# ejecutado: 2026-08-16T12:01:22-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK (/mblog activo)"
+#   if pgrep -f mb-build-worker >/dev/null; then echo "build corriendo"; else nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 & echo "build v2.1 lanzado"; fi
+
+# ───── output ─────
+reload OK (/mblog activo)
+build v2.1 lanzado
+
+# exit=0
