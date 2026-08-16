@@ -1,0 +1,24 @@
+# ejecutado: 2026-08-16T18:40:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   bash ops/sites/intensa.io/deploy.sh 2>&1 | tail -5
+#   echo "── verificación en vivo ──"
+#   curl -s https://intensa.io/maria/ | grep -c "Telegram"
+#   curl -s https://intensa.io/maria/script.js | grep -c "Telegram"
+#   echo LISTO
+
+# ───── output ─────
+intensa.io        HTTPS 200
+www.intensa.io    HTTPS 200
+veritas-trace (no se rompió) HTTPS 200
+
+═══ DONE ═══
+── verificación en vivo ──
+8
+16
+LISTO
+
+# exit=0
