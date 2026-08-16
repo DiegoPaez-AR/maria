@@ -1,0 +1,21 @@
+# ejecutado: 2026-08-15T21:38:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── recursos VPS ──"
+#   free -h | head -2; df -h / | tail -1
+#   java -version 2>&1 | head -1
+#   curl -sI -m 10 https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip | head -1
+#   echo LISTO
+
+# ───── output ─────
+── recursos VPS ──
+               total        used        free      shared  buff/cache   available
+Mem:           3.7Gi       824Mi       726Mi       5.9Mi       2.5Gi       2.9Gi
+/dev/sda1        38G   15G   22G  40% /
+ops/instances/maria-paez/inbox/check-build-env.sh: line 4: java: command not found
+HTTP/2 200 
+LISTO
+
+# exit=0
