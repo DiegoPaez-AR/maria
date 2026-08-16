@@ -1,0 +1,45 @@
+# ejecutado: 2026-08-16T12:29:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── logs [MB] con Natali/Nati ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | grep -i "natali\|nati" | tail -8
+#   echo "── hook: desconocidos/ambiguos (6h) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,substr(cuerpo,1,100) c FROM eventos WHERE canal='sistema' AND cuerpo LIKE 'wa-hook:%' AND timestamp>=datetime('now','-6 hours') ORDER BY id DESC LIMIT 10\").all().forEach(r=>console.log(r.timestamp.slice(11),'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── ¿qué generó el #44? turnos de Maria 13:40-14:00 UTC ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,canal,direccion,de,substr(cuerpo,1,60) c FROM eventos WHERE timestamp BETWEEN '2026-08-16 13:45' AND '2026-08-16 14:00' ORDER BY id LIMIT 12\").all().forEach(r=>console.log(r.timestamp.slice(11),r.canal,r.direccion,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── logs [MB] con Natali/Nati ──
+2026-08-16 12:15:24: [MB v2.1] 12:15:20 I [notif] entrante de "Diego Paez": que paso con lo de natali? te respondio algo del cine?
+2026-08-16 12:15:57: [MB v2.1] 12:15:50 I [notif] entrante de "You": Todavía no, Nati no me respondió nada. Apenas conteste te av
+── hook: desconocidos/ambiguos (6h) ──
+15:15:50 | wa-hook: desconocido "You": "Todavía no, Nati no me respondió nada. Apenas conteste te aviso.  ⚠️ Oj
+15:14:05 | wa-hook: desconocido "You": "Dale, te resumo todo:  📝 Tus tareas: 1. iProt Seguridad 2. DDJJ 2025 3.
+11:26:33 | wa-hook: desconocido "You": "hola"
+11:26:33 | wa-hook: desconocido "You": "hola"
+11:26:33 | wa-hook: desconocido "You": "hola"
+── ¿qué generó el #44? turnos de Maria 13:40-14:00 UTC ──
+13:45:24 gmail saliente | ⏰ *En 15min*: Global AI - 8th SESSION - Marketing in the AI 
+13:51:17 telegram entrante | Natali Funez si lo tenes
+13:51:47 sistema interno | claude_call moderacion: 6087ms prompt=1549c raw=6358c in=10t
+13:51:47 sistema interno | acción ejecutada: enviar_wa
+13:51:51 sistema interno | claude_call telegram: 33352ms prompt=78816c raw=14404c in=6t
+13:51:52 telegram saliente | Le escribo ahora a Nati por WhatsApp para preguntarle si pod
+13:51:53 whatsapp saliente | Hola Nati! Te escribo de parte de Diego para consultarte: ¿p
+13:56:03 whatsapp entrante | Hoy no puedo
+13:56:36 sistema interno | acción ejecutada: agregar_pendiente
+13:56:41 sistema interno | acción ejecutada: quitar_pendiente
+13:57:01 sistema interno | claude_call whatsapp: 58113ms prompt=58954c raw=40379c in=24
+13:57:01 whatsapp saliente | ¿A qué te referís con que hoy no podés? No tengo nada agenda
+LISTO
+
+# exit=0
