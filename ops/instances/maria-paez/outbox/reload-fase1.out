@@ -1,0 +1,41 @@
+# ejecutado: 2026-08-16T19:36:22-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   [ -f state/.canary-bad-commit ] && { echo "CANARY BLOQUEÓ: $(cat state/.canary-bad-commit)"; exit 0; }
+#   pm2 reload ecosystem.config.js --update-env >/dev/null 2>&1 && echo "reload OK"
+#   node -e "require('/root/secretaria/gestion-ajena.js'); console.log('require gestion-ajena OK')"
+#   echo "── usuarios activos NO vinculados a TG ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   const rows=db.prepare(\"SELECT id,nombre,telegram_chat_id FROM usuarios WHERE activo=1 AND (servido IS NULL OR servido=1)\").all();
+#   rows.forEach(r=>console.log(r.id, r.nombre, r.telegram_chat_id?'VINCULADO':'no'));
+#   console.log('total:',rows.length,'| sin vincular:',rows.filter(r=>!r.telegram_chat_id).length);
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+reload OK
+require gestion-ajena OK
+── usuarios activos NO vinculados a TG ──
+1 Diego VINCULADO
+2 Hernan Fulco no
+3 Natali Funez no
+5 Santiago Bignone no
+6 Doris Capurro no
+7 Nicolas Kosinski no
+8 Walter Vera no
+9 Cristian Ruiz no
+10 Sebastian Ameijeira no
+12 Enrique Sosa no
+13 Santiago Capurro no
+16 Andres Neumann no
+18 Gabriela Echaniz no
+19 Jaime Cibils no
+20 Alfonso Amat no
+total: 15 | sin vincular: 14
+LISTO
+
+# exit=0
