@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27636  2026-08-16 23:08:23  sistema   interno                                      WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+
+27635  2026-08-16 23:08:23  sistema   interno                                      Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+
+27634  2026-08-16 23:08:23  sistema   interno                                      MODO DEGRADADO: loops arrancados sin WA (caído hace 52362 min)                                                                                                                                          
+
 27633  2026-08-16 23:08:22  sistema   interno                                      shutdown por SIGINT                                                                                                                                                                                     
 
 27632  2026-08-16 23:06:24  gmail     saliente   nfunez@iplan.com.ar               Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
@@ -254,9 +260,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 27537  2026-08-16 15:15:49  whatsapp  saliente   541132317896@c.us                 Todavía no, Nati no me respondió nada. Apenas conteste te aviso.                                                                                                                                        
                                                                                                                                                                                                                                                                                            
                                                                                    ⚠️ Ojo: no pude completar esta acción: reenviar_wa.                                                                                                                                                     
-
-27536  2026-08-16 15:15:49  sistema   interno                                      claude_call whatsapp: 5497ms prompt=83559c raw=4910c in=2t(cache_read=8784 new=44987) out=109t ttfb=1617ms api=4486ms turnos=1 $0.1838                                                                  
-
-27535  2026-08-16 15:15:43  sistema   interno                                      claude_call whatsapp: 23126ms prompt=82816c raw=20561c in=14t(cache_read=279739 new=99715) out=966t ttfb=1586ms api=22129ms turnos=7 $0.4830                                                            
-
-27534  2026-08-16 15:15:31  sistema   interno                                      acción FALLÓ: reenviar_wa — Faltan campos requeridos: messageId, a                                                                                                                                      
