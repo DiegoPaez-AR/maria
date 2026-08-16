@@ -1,0 +1,53 @@
+# ejecutado: 2026-08-16T20:43:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── 1. programados de la campaña ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   const rows=db.prepare(\"SELECT id,cuando,substr(destino,1,18) d,enviado FROM programados WHERE texto LIKE '%Telegram%' ORDER BY cuando\").all();
+#   rows.forEach(r=>console.log('#'+r.id,r.cuando,r.d,r.enviado?'YA ENVIADO?!':'pendiente'));
+#   console.log('total:',rows.length,'(esperado 14)');
+#   db.close();"
+#   echo "── 2. bridge en línea (polls último minuto) ──"
+#   grep "pendiente.txt" /var/log/nginx/intensa.io.access.log | tail -3 | sed -E 's/.*\[([^]]+)\].*/\1/'
+#   echo "── 3. cola outbox limpia ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('pendientes en outbox:', db.prepare(\"SELECT COUNT(*) n FROM wa_outbox WHERE estado='pendiente'\").get().n);
+#   db.close();"
+#   echo "── 4. últimos logs MB ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+── 1. programados de la campaña ──
+#1341 2026-08-17T13:00:00.000Z 137456250806423@li pendiente
+#1342 2026-08-17T13:15:00.000Z 232637088149596@li pendiente
+#1343 2026-08-17T13:30:00.000Z 5491134274828@c.us pendiente
+#1344 2026-08-17T13:45:00.000Z 105171031949561@li pendiente
+#1345 2026-08-17T14:00:00.000Z 227143674011812@li pendiente
+#1346 2026-08-17T14:15:00.000Z 5491138433288@c.us pendiente
+#1347 2026-08-17T14:30:00.000Z 5491126406612@c.us pendiente
+#1348 2026-08-17T14:45:00.000Z 5491163004389@c.us pendiente
+#1349 2026-08-17T15:00:00.000Z 59899643028@c.us pendiente
+#1350 2026-08-17T15:15:00.000Z 134076010885285@li pendiente
+#1351 2026-08-17T15:30:00.000Z 5491164719969@c.us pendiente
+#1352 2026-08-17T15:45:00.000Z 5491165286555@c.us pendiente
+#1353 2026-08-17T16:00:00.000Z 5491161991122@c.us pendiente
+#1354 2026-08-17T16:15:00.000Z 5491161549534@c.us pendiente
+total: 14 (esperado 14)
+── 2. bridge en línea (polls último minuto) ──
+16/Aug/2026:20:42:52 -0300
+16/Aug/2026:20:42:57 -0300
+16/Aug/2026:20:43:02 -0300
+── 3. cola outbox limpia ──
+pendientes en outbox: 0
+── 4. últimos logs MB ──
+2026-08-16 20:28:11: [MB v2.3] 20:28:02 I [notif] entrante de "WhatsApp": Checking for new messages
+2026-08-16 20:28:11: [MB v2.3] 20:28:03 I [notif] entrante de "Ulises": Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a 
+2026-08-16 20:28:11: [MB v2.3] 20:28:03 I [notif] entrante de "Gabriela Echaniz": Me agregas al calendario que el miércoles vaya al museo de l
+LISTO
+
+# exit=0
