@@ -1,0 +1,16 @@
+# ejecutado: 2026-08-16T10:21:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true}); const r=db.prepare('SELECT id,estado,intentos FROM wa_outbox ORDER BY id DESC LIMIT 1').get(); console.log('#'+r.id, r.estado, 'int:'+r.intentos); db.close();"
+#   grep "MB-DIAG" ~/.pm2/logs/maria-paez-out.log | tail -2
+#   echo LISTO
+
+# ───── output ─────
+#43 entregado int:1
+2026-08-16 09:01:02: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+2026-08-16 09:01:02: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+LISTO
+
+# exit=0
