@@ -15,6 +15,8 @@ class NotifListener : NotificationListenerService() {
 
     private val WA = setOf("com.whatsapp", "com.whatsapp.w4b")
 
+    override fun onCreate() { super.onCreate(); MbLog.init(this); MbLog.i("notif", "listener conectado") }
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         if (sbn.packageName !in WA) return
         val extras = sbn.notification.extras ?: return
@@ -38,6 +40,7 @@ class NotifListener : NotificationListenerService() {
         val secret = Prefs.secret(this)
         if (base.isBlank() || secret.isBlank()) return
 
+        MbLog.i("notif", "entrante de \"$titulo\": ${texto.take(60)}")
         val payload = JSONObject().apply {
             put("query", JSONObject().apply {
                 put("sender", titulo)          // nombre del contacto (WA no expone el número en la notif)
@@ -46,6 +49,22 @@ class NotifListener : NotificationListenerService() {
                 put("source", "mariabridge")
             })
         }
-        Net.postJson("$base/$secret", payload.toString())
+        Net.postJson("$base/$secret", payload.toString()) { code, resp ->
+            if (code != 200) MbLog.e("notif", "hook devolvió $code: ${resp.take(120)}")
+            else {
+                // respuestas inline del hook → mandarlas por RemoteInput ya mismo
+                try {
+                    val rs = org.json.JSONObject(resp).optJSONArray("replies")
+                    if (rs != null) for (i in 0 until rs.length()) {
+                        val m = rs.getJSONObject(i).optString("message")
+                        if (m.isNotBlank()) {
+                            val ok = ReplyRegistry.responder(this, titulo, m)
+                            MbLog.i("notif", "reply inline a \"$titulo\": ${if (ok) "ENVIADA" else "FALLÓ"}")
+                            Thread.sleep(1200)
+                        }
+                    }
+                } catch (e: Exception) { MbLog.e("notif", "parse replies: ${e.message}") }
+            }
+        }
     }
 }

@@ -27,6 +27,8 @@ class OutboxService : Service() {
     override fun onBind(i: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        MbLog.init(this)
+        MbLog.i("svc", "OutboxService arrancó")
         arrancarForeground()
         Thread { loop() }.start()
         return START_STICKY
@@ -99,6 +101,6 @@ class OutboxService : Service() {
         startForeground(1, n)
     }
 
-    private fun log(s: String) { android.util.Log.i("MariaBridge", s) }
+    private fun log(s: String) { MbLog.i("outbox", s) }
     override fun onDestroy() { run = false; super.onDestroy() }
 }

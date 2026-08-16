@@ -22,6 +22,8 @@ class WaSendService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
+        MbLog.init(this)
+        MbLog.i("frio", "accesibilidad conectada")
         loop()
     }
 
@@ -30,10 +32,12 @@ class WaSendService : AccessibilityService() {
         val t = ColdSend.pendiente
         if (t != null && !ColdSend.lanzado) {
             ColdSend.lanzado = true
+            MbLog.i("frio", "abriendo chat ${t.numero} (#${t.id})")
             abrirChat(t.numero, t.texto)
             // deadline
             h.postDelayed({
                 if (ColdSend.pendiente?.id == t.id) {   // seguía sin resolverse
+                    MbLog.w("frio", "timeout #${t.id} — no encontré el botón send")
                     goHome()
                     ColdSend.terminar(t.id, false)       // no se pudo → queda en cola, reintenta
                 }
@@ -49,7 +53,7 @@ class WaSendService : AccessibilityService() {
             val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$num?text=$enc"))
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(i)
-        } catch (e: Exception) { android.util.Log.e("MariaBridge", "abrirChat: ${e.message}") }
+        } catch (e: Exception) { MbLog.e("frio", "abrirChat: ${e.message}") }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -61,6 +65,7 @@ class WaSendService : AccessibilityService() {
         val root = rootInActiveWindow ?: return
         val send = buscarPorId(root, "$pkg:id/send")
         if (send != null && send.isClickable) {
+            MbLog.i("frio", "botón send encontrado — tap")
             send.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             // verificar: tras enviar, el campo de texto queda vacío
             h.postDelayed({ verificarYConfirmar(t.id, pkg) }, 1200)
@@ -74,6 +79,7 @@ class WaSendService : AccessibilityService() {
         val textoEntry = entry?.text?.toString() ?: ""
         val sendSigue = root?.let { buscarPorId(it, "$pkg:id/send") } != null
         val ok = textoEntry.isBlank() || !sendSigue   // se vació o el botón send desapareció
+        MbLog.i("frio", "verificación #$id: ${if (ok) "ENVIADO" else "NO se envió (entry='${textoEntry.take(30)}')"}")
         goHome()
         ColdSend.terminar(id, ok)
     }
