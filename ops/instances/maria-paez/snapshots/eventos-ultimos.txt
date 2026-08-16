@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27559  2026-08-16 19:08:15  whatsapp  saliente   5491165286555@c.us    Te agendo el viernes 21 de agosto a las 15:30hs (hasta las 16:30hs): Ir a ver departamento para tu papá, en Independencia 556 😊 Como todavía tenés acceso de solo lectura, quedó del lado mío igual que 
+
+27558  2026-08-16 19:08:15  sistema   interno                          claude_call whatsapp: 16923ms prompt=62819c raw=11235c in=6t(cache_read=62817 new=72068) out=865t ttfb=1599ms api=15895ms turnos=3 $0.3066                                                              
+
+27557  2026-08-16 19:08:11  sistema   interno                          acción ejecutada: crear_evento                                                                                                                                                                          
+
+27556  2026-08-16 19:08:11  calendar  saliente                         creado: Ir a ver departamento para el papá (2026-08-21T15:30:00-03:00 → 2026-08-21T16:30:00-03:00) [en calendar de Maria]                                                                               
+
 27555  2026-08-16 19:07:57  whatsapp  entrante   5491165286555@c.us    Agéndame también el viernes a las 15.30                                                                                                                                                                 
                                                                        Ir a ver departamento para mi papá en la dirección que te copio acá                                                                                                                                     
                                                                        independencia 556                                                                                                                                                                                       
@@ -221,11 +229,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo
 27461  2026-08-16 12:12:24  sistema   interno                          poda-eventos: 11 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
 
 27460  2026-08-16 12:08:31  sistema   interno                          claude_call memoria-curada: 16848ms prompt=5122c raw=10886c in=2t(cache_read=8775 new=8639) out=1319t ttfb=1536ms api=15763ms turnos=1 $0.0569                                                          
-
-27459  2026-08-16 12:08:13  sistema   interno                          claude_call memoria-curada: 18438ms prompt=5355c raw=10413c in=2t(cache_read=0 new=17541) out=1238t ttfb=3253ms api=16099ms turnos=1 $0.0866                                                            
-
-27458  2026-08-16 12:07:24  sistema   interno                          WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-27457  2026-08-16 12:07:24  sistema   interno                          Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-27456  2026-08-16 12:07:24  sistema   interno                          MODO DEGRADADO: loops arrancados sin WA (caído hace 51701 min)                                                                                                                                          
