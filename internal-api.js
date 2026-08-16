@@ -61,7 +61,24 @@ function start({ waClient } = {}) {
         if (_out[2] === 'pendiente.txt') {
           const p = outbox.siguiente();
           res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-          return res.end(p ? `${p.id}|${p.numero}|${encodeURIComponent(p.texto)}` : '');
+          if (!p) return res.end('');
+          // 4º campo = NOMBRE del contacto tal como WhatsApp lo muestra en la
+          // notificación (2026-08-15, para MariaBridge: responde por RemoteInput
+          // matcheando el título de la notif = nombre agendado). El VPS lo
+          // resuelve por número contra usuarios/libreta; MariaBridge cae al
+          // número si no matchea (chats no agendados muestran el número).
+          let nombre = '';
+          try {
+            const dig = String(p.numero).replace(/\D/g, '');
+            const u = usuarios.resolverPorWa(dig + '@c.us');
+            if (u) nombre = u.nombre;
+            else {
+              const owner = usuarios.obtenerOwner();
+              const c = owner ? mem.buscarContacto({ usuarioId: owner.id, whatsapp: dig + '@c.us' }) : null;
+              if (c) nombre = c.nombre;
+            }
+          } catch {}
+          return res.end(`${p.id}|${p.numero}|${encodeURIComponent(p.texto)}|${encodeURIComponent(nombre)}`);
         }
         if (_out[2] === 'confirmar-ultimo') {
           return send(200, outbox.confirmarUltimo());

@@ -44,27 +44,30 @@ class OutboxService : Service() {
         if (base.isBlank() || secret.isBlank()) return
         Net.get("$base/$secret/pendiente.txt") { code, resp ->
             if (code != 200 || resp.isBlank()) return@get
-            val partes = resp.split("|", limit = 3)
+            val partes = resp.split("|", limit = 4)
             if (partes.size < 3) return@get
             val id = partes[0]
-            val destino = partes[1]
+            val numero = partes[1]
             val texto = try { URLDecoder.decode(partes[2], "UTF-8") } catch (_: Exception) { partes[2] }
-            enviar(base, secret, id, destino, texto)
+            val nombre = if (partes.size >= 4) try { URLDecoder.decode(partes[3], "UTF-8") } catch (_: Exception) { partes[3] } else ""
+            enviar(base, secret, id, numero, nombre, texto)
         }
     }
 
-    private fun enviar(base: String, secret: String, id: String, destino: String, texto: String) {
-        // 1) intento silencioso por RemoteInput (chat con notif viva).
-        //    destino puede venir como nombre o número — el registry matchea por nombre;
-        //    para número puro, v1 depende de que haya notif de ese chat.
-        val ok = ReplyRegistry.responder(this, destino, texto)
+    private fun enviar(base: String, secret: String, id: String, numero: String, nombre: String, texto: String) {
+        // Respuesta silenciosa por RemoteInput: primero por NOMBRE (título de la
+        // notif = nombre agendado), luego por NÚMERO (chats no agendados).
+        var ok = false
+        if (nombre.isNotBlank()) ok = ReplyRegistry.responder(this, nombre, texto)
+        if (!ok) ok = ReplyRegistry.responder(this, numero, texto)
         if (ok) {
-            // confirmar SOLO tras el envío real
-            Net.get("$base/$secret/confirmar/$id") { _, _ -> }
-            log("respondido (silencioso) → $destino")
+            Net.get("$base/$secret/confirmar/$id") { _, _ -> }   // confirmar SOLO tras enviar
+            log("respondido (silencioso) → ${if (nombre.isNotBlank()) nombre else numero}")
         } else {
-            // 2) chat en frío: v1 no puede; NO confirmamos (queda en cola para v2/manual).
-            log("sin notif viva de \"$destino\" — pendiente #$id espera (envío en frío = v2)")
+            // Sin notif viva de ese chat: NO confirmamos. El mensaje ESPERA en la
+            // cola (tope de intentos alto) hasta que el chat tenga notif activa o
+            // venza el TTL. Envío en frío (chat sin ninguna notif) = v2.
+            log("sin notif viva de \"${if (nombre.isNotBlank()) nombre else numero}\" — #$id espera")
         }
     }
 

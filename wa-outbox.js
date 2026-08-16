@@ -28,7 +28,7 @@ mem.db.exec(`CREATE TABLE IF NOT EXISTS wa_outbox (
 )`);
 
 const TTL_H = Number(process.env.WA_OUTBOX_TTL_H || 6);
-const MAX_INTENTOS = 3;
+const MAX_INTENTOS = Number(process.env.WA_OUTBOX_MAX_INTENTOS || 400);  // alto a propósito (2026-08-15): con MariaBridge un mensaje ESPERA a que el chat tenga notif viva; solo vence por TTL (6h). Con Tasker daba igual (confirma al 1er intento).
 
 function encolar({ usuarioId = null, numero, texto, metadata = null }) {
   const digs = String(numero || '').replace(/\D/g, '');
