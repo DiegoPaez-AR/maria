@@ -1,0 +1,26 @@
+# ejecutado: 2026-08-16T18:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── logs [MB] últimos 10 min (versión + updater + servicios) ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -12
+#   echo LISTO
+
+# ───── output ─────
+── logs [MB] últimos 10 min (versión + updater + servicios) ──
+2026-08-16 16:06:17: [MB v2.2] 16:06:13 E [notif] hook devolvió -1: timeout
+2026-08-16 16:08:02: [MB v2.2] 16:07:58 I [notif] entrante de "Gabriela Echaniz": Agéndame también el viernes a las 15.30
+2026-08-16 16:08:21: [MB v2.2] 16:08:16 I [notif] reply inline a "Gabriela Echaniz": ENVIADA
+2026-08-16 16:16:30: [MB v2.2] 16:16:24 I [notif] entrante de "Gabriela Echaniz": Dale
+2026-08-16 18:24:55: [MB v2.2] 18:24:48 I [upd] versión nueva v2.3 (code 8 > 7) — descargando
+2026-08-16 18:24:55: [MB v2.2] 18:24:56 I [upd] descargado 3123KB — ofreciendo instalar
+2026-08-16 18:25:23: [MB v2.3] 18:25:13 I [notif] listener conectado
+2026-08-16 18:25:23: [MB v2.3] 18:25:13 I [frio] accesibilidad conectada
+2026-08-16 18:26:12: [MB v2.3] 18:26:07 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-16 18:26:12: [MB v2.3] 18:26:10 I [upd] al día (v2.3 code=8, mío=8)
+2026-08-16 18:26:22: [MB v2.3] 18:26:18 I [svc] OutboxService ya corría — no apilo otro loop
+2026-08-16 18:26:42: [MB v2.3] 18:26:38 I [upd] al día (v2.3 code=8, mío=8)
+LISTO
+
+# exit=0
