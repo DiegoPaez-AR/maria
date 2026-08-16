@@ -1,0 +1,18 @@
+# ejecutado: 2026-08-16T00:07:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   SECRET=<REDACTED> -E '^ASISTENTE_INTERNAL_SECRET=' config/secrets.conf | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   curl -s -m 40 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $SECRET" -H 'Content-Type: application/json' \
+#     -d "{\"usuarioId\":1,\"accion\":{\"tipo\":\"enviar_wa\",\"a\":\"541132317896@c.us\",\"texto\":\"🌉 Prueba v1.3 por la COLA — con matcheo flexible. Si llegó, MariaBridge reemplaza al Tasker. Si no, la app ya me mandó el diagnóstico del mismatch.\"},\"canalOrigen\":\"whatsapp\"}" \
+#     | python3 -c "import json,sys; d=json.load(sys.stdin); print('encolado:', d.get('ok'))"
+#   echo LISTO
+
+# ───── output ─────
+encolado: True
+LISTO
+
+# exit=0

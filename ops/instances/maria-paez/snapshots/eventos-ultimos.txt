@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27096  2026-08-16 03:07:08  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
+
+27095  2026-08-16 03:07:08  sistema   interno                                    claude_call moderacion: 6110ms prompt=1596c raw=5908c in=10t(cache_read=0 new=22487) out=295t ttfb=1762ms api=5126ms turnos=1 $0.0301                                                                   
+
 27094  2026-08-16 02:43:11  sistema   interno                                    claude_call memoria-curada: 16333ms prompt=5743c raw=10327c in=2t(cache_read=0 new=17682) out=1208t ttfb=1525ms api=15476ms turnos=1 $0.0867                                                            
 
 27093  2026-08-16 02:42:25  sistema   interno                                    WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
@@ -197,7 +201,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26998  2026-08-15 20:33:39  telegram  saliente   telegram:590589920              Sí, fue por los mensajes duplicados de la madrugada (el error técnico que ya se resolvió). Manuel se quejó un poco pero le pedí disculpas y quedó tranquilo. Sigo esperando que Hernán confirme jueves 2
 
 26997  2026-08-15 20:33:39  sistema   interno                                    claude_call telegram: 13683ms prompt=79249c raw=8799c in=2t(cache_read=8784 new=43008) out=858t ttfb=1861ms api=12458ms turnos=1 $0.1862                                                                
-
-26996  2026-08-15 20:33:24  telegram  entrante   telegram:590589920              Ahí vi que Manuel te estaba escribiendo a lo puede ser, no vi que eres.                                                                                                                                 
-
-26995  2026-08-15 20:32:31  whatsapp  saliente   541155771290@c.us               Tenés toda la razón, Manuel, disculpá el quilombo de mensajes. Sigo esperando que Hernán confirme entre jueves 20/08 13-16hs o lunes 24/08, apenas tenga novedades te aviso para cerrar el horario defin
