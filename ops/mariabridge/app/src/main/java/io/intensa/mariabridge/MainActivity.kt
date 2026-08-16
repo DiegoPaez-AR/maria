@@ -13,7 +13,9 @@ class MainActivity : Activity() {
         val pad = (16 * resources.displayMetrics.density).toInt()
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(pad, pad, pad, pad) }
 
-        val titulo = TextView(this).apply { text = "MariaBridge"; textSize = 24f }
+        val pkgInfo = try { packageManager.getPackageInfo(packageName, 0) } catch (e: Exception) { null }
+        val ver = pkgInfo?.versionName ?: "?"
+        val titulo = TextView(this).apply { text = "MariaBridge  v$ver"; textSize = 24f }
         val eBase = EditText(this).apply { hint = "URL del hook (https://intensa.io/hooks/wa)"; setText(Prefs.hookBase(this@MainActivity)) }
         val eSec = EditText(this).apply { hint = "Secret del hook"; setText(Prefs.secret(this@MainActivity)) }
         val estado = TextView(this).apply { text = "" }
