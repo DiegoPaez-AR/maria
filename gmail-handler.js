@@ -24,6 +24,7 @@ const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
 const moderacion = require('./moderacion');
 const unknownFlow = require('./unknown-flow');
+const gestionAjena = require('./gestion-ajena');
 const { construirPrompt, construirTurnoSesion } = require('./prompt-builder');
 const { invocarClaudeJSON, invocarClaudeJSONConConsultas } = require('./claude-client');
 
@@ -206,6 +207,30 @@ async function procesarUnEmail(id, { waClient } = {}) {
       },
     });
     return;
+  }
+
+  // ── Ruteo por identidad, Fase 2 (2026-08-16): la conversación sigue a la
+  // PERSONA, no al canal. Si este usuario tiene gestiones ABIERTAS de OTROS
+  // usuarios esperándolo (por su email O su WA) y este mail las responde →
+  // turno de TERCERO del dueño (el propio _procesarComoUsuario detecta
+  // remitente ≠ usuario.email y marca turnoTercero). Duda/error → turno propio.
+  {
+    let _ga = null;
+    try {
+      _ga = await gestionAjena.gestionAjenaRelacionada(
+        usuario, `${email.asunto || ''}\n${emailCuerpo || ''}`.trim(), { canal: 'gmail' });
+    } catch (e) { console.warn('[GMAIL] gestion-ajena falló (sigo como usuario):', e.message); }
+    if (_ga) {
+      mem.log({ usuarioId: _ga.due.id, canal: 'gmail', direccion: 'entrante',
+        de: email.de, asunto: email.asunto, cuerpo: emailCuerpo, tipo_original: 'email',
+        metadata: { messageId: id, threadId: email.threadId, tipo: 'usuario_como_tercero', remitente_usuario: usuario.id, gestion: _ga.gestion } });
+      await _procesarComoUsuario({
+        usuario: _ga.due,
+        entrada: { de: email.de, email: email.de, asunto: email.asunto, cuerpo: emailCuerpo, messageId: id, para: email.para || '', cc: email.cc || '' },
+        waClient,
+      });
+      return;
+    }
   }
 
   // Log entrante (usuario conocido).
