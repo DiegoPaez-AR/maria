@@ -1,5 +1,7 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27077  2026-08-16 02:00:26  sistema   interno                                    poda-eventos: 50 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
+
 27076  2026-08-16 01:57:06  sistema   interno                                    claude_call memoria-curada: 20354ms prompt=4377c raw=11357c in=2t(cache_read=8775 new=8311) out=1225t ttfb=1729ms api=19143ms turnos=1 $0.0541                                                          
 
 27075  2026-08-16 01:56:45  sistema   interno                                    claude_call memoria-curada: 14886ms prompt=4146c raw=9699c in=2t(cache_read=8775 new=8131) out=1060t ttfb=1787ms api=13627ms turnos=1 $0.0508                                                           
@@ -201,6 +203,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26979  2026-08-15 20:30:27  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
 
 26978  2026-08-15 20:30:27  sistema   interno                                    claude_call moderacion: 6462ms prompt=1781c raw=6868c in=10t(cache_read=0 new=22550) out=417t ttfb=1448ms api=5286ms turnos=1 $0.0309                                                                   
-
-26977  2026-08-15 20:30:08  telegram  entrante   telegram:590589920              Hola María, recién saqué yo los mensajes de Whatsapp que se había trabado.                                                                                                                              
-                                                                                  Así que borrar esos petdos pendientes que te quedan porque ya te van a empezar a responder.                                                                                                            
