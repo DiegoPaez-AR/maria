@@ -1,0 +1,23 @@
+# ejecutado: 2026-08-16T12:11:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── últimos logs [MB] de MariaBridge (unificados) ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -15
+#   echo "── entrantes de Diego últimos 15 min (¿duplicados?) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,direccion,substr(cuerpo,1,50) c FROM eventos WHERE usuario_id=1 AND canal='whatsapp' AND timestamp>=datetime('now','-15 minutes') ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11),r.direccion,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── últimos logs [MB] de MariaBridge (unificados) ──
+2026-08-16 12:09:07: [MB v2.1] 12:08:57 I [notif] listener conectado
+2026-08-16 12:09:07: [MB v2.1] 12:08:57 I [frio] accesibilidad conectada
+2026-08-16 12:09:56: [MB v2.1] 12:09:47 I [svc] OutboxService arrancó
+── entrantes de Diego últimos 15 min (¿duplicados?) ──
+LISTO
+
+# exit=0
