@@ -1,0 +1,47 @@
+# ejecutado: 2026-08-15T21:52:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── proceso ──"; pgrep -f mb-build-worker >/dev/null && echo "CORRIENDO" || echo "terminó (o no arrancó)"
+#   echo "── últimas 30 del log ──"
+#   tail -30 /root/mariabridge-build.log 2>/dev/null || echo "sin log aún"
+#   echo LISTO
+
+# ───── output ─────
+── proceso ──
+terminó (o no arrancó)
+── últimas 30 del log ──
++ which gradle
++ cd /tmp
++ curl -sL -o gradle.zip https://services.gradle.org/distributions/gradle-8.7-bin.zip
++ unzip -q -o gradle.zip -d /opt
+/root/mb-build-worker.sh: line 30: unzip: command not found
++ export PATH=/opt/gradle-8.7/bin:/root/android-sdk/cmdline-tools/latest/bin:/root/android-sdk/platform-tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.nvm/versions/node//bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/opt/gradle-8.7/bin:/root/android-sdk/cmdline-tools/latest/bin:/root/android-sdk/platform-tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.nvm/versions/node//bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ gradle -version
++ head -3
+/root/mb-build-worker.sh: line 33: gradle: command not found
++ echo '── 5. build ──'
+── 5. build ──
++ cd /root/secretaria/ops/mariabridge
++ echo sdk.dir=/root/android-sdk
++ export 'GRADLE_OPTS=-Xmx1536m -Dorg.gradle.daemon=false'
++ GRADLE_OPTS='-Xmx1536m -Dorg.gradle.daemon=false'
++ gradle assembleDebug --no-daemon --stacktrace
++ tail -60
+/root/mb-build-worker.sh: line 39: gradle: command not found
++ echo '── 6. resultado ──'
+── 6. resultado ──
+++ find /root/secretaria/ops/mariabridge/app/build/outputs/apk/debug -name '*.apk'
+++ head -1
++ APK=
++ '[' -n '' ']'
++ echo 'APK_FAIL — no se generó el apk'
+APK_FAIL — no se generó el apk
+++ date
++ echo '=== FIN Sat Aug 15 09:50:12 PM -03 2026 ==='
+=== FIN Sat Aug 15 09:50:12 PM -03 2026 ===
+LISTO
+
+# exit=0
