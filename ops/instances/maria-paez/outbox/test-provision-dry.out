@@ -1,0 +1,53 @@
+# ejecutado: 2026-08-16T19:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   bash ops/provision/nueva-instancia.sh maria-demo "Maria Demo" maria.demo@gmail.com --dry-run 2>&1 | head -40
+#   echo LISTO
+
+# ───── output ─────
+⚠️  WA_HOOK_SECRET está en secrets.conf GLOBAL — pisaría el de cada instancia.
+    Movelo al .conf de maria-paez y borralo de secrets.conf antes de seguir.
+⚠️  ASISTENTE_INTERNAL_SECRET está en secrets.conf GLOBAL — pisaría el de cada instancia.
+    Movelo al .conf de maria-paez y borralo de secrets.conf antes de seguir.
+═══ Alta de instancia: maria-demo (Maria Demo) ═══
+  gmail:    maria.demo@gmail.com
+  puerto:   4502
+  max_usu:  10
+  hook:     https://intensa.io/hooks/wa-maria-demo/<secret>
+  (DRY-RUN: no toco nada)
+── [dry] escribiría config/instances/maria-demo.conf
+── [dry] crearía state/maria-demo/db + copiaría credentials.json
+── [dry] insertaría en nginx:
+    location /hooks/wa-maria-demo/ {
+        proxy_pass http://127.0.0.1:4502/wa-hook/;
+        proxy_read_timeout 90s;
+        proxy_http_version 1.1;
+    }
+── [dry] INSERT en instances (signup_bot=0)
+── pm2 NO recargado (correr tras el OAuth: pm2 reload ecosystem.config.js --update-env)
+
+═══ CHECKLIST MANUAL (ver ops/provision/README.md) ═══
+ 1. GMAIL: crear/usar maria.demo@gmail.com (Workspace del cliente o Gmail dedicado)
+ 2. OAUTH: correr el flow de Google en el VPS →
+      cd /root/secretaria && ASISTENTE_SLUG=maria-demo node ops/oauth-setup.js  (o el procedimiento del runbook)
+    → genera state/maria-demo/token.json (cifrar con la vault key si aplica)
+ 3. TELÉFONO dedicado: chip + WhatsApp con el número de la Maria nueva
+    ⚠️  WARM-UP: usar el número A MANO 2-3 días antes de conectar nada (lección Meta)
+ 4. MARIABRIDGE en ese teléfono:
+      APK:    (QR/link del último build — /root/mariabridge-build.log o https://intensa.io/_dl/mariabridge-latest.json)
+      URL:    https://intensa.io/hooks/wa-maria-demo
+      Secret: 3630266d3e73dd8bdb6c71222d16244a
+      Permisos: ①notificaciones ②batería ③accesibilidad (+ permitir instalar apps para el auto-update)
+ 5. TELEGRAM (opcional pero recomendado): crear bot en @BotFather →
+      TELEGRAM_BOT_TOKEN/USERNAME en config/instances/maria-demo.conf (NO en secrets.conf global)
+ 6. OWNER/CLIENTE: OWNER_* en config/instances/maria-demo.conf ya apunta a Diego (admin). Cargar al
+    cliente como USUARIO: desde el chat del owner → "sumá a <nombre> como usuario"
+ 7. pm2 reload ecosystem.config.js --update-env  (si no usaste --start)
+ 8. SMOKE: curl -X POST "https://intensa.io/hooks/wa-maria-demo/3630266d3e73dd8bdb6c71222d16244a" \
+      -H 'Content-Type: application/json' -d '{"query":{"sender":"000","message":"ping","isTestMessage":true}}'
+LISTO
+
+# exit=0
