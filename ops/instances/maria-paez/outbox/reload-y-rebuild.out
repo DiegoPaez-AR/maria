@@ -1,0 +1,21 @@
+# ejecutado: 2026-08-15T22:55:22-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── reload Maria (pendiente.txt con nombre) ──"
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+#   echo "── recompilar APK v1.1 en background ──"
+#   if pgrep -f mb-build-worker >/dev/null; then echo "build ya corriendo"; else
+#     nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 &
+#     echo "build lanzado (pid $!)"
+#   fi
+
+# ───── output ─────
+── reload Maria (pendiente.txt con nombre) ──
+reload OK
+── recompilar APK v1.1 en background ──
+build lanzado (pid 3453260)
+
+# exit=0

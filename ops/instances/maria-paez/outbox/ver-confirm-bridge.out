@@ -1,0 +1,31 @@
+# ejecutado: 2026-08-15T22:55:23-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   L=/var/log/nginx/intensa.io.access.log
+#   echo "── últimos confirmar/ (MariaBridge confirmando envíos) ──"
+#   grep -E "wa-maria.*confirmar" "$L" 2>/dev/null | tail -6 | sed -E 's/.*\[([^]]+)\] "GET ([^"]{0,60}).*" ([0-9]+).*/\1 | \2 → \3/'
+#   echo "── estado del último outbox ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare('SELECT id,creado,estado,intentos,numero,substr(texto,1,40) t FROM wa_outbox ORDER BY id DESC LIMIT 3').all().forEach(r=>console.log(r.id,r.creado,r.estado,'int:'+r.intentos,'|',r.numero,'|',r.t));
+#   db.close();
+#   "
+#   echo LISTO
+
+# ───── output ─────
+── últimos confirmar/ (MariaBridge confirmando envíos) ──
+15/Aug/2026:19:54:04 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar-u → 200
+15/Aug/2026:20:04:04 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar-u → 200
+15/Aug/2026:20:06:05 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar-u → 200
+15/Aug/2026:20:12:04 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar-u → 200
+15/Aug/2026:20:32:09 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar-u → 200
+15/Aug/2026:20:52:09 -0300 | /hooks/wa-maria/cfS1IoCOSxNtVUwIzomSLsqccS5iL7Q8/confirmar-u → 200
+── estado del último outbox ──
+38 2026-08-15 23:51:08 entregado int:1 | 541132317896 | 🅷 PRUEBA H — el examen final: pantalla d
+37 2026-08-15 23:30:09 entregado int:1 | 541132317896 | 🅶 Prueba G — con Turn On en el task. Si 
+36 2026-08-15 23:11:08 entregado int:1 | 541132317896 | 🅵 PRUEBA FINAL — enchufado, pantalla viv
+LISTO
+
+# exit=0
