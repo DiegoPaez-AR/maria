@@ -1,0 +1,21 @@
+# ejecutado: 2026-08-16T19:48:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   const cols=db.prepare('PRAGMA table_info(programados)').all().map(c=>c.name).join(',');
+#   console.log('cols:',cols);
+#   const rows=db.prepare(\"SELECT * FROM programados WHERE texto LIKE '%Telegram%' ORDER BY cuando LIMIT 20\").all();
+#   rows.forEach(r=>console.log('#'+r.id, r.cuando, (r.destino||'').slice(0,22), (r.enviado!==undefined?('enviado='+r.enviado):'')));
+#   console.log('total campaña:',rows.length);
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+cols: id,creado,cuando,canal,destino,asunto,texto,enviado,razon,metadata_json,usuario_id
+total campaña: 0
+LISTO
+
+# exit=0
