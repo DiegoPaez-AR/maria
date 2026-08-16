@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                 cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27089  2026-08-16 02:23:17  whatsapp  saliente   541132317896@c.us               Sigue igual que antes: Hernán confirmó el lunes 24/08 de 15 a 18hs. Le trasladé la propuesta a Manuel (que había elegido jueves, pero ese día no le sirve a Hernán) y todavía no me contestó si el lunes
+
+27088  2026-08-16 02:23:17  sistema   interno                                    claude_call whatsapp: 6281ms prompt=82701c raw=5389c in=2t(cache_read=8784 new=44496) out=215t ttfb=1391ms api=5352ms turnos=1 $0.1832                                                                  
+
+27087  2026-08-16 02:23:10  whatsapp  entrante   541132317896@c.us               que paso con la reu de hernan y manu?                                                                                                                                                                   
+
+27086  2026-08-16 02:23:10  whatsapp  saliente   541132317896@c.us               Va quedando así: Hernán confirmó el lunes 24/08 de 15 a 18hs (el jueves no le andaba). Le trasladé la propuesta a Manuel, que había elegido jueves, y todavía no me contestó si el lunes 24 15-18 le sir
+
+27085  2026-08-16 02:23:10  sistema   interno                                    claude_call whatsapp: 7556ms prompt=82576c raw=5498c in=2t(cache_read=0 new=53239) out=242t ttfb=1823ms api=6592ms turnos=1 $0.2137                                                                     
+
+27084  2026-08-16 02:23:02  whatsapp  entrante   541132317896@c.us               que paso con la reu de hernan y manu?                                                                                                                                                                   
+
 27083  2026-08-16 02:17:46  whatsapp  saliente   541132317896@c.us               Todo tranquilo, sin novedades nuevas. Sigo esperando que Hernán confirme jueves 20/08 13-16 o lunes 24/08, y a Manuel le consulté por el lunes 24 15-18hs. En cuanto conteste alguno te aviso.          
 
 27082  2026-08-16 02:17:46  sistema   interno                                    claude_call whatsapp: 9571ms prompt=82514c raw=6766c in=2t(cache_read=8784 new=44440) out=375t ttfb=1476ms api=8755ms turnos=1 $0.1853                                                                  
@@ -191,15 +203,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 26990  2026-08-15 20:32:05  whatsapp  saliente   541155771290@c.us               ¡Hola Manuel! ¿Cómo estás? Antes que nada, disculpas por los mensajes repetidos que te llegaron de madrugada — fue un error técnico de mi lado, ya está resuelto.                                       
                                                                                                                                                                                                                                                                                          
                                                                                  Anoté tu preferencia por el *jueves 2                                                                                                                                                                   
-
-26989  2026-08-15 20:31:30  whatsapp  entrante   541155771290@c.us               👆🏻                                                                                                                                                                                                      
-
-26988  2026-08-15 20:31:30  sistema   interno                                    claude_call whatsapp: 57878ms prompt=83338c raw=22604c in=6t(cache_read=75335 new=94244) out=4129t ttfb=1538ms api=49819ms turnos=3 $0.4488                                                             
-
-26987  2026-08-15 20:31:27  sistema   interno                                    acción ejecutada: enviar_wa                                                                                                                                                                             
-
-26986  2026-08-15 20:31:27  sistema   interno                                    claude_call moderacion: 7120ms prompt=1692c raw=6211c in=10t(cache_read=17396 new=5123) out=332t ttfb=1298ms api=6547ms turnos=1 $0.0103                                                                
-
-26985  2026-08-15 20:31:21  telegram  saliente   telegram:590589920              Listo, cancelé los dos mensajes programados que se habían trabado (el de Manuel y el de Hernán) para que no vuelvan a intentar salir por las dudas. Como los mandaste vos directo, no hace falta que yo 
-
-26984  2026-08-15 20:31:21  sistema   interno                                    claude_call telegram: 72372ms prompt=79983c raw=29869c in=6t(cache_read=75448 new=92631) out=5737t ttfb=1616ms api=71900ms turnos=4 $0.4658                                                             
