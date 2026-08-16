@@ -26,11 +26,20 @@ class OutboxService : Service() {
 
     override fun onBind(i: Intent?): IBinder? = null
 
+    @Volatile private var loopVivo = false
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         MbLog.init(this)
-        MbLog.i("svc", "OutboxService arrancó")
         arrancarForeground()
-        Thread { loop() }.start()
+        // singleton: "Guardar y arrancar" repetido NO debe apilar pollers
+        // (v2.2 y anteriores apilaban → posible causa del triple-envío del 15/8)
+        if (!loopVivo) {
+            loopVivo = true
+            MbLog.i("svc", "OutboxService arrancó (loop nuevo)")
+            Thread { loop() }.start()
+        } else {
+            MbLog.i("svc", "OutboxService ya corría — no apilo otro loop")
+        }
         return START_STICKY
     }
 
