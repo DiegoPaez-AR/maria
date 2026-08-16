@@ -1,0 +1,58 @@
+# ejecutado: 2026-08-16T08:54:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── 1. estado del bridge (poller + confirmaciones últimas 3h) ──"
+#   L=/var/log/nginx/intensa.io.access.log
+#   echo "GETs pendiente.txt última hora: $(grep 'pendiente.txt' "$L" | grep "$(date '+%d/%b/%Y:%H')" | wc -l)"
+#   echo "confirmaciones hoy: $(grep -c 'wa-maria.*confirmar' "$L")"
+#   echo "── 2. mbdiag de hoy (mismatches = mensajes que NO pudo mandar) ──"
+#   grep "MB-DIAG" ~/.pm2/logs/maria-paez-out.log | tail -5
+#   echo "── 3. outbox: pendientes atascados ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('por estado (hoy):');
+#   db.prepare(\"SELECT estado,COUNT(*) c FROM wa_outbox WHERE creado>=datetime('now','-12 hours') GROUP BY estado\").all().forEach(r=>console.log('  '+r.estado+':',r.c));
+#   console.log('atascados (pendiente, muchos intentos):');
+#   db.prepare(\"SELECT id,creado,intentos,numero,substr(texto,1,45) t FROM wa_outbox WHERE estado='pendiente' AND intentos>5 ORDER BY id DESC LIMIT 6\").all().forEach(r=>console.log('  #'+r.id,r.creado,'int:'+r.intentos,'|',r.numero,'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── 4. conversación Telegram de Diego (u1) últimos 12 ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,direccion,substr(cuerpo,1,80) c FROM eventos WHERE usuario_id=1 AND canal='telegram' ORDER BY id DESC LIMIT 12\").all().reverse().forEach(r=>console.log(r.timestamp.slice(5,16),r.direccion,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── 1. estado del bridge (poller + confirmaciones últimas 3h) ──
+GETs pendiente.txt última hora: 84
+confirmaciones hoy: 6
+── 2. mbdiag de hoy (mismatches = mensajes que NO pudo mandar) ──
+2026-08-16 08:51:38: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+2026-08-16 08:51:39: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+2026-08-16 08:51:52: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+2026-08-16 08:51:53: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+2026-08-16 08:51:53: [MB-DIAG] buscaba nombre="Natali Funez" numero="5491150105262" pendiente=42 | chats_vivos=[diego paez ~ you]
+── 3. outbox: pendientes atascados ──
+por estado (hoy):
+  entregado: 3
+  pendiente: 1
+atascados (pendiente, muchos intentos):
+  #42 2026-08-16 11:26:12 int:75 | 5491150105262 | Hola Nati! Te escribe Maria, la secretaria de
+── 4. conversación Telegram de Diego (u1) últimos 12 ──
+08-16 11:16 saliente | Listo, te mando el WA que dice hola.
+08-16 11:25 entrante | Me mandaste?
+08-16 11:25 saliente | Sí, te lo mandé a tu WhatsApp a las 8:16, decía "hola".
+08-16 11:25 entrante | Pregúntale a natali si puede ir al cine hoy
+08-16 11:26 saliente | Le escribo a Nati preguntándole si puede ir al cine hoy, apenas me conteste te a
+08-16 11:29 entrante | Me llegó 3 veces, vos me mandaste 3?
+08-16 11:36 entrante | Y?
+08-16 11:38 saliente | Reviso el historial: a las 8:26 quedaron registrados 3 mensajes de "hola" salien
+08-16 11:39 entrante | Yo te pedí un hola hace un rato pero llegaron 3
+08-16 11:40 saliente | Che, reviso el log de las 8:26: tengo registrada UNA sola ejecución de enviar_wa
+08-16 11:40 entrante | Y hablaste con Nati?
+08-16 11:41 saliente | Todavía no, le escribí a Nati preguntándole si podía ir al cine hoy pero no me c
+LISTO
+
+# exit=0
