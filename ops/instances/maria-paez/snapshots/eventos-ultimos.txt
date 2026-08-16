@@ -1,5 +1,17 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                   cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27672  2026-08-16 23:26:55  whatsapp  saliente   5491165286555@c.us                Listo, te agrego *Museo de la Cárcova* el miércoles 19/08 de 11:00 a 12:00 📅                                                                                                                            
+
+27671  2026-08-16 23:26:55  sistema   interno                                      claude_call whatsapp: 14431ms prompt=64541c raw=9917c in=6t(cache_read=63514 new=73663) out=548t ttfb=1523ms api=12459ms turnos=3 $0.3086                                                               
+
+27670  2026-08-16 23:26:51  sistema   interno                                      acción ejecutada: crear_evento                                                                                                                                                                          
+
+27669  2026-08-16 23:26:51  calendar  saliente                                     creado: Museo de la Cárcova (2026-08-19T11:00:00-03:00 → 2026-08-19T12:00:00-03:00) [en calendar de Maria]                                                                                              
+
+27668  2026-08-16 23:26:40  whatsapp  entrante   5491165286555@c.us                Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11                                                                                                                         
+
+27667  2026-08-16 23:26:40  sistema   interno                                      claude_call whatsapp-gestion-ajena: 5946ms prompt=761c raw=8193c in=10t(cache_read=26048 new=1507) out=397t ttfb=1560ms api=4756ms turnos=1 $0.0072                                                     
+
 27666  2026-08-16 23:24:28  whatsapp  saliente   5491165286555@c.us                Dale, te sumo también este tercer recordatorio para *mañana lunes 17/08 a las 9:00* con la lista de Orden de la casa 🏠                                                                                  
 
 27665  2026-08-16 23:24:28  sistema   interno                                      claude_call whatsapp: 29447ms prompt=64551c raw=13877c in=6t(cache_read=64377 new=74592) out=1700t ttfb=1590ms api=22392ms turnos=3 $0.3296                                                             
@@ -250,15 +262,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 27574  2026-08-16 22:06:04  sistema   interno                                      Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
 27573  2026-08-16 22:06:04  sistema   interno                                      MODO DEGRADADO: loops arrancados sin WA (caído hace 52300 min)                                                                                                                                          
-
-27572  2026-08-16 22:06:02  sistema   interno                                      shutdown por SIGINT                                                                                                                                                                                     
-
-27571  2026-08-16 22:03:24  sistema   interno                                      follow-up #36 cerrado: 541155771290@c.us respondió antes del vencimiento (Coordinar reunión 3hs entre Diego, Manuel Carrasco y Hernán Fulco — Manuel propuso jueves 20/08 13-16hs pero Hernán ya había c
-
-27570  2026-08-16 21:58:24  sistema   interno                                      poda-eventos: 30 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
-
-27569  2026-08-16 21:53:24  sistema   interno                                      WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-27568  2026-08-16 21:53:24  sistema   interno                                      Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-27567  2026-08-16 21:53:24  sistema   interno                                      MODO DEGRADADO: loops arrancados sin WA (caído hace 52287 min)                                                                                                                                          
