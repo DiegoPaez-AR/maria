@@ -1,5 +1,9 @@
 id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  --------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27561  2026-08-16 19:16:29  sistema   interno                          claude_call whatsapp: 5318ms prompt=62868c raw=4698c in=2t(cache_read=0 new=44129) out=66t ttfb=1542ms api=4702ms turnos=1 $0.1710                                                                      
+
+27560  2026-08-16 19:16:23  whatsapp  entrante   5491165286555@c.us    Dale                                                                                                                                                                                                    
+
 27559  2026-08-16 19:08:15  whatsapp  saliente   5491165286555@c.us    Te agendo el viernes 21 de agosto a las 15:30hs (hasta las 16:30hs): Ir a ver departamento para tu papá, en Independencia 556 😊 Como todavía tenés acceso de solo lectura, quedó del lado mío igual que 
 
 27558  2026-08-16 19:08:15  sistema   interno                          claude_call whatsapp: 16923ms prompt=62819c raw=11235c in=6t(cache_read=62817 new=72068) out=865t ttfb=1599ms api=15895ms turnos=3 $0.3066                                                              
@@ -225,7 +229,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")       cuerpo
                                                                                                                                                                                                                                                                                
                                                                        *📅 Agenda del día*                                                                                                                                                                                      
                                                                        (sin eventos hoy)                                                                                                                                                                                       
-
-27461  2026-08-16 12:12:24  sistema   interno                          poda-eventos: 11 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
-
-27460  2026-08-16 12:08:31  sistema   interno                          claude_call memoria-curada: 16848ms prompt=5122c raw=10886c in=2t(cache_read=8775 new=8639) out=1319t ttfb=1536ms api=15763ms turnos=1 $0.0569                                                          
