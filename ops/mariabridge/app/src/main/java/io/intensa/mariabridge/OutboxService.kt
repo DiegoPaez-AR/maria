@@ -35,8 +35,14 @@ class OutboxService : Service() {
     }
 
     private fun loop() {
+        // auto-update: primer chequeo a los 30s de arrancar, después cada 6h
+        var proximoUpd = System.currentTimeMillis() + 30000L
         while (run) {
             try { tick() } catch (_: Exception) {}
+            if (System.currentTimeMillis() >= proximoUpd) {
+                proximoUpd = System.currentTimeMillis() + 6 * 3600 * 1000L
+                Updater.chequear(this, desdeUi = false)
+            }
             try { Thread.sleep(POLL_MS) } catch (_: Exception) {}
         }
     }

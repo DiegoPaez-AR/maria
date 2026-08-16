@@ -1,0 +1,91 @@
+package io.intensa.mariabridge
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import androidx.core.content.FileProvider
+import org.json.JSONObject
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
+
+/**
+ * Auto-update semi-automático: chequea <host>/_dl/mariabridge-latest.json
+ * (lo publica el build del VPS), descarga el APK nuevo y ofrece instalarlo con
+ * UN tap (notificación, o directo si está la app abierta). El tap final de
+ * "Instalar" lo exige Android para apps sideloaded — no se puede saltear sin
+ * device-owner. Multitenant: deriva el host de la URL del hook configurada.
+ */
+object Updater {
+    @Volatile private var chequeando = false
+
+    fun chequear(c: Context, desdeUi: Boolean, onEstado: ((String) -> Unit)? = null) {
+        if (chequeando) return
+        chequeando = true
+        Thread {
+            try {
+                val estado = _chequear(c.applicationContext, desdeUi)
+                onEstado?.invoke(estado)
+            } catch (e: Exception) {
+                MbLog.e("upd", "chequeo falló: ${e.message}")
+                onEstado?.invoke("error: ${e.message}")
+            } finally { chequeando = false }
+        }.apply { isDaemon = true }.start()
+    }
+
+    private fun _chequear(c: Context, desdeUi: Boolean): String {
+        val hook = Prefs.hookBase(c)
+        if (hook.isBlank()) return "sin config"
+        val host = Uri.parse(hook).host ?: return "URL inválida"
+        val jsonUrl = "https://$host/_dl/mariabridge-latest.json"
+
+        val info = c.packageManager.getPackageInfo(c.packageName, 0)
+        @Suppress("DEPRECATION")
+        val mio = if (Build.VERSION.SDK_INT >= 28) info.longVersionCode.toInt() else info.versionCode
+
+        val conn = URL(jsonUrl).openConnection() as HttpURLConnection
+        conn.connectTimeout = 15000; conn.readTimeout = 15000
+        val j = JSONObject(conn.inputStream.bufferedReader().readText())
+        conn.disconnect()
+        val remoto = j.optInt("versionCode", 0)
+        val nombre = j.optString("versionName", "?")
+        val apkUrl = j.optString("url", "")
+        if (remoto <= mio) { MbLog.i("upd", "al día (v$nombre code=$remoto, mío=$mio)"); return "al día (v${info.versionName})" }
+        if (apkUrl.isBlank()) return "json sin url"
+
+        MbLog.i("upd", "versión nueva v$nombre (code $remoto > $mio) — descargando")
+        val f = File(c.getExternalFilesDir(null), "mariabridge-update.apk")
+        val dl = URL(apkUrl).openConnection() as HttpURLConnection
+        dl.connectTimeout = 20000; dl.readTimeout = 120000
+        dl.inputStream.use { inp -> f.outputStream().use { out -> inp.copyTo(out) } }
+        dl.disconnect()
+        MbLog.i("upd", "descargado ${f.length() / 1024}KB — ofreciendo instalar")
+
+        val uri = FileProvider.getUriForFile(c, c.packageName + ".fileprovider", f)
+        val i = Intent(Intent.ACTION_VIEW)
+            .setDataAndType(uri, "application/vnd.android.package-archive")
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        if (desdeUi) {
+            c.startActivity(i)
+        } else {
+            // desde el servicio: Android bloquea abrir pantallas de fondo → notificación 1-tap
+            val nm = c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= 26)
+                nm.createNotificationChannel(NotificationChannel("mariabridge_upd", "Actualizaciones", NotificationManager.IMPORTANCE_HIGH))
+            val pi = PendingIntent.getActivity(c, 7, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            val n = Notification.Builder(c, "mariabridge_upd")
+                .setContentTitle("MariaBridge v$nombre lista")
+                .setContentText("Tocá para instalar la actualización")
+                .setSmallIcon(android.R.drawable.stat_sys_download_done)
+                .setContentIntent(pi).setAutoCancel(true).build()
+            nm.notify(7, n)
+        }
+        return "v$nombre descargada — instalá"
+    }
+}

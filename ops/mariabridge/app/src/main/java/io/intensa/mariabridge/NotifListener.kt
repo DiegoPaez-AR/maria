@@ -22,6 +22,10 @@ class NotifListener : NotificationListenerService() {
         val extras = sbn.notification.extras ?: return
 
         val titulo = extras.getCharSequence(Notification.EXTRA_TITLE)?.toString() ?: return
+        // Eco propio: al responder por RemoteInput, WhatsApp re-emite la notif con
+        // nuestra respuesta como "You"/"Tú" → NO es un entrante, filtrar.
+        val tNorm = titulo.trim().lowercase()
+        if (tNorm in setOf("you", "tú", "tu", "vos", "yo")) return
         var texto = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
 
         // Resumen agregado ("3 mensajes nuevos") → ignorar, no es contenido real.

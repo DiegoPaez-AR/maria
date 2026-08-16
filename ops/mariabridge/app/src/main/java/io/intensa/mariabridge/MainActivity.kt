@@ -16,12 +16,19 @@ class MainActivity : Activity() {
         val pkgInfo = try { packageManager.getPackageInfo(packageName, 0) } catch (e: Exception) { null }
         val ver = pkgInfo?.versionName ?: "?"
         val titulo = TextView(this).apply { text = "MariaBridge  v$ver"; textSize = 24f }
-        val eBase = EditText(this).apply { hint = "URL del hook (https://intensa.io/hooks/wa)"; setText(Prefs.hookBase(this@MainActivity)) }
+        val eBase = EditText(this).apply {
+            hint = "URL del hook"
+            // precargada por default (pedido Diego 16/8) — editable para otras instancias
+            setText(Prefs.hookBase(this@MainActivity).ifBlank { "https://intensa.io/hooks/wa-maria" })
+        }
         val eSec = EditText(this).apply { hint = "Secret del hook"; setText(Prefs.secret(this@MainActivity)) }
         val estado = TextView(this).apply { text = "" }
 
         fun bloquear(b: Boolean) {
-            eBase.isEnabled = !b; eSec.isEnabled = !b
+            for (e in listOf(eBase, eSec)) {
+                e.isEnabled = !b; e.isFocusable = !b; e.isFocusableInTouchMode = !b
+                e.alpha = if (b) 0.5f else 1f
+            }
         }
         // Si ya estaba configurado, arrancar bloqueado.
         if (Prefs.activo(this)) bloquear(true)
@@ -52,6 +59,15 @@ class MainActivity : Activity() {
             text = "③ Permiso: accesibilidad (envío en frío)"
             setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
         }
+        val bUpd = Button(this).apply {
+            text = "Buscar actualización"
+            setOnClickListener {
+                estado.text = "Buscando actualización…"
+                Updater.chequear(this@MainActivity, desdeUi = true) { r ->
+                    runOnUiThread { estado.text = "Update: $r" }
+                }
+            }
+        }
 
         // Aviso si el acceso a notificaciones se perdió (pasa al actualizar el APK).
         val aviso = TextView(this).apply { textSize = 13f }
@@ -63,7 +79,7 @@ class MainActivity : Activity() {
         }
         chequearNotif()
 
-        listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, bAcc, aviso, estado).forEach { root.addView(it) }
+        listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, bAcc, bUpd, aviso, estado).forEach { root.addView(it) }
         setContentView(ScrollView(this).apply { addView(root) })
     }
 }

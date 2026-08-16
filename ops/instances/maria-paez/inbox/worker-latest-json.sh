@@ -1,0 +1,19 @@
+#!/bin/bash
+# actualizar el mb-build-worker para que publique mariabridge-latest.json
+python3 - <<'PY'
+s = open('/root/mb-build-worker.sh').read()
+old = '''  echo "APK_OK url=https://intensa.io/_dl/mb-$TK.apk size=$(du -h "$APK"|cut -f1)"'''
+new = '''  VC=$(grep -oP 'versionCode \\d+' /root/secretaria/ops/mariabridge/app/build.gradle | grep -oP '\\d+')
+  VN=$(grep -oP "versionName '[^']+'" /root/secretaria/ops/mariabridge/app/build.gradle | grep -oP "'[^']+'" | tr -d "'")
+  cat > "$DEST/mariabridge-latest.json" <<J
+{"versionCode": $VC, "versionName": "$VN", "url": "https://intensa.io/_dl/mb-$TK.apk"}
+J
+  chmod 644 "$DEST/mariabridge-latest.json"
+  echo "APK_OK url=https://intensa.io/_dl/mb-$TK.apk size=$(du -h "$APK"|cut -f1) latest.json=v$VN($VC)"'''
+if old in s:
+    s = s.replace(old, new)
+    open('/root/mb-build-worker.sh','w').write(s)
+    print("worker actualizado")
+else:
+    print("PATRON NO ENCONTRADO — revisar worker")
+PY
