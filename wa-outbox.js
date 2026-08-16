@@ -66,6 +66,19 @@ function siguiente() {
 // Tasker confirmaba pero el mensaje no llegaba. Solo transforma la SALIDA,
 // lo guardado no se toca.
 function _numeroEnvio(n) {
+  // LID → número real (2026-08-16, preflight campaña): destinos '<id>@lid'
+  // (identidad oculta de WhatsApp, válida en wwebjs) NO sirven para wa.me /
+  // MariaBridge. Si el numero corresponde al wa_lid de un usuario, servimos
+  // su wa_cus (número real). Lookup lazy para evitar ciclos de require.
+  try {
+    const raw = String(n || '');
+    const digs = raw.replace(/\D/g, '');
+    if (raw.includes('@lid') || digs.length > 13) {
+      const usuarios = require('./usuarios');
+      const u = usuarios.listarActivos().find(x => String(x.wa_lid || '').replace(/\D/g, '') === digs);
+      if (u && u.wa_cus) n = u.wa_cus;
+    }
+  } catch (_) {}
   const d = String(n).replace(/\D/g, '');
   if (/^54\d{10}$/.test(d)) return '549' + d.slice(2);
   return d;
