@@ -1,0 +1,55 @@
+# ejecutado: 2026-08-17T18:13:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB);
+#   const r=db.prepare(\"UPDATE programados SET enviado=-2, razon='pausado-bug-chat-equivocado' WHERE id IN (1352,1353,1354) AND enviado=0\").run();
+#   console.log('campaña FRENADA:', r.changes, 'mensajes pausados');
+#   console.log('── ¿algún usuario campaña respondió hoy? (entrantes de sus números) ──');
+#   db.prepare(\"SELECT timestamp,de,substr(cuerpo,1,50) c FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND timestamp>='2026-08-17 13:00' ORDER BY id\").all().forEach(x=>console.log(x.timestamp.slice(11,16),String(x.de).slice(-10),'|',String(x.c).replace(/\n/g,' ')));
+#   console.log('── qué es el 'Te debo consulta' (programados/follow-ups con ese texto) ──');
+#   db.prepare(\"SELECT id,cuando,enviado,usuario_id,substr(texto,1,80) t FROM programados WHERE texto LIKE '%Te debo consulta%' ORDER BY id DESC LIMIT 5\").all().forEach(x=>console.log('prog#'+x.id,x.cuando,'env:'+x.enviado,'u:'+x.usuario_id,'|',x.t));
+#   db.close();"
+#   echo "── logs MB del mediodía en adelante (frio vs silencioso) ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | grep -E "frio|outbox|respondido" | tail -20
+#   echo LISTO
+
+# ───── output ─────
+[eval]:7
+console.log('── qué es el 'Te debo consulta' (programados/follow-ups con ese texto) ──');
+            ^^^^^^^^^^^^^^^
+Expected ',', got 'ident'
+
+SyntaxError: missing ) after argument list
+    at makeContextifyScript (node:internal/vm:185:14)
+    at compileScript (node:internal/process/execution:383:10)
+    at evalTypeScript (node:internal/process/execution:256:22)
+    at node:internal/main/eval_string:74:3
+
+Node.js v22.23.1
+── logs MB del mediodía en adelante (frio vs silencioso) ──
+2026-08-17 12:17:59: [MB v2.9] 12:17:57 I [frio] abriendo chat 5491144471264 (#57)
+2026-08-17 12:17:59: [MB v2.9] 12:17:58 I [frio] botón send encontrado — tap
+2026-08-17 12:17:59: [MB v2.9] 12:17:59 I [frio] verificación #57: ENVIADO
+2026-08-17 12:17:59: [MB v2.9] 12:17:59 I [outbox] enviado EN FRÍO (accesibilidad) → 5491144471264
+2026-08-17 12:56:54: [MB v2.9] 12:56:53 I [frio] abriendo chat 5491155771290 (#58)
+2026-08-17 12:56:54: [MB v2.9] 12:56:54 I [frio] botón send encontrado — tap
+2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [frio] verificación #58: ENVIADO
+2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [outbox] enviado EN FRÍO (accesibilidad) → 5491155771290
+2026-08-17 13:00:57: [MB v2.9] 13:00:55 I [outbox] respondido (silencioso) → Nicolas Kosinski
+2026-08-17 13:54:39: [MB v2.9] 13:54:38 I [outbox] respondido (silencioso) → Walter Vera
+2026-08-17 14:30:46: [MB v2.9] 14:30:40 I [outbox] respondido (silencioso) → Cristian Ruiz
+2026-08-17 14:49:00: [MB v2.9] 14:48:59 I [outbox] respondido (silencioso) → Natali Funez
+2026-08-17 15:09:59: [MB v2.9] 15:09:52 I [outbox] respondido (silencioso) → Diego
+2026-08-17 15:18:25: [MB v2.9] 15:18:25 I [outbox] respondido (silencioso) → Sebastian Ameijeira
+2026-08-17 16:00:33: [MB v2.9] 16:00:32 I [outbox] respondido (silencioso) → Enrique Sosa
+2026-08-17 16:45:33: [MB v2.9] 16:45:28 I [outbox] respondido (silencioso) → Santiago Capurro
+2026-08-17 16:45:33: [MB v2.9] 16:45:33 I [outbox] respondido (silencioso) → Doris Capurro
+2026-08-17 17:30:34: [MB v2.9] 17:30:29 I [outbox] respondido (silencioso) → Andres Neumann
+2026-08-17 17:38:34: [MB v2.9] 17:38:29 I [outbox] respondido (silencioso) → Diego
+2026-08-17 17:38:34: [MB v2.9] 17:38:34 I [outbox] respondido (silencioso) → Natali Funez
+LISTO
+
+# exit=0
