@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27726  2026-08-17 00:44:52  telegram  saliente   telegram:590589920   Che, para no mandar mal el mensaje: mencionaste "escribíle a ambos" pero por acá solo tengo confirmado a Gabriel Pacheco. ¿Quién es la otra persona con la que coordino la cena en FICO?                
+
+27725  2026-08-17 00:44:51  sistema   interno                         claude_call telegram: 44872ms prompt=86956c raw=21117c in=6t(cache_read=76610 new=97401) out=3478t ttfb=1647ms api=43737ms turnos=3 $0.4526                                                             
+
+27724  2026-08-17 00:44:06  sistema   interno                         claude_call telegram: 96937ms prompt=85908c raw=65834c in=36t(cache_read=1080349 new=116823) out=6303t ttfb=1814ms api=95938ms turnos=18 $0.8686                                                        
+
 27723  2026-08-17 00:43:18  sistema   interno                         acción ejecutada: buscar_contacto_global                                                                                                                                                                
 
 27722  2026-08-17 00:42:29  telegram  entrante   telegram:590589920   Excelente, escribíle a ambos por WhatsApp para coordinar una cena o este miércoles o el miércoles                                                                                                       
@@ -218,9 +224,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 27628  2026-08-16 23:02:36  sistema   interno                         claude_call moderacion: 6740ms prompt=1820c raw=7146c in=10t(cache_read=17396 new=5167) out=446t ttfb=1238ms api=5840ms turnos=1 $0.0110                                                                
 
 27627  2026-08-16 23:02:30  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-27626  2026-08-16 23:02:30  sistema   interno                         claude_call moderacion: 6786ms prompt=1823c raw=7244c in=10t(cache_read=17396 new=5167) out=464t ttfb=1344ms api=5829ms turnos=1 $0.0111                                                                
-
-27625  2026-08-16 23:02:23  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-27624  2026-08-16 23:02:23  sistema   interno                         claude_call moderacion: 7369ms prompt=1821c raw=7194c in=10t(cache_read=17396 new=5167) out=442t ttfb=1188ms api=6410ms turnos=1 $0.0110                                                                
