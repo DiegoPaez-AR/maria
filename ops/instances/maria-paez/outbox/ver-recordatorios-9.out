@@ -1,0 +1,32 @@
+# ejecutado: 2026-08-17T09:18:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('── programados de Gabriela hoy ──');
+#   db.prepare(\"SELECT id,cuando,enviado,substr(texto,1,50) t FROM programados WHERE usuario_id=18 AND cuando LIKE '2026-08-17%' ORDER BY cuando\").all().forEach(r=>console.log('#'+r.id,r.cuando,r.enviado?'ENVIADO ✓':'pendiente','|',String(r.t).replace(/\n/g,' ')));
+#   console.log('── outbox reciente ──');
+#   db.prepare(\"SELECT id,creado,estado,intentos,numero,substr(texto,1,40) t FROM wa_outbox WHERE creado>='2026-08-17 11:30' ORDER BY id\").all().forEach(r=>console.log('#'+r.id,r.creado.slice(11),r.estado,'int:'+r.intentos,r.numero.slice(-6),'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── logs MB última hora ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -6
+#   echo LISTO
+
+# ───── output ─────
+── programados de Gabriela hoy ──
+#1355 2026-08-17T12:00:00.000Z ENVIADO ✓ | Buen día! 🌞 Recordatorio de tu orden laboral de ho
+#1356 2026-08-17T12:00:00.000Z ENVIADO ✓ | Y también tu lista de Personal para hoy 📋 1️⃣ Cert
+#1357 2026-08-17T12:00:00.000Z ENVIADO ✓ | Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a señor
+── outbox reciente ──
+── logs MB última hora ──
+2026-08-17 01:17:23: [MB v2.5] 01:17:18 I [upd] al día (v2.5 code=10, mío=10)
+2026-08-17 03:50:04: [MB v2.5] 03:50:00 I [notif] entrante de "Your account is no longer restricted": All features are now available for you.
+2026-08-17 03:50:04: [MB v2.5] 03:50:00 I [notif] entrante de "Your account is no longer restricted": All features are now available for you.
+2026-08-17 07:29:42: [MB v2.5] 07:29:35 I [upd] versión nueva v2.6 (code 11 > 10) — descargando
+2026-08-17 07:29:52: [MB v2.5] 07:29:44 I [upd] descargado 3126KB — ofreciendo instalar
+2026-08-17 09:11:32: [MB v2.5] 09:11:31 I [notif] entrante de "Ulises": Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo 
+LISTO
+
+# exit=0
