@@ -264,13 +264,13 @@ _migrarUsuariosIdioma();
 // @, lowercase) o chat_id del contacto en Telegram. Permite matching
 // DETERMINÍSTICO de terceros que escriben al bot (antes: solo pre-pass LLM).
 function _migrarContactosTelegram() {
+  if (!_tablaExiste('contactos')) return false;   // DB fresca: la crea _migrarContactos() más abajo (ya con telegram)
   if (_tieneColumna('contactos', 'telegram')) return false;
   db.exec(`ALTER TABLE contactos ADD COLUMN telegram TEXT`);
   db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_telegram ON contactos(telegram)`);
   console.log('[memory] migración: contactos.telegram agregado');
   return true;
 }
-_migrarContactosTelegram();
 
 // Migración: usuarios.calendar_acceso (none|read|write).
 // Modela los 3 tiers de integración con calendar:
@@ -475,6 +475,7 @@ function _migrarContactos() {
     db.exec(`
       CREATE TABLE contactos (
         id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        telegram    TEXT,
         usuario_id  INTEGER NOT NULL REFERENCES usuarios(id),
         nombre      TEXT NOT NULL,
         whatsapp    TEXT,
@@ -567,6 +568,7 @@ function _migrarContactos() {
   }
 }
 _migrarContactos();
+_migrarContactosTelegram();
 
 // Perfil web del contacto (rol/empresa por búsqueda web, enriquecido al crearlo).
 // Separado de la nota curada (notas_contacto, que la regenera memoria-curada).
