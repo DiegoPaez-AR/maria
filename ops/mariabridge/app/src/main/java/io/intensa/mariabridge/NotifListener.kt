@@ -51,6 +51,45 @@ class NotifListener : NotificationListenerService() {
         if (base.isBlank() || secret.isBlank()) return
 
         MbLog.i("notif", "entrante de \"$titulo\": ${texto.take(60)}")
+
+        // 7a (2026-08-17): si es un AUDIO y tenemos acceso a archivos, cazamos
+        // el .opus de la carpeta de medios y lo subimos → el server transcribe
+        // con Whisper y corre el turno con el TEXTO REAL. Si no aparece el
+        // archivo o falla, caemos al POST normal (hint "mandámelo en texto").
+        val esAudio = texto.contains("🎤") || Regex("mensaje de voz|voice message|^audio\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)
+        if (esAudio && MediaCaza.tenemosPermiso()) {
+            val ts = System.currentTimeMillis()
+            Thread {
+                try {
+                    val f = MediaCaza.cazarAudio(ts)
+                    if (f != null) {
+                        MbLog.i("media", "audio de \"$titulo\" cazado: ${f.name} (${f.length() / 1024}KB) — subiendo")
+                        val r = MediaCaza.subir(base, secret, titulo, f)
+                        val transcript = r?.optString("transcript")
+                        if (r != null && !transcript.isNullOrBlank()) {
+                            MbLog.i("media", "transcripto OK: ${transcript.take(60)}")
+                            val rs = r.optJSONArray("replies")
+                            if (rs != null) for (i in 0 until rs.length()) {
+                                val m = rs.getJSONObject(i).optString("message")
+                                if (m.isNotBlank()) {
+                                    val ok = ReplyRegistry.responder(this, titulo, m)
+                                    MbLog.i("media", "reply a \"$titulo\": ${if (ok) "ENVIADA" else "FALLÓ"}")
+                                    Thread.sleep(1200)
+                                }
+                            }
+                            return@Thread   // audio procesado — NO hacemos el POST del hint
+                        }
+                    } else MbLog.w("media", "no apareció el archivo del audio de \"$titulo\" — caigo al hint")
+                } catch (e: Exception) { MbLog.e("media", "caza falló: ${e.message}") }
+                _postNormal(base, secret, titulo, texto)   // fallback
+            }.apply { isDaemon = true }.start()
+            return
+        }
+
+        _postNormal(base, secret, titulo, texto)
+    }
+
+    private fun _postNormal(base: String, secret: String, titulo: String, texto: String) {
         val payload = JSONObject().apply {
             put("query", JSONObject().apply {
                 put("sender", titulo)          // nombre del contacto (WA no expone el número en la notif)

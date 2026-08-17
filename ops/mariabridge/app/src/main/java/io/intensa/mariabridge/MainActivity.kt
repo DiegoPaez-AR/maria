@@ -59,6 +59,18 @@ class MainActivity : Activity() {
             text = "③ Permiso: accesibilidad (envío en frío)"
             setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
         }
+        val bArchivos = Button(this).apply {
+            text = "④ Permiso: todos los archivos (audios reales)"
+            setOnClickListener {
+                try {
+                    val i = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        android.net.Uri.parse("package:$packageName"))
+                    startActivity(i)
+                } catch (_: Exception) {
+                    startActivity(Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION))
+                }
+            }
+        }
         val bUpd = Button(this).apply {
             text = "Buscar actualización"
             setOnClickListener {
@@ -79,7 +91,7 @@ class MainActivity : Activity() {
         }
         chequearNotif()
 
-        listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, bAcc, bUpd, aviso, estado).forEach { root.addView(it) }
+        listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, bAcc, bArchivos, bUpd, aviso, estado).forEach { root.addView(it) }
 
         // Config por deep-link (v2.6): mariabridge://config?url=..&secret=..
         // — el provisioning imprime el link; un tap y queda configurada.
