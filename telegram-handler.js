@@ -357,6 +357,34 @@ async function _procesarNoVinculado(chatId, texto, remitente = null) {
     await enviarTG(chatId, 'Ese código no es válido o expiró. Pedime uno nuevo por WhatsApp ("quiero vincular telegram") y mandámelo acá en menos de 15 minutos.');
     return;
   }
+  // ── Fase 3 identidad (2026-08-17): lookup DETERMINÍSTICO por username de
+  // Telegram en las libretas ANTES del pre-pass LLM. Si el contacto está
+  // cargado con su telegram, rutea directo como tercero del dueño (candado
+  // de homónimos si aparece en varias libretas, igual que WA).
+  const userTG = String(remitente?.username || '').trim().toLowerCase();
+  if (userTG) {
+    const rows = mem.db.prepare(
+      `SELECT usuario_id, nombre FROM contactos WHERE lower(COALESCE(telegram,'')) = ?`
+    ).all(userTG);
+    const porU = new Map();
+    for (const r of rows) if (!porU.has(r.usuario_id)) porU.set(r.usuario_id, r);
+    if (porU.size === 1) {
+      const c = [...porU.values()][0];
+      const due = usuarios.obtener(c.usuario_id);
+      if (due) {
+        mem.log({ usuarioId: due.id, canal: 'sistema', direccion: 'interno',
+          cuerpo: `TG: @${userTG} matchea contacto "${c.nombre}" en libreta de ${due.nombre} — ruteo directo como tercero`,
+          metadata: { tipo: 'tg_tercero_por_libreta', chatId } });
+        await _procesarTurnoTercero(due, chatId, remitente, texto, `contacto @${userTG} (${c.nombre}) en la libreta`);
+        return;
+      }
+    } else if (porU.size > 1) {
+      mem.log({ canal: 'sistema', direccion: 'interno',
+        cuerpo: `TG: @${userTG} en ${porU.size} libretas — no ruteo (candado homónimos), sigue pre-pass`,
+        metadata: { tipo: 'tg_tercero_ambiguo', chatId } });
+    }
+  }
+
   // ¿Tercero de una gestión abierta? (2026-07-07)
   const decision = await _prepassTercero(chatId, remitente, texto);
   if (decision && decision.tipo === 'tercero_de_usuario' && decision.usuario) {

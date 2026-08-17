@@ -962,6 +962,7 @@ async function _upsertContacto(a, ctx) {
     notas: a.notas || null,
     visibilidad,
     cumple: a.cumple || null,
+    telegram: a.telegram || null,   // Fase 3 identidad (2026-08-17)
   });
   // Réplica a Google Contacts → teléfono WA v2 (2026-08-03). Fire-and-forget.
   if (c && c.id) {

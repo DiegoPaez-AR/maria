@@ -260,6 +260,18 @@ function _migrarUsuariosIdioma() {
 }
 _migrarUsuariosIdioma();
 
+// Migración (2026-08-17, Fase 3 identidad): contactos.telegram — username (sin
+// @, lowercase) o chat_id del contacto en Telegram. Permite matching
+// DETERMINÍSTICO de terceros que escriben al bot (antes: solo pre-pass LLM).
+function _migrarContactosTelegram() {
+  if (_tieneColumna('contactos', 'telegram')) return false;
+  db.exec(`ALTER TABLE contactos ADD COLUMN telegram TEXT`);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_contactos_telegram ON contactos(telegram)`);
+  console.log('[memory] migración: contactos.telegram agregado');
+  return true;
+}
+_migrarContactosTelegram();
+
 // Migración: usuarios.calendar_acceso (none|read|write).
 // Modela los 3 tiers de integración con calendar:
 //   - 'none'  → tier 0: Maria no tiene acceso al calendar del user. Crea
@@ -1547,23 +1559,25 @@ try {
 // upsert distinto por visibilidad: el ON CONFLICT debe matchear el índice
 // parcial correcto, así que tenemos dos statements paralelos.
 const insertContactoPriv = db.prepare(`
-  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple)
-  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'privada', @cumple)
+  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple, telegram)
+  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'privada', @cumple, @telegram)
   ON CONFLICT(usuario_id, nombre) WHERE visibilidad = 'privada' DO UPDATE SET
     whatsapp = COALESCE(excluded.whatsapp, contactos.whatsapp),
     email    = COALESCE(excluded.email,    contactos.email),
     notas    = COALESCE(excluded.notas,    contactos.notas),
     cumple   = COALESCE(excluded.cumple,   contactos.cumple),
+    telegram = COALESCE(excluded.telegram, contactos.telegram),
     actualizado = CURRENT_TIMESTAMP
 `);
 const insertContactoPub = db.prepare(`
-  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple)
-  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'publica', @cumple)
+  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple, telegram)
+  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'publica', @cumple, @telegram)
   ON CONFLICT(nombre) WHERE visibilidad = 'publica' DO UPDATE SET
     whatsapp = COALESCE(excluded.whatsapp, contactos.whatsapp),
     email    = COALESCE(excluded.email,    contactos.email),
     notas    = COALESCE(excluded.notas,    contactos.notas),
     cumple   = COALESCE(excluded.cumple,   contactos.cumple),
+    telegram = COALESCE(excluded.telegram, contactos.telegram),
     actualizado = CURRENT_TIMESTAMP
 `);
 
@@ -1580,7 +1594,8 @@ const qContactoPorId           = db.prepare(`SELECT * FROM contactos WHERE id = 
 const updVisibilidad           = db.prepare(`UPDATE contactos SET visibilidad = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
 const updCumple                = db.prepare(`UPDATE contactos SET cumple = ?,      actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
 
-function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null, visibilidad = 'privada', cumple = null }) {
+function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null, visibilidad = 'privada', cumple = null, telegram = null }) {
+  if (telegram) telegram = String(telegram).trim().replace(/^@/, '').toLowerCase() || null;
   if (!usuarioId) throw new Error('upsertContacto: usuarioId requerido');
   if (!nombre) throw new Error('upsertContacto: nombre requerido');
   if (visibilidad !== 'privada' && visibilidad !== 'publica') {
@@ -1591,7 +1606,7 @@ function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, nota
     console.warn(`[upsertContacto] descarto whatsapp=@lid para "${nombre}" (no es estable)`);
     whatsapp = null;
   }
-  const params = { usuario_id: usuarioId, nombre, whatsapp, email, notas, cumple };
+  const params = { usuario_id: usuarioId, nombre, whatsapp, email, notas, cumple, telegram };
   if (visibilidad === 'privada') {
     insertContactoPriv.run(params);
     return qContactoPorNombrePriv.get(usuarioId, nombre);
