@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e
+cd /root/secretaria
+CONF=config/instances/maria-paez.conf
+VIEJO=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$CONF" | cut -d= -f2- | tr -d '"')
+NUEVO=$(openssl rand -hex 24)
+PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' "$CONF" | cut -d= -f2- | tr -d '"')
+cp "$CONF" "$CONF.bak-rot"
+# 1. conf
+sed -i "s/^ASISTENTE_INTERNAL_SECRET=.*/ASISTENTE_INTERNAL_SECRET=$NUEVO/" "$CONF"
+# 2. control DB (intensa-api rutea por acá)
+node -e "
+const db=require('/root/secretaria/node_modules/better-sqlite3')('/root/secretaria/state/control/control.sqlite');
+const r=db.prepare(\"UPDATE instances SET internal_secret=? WHERE slug='maria-paez'\").run('$NUEVO');
+console.log('control DB:', r.changes, 'fila(s)');
+db.close();"
+# 3. reloads
+pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "maria reload OK"
+pm2 restart intensa-api --update-env >/dev/null 2>&1 && echo "intensa-api restart OK" || echo "intensa-api: revisar nombre pm2"
+sleep 4
+# 4. smoke: nuevo debe andar, viejo debe rebotar
+NEW_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 10 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $NUEVO" -H 'Content-Type: application/json' -d '{"usuarioId":1,"accion":{"tipo":"noop"}}')
+OLD_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 10 -X POST "http://127.0.0.1:$PORT/accion" -H "x-intensa-secret: $VIEJO" -H 'Content-Type: application/json' -d '{"usuarioId":1,"accion":{"tipo":"noop"}}')
+echo "smoke: nuevo→$NEW_CODE (esperado != 401) | viejo→$OLD_CODE (esperado 401)"
+if [ "$OLD_CODE" != "401" ] || [ "$NEW_CODE" = "401" ]; then
+  echo "✗ ALGO MAL — RESTAURANDO"
+  cp "$CONF.bak-rot" "$CONF"
+  node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')('/root/secretaria/state/control/control.sqlite'); db.prepare(\"UPDATE instances SET internal_secret=? WHERE slug='maria-paez'\").run('$VIEJO'); db.close();"
+  pm2 reload ecosystem.config.js --only maria-paez --update-env; pm2 restart intensa-api --update-env
+else
+  echo "✔ ROTACIÓN COMPLETA"
+fi
+echo LISTO
