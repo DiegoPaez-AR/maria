@@ -1,8 +1,0 @@
-#!/bin/bash
-node -e "
-const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
-console.log('outbox pendientes:', db.prepare(\"SELECT COUNT(*) n FROM wa_outbox WHERE estado='pendiente'\").get().n);
-console.log('programados próximas 12h:', db.prepare(\"SELECT COUNT(*) n FROM programados WHERE enviado=0 AND cuando <= datetime('now','+12 hours')\").get().n);
-db.prepare(\"SELECT id,cuando,substr(destino,1,18) d FROM programados WHERE enviado=0 AND cuando <= datetime('now','+12 hours') ORDER BY cuando LIMIT 5\").all().forEach(r=>console.log(' ',r.id,r.cuando,r.d));
-db.close();"
-echo LISTO
