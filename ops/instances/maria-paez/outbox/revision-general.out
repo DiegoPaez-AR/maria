@@ -1,0 +1,115 @@
+# ejecutado: 2026-08-17T18:10:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('══ 1. CAMPAÑA: programados ══');
+#   db.prepare(\"SELECT id,cuando,enviado,razon FROM programados WHERE texto LIKE '%Telegram%' ORDER BY cuando\").all().forEach(r=>console.log('#'+r.id,r.cuando.slice(11,16),'enviado:'+r.enviado,r.razon||''));
+#   console.log('══ 2. OUTBOX de hoy ══');
+#   db.prepare(\"SELECT id,creado,estado,intentos,numero,substr(texto,1,42) t,metadata_json m FROM wa_outbox WHERE creado>='2026-08-17' ORDER BY id\").all().forEach(r=>{
+#     let via=''; try{const mm=JSON.parse(r.m||'{}');via=mm.tipo||mm.via||mm.tag||''}catch{};
+#     console.log('#'+r.id,r.creado.slice(11,16),r.estado,'int:'+r.intentos,r.numero.slice(-8),via,'|',String(r.t).replace(/\n/g,' '))});
+#   console.log('══ 3. SALIENTES a Diego desde las 12 UTC ══');
+#   db.prepare(\"SELECT timestamp,canal,substr(cuerpo,1,70) c FROM eventos WHERE usuario_id=1 AND direccion='saliente' AND timestamp>='2026-08-17 14:00' ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11,16),r.canal,'|',String(r.c).replace(/\n/g,' ')));
+#   console.log('══ 4. vinculados TG ══');
+#   console.log(db.prepare(\"SELECT COUNT(*) n FROM usuarios WHERE telegram_chat_id IS NOT NULL\").get().n, 'vinculados');
+#   db.close();"
+#   echo "══ 5. MB-FALLO + logs MB tarde ══"
+#   grep "MB-FALLO" ~/.pm2/logs/maria-paez-out.log | tail -6
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -14
+#   echo LISTO
+
+# ───── output ─────
+══ 1. CAMPAÑA: programados ══
+#1341 13:36 enviado:1 
+#1342 13:45 enviado:1 usuario
+#1343 14:30 enviado:1 usuario
+#1344 15:15 enviado:1 usuario
+#1345 16:00 enviado:1 usuario
+#1346 16:45 enviado:1 usuario
+#1347 17:30 enviado:1 usuario
+#1348 18:15 enviado:1 usuario
+#1349 19:00 enviado:1 usuario
+#1350 19:45 enviado:1 usuario
+#1351 20:30 enviado:1 usuario
+#1352 21:15 enviado:0 usuario
+#1353 22:00 enviado:0 usuario
+#1354 22:45 enviado:0 usuario
+══ 2. OUTBOX de hoy ══
+#45 00:46 entregado int:1 40402319  | Hola Gabriel! Soy Maria, la secretaria de 
+#46 00:46 vencido int:314 41885339  | Hola Carolina! Soy Maria, la secretaria de
+#47 00:50 entregado int:1 40402319  | Genial, anotado miércoles 19! Apenas confi
+#48 12:28 entregado int:1 65286555 reenvio_recordatorio | Buen día! 🌞 Recordatorio de tu orden labor
+#49 12:28 entregado int:1 65286555 reenvio_recordatorio | Y también tu lista de Personal para hoy 📋 
+#50 12:28 entregado int:1 65286555 reenvio_recordatorio | Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar
+#51 12:28 entregado int:1 65286555 aclaracion | Perdón por el enredo de recién — los recor
+#52 13:36 entregado int:3 26829596 outbox_bridge | ¡Hola Hernan! Te cuento algo útil: ahora t
+#53 13:45 entregado int:1 50105262 outbox_bridge | ¡Hola Natali! Te cuento algo útil: ahora t
+#54 14:30 entregado int:3 34274828 outbox_bridge | ¡Hola Santiago! Te cuento algo útil: ahora
+#55 14:38 entregado int:1 50105262 recordatorio | Te debo consulta sobre algo pendiente 👇  1
+#56 15:15 entregado int:1 44471264 outbox_bridge | ¡Hola Doris! Te cuento algo útil: ahora ta
+#57 15:15 entregado int:2 44471264 outbox_bridge | ⏰ *En 15min*: Ada (12:30 p. m.)
+#58 15:54 entregado int:1 55771290  | Hola Manuel! Te reescribo por la reunión d
+#59 16:00 entregado int:1 50080522 outbox_bridge | ¡Hola Nicolas! Te cuento algo útil: ahora 
+#60 16:45 entregado int:1 38433288 outbox_bridge | ¡Hola Walter! Te cuento algo útil: ahora t
+#61 17:30 entregado int:1 26406612 outbox_bridge | ¡Hola Cristian! Te cuento algo útil: ahora
+#62 17:38 entregado int:1 50105262 recordatorio | Te debo consulta sobre algo pendiente 👇  1
+#63 18:09 entregado int:1 32317896  | El audio me volvió a llegar cortado — no d
+#64 18:15 entregado int:1 63004389 outbox_bridge | ¡Hola Sebastian! Te cuento algo útil: ahor
+#65 19:00 entregado int:1 99643028 outbox_bridge | ¡Hola Enrique! Te cuento algo útil: ahora 
+#66 19:45 entregado int:1 66010010 outbox_bridge | ¡Hola Santiago! Te cuento algo útil: ahora
+#67 19:45 entregado int:1 44471264 outbox_bridge | ⏰ *En 15min*: harrods (05:00 p. m.)
+#68 20:30 entregado int:1 64719969 outbox_bridge | ¡Hola Andres! Te cuento algo útil: ahora t
+#69 20:38 entregado int:1 32317896 recordatorio | Te debo consulta sobre algo pendiente 👇  1
+#70 20:38 entregado int:1 50105262 recordatorio | Te debo consulta sobre algo pendiente 👇  1
+══ 3. SALIENTES a Diego desde las 12 UTC ══
+14:30 whatsapp | ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+14:33 whatsapp | ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+15:15 whatsapp | ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Tel
+15:17 whatsapp | ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Tel
+15:56 whatsapp | Hola Manuel! Te reescribo por la reunión de 3hs con Diego y Hernán: qu
+16:00 whatsapp | ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por T
+16:00 whatsapp | Todavía nada firme en ninguna de las dos:  🔹 *Manuel Carrasco*: le man
+16:00 whatsapp | ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por T
+16:45 whatsapp | ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Te
+16:54 whatsapp | ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Te
+17:30 whatsapp | ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por 
+17:30 whatsapp | ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por 
+18:08 whatsapp | Diego, el audio me llegó bastante cortado y no términos como 'Cancelan
+18:09 whatsapp | El audio me volvió a llegar cortado — no descifré bien "gavipaché con 
+18:10 whatsapp | Dale, con Natali no hago nada más de mi lado.
+18:10 whatsapp | Dale, quedo esperando esas opciones de fecha en septiembre. Cuando me 
+18:15 whatsapp | ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por
+18:18 whatsapp | ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por
+19:00 whatsapp | ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por T
+19:00 whatsapp | ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por T
+19:45 whatsapp | ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+19:45 whatsapp | ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+20:30 whatsapp | ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Te
+20:30 whatsapp | ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Te
+20:38 whatsapp | Te debo consulta sobre algo pendiente 👇  1. Pasarme las opciones de fe
+20:38 whatsapp | Te debo consulta sobre algo pendiente 👇  1. Pasarme las opciones de fe
+══ 4. vinculados TG ══
+1 vinculados
+══ 5. MB-FALLO + logs MB tarde ══
+2026-08-17 10:36:31: [MB-FALLO] #52 motivo=timeout_sin_boton → {"id":52,"cold_fallos":1,"definitivo":false}
+2026-08-17 11:31:41: [MB-FALLO] #54 motivo=timeout_sin_boton → {"id":54,"cold_fallos":1,"definitivo":false}
+2026-08-17 15:09:49: [MB v2.9] 15:09:38 I [media] audio procesado OK
+2026-08-17 15:09:59: [MB v2.9] 15:09:50 I [notif] entrante de "Diego Paez": Lo de natali olvídate de todo, lo sigo yo
+2026-08-17 15:09:59: [MB v2.9] 15:09:52 I [outbox] respondido (silencioso) → Diego
+2026-08-17 15:10:09: [MB v2.9] 15:10:03 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-17 15:10:19: [MB v2.9] 15:10:18 I [notif] entrante de "Diego Paez": Y lo de la cena con caro y gabi, te paso opciones por qué ca
+2026-08-17 15:11:07: [MB v2.9] 15:10:59 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-17 15:18:25: [MB v2.9] 15:18:25 I [outbox] respondido (silencioso) → Sebastian Ameijeira
+2026-08-17 16:00:33: [MB v2.9] 16:00:32 I [outbox] respondido (silencioso) → Enrique Sosa
+2026-08-17 16:45:33: [MB v2.9] 16:45:28 I [outbox] respondido (silencioso) → Santiago Capurro
+2026-08-17 16:45:33: [MB v2.9] 16:45:33 I [outbox] respondido (silencioso) → Doris Capurro
+2026-08-17 17:18:04: [MB v2.9] 17:17:55 I [upd] al día (v2.9 code=14, mío=14)
+2026-08-17 17:30:34: [MB v2.9] 17:30:29 I [outbox] respondido (silencioso) → Andres Neumann
+2026-08-17 17:38:34: [MB v2.9] 17:38:29 I [outbox] respondido (silencioso) → Diego
+2026-08-17 17:38:34: [MB v2.9] 17:38:34 I [outbox] respondido (silencioso) → Natali Funez
+LISTO
+
+# exit=0
