@@ -161,6 +161,7 @@ async function ejecutarUna(accion, ctx) {
     case 'responder_email':    return await _responderEmail(accion, ctx);
     case 'enviar_email':       return await _enviarEmail(accion, ctx);
     case 'enviar_wa':          return await _enviarWA(accion, ctx);
+    case 'enviar_archivo_wa':  return await _enviarArchivoWA(accion, ctx);
     case 'reenviar_wa':        return await _reenviarWA(accion, ctx);
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
@@ -677,6 +678,21 @@ async function _enviarWA(a, ctx) {
   }
   const gestion = _autoGestionTercero(a, ctx);
   return { a: destinoFinal, enviado: true, gestion_auto: gestion };
+}
+
+// enviar_archivo_wa (2026-08-17): el bridge no puede adjuntar media nativa por
+// WhatsApp — publicamos el archivo como LINK con token (intensa.io/_dl, vive
+// 30 días) y mandamos texto+link por el camino normal de enviar_wa (hereda
+// moderación, validación de destinatario, outbox y auto-gestión).
+async function _enviarArchivoWA(a, ctx) {
+  _requerir(a, ['a', 'archivo']);
+  const mediaStore = require('./media-store');
+  let url;
+  try { url = mediaStore.publicar(String(a.archivo)); }
+  catch (err) { throw new Error(`enviar_archivo_wa: ${err.message}. Los adjuntos guardados duran 30 días; pedile al usuario que lo reenvíe si expiró.`); }
+  const texto = `${String(a.texto || 'Te comparto este archivo:').trim()}\n${url}`;
+  const r = await _enviarWA({ a: a.a, texto }, ctx);
+  return { ...r, archivo: a.archivo, link: url, nota: 'el link vive 30 días' };
 }
 
 // Red de seguridad (2026-08-16, caso Nati/cine): todo enviar_wa a un NO-usuario

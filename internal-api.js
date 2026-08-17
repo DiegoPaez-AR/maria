@@ -103,17 +103,21 @@ function start({ waClient } = {}) {
 
           if (tipo === 'imagen' || tipo === 'documento') {
             // v2.8: imagen/PDF real → archivo temporal → turno con VISIÓN
-            // (mismo pipeline attachmentPath de Gmail/Telegram).
+            // (mismo pipeline attachmentPath de Gmail/Telegram). Además se
+            // PERSISTE en media-store (30d) para poder reenviarlo después.
             const fs2 = require('fs');
             const tmp = `/tmp/maria-mb-${Date.now()}.${ext}`;
             fs2.writeFileSync(tmp, buf);
-            console.log(`[MB-MEDIA] ${tipo} de "${b.sender}" (${Math.round(buf.length / 1024)}KB) → ${tmp}`);
+            let mediaId = null;
+            try { mediaId = require('./media-store').guardar(buf, b.fileName || `x.${ext}`); } catch (e) { console.warn('[mbmedia] guardar falló:', e.message); }
+            console.log(`[MB-MEDIA] ${tipo} de "${b.sender}" (${Math.round(buf.length / 1024)}KB) → ${tmp}${mediaId ? ` (guardado: ${mediaId})` : ''}`);
             try {
               const caption = String(b.caption || '').trim();
-              const msj = caption && !/^(📷|📄|photo|foto|imagen|documento)/i.test(caption)
+              let msj = caption && !/^(📷|📄|photo|foto|imagen|documento)/i.test(caption)
                 ? caption : (tipo === 'imagen' ? '(te mandé una imagen — mirala)' : '(te mandé un documento — miralo)');
+              if (mediaId) msj += `\n(sistema: adjunto guardado con id "${mediaId}" — si piden reenviarlo/compartirlo usá enviar_archivo_wa con ese id)`;
               const r = await require('./wa-hook').procesar({ query: { sender: b.sender, message: msj, attachmentPath: tmp } });
-              return send(200, { ...(r || {}), adjunto: true });
+              return send(200, { ...(r || {}), adjunto: true, mediaId });
             } finally {
               try { fs2.unlinkSync(tmp); } catch { /* noop */ }
             }
