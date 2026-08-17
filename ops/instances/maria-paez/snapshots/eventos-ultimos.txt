@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+28093  2026-08-17 15:55:04  sistema   interno                        unhandledRejection: No se pudo extraer JSON de la respuesta de Claude:                                                                                                                                  
+                                                                     No hace falta esa herramienta acá, ya tengo todo lo necesario para responder.                                                                                                                           
+                                                                                                                                                                                                                                                                             
+                                                                     **Respuesta a Diego:**                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                             
+                                                                     Te cuento cómo está todo:                                                                                                                                                                               
+
+28092  2026-08-17 15:55:04  sistema   interno                        claude_call whatsapp: 113708ms prompt=97589c raw=47475c in=12t(cache_read=297642 new=114487) out=8339t ttfb=1626ms api=109600ms turnos=8 $0.6600                                                        
+
 28091  2026-08-17 15:54:50  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
 28090  2026-08-17 15:54:45  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -221,7 +230,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 27995  2026-08-17 12:34:36  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
 27994  2026-08-17 12:34:36  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-27993  2026-08-17 12:34:36  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 53168 min)                                                                                                                                          
-
-27992  2026-08-17 12:34:34  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
