@@ -146,8 +146,14 @@ class WaSendService : AccessibilityService() {
         val esperadoNombre = t.nombre.trim().lowercase()
         val dEsperado = _dig9(t.numero)
         val dVisto = _dig9(visto)
-        val ok = (esperadoNombre.isNotBlank() && visto == esperadoNombre) ||
-                 (dVisto.length >= 10 && dVisto.takeLast(10) == dEsperado.takeLast(10))
+        // v3.1: match por PALABRAS (subset de tokens en cualquier dirección):
+        // "diego" ✓ "diego paez"; DB "Natali Funez" ✓ agenda "Natali Funez";
+        // un chat ajeno no comparte tokens → jamás pasa. O match por número.
+        fun toks(x: String) = x.split(Regex("\\s+")).filter { it.length >= 2 }.toSet()
+        val tv = toks(visto); val te = toks(esperadoNombre)
+        val nombreOk = esperadoNombre.isNotBlank() && te.isNotEmpty() && tv.isNotEmpty() &&
+                       (tv.containsAll(te) || te.containsAll(tv))
+        val ok = nombreOk || (dVisto.length >= 10 && dVisto.takeLast(10) == dEsperado.takeLast(10))
         if (!ok) {
             MbLog.e("frio", "#${t.id}: chat ABIERTO ES OTRO (\"$visto\" ≠ \"${t.nombre}\"/${t.numero}) — ABORTO sin tocar")
             _reportarFallo(t.id, "chat_equivocado")
