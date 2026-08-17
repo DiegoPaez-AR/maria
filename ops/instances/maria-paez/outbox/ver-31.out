@@ -1,0 +1,19 @@
+# ejecutado: 2026-08-17T19:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pgrep -f mb-build-worker >/dev/null && echo compilando || echo terminó
+#   grep -E "BUILD (SUCC|FAIL)|APK_OK|APK_FAIL|^e: file" /root/mariabridge-build.log | tail -3
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   echo LISTO
+
+# ───── output ─────
+terminó
+BUILD SUCCESSFUL in 38s
+APK_OK url=https://intensa.io/_dl/mb-006714c43e784df1.apk size=3.1M latest.json=v3.1(16)
+{"versionCode": 16, "versionName": "3.1", "url": "https://intensa.io/_dl/mb-006714c43e784df1.apk"}
+
+LISTO
+
+# exit=0
