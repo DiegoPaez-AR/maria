@@ -95,10 +95,30 @@ function start({ waClient } = {}) {
           // Audio REAL desde MariaBridge (2026-08-17, 7a): la app caza el .opus
           // de la carpeta de medios de WA y lo sube; acá se transcribe con el
           // Whisper local y corre el turno normal con la transcripción.
-          const b = await readJsonGrande(req).catch(() => null);
+          const b = await readJsonGrande(req, 16 * 1024 * 1024).catch(() => null);
           if (!b || !b.data || !b.sender) return send(400, { error: 'payload' });
           const buf = Buffer.from(String(b.data), 'base64');
           const ext = (String(b.fileName || '').match(/\.(\w+)$/) || [])[1] || 'opus';
+          const tipo = String(b.tipo || 'audio');
+
+          if (tipo === 'imagen' || tipo === 'documento') {
+            // v2.8: imagen/PDF real → archivo temporal → turno con VISIÓN
+            // (mismo pipeline attachmentPath de Gmail/Telegram).
+            const fs2 = require('fs');
+            const tmp = `/tmp/maria-mb-${Date.now()}.${ext}`;
+            fs2.writeFileSync(tmp, buf);
+            console.log(`[MB-MEDIA] ${tipo} de "${b.sender}" (${Math.round(buf.length / 1024)}KB) → ${tmp}`);
+            try {
+              const caption = String(b.caption || '').trim();
+              const msj = caption && !/^(📷|📄|photo|foto|imagen|documento)/i.test(caption)
+                ? caption : (tipo === 'imagen' ? '(te mandé una imagen — mirala)' : '(te mandé un documento — miralo)');
+              const r = await require('./wa-hook').procesar({ query: { sender: b.sender, message: msj, attachmentPath: tmp } });
+              return send(200, { ...(r || {}), adjunto: true });
+            } finally {
+              try { fs2.unlinkSync(tmp); } catch { /* noop */ }
+            }
+          }
+
           let transcript = null;
           try {
             const { transcribirBuffer } = require('./transcribir');

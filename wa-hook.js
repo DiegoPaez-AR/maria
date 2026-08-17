@@ -117,7 +117,7 @@ function _stashSacar(digs) {
 const _enProceso = new Map(); // digs -> Promise
 
 // ── Turno de usuario ───────────────────────────────────────────────────────
-async function _turnoUsuario(u, cuerpo) {
+async function _turnoUsuario(u, cuerpo, attachmentPath = null) {
   const startTs = Date.now();
   const de = u.wa_cus || u.wa_lid || `agenda:${String(u.nombre).toLowerCase().replace(/\s+/g, '_')}`;
   const chatKey = 'wahook:' + de;
@@ -130,7 +130,7 @@ async function _turnoUsuario(u, cuerpo) {
 
   mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'entrante', de, nombre: u.nombre, cuerpo, metadata: { via: 'autoresponder' } });
 
-  const entrada = { de, nombre: u.nombre, cuerpo };
+  const entrada = { de, nombre: u.nombre, cuerpo, ...(attachmentPath ? { attachmentPath } : {}) };
   const prompt = await construirPrompt({ usuario: u, canal: 'whatsapp', entrada });
   const { json } = await invocarClaudeJSONConConsultas(prompt, { usuario: u }, {
     audit: { usuarioId: u.id, canal: 'whatsapp', chatKey, turnStartTs: startTs, turnoTercero: false },
@@ -155,7 +155,7 @@ async function _turnoUsuario(u, cuerpo) {
 }
 
 // ── Turno de tercero (match único en libreta) ──────────────────────────────
-async function _turnoTercero(u, contacto, de, cuerpo) {
+async function _turnoTercero(u, contacto, de, cuerpo, attachmentPath = null) {
   const startTs = Date.now();
   const chatKey = 'wahook:' + de;
   turnState.setLastInbound(chatKey, startTs);
@@ -165,7 +165,7 @@ async function _turnoTercero(u, contacto, de, cuerpo) {
 
   mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'entrante', de, nombre: contacto.nombre, cuerpo, metadata: { via: 'autoresponder', tipo: 'tercero_libreta' } });
 
-  const entrada = { de, nombre: contacto.nombre, cuerpo,
+  const entrada = { de, nombre: contacto.nombre, cuerpo, ...(attachmentPath ? { attachmentPath } : {}),
     contextoRemitente: { esTercero: true, via: 'libreta', razon: `"${contacto.nombre}" está en la libreta de ${u.nombre}` } };
   const prompt = await construirPrompt({ usuario: u, canal: 'whatsapp', entrada });
   const { json } = await invocarClaudeJSONConConsultas(prompt, { usuario: u }, {
@@ -328,7 +328,7 @@ async function procesar(body) {
 
   // Serializar por remitente
   const prev = _enProceso.get(clave) || Promise.resolve();
-  const turno = prev.catch(() => {}).then(() => u ? _turnoUsuario(u, cuerpo) : _turnoTercero(tercero.usuario, tercero.contacto, tercero.de, cuerpo));
+  const turno = prev.catch(() => {}).then(() => u ? _turnoUsuario(u, cuerpo, q.attachmentPath || null) : _turnoTercero(tercero.usuario, tercero.contacto, tercero.de, cuerpo, q.attachmentPath || null));
   _enProceso.set(clave, turno);
   turno.finally(() => { if (_enProceso.get(clave) === turno) _enProceso.delete(clave); });
 
