@@ -1,5 +1,23 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+28132  2026-08-17 18:10:58  whatsapp  saliente   541132317896@c.us   Dale, quedo esperando esas opciones de fecha en septiembre. Cuando me las pases, coordino con Caro y Gabriel para cerrar el día de la cena en FICO.                                                     
+                                                                                                                                                                                                                                                                             
+                                                                     ⚠️ Ojo: no pude completar esta acción: agregar_pend                                                                                                                                                     
+
+28131  2026-08-17 18:10:58  sistema   interno                        claude_call whatsapp: 40077ms prompt=88325c raw=27378c in=8t(cache_read=136461 new=99077) out=3170t ttfb=1525ms api=39099ms turnos=7 $0.4726                                                            
+
+28130  2026-08-17 18:10:53  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+28129  2026-08-17 18:10:49  sistema   interno                        acción FALLÓ: agregar_pendiente — agregarPendiente: combo inválido (dueno=maria + disparador=respuesta_usuario). Maria no se pregunta a sí misma.                                                       
+
+28128  2026-08-17 18:10:47  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+28127  2026-08-17 18:10:47  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+28126  2026-08-17 18:10:47  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+28125  2026-08-17 18:10:17  whatsapp  entrante   541132317896@c.us   Y lo de la cena con caro y gabi, te paso opciones por qué caro me pidió pasarlo para septiembre                                                                                                         
+
 28124  2026-08-17 18:10:02  whatsapp  saliente   541132317896@c.us   Dale, con Natali no hago nada más de mi lado.                                                                                                                                                           
 
 28123  2026-08-17 18:10:02  sistema   interno                        claude_call whatsapp: 11563ms prompt=88487c raw=7760c in=2t(cache_read=8784 new=47325) out=578t ttfb=1552ms api=10435ms turnos=1 $0.2014                                                                
@@ -208,19 +226,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 28034  2026-08-17 13:18:04  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 53212 min)                                                                                                                                          
 
 28033  2026-08-17 13:18:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
-
-28032  2026-08-17 13:16:24  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-28031  2026-08-17 13:16:24  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-28030  2026-08-17 13:16:24  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 53210 min)                                                                                                                                          
-
-28029  2026-08-17 13:16:22  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
-
-28028  2026-08-17 13:12:06  sistema   interno                        poda-eventos: 17 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
-
-28027  2026-08-17 13:07:06  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-28026  2026-08-17 13:07:06  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-28025  2026-08-17 13:07:06  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 53201 min)                                                                                                                                          
