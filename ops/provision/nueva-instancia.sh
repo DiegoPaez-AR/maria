@@ -138,9 +138,10 @@ cat <<CHECKLIST
  3. TELÉFONO dedicado: chip + WhatsApp con el número de la Maria nueva
     ⚠️  WARM-UP: usar el número A MANO 2-3 días antes de conectar nada (lección Meta)
  4. MARIABRIDGE en ese teléfono:
-      APK:    (QR/link del último build — /root/mariabridge-build.log o https://intensa.io/_dl/mariabridge-latest.json)
-      URL:    https://intensa.io/hooks/wa-${SLUG}
-      Secret: ${WA_HOOK_SECRET}
+      APK:    https://intensa.io/_dl/ (ver mariabridge-latest.json para el último)
+      CONFIG 1-TAP (v2.6+): abrí este link EN EL TELÉFONO (mandalo por el canal que sea):
+        mariabridge://config?url=https%3A%2F%2Fintensa.io%2Fhooks%2Fwa-${SLUG}&secret=${WA_HOOK_SECRET}
+      (o a mano: URL https://intensa.io/hooks/wa-${SLUG} + secret ${WA_HOOK_SECRET})
       Permisos: ①notificaciones ②batería ③accesibilidad (+ permitir instalar apps para el auto-update)
  5. TELEGRAM (opcional pero recomendado): crear bot en @BotFather →
       TELEGRAM_BOT_TOKEN/USERNAME en ${CONF} (NO en secrets.conf global)
