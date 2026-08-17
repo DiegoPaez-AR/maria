@@ -1,0 +1,37 @@
+# ejecutado: 2026-08-17T01:27:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB);
+#   const rows=db.prepare(\"SELECT id FROM programados WHERE texto LIKE '%Telegram%' AND enviado=0 ORDER BY cuando\").all();
+#   const t0=new Date('2026-08-17T10:00:00-03:00').getTime();
+#   rows.forEach((r,i)=>{
+#     const cuando=new Date(t0 + i*45*60*1000).toISOString();
+#     db.prepare('UPDATE programados SET cuando=? WHERE id=?').run(cuando, r.id);
+#     console.log('#'+r.id,'→',cuando);
+#   });
+#   console.log('reprogramados:',rows.length,'(cada 45min desde 10:00 ART)');
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+#1341 → 2026-08-17T13:00:00.000Z
+#1342 → 2026-08-17T13:45:00.000Z
+#1343 → 2026-08-17T14:30:00.000Z
+#1344 → 2026-08-17T15:15:00.000Z
+#1345 → 2026-08-17T16:00:00.000Z
+#1346 → 2026-08-17T16:45:00.000Z
+#1347 → 2026-08-17T17:30:00.000Z
+#1348 → 2026-08-17T18:15:00.000Z
+#1349 → 2026-08-17T19:00:00.000Z
+#1350 → 2026-08-17T19:45:00.000Z
+#1351 → 2026-08-17T20:30:00.000Z
+#1352 → 2026-08-17T21:15:00.000Z
+#1353 → 2026-08-17T22:00:00.000Z
+#1354 → 2026-08-17T22:45:00.000Z
+reprogramados: 14 (cada 45min desde 10:00 ART)
+LISTO
+
+# exit=0
