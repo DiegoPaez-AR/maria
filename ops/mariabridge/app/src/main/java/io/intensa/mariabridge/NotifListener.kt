@@ -22,6 +22,7 @@ class NotifListener : NotificationListenerService() {
         val extras = sbn.notification.extras ?: return
 
         val titulo = extras.getCharSequence(Notification.EXTRA_TITLE)?.toString() ?: return
+        if (titulo.isBlank()) return   // notifs redactadas llegan sin título
         // Eco propio: al responder por RemoteInput, WhatsApp re-emite la notif con
         // nuestra respuesta como "You"/"Tú" → NO es un entrante, filtrar.
         val tNorm = titulo.trim().lowercase()
@@ -34,6 +35,11 @@ class NotifListener : NotificationListenerService() {
         // útil para el hook; generan turnos basura. Con o sin prefijo de nombre.
         if (Regex("^([^:]{1,40}: )?(Reacted|Reaccionó|Reagiu|Reaccionaste)\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)) return
 
+        // Contenido redactado por Android ("Sensitive notification content hidden")
+        if (texto.contains("notification content hidden", ignoreCase = true)) return
+        // DEDUPE (17/8, caso "Gracias María!" x4): WhatsApp re-emite la misma
+        // notif al actualizar el grupo → mismo (título,texto) en 10 min = ya visto.
+        if (Dedupe.visto(titulo, texto)) { MbLog.i("notif", "dup ignorado de \"$titulo\""); return }
         // Resumen agregado ("3 mensajes nuevos") → ignorar, no es contenido real.
         if (texto.matches(Regex("^\\d+ (mensajes?|messages?).*", RegexOption.IGNORE_CASE))) return
         // Notif de llamada / "escribiendo" / vacías → ignorar.

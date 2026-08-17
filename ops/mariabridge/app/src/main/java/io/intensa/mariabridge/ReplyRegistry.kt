@@ -21,6 +21,10 @@ object ReplyRegistry {
 
     /** @return true si la notif tenía acción de Responder (= es un CHAT real). */
     fun registrarDesde(sbnKey: String, titulo: String, n: Notification): Boolean {
+        // BUG 17/8 (título vacío por "Sensitive notification content hidden"):
+        // la clave "" matcheaba con TODO en el contains → 7 invitaciones de la
+        // campaña salieron por el chat equivocado. Títulos vacíos JAMÁS entran.
+        if (normalizar(titulo).isBlank()) return false
         val actions = n.actions ?: return false
         for (a in actions) {
             val ris = a.remoteInputs ?: continue
@@ -52,15 +56,25 @@ object ReplyRegistry {
 
     private fun buscarAccion(buscado: String): Accion? {
         val b = normalizar(buscado)
-        porChat[b]?.let { return it }                                   // exacto
-        val bDig = b.filter { it.isDigit() }
-        for ((k, v) in porChat) {
-            if (k.contains(b) || b.contains(k)) return v                // contains bidireccional
-            val kDig = k.filter { it.isDigit() }
-            if (bDig.length >= 8 && kDig.length >= 8 &&
-                (kDig.endsWith(bDig.takeLast(10)) || bDig.endsWith(kDig.takeLast(10)))) return v  // por número
+        if (b.isBlank()) return null
+        porChat[b]?.let { return it }                                   // exacto (nombre de pendiente.txt)
+        // Por NÚMERO verificado (chats sin agendar, título = número), con
+        // variante 9-AR. NADA de contains: el matcheo laxo causó el desvío
+        // de la campaña del 17/8 (clave "" matcheaba todo).
+        val bDig = _dig9(b)
+        if (bDig.length >= 10) {
+            for ((k, v) in porChat) {
+                val kDig = _dig9(k)
+                if (kDig.length >= 10 && kDig.takeLast(10) == bDig.takeLast(10)) return v
+            }
         }
         return null
+    }
+
+    private fun _dig9(s: String): String {
+        var d = s.filter { it.isDigit() }
+        if (d.startsWith("549")) d = "54" + d.substring(3)
+        return d
     }
 
     private fun normalizar(s: String): String =

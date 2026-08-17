@@ -83,7 +83,7 @@ class OutboxService : Service() {
         } else {
             // Sin notif viva → ENVÍO EN FRÍO por accesibilidad (abre wa.me + tap
             // por viewId + verifica). Un cold-send a la vez; si ya hay uno, espera.
-            val encolado = ColdSend.encolar(ColdSend.Target(id, numero, texto)) { doneId, okCold ->
+            val encolado = ColdSend.encolar(ColdSend.Target(id, numero, texto, nombre)) { doneId, okCold ->
                 if (okCold) {
                     Net.get("$base/$secret/confirmar/$doneId") { _, _ -> }
                     log("enviado EN FRÍO (accesibilidad) → $numero")

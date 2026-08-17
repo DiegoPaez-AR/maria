@@ -104,6 +104,10 @@ class WaSendService : AccessibilityService() {
         if (pkg != "com.whatsapp" && pkg != "com.whatsapp.w4b") return
 
         val root = rootInActiveWindow ?: return
+        // VERIFICACIÓN DE CHAT (v3.0, caso campaña desviada 17/8): antes de
+        // tocar enviar, el título de la conversación abierta tiene que ser el
+        // DESTINATARIO (nombre esperado o número). Si es otro chat, ABORTAMOS.
+        if (!_chatCorrecto(root, t)) return
         // Número SIN WhatsApp (v2.5, caso Carolina): wa.me muestra un diálogo
         // "el número no está en WhatsApp" → fail-fast definitivo, sin reintentos.
         if (_esDialogoSinWA(root)) {
@@ -133,6 +137,30 @@ class WaSendService : AccessibilityService() {
         if (!ok) _reportarFallo(id, "verificacion_negativa")
         goHome()
         ColdSend.terminar(id, ok)
+    }
+
+    private fun _chatCorrecto(root: AccessibilityNodeInfo, t: ColdSend.Target): Boolean {
+        val nodos = root.findAccessibilityNodeInfosByViewId("com.whatsapp:id/conversation_contact_name")
+        if (nodos == null || nodos.isEmpty()) return true   // pantalla intermedia (aún sin chat) — seguir esperando
+        val visto = nodos[0].text?.toString()?.trim()?.lowercase() ?: return true
+        val esperadoNombre = t.nombre.trim().lowercase()
+        val dEsperado = _dig9(t.numero)
+        val dVisto = _dig9(visto)
+        val ok = (esperadoNombre.isNotBlank() && visto == esperadoNombre) ||
+                 (dVisto.length >= 10 && dVisto.takeLast(10) == dEsperado.takeLast(10))
+        if (!ok) {
+            MbLog.e("frio", "#${t.id}: chat ABIERTO ES OTRO (\"$visto\" ≠ \"${t.nombre}\"/${t.numero}) — ABORTO sin tocar")
+            _reportarFallo(t.id, "chat_equivocado")
+            goHome()
+            ColdSend.terminar(t.id, false)
+        }
+        return ok
+    }
+
+    private fun _dig9(s: String): String {
+        var d = s.filter { it.isDigit() }
+        if (d.startsWith("549")) d = "54" + d.substring(3)
+        return d
     }
 
     private fun _reportarFallo(id: String, motivo: String) {

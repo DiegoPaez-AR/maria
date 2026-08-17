@@ -6,7 +6,7 @@ package io.intensa.mariabridge
  * viva, donde RemoteInput no sirve. Un solo cold-send a la vez.
  */
 object ColdSend {
-    data class Target(val id: String, val numero: String, val texto: String, val ts: Long = System.currentTimeMillis())
+    data class Target(val id: String, val numero: String, val texto: String, val nombre: String = "", val ts: Long = System.currentTimeMillis())
 
     @Volatile var pendiente: Target? = null
     @Volatile var lanzado: Boolean = false
