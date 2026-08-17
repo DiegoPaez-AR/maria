@@ -1,5 +1,13 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27716  2026-08-17 00:40:56  sistema   interno                         claude_call telegram: 15646ms prompt=85945c raw=12124c in=6t(cache_read=64715 new=102376) out=864t ttfb=1611ms api=14552ms turnos=3 $0.4281                                                             
+
+27715  2026-08-17 00:40:39  telegram  entrante   telegram:590589920   Selemente, tenés el contacto de Abiel Pacheco y de Carolina Brunatti.                                                                                                                                   
+
+27714  2026-08-17 00:40:09  telegram  saliente   telegram:590589920   Tenés toda la razón, me comí el nombre del día. Mañana es lunes 17/08, no martes — el trigger interno ya apunta bien a esa fecha a las 11hs (ese dato sí estaba correcto), solo fue un error mío al nomb
+
+27713  2026-08-17 00:40:09  sistema   interno                         claude_call telegram: 23497ms prompt=85525c raw=12327c in=2t(cache_read=8784 new=46087) out=1824t ttfb=1539ms api=23865ms turnos=1 $0.2144                                                              
+
 27712  2026-08-17 00:39:45  telegram  entrante   telegram:590589920   Perfecto, mañana es lunes, igual no martes.                                                                                                                                                             
 
 27711  2026-08-17 00:39:14  telegram  saliente   telegram:590589920   Sí, te había contestado pero hubo un error técnico de mi lado y el mensaje no te llegó — perdón. Pero quedó todo anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un Whats
@@ -214,11 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 27618  2026-08-16 23:02:02  sistema   interno                         claude_call moderacion: 8233ms prompt=1824c raw=7835c in=10t(cache_read=17396 new=5165) out=521t ttfb=1397ms api=7044ms turnos=1 $0.0114                                                                
 
 27617  2026-08-16 23:01:54  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-27616  2026-08-16 23:01:54  sistema   interno                         claude_call moderacion: 9391ms prompt=1823c raw=7994c in=10t(cache_read=17396 new=5167) out=568t ttfb=1191ms api=8417ms turnos=1 $0.0116                                                                
-
-27615  2026-08-16 23:01:45  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-27614  2026-08-16 23:01:45  sistema   interno                         claude_call moderacion: 6927ms prompt=1821c raw=7308c in=10t(cache_read=17396 new=5165) out=456t ttfb=1312ms api=5914ms turnos=1 $0.0110                                                                
-
-27613  2026-08-16 23:01:38  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
