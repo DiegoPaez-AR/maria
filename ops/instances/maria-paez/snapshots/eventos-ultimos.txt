@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27755  2026-08-17 00:50:48  sistema   interno                        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]                                                                                    
+
+27754  2026-08-17 00:50:33  whatsapp  saliente   5491140402319@c.us  Genial, anotado miércoles 19! Apenas confirme Carolina también les aviso con el horario y la reserva.                                                                                                   
+
+27753  2026-08-17 00:50:26  sistema   interno                        claude_call whatsapp: 29665ms prompt=88339c raw=15350c in=8t(cache_read=133297 new=96878) out=1411t ttfb=1642ms api=23063ms turnos=4 $0.4371                                                            
+
+27752  2026-08-17 00:50:23  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+27751  2026-08-17 00:50:23  sistema   interno                        claude_call moderacion: 5636ms prompt=1549c raw=6076c in=10t(cache_read=17396 new=5066) out=307t ttfb=1209ms api=4761ms turnos=1 $0.0101                                                                
+
+27750  2026-08-17 00:50:14  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+27749  2026-08-17 00:50:08  sistema   interno                        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]                                                                                    
+
 27748  2026-08-17 00:49:56  whatsapp  entrante   5491140402319@c.us  Miércoles 19                                                                                                                                                                                            
 
 27747  2026-08-17 00:49:28  sistema   interno                        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]                                                                                                      
@@ -202,21 +216,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
                                                                      Pedir turno dent                                                                                                                                                                                        
 
 27656  2026-08-16 23:23:23  whatsapp  saliente   5491165286555@c.us  Listo, te programo el recordatorio con toda la lista para *mañana lunes 17/08 a las 9:00* 📋                                                                                                             
-
-27655  2026-08-16 23:23:23  sistema   interno                        claude_call whatsapp: 22934ms prompt=64092c raw=11376c in=6t(cache_read=45490 new=90963) out=908t ttfb=1725ms api=14406ms turnos=3 $0.3732                                                              
-
-27654  2026-08-16 23:23:19  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
-
-27653  2026-08-16 23:23:19  sistema   interno                        claude_call moderacion: 7228ms prompt=1856c raw=7246c in=10t(cache_read=0 new=22628) out=446t ttfb=1258ms api=6265ms turnos=1 $0.0311                                                                   
-
-27652  2026-08-16 23:23:19  sistema   interno                        claude_call whatsapp-gestion-ajena: 4889ms prompt=804c raw=7078c in=10t(cache_read=26048 new=1540) out=270t ttfb=1461ms api=3648ms turnos=1 $0.0066                                                     
-
-27651  2026-08-16 23:23:01  sistema   interno                        claude_call whatsapp-gestion-ajena: 6546ms prompt=964c raw=8451c in=10t(cache_read=26048 new=1586) out=441t ttfb=1917ms api=5269ms turnos=1 $0.0076                                                     
-
-27650  2026-08-16 23:22:59  whatsapp  entrante   5491165286555@c.us  Maria quería pedirte que le hagas algunos recordatorios mañana a las 9.00                                                                                                                               
-                                                                     Orden laboral:                                                                                                                                                                                          
-                                                                     Terminar texto curatorial                                                                                                                                                                               
-                                                                     Revisar exell para comunicación                                                                                                                                                                         
-                                                                     Mandar Mail a becas por fechas y chequear que se hay                                                                                                                                                    
-
-27649  2026-08-16 23:22:59  sistema   interno                        claude_call whatsapp-gestion-ajena: 6314ms prompt=1082c raw=8328c in=10t(cache_read=0 new=27675) out=448t ttfb=1682ms api=5080ms turnos=1 $0.0376                                                       
