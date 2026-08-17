@@ -1,0 +1,28 @@
+# ejecutado: 2026-08-17T10:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pgrep -f mb-build-worker >/dev/null && echo compilando || echo terminó
+#   grep -E "BUILD (SUCC|FAIL)|APK_OK|APK_FAIL|^e: file" /root/mariabridge-build.log | tail -4
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   echo "── campaña: primeros envíos ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT id,cuando,enviado FROM programados WHERE texto LIKE '%Telegram%' ORDER BY cuando LIMIT 3\").all().forEach(r=>console.log('#'+r.id,r.cuando.slice(11,16),'UTC',r.enviado?'ENVIADO ✓':'pendiente'));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+terminó
+BUILD SUCCESSFUL in 39s
+APK_OK url=https://intensa.io/_dl/mb-cefa44d102f7d754.apk size=3.1M latest.json=v2.8(13)
+{"versionCode": 13, "versionName": "2.8", "url": "https://intensa.io/_dl/mb-cefa44d102f7d754.apk"}
+
+── campaña: primeros envíos ──
+#1341 13:00 UTC ENVIADO ✓
+#1342 13:45 UTC pendiente
+#1343 14:30 UTC pendiente
+LISTO
+
+# exit=0
