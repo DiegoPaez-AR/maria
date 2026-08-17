@@ -236,23 +236,35 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
     return { destinoFinal: null, enviado: false, diferido: true, diferidoId: _id };
   }
 
-  // AUTOMÁTICOS SIN WA (política 2026-07-07 v2, pedido de Diego tras el 2do
-  // bloqueo): TODO envío automático a usuarios sale FIJO por Telegram y, si
-  // no está vinculado, por email. WhatsApp queda como ÚLTIMO recurso (usuario
-  // sin TG ni email, o ambos fallaron) — y aún así pasa por el embudo.
-  // El chat conversacional NO pasa por acá: responde por el canal de origen.
-  // opts.fallback=false es el escape hatch para forzar WA directo.
-  if (fallback) {
-    const r = await _enviarTGoEmail(usuario, texto, { tag, metadata, motivo: 'automaticos_sin_wa', logSaliente });
-    if (r) return r;
-    if (usuario.telegram_chat_id || usuario.email) {
-      console.warn(`[wa-send] ${tag}: TG/email fallaron para ${usuario.nombre} — último recurso: WhatsApp`);
-    }
-  }
-
+  // POLÍTICA 2026-08-17 (decisión Diego: "volvamos a WA como ruta principal"):
+  // en la era MariaBridge, WhatsApp vuelve a ser el canal PRINCIPAL para todo
+  // envío a usuarios — sin waClient se encola en wa_outbox y el teléfono lo
+  // manda (silencioso si hay notif viva, en frío si no). TG/email quedan como
+  // FALLBACK solo si el camino WA falla de verdad. (Reemplaza la política
+  // "automáticos sin WA" de 2026-07-07, que era de la era wwebjs post-bloqueos.)
   if (!client) {
-    if (!fallback) throw new Error(`${tag}: waClient requerido`);
-    return _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA: 'sin cliente WA' });
+    try {
+      const destinoCola = usuario.wa_cus || usuario.wa_lid;
+      if (!destinoCola) throw new Error('usuario sin destinos WA');
+      const outbox = require('./wa-outbox');
+      const id = outbox.encolar({
+        usuarioId: usuario.id, numero: String(destinoCola).replace(/@.*/, ''), texto,
+        metadata: { ...(metadata || {}), via: 'outbox_bridge', tag },
+      });
+      if (logSaliente) {
+        try {
+          mem.log({ usuarioId: usuario.id, canal: 'whatsapp', direccion: 'saliente',
+            de: destinoCola, nombre: usuario.nombre, cuerpo: texto,
+            metadata: { ...(metadata || {}), via: 'outbox_bridge', outboxId: id, tag } });
+        } catch { /* noop */ }
+      }
+      console.log(`[wa-send] ${tag}: sin waClient → outbox #${id} (bridge) para ${usuario.nombre}`);
+      return { destinoFinal: destinoCola, enviado: true, canal: 'whatsapp', outboxId: id };
+    } catch (errCola) {
+      if (!fallback) throw errCola;
+      console.warn(`[wa-send] ${tag}: outbox falló para ${usuario.nombre} (${errCola.message}) — pruebo telegram/email`);
+      return _fallbackTGoEmail(usuario, texto, { tag, metadata, errorWA: errCola.message });
+    }
   }
 
   // Orden de preferencia: @lid primero (formato moderno, no requiere
