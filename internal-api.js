@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo)(?:\/(\d+))?$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo|mbmedia)(?:\/(\d+))?$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -90,6 +90,27 @@ function start({ waClient } = {}) {
           const lineas = Array.isArray(b.lineas) ? b.lineas : [];
           for (const l of lineas.slice(0, 100)) console.log(`[MB v${b.ver || '?'}] ${String(l).slice(0, 400)}`);
           return send(200, { ok: true, recibidas: lineas.length });
+        }
+        if (_out[2] === 'mbmedia') {
+          // Audio REAL desde MariaBridge (2026-08-17, 7a): la app caza el .opus
+          // de la carpeta de medios de WA y lo sube; acá se transcribe con el
+          // Whisper local y corre el turno normal con la transcripción.
+          const b = await readJsonGrande(req).catch(() => null);
+          if (!b || !b.data || !b.sender) return send(400, { error: 'payload' });
+          const buf = Buffer.from(String(b.data), 'base64');
+          const ext = (String(b.fileName || '').match(/\.(\w+)$/) || [])[1] || 'opus';
+          let transcript = null;
+          try {
+            const { transcribirBuffer } = require('./transcribir');
+            transcript = await transcribirBuffer(buf, ext);
+          } catch (e) { console.warn('[mbmedia] transcripción falló:', e.message); }
+          if (!transcript || !String(transcript).trim()) {
+            console.warn(`[MB-MEDIA] audio de "${b.sender}" (${Math.round(buf.length / 1024)}KB) — transcripción vacía, la app cae al hint`);
+            return send(200, { replies: [], transcript: null });
+          }
+          console.log(`[MB-MEDIA] audio de "${b.sender}" (${Math.round(buf.length / 1024)}KB) → "${String(transcript).slice(0, 80)}"`);
+          const r = await require('./wa-hook').procesar({ query: { sender: b.sender, message: `(audio de voz, transcripto) ${String(transcript).trim()}` } });
+          return send(200, { ...(r || {}), transcript: String(transcript).slice(0, 200) });
         }
         if (_out[2] === 'mbfallo') {
           const b = await readJson(req).catch(() => ({}));
@@ -287,6 +308,15 @@ function _secretOk(header) {
   const b = Buffer.from(SECRET);
   if (a.length !== b.length) return false;
   return crypto.timingSafeEqual(a, b);
+}
+
+function readJsonGrande(req, cap = 8 * 1024 * 1024) {
+  return new Promise((resolve, reject) => {
+    let buf = '';
+    req.on('data', c => { buf += c; if (buf.length > cap) { req.destroy(); reject(new Error('body too big')); } });
+    req.on('end', () => { try { resolve(buf ? JSON.parse(buf) : {}); } catch (e) { reject(e); } });
+    req.on('error', reject);
+  });
 }
 
 function readJson(req) {
