@@ -1,0 +1,41 @@
+# ejecutado: 2026-08-16T23:29:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── 1. pm2: restarts y uptime ──"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys
+#   for p in json.load(sys.stdin):
+#       print(p['name'], 'restarts:', p['pm2_env'].get('restart_time'), 'uptime_min:', round((__import__('time').time()*1000-p['pm2_env'].get('pm_uptime',0))/60000))"
+#   echo "── 2. ¿qué es lo de Brunatti? outbox pendientes ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT id,creado,estado,intentos,numero,substr(texto,1,60) t FROM wa_outbox WHERE estado='pendiente' ORDER BY id\").all().forEach(r=>console.log('#'+r.id,r.creado,'int:'+r.intentos,r.numero,'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── 3. pendiente nuevo del mail CC ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT id,substr(\\\"desc\\\",1,100) d FROM pendientes WHERE creado>=datetime('now','-20 minutes') AND estado='abierto'\").all().forEach(r=>console.log('#'+r.id,'|',r.d));
+#   db.close();"
+#   echo "── 4. últimos logs MB (¿accesibilidad viva?) ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | grep -i "frio\|svc\|upd" | tail -5
+#   echo LISTO
+
+# ───── output ─────
+── 1. pm2: restarts y uptime ──
+intensa-api restarts: 4 uptime_min: 7
+maria-paez restarts: 277 uptime_min: 7
+── 2. ¿qué es lo de Brunatti? outbox pendientes ──
+#46 2026-08-17 00:46:24 int:308 5491141885339 | Hola Carolina! Soy Maria, la secretaria de Diego. Te escribo
+── 3. pendiente nuevo del mail CC ──
+#261 | Esperando que Natali Funez confirme la meet del lunes 17/08 14hs con Diego (Diego ya le propuso el h
+── 4. últimos logs MB (¿accesibilidad viva?) ──
+2026-08-16 23:27:29: [MB v2.3] 23:27:22 I [frio] abriendo chat 5491141885339 (#46)
+2026-08-16 23:27:49: [MB v2.3] 23:27:47 W [frio] timeout #46 — no encontré el botón send
+2026-08-16 23:28:09: [MB v2.3] 23:28:02 I [frio] abriendo chat 5491141885339 (#46)
+2026-08-16 23:28:29: [MB v2.3] 23:28:27 W [frio] timeout #46 — no encontré el botón send
+2026-08-16 23:28:49: [MB v2.3] 23:28:43 I [frio] abriendo chat 5491141885339 (#46)
+LISTO
+
+# exit=0
