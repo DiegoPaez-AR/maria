@@ -1,0 +1,38 @@
+# ejecutado: 2026-08-17T09:26:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('── TODOS los salientes a Gabi (u18) anoche 23:20+ y hoy 11:55+ UTC, con canal y metadata ──');
+#   db.prepare(\"SELECT timestamp,canal,substr(cuerpo,1,45) c, metadata_json m FROM eventos WHERE usuario_id=18 AND direccion='saliente' AND (timestamp>='2026-08-16 23:20' AND timestamp<='2026-08-16 23:30' OR timestamp>='2026-08-17 11:55') ORDER BY id\").all().forEach(r=>{
+#     let via=''; try{const mm=JSON.parse(r.m||'{}'); via=mm.via||mm.fallback||mm.tipo||'';}catch{}
+#     console.log(r.timestamp.slice(5,16),r.canal,via,'|',String(r.c).replace(/\n/g,' '));});
+#   db.close();"
+#   echo "── wa-send: qué hace sin waClient (fallback) ──"
+#   grep -n "fallback\|!waClient\|waClient) " /root/secretaria/wa-send.js | head -8
+#   echo LISTO
+
+# ───── output ─────
+── TODOS los salientes a Gabi (u18) anoche 23:20+ y hoy 11:55+ UTC, con canal y metadata ──
+08-16 23:23 whatsapp autoresponder | Listo, te programo el recordatorio con toda l
+08-16 23:23 whatsapp autoresponder | Genial, te sumo también este segundo recordat
+08-16 23:24 whatsapp autoresponder | Dale, te sumo también este tercer recordatori
+08-16 23:26 calendar  | creado: Museo de la Cárcova (2026-08-19T11:00
+08-16 23:26 whatsapp autoresponder | Listo, te agrego *Museo de la Cárcova* el mié
+08-17 12:00 gmail  | Buen día! 🌞 Recordatorio de tu orden laboral 
+08-17 12:00 gmail  | Y también tu lista de Personal para hoy 📋 1️⃣
+08-17 12:00 gmail  | Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a 
+── wa-send: qué hace sin waClient (fallback) ──
+3:// fallback que ya existía en executor._enviarWA, el log saliente en
+9:// sin fallback. Eso causó el spam de morning-brief de Doris durante 2
+90:// re-rutea a Telegram (fallback email; WA queda como último recurso para no
+159: *  - fallback automático si el primer destino tira error de LID/wid
+173:// follow-ups, alertas). opts.fallback=false lo desactiva para un caller puntual.
+174:async function _enviarTGoEmail(usuario, texto, { tag, metadata, motivo = 'fallback_wa', logSaliente = true }) {
+175:  const esFallback = motivo === 'fallback_wa';
+176:  const metaVia = esFallback ? { fallback_de: 'whatsapp' } : { via: motivo };
+LISTO
+
+# exit=0
