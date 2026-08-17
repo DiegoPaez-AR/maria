@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog)(?:\/(\d+))?$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo)(?:\/(\d+))?$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -90,6 +90,12 @@ function start({ waClient } = {}) {
           const lineas = Array.isArray(b.lineas) ? b.lineas : [];
           for (const l of lineas.slice(0, 100)) console.log(`[MB v${b.ver || '?'}] ${String(l).slice(0, 400)}`);
           return send(200, { ok: true, recibidas: lineas.length });
+        }
+        if (_out[2] === 'mbfallo') {
+          const b = await readJson(req).catch(() => ({}));
+          const r = require('./wa-outbox').registrarFalloCold(Number(b.id), String(b.motivo || ''));
+          console.log(`[MB-FALLO] #${b.id} motivo=${b.motivo} → ${JSON.stringify(r)}`);
+          return send(200, r);
         }
         if (_out[2] === 'mbdiag') {
           const b = await readJson(req).catch(() => ({}));

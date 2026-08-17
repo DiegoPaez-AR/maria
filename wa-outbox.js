@@ -111,4 +111,47 @@ function confirmarUltimo() {
   return { ok: true, id: row.id };
 }
 
-module.exports = { encolar, siguiente, confirmar, confirmarUltimo };
+// Fallo de COLD-send reportado por MariaBridge (2026-08-17, caso Carolina
+// #46: número sin WhatsApp → 314 reintentos con la pantalla prendiéndose).
+// motivo 'numero_sin_whatsapp' → vencido INMEDIATO; otros → contador en
+// metadata_json, al 5º → vencido. Al vencer: aviso WA al owner con el email
+// del contacto si está en alguna libreta (el owner decide si va por mail).
+function registrarFalloCold(id, motivo) {
+  const row = mem.db.prepare(`SELECT * FROM wa_outbox WHERE id = ?`).get(id);
+  if (!row || row.estado !== 'pendiente') return { id, estado: row ? row.estado : 'inexistente' };
+  let meta = {};
+  try { meta = JSON.parse(row.metadata_json || '{}'); } catch {}
+  const MAXF = Number(process.env.WA_OUTBOX_COLD_FALLOS_MAX || 5);
+  meta.cold_fallos = (meta.cold_fallos || 0) + 1;
+  meta.cold_motivo = String(motivo || 'desconocido').slice(0, 60);
+  const definitivo = motivo === 'numero_sin_whatsapp' || meta.cold_fallos >= MAXF;
+  mem.db.prepare(`UPDATE wa_outbox SET metadata_json = ?, estado = CASE WHEN ? THEN 'vencido' ELSE estado END WHERE id = ?`)
+    .run(JSON.stringify(meta), definitivo ? 1 : 0, id);
+  if (definitivo) {
+    try { _avisarOwnerFalloEntrega(row, meta); } catch (e) { console.warn('[wa-outbox] aviso fallo entrega:', e.message); }
+  }
+  return { id, cold_fallos: meta.cold_fallos, definitivo };
+}
+
+function _avisarOwnerFalloEntrega(row, meta) {
+  const usuarios = require('./usuarios');
+  const owner = usuarios.obtenerOwner();
+  if (!owner || !owner.wa_cus) return;
+  const digs = String(row.numero).replace(/\D/g, '').slice(-10);
+  const c = mem.db.prepare(
+    `SELECT nombre, email FROM contactos WHERE replace(replace(COALESCE(whatsapp,''),'+',''),' ','') LIKE '%' || ? || '%' AND email IS NOT NULL LIMIT 1`
+  ).get(digs);
+  const quien = c ? c.nombre : row.numero;
+  const motivoTxt = meta.cold_motivo === 'numero_sin_whatsapp'
+    ? 'el número NO está en WhatsApp' : `no pude entregarlo tras ${meta.cold_fallos} intentos`;
+  const sugerencia = c && c.email
+    ? `Tiene email en la libreta (${c.email}) — decime si querés que se lo mande por mail.`
+    : 'No tiene email en la libreta.';
+  const texto = `⚠️ No pude entregar un WhatsApp a ${quien}: ${motivoTxt}. El mensaje decía: "${String(row.texto).slice(0, 80)}…". ${sugerencia}`;
+  encolar({ usuarioId: owner.id, numero: String(owner.wa_cus).replace('@c.us', ''), texto, metadata: { tipo: 'aviso_fallo_entrega', outboxId: row.id } });
+  mem.log({ usuarioId: row.usuario_id || null, canal: 'sistema', direccion: 'interno',
+    cuerpo: `wa-outbox: entrega FALLIDA definitiva #${row.id} a ${row.numero} (${meta.cold_motivo}) — aviso al owner`,
+    metadata: { tipo: 'fallo_entrega_wa', outboxId: row.id, motivo: meta.cold_motivo } });
+}
+
+module.exports = { encolar, siguiente, confirmar, confirmarUltimo, registrarFalloCold };
