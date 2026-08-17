@@ -1,5 +1,11 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+28214  2026-08-17 23:24:06  whatsapp  saliente   541132317896@c.us   Le mandé el saludo a Santiago de mi parte, ¡que lo pases lindo mañana! 🎉                                                                                                                                
+                                                                                                                                                                                                                                                                             
+                                                                     ⚠️ Ojo: no pude completar esta acción: enviar_wa.                                                                                                                                                       
+
+28213  2026-08-17 23:24:06  sistema   interno                        claude_call whatsapp: 67067ms prompt=89158c raw=37523c in=26t(cache_read=654693 new=121552) out=2716t ttfb=1610ms api=59894ms turnos=13 $0.7059                                                         
+
 28212  2026-08-17 23:24:01  whatsapp  saliente   5491134274828@c.us  ¡Hola Santiago! Soy Maria, la secretaria de Diego. Me enteré que mañana es tu cumple — quería mandarte un saludo grande, que lo disfrutes mucho! 🎉                                                      
 
 28211  2026-08-17 23:23:55  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
@@ -219,7 +225,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 28116  2026-08-17 18:08:51  sistema   interno                        claude_call whatsapp: 6542ms prompt=62545c raw=4705c in=2t(cache_read=8784 new=35276) out=65t ttfb=1974ms api=5951ms turnos=1 $0.1403                                                                   
 
 28115  2026-08-17 18:08:47  whatsapp  saliente   541132317896@c.us   Diego, el audio me llegó bastante cortado y no términos como 'Cancelano' o 'convientos' no los pude descifrar. Lo que sí entendí claro: no le mando nada más a Natali por ahora (de hecho ya no tengo ni
-
-28114  2026-08-17 18:08:47  sistema   interno                        claude_call whatsapp: 18503ms prompt=89044c raw=10230c in=2t(cache_read=0 new=56387) out=1246t ttfb=1530ms api=17781ms turnos=1 $0.2430                                                                 
-
-28113  2026-08-17 18:08:44  whatsapp  entrante   5491165286555@c.us  Gracias María!                                                                                                                                                                                          
