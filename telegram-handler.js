@@ -24,6 +24,7 @@ const vinculos = require('./telegram-vinculos');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSONConConsultas, invocarClaudeJSON } = require('./claude-client');
 const gestionAjena = require('./gestion-ajena');
+const loopGuard = require('./loop-guard');
 const { transcribirBuffer } = require('./transcribir');
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -508,8 +509,12 @@ async function _loop(waEstado) {
           if (adjunto) { try { fs.unlinkSync(adjunto.path); } catch {} }
         }
       }
+      loopGuard.reportar('telegram_polling', true);
     } catch (err) {
       console.warn('[TG] poll error (reintento en 15s):', err.message);
+      // Canal de RESPALDO caído en silencio = el seguro no asegura (loop-guard
+      // extendido 2026-08-16): tras N fallos seguidos avisa al owner por WA.
+      loopGuard.reportar('telegram_polling', false, err);
       await new Promise(r => setTimeout(r, 15_000));
     }
   }

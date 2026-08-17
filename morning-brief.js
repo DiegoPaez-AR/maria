@@ -270,8 +270,10 @@ async function tick(waClient) {
 
 function iniciarMorningBrief({ waClient, intervaloMs = 60_000 } = {}) {
   console.log(`[morning-brief] activo, ventana ${BRIEF_VENTANA_H}h, cada usuario en su tz`);
+  const loopGuard = require('./loop-guard');
   return setInterval(() => {
-    tick(waClient).catch(err => console.error('[morning-brief] tick:', err));
+    tick(waClient).then(() => loopGuard.reportar('morning_brief', true))
+      .catch(err => { console.error('[morning-brief] tick:', err); loopGuard.reportar('morning_brief', false, err); });
   }, intervaloMs);
 }
 

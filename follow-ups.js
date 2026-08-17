@@ -248,8 +248,10 @@ function iniciarFollowUps({ waClient, intervaloMs = 5 * 60_000 } = {}) {
   console.log('[follow-ups] activo, cada 5min (re-ping automático a terceros: ON)');
   // Tick inicial al boot (por si quedaron vencidos durante un downtime).
   tick(waClient).catch(err => console.error('[follow-ups] tick inicial:', err.message));
+  const loopGuard = require('./loop-guard');
   return setInterval(() => {
-    tick(waClient).catch(err => console.error('[follow-ups] tick:', err.message));
+    tick(waClient).then(() => loopGuard.reportar('follow_ups', true))
+      .catch(err => { console.error('[follow-ups] tick:', err.message); loopGuard.reportar('follow_ups', false, err); });
   }, intervaloMs);
 }
 

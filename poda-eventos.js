@@ -25,8 +25,10 @@ function tick() {
         metadata: { tipo: 'poda_eventos', ...r },
       });
     }
+    require('./loop-guard').reportar('poda_eventos', true);
   } catch (err) {
     console.error('[poda-eventos] tick:', err.message);
+    require('./loop-guard').reportar('poda_eventos', false, err);
   }
 }
 

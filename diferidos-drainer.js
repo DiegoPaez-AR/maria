@@ -55,8 +55,10 @@ function iniciarDiferidosDrainer({ waClient, intervaloMs = 5 * 60_000 } = {}) {
   console.log(`[diferidos] drainer activo (cada ${intervaloMs / 60_000}min)`);
   // Tick inicial: por si el proceso arranca de día con cosas encoladas anoche.
   tick(waClient).catch(err => console.error('[diferidos] tick inicial:', err.message));
+  const loopGuard = require('./loop-guard');
   return setInterval(() => {
-    tick(waClient).catch(err => console.error('[diferidos] tick:', err.message));
+    tick(waClient).then(() => loopGuard.reportar('diferidos_drainer', true))
+      .catch(err => { console.error('[diferidos] tick:', err.message); loopGuard.reportar('diferidos_drainer', false, err); });
   }, intervaloMs);
 }
 
