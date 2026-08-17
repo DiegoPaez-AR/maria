@@ -1,0 +1,29 @@
+# ejecutado: 2026-08-16T23:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── eventos gmail últimos 10 min ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,direccion,de,substr(asunto,1,40) a,substr(cuerpo,1,70) c FROM eventos WHERE canal='gmail' AND timestamp>=datetime('now','-15 minutes') ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11),r.direccion,'de:'+String(r.de).slice(0,30),'|',r.a,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── log pm2 gmail últimos min ──"
+#   grep -i "GMAIL" ~/.pm2/logs/maria-paez-out.log | tail -8
+#   echo LISTO
+
+# ───── output ─────
+── eventos gmail últimos 10 min ──
+02:20:07 entrante de:Diego Paez <diego@paez.is> | meet | Hola Natali, podremos tener una meet mañana lunes a las 14?  copio a
+── log pm2 gmail últimos min ──
+2026-08-16 23:20:04: ▸ arrancando poll de Gmail (cada 300s)
+2026-08-16 23:20:06: [GMAIL poll] 1 email(s) nuevo(s)
+2026-08-16 23:20:07: [GMAIL ←] Diego Paez <diego@paez.is> | "meet"
+2026-08-16 23:20:07: [GMAIL sesion/Diego] rotando sesión (turnos=3, creada=2026-07-08T01:49:45.687Z)
+2026-08-16 23:20:41: [GMAIL acciones-mcp/Diego] 1/1 ejecutadas en vivo
+2026-08-16 23:20:41: [GMAIL/Diego] 1a00d849007f5337 — sin acciones ni respuesta, queda no-leído
+2026-08-16 23:22:04:   Gmail poll: cada 300s
+2026-08-16 23:22:04: ▸ arrancando poll de Gmail (cada 300s)
+LISTO
+
+# exit=0
