@@ -1,0 +1,46 @@
+# ejecutado: 2026-08-17T10:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── salientes TG a Diego (últimos 30 min) ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT timestamp,substr(cuerpo,1,200) c FROM eventos WHERE usuario_id=1 AND canal='telegram' AND direccion='saliente' AND timestamp>=datetime('now','-30 minutes') ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(11),'|',String(r.c).replace(/\n/g,' ⏎ ')));
+#   db.close();"
+#   echo "── errores en pm2 log últimos 15 min ──"
+#   grep -iE "error|falló|FALLO|warn" ~/.pm2/logs/maria-paez-out.log | tail -12
+#   echo "── logs MB últimos 10 ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -10
+#   echo LISTO
+
+# ───── output ─────
+── salientes TG a Diego (últimos 30 min) ──
+13:01:05 | ⚠️ Tu programado #1341 falla repetidamente (2 intentos). ⏎  ⏎ Canal: whatsapp ⏎ Destino: 5491126829596@c.us ⏎ Mensaje: "¡Hola Hernan! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+── errores en pm2 log últimos 15 min ──
+2026-07-01 09:31:50: [WA →usr] Diego (34342575317160@lid) [con fallos]: Hola Diego! Quería avisarte que intenté agendarte algo pero me faltó información para poder hacerlo: no tengo el título del evento, ni la fecha y hora de inicio
+2026-07-01 10:26:56: [WA →usr] Diego (34342575317160@lid) [con fallos]: Diego, te cuento: quise dejar agendado el recordatorio de Gabi para las 10h, pero no me salió — me faltó un dato del destinatario y no se programó. ¿Me confirmá
+2026-07-01 11:50:02: [WA →usr] Diego (34342575317160@lid) [con fallos]: Diego, quería avisarte que no pude agendar el evento porque me faltaron los datos necesarios: el título, la fecha y el horario. ¿Me los confirmás y lo agendo en
+2026-07-01 12:09:24: [WA →usr] Diego (34342575317160@lid) [con fallos]: Diego, quería avisarte que no pude agendarte el evento porque me faltaron los datos para crearlo: el título, la fecha y el horario. Si me confirmás esos detalle
+2026-07-01 18:09:52: [WA →usr] Diego (34342575317160@lid): Tenés razón. Dodi lo dijo explícito — "Para Gabriela Echaniz" — y el sistema igualmente te preguntó a vos en lugar de rutear solo. Fue un error mío. Lo tengo pr
+2026-07-06 07:38:16: [WA ←] Diego (5491132317896@c.us): Olvídate de ese tema, no era para vos, te lo mandé por error
+2026-08-15 09:31:24: [wa-send] programados/1335/fallo-repetido: entregado por TELEGRAM (automaticos_sin_wa) a Diego
+2026-08-15 09:31:24: [programados] ⚠ id=1335 pausado tras 2 fallos consecutivos — owner notificado
+2026-08-15 09:36:24: [wa-send] programados/1336/fallo-repetido: entregado por TELEGRAM (automaticos_sin_wa) a Diego
+2026-08-15 09:36:24: [programados] ⚠ id=1336 pausado tras 2 fallos consecutivos — owner notificado
+2026-08-17 10:01:05: [wa-send] programados/1341/fallo-repetido: entregado por TELEGRAM (automaticos_sin_wa) a Diego
+2026-08-17 10:01:05: [programados] ⚠ id=1341 pausado tras 2 fallos consecutivos — owner notificado
+── logs MB últimos 10 ──
+2026-08-17 09:56:26: [MB v2.7] 09:56:26 I [media] reply a "Diego Paez": ENVIADA
+2026-08-17 09:57:28: [MB v2.7] 09:57:23 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:06)
+2026-08-17 09:57:28: [MB v2.7] 09:57:23 I [media] audio de "Diego Paez" cazado: PTT-20260817-WA0001.opus (12KB) — subiendo
+2026-08-17 09:58:32: [MB v2.7] 09:58:26 I [media] transcripto OK: Suspendenme también la amigüe de la catorce con la talí de h
+2026-08-17 09:58:32: [MB v2.7] 09:58:26 I [media] reply a "Diego Paez": ENVIADA
+2026-08-17 10:25:21: [MB v2.7] 10:25:16 I [upd] versión nueva v2.8 (code 13 > 12) — descargando
+2026-08-17 10:25:21: [MB v2.7] 10:25:19 I [upd] descargado 3133KB — ofreciendo instalar
+2026-08-17 10:25:55: [MB v2.8] 10:25:44 I [notif] listener conectado
+2026-08-17 10:25:55: [MB v2.8] 10:25:45 I [frio] accesibilidad conectada
+2026-08-17 10:26:03: [MB v2.8] 10:26:00 I [svc] OutboxService arrancó (loop nuevo)
+LISTO
+
+# exit=0
