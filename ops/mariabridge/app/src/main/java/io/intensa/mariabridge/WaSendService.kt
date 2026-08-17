@@ -38,8 +38,9 @@ class WaSendService : AccessibilityService() {
             h.postDelayed({
                 if (ColdSend.pendiente?.id == t.id) {   // seguía sin resolverse
                     MbLog.w("frio", "timeout #${t.id} — no encontré el botón send")
+                    _reportarFallo(t.id, "timeout_sin_boton")
                     goHome()
-                    ColdSend.terminar(t.id, false)       // no se pudo → queda en cola, reintenta
+                    ColdSend.terminar(t.id, false)       // el server decide si reintenta (tope 5)
                 }
             }, TIMEOUT_MS)
         }
@@ -56,6 +57,21 @@ class WaSendService : AccessibilityService() {
         } catch (e: Exception) { MbLog.e("frio", "abrirChat: ${e.message}") }
     }
 
+    private val SIN_WA = listOf(
+        "no está en whatsapp", "isn't on whatsapp", "is not on whatsapp",
+        "não está no whatsapp", "no esta en whatsapp")
+
+    private fun _esDialogoSinWA(root: AccessibilityNodeInfo): Boolean {
+        for (frase in listOf("WhatsApp")) {
+            val nodos = root.findAccessibilityNodeInfosByText(frase) ?: continue
+            for (n in nodos) {
+                val txt = n.text?.toString()?.lowercase() ?: continue
+                if (SIN_WA.any { txt.contains(it) }) return true
+            }
+        }
+        return false
+    }
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val t = ColdSend.pendiente ?: return
         if (!ColdSend.lanzado) return
@@ -63,6 +79,15 @@ class WaSendService : AccessibilityService() {
         if (pkg != "com.whatsapp" && pkg != "com.whatsapp.w4b") return
 
         val root = rootInActiveWindow ?: return
+        // Número SIN WhatsApp (v2.5, caso Carolina): wa.me muestra un diálogo
+        // "el número no está en WhatsApp" → fail-fast definitivo, sin reintentos.
+        if (_esDialogoSinWA(root)) {
+            MbLog.w("frio", "#${t.id}: número ${t.numero} NO está en WhatsApp — reporto y abandono")
+            _reportarFallo(t.id, "numero_sin_whatsapp")
+            goHome()
+            ColdSend.terminar(t.id, false)
+            return
+        }
         val send = buscarPorId(root, "$pkg:id/send")
         if (send != null && send.isClickable) {
             MbLog.i("frio", "botón send encontrado — tap")
@@ -80,8 +105,16 @@ class WaSendService : AccessibilityService() {
         val sendSigue = root?.let { buscarPorId(it, "$pkg:id/send") } != null
         val ok = textoEntry.isBlank() || !sendSigue   // se vació o el botón send desapareció
         MbLog.i("frio", "verificación #$id: ${if (ok) "ENVIADO" else "NO se envió (entry='${textoEntry.take(30)}')"}")
+        if (!ok) _reportarFallo(id, "verificacion_negativa")
         goHome()
         ColdSend.terminar(id, ok)
+    }
+
+    private fun _reportarFallo(id: String, motivo: String) {
+        val base = Prefs.hookBase(this); val secret = Prefs.secret(this)
+        if (base.isBlank()) return
+        val body = org.json.JSONObject().put("id", id).put("motivo", motivo)
+        Net.postJson("$base/$secret/mbfallo", body.toString())
     }
 
     private fun buscarPorId(root: AccessibilityNodeInfo, viewId: String): AccessibilityNodeInfo? {

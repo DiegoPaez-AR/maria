@@ -14,7 +14,16 @@ object ColdSend {
     @Volatile var onDone: ((String, Boolean) -> Unit)? = null
 
     @Synchronized fun encolar(t: Target, cb: (String, Boolean) -> Unit): Boolean {
-        if (pendiente != null) return false     // ya hay uno en curso
+        val p = pendiente
+        if (p != null) {
+            // Guard anti-colgado (v2.5): si el que está "en curso" tiene >90s,
+            // la accesibilidad murió o algo se trabó — lo damos por fallido y
+            // tomamos el lugar (antes: ocupado para siempre + spam de mbdiag).
+            if (System.currentTimeMillis() - p.ts > 90_000) {
+                MbLog.w("frio", "ColdSend colgado con #${p.id} (${(System.currentTimeMillis() - p.ts) / 1000}s) — lo suelto")
+                terminar(p.id, false)
+            } else return false
+        }
         pendiente = t; lanzado = false; onDone = cb
         return true
     }
