@@ -1,0 +1,18 @@
+# ejecutado: 2026-08-16T21:02:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pgrep -f mb-build-worker >/dev/null && echo compilando || echo terminó
+#   grep "APK_OK\|APK_FAIL" /root/mariabridge-build.log | tail -1
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   echo LISTO
+
+# ───── output ─────
+terminó
+APK_OK url=https://intensa.io/_dl/mb-0f9ea0b43febad27.apk size=3.1M latest.json=v2.4(9)
+{"versionCode": 9, "versionName": "2.4", "url": "https://intensa.io/_dl/mb-0f9ea0b43febad27.apk"}
+
+LISTO
+
+# exit=0
