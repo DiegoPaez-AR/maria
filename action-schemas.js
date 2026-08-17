@@ -51,12 +51,12 @@ const TOOLS = [
     description: 'Envía un WhatsApp. `a` = wid destino (541...@c.us o @lid). El destinatario debe estar en libreta/ser usuario, o cargalo antes con upsert_contacto.',
     inputSchema: { type: 'object', additionalProperties: true, required: ['a', 'texto'],
       properties: { a: s('wid destino, ej. 5491...@c.us'), texto: s('mensaje') } },
+  },
   {
     name: 'enviar_archivo_wa',
     description: 'Manda un archivo guardado (imagen/PDF/audio recibido antes) a un contacto por WhatsApp, como LINK de descarga (vive 30 días). archivo = el id que te dio el sistema al recibirlo (ej "2026-08-17-ab12cd34.jpg").',
     inputSchema: { type: 'object', additionalProperties: true, required: ['a', 'archivo'],
       properties: { a: s('wid destino, ej 5491...@c.us'), archivo: s('id del archivo guardado'), texto: s('mensaje que acompaña el link (opcional)') } },
-  },
   },
   {
     name: 'reenviar_wa',
