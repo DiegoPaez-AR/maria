@@ -1,0 +1,36 @@
+# ejecutado: 2026-08-17T10:29:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── todas las líneas de programados/1341 y sus errores ──"
+#   grep -B3 "programados/1341\|programados.*1341" ~/.pm2/logs/maria-paez-out.log | tail -20
+#   grep -B2 -A2 "1341" ~/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -10
+#   echo "── cómo decide canal el sender de programados ──"
+#   grep -n "automaticos_sin_wa\|enviarWAUsuario\|programados" /root/secretaria/wa-send.js | head -10
+#   echo LISTO
+
+# ───── output ─────
+── todas las líneas de programados/1341 y sus errores ──
+2026-08-17 09:58:32: [MB v2.7] 09:58:26 I [media] reply a "Diego Paez": ENVIADA
+2026-08-17 10:00:05: [programados] 1 mensaje(s) debidos, despachando…
+2026-08-17 10:01:05: [programados] 1 mensaje(s) debidos, despachando…
+2026-08-17 10:01:05: [wa-send] programados/1341/fallo-repetido: entregado por TELEGRAM (automaticos_sin_wa) a Diego
+2026-08-17 10:01:05: [programados] ⚠ id=1341 pausado tras 2 fallos consecutivos — owner notificado
+2026-08-17 09:42:05: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
+2026-08-17 09:50:03: [TG] poll error (reintento en 15s): fetch failed
+2026-08-17 10:00:05: [programados] ✗ id=1341 falló: waClient no disponible
+2026-08-17 10:01:05: [programados] ✗ id=1341 falló: waClient no disponible
+2026-08-17 10:04:39: ⚠️ [MODO DEGRADADO] WA caído hace 53198 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
+2026-08-17 10:04:39: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
+── cómo decide canal el sender de programados ──
+7:// (morning-brief, recordatorios, programados, etc.) hacían
+219:async function enviarWAUsuario(client, usuario, texto, opts = {}) {
+246:    const r = await _enviarTGoEmail(usuario, texto, { tag, metadata, motivo: 'automaticos_sin_wa', logSaliente });
+304: * Envía a un destino crudo (terceros, programados con destino libre).
+309: *   tag, metadata, logSaliente (igual que enviarWAUsuario)
+335:  // Horas de silencio (ver enviarWAUsuario). Si no nos pasaron tz, intentamos
+444:  warmupActivo, enviarWAUsuario, enviarWADirecto, resolverPorPersistencia, LID_ERR_RE };
+LISTO
+
+# exit=0
