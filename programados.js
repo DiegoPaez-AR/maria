@@ -47,7 +47,9 @@ async function _enviarWA(waClient, prog) {
     });
     return { destinoFinal: r.destinoFinal, canal: r.canal || 'whatsapp' };
   }
-  if (!waClient) throw new Error('waClient no disponible');
+  // Era bridge (2026-08-17): sin waClient, enviarWADirecto encola en wa_outbox
+  // y el teléfono lo manda — el throw viejo mataba los programados con destino
+  // libre (falló la campaña TG #1341 con "waClient no disponible").
   const { destinoFinal } = await waSend.enviarWADirecto(waClient, prog.destino, prog.texto, {
     tag: `programados/${prog.id}`,
     logSaliente: false,
