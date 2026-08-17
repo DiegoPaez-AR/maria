@@ -1,0 +1,37 @@
+# ejecutado: 2026-08-17T11:07:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep -B2 -A6 "canary FALLO\|canary FALLÓ" /root/secretaria/ops/.cron.log | tail -25
+#   echo LISTO
+
+# ───── output ─────
+    at Module.require (node:internal/modules/cjs/loader:1527:12)
+    at require (node:internal/modules/helpers:147:16) {
+  code: 'SQLITE_ERROR'
+}
+
+Node.js v22.23.1
+canary FALLÓ (f55908cbfecbcedd97d98cf85c13fdadbe3f6bd5) — NO recargo pm2, prod sigue con la versión anterior en memoria
+[maria-paez exec] ops/instances/maria-paez/inbox/reenviar-gabi-wa.sh → ops/instances/maria-paez/outbox/reenviar-gabi-wa.out
+push fase 1 OK
+tick done
+═══ 2026-08-17T09:29:01-03:00 ═══
+push fase 1 OK
+tick done
+--
+═══ 2026-08-17T11:01:01-03:00 ═══
+código cambió → restart pendiente
+canary FALLO npm test:
+not ok 1 - paridad de nombres: switch del executor ↔ tools de action-schemas
+canary FALLÓ (0214723ed46f6681514d2d94b5992e1d73a009cf) — NO recargo pm2, prod sigue con la versión anterior en memoria
+push fase 1 OK
+tick done
+═══ 2026-08-17T11:02:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-17T11:03:01-03:00 ═══
+LISTO
+
+# exit=0
