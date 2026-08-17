@@ -1,14 +1,3 @@
-3|maria-pa | 2026-08-17 10:33:04: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-08-17 10:33:06: [meeting-prep/Doris Capurro] + id=1362 Ada @ 2026-08-17T15:15:00.000Z
-3|maria-pa | 2026-08-17 10:36:04: [programados] 1 mensaje(s) debidos, despachando…
-3|maria-pa | 2026-08-17 10:36:04: [wa-outbox] #52 encolado → +5491126829596 (¡Hola Hernan! Te cuento algo útil: ahora…)
-3|maria-pa | 2026-08-17 10:36:04: [wa-send] programados/1341: sin waClient → outbox #52 (bridge)
-3|maria-pa | 2026-08-17 10:36:04: [programados] ✓ id=1341 (whatsapp/5491126829596@c.us) [sin-razon]
-3|maria-pa | 2026-08-17 10:36:10: [MB v2.8] 10:36:06 I [frio] abriendo chat 5491126829596 (#52)
-3|maria-pa | 2026-08-17 10:36:10: [MB v2.8] 10:36:08 I [notif] entrante de "Ulises": Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo 
-3|maria-pa | 2026-08-17 10:36:25: [MB-DIAG] buscaba nombre="Hernan Fulco" numero="5491126829596" pendiente=52 | chats_vivos=[]
-3|maria-pa | 2026-08-17 10:36:31: [MB-FALLO] #52 motivo=timeout_sin_boton → {"id":52,"cold_fallos":1,"definitivo":false}
-3|maria-pa | 2026-08-17 10:36:39: [MB v2.8] 10:36:32 W [frio] timeout #52 — no encontré el botón send
 3|maria-pa | 2026-08-17 10:36:39: [MB v2.8] 10:36:32 I [outbox] cold-send #52 no verificado — queda en cola
 3|maria-pa | 2026-08-17 10:36:47: [wa-outbox] #52 entregado por el teléfono
 3|maria-pa | 2026-08-17 10:36:49: [MB v2.8] 10:36:46 I [frio] abriendo chat 5491126829596 (#52)
@@ -197,4 +186,15 @@
 3|maria-pa | 2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [frio] verificación #58: ENVIADO
 3|maria-pa | 2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [outbox] enviado EN FRÍO (accesibilidad) → 5491155771290
 3|maria-pa | 2026-08-17 12:59:49: [MB v2.9] 12:59:45 I [notif] entrante de "Diego Paez": Y?
+3|maria-pa | 2026-08-17 13:00:19: [claude-client] consulta verificar_respuesta("541155771290@c.us") → 5 entrantes
+3|maria-pa | 2026-08-17 13:00:19: [claude-client] consulta verificar_respuesta("5491141885339@c.us") → 0 entrantes
+3|maria-pa | 2026-08-17 13:00:19: [claude-client] consulta verificar_respuesta("5491140402319@c.us") → 1 entrantes
+3|maria-pa | 2026-08-17 13:00:26: [programados] 1 mensaje(s) debidos, despachando…
+3|maria-pa | 2026-08-17 13:00:26: [wa-outbox] #59 encolado → +5491150080522 (¡Hola Nicolas! Te cuento algo útil: ahor…)
+3|maria-pa | 2026-08-17 13:00:26: [wa-send] programados/1345: sin waClient → outbox #59 (bridge)
+3|maria-pa | 2026-08-17 13:00:26: [programados] ✓ id=1345 (whatsapp/5491150080522@c.us) [usuario]
+3|maria-pa | 2026-08-17 13:00:54: [wa-outbox] #59 entregado por el teléfono
+3|maria-pa | 2026-08-17 13:00:57: [MB v2.9] 13:00:53 I [notif] reply inline a "Diego Paez": ENVIADA
+3|maria-pa | 2026-08-17 13:00:57: [MB v2.9] 13:00:54 I [notif] entrante de "": Sensitive notification content hidden
+3|maria-pa | 2026-08-17 13:00:57: [MB v2.9] 13:00:55 I [outbox] respondido (silencioso) → Nicolas Kosinski
 
