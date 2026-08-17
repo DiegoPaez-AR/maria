@@ -1,0 +1,36 @@
+# ejecutado: 2026-08-17T09:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── cola del cron log (canary) ──"
+#   grep -i "canary" /root/secretaria/ops/.cron.log | tail -6
+#   echo "── require de wa-send con error completo ──"
+#   cd /root/secretaria
+#   env MARIA_DB=/tmp/x.sqlite GOOGLE_TOKEN_PATH=<REDACTED> GOOGLE_CRED_PATH=/tmp/c.json node -e "require('./wa-send.js')" 2>&1 | head -12
+#   echo LISTO
+
+# ───── output ─────
+── cola del cron log (canary) ──
+canary OK (dcfac8215ba0676a40d433823a6005fd89d3c2c5) → reload
+canary OK (93682c17feef02c67ddf03b923d052233f60d060) → reload
+canary FALLO require-smoke/migración:
+canary FALLÓ (f55908cbfecbcedd97d98cf85c13fdadbe3f6bd5) — NO recargo pm2, prod sigue con la versión anterior en memoria
+[maria-paez exec] ops/instances/maria-paez/inbox/ver-canary-fail.sh → ops/instances/maria-paez/outbox/ver-canary-fail.out
+[maria-paez exec] ops/instances/maria-paez/inbox/ver-canary-fail-2.sh → ops/instances/maria-paez/outbox/ver-canary-fail-2.out
+── require de wa-send con error completo ──
+/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:9
+	this[cppdb].exec(sql);
+	            ^
+
+SqliteError: no such table: contactos
+    at Database.exec (/root/secretaria/node_modules/better-sqlite3/lib/methods/wrappers.js:9:14)
+    at _migrarContactosTelegram (/root/secretaria/memory.js:268:6)
+    at Object.<anonymous> (/root/secretaria/memory.js:273:1)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+LISTO
+
+# exit=0
