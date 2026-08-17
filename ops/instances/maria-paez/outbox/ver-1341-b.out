@@ -1,0 +1,23 @@
+# ejecutado: 2026-08-17T10:38:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('#1341:', JSON.stringify(db.prepare('SELECT id,enviado,razon FROM programados WHERE id=1341').get()));
+#   db.prepare(\"SELECT id,estado,intentos,numero,substr(texto,1,35) t FROM wa_outbox WHERE id>51 ORDER BY id\").all().forEach(x=>console.log('#'+x.id,x.estado,'int:'+x.intentos,x.numero.slice(-6),'|',x.t));
+#   db.close();"
+#   grep "programados/1341\|programados\]" ~/.pm2/logs/maria-paez-out.log | tail -4
+#   echo LISTO
+
+# ───── output ─────
+#1341: {"id":1341,"enviado":1,"razon":null}
+#52 entregado int:3 829596 | ¡Hola Hernan! Te cuento algo útil: 
+2026-08-17 10:01:05: [programados] ⚠ id=1341 pausado tras 2 fallos consecutivos — owner notificado
+2026-08-17 10:36:04: [programados] 1 mensaje(s) debidos, despachando…
+2026-08-17 10:36:04: [wa-send] programados/1341: sin waClient → outbox #52 (bridge)
+2026-08-17 10:36:04: [programados] ✓ id=1341 (whatsapp/5491126829596@c.us) [sin-razon]
+LISTO
+
+# exit=0
