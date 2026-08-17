@@ -1,0 +1,38 @@
+# ejecutado: 2026-08-16T23:31:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB);
+#   const r=db.prepare(\"UPDATE wa_outbox SET estado='vencido' WHERE id=46 AND estado='pendiente'\").run();
+#   console.log('#46 frenado:', r.changes);
+#   console.log('── quién disparó el mensaje a Carolina (eventos 21:30-22:00 ART = 00:30-01:00 UTC) ──');
+#   db.prepare(\"SELECT timestamp,canal,direccion,substr(cuerpo,1,90) c FROM eventos WHERE timestamp BETWEEN '2026-08-17 00:30' AND '2026-08-17 01:00' AND (cuerpo LIKE '%arolina%' OR cuerpo LIKE '%runatti%' OR canal='telegram') ORDER BY id LIMIT 10\").all().forEach(r=>console.log(r.timestamp.slice(11),r.canal,r.direccion,'|',String(r.c).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── restarts ahora (¿sigue reiniciando?) ──"
+#   pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       print(p['name'],'restarts:',p['pm2_env'].get('restart_time'),'uptime_min:',round((time.time()*1000-p['pm2_env'].get('pm_uptime',0))/60000))"
+#   echo LISTO
+
+# ───── output ─────
+#46 frenado: 1
+── quién disparó el mensaje a Carolina (eventos 21:30-22:00 ART = 00:30-01:00 UTC) ──
+00:38:58 telegram entrante | Mariana, ¿me contestaste nada? ¿este último que te mandé está ok?
+00:39:14 telegram saliente | Sí, te había contestado pero hubo un error técnico de mi lado y el mensaje no te llegó — p
+00:39:45 telegram entrante | Perfecto, mañana es lunes, igual no martes.
+00:40:09 telegram saliente | Tenés toda la razón, me comí el nombre del día. Mañana es lunes 17/08, no martes — el trig
+00:40:39 telegram entrante | Selemente, tenés el contacto de Abiel Pacheco y de Carolina Brunatti.
+00:41:05 telegram saliente | Carolina Brunatti sí la tengo en la libreta: WA 5491141885339@c.us, mail carolina.brunatti
+00:41:27 telegram entrante | Gabriel Pacheco, lo tenes?
+00:41:36 telegram saliente | Sí, a Gabriel Pacheco lo tengo: WA +54 9 11 4040-2319, mail gap2612@gmail.com.
+00:42:29 telegram entrante | Excelente, escribíle a ambos por WhatsApp para coordinar una cena o este miércoles o el mi
+00:44:52 telegram saliente | Che, para no mandar mal el mensaje: mencionaste "escribíle a ambos" pero por acá solo teng
+── restarts ahora (¿sigue reiniciando?) ──
+intensa-api restarts: 4 uptime_min: 9
+maria-paez restarts: 277 uptime_min: 9
+LISTO
+
+# exit=0
