@@ -1,0 +1,20 @@
+# ejecutado: 2026-08-17T11:10:07-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep -i "canary" /root/secretaria/ops/.cron.log | tail -2
+#   ls /root/secretaria/state/.canary-bad-commit 2>/dev/null && echo "marker sigue" || echo "marker limpio"
+#   grep "versionName" /root/secretaria/ops/mariabridge/app/build.gradle | head -1
+#   if ! pgrep -f mb-build-worker >/dev/null; then nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 & echo "build v2.9 lanzado"; else echo "build corriendo"; fi
+#   echo LISTO
+
+# ───── output ─────
+canary OK (31e1cbb2d7435c27fffa7239b998eed19b468689) → reload
+[maria-paez exec] ops/instances/maria-paez/inbox/ver-canary-29b.sh → ops/instances/maria-paez/outbox/ver-canary-29b.out
+marker limpio
+        versionName '2.9'
+build v2.9 lanzado
+LISTO
+
+# exit=0
