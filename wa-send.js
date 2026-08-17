@@ -311,8 +311,26 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
  */
 async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
   const { tag = 'wa-send-directo', metadata = null, logSaliente = true, usuarioId = null, diferible = false, tz = null } = opts;
-  if (!client) throw new Error(`${tag}: waClient requerido`);
   if (!destinoCrudo) throw new Error(`${tag}: destino vacío`);
+  // Era MariaBridge (2026-08-17, caso recordatorios de Gabi por mail): sin
+  // waClient (wwebjs apagado) el canal WA REAL es la cola wa_outbox que drena
+  // el teléfono. Antes acá se tiraba error y los callers caían al fallback
+  // TG/email aunque WhatsApp estuviera perfectamente operativo via bridge.
+  if (!client) {
+    const outbox = require('./wa-outbox');
+    const id = outbox.encolar({
+      usuarioId, numero: String(destinoCrudo).replace(/@.*/, ''), texto,
+      metadata: { ...(metadata || {}), via: 'outbox_bridge', tag },
+    });
+    if (logSaliente) {
+      try {
+        mem.log({ usuarioId, canal: 'whatsapp', direccion: 'saliente', de: destinoCrudo,
+          cuerpo: texto, metadata: { ...(metadata || {}), via: 'outbox_bridge', outboxId: id, tag } });
+      } catch { /* noop */ }
+    }
+    console.log(`[wa-send] ${tag}: sin waClient → outbox #${id} (bridge)`);
+    return { destinoFinal: destinoCrudo, enviado: true, outboxId: id };
+  }
 
   // Horas de silencio (ver enviarWAUsuario). Si no nos pasaron tz, intentamos
   // resolverla por el destino (si matchea un usuario activo).
