@@ -1,0 +1,67 @@
+# ejecutado: 2026-08-17T09:16:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('── eventos de Gabriela (u18) desde ayer 19:00 ART (22:00 UTC) ──');
+#   db.prepare(\"SELECT timestamp,canal,direccion,substr(cuerpo,1,80) c FROM eventos WHERE usuario_id=18 AND timestamp>='2026-08-16 22:00' ORDER BY id\").all().forEach(r=>console.log(r.timestamp.slice(5,16),r.canal,r.direccion,'|',String(r.c).replace(/\n/g,' ⏎ ')));
+#   console.log('── programados de Gabriela para hoy ──');
+#   db.prepare(\"SELECT id,cuando,enviado,substr(texto,1,60) t FROM programados WHERE usuario_id=18 AND cuando>='2026-08-17' ORDER BY cuando LIMIT 8\").all().forEach(r=>console.log('#'+r.id,r.cuando,'env:'+r.enviado,'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo "── logs MB de anoche 20:15-20:30 ART con Gabriela ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | grep -i "gabriela" | tail -8
+#   echo LISTO
+
+# ───── output ─────
+── eventos de Gabriela (u18) desde ayer 19:00 ART (22:00 UTC) ──
+08-16 22:21 gmail saliente | 📊 *Tu semana* (al 16/08) ⏎ 💬 WhatsApp: 39 recibidos · 28 enviados ⏎ 📧 Emails: 0 reci
+08-16 23:22 sistema interno | claude_call whatsapp-gestion-ajena: 6314ms prompt=1082c raw=8328c in=10t(cache_r
+08-16 23:22 whatsapp entrante | Maria quería pedirte que le hagas algunos recordatorios mañana a las 9.00 ⏎ Orden 
+08-16 23:23 sistema interno | claude_call whatsapp-gestion-ajena: 6546ms prompt=964c raw=8451c in=10t(cache_re
+08-16 23:23 sistema interno | claude_call whatsapp-gestion-ajena: 4889ms prompt=804c raw=7078c in=10t(cache_re
+08-16 23:23 sistema interno | acción ejecutada: programar_mensaje
+08-16 23:23 sistema interno | claude_call whatsapp: 22934ms prompt=64092c raw=11376c in=6t(cache_read=45490 ne
+08-16 23:23 whatsapp saliente | Listo, te programo el recordatorio con toda la lista para *mañana lunes 17/08 a 
+08-16 23:23 whatsapp entrante | Personal  ⏎ Certificado de alumna regular Eloisa  ⏎ Inscripción mastrazzi  ⏎ Pagar coo
+08-16 23:23 sistema interno | acción ejecutada: programar_mensaje
+08-16 23:23 sistema interno | claude_call whatsapp: 34697ms prompt=64405c raw=15762c in=6t(cache_read=64648 ne
+08-16 23:23 whatsapp saliente | Genial, te sumo también este segundo recordatorio para *mañana lunes 17/08 a las
+08-16 23:23 whatsapp entrante | Orden de la casa: ⏎ Expensas  ⏎ Llamar a señora x limpieza  ⏎ Mampara  ⏎ Cuadros  ⏎ Imanes
+08-16 23:24 sistema interno | acción ejecutada: programar_mensaje
+08-16 23:24 sistema interno | claude_call whatsapp: 29447ms prompt=64551c raw=13877c in=6t(cache_read=64377 ne
+08-16 23:24 whatsapp saliente | Dale, te sumo también este tercer recordatorio para *mañana lunes 17/08 a las 9:
+08-16 23:26 sistema interno | claude_call whatsapp-gestion-ajena: 5946ms prompt=761c raw=8193c in=10t(cache_re
+08-16 23:26 whatsapp entrante | Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11
+08-16 23:26 calendar saliente | creado: Museo de la Cárcova (2026-08-19T11:00:00-03:00 → 2026-08-19T12:00:00-03:
+08-16 23:26 sistema interno | acción ejecutada: crear_evento
+08-16 23:26 sistema interno | claude_call whatsapp: 14431ms prompt=64541c raw=9917c in=6t(cache_read=63514 new
+08-16 23:26 whatsapp saliente | Listo, te agrego *Museo de la Cárcova* el miércoles 19/08 de 11:00 a 12:00 📅
+08-16 23:28 whatsapp entrante | Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+08-16 23:28 sistema interno | claude_call whatsapp-gestion-ajena: 7354ms prompt=761c raw=7627c in=10t(cache_re
+08-16 23:28 whatsapp entrante | Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11
+08-16 23:28 sistema interno | claude_call whatsapp: 8527ms prompt=68789c raw=6299c in=2t(cache_read=8784 new=3
+08-16 23:28 sistema interno | claude_call whatsapp: 7294ms prompt=64419c raw=6453c in=2t(cache_read=8784 new=3
+08-17 10:00 gmail saliente | ☀️ *Buen día, Gabriela Echaniz.* lunes, 17 de agosto. ⏎  ⏎ *📅 Agenda del día* ⏎ (sin e
+08-17 12:00 gmail saliente | Buen día! 🌞 Recordatorio de tu orden laboral de hoy: ⏎ 1️⃣ Terminar texto curatori
+08-17 12:00 gmail saliente | Y también tu lista de Personal para hoy 📋 ⏎ 1️⃣ Certificado de alumna regular Eloí
+08-17 12:00 gmail saliente | Orden de la casa 🏠 ⏎ 1️⃣ Expensas ⏎ 2️⃣ Llamar a señora x limpieza ⏎ 3️⃣ Mampara ⏎ 4️⃣ C
+08-17 12:11 whatsapp entrante | Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora m
+08-17 12:11 sistema interno | claude_call whatsapp: 6078ms prompt=67441c raw=4795c in=2t(cache_read=0 new=4617
+── programados de Gabriela para hoy ──
+#1355 2026-08-17T12:00:00.000Z env:1 | Buen día! 🌞 Recordatorio de tu orden laboral de hoy: 1️⃣ Ter
+#1356 2026-08-17T12:00:00.000Z env:1 | Y también tu lista de Personal para hoy 📋 1️⃣ Certificado de
+#1357 2026-08-17T12:00:00.000Z env:1 | Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a señora x limpie
+── logs MB de anoche 20:15-20:30 ART con Gabriela ──
+2026-08-16 16:08:02: [MB v2.2] 16:07:58 I [notif] entrante de "Gabriela Echaniz": Agéndame también el viernes a las 15.30
+2026-08-16 16:08:21: [MB v2.2] 16:08:16 I [notif] reply inline a "Gabriela Echaniz": ENVIADA
+2026-08-16 16:16:30: [MB v2.2] 16:16:24 I [notif] entrante de "Gabriela Echaniz": Dale
+2026-08-16 20:23:15: [MB v2.3] 20:22:54 I [notif] entrante de "Gabriela Echaniz": Maria quería pedirte que le hagas algunos recordatorios maña
+2026-08-16 20:23:15: [MB v2.3] 20:22:54 I [notif] entrante de "Gabriela Echaniz": Personal 
+2026-08-16 20:23:16: [MB v2.3] 20:22:58 I [notif] entrante de "Gabriela Echaniz": Orden de la casa:
+2026-08-16 20:26:38: [MB v2.3] 20:26:35 I [notif] entrante de "Gabriela Echaniz": Me agregas al calendario que el miércoles vaya al museo de l
+2026-08-16 20:28:11: [MB v2.3] 20:28:03 I [notif] entrante de "Gabriela Echaniz": Me agregas al calendario que el miércoles vaya al museo de l
+LISTO
+
+# exit=0
