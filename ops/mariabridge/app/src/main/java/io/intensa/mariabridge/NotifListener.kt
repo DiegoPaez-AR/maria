@@ -69,7 +69,8 @@ class NotifListener : NotificationListenerService() {
         val esAudio = texto.contains("🎤") || Regex("mensaje de voz|voice message|^audio\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)
         val esImagen = texto.contains("📷") || texto.contains("📸") || Regex("^(photo|foto|imagen)\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)
         val esDoc = texto.contains("📄") || texto.contains(".pdf", ignoreCase = true)
-        val tipoMedia = when { esAudio -> "audio"; esImagen -> "imagen"; esDoc -> "documento"; else -> null }
+        val esVideo = texto.contains("🎥") || Regex("^(video|vídeo)\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)
+        val tipoMedia = when { esAudio -> "audio"; esImagen -> "imagen"; esDoc -> "documento"; esVideo -> "video"; else -> null }
         if (tipoMedia != null && MediaCaza.tenemosPermiso()) {
             val ts = System.currentTimeMillis()
             Thread {
@@ -77,12 +78,13 @@ class NotifListener : NotificationListenerService() {
                     val f = when (tipoMedia) {
                         "audio" -> MediaCaza.cazarAudio(ts)
                         "imagen" -> MediaCaza.cazarImagen(ts)
+                        "video" -> MediaCaza.cazarVideo(ts)
                         else -> MediaCaza.cazarDocumento(ts)
                     }
                     if (f != null) {
                         MbLog.i("media", "$tipoMedia de \"$titulo\" cazado: ${f.name} (${f.length() / 1024}KB) — subiendo")
                         val r = MediaCaza.subir(base, secret, titulo, f, tipoMedia, texto)
-                        val okMedia = r != null && (tipoMedia != "audio" || !r.optString("transcript").isNullOrBlank())
+                        val okMedia = r != null && (tipoMedia !in listOf("audio", "video") || !r.optString("transcript").isNullOrBlank())
                         if (okMedia) {
                             MbLog.i("media", "$tipoMedia procesado OK")
                             val rs = r!!.optJSONArray("replies")

@@ -20,9 +20,11 @@ object MediaCaza {
     private val DIRS_AUDIO = BASES.map { "$it/WhatsApp Voice Notes" } + BASES.map { "$it/WhatsApp Audio" }
     private val DIRS_IMG = BASES.map { "$it/WhatsApp Images" }
     private val DIRS_DOC = BASES.map { "$it/WhatsApp Documents" }
+    private val DIRS_VIDEO = BASES.map { "$it/WhatsApp Video" }
     private val EXT_AUDIO = listOf(".opus", ".m4a", ".ogg", ".mp3")
     private val EXT_IMG = listOf(".jpg", ".jpeg", ".png", ".webp")
     private val EXT_DOC = listOf(".pdf")
+    private val EXT_VIDEO = listOf(".mp4", ".3gp", ".mov")
     private const val TIMEOUT_MS = 12_000L
     private const val FRESCURA_MS = 45_000L      // el archivo debe ser de ahora
     private const val MAX_BYTES = 10 * 1024 * 1024
@@ -33,6 +35,7 @@ object MediaCaza {
     fun cazarAudio(desdeTs: Long) = _cazar(DIRS_AUDIO, EXT_AUDIO, desdeTs)
     fun cazarImagen(desdeTs: Long) = _cazar(DIRS_IMG, EXT_IMG, desdeTs)
     fun cazarDocumento(desdeTs: Long) = _cazar(DIRS_DOC, EXT_DOC, desdeTs)
+    fun cazarVideo(desdeTs: Long) = _cazar(DIRS_VIDEO, EXT_VIDEO, desdeTs)
 
     /** Busca un archivo NUEVO (mtime dentro de FRESCURA). Espera hasta TIMEOUT. */
     private fun _cazar(dirs: List<String>, exts: List<String>, desdeTs: Long): File? {

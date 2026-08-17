@@ -76,16 +76,27 @@ class WaSendService : AccessibilityService() {
     // instalación, tocamos Instalar/Actualizar/Listo solos. Guard: SOLO dentro
     // de la ventana de 10min que abre Updater — jamás tocamos installs ajenos.
     private fun _autoInstalar(root: AccessibilityNodeInfo): Boolean {
-        if (!Updater.enVentanaInstalacion()) return false
-        for (label in listOf("Instalar", "Install", "Actualizar", "Update", "Listo", "Done", "Abrir", "Open")) {
-            val nodos = root.findAccessibilityNodeInfosByText(label) ?: continue
-            for (n in nodos) {
-                if (n.isClickable && n.className?.toString()?.contains("Button") == true) {
-                    MbLog.i("upd", "auto-tap '$label' en el instalador")
-                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                    if (label in listOf("Listo", "Done", "Abrir", "Open")) Updater.instalandoDesde = 0L
-                    return true
-                }
+        // Debug 0-tap (v3.2): loguear SIEMPRE que vemos al instalador, con
+        // estado de ventana y botones — para cruzar con el video de Diego.
+        val enVentana = Updater.enVentanaInstalacion()
+        val botones = mutableListOf<String>()
+        _todosLosNodos(root).forEach { n ->
+            if (n.isClickable) {
+                val tt = n.text?.toString() ?: n.contentDescription?.toString() ?: ""
+                if (tt.isNotBlank()) botones.add("${tt.take(20)}[${(n.className ?: "").toString().substringAfterLast('.')}]")
+            }
+        }
+        MbLog.i("upd", "instalador visible — ventana=${enVentana} clickables=${botones.joinToString(",").take(200)}")
+        if (!enVentana) return false
+        val objetivos = listOf("instalar", "install", "actualizar", "update", "listo", "done", "abrir", "open")
+        for (n in _todosLosNodos(root)) {
+            if (!n.isClickable) continue
+            val tt = (n.text?.toString() ?: n.contentDescription?.toString() ?: "").trim().lowercase()
+            if (tt in objetivos) {
+                MbLog.i("upd", "auto-tap '$tt' en el instalador")
+                n.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                if (tt in listOf("listo", "done", "abrir", "open")) Updater.instalandoDesde = 0L
+                return true
             }
         }
         return false
@@ -174,6 +185,17 @@ class WaSendService : AccessibilityService() {
         if (base.isBlank()) return
         val body = org.json.JSONObject().put("id", id).put("motivo", motivo)
         Net.postJson("$base/$secret/mbfallo", body.toString())
+    }
+
+    private fun _todosLosNodos(root: AccessibilityNodeInfo): List<AccessibilityNodeInfo> {
+        val out = mutableListOf<AccessibilityNodeInfo>()
+        fun rec(n: AccessibilityNodeInfo?, prof: Int) {
+            if (n == null || prof > 12) return
+            out.add(n)
+            for (i in 0 until n.childCount) rec(n.getChild(i), prof + 1)
+        }
+        rec(root, 0)
+        return out
     }
 
     private fun buscarPorId(root: AccessibilityNodeInfo, viewId: String): AccessibilityNodeInfo? {
