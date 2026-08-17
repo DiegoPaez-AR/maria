@@ -1,5 +1,14 @@
 id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                         
 -----  -------------------  --------  ---------  -------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27708  2026-08-17 00:28:59  sistema   interno                         Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                                           
+                                                                      Listo, quedó anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un WhatsApp recordándol                                                                            
+
+27707  2026-08-17 00:28:59  sistema   interno                         claude_call telegram: 83459ms prompt=85418c raw=35489c in=6t(cache_read=61678 new=117578) out=6752t ttfb=1573ms api=82839ms turnos=4 $0.5723                                                   
+
+27706  2026-08-17 00:28:55  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                            
+
+27705  2026-08-17 00:28:53  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                             
+
 27704  2026-08-17 00:27:35  telegram  entrante   telegram:590589920   Si Manuel no te confirma mañana a las 11, mándale un recordatorio del tema                                                                                                                     
 
 27703  2026-08-17 00:00:55  sistema   interno                         claude_call memoria-curada: 16102ms prompt=4240c raw=10432c in=2t(cache_read=0 new=16935) out=1187t ttfb=1579ms api=15045ms turnos=1 $0.0831                                                   
@@ -213,11 +222,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo
 27610  2026-08-16 23:01:31  sistema   interno                         claude_call moderacion: 7312ms prompt=1820c raw=7501c in=10t(cache_read=17396 new=5167) out=488t ttfb=1446ms api=6131ms turnos=1 $0.0112                                                       
 
 27609  2026-08-16 23:01:24  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                            
-
-27608  2026-08-16 23:01:24  sistema   interno                         claude_call moderacion: 7847ms prompt=1823c raw=7405c in=10t(cache_read=17396 new=5165) out=479t ttfb=1389ms api=6752ms turnos=1 $0.0112                                                       
-
-27607  2026-08-16 23:01:16  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                            
-
-27606  2026-08-16 23:01:16  sistema   interno                         claude_call moderacion: 6408ms prompt=1821c raw=6979c in=10t(cache_read=17396 new=5167) out=441t ttfb=1160ms api=5558ms turnos=1 $0.0110                                                       
-
-27605  2026-08-16 23:01:09  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                            
