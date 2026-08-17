@@ -1,226 +1,222 @@
-id     timestamp            canal     direccion  COALESCE(de,"")      cuerpo                                                                                                                                                                                                  
------  -------------------  --------  ---------  -------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-27727  2026-08-17 00:45:38  telegram  entrante   telegram:590589920   Carolina Brunatti                                                                                                                                                                                       
+id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
+-----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+27738  2026-08-17 00:46:48  sistema   interno                        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]                                                                                                      
 
-27726  2026-08-17 00:44:52  telegram  saliente   telegram:590589920   Che, para no mandar mal el mensaje: mencionaste "escribíle a ambos" pero por acá solo tengo confirmado a Gabriel Pacheco. ¿Quién es la otra persona con la que coordino la cena en FICO?                
+27737  2026-08-17 00:46:28  telegram  saliente   telegram:590589920  Listo, les escribo ahora a Gabriel Pacheco y a Carolina Brunatti para coordinar la cena en FICO, este miércoles 19/08 o el que viene 26/08, de 21 a 23hs. Apenas confirmen el mismo día te aviso y hago 
 
-27725  2026-08-17 00:44:51  sistema   interno                         claude_call telegram: 44872ms prompt=86956c raw=21117c in=6t(cache_read=76610 new=97401) out=3478t ttfb=1647ms api=43737ms turnos=3 $0.4526                                                             
+27736  2026-08-17 00:46:28  sistema   interno                        claude_call telegram: 49047ms prompt=85959c raw=26743c in=6t(cache_read=76012 new=98032) out=3538t ttfb=1729ms api=39403ms turnos=7 $0.4553                                                             
 
-27724  2026-08-17 00:44:06  sistema   interno                         claude_call telegram: 96937ms prompt=85908c raw=65834c in=36t(cache_read=1080349 new=116823) out=6303t ttfb=1814ms api=95938ms turnos=18 $0.8686                                                        
+27735  2026-08-17 00:46:24  sistema   interno                        acción ejecutada: crear_follow_up                                                                                                                                                                       
 
-27723  2026-08-17 00:43:18  sistema   interno                         acción ejecutada: buscar_contacto_global                                                                                                                                                                
+27734  2026-08-17 00:46:24  sistema   interno                        acción ejecutada: crear_follow_up                                                                                                                                                                       
 
-27722  2026-08-17 00:42:29  telegram  entrante   telegram:590589920   Excelente, escribíle a ambos por WhatsApp para coordinar una cena o este miércoles o el miércoles                                                                                                       
-                                                                       que viene en FICO y cuando te confirmen la cena sería de 9 a 11 ponerle de la noche, cuando                                                                                                            
-                                                                       te confi                                                                                                                                                                                               
+27733  2026-08-17 00:46:24  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-27721  2026-08-17 00:41:36  telegram  saliente   telegram:590589920   Sí, a Gabriel Pacheco lo tengo: WA +54 9 11 4040-2319, mail gap2612@gmail.com.                                                                                                                          
+27732  2026-08-17 00:46:24  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-27720  2026-08-17 00:41:36  sistema   interno                         claude_call telegram: 7751ms prompt=86002c raw=6136c in=2t(cache_read=8784 new=46365) out=224t ttfb=1932ms api=6715ms turnos=1 $0.1916                                                                  
+27731  2026-08-17 00:46:24  sistema   interno                        claude_call moderacion: 6708ms prompt=1666c raw=6965c in=10t(cache_read=17396 new=5118) out=425t ttfb=1283ms api=6041ms turnos=1 $0.0108                                                                
 
-27719  2026-08-17 00:41:27  telegram  entrante   telegram:590589920   Gabriel Pacheco, lo tenes?                                                                                                                                                                              
+27730  2026-08-17 00:46:21  whatsapp  saliente   5491140402319@c.us  Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo para coordinar una cena con vos, Carolina Brunatti y Diego en FICO, este miércoles 19/08 o el miércoles que viene 26/08, de 21 a 23hs. ¿Qué 
 
-27718  2026-08-17 00:41:05  telegram  saliente   telegram:590589920   Carolina Brunatti sí la tengo en la libreta: WA 5491141885339@c.us, mail carolina.brunatti@telefonica.com. A Abiel Pacheco no lo tengo cargado — pasame su whatsapp o mail y lo guardo.                 
+27729  2026-08-17 00:46:17  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
 
-27717  2026-08-17 00:41:05  sistema   interno                         claude_call telegram: 9403ms prompt=86530c raw=7290c in=4t(cache_read=64170 new=46779) out=367t ttfb=1623ms api=8380ms turnos=2 $0.2122                                                                 
+27728  2026-08-17 00:46:17  sistema   interno                        claude_call moderacion: 5765ms prompt=1667c raw=6094c in=10t(cache_read=0 new=22514) out=308t ttfb=1279ms api=4811ms turnos=1 $0.0302                                                                   
 
-27716  2026-08-17 00:40:56  sistema   interno                         claude_call telegram: 15646ms prompt=85945c raw=12124c in=6t(cache_read=64715 new=102376) out=864t ttfb=1611ms api=14552ms turnos=3 $0.4281                                                             
+27727  2026-08-17 00:45:38  telegram  entrante   telegram:590589920  Carolina Brunatti                                                                                                                                                                                       
 
-27715  2026-08-17 00:40:39  telegram  entrante   telegram:590589920   Selemente, tenés el contacto de Abiel Pacheco y de Carolina Brunatti.                                                                                                                                   
+27726  2026-08-17 00:44:52  telegram  saliente   telegram:590589920  Che, para no mandar mal el mensaje: mencionaste "escribíle a ambos" pero por acá solo tengo confirmado a Gabriel Pacheco. ¿Quién es la otra persona con la que coordino la cena en FICO?                
 
-27714  2026-08-17 00:40:09  telegram  saliente   telegram:590589920   Tenés toda la razón, me comí el nombre del día. Mañana es lunes 17/08, no martes — el trigger interno ya apunta bien a esa fecha a las 11hs (ese dato sí estaba correcto), solo fue un error mío al nomb
+27725  2026-08-17 00:44:51  sistema   interno                        claude_call telegram: 44872ms prompt=86956c raw=21117c in=6t(cache_read=76610 new=97401) out=3478t ttfb=1647ms api=43737ms turnos=3 $0.4526                                                             
 
-27713  2026-08-17 00:40:09  sistema   interno                         claude_call telegram: 23497ms prompt=85525c raw=12327c in=2t(cache_read=8784 new=46087) out=1824t ttfb=1539ms api=23865ms turnos=1 $0.2144                                                              
+27724  2026-08-17 00:44:06  sistema   interno                        claude_call telegram: 96937ms prompt=85908c raw=65834c in=36t(cache_read=1080349 new=116823) out=6303t ttfb=1814ms api=95938ms turnos=18 $0.8686                                                        
 
-27712  2026-08-17 00:39:45  telegram  entrante   telegram:590589920   Perfecto, mañana es lunes, igual no martes.                                                                                                                                                             
+27723  2026-08-17 00:43:18  sistema   interno                        acción ejecutada: buscar_contacto_global                                                                                                                                                                
 
-27711  2026-08-17 00:39:14  telegram  saliente   telegram:590589920   Sí, te había contestado pero hubo un error técnico de mi lado y el mensaje no te llegó — perdón. Pero quedó todo anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un Whats
+27722  2026-08-17 00:42:29  telegram  entrante   telegram:590589920  Excelente, escribíle a ambos por WhatsApp para coordinar una cena o este miércoles o el miércoles                                                                                                       
+                                                                      que viene en FICO y cuando te confirmen la cena sería de 9 a 11 ponerle de la noche, cuando                                                                                                            
+                                                                      te confi                                                                                                                                                                                               
 
-27710  2026-08-17 00:39:14  sistema   interno                         claude_call telegram: 15136ms prompt=85429c raw=8938c in=2t(cache_read=0 new=54819) out=925t ttfb=1786ms api=14370ms turnos=1 $0.2310                                                                   
+27721  2026-08-17 00:41:36  telegram  saliente   telegram:590589920  Sí, a Gabriel Pacheco lo tengo: WA +54 9 11 4040-2319, mail gap2612@gmail.com.                                                                                                                          
 
-27709  2026-08-17 00:38:58  telegram  entrante   telegram:590589920   Mariana, ¿me contestaste nada? ¿este último que te mandé está ok?                                                                                                                                       
+27720  2026-08-17 00:41:36  sistema   interno                        claude_call telegram: 7751ms prompt=86002c raw=6136c in=2t(cache_read=8784 new=46365) out=224t ttfb=1932ms api=6715ms turnos=1 $0.1916                                                                  
 
-27708  2026-08-17 00:28:59  sistema   interno                         Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                                                    
-                                                                      Listo, quedó anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un WhatsApp recordándol                                                                                     
+27719  2026-08-17 00:41:27  telegram  entrante   telegram:590589920  Gabriel Pacheco, lo tenes?                                                                                                                                                                              
 
-27707  2026-08-17 00:28:59  sistema   interno                         claude_call telegram: 83459ms prompt=85418c raw=35489c in=6t(cache_read=61678 new=117578) out=6752t ttfb=1573ms api=82839ms turnos=4 $0.5723                                                            
+27718  2026-08-17 00:41:05  telegram  saliente   telegram:590589920  Carolina Brunatti sí la tengo en la libreta: WA 5491141885339@c.us, mail carolina.brunatti@telefonica.com. A Abiel Pacheco no lo tengo cargado — pasame su whatsapp o mail y lo guardo.                 
 
-27706  2026-08-17 00:28:55  sistema   interno                         acción ejecutada: agregar_pendiente                                                                                                                                                                     
+27717  2026-08-17 00:41:05  sistema   interno                        claude_call telegram: 9403ms prompt=86530c raw=7290c in=4t(cache_read=64170 new=46779) out=367t ttfb=1623ms api=8380ms turnos=2 $0.2122                                                                 
 
-27705  2026-08-17 00:28:53  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+27716  2026-08-17 00:40:56  sistema   interno                        claude_call telegram: 15646ms prompt=85945c raw=12124c in=6t(cache_read=64715 new=102376) out=864t ttfb=1611ms api=14552ms turnos=3 $0.4281                                                             
 
-27704  2026-08-17 00:27:35  telegram  entrante   telegram:590589920   Si Manuel no te confirma mañana a las 11, mándale un recordatorio del tema                                                                                                                              
+27715  2026-08-17 00:40:39  telegram  entrante   telegram:590589920  Selemente, tenés el contacto de Abiel Pacheco y de Carolina Brunatti.                                                                                                                                   
 
-27703  2026-08-17 00:00:55  sistema   interno                         claude_call memoria-curada: 16102ms prompt=4240c raw=10432c in=2t(cache_read=0 new=16935) out=1187t ttfb=1579ms api=15045ms turnos=1 $0.0831                                                            
+27714  2026-08-17 00:40:09  telegram  saliente   telegram:590589920  Tenés toda la razón, me comí el nombre del día. Mañana es lunes 17/08, no martes — el trigger interno ya apunta bien a esa fecha a las 11hs (ese dato sí estaba correcto), solo fue un error mío al nomb
 
-27702  2026-08-17 00:00:08  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27713  2026-08-17 00:40:09  sistema   interno                        claude_call telegram: 23497ms prompt=85525c raw=12327c in=2t(cache_read=8784 new=46087) out=1824t ttfb=1539ms api=23865ms turnos=1 $0.2144                                                              
 
-27701  2026-08-17 00:00:08  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27712  2026-08-17 00:39:45  telegram  entrante   telegram:590589920  Perfecto, mañana es lunes, igual no martes.                                                                                                                                                             
 
-27700  2026-08-17 00:00:08  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52414 min)                                                                                                                                          
+27711  2026-08-17 00:39:14  telegram  saliente   telegram:590589920  Sí, te había contestado pero hubo un error técnico de mi lado y el mensaje no te llegó — perdón. Pero quedó todo anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un Whats
 
-27699  2026-08-17 00:00:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27710  2026-08-17 00:39:14  sistema   interno                        claude_call telegram: 15136ms prompt=85429c raw=8938c in=2t(cache_read=0 new=54819) out=925t ttfb=1786ms api=14370ms turnos=1 $0.2310                                                                   
 
-27698  2026-08-16 23:56:35  whatsapp  saliente   5491126829596@c.us   Perfecto Hernán, gracias por confirmar!                                                                                                                                                                 
+27709  2026-08-17 00:38:58  telegram  entrante   telegram:590589920  Mariana, ¿me contestaste nada? ¿este último que te mandé está ok?                                                                                                                                       
 
-27697  2026-08-16 23:56:35  sistema   interno                         claude_call moderacion: 5257ms prompt=1487c raw=5949c in=10t(cache_read=0 new=22444) out=238t ttfb=1362ms api=4198ms turnos=1 $0.0297                                                                   
+27708  2026-08-17 00:28:59  sistema   interno                        Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude:                                                                                                                    
+                                                                     Listo, quedó anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un WhatsApp recordándol                                                                                     
 
-27696  2026-08-16 23:56:30  telegram  saliente   telegram:590589920   Hernán confirmó que recibió la prueba del sistema, todo ok de su lado. Test de ruteo completado, no hice nada más (ni eventos ni nada) como pediste.                                                    
+27707  2026-08-17 00:28:59  sistema   interno                        claude_call telegram: 83459ms prompt=85418c raw=35489c in=6t(cache_read=61678 new=117578) out=6752t ttfb=1573ms api=82839ms turnos=4 $0.5723                                                            
 
-27695  2026-08-16 23:56:29  sistema   interno                         claude_call whatsapp: 21280ms prompt=90338c raw=13075c in=6t(cache_read=58418 new=115619) out=1417t ttfb=1871ms api=20141ms turnos=3 $0.4856                                                            
+27706  2026-08-17 00:28:55  sistema   interno                        acción ejecutada: agregar_pendiente                                                                                                                                                                     
 
-27694  2026-08-16 23:56:26  sistema   interno                         acción ejecutada: quitar_pendiente                                                                                                                                                                      
+27705  2026-08-17 00:28:53  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-27693  2026-08-16 23:56:08  whatsapp  entrante   5491126829596@c.us   Confirmo que recibí la prueba del sistema, todo ok por acá                                                                                                                                              
+27704  2026-08-17 00:27:35  telegram  entrante   telegram:590589920  Si Manuel no te confirma mañana a las 11, mándale un recordatorio del tema                                                                                                                              
 
-27692  2026-08-16 23:56:08  sistema   interno                         gestion-ajena: mensaje de Hernan Fulco (usuario, via whatsapp) ruteado como TERCERO a gestión de Diego (#254: TEST TÉCNICO de ruteo: esperando que Hernan Fulco confirme que recibió la prueba)         
+27703  2026-08-17 00:00:55  sistema   interno                        claude_call memoria-curada: 16102ms prompt=4240c raw=10432c in=2t(cache_read=0 new=16935) out=1187t ttfb=1579ms api=15045ms turnos=1 $0.0831                                                            
 
-27691  2026-08-16 23:56:08  sistema   interno                         claude_call whatsapp-gestion-ajena: 5595ms prompt=773c raw=7332c in=10t(cache_read=0 new=27557) out=285t ttfb=1750ms api=4241ms turnos=1 $0.0366                                                        
+27702  2026-08-17 00:00:08  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27690  2026-08-16 23:53:23  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27701  2026-08-17 00:00:08  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-27689  2026-08-16 23:53:23  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27700  2026-08-17 00:00:08  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 52414 min)                                                                                                                                          
 
-27688  2026-08-16 23:53:23  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52407 min)                                                                                                                                          
+27699  2026-08-17 00:00:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-27687  2026-08-16 23:53:21  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27698  2026-08-16 23:56:35  whatsapp  saliente   5491126829596@c.us  Perfecto Hernán, gracias por confirmar!                                                                                                                                                                 
 
-27686  2026-08-16 23:35:04  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27697  2026-08-16 23:56:35  sistema   interno                        claude_call moderacion: 5257ms prompt=1487c raw=5949c in=10t(cache_read=0 new=22444) out=238t ttfb=1362ms api=4198ms turnos=1 $0.0297                                                                   
 
-27685  2026-08-16 23:35:04  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27696  2026-08-16 23:56:30  telegram  saliente   telegram:590589920  Hernán confirmó que recibió la prueba del sistema, todo ok de su lado. Test de ruteo completado, no hice nada más (ni eventos ni nada) como pediste.                                                    
 
-27684  2026-08-16 23:35:04  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52389 min)                                                                                                                                          
+27695  2026-08-16 23:56:29  sistema   interno                        claude_call whatsapp: 21280ms prompt=90338c raw=13075c in=6t(cache_read=58418 new=115619) out=1417t ttfb=1871ms api=20141ms turnos=3 $0.4856                                                            
 
-27683  2026-08-16 23:35:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27694  2026-08-16 23:56:26  sistema   interno                        acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
-27682  2026-08-16 23:33:26  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27693  2026-08-16 23:56:08  whatsapp  entrante   5491126829596@c.us  Confirmo que recibí la prueba del sistema, todo ok por acá                                                                                                                                              
 
-27681  2026-08-16 23:33:26  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27692  2026-08-16 23:56:08  sistema   interno                        gestion-ajena: mensaje de Hernan Fulco (usuario, via whatsapp) ruteado como TERCERO a gestión de Diego (#254: TEST TÉCNICO de ruteo: esperando que Hernan Fulco confirme que recibió la prueba)         
 
-27680  2026-08-16 23:33:26  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52387 min)                                                                                                                                          
+27691  2026-08-16 23:56:08  sistema   interno                        claude_call whatsapp-gestion-ajena: 5595ms prompt=773c raw=7332c in=10t(cache_read=0 new=27557) out=285t ttfb=1750ms api=4241ms turnos=1 $0.0366                                                        
 
-27679  2026-08-16 23:33:24  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27690  2026-08-16 23:53:23  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27678  2026-08-16 23:28:17  sistema   interno                         claude_call whatsapp: 7294ms prompt=64419c raw=6453c in=2t(cache_read=8784 new=36271) out=285t ttfb=1588ms api=6023ms turnos=1 $0.1480                                                                  
+27689  2026-08-16 23:53:23  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-27677  2026-08-16 23:28:11  sistema   interno                         claude_call whatsapp: 8527ms prompt=68789c raw=6299c in=2t(cache_read=8784 new=38156) out=249t ttfb=2813ms api=6291ms turnos=1 $0.1561                                                                  
+27688  2026-08-16 23:53:23  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 52407 min)                                                                                                                                          
 
-27676  2026-08-16 23:28:09  whatsapp  entrante   5491165286555@c.us   Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11                                                                                                                         
+27687  2026-08-16 23:53:21  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-27675  2026-08-16 23:28:09  sistema   interno                         claude_call whatsapp-gestion-ajena: 7354ms prompt=761c raw=7627c in=10t(cache_read=27555 new=0) out=325t ttfb=2894ms api=4959ms turnos=1 $0.0051                                                        
+27686  2026-08-16 23:35:04  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27674  2026-08-16 23:28:02  whatsapp  entrante   5491141935177@c.us   Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"                                                                                                                        
+27685  2026-08-16 23:35:04  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-27673  2026-08-16 23:28:01  sistema   interno                         wa-hook: desconocido "WhatsApp": "Checking for new messages"                                                                                                                                            
+27684  2026-08-16 23:35:04  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 52389 min)                                                                                                                                          
 
-27672  2026-08-16 23:26:55  whatsapp  saliente   5491165286555@c.us   Listo, te agrego *Museo de la Cárcova* el miércoles 19/08 de 11:00 a 12:00 📅                                                                                                                            
+27683  2026-08-16 23:35:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-27671  2026-08-16 23:26:55  sistema   interno                         claude_call whatsapp: 14431ms prompt=64541c raw=9917c in=6t(cache_read=63514 new=73663) out=548t ttfb=1523ms api=12459ms turnos=3 $0.3086                                                               
+27682  2026-08-16 23:33:26  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27670  2026-08-16 23:26:51  sistema   interno                         acción ejecutada: crear_evento                                                                                                                                                                          
+27681  2026-08-16 23:33:26  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-27669  2026-08-16 23:26:51  calendar  saliente                        creado: Museo de la Cárcova (2026-08-19T11:00:00-03:00 → 2026-08-19T12:00:00-03:00) [en calendar de Maria]                                                                                              
+27680  2026-08-16 23:33:26  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 52387 min)                                                                                                                                          
 
-27668  2026-08-16 23:26:40  whatsapp  entrante   5491165286555@c.us   Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11                                                                                                                         
+27679  2026-08-16 23:33:24  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-27667  2026-08-16 23:26:40  sistema   interno                         claude_call whatsapp-gestion-ajena: 5946ms prompt=761c raw=8193c in=10t(cache_read=26048 new=1507) out=397t ttfb=1560ms api=4756ms turnos=1 $0.0072                                                     
+27678  2026-08-16 23:28:17  sistema   interno                        claude_call whatsapp: 7294ms prompt=64419c raw=6453c in=2t(cache_read=8784 new=36271) out=285t ttfb=1588ms api=6023ms turnos=1 $0.1480                                                                  
 
-27666  2026-08-16 23:24:28  whatsapp  saliente   5491165286555@c.us   Dale, te sumo también este tercer recordatorio para *mañana lunes 17/08 a las 9:00* con la lista de Orden de la casa 🏠                                                                                  
+27677  2026-08-16 23:28:11  sistema   interno                        claude_call whatsapp: 8527ms prompt=68789c raw=6299c in=2t(cache_read=8784 new=38156) out=249t ttfb=2813ms api=6291ms turnos=1 $0.1561                                                                  
 
-27665  2026-08-16 23:24:28  sistema   interno                         claude_call whatsapp: 29447ms prompt=64551c raw=13877c in=6t(cache_read=64377 new=74592) out=1700t ttfb=1590ms api=22392ms turnos=3 $0.3296                                                             
+27676  2026-08-16 23:28:09  whatsapp  entrante   5491165286555@c.us  Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11                                                                                                                         
 
-27664  2026-08-16 23:24:24  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+27675  2026-08-16 23:28:09  sistema   interno                        claude_call whatsapp-gestion-ajena: 7354ms prompt=761c raw=7627c in=10t(cache_read=27555 new=0) out=325t ttfb=2894ms api=4959ms turnos=1 $0.0051                                                        
 
-27663  2026-08-16 23:24:24  sistema   interno                         claude_call moderacion: 5851ms prompt=1594c raw=6342c in=10t(cache_read=17396 new=5131) out=334t ttfb=1126ms api=5011ms turnos=1 $0.0103                                                                
+27674  2026-08-16 23:28:02  whatsapp  entrante   5491141935177@c.us  Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"                                                                                                                        
 
-27662  2026-08-16 23:23:58  whatsapp  entrante   5491165286555@c.us   Orden de la casa:                                                                                                                                                                                       
-                                                                      Expensas                                                                                                                                                                                                
-                                                                      Llamar a señora x limpieza                                                                                                                                                                              
-                                                                      Mampara                                                                                                                                                                                                 
-                                                                      Cuadros                                                                                                                                                                                                 
-                                                                      Imanes puertas                                                                                                                                                                                          
-                                                                      Estantes baños                                                                                                                                                                                          
-                                                                      Plantas balcones                                                                                                                                                                                        
+27673  2026-08-16 23:28:01  sistema   interno                        wa-hook: desconocido "WhatsApp": "Checking for new messages"                                                                                                                                            
 
-27661  2026-08-16 23:23:58  whatsapp  saliente   5491165286555@c.us   Genial, te sumo también este segundo recordatorio para *mañana lunes 17/08 a las 9:00* con la lista de Personal 📋                                                                                       
+27672  2026-08-16 23:26:55  whatsapp  saliente   5491165286555@c.us  Listo, te agrego *Museo de la Cárcova* el miércoles 19/08 de 11:00 a 12:00 📅                                                                                                                            
 
-27660  2026-08-16 23:23:58  sistema   interno                         claude_call whatsapp: 34697ms prompt=64405c raw=15762c in=6t(cache_read=64648 new=74949) out=2178t ttfb=1641ms api=27145ms turnos=3 $0.3381                                                             
+27671  2026-08-16 23:26:55  sistema   interno                        claude_call whatsapp: 14431ms prompt=64541c raw=9917c in=6t(cache_read=63514 new=73663) out=548t ttfb=1523ms api=12459ms turnos=3 $0.3086                                                               
 
-27659  2026-08-16 23:23:54  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+27670  2026-08-16 23:26:51  sistema   interno                        acción ejecutada: crear_evento                                                                                                                                                                          
 
-27658  2026-08-16 23:23:54  sistema   interno                         claude_call moderacion: 6417ms prompt=1792c raw=6194c in=10t(cache_read=17396 new=5198) out=333t ttfb=1170ms api=5512ms turnos=1 $0.0105                                                                
+27669  2026-08-16 23:26:51  calendar  saliente                       creado: Museo de la Cárcova (2026-08-19T11:00:00-03:00 → 2026-08-19T12:00:00-03:00) [en calendar de Maria]                                                                                              
 
-27657  2026-08-16 23:23:23  whatsapp  entrante   5491165286555@c.us   Personal                                                                                                                                                                                                
-                                                                      Certificado de alumna regular Eloisa                                                                                                                                                                    
-                                                                      Inscripción mastrazzi                                                                                                                                                                                   
-                                                                      Pagar cooperadora y entradas muestra                                                                                                                                                                    
-                                                                      Pedir turno Elo médico                                                                                                                                                                                  
-                                                                      Pedir turno podóloga                                                                                                                                                                                    
-                                                                      Pedir turno dermatólogo Elo                                                                                                                                                                             
-                                                                      Pedir turno dent                                                                                                                                                                                        
+27668  2026-08-16 23:26:40  whatsapp  entrante   5491165286555@c.us  Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11                                                                                                                         
 
-27656  2026-08-16 23:23:23  whatsapp  saliente   5491165286555@c.us   Listo, te programo el recordatorio con toda la lista para *mañana lunes 17/08 a las 9:00* 📋                                                                                                             
+27667  2026-08-16 23:26:40  sistema   interno                        claude_call whatsapp-gestion-ajena: 5946ms prompt=761c raw=8193c in=10t(cache_read=26048 new=1507) out=397t ttfb=1560ms api=4756ms turnos=1 $0.0072                                                     
 
-27655  2026-08-16 23:23:23  sistema   interno                         claude_call whatsapp: 22934ms prompt=64092c raw=11376c in=6t(cache_read=45490 new=90963) out=908t ttfb=1725ms api=14406ms turnos=3 $0.3732                                                              
+27666  2026-08-16 23:24:28  whatsapp  saliente   5491165286555@c.us  Dale, te sumo también este tercer recordatorio para *mañana lunes 17/08 a las 9:00* con la lista de Orden de la casa 🏠                                                                                  
 
-27654  2026-08-16 23:23:19  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+27665  2026-08-16 23:24:28  sistema   interno                        claude_call whatsapp: 29447ms prompt=64551c raw=13877c in=6t(cache_read=64377 new=74592) out=1700t ttfb=1590ms api=22392ms turnos=3 $0.3296                                                             
 
-27653  2026-08-16 23:23:19  sistema   interno                         claude_call moderacion: 7228ms prompt=1856c raw=7246c in=10t(cache_read=0 new=22628) out=446t ttfb=1258ms api=6265ms turnos=1 $0.0311                                                                   
+27664  2026-08-16 23:24:24  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
 
-27652  2026-08-16 23:23:19  sistema   interno                         claude_call whatsapp-gestion-ajena: 4889ms prompt=804c raw=7078c in=10t(cache_read=26048 new=1540) out=270t ttfb=1461ms api=3648ms turnos=1 $0.0066                                                     
+27663  2026-08-16 23:24:24  sistema   interno                        claude_call moderacion: 5851ms prompt=1594c raw=6342c in=10t(cache_read=17396 new=5131) out=334t ttfb=1126ms api=5011ms turnos=1 $0.0103                                                                
 
-27651  2026-08-16 23:23:01  sistema   interno                         claude_call whatsapp-gestion-ajena: 6546ms prompt=964c raw=8451c in=10t(cache_read=26048 new=1586) out=441t ttfb=1917ms api=5269ms turnos=1 $0.0076                                                     
+27662  2026-08-16 23:23:58  whatsapp  entrante   5491165286555@c.us  Orden de la casa:                                                                                                                                                                                       
+                                                                     Expensas                                                                                                                                                                                                
+                                                                     Llamar a señora x limpieza                                                                                                                                                                              
+                                                                     Mampara                                                                                                                                                                                                 
+                                                                     Cuadros                                                                                                                                                                                                 
+                                                                     Imanes puertas                                                                                                                                                                                          
+                                                                     Estantes baños                                                                                                                                                                                          
+                                                                     Plantas balcones                                                                                                                                                                                        
 
-27650  2026-08-16 23:22:59  whatsapp  entrante   5491165286555@c.us   Maria quería pedirte que le hagas algunos recordatorios mañana a las 9.00                                                                                                                               
-                                                                      Orden laboral:                                                                                                                                                                                          
-                                                                      Terminar texto curatorial                                                                                                                                                                               
-                                                                      Revisar exell para comunicación                                                                                                                                                                         
-                                                                      Mandar Mail a becas por fechas y chequear que se hay                                                                                                                                                    
+27661  2026-08-16 23:23:58  whatsapp  saliente   5491165286555@c.us  Genial, te sumo también este segundo recordatorio para *mañana lunes 17/08 a las 9:00* con la lista de Personal 📋                                                                                       
 
-27649  2026-08-16 23:22:59  sistema   interno                         claude_call whatsapp-gestion-ajena: 6314ms prompt=1082c raw=8328c in=10t(cache_read=0 new=27675) out=448t ttfb=1682ms api=5080ms turnos=1 $0.0376                                                       
+27660  2026-08-16 23:23:58  sistema   interno                        claude_call whatsapp: 34697ms prompt=64405c raw=15762c in=6t(cache_read=64648 new=74949) out=2178t ttfb=1641ms api=27145ms turnos=3 $0.3381                                                             
 
-27648  2026-08-16 23:16:04  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27659  2026-08-16 23:23:54  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
 
-27647  2026-08-16 23:16:04  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27658  2026-08-16 23:23:54  sistema   interno                        claude_call moderacion: 6417ms prompt=1792c raw=6194c in=10t(cache_read=17396 new=5198) out=333t ttfb=1170ms api=5512ms turnos=1 $0.0105                                                                
 
-27646  2026-08-16 23:16:04  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52370 min)                                                                                                                                          
+27657  2026-08-16 23:23:23  whatsapp  entrante   5491165286555@c.us  Personal                                                                                                                                                                                                
+                                                                     Certificado de alumna regular Eloisa                                                                                                                                                                    
+                                                                     Inscripción mastrazzi                                                                                                                                                                                   
+                                                                     Pagar cooperadora y entradas muestra                                                                                                                                                                    
+                                                                     Pedir turno Elo médico                                                                                                                                                                                  
+                                                                     Pedir turno podóloga                                                                                                                                                                                    
+                                                                     Pedir turno dermatólogo Elo                                                                                                                                                                             
+                                                                     Pedir turno dent                                                                                                                                                                                        
 
-27645  2026-08-16 23:16:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27656  2026-08-16 23:23:23  whatsapp  saliente   5491165286555@c.us  Listo, te programo el recordatorio con toda la lista para *mañana lunes 17/08 a las 9:00* 📋                                                                                                             
 
-27644  2026-08-16 23:14:23  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27655  2026-08-16 23:23:23  sistema   interno                        claude_call whatsapp: 22934ms prompt=64092c raw=11376c in=6t(cache_read=45490 new=90963) out=908t ttfb=1725ms api=14406ms turnos=3 $0.3732                                                              
 
-27643  2026-08-16 23:14:23  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27654  2026-08-16 23:23:19  sistema   interno                        acción ejecutada: programar_mensaje                                                                                                                                                                     
 
-27642  2026-08-16 23:14:23  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52368 min)                                                                                                                                          
+27653  2026-08-16 23:23:19  sistema   interno                        claude_call moderacion: 7228ms prompt=1856c raw=7246c in=10t(cache_read=0 new=22628) out=446t ttfb=1258ms api=6265ms turnos=1 $0.0311                                                                   
 
-27641  2026-08-16 23:14:21  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27652  2026-08-16 23:23:19  sistema   interno                        claude_call whatsapp-gestion-ajena: 4889ms prompt=804c raw=7078c in=10t(cache_read=26048 new=1540) out=270t ttfb=1461ms api=3648ms turnos=1 $0.0066                                                     
 
-27640  2026-08-16 23:10:04  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27651  2026-08-16 23:23:01  sistema   interno                        claude_call whatsapp-gestion-ajena: 6546ms prompt=964c raw=8451c in=10t(cache_read=26048 new=1586) out=441t ttfb=1917ms api=5269ms turnos=1 $0.0076                                                     
 
-27639  2026-08-16 23:10:04  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27650  2026-08-16 23:22:59  whatsapp  entrante   5491165286555@c.us  Maria quería pedirte que le hagas algunos recordatorios mañana a las 9.00                                                                                                                               
+                                                                     Orden laboral:                                                                                                                                                                                          
+                                                                     Terminar texto curatorial                                                                                                                                                                               
+                                                                     Revisar exell para comunicación                                                                                                                                                                         
+                                                                     Mandar Mail a becas por fechas y chequear que se hay                                                                                                                                                    
 
-27638  2026-08-16 23:10:04  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52364 min)                                                                                                                                          
+27649  2026-08-16 23:22:59  sistema   interno                        claude_call whatsapp-gestion-ajena: 6314ms prompt=1082c raw=8328c in=10t(cache_read=0 new=27675) out=448t ttfb=1682ms api=5080ms turnos=1 $0.0376                                                       
 
-27637  2026-08-16 23:10:02  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27648  2026-08-16 23:16:04  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27636  2026-08-16 23:08:23  sistema   interno                         WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
+27647  2026-08-16 23:16:04  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-27635  2026-08-16 23:08:23  sistema   interno                         Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
+27646  2026-08-16 23:16:04  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 52370 min)                                                                                                                                          
 
-27634  2026-08-16 23:08:23  sistema   interno                         MODO DEGRADADO: loops arrancados sin WA (caído hace 52362 min)                                                                                                                                          
+27645  2026-08-16 23:16:02  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-27633  2026-08-16 23:08:22  sistema   interno                         shutdown por SIGINT                                                                                                                                                                                     
+27644  2026-08-16 23:14:23  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27632  2026-08-16 23:06:24  gmail     saliente   nfunez@iplan.com.ar  Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                              
-                                                                      1. Natali dijo dos veces "Hoy no puedo" sin dar contexto de a qué se refiere — 9h                                                                                                                       
-                                                                                                                                                                                                                                                                              
-                                                                      Decime qué hago con cada uno.                                                                                                                                                                           
+27643  2026-08-16 23:14:23  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
 
-27631  2026-08-16 23:02:43  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+27642  2026-08-16 23:14:23  sistema   interno                        MODO DEGRADADO: loops arrancados sin WA (caído hace 52368 min)                                                                                                                                          
 
-27630  2026-08-16 23:02:43  sistema   interno                         claude_call moderacion: 6697ms prompt=1822c raw=7277c in=10t(cache_read=17396 new=5165) out=467t ttfb=1196ms api=5711ms turnos=1 $0.0111                                                                
+27641  2026-08-16 23:14:21  sistema   interno                        shutdown por SIGINT                                                                                                                                                                                     
 
-27629  2026-08-16 23:02:36  sistema   interno                         acción ejecutada: programar_mensaje                                                                                                                                                                     
+27640  2026-08-16 23:10:04  sistema   interno                        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
 
-27628  2026-08-16 23:02:36  sistema   interno                         claude_call moderacion: 6740ms prompt=1820c raw=7146c in=10t(cache_read=17396 new=5167) out=446t ttfb=1238ms api=5840ms turnos=1 $0.0110                                                                
+27639  2026-08-16 23:10:04  sistema   interno                        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
