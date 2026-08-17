@@ -101,6 +101,24 @@ function start({ waClient } = {}) {
           const ext = (String(b.fileName || '').match(/\.(\w+)$/) || [])[1] || 'opus';
           const tipo = String(b.tipo || 'audio');
 
+          if (tipo === 'video') {
+            // v3.2: video entrante → transcribimos el AUDIO (paridad TG: ffmpeg
+            // extrae de mp4). La imagen del video no se procesa (igual que TG).
+            let tv = null;
+            try {
+              const { transcribirBuffer } = require('./transcribir');
+              tv = await transcribirBuffer(buf, ext === 'bin' ? 'mp4' : ext);
+            } catch (e) { console.warn('[mbmedia] video transcripción falló:', e.message); }
+            let mediaIdV = null;
+            try { mediaIdV = require('./media-store').guardar(buf, b.fileName || 'video.mp4'); } catch { /* noop */ }
+            if (!tv || !String(tv).trim()) return send(200, { replies: [], transcript: null });
+            console.log(`[MB-MEDIA] video de "${b.sender}" (${Math.round(buf.length / 1024)}KB) → "${String(tv).slice(0, 60)}"`);
+            let msjV = `(video recibido — transcripción del audio) ${String(tv).trim()}`;
+            if (mediaIdV) msjV += `\n(sistema: adjunto guardado con id "${mediaIdV}" — enviar_archivo_wa para reenviar)`;
+            const rv = await require('./wa-hook').procesar({ query: { sender: b.sender, message: msjV } });
+            return send(200, { ...(rv || {}), transcript: String(tv).slice(0, 200) });
+          }
+
           if (tipo === 'imagen' || tipo === 'documento') {
             // v2.8: imagen/PDF real → archivo temporal → turno con VISIÓN
             // (mismo pipeline attachmentPath de Gmail/Telegram). Además se
