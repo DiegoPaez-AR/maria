@@ -72,10 +72,35 @@ class WaSendService : AccessibilityService() {
         return false
     }
 
+    // Auto-instalación de updates (v2.6): cuando NUESTRO APK está en ventana de
+    // instalación, tocamos Instalar/Actualizar/Listo solos. Guard: SOLO dentro
+    // de la ventana de 10min que abre Updater — jamás tocamos installs ajenos.
+    private fun _autoInstalar(root: AccessibilityNodeInfo): Boolean {
+        if (!Updater.enVentanaInstalacion()) return false
+        for (label in listOf("Instalar", "Install", "Actualizar", "Update", "Listo", "Done", "Abrir", "Open")) {
+            val nodos = root.findAccessibilityNodeInfosByText(label) ?: continue
+            for (n in nodos) {
+                if (n.isClickable && n.className?.toString()?.contains("Button") == true) {
+                    MbLog.i("upd", "auto-tap '$label' en el instalador")
+                    n.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    if (label in listOf("Listo", "Done", "Abrir", "Open")) Updater.instalandoDesde = 0L
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        val pkg0 = event?.packageName?.toString() ?: return
+        if (pkg0.contains("packageinstaller")) {
+            val r = rootInActiveWindow ?: return
+            _autoInstalar(r)
+            return
+        }
         val t = ColdSend.pendiente ?: return
         if (!ColdSend.lanzado) return
-        val pkg = event?.packageName?.toString() ?: return
+        val pkg = pkg0
         if (pkg != "com.whatsapp" && pkg != "com.whatsapp.w4b") return
 
         val root = rootInActiveWindow ?: return

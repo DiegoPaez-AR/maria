@@ -80,6 +80,25 @@ class MainActivity : Activity() {
         chequearNotif()
 
         listOf(titulo, eBase, eSec, bGuardar, bNotif, bBat, bAcc, bUpd, aviso, estado).forEach { root.addView(it) }
+
+        // Config por deep-link (v2.6): mariabridge://config?url=..&secret=..
+        // — el provisioning imprime el link; un tap y queda configurada.
+        intent?.data?.let { uri ->
+            if (uri.scheme == "mariabridge" && uri.host == "config") {
+                val u = uri.getQueryParameter("url") ?: ""
+                val sec = uri.getQueryParameter("secret") ?: ""
+                if (u.isNotBlank() && sec.isNotBlank()) {
+                    bloquear(false)
+                    eBase.setText(u); eSec.setText(sec)
+                    Prefs.guardar(this, u, sec)
+                    val svc = Intent(this, OutboxService::class.java)
+                    if (android.os.Build.VERSION.SDK_INT >= 26) startForegroundService(svc) else startService(svc)
+                    bloquear(true)
+                    estado.text = "Configurada por link ✔ Servicio en marcha"
+                    MbLog.init(this); MbLog.i("cfg", "configurada por deep-link")
+                }
+            }
+        }
         setContentView(ScrollView(this).apply { addView(root) })
     }
 }

@@ -20,6 +20,13 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Config por link (v2.6): mariabridge://config?url=..&secret=.. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="mariabridge" android:host="config"/>
+            </intent-filter>
         </activity>
 
         <!-- Escucha las notificaciones de WhatsApp (recibir) -->

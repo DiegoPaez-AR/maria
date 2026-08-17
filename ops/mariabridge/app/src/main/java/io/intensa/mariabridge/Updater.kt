@@ -23,6 +23,10 @@ import java.net.URL
  */
 object Updater {
     @Volatile private var chequeando = false
+    // Ventana de auto-instalación (v2.6): cuando hay un APK nuestro listo para
+    // instalar, la accesibilidad puede tocar "Instalar" sola. 10 min de margen.
+    @Volatile var instalandoDesde: Long = 0L
+    fun enVentanaInstalacion() = System.currentTimeMillis() - instalandoDesde < 10 * 60_000L
 
     fun chequear(c: Context, desdeUi: Boolean, onEstado: ((String) -> Unit)? = null) {
         if (chequeando) return
@@ -71,6 +75,7 @@ object Updater {
             .setDataAndType(uri, "application/vnd.android.package-archive")
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
 
+        instalandoDesde = System.currentTimeMillis()
         if (desdeUi) {
             c.startActivity(i)
         } else {
