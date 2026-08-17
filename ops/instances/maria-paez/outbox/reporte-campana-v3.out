@@ -1,0 +1,250 @@
+# ejecutado: 2026-08-17T20:37:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   export PATH="/usr/local/bin:/usr/bin:/bin:${PATH:-}"
+#   cd /root/secretaria
+#   echo "=== REPORTE CAMPANA v3 - $(date '+%Y-%m-%d %H:%M:%S %z') ==="
+#   cat > /tmp/rep3.js <<'JSEOF'
+#   const Database = require("/root/secretaria/node_modules/better-sqlite3");
+#   const db = new Database(process.env.MARIA_DB, { readonly: true });
+#   const q=(s)=>{try{return db.prepare(s).all()}catch(e){console.log(" ERR:"+e.message);return[]}};
+#   const cut=(s,n)=>(s==null?"":String(s).replace(/\s+/g," ").slice(0,n));
+#   
+#   console.log("-- ENTRANTES REALES (wa/tg) ultimas 36h --");
+#   const ent=q("SELECT timestamp,canal,de,nombre,usuario_id,cuerpo FROM eventos WHERE direccion='entrante' AND canal IN ('whatsapp','telegram') AND datetime(timestamp)>=datetime('now','-36 hours') ORDER BY timestamp");
+#   console.log("   total: "+ent.length);
+#   for(const e of ent){
+#     console.log("   "+e.timestamp+" ["+e.canal+"] de="+e.de+" ("+(e.nombre||"-")+") u="+e.usuario_id);
+#     console.log("      "+cut(e.cuerpo,160));
+#   }
+#   console.log();
+#   console.log("-- ENTRANTES gmail 36h (por si contestaron por mail) --");
+#   const g=q("SELECT timestamp,de,nombre,usuario_id,asunto,cuerpo FROM eventos WHERE direccion='entrante' AND canal='gmail' AND datetime(timestamp)>=datetime('now','-36 hours') ORDER BY timestamp");
+#   console.log("   total: "+g.length);
+#   for(const e of g) console.log("   "+e.timestamp+" de="+e.de+" ["+cut(e.asunto,50)+"] :: "+cut(e.cuerpo,90));
+#   console.log();
+#   console.log("-- TELEGRAM: cualquier evento canal=telegram 36h --");
+#   const t=q("SELECT timestamp,direccion,de,nombre,usuario_id,cuerpo FROM eventos WHERE canal='telegram' AND datetime(timestamp)>=datetime('now','-36 hours') ORDER BY timestamp");
+#   const noDiego=t.filter(e=>String(e.de||"")!=="telegram:590589920");
+#   console.log("   total tg: "+t.length+"   de NO-Diego: "+noDiego.length);
+#   for(const e of noDiego) console.log("   "+e.timestamp+" "+e.direccion+" de="+e.de+" ("+(e.nombre||"-")+") :: "+cut(e.cuerpo,120));
+#   db.close();
+#   JSEOF
+#   node /tmp/rep3.js 2>&1
+#   echo
+#   echo "-- MB: desvios / titulo vacio / restriccion --"
+#   grep -iE "titulo|título|desvi|no encontr|restring|fallo|error|timeout|reintent" ~/.pm2/logs/maria-paez-out.log 2>/dev/null | grep "2026-08-17" | tail -40
+#   echo
+#   echo "-- MB: todas las lineas frio de hoy --"
+#   grep "\[frio\]" ~/.pm2/logs/maria-paez-out.log 2>/dev/null | grep "2026-08-17" | tail -60
+#   echo done
+
+# ───── output ─────
+=== REPORTE CAMPANA v3 - 2026-08-17 20:37:01 -0300 ===
+-- ENTRANTES REALES (wa/tg) ultimas 36h --
+   total: 65
+   2026-08-16 11:39:04 [telegram] de=telegram:590589920 (Diego) u=1
+      Yo te pedí un hola hace un rato pero llegaron 3
+   2026-08-16 11:40:22 [telegram] de=telegram:590589920 (Diego) u=1
+      Y hablaste con Nati?
+   2026-08-16 13:14:34 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 13:14:34 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Dale
+   2026-08-16 13:43:32 [telegram] de=telegram:590589920 (Diego) u=1
+      Les repetís el mensaje a Nati a ver si puedo ir al cine hoy.
+   2026-08-16 13:51:17 [telegram] de=telegram:590589920 (Diego) u=1
+      Natali Funez si lo tenes
+   2026-08-16 13:56:03 [whatsapp] de=5491150105262@c.us (Natali Funez) u=3
+      Hoy no puedo
+   2026-08-16 13:57:01 [whatsapp] de=5491150105262@c.us (Natali Funez) u=3
+      Hoy no puedo
+   2026-08-16 14:26:31 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Mándame foto de las empanadas
+   2026-08-16 14:26:42 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Mándame foto de las empanadas
+   2026-08-16 14:26:52 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 14:26:52 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Cómo estuvo el cumple de Juanita?
+   2026-08-16 14:27:15 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Cómo estuvo el cumple de Juanita?
+   2026-08-16 14:27:44 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 14:27:44 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Le confundo de chat perdón
+   2026-08-16 14:27:49 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Le confundo de chat perdón
+   2026-08-16 14:31:20 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Me confundí al escribirte era para mi hija Eloísa el mensaje 😊
+   2026-08-16 14:31:26 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Me confundí al escribirte era para mi hija Eloísa el mensaje 😊
+   2026-08-16 14:31:34 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 15:13:55 [whatsapp] de=541132317896@c.us (Diego) u=1
+      hola Maria, que pendeintes tengo?
+   2026-08-16 15:15:19 [whatsapp] de=541132317896@c.us (Diego) u=1
+      que paso con lo de natali? te respondio algo del cine?
+   2026-08-16 19:05:53 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Maria cómo estás? Me agendas en el calendario jueves 3 de septiembre reunión en la escuela de danzas a las 9.30h
+   2026-08-16 19:07:57 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Agéndame también el viernes a las 15.30 Ir a ver departamento para mi papá en la dirección que te copio acá independencia 556
+   2026-08-16 19:16:23 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Dale
+   2026-08-16 22:43:51 [whatsapp] de=541132317896@c.us (Diego) u=1
+      hola maria, todo tranqui?
+   2026-08-16 23:22:59 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Maria quería pedirte que le hagas algunos recordatorios mañana a las 9.00 Orden laboral: Terminar texto curatorial Revisar exell para comunicación Mandar Mail a
+   2026-08-16 23:23:23 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Personal Certificado de alumna regular Eloisa Inscripción mastrazzi Pagar cooperadora y entradas muestra Pedir turno Elo médico Pedir turno podóloga Pedir turno
+   2026-08-16 23:23:58 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Orden de la casa: Expensas Llamar a señora x limpieza Mampara Cuadros Imanes puertas Estantes baños Plantas balcones
+   2026-08-16 23:26:40 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11
+   2026-08-16 23:28:02 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 23:28:09 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11
+   2026-08-16 23:56:08 [whatsapp] de=5491126829596@c.us (Hernan Fulco) u=1
+      Confirmo que recibí la prueba del sistema, todo ok por acá
+   2026-08-17 00:27:35 [telegram] de=telegram:590589920 (Diego) u=1
+      Si Manuel no te confirma mañana a las 11, mándale un recordatorio del tema
+   2026-08-17 00:38:58 [telegram] de=telegram:590589920 (Diego) u=1
+      Mariana, ¿me contestaste nada? ¿este último que te mandé está ok?
+   2026-08-17 00:39:45 [telegram] de=telegram:590589920 (Diego) u=1
+      Perfecto, mañana es lunes, igual no martes.
+   2026-08-17 00:40:39 [telegram] de=telegram:590589920 (Diego) u=1
+      Selemente, tenés el contacto de Abiel Pacheco y de Carolina Brunatti.
+   2026-08-17 00:41:27 [telegram] de=telegram:590589920 (Diego) u=1
+      Gabriel Pacheco, lo tenes?
+   2026-08-17 00:42:29 [telegram] de=telegram:590589920 (Diego) u=1
+      Excelente, escribíle a ambos por WhatsApp para coordinar una cena o este miércoles o el miércoles que viene en FICO y cuando te confirmen la cena sería de 9 a 1
+   2026-08-17 00:45:38 [telegram] de=telegram:590589920 (Diego) u=1
+      Carolina Brunatti
+   2026-08-17 00:47:15 [telegram] de=telegram:590589920 (Diego) u=1
+      Dale, y mándeles invitación al calendario, y a mi tb
+   2026-08-17 00:49:56 [whatsapp] de=5491140402319@c.us (Gabriel Pacheco) u=1
+      Miércoles 19
+   2026-08-17 12:03:05 [telegram] de=telegram:590589920 (Diego) u=1
+      Lo del cine con natali, descártalo
+   2026-08-17 12:03:19 [telegram] de=telegram:590589920 (Diego) u=1
+      Que número tenes de carolina?
+   2026-08-17 12:11:30 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:21:54 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:30 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:38 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:48 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:55 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:55:40 [whatsapp] de=541132317896@c.us (Diego) u=1
+      (audio de voz, transcripto) María que tengo y en mi agenda y pendientes me mandas un razon en por favor.
+   2026-08-17 12:57:26 [whatsapp] de=541132317896@c.us (Diego) u=1
+      (audio de voz, transcripto) Suspendenme también la amigüe de la catorce con la talí de hoy.
+   2026-08-17 13:36:07 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 13:36:46 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 13:45:11 [whatsapp] de=5491141935177@c.us (Ulises) u=18
+      Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 14:52:58 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Gracias María!
+   2026-08-17 15:52:20 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Gracias María!
+   2026-08-17 15:52:21 [whatsapp] de=541132317896@c.us (Diego) u=1
+      (audio de voz, transcripto) ¿Cómo están los pendientes con la cena con gavi con caro y la reunión esa con fulcú y con Manu Carrasco? Yo te había pedido que las 
+   2026-08-17 15:59:44 [whatsapp] de=541132317896@c.us (Diego) u=1
+      Y?
+   2026-08-17 18:08:28 [whatsapp] de=541132317896@c.us (Diego) u=1
+      (audio de voz, transcripto) Y lo de Natal y Cancelano, no le envíes más nada ni le dole a te. Cable a te el tema, Cancelano de tus convientos, yo me apupó.
+   2026-08-17 18:08:31 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Gracias María!
+   2026-08-17 18:08:44 [whatsapp] de=5491165286555@c.us (Gabriela Echaniz) u=18
+      Gracias María!
+   2026-08-17 18:08:52 [whatsapp] de=541132317896@c.us (Diego) u=1
+      (audio de voz, transcripto) Y ahí me escribí a Carolina para pasar la escena con esa gavipaché con Atillo para después del 2 de septiembre, ahora te pasó opcion
+   2026-08-17 18:09:49 [whatsapp] de=541132317896@c.us (Diego) u=1
+      Lo de natali olvídate de todo, lo sigo yo
+   2026-08-17 18:10:17 [whatsapp] de=541132317896@c.us (Diego) u=1
+      Y lo de la cena con caro y gabi, te paso opciones por qué caro me pidió pasarlo para septiembre
+   2026-08-17 23:22:59 [whatsapp] de=541132317896@c.us (Diego) u=1
+      (audio de voz, transcripto) Sí, mandarle un saludo felicitándolo, pero que sea algo más bien de tu parte, no mía.
+
+-- ENTRANTES gmail 36h (por si contestaron por mail) --
+   total: 2
+   2026-08-17 02:20:07 de=Diego Paez <diego@paez.is> [meet] :: Hola Natali, podremos tener una meet mañana lunes a las 14? copio a maria para q coordine.
+   2026-08-17 11:54:13 de=Google Play <googleplay-noreply@google.com> [Your trial for AutoResponder for WA will end on Au] ::  Hi Maria, This is a reminder that your trial for AutoResponder for WA (AutoResponder Pro 
+
+-- TELEGRAM: cualquier evento canal=telegram 36h --
+   total tg: 34   de NO-Diego: 0
+
+-- MB: desvios / titulo vacio / restriccion --
+2026-08-17 10:01:05: [wa-send] programados/1341/fallo-repetido: entregado por TELEGRAM (automaticos_sin_wa) a Diego
+2026-08-17 10:01:05: [programados] ⚠ id=1341 pausado tras 2 fallos consecutivos — owner notificado
+2026-08-17 10:36:31: [MB-FALLO] #52 motivo=timeout_sin_boton → {"id":52,"cold_fallos":1,"definitivo":false}
+2026-08-17 10:36:39: [MB v2.8] 10:36:32 W [frio] timeout #52 — no encontré el botón send
+2026-08-17 11:31:41: [MB-FALLO] #54 motivo=timeout_sin_boton → {"id":54,"cold_fallos":1,"definitivo":false}
+2026-08-17 11:31:43: [MB v2.9] 11:31:42 W [frio] timeout #54 — no encontré el botón send
+
+-- MB: todas las lineas frio de hoy --
+2026-08-17 01:16:14: [MB v2.5] 01:16:04 I [frio] accesibilidad conectada
+2026-08-17 09:23:57: [MB v2.6] 09:23:47 I [frio] accesibilidad conectada
+2026-08-17 09:30:33: [MB v2.6] 09:30:30 I [frio] abriendo chat 5491165286555 (#48)
+2026-08-17 09:30:33: [MB v2.6] 09:30:31 I [frio] botón send encontrado — tap
+2026-08-17 09:30:33: [MB v2.6] 09:30:32 I [frio] verificación #48: ENVIADO
+2026-08-17 09:30:49: [MB v2.6] 09:30:34 I [frio] abriendo chat 5491165286555 (#49)
+2026-08-17 09:30:49: [MB v2.6] 09:30:35 I [frio] botón send encontrado — tap
+2026-08-17 09:30:49: [MB v2.6] 09:30:36 I [frio] verificación #49: ENVIADO
+2026-08-17 09:30:49: [MB v2.6] 09:30:40 I [frio] abriendo chat 5491165286555 (#50)
+2026-08-17 09:30:49: [MB v2.6] 09:30:41 I [frio] botón send encontrado — tap
+2026-08-17 09:30:49: [MB v2.6] 09:30:42 I [frio] verificación #50: ENVIADO
+2026-08-17 09:30:56: [MB v2.6] 09:30:50 I [frio] abriendo chat 5491165286555 (#51)
+2026-08-17 09:30:56: [MB v2.6] 09:30:51 I [frio] botón send encontrado — tap
+2026-08-17 09:30:56: [MB v2.6] 09:30:52 I [frio] verificación #51: ENVIADO
+2026-08-17 09:54:12: [MB v2.7] 09:54:02 I [frio] accesibilidad conectada
+2026-08-17 10:25:55: [MB v2.8] 10:25:45 I [frio] accesibilidad conectada
+2026-08-17 10:36:10: [MB v2.8] 10:36:06 I [frio] abriendo chat 5491126829596 (#52)
+2026-08-17 10:36:39: [MB v2.8] 10:36:32 W [frio] timeout #52 — no encontré el botón send
+2026-08-17 10:36:49: [MB v2.8] 10:36:46 I [frio] abriendo chat 5491126829596 (#52)
+2026-08-17 10:36:49: [MB v2.8] 10:36:46 I [frio] botón send encontrado — tap
+2026-08-17 10:36:49: [MB v2.8] 10:36:48 I [frio] verificación #52: ENVIADO
+2026-08-17 10:45:19: [MB v2.8] 10:45:11 I [frio] abriendo chat 5491150105262 (#53)
+2026-08-17 10:45:19: [MB v2.8] 10:45:12 I [frio] botón send encontrado — tap
+2026-08-17 10:45:19: [MB v2.8] 10:45:13 I [frio] verificación #53: ENVIADO
+2026-08-17 11:17:24: [MB v2.9] 11:17:15 I [frio] accesibilidad conectada
+2026-08-17 11:31:23: [MB v2.9] 11:31:17 I [frio] abriendo chat 5491134274828 (#54)
+2026-08-17 11:31:43: [MB v2.9] 11:31:42 W [frio] timeout #54 — no encontré el botón send
+2026-08-17 11:33:54: [MB v2.9] 11:33:54 I [frio] abriendo chat 5491134274828 (#54)
+2026-08-17 11:33:54: [MB v2.9] 11:33:55 I [frio] botón send encontrado — tap
+2026-08-17 11:34:04: [MB v2.9] 11:33:56 I [frio] verificación #54: ENVIADO
+2026-08-17 11:45:41: [MB v2.9] 11:45:35 I [frio] abriendo chat 5491150105262 (#55)
+2026-08-17 11:45:41: [MB v2.9] 11:45:36 I [frio] botón send encontrado — tap
+2026-08-17 11:45:41: [MB v2.9] 11:45:37 I [frio] verificación #55: ENVIADO
+2026-08-17 12:17:39: [MB v2.9] 12:17:34 I [frio] abriendo chat 5491144471264 (#56)
+2026-08-17 12:17:39: [MB v2.9] 12:17:36 I [frio] botón send encontrado — tap
+2026-08-17 12:17:39: [MB v2.9] 12:17:37 I [frio] verificación #56: ENVIADO
+2026-08-17 12:17:59: [MB v2.9] 12:17:57 I [frio] abriendo chat 5491144471264 (#57)
+2026-08-17 12:17:59: [MB v2.9] 12:17:58 I [frio] botón send encontrado — tap
+2026-08-17 12:17:59: [MB v2.9] 12:17:59 I [frio] verificación #57: ENVIADO
+2026-08-17 12:56:54: [MB v2.9] 12:56:53 I [frio] abriendo chat 5491155771290 (#58)
+2026-08-17 12:56:54: [MB v2.9] 12:56:54 I [frio] botón send encontrado — tap
+2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [frio] verificación #58: ENVIADO
+2026-08-17 19:49:38: [MB v3.0] 19:49:29 I [frio] accesibilidad conectada
+2026-08-17 20:02:55: [MB v3.1] 20:02:46 I [frio] accesibilidad conectada
+2026-08-17 20:08:35: [MB v3.1] 20:08:28 I [frio] abriendo chat 5491132317896 (#76)
+2026-08-17 20:08:35: [MB v3.1] 20:08:30 I [frio] botón send encontrado — tap
+2026-08-17 20:08:35: [MB v3.1] 20:08:31 I [frio] verificación #76: ENVIADO
+2026-08-17 20:24:06: [MB v3.1] 20:23:59 I [frio] abriendo chat 5491134274828 (#77)
+2026-08-17 20:24:06: [MB v3.1] 20:24:01 I [frio] botón send encontrado — tap
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [frio] verificación #77: ENVIADO
+2026-08-17 20:28:00: [MB v3.2] 20:27:52 I [frio] accesibilidad conectada
+done
+
+# exit=0
