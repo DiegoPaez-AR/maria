@@ -59,12 +59,6 @@ const TOOLS = [
       properties: { a: s('wid destino, ej 5491...@c.us'), archivo: s('id del archivo guardado'), texto: s('mensaje que acompaña el link (opcional)') } },
   },
   {
-    name: 'reenviar_wa',
-    description: 'Forward NATIVO de WhatsApp de un mensaje existente (cualquier tipo de archivo). Necesita el wa_msg_id original (viene como [wa_msg_id=...] en el historial).',
-    inputSchema: { type: 'object', additionalProperties: true, required: ['messageId', 'a'],
-      properties: { messageId: s('wa_msg_id del mensaje original'), a: s('wid destino') } },
-  },
-  {
     name: 'agregar_pendiente',
     description: 'Agrega un pendiente. dueno=usuario|maria, disparador=manual|respuesta_usuario|trigger_externo. Para trigger_externo esperando respuesta de un tercero, sumá meta.esperando_de + meta.esperando_canal.',
     inputSchema: { type: 'object', additionalProperties: true, required: ['desc', 'dueno', 'disparador'],

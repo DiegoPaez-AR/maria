@@ -19,17 +19,19 @@ object ReplyRegistry {
 
     private val porChat = HashMap<String, Accion>()
 
-    fun registrarDesde(sbnKey: String, titulo: String, n: Notification) {
-        val actions = n.actions ?: return
+    /** @return true si la notif tenía acción de Responder (= es un CHAT real). */
+    fun registrarDesde(sbnKey: String, titulo: String, n: Notification): Boolean {
+        val actions = n.actions ?: return false
         for (a in actions) {
             val ris = a.remoteInputs ?: continue
             for (ri in ris) {
                 if (ri.resultKey != null) {
                     porChat[normalizar(titulo)] = Accion(a.actionIntent, ri, null)
-                    return
+                    return true
                 }
             }
         }
+        return false
     }
 
     fun titulosVivos(): List<String> = porChat.keys.toList()

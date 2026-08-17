@@ -162,7 +162,7 @@ async function ejecutarUna(accion, ctx) {
     case 'enviar_email':       return await _enviarEmail(accion, ctx);
     case 'enviar_wa':          return await _enviarWA(accion, ctx);
     case 'enviar_archivo_wa':  return await _enviarArchivoWA(accion, ctx);
-    case 'reenviar_wa':        return await _reenviarWA(accion, ctx);
+    case 'reenviar_wa':        throw new Error('reenviar_wa fue reemplazada: usá enviar_archivo_wa con el id del archivo guardado (el forward nativo era de la era wwebjs)');
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
     case 'posponer_pendiente': return _posponerPendiente(accion, ctx);

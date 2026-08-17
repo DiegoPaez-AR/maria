@@ -30,9 +30,9 @@ class NotifListener : NotificationListenerService() {
         // backups, llamadas perdidas) — no son mensajes.
         if (tNorm == "whatsapp") return
         var texto = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
-        // Reacciones ("Reacted ❤️ to ...", "Reaccionó ...") — no son texto útil
-        // para el hook; generan turnos basura.
-        if (texto.matches(Regex("^(Reacted|Reaccionó|Reagiu)\\b.*", RegexOption.IGNORE_CASE))) return
+        // Reacciones ("Reacted ❤️ to ...", "Ulises: Reacted ...") — no son texto
+        // útil para el hook; generan turnos basura. Con o sin prefijo de nombre.
+        if (Regex("^([^:]{1,40}: )?(Reacted|Reaccionó|Reagiu|Reaccionaste)\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)) return
 
         // Resumen agregado ("3 mensajes nuevos") → ignorar, no es contenido real.
         if (texto.matches(Regex("^\\d+ (mensajes?|messages?).*", RegexOption.IGNORE_CASE))) return
@@ -42,8 +42,12 @@ class NotifListener : NotificationListenerService() {
         // (heurística: si el texto tiene "Nombre: " y el título parece grupo, lo dejamos pasar
         //  igual con el título como remitente — el ruteo real lo hace el VPS por número.)
 
-        // Guardar la acción Responder de este chat (clave = título = nombre del contacto)
-        ReplyRegistry.registrarDesde(sbn.key, titulo, sbn.notification)
+        // Guardar la acción Responder de este chat (clave = título = nombre del
+        // contacto). v2.9: si la notif NO tiene botón Responder, NO es un chat
+        // (notifs de sistema de WA: "account restricted", backups, llamadas) —
+        // filtrarla acá mata todo el ruido de una vez.
+        val esChat = ReplyRegistry.registrarDesde(sbn.key, titulo, sbn.notification)
+        if (!esChat) { MbLog.i("notif", "sin acción de reply — descarto no-chat: \"${titulo.take(40)}\""); return }
 
         // Enviar al hook (el VPS resuelve usuario/tercero por nombre+historial)
         val base = Prefs.hookBase(this)
