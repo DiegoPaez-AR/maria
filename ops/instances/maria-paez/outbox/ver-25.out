@@ -1,0 +1,19 @@
+# ejecutado: 2026-08-17T00:49:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   pgrep -f mb-build-worker >/dev/null && echo compilando || echo terminó
+#   grep "APK_OK\|APK_FAIL\|^e: file" /root/mariabridge-build.log | tail -3
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   echo LISTO
+
+# ───── output ─────
+terminó
+e: file:///root/secretaria/ops/mariabridge/app/src/main/java/io/intensa/mariabridge/NotifListener.kt:34:13 Unresolved reference: texto
+APK_OK url=https://intensa.io/_dl/mb-205ced8314f6687a.apk size=3.1M latest.json=v2.5(10)
+{"versionCode": 10, "versionName": "2.5", "url": "https://intensa.io/_dl/mb-205ced8314f6687a.apk"}
+
+LISTO
+
+# exit=0
