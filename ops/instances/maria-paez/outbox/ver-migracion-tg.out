@@ -1,0 +1,21 @@
+# ejecutado: 2026-08-17T01:45:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   const cols=db.prepare('PRAGMA table_info(contactos)').all().map(c=>c.name);
+#   console.log('contactos.telegram:', cols.includes('telegram') ? 'MIGRADO ✓' : 'FALTA ✗');
+#   db.close();"
+#   grep "migración" ~/.pm2/logs/maria-paez-out.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+contactos.telegram: MIGRADO ✓
+2026-07-03 17:09:06: [memory] migración telegram: rebuild OK
+2026-07-03 17:09:06: [memory] migración: usuarios.telegram_chat_id agregada
+2026-08-17 01:44:02: [memory] migración: contactos.telegram agregado
+LISTO
+
+# exit=0
