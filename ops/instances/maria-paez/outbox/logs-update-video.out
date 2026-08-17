@@ -1,0 +1,40 @@
+# ejecutado: 2026-08-17T20:32:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | awk '$2>="20:24:00" && $2<="20:32:00"' | head -20
+#   echo "── ¿v3.2 arrancó? ──"
+#   grep "\[MB v3.2" ~/.pm2/logs/maria-paez-out.log | head -5
+#   echo LISTO
+
+# ───── output ─────
+2026-08-16 20:26:38: [MB v2.3] 20:26:35 I [notif] entrante de "Gabriela Echaniz": Me agregas al calendario que el miércoles vaya al museo de l
+2026-08-16 20:26:57: [MB v2.3] 20:26:55 E [notif] hook devolvió -1: timeout
+2026-08-16 20:28:11: [MB v2.3] 20:28:02 I [notif] entrante de "WhatsApp": Checking for new messages
+2026-08-16 20:28:11: [MB v2.3] 20:28:03 I [notif] entrante de "Ulises": Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a 
+2026-08-16 20:28:11: [MB v2.3] 20:28:03 I [notif] entrante de "Gabriela Echaniz": Me agregas al calendario que el miércoles vaya al museo de l
+2026-08-17 20:24:06: [MB v3.1] 20:23:59 I [frio] abriendo chat 5491134274828 (#77)
+2026-08-17 20:24:06: [MB v3.1] 20:24:01 I [frio] botón send encontrado — tap
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [frio] verificación #77: ENVIADO
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [outbox] enviado EN FRÍO (accesibilidad) → 5491134274828
+2026-08-17 20:24:16: [MB v3.1] 20:24:08 I [media] audio procesado OK
+2026-08-17 20:24:16: [MB v3.1] 20:24:08 I [media] reply a "Diego Paez": ENVIADA
+2026-08-17 20:26:56: [MB v3.1] 20:26:50 I [upd] versión nueva v3.2 (code 17 > 16) — descargando
+2026-08-17 20:27:06: [MB v3.1] 20:26:59 I [upd] descargado 3136KB — ofreciendo instalar
+2026-08-17 20:27:26: [MB v3.1] 20:27:26 I [upd] versión nueva v3.2 (code 17 > 16) — descargando
+2026-08-17 20:27:36: [MB v3.1] 20:27:29 I [upd] descargado 3136KB — ofreciendo instalar
+2026-08-17 20:28:00: [MB v3.2] 20:27:51 I [notif] listener conectado
+2026-08-17 20:28:00: [MB v3.2] 20:27:52 I [frio] accesibilidad conectada
+2026-08-17 20:28:00: [MB v3.2] 20:27:57 I [upd] al día (v3.2 code=17, mío=17)
+2026-08-17 20:28:10: [MB v3.2] 20:28:03 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-17 20:28:40: [MB v3.2] 20:28:35 I [upd] al día (v3.2 code=17, mío=17)
+── ¿v3.2 arrancó? ──
+2026-08-17 20:28:00: [MB v3.2] 20:27:51 I [notif] listener conectado
+2026-08-17 20:28:00: [MB v3.2] 20:27:52 I [frio] accesibilidad conectada
+2026-08-17 20:28:00: [MB v3.2] 20:27:57 I [upd] al día (v3.2 code=17, mío=17)
+2026-08-17 20:28:10: [MB v3.2] 20:28:03 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-17 20:28:40: [MB v3.2] 20:28:35 I [upd] al día (v3.2 code=17, mío=17)
+LISTO
+
+# exit=0
