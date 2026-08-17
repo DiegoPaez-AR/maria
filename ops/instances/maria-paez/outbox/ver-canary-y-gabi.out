@@ -1,0 +1,25 @@
+# ejecutado: 2026-08-17T09:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep -i "canary" /root/secretaria/ops/.cron.log | tail -2
+#   ls /root/secretaria/state/.canary-bad-commit 2>/dev/null && echo "marker sigue" || echo "marker limpio"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   db.prepare(\"SELECT id,estado,intentos,substr(texto,1,35) t FROM wa_outbox ORDER BY id DESC LIMIT 5\").all().forEach(r=>console.log('#'+r.id,r.estado,'int:'+r.intentos,'|',String(r.t).replace(/\n/g,' ')));
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+canary OK (e168300478e1c6773c96bb86f5240c439c7c43c1) → reload
+[maria-paez exec] ops/instances/maria-paez/inbox/ver-canary-y-gabi.sh → ops/instances/maria-paez/outbox/ver-canary-y-gabi.out
+marker limpio
+#51 entregado int:1 | Perdón por el enredo de recién — lo
+#50 entregado int:1 | Orden de la casa 🏠 1️⃣ Expensas 2️⃣
+#49 entregado int:1 | Y también tu lista de Personal para
+#48 entregado int:1 | Buen día! 🌞 Recordatorio de tu orde
+#47 entregado int:1 | Genial, anotado miércoles 19! Apena
+LISTO
+
+# exit=0
