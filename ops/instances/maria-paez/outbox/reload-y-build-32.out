@@ -1,0 +1,15 @@
+# ejecutado: 2026-08-17T20:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   [ -f state/.canary-bad-commit ] && { echo "CANARY BLOQUEÓ: $(cat state/.canary-bad-commit)"; exit 0; }
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK (mbmedia video)"
+#   if pgrep -f mb-build-worker >/dev/null; then echo "build corriendo"; else nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 & echo "build v3.2 lanzado"; fi
+
+# ───── output ─────
+reload OK (mbmedia video)
+build v3.2 lanzado
+
+# exit=0
