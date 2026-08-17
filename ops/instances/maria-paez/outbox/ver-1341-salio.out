@@ -1,0 +1,28 @@
+# ejecutado: 2026-08-17T10:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   const r=db.prepare('SELECT id,enviado,razon FROM programados WHERE id=1341').get();
+#   console.log('#1341:', JSON.stringify(r));
+#   db.prepare(\"SELECT id,estado,intentos,numero,substr(texto,1,30) t FROM wa_outbox ORDER BY id DESC LIMIT 3\").all().forEach(x=>console.log('#'+x.id,x.estado,'int:'+x.intentos,x.numero.slice(-6),'|',x.t));
+#   db.close();"
+#   grep "programados/1341\|MB " ~/.pm2/logs/maria-paez-out.log | tail -5
+#   echo LISTO
+
+# ───── output ─────
+#1341: {"id":1341,"enviado":0,"razon":null}
+#51 entregado int:1 286555 | Perdón por el enredo de recién
+#50 entregado int:1 286555 | Orden de la casa 🏠
+1️⃣ Expensa
+#49 entregado int:1 286555 | Y también tu lista de Personal
+2026-08-17 10:25:21: [MB v2.7] 10:25:19 I [upd] descargado 3133KB — ofreciendo instalar
+2026-08-17 10:25:55: [MB v2.8] 10:25:44 I [notif] listener conectado
+2026-08-17 10:25:55: [MB v2.8] 10:25:45 I [frio] accesibilidad conectada
+2026-08-17 10:26:03: [MB v2.8] 10:26:00 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-17 10:29:35: [MB v2.8] 10:28:52 I [upd] al día (v2.8 code=13, mío=13)
+LISTO
+
+# exit=0
