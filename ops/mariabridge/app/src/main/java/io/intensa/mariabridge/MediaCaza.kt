@@ -13,23 +13,33 @@ import java.io.File
  * TIMEOUT_MS, el llamador cae al hint de siempre ("mandámelo en texto").
  */
 object MediaCaza {
-    private val DIRS_AUDIO = listOf(
-        "/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Voice Notes",
-        "/storage/emulated/0/WhatsApp/Media/WhatsApp Voice Notes",   // layouts viejos
+    private val BASES = listOf(
+        "/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media",
+        "/storage/emulated/0/WhatsApp/Media",   // layouts viejos
     )
+    private val DIRS_AUDIO = BASES.map { "$it/WhatsApp Voice Notes" } + BASES.map { "$it/WhatsApp Audio" }
+    private val DIRS_IMG = BASES.map { "$it/WhatsApp Images" }
+    private val DIRS_DOC = BASES.map { "$it/WhatsApp Documents" }
+    private val EXT_AUDIO = listOf(".opus", ".m4a", ".ogg", ".mp3")
+    private val EXT_IMG = listOf(".jpg", ".jpeg", ".png", ".webp")
+    private val EXT_DOC = listOf(".pdf")
     private const val TIMEOUT_MS = 12_000L
     private const val FRESCURA_MS = 45_000L      // el archivo debe ser de ahora
-    private const val MAX_BYTES = 6 * 1024 * 1024
+    private const val MAX_BYTES = 10 * 1024 * 1024
 
     fun tenemosPermiso(): Boolean =
         try { Environment.isExternalStorageManager() } catch (_: Exception) { false }
 
-    /** Busca un audio NUEVO (mtime dentro de FRESCURA). Espera hasta TIMEOUT. */
-    fun cazarAudio(desdeTs: Long): File? {
+    fun cazarAudio(desdeTs: Long) = _cazar(DIRS_AUDIO, EXT_AUDIO, desdeTs)
+    fun cazarImagen(desdeTs: Long) = _cazar(DIRS_IMG, EXT_IMG, desdeTs)
+    fun cazarDocumento(desdeTs: Long) = _cazar(DIRS_DOC, EXT_DOC, desdeTs)
+
+    /** Busca un archivo NUEVO (mtime dentro de FRESCURA). Espera hasta TIMEOUT. */
+    private fun _cazar(dirs: List<String>, exts: List<String>, desdeTs: Long): File? {
         if (!tenemosPermiso()) return null
         val limite = System.currentTimeMillis() + TIMEOUT_MS
         while (System.currentTimeMillis() < limite) {
-            val f = _masNuevo(desdeTs)
+            val f = _masNuevo(dirs, exts, desdeTs)
             if (f != null) {
                 // esperar a que termine de escribirse (tamaño estable)
                 val t1 = f.length(); Thread.sleep(700)
@@ -39,15 +49,16 @@ object MediaCaza {
         return null
     }
 
-    private fun _masNuevo(desdeTs: Long): File? {
+    private fun _masNuevo(dirs: List<String>, exts: List<String>, desdeTs: Long): File? {
         var mejor: File? = null
-        for (dir in DIRS_AUDIO) {
+        for (dir in dirs) {
             val d = File(dir)
             if (!d.isDirectory) continue
-            // subcarpetas por semana (ej. 202633) — mirar las 2 más recientes
-            val subs = d.listFiles { x -> x.isDirectory }?.sortedByDescending { it.name }?.take(2) ?: continue
-            for (sub in subs) {
-                sub.listFiles { x -> x.isFile && (x.name.endsWith(".opus") || x.name.endsWith(".m4a") || x.name.endsWith(".ogg")) }
+            // raíz + subcarpetas por semana (ej. 202633) — las 2 más recientes
+            val lugares = mutableListOf(d)
+            d.listFiles { x -> x.isDirectory }?.sortedByDescending { it.name }?.take(2)?.let { lugares.addAll(it) }
+            for (sub in lugares) {
+                sub.listFiles { x -> x.isFile && exts.any { e -> x.name.lowercase().endsWith(e) } && !x.name.startsWith(".") }
                     ?.forEach { f ->
                         if (f.lastModified() >= desdeTs - FRESCURA_MS &&
                             (mejor == null || f.lastModified() > mejor!!.lastModified())) mejor = f
@@ -58,11 +69,12 @@ object MediaCaza {
     }
 
     /** Sube el audio a /mbmedia. Devuelve el JSON de respuesta o null. */
-    fun subir(base: String, secret: String, sender: String, f: File): JSONObject? {
+    fun subir(base: String, secret: String, sender: String, f: File, tipo: String = "audio", caption: String = ""): JSONObject? {
         return try {
-            if (f.length() > MAX_BYTES) { MbLog.w("media", "audio ${f.length() / 1024}KB > cap, no subo"); return null }
+            if (f.length() > MAX_BYTES) { MbLog.w("media", "$tipo ${f.length() / 1024}KB > cap, no subo"); return null }
             val b64 = Base64.encodeToString(f.readBytes(), Base64.NO_WRAP)
             val body = JSONObject().put("sender", sender).put("fileName", f.name).put("data", b64)
+                .put("tipo", tipo).put("caption", caption)
             var resultado: JSONObject? = null
             val lock = Object()
             Net.postJson("$base/$secret/mbmedia", body.toString()) { code, resp ->

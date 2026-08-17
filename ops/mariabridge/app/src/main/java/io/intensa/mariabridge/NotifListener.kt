@@ -57,18 +57,25 @@ class NotifListener : NotificationListenerService() {
         // con Whisper y corre el turno con el TEXTO REAL. Si no aparece el
         // archivo o falla, caemos al POST normal (hint "mandámelo en texto").
         val esAudio = texto.contains("🎤") || Regex("mensaje de voz|voice message|^audio\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)
-        if (esAudio && MediaCaza.tenemosPermiso()) {
+        val esImagen = texto.contains("📷") || texto.contains("📸") || Regex("^(photo|foto|imagen)\\b", RegexOption.IGNORE_CASE).containsMatchIn(texto)
+        val esDoc = texto.contains("📄") || texto.contains(".pdf", ignoreCase = true)
+        val tipoMedia = when { esAudio -> "audio"; esImagen -> "imagen"; esDoc -> "documento"; else -> null }
+        if (tipoMedia != null && MediaCaza.tenemosPermiso()) {
             val ts = System.currentTimeMillis()
             Thread {
                 try {
-                    val f = MediaCaza.cazarAudio(ts)
+                    val f = when (tipoMedia) {
+                        "audio" -> MediaCaza.cazarAudio(ts)
+                        "imagen" -> MediaCaza.cazarImagen(ts)
+                        else -> MediaCaza.cazarDocumento(ts)
+                    }
                     if (f != null) {
-                        MbLog.i("media", "audio de \"$titulo\" cazado: ${f.name} (${f.length() / 1024}KB) — subiendo")
-                        val r = MediaCaza.subir(base, secret, titulo, f)
-                        val transcript = r?.optString("transcript")
-                        if (r != null && !transcript.isNullOrBlank()) {
-                            MbLog.i("media", "transcripto OK: ${transcript.take(60)}")
-                            val rs = r.optJSONArray("replies")
+                        MbLog.i("media", "$tipoMedia de \"$titulo\" cazado: ${f.name} (${f.length() / 1024}KB) — subiendo")
+                        val r = MediaCaza.subir(base, secret, titulo, f, tipoMedia, texto)
+                        val okMedia = r != null && (tipoMedia != "audio" || !r.optString("transcript").isNullOrBlank())
+                        if (okMedia) {
+                            MbLog.i("media", "$tipoMedia procesado OK")
+                            val rs = r!!.optJSONArray("replies")
                             if (rs != null) for (i in 0 until rs.length()) {
                                 val m = rs.getJSONObject(i).optString("message")
                                 if (m.isNotBlank()) {
@@ -77,9 +84,9 @@ class NotifListener : NotificationListenerService() {
                                     Thread.sleep(1200)
                                 }
                             }
-                            return@Thread   // audio procesado — NO hacemos el POST del hint
+                            return@Thread   // media procesada — NO hacemos el POST del hint
                         }
-                    } else MbLog.w("media", "no apareció el archivo del audio de \"$titulo\" — caigo al hint")
+                    } else MbLog.w("media", "no apareció el archivo ($tipoMedia) de \"$titulo\" — caigo al hint")
                 } catch (e: Exception) { MbLog.e("media", "caza falló: ${e.message}") }
                 _postNormal(base, secret, titulo, texto)   // fallback
             }.apply { isDaemon = true }.start()
