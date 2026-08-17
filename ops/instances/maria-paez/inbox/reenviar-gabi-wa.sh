@@ -1,0 +1,16 @@
+#!/bin/bash
+node -e "
+const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB);
+const rows=db.prepare(\"SELECT id,texto FROM programados WHERE id IN (1355,1356,1357) ORDER BY id\").all();
+const gabi=db.prepare(\"SELECT wa_cus FROM usuarios WHERE id=18\").get();
+const num=String(gabi.wa_cus).replace('@c.us','');
+let n=0;
+for (const r of rows) {
+  db.prepare(\"INSERT INTO wa_outbox (usuario_id, numero, texto, metadata_json) VALUES (18, ?, ?, ?)\").run(num, r.texto, JSON.stringify({tipo:'reenvio_recordatorio', programado:r.id}));
+  n++;
+}
+db.prepare(\"INSERT INTO wa_outbox (usuario_id, numero, texto, metadata_json) VALUES (18, ?, ?, ?)\").run(num,
+  'Perdón por el enredo de recién — los recordatorios te habían llegado por mail por un tema técnico mío, ya está resuelto. El Museo de la Cárcova del miércoles ya está en tu calendario ✓', JSON.stringify({tipo:'aclaracion'}));
+console.log('encolados a Gabi:', n+1);
+db.close();"
+echo LISTO
