@@ -1,5 +1,21 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+28212  2026-08-17 23:24:01  whatsapp  saliente   5491134274828@c.us  ¡Hola Santiago! Soy Maria, la secretaria de Diego. Me enteré que mañana es tu cumple — quería mandarte un saludo grande, que lo disfrutes mucho! 🎉                                                      
+
+28211  2026-08-17 23:23:55  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+28210  2026-08-17 23:23:55  sistema   interno                        claude_call moderacion: 6100ms prompt=1595c raw=6032c in=10t(cache_read=0 new=22482) out=302t ttfb=1220ms api=5149ms turnos=1 $0.0301                                                                   
+
+28209  2026-08-17 23:23:45  sistema   interno                        acción ejecutada: buscar_contacto_global                                                                                                                                                                
+
+28208  2026-08-17 23:23:44  sistema   interno                        claude_call memoria-curada: 17922ms prompt=2674c raw=10872c in=2t(cache_read=8775 new=7621) out=1081t ttfb=1398ms api=17116ms turnos=1 $0.0488                                                          
+
+28207  2026-08-17 23:23:26  sistema   interno                        claude_call memoria-curada: 17794ms prompt=2311c raw=11153c in=2t(cache_read=8775 new=7437) out=1228t ttfb=1591ms api=16564ms turnos=1 $0.0502                                                          
+
+28206  2026-08-17 23:23:26  sistema   interno                        acción FALLÓ: enviar_wa — enviar_wa: WA "PLACEHOLDER" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.                            
+
+28205  2026-08-17 23:23:08  sistema   interno                        claude_call memoria-curada: 17008ms prompt=4678c raw=9579c in=2t(cache_read=8775 new=8346) out=1022t ttfb=2648ms api=14744ms turnos=1 $0.0511                                                           
+
 28204  2026-08-17 23:22:59  whatsapp  entrante   541132317896@c.us   (audio de voz, transcripto) Sí, mandarle un saludo felicitándolo, pero que sea algo más bien de tu parte, no mía.                                                                                       
 
 28203  2026-08-17 23:22:51  sistema   interno                        claude_call memoria-curada: 14678ms prompt=2688c raw=8124c in=2t(cache_read=8775 new=7641) out=747t ttfb=2556ms api=12461ms turnos=1 $0.0439                                                            
@@ -207,28 +223,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 28114  2026-08-17 18:08:47  sistema   interno                        claude_call whatsapp: 18503ms prompt=89044c raw=10230c in=2t(cache_read=0 new=56387) out=1246t ttfb=1530ms api=17781ms turnos=1 $0.2430                                                                 
 
 28113  2026-08-17 18:08:44  whatsapp  entrante   5491165286555@c.us  Gracias María!                                                                                                                                                                                          
-
-28112  2026-08-17 18:08:44  sistema   interno                        claude_call whatsapp-gestion-ajena: 5472ms prompt=696c raw=7456c in=10t(cache_read=27641 new=0) out=303t ttfb=1484ms api=4291ms turnos=1 $0.0050                                                        
-
-28111  2026-08-17 18:08:37  sistema   interno                        claude_call whatsapp: 5624ms prompt=62609c raw=4723c in=2t(cache_read=8784 new=35318) out=69t ttfb=1429ms api=4572ms turnos=1 $0.1405                                                                   
-
-28110  2026-08-17 18:08:31  whatsapp  entrante   5491165286555@c.us  Gracias María!                                                                                                                                                                                          
-
-28109  2026-08-17 18:08:31  sistema   interno                        claude_call whatsapp-gestion-ajena: 7632ms prompt=696c raw=8063c in=10t(cache_read=0 new=27641) out=365t ttfb=1951ms api=7055ms turnos=1 $0.0371                                                        
-
-28108  2026-08-17 18:08:28  whatsapp  entrante   541132317896@c.us   (audio de voz, transcripto) Y lo de Natal y Cancelano, no le envíes más nada ni le dole a te.                                                                                                           
-                                                                      Cable a te el tema, Cancelano de tus convientos, yo me apupó.                                                                                                                                          
-
-28107  2026-08-17 18:03:32  sistema   interno                        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-28106  2026-08-17 17:48:58  whatsapp  saliente   5491150105262@c.us  Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     1. Natali dijo dos veces "Hoy no puedo" sin dar contexto de a qué se refiere — 27h                                                                                                                      
-                                                                                                                                                                                                                                                                             
-                                                                     Decime qué hago con cada uno.                                                                                                                                                                           
-
-28105  2026-08-17 17:38:26  whatsapp  saliente   5491150105262@c.us  Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     1. Natali dijo dos veces "Hoy no puedo" sin dar contexto de a qué se refiere — 27h                                                                                                                      
-                                                                                                                                                                                                                                                                             
-                                                                     Decime qué hago con cada uno.                                                                                                                                                                           
