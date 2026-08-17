@@ -1,0 +1,1937 @@
+# ejecutado: 2026-08-17T20:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   set -uo pipefail
+#   export PATH="/usr/local/bin:/usr/bin:/bin:${PATH:-}"
+#   cd /root/secretaria
+#   echo "=== REPORTE CAMPANA TELEGRAM v2 - $(date '+%Y-%m-%d %H:%M:%S %z') ==="
+#   echo "DB=${MARIA_DB:-<sin MARIA_DB>}"
+#   echo
+#   
+#   cat > /tmp/rep-campana.js <<'JSEOF'
+#   const Database = require("/root/secretaria/node_modules/better-sqlite3");
+#   const db = new Database(process.env.MARIA_DB, { readonly: true });
+#   const q = (s,...a)=>{ try { return db.prepare(s).all(...a); } catch(e){ console.log("  ERR: "+e.message); return []; } };
+#   const cut = (s,n)=> (s==null?"":String(s).replace(/\s+/g," ").slice(0,n));
+#   
+#   console.log("-- 1) PROGRAMADOS con Telegram --");
+#   const prog = q("SELECT id, usuario_id, cuando, canal, destino, enviado, razon, texto FROM programados WHERE texto LIKE '%Telegram%' ORDER BY cuando");
+#   console.log("   total: " + prog.length);
+#   console.log("   enviado=1: " + prog.filter(p=>p.enviado).length + "   pendientes: " + prog.filter(p=>!p.enviado).length);
+#   for (const p of prog) {
+#     console.log("   ["+p.id+"] "+p.cuando+" u="+p.usuario_id+" "+p.canal+"->"+p.destino+" enviado="+p.enviado+" razon="+(p.razon||"-"));
+#     console.log("        txt: " + cut(p.texto,90));
+#   }
+#   console.log();
+#   console.log("   -- todos los programados de las ultimas 36h (por si el texto no dice Telegram) --");
+#   const prog2 = q("SELECT id, usuario_id, cuando, canal, destino, enviado, razon, texto FROM programados WHERE datetime(cuando) >= datetime('now','-36 hours') ORDER BY cuando");
+#   console.log("   total: " + prog2.length);
+#   for (const p of prog2) {
+#     console.log("   ["+p.id+"] "+p.cuando+" u="+p.usuario_id+" "+p.canal+"->"+p.destino+" env="+p.enviado+" razon="+(p.razon||"-")+" :: "+cut(p.texto,70));
+#   }
+#   console.log();
+#   
+#   console.log("-- 2) WA_OUTBOX ultimas 36h --");
+#   const ob = q("SELECT id, creado, usuario_id, numero, estado, intentos, tomado_en, entregado, texto FROM wa_outbox WHERE datetime(creado) >= datetime('now','-36 hours') ORDER BY id");
+#   console.log("   filas: " + ob.length);
+#   const cnt = (arr,k)=>{const o={};for(const r of arr)o[r[k]]=(o[r[k]]||0)+1;return JSON.stringify(o);};
+#   console.log("   por estado: " + cnt(ob,"estado"));
+#   const obTg = ob.filter(r=>/Telegram/i.test(r.texto||""));
+#   console.log("   campana (texto LIKE Telegram): " + obTg.length + "  " + cnt(obTg,"estado"));
+#   for (const r of ob) {
+#     console.log("   ["+r.id+"] creado="+r.creado+" n="+r.numero+" u="+r.usuario_id+" estado="+r.estado+" int="+r.intentos+" entregado="+(r.entregado||"-"));
+#     console.log("        txt: " + cut(r.texto,80));
+#   }
+#   console.log();
+#   
+#   console.log("-- 3) USUARIOS con telegram_chat_id --");
+#   const us = q("SELECT id, nombre, email, wa_cus, telegram_chat_id, servido, activo FROM usuarios ORDER BY id");
+#   const conTg = us.filter(u=>u.telegram_chat_id!=null && String(u.telegram_chat_id).trim()!=="");
+#   console.log("   totales: "+us.length+"   con TG: "+conTg.length);
+#   for (const u of conTg) console.log("   VINCULADO -> ["+u.id+"] "+u.nombre+" tg="+u.telegram_chat_id);
+#   console.log("   sin TG: " + us.filter(u=>!u.telegram_chat_id).map(u=>u.nombre).join(", "));
+#   console.log();
+#   
+#   console.log("-- 4) EVENTOS ultimas 36h --");
+#   const ev = q("SELECT id, timestamp, canal, direccion, de, nombre, usuario_id, tipo, cuerpo FROM eventos WHERE datetime(timestamp) >= datetime('now','-36 hours') ORDER BY timestamp");
+#   console.log("   total: " + ev.length);
+#   console.log("   por canal: " + cnt(ev,"canal") + "   por direccion: " + cnt(ev,"direccion"));
+#   const ent = ev.filter(e=>String(e.direccion||"").match(/entrante|in/i));
+#   console.log("   ENTRANTES: " + ent.length);
+#   for (const e of ent) {
+#     console.log("   "+e.timestamp+" ["+e.canal+"/"+(e.tipo||"-")+"] de="+e.de+" ("+(e.nombre||"-")+") u="+e.usuario_id);
+#     console.log("        " + cut(e.cuerpo,140));
+#   }
+#   console.log();
+#   console.log("   -- SALIENTES de hoy (resumen) --");
+#   for (const e of ev.filter(e=>!String(e.direccion||"").match(/entrante|in/i))) {
+#     console.log("   "+e.timestamp+" ["+e.canal+"] ->"+e.de+" :: "+cut(e.cuerpo,70));
+#   }
+#   db.close();
+#   JSEOF
+#   
+#   node /tmp/rep-campana.js 2>&1
+#   
+#   echo
+#   echo "-- 5) LOGS [MB] hoy --"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log 2>/dev/null | grep "2026-08-17" | tail -60
+#   echo
+#   echo "-- 6) grep frio/outbox/error en out.log hoy --"
+#   grep -iE "\[frio\]|\[outbox\]|restring|timeout|no entrega" ~/.pm2/logs/maria-paez-out.log 2>/dev/null | grep "2026-08-17" | tail -50
+#   echo
+#   echo "-- 7) marker WA / estado --"
+#   ls -la /root/secretaria/state/maria-paez/ 2>/dev/null | grep -iE "wa-|marker" || echo "   (sin markers)"
+#   echo
+#   echo "done"
+
+# ───── output ─────
+=== REPORTE CAMPANA TELEGRAM v2 - 2026-08-17 20:35:02 -0300 ===
+DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+
+-- 1) PROGRAMADOS con Telegram --
+   total: 24
+   enviado=1: 14   pendientes: 10
+   [1341] 2026-08-17T13:36:02.359Z u=1 whatsapp->5491126829596@c.us enviado=1 razon=-
+        txt: ¡Hola Hernan! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria
+   [1342] 2026-08-17T13:45:00.000Z u=1 whatsapp->5491150105262@c.us enviado=1 razon=usuario
+        txt: ¡Hola Natali! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria
+   [1343] 2026-08-17T14:30:00.000Z u=1 whatsapp->5491134274828@c.us enviado=1 razon=usuario
+        txt: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1344] 2026-08-17T15:15:00.000Z u=1 whatsapp->5491144471264@c.us enviado=1 razon=usuario
+        txt: ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria,
+   [1345] 2026-08-17T16:00:00.000Z u=1 whatsapp->5491150080522@c.us enviado=1 razon=usuario
+        txt: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mari
+   [1346] 2026-08-17T16:45:00.000Z u=1 whatsapp->5491138433288@c.us enviado=1 razon=usuario
+        txt: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria
+   [1347] 2026-08-17T17:30:00.000Z u=1 whatsapp->5491126406612@c.us enviado=1 razon=usuario
+        txt: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1348] 2026-08-17T18:15:00.000Z u=1 whatsapp->5491163004389@c.us enviado=1 razon=usuario
+        txt: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Ma
+   [1349] 2026-08-17T19:00:00.000Z u=1 whatsapp->59899643028@c.us enviado=1 razon=usuario
+        txt: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mari
+   [1350] 2026-08-17T19:45:00.000Z u=1 whatsapp->5491166010010@c.us enviado=1 razon=usuario
+        txt: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1351] 2026-08-17T20:30:00.000Z u=1 whatsapp->5491164719969@c.us enviado=1 razon=usuario
+        txt: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria
+   [1352] 2026-08-17T21:15:00.000Z u=1 whatsapp->5491165286555@c.us enviado=1 razon=usuario
+        txt: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1353] 2026-08-17T22:00:00.000Z u=1 whatsapp->5491161991122@c.us enviado=1 razon=usuario
+        txt: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria,
+   [1354] 2026-08-17T22:45:00.000Z u=1 whatsapp->5491161549534@c.us enviado=1 razon=usuario
+        txt: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mari
+   [1365] 2026-08-18T13:00:00.000Z u=1 whatsapp->227143674011812@lid enviado=0 razon=usuario
+        txt: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mari
+   [1366] 2026-08-18T13:45:00.000Z u=1 whatsapp->5491138433288@c.us enviado=0 razon=usuario
+        txt: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria
+   [1367] 2026-08-18T14:30:00.000Z u=1 whatsapp->5491126406612@c.us enviado=0 razon=usuario
+        txt: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1368] 2026-08-18T15:15:00.000Z u=1 whatsapp->5491163004389@c.us enviado=0 razon=usuario
+        txt: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Ma
+   [1369] 2026-08-18T16:00:00.000Z u=1 whatsapp->59899643028@c.us enviado=0 razon=usuario
+        txt: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mari
+   [1370] 2026-08-18T16:45:00.000Z u=1 whatsapp->134076010885285@lid enviado=0 razon=usuario
+        txt: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1371] 2026-08-18T17:30:00.000Z u=1 whatsapp->5491164719969@c.us enviado=0 razon=usuario
+        txt: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria
+   [1372] 2026-08-18T18:15:00.000Z u=1 whatsapp->5491165286555@c.us enviado=0 razon=usuario
+        txt: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mar
+   [1373] 2026-08-18T19:00:00.000Z u=1 whatsapp->5491161991122@c.us enviado=0 razon=usuario
+        txt: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Maria,
+   [1374] 2026-08-18T19:45:00.000Z u=1 whatsapp->5491161549534@c.us enviado=0 razon=usuario
+        txt: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por Telegram — misma Mari
+
+   -- todos los programados de las ultimas 36h (por si el texto no dice Telegram) --
+   total: 36
+   [1339] 2026-08-16T12:45:00.000Z u=6 whatsapp->105171031949561@lid env=1 razon=meeting_prep:6:4un85vihscvlak5epjrk14ifmb :: ⏰ *En 15min*: joaquin vasco (10:00 a. m.) @Joaquin Vasco, Av. Federico
+   [1340] 2026-08-16T13:45:00.000Z u=6 whatsapp->105171031949561@lid env=1 razon=meeting_prep:6:327v8nhq5u51h9ad53otml34fs :: ⏰ *En 15min*: Global AI - 8th SESSION - Marketing in the AI era (11:00
+   [1358] 2026-08-17T10:15:00.000Z u=13 whatsapp->134076010885285@lid env=1 razon=meeting_prep:13:1rsnqrocq5n5e66crn9vq50ocv :: ⏰ *En 15min*: feriado (07:30 a. m.)
+   [1359] 2026-08-17T10:45:00.000Z u=13 whatsapp->134076010885285@lid env=1 razon=meeting_prep:13:tgnc78naeo9a7emttjd4mdp8ho_20260817T110000Z :: ⏰ *En 15min*: Gimnasio (08:00 a. m.)
+   [1355] 2026-08-17T12:00:00.000Z u=18 whatsapp->5491165286555@c.us env=1 razon=usuario :: Buen día! 🌞 Recordatorio de tu orden laboral de hoy: 1️⃣ Terminar tex
+   [1356] 2026-08-17T12:00:00.000Z u=18 whatsapp->5491165286555@c.us env=1 razon=usuario :: Y también tu lista de Personal para hoy 📋 1️⃣ Certificado de alumna r
+   [1357] 2026-08-17T12:00:00.000Z u=18 whatsapp->5491165286555@c.us env=1 razon=usuario :: Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a señora x limpieza 3️⃣ Ma
+   [1360] 2026-08-17T12:00:00.000Z u=2 whatsapp->137456250806423@lid env=1 razon=meeting_prep:2:klo63l5odqiducuv1bpmmgsohr_20260817T121500Z :: ⏰ *En 15min*: MC Daily (09:15 a. m.) Con: cristian.incarnato@sondeos.c
+   [1361] 2026-08-17T12:30:00.000Z u=2 whatsapp->137456250806423@lid env=1 razon=meeting_prep:2:mj353rh0ornn2pd0no1jnl2gbu_20260817T124500Z :: ⏰ *En 15min*: Daily CMP (09:45 a. m.) Con: agustin.escobar@sondeosglob
+   [1341] 2026-08-17T13:36:02.359Z u=1 whatsapp->5491126829596@c.us env=1 razon=- :: ¡Hola Hernan! Te cuento algo útil: ahora también podés hablarme por Te
+   [1342] 2026-08-17T13:45:00.000Z u=1 whatsapp->5491150105262@c.us env=1 razon=usuario :: ¡Hola Natali! Te cuento algo útil: ahora también podés hablarme por Te
+   [1343] 2026-08-17T14:30:00.000Z u=1 whatsapp->5491134274828@c.us env=1 razon=usuario :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   [1344] 2026-08-17T15:15:00.000Z u=1 whatsapp->5491144471264@c.us env=1 razon=usuario :: ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Tel
+   [1362] 2026-08-17T15:15:00.000Z u=6 whatsapp->105171031949561@lid env=1 razon=meeting_prep:6:9obtdla70l34r8l18g8h8ek69g :: ⏰ *En 15min*: Ada (12:30 p. m.)
+   [1345] 2026-08-17T16:00:00.000Z u=1 whatsapp->5491150080522@c.us env=1 razon=usuario :: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por T
+   [1346] 2026-08-17T16:45:00.000Z u=1 whatsapp->5491138433288@c.us env=1 razon=usuario :: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Te
+   [1347] 2026-08-17T17:30:00.000Z u=1 whatsapp->5491126406612@c.us env=1 razon=usuario :: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por 
+   [1348] 2026-08-17T18:15:00.000Z u=1 whatsapp->5491163004389@c.us env=1 razon=usuario :: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por
+   [1349] 2026-08-17T19:00:00.000Z u=1 whatsapp->59899643028@c.us env=1 razon=usuario :: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por T
+   [1350] 2026-08-17T19:45:00.000Z u=1 whatsapp->5491166010010@c.us env=1 razon=usuario :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   [1363] 2026-08-17T19:45:00.000Z u=6 whatsapp->105171031949561@lid env=1 razon=meeting_prep:6:10b45rl8egp7t22c26f9v6eq7n :: ⏰ *En 15min*: harrods (05:00 p. m.)
+   [1351] 2026-08-17T20:30:00.000Z u=1 whatsapp->5491164719969@c.us env=1 razon=usuario :: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Te
+   [1352] 2026-08-17T21:15:00.000Z u=1 whatsapp->5491165286555@c.us env=1 razon=usuario :: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por 
+   [1364] 2026-08-17T21:45:00.000Z u=6 whatsapp->105171031949561@lid env=1 razon=meeting_prep:6:rfe359njsh4sqsgmnm4b239gkc :: ⏰ *En 15min*: Gordon (07:00 p. m.)
+   [1353] 2026-08-17T22:00:00.000Z u=1 whatsapp->5491161991122@c.us env=1 razon=usuario :: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Tel
+   [1354] 2026-08-17T22:45:00.000Z u=1 whatsapp->5491161549534@c.us env=1 razon=usuario :: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por T
+   [1365] 2026-08-18T13:00:00.000Z u=1 whatsapp->227143674011812@lid env=0 razon=usuario :: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por T
+   [1366] 2026-08-18T13:45:00.000Z u=1 whatsapp->5491138433288@c.us env=0 razon=usuario :: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Te
+   [1367] 2026-08-18T14:30:00.000Z u=1 whatsapp->5491126406612@c.us env=0 razon=usuario :: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por 
+   [1368] 2026-08-18T15:15:00.000Z u=1 whatsapp->5491163004389@c.us env=0 razon=usuario :: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por
+   [1369] 2026-08-18T16:00:00.000Z u=1 whatsapp->59899643028@c.us env=0 razon=usuario :: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por T
+   [1370] 2026-08-18T16:45:00.000Z u=1 whatsapp->134076010885285@lid env=0 razon=usuario :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   [1371] 2026-08-18T17:30:00.000Z u=1 whatsapp->5491164719969@c.us env=0 razon=usuario :: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Te
+   [1372] 2026-08-18T18:15:00.000Z u=1 whatsapp->5491165286555@c.us env=0 razon=usuario :: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por 
+   [1373] 2026-08-18T19:00:00.000Z u=1 whatsapp->5491161991122@c.us env=0 razon=usuario :: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Tel
+   [1374] 2026-08-18T19:45:00.000Z u=1 whatsapp->5491161549534@c.us env=0 razon=usuario :: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por T
+
+-- 2) WA_OUTBOX ultimas 36h --
+   filas: 35
+   por estado: {"entregado":34,"vencido":1}
+   campana (texto LIKE Telegram): 14  {"entregado":14}
+   [43] creado=2026-08-16 13:19:07 n=541132317896 u=1 estado=entregado int=1 entregado=2026-08-16 13:20:10
+        txt: 🧊 Prueba EN FRÍO v2.0 — si viste a WhatsApp abrirse solo, mandar esto y cerrars
+   [44] creado=2026-08-16 13:51:47 n=5491150105262 u=1 estado=entregado int=1 entregado=2026-08-16 13:51:53
+        txt: Hola Nati! Te escribo de parte de Diego para consultarte: ¿podés confirmarle si 
+   [45] creado=2026-08-17 00:46:17 n=5491140402319 u=1 estado=entregado int=1 entregado=2026-08-17 00:46:21
+        txt: Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo para coordinar una c
+   [46] creado=2026-08-17 00:46:24 n=5491141885339 u=1 estado=vencido int=314 entregado=-
+        txt: Hola Carolina! Soy Maria, la secretaria de Diego. Te escribo para coordinar una 
+   [47] creado=2026-08-17 00:50:23 n=5491140402319 u=1 estado=entregado int=1 entregado=2026-08-17 00:50:33
+        txt: Genial, anotado miércoles 19! Apenas confirme Carolina también les aviso con el 
+   [48] creado=2026-08-17 12:28:04 n=5491165286555 u=18 estado=entregado int=1 entregado=2026-08-17 12:30:32
+        txt: Buen día! 🌞 Recordatorio de tu orden laboral de hoy: 1️⃣ Terminar texto curator
+   [49] creado=2026-08-17 12:28:04 n=5491165286555 u=18 estado=entregado int=1 entregado=2026-08-17 12:30:38
+        txt: Y también tu lista de Personal para hoy 📋 1️⃣ Certificado de alumna regular Elo
+   [50] creado=2026-08-17 12:28:04 n=5491165286555 u=18 estado=entregado int=1 entregado=2026-08-17 12:30:48
+        txt: Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a señora x limpieza 3️⃣ Mampara 4️⃣ 
+   [51] creado=2026-08-17 12:28:04 n=5491165286555 u=18 estado=entregado int=1 entregado=2026-08-17 12:30:55
+        txt: Perdón por el enredo de recién — los recordatorios te habían llegado por mail po
+   [52] creado=2026-08-17 13:36:04 n=5491126829596 u=1 estado=entregado int=3 entregado=2026-08-17 13:36:47
+        txt: ¡Hola Hernan! Te cuento algo útil: ahora también podés hablarme por Telegram — m
+   [53] creado=2026-08-17 13:45:05 n=5491150105262 u=1 estado=entregado int=1 entregado=2026-08-17 13:45:13
+        txt: ¡Hola Natali! Te cuento algo útil: ahora también podés hablarme por Telegram — m
+   [54] creado=2026-08-17 14:30:26 n=5491134274828 u=1 estado=entregado int=3 entregado=2026-08-17 14:33:55
+        txt: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por Telegram —
+   [55] creado=2026-08-17 14:38:26 n=5491150105262 u=3 estado=entregado int=1 entregado=2026-08-17 14:45:37
+        txt: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy no puedo"
+   [56] creado=2026-08-17 15:15:26 n=5491144471264 u=1 estado=entregado int=1 entregado=2026-08-17 15:17:36
+        txt: ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Telegram — mi
+   [57] creado=2026-08-17 15:15:26 n=5491144471264 u=6 estado=entregado int=2 entregado=2026-08-17 15:17:58
+        txt: ⏰ *En 15min*: Ada (12:30 p. m.)
+   [58] creado=2026-08-17 15:54:45 n=541155771290 u=1 estado=entregado int=1 entregado=2026-08-17 15:56:55
+        txt: Hola Manuel! Te reescribo por la reunión de 3hs con Diego y Hernán: quedó propue
+   [59] creado=2026-08-17 16:00:26 n=5491150080522 u=1 estado=entregado int=1 entregado=2026-08-17 16:00:54
+        txt: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por Telegram — 
+   [60] creado=2026-08-17 16:45:26 n=5491138433288 u=1 estado=entregado int=1 entregado=2026-08-17 16:54:37
+        txt: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Telegram — m
+   [61] creado=2026-08-17 17:30:26 n=5491126406612 u=1 estado=entregado int=1 entregado=2026-08-17 17:30:39
+        txt: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por Telegram —
+   [62] creado=2026-08-17 17:38:26 n=5491150105262 u=3 estado=entregado int=1 entregado=2026-08-17 17:48:58
+        txt: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy no puedo"
+   [63] creado=2026-08-17 18:09:33 n=541132317896 u=1 estado=entregado int=1 entregado=2026-08-17 18:09:51
+        txt: El audio me volvió a llegar cortado — no descifré bien "gavipaché con Atillo". L
+   [64] creado=2026-08-17 18:15:26 n=5491163004389 u=1 estado=entregado int=1 entregado=2026-08-17 18:18:24
+        txt: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por Telegram 
+   [65] creado=2026-08-17 19:00:26 n=59899643028 u=1 estado=entregado int=1 entregado=2026-08-17 19:00:31
+        txt: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por Telegram — 
+   [66] creado=2026-08-17 19:45:26 n=5491166010010 u=1 estado=entregado int=1 entregado=2026-08-17 19:45:27
+        txt: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por Telegram —
+   [67] creado=2026-08-17 19:45:26 n=5491144471264 u=6 estado=entregado int=1 entregado=2026-08-17 19:45:32
+        txt: ⏰ *En 15min*: harrods (05:00 p. m.)
+   [68] creado=2026-08-17 20:30:26 n=5491164719969 u=1 estado=entregado int=1 entregado=2026-08-17 20:30:28
+        txt: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Telegram — m
+   [69] creado=2026-08-17 20:38:26 n=541132317896 u=1 estado=entregado int=1 entregado=2026-08-17 20:38:28
+        txt: Te debo consulta sobre algo pendiente 👇 1. Pasarme las opciones de fecha en sep
+   [70] creado=2026-08-17 20:38:26 n=5491150105262 u=3 estado=entregado int=1 entregado=2026-08-17 20:38:33
+        txt: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy no puedo"
+   [71] creado=2026-08-17 21:15:26 n=5491165286555 u=1 estado=entregado int=1 entregado=2026-08-17 21:15:28
+        txt: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por Telegram —
+   [72] creado=2026-08-17 21:45:26 n=5491144471264 u=6 estado=entregado int=1 entregado=2026-08-17 21:45:28
+        txt: ⏰ *En 15min*: Gordon (07:00 p. m.)
+   [73] creado=2026-08-17 22:00:26 n=5491161991122 u=1 estado=entregado int=1 entregado=2026-08-17 22:00:29
+        txt: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Telegram — mi
+   [74] creado=2026-08-17 22:45:26 n=5491161549534 u=1 estado=entregado int=1 entregado=2026-08-17 22:45:29
+        txt: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por Telegram — 
+   [75] creado=2026-08-17 22:48:36 n=541155771290 u=1 estado=entregado int=1 entregado=2026-08-17 22:48:39
+        txt: Hola Manuel! Solo quería confirmar si el lunes 24/08 de 15 a 18hs te sigue sirvi
+   [76] creado=2026-08-17 23:08:26 n=541132317896 u=1 estado=entregado int=1 entregado=2026-08-17 23:08:30
+        txt: 🎂 *Mañana cumple años:* • Santiago Bignone ¿Le mando un saludo de tu parte? Dec
+   [77] creado=2026-08-17 23:23:55 n=5491134274828 u=1 estado=entregado int=1 entregado=2026-08-17 23:24:01
+        txt: ¡Hola Santiago! Soy Maria, la secretaria de Diego. Me enteré que mañana es tu cu
+
+-- 3) USUARIOS con telegram_chat_id --
+   totales: 20   con TG: 1
+   VINCULADO -> [1] Diego tg=590589920
+   sin TG: Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Rubén Ward, Enrique Sosa, Santiago Capurro, Facundo Diaz, Guillermo Bagnato, Andres Neumann, Santiago Paez, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+
+-- 4) EVENTOS ultimas 36h --
+   total: 847
+   por canal: {"sistema":630,"telegram":35,"gmail":45,"whatsapp":134,"calendar":3}   por direccion: {"interno":630,"entrante":68,"saliente":149}
+   ENTRANTES: 698
+   2026-08-16 11:36:35 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:36:35 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Y?
+   2026-08-16 11:36:35 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:36:35 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:38:09 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 93829ms prompt=79209c raw=43317c in=16t(cache_read=347609 new=111217) out=6457t ttfb=1505ms api=94976ms turnos=8 $0.62
+   2026-08-16 11:39:04 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Yo te pedí un hola hace un rato pero llegaron 3
+   2026-08-16 11:39:53 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:39:53 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:39:54 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:40:22 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Y hablaste con Nati?
+   2026-08-16 11:40:22 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 76584ms prompt=79480c raw=39931c in=16t(cache_read=357490 new=92782) out=5433t ttfb=1527ms api=75798ms turnos=8 $0.546
+   2026-08-16 11:40:56 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 33637ms prompt=79471c raw=22911c in=12t(cache_read=233664 new=88959) out=2272t ttfb=1571ms api=32094ms turnos=6 $0.447
+   2026-08-16 11:41:13 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 16537ms prompt=80954c raw=12510c in=6t(cache_read=71136 new=88658) out=871t ttfb=1907ms api=15277ms turnos=3 $0.3769
+   2026-08-16 11:42:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:14 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:14 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:14 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:19 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:19 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:19 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:24 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:24 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:24 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:33 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:33 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:34 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:39 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:39 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:42:39 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:49:07 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:49:07 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:49:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:51:38 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:51:38 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:51:39 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:51:52 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:51:53 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 11:51:53 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:02 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:02 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:02 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:06 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:07 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:07 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:11 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:12 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:12 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:16 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:17 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:17 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:21 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:22 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:22 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:26 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:27 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:27 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:31 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:32 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:32 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:36 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:37 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:37 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:41 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:42 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:42 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:46 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:47 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:47 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:51 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:52 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:52 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:56 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:57 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:00:57 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:01:01 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:01:02 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:01:02 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Natali Funez"/"5491150105262" vivos=[diego paez ~ you]
+   2026-08-16 12:02:29 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-16 12:07:20 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 12:07:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 12:07:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 12:07:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 51701 min)
+   2026-08-16 12:08:13 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 18438ms prompt=5355c raw=10413c in=2t(cache_read=0 new=17541) out=1238t ttfb=3253ms api=16099ms turnos=1 $0.0866
+   2026-08-16 12:08:31 [sistema/claude_call] de=null (-) u=16
+        claude_call memoria-curada: 16848ms prompt=5122c raw=10886c in=2t(cache_read=8775 new=8639) out=1319t ttfb=1536ms api=15763ms turnos=1 $0.05
+   2026-08-16 12:12:24 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 11 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-16 13:14:34 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 13:14:34 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Dale
+   2026-08-16 13:14:45 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 10423ms prompt=66432c raw=6650c in=4t(cache_read=45668 new=45803) out=198t ttfb=2312ms api=8379ms turnos=2 $0.1942
+   2026-08-16 13:15:39 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 65202ms prompt=62242c raw=26538c in=4t(cache_read=43870 new=49501) out=5761t ttfb=2168ms api=63678ms turnos=2 $0.2896
+   2026-08-16 13:19:07 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-16 13:19:07 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5842ms prompt=1633c raw=6353c in=10t(cache_read=0 new=22503) out=339t ttfb=1193ms api=5006ms turnos=1 $0.0303
+   2026-08-16 13:43:32 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Les repetís el mensaje a Nati a ver si puedo ir al cine hoy.
+   2026-08-16 13:43:58 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 25491ms prompt=78755c raw=19129c in=12t(cache_read=211951 new=106080) out=1405t ttfb=1549ms api=24618ms turnos=6 $0.49
+   2026-08-16 13:44:05 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 7132ms prompt=79331c raw=5508c in=2t(cache_read=8784 new=43083) out=250t ttfb=1357ms api=6678ms turnos=1 $0.1774
+   2026-08-16 13:51:17 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Natali Funez si lo tenes
+   2026-08-16 13:51:47 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-16 13:51:47 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6087ms prompt=1549c raw=6358c in=10t(cache_read=0 new=22466) out=346t ttfb=1228ms api=5032ms turnos=1 $0.0303
+   2026-08-16 13:51:51 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 33352ms prompt=78816c raw=14404c in=6t(cache_read=53443 new=105351) out=1785t ttfb=1678ms api=26209ms turnos=3 $0.4471
+   2026-08-16 13:56:03 [whatsapp/-] de=5491150105262@c.us (Natali Funez) u=3
+        Hoy no puedo
+   2026-08-16 13:56:36 [sistema/-] de=null (-) u=3
+        acción ejecutada: agregar_pendiente
+   2026-08-16 13:56:41 [sistema/-] de=null (-) u=3
+        acción ejecutada: quitar_pendiente
+   2026-08-16 13:57:01 [whatsapp/-] de=5491150105262@c.us (Natali Funez) u=3
+        Hoy no puedo
+   2026-08-16 13:57:01 [sistema/claude_call] de=null (-) u=3
+        claude_call whatsapp: 58113ms prompt=58954c raw=40379c in=24t(cache_read=476490 new=78471) out=3267t ttfb=1525ms api=57427ms turnos=12 $0.48
+   2026-08-16 13:57:17 [sistema/-] de=null (-) u=3
+        acción ejecutada: agregar_pendiente
+   2026-08-16 13:57:22 [sistema/claude_call] de=null (-) u=3
+        claude_call whatsapp: 21181ms prompt=59322c raw=13448c in=6t(cache_read=61064 new=68370) out=1250t ttfb=2187ms api=19885ms turnos=3 $0.2967
+   2026-08-16 14:26:31 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Mándame foto de las empanadas
+   2026-08-16 14:26:42 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Mándame foto de las empanadas
+   2026-08-16 14:26:42 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 10690ms prompt=62242c raw=7376c in=4t(cache_read=43859 new=44042) out=372t ttfb=1620ms api=9602ms turnos=2 $0.1882
+   2026-08-16 14:26:52 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 14:26:52 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Cómo estuvo el cumple de Juanita?
+   2026-08-16 14:26:52 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 9583ms prompt=62339c raw=6845c in=2t(cache_read=8784 new=35086) out=394t ttfb=1587ms api=8407ms turnos=1 $0.1445
+   2026-08-16 14:27:06 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 13659ms prompt=62456c raw=11191c in=6t(cache_read=96768 new=35495) out=537t ttfb=1521ms api=12627ms turnos=3 $0.1746
+   2026-08-16 14:27:11 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 18941ms prompt=66674c raw=11618c in=4t(cache_read=8784 new=83864) out=1135t ttfb=1646ms api=18013ms turnos=2 $0.3400
+   2026-08-16 14:27:15 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Cómo estuvo el cumple de Juanita?
+   2026-08-16 14:27:15 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 9512ms prompt=63022c raw=7167c in=4t(cache_read=53007 new=35619) out=335t ttfb=1568ms api=8425ms turnos=2 $0.1591
+   2026-08-16 14:27:33 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 17262ms prompt=62474c raw=13480c in=8t(cache_read=107014 new=71557) out=803t ttfb=1391ms api=16362ms turnos=4 $0.3169
+   2026-08-16 14:27:44 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 14:27:44 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Le confundo de chat perdón
+   2026-08-16 14:27:44 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 11051ms prompt=63369c raw=8542c in=4t(cache_read=17661 new=71625) out=374t ttfb=1543ms api=10065ms turnos=2 $0.2843
+   2026-08-16 14:27:49 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Le confundo de chat perdón
+   2026-08-16 14:27:49 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5537ms prompt=62534c raw=4744c in=2t(cache_read=8784 new=35185) out=77t ttfb=1760ms api=4401ms turnos=1 $0.1401
+   2026-08-16 14:27:55 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5512ms prompt=62347c raw=4710c in=2t(cache_read=8784 new=35102) out=67t ttfb=1396ms api=4503ms turnos=1 $0.1396
+   2026-08-16 14:28:27 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 42795ms prompt=66710c raw=26198c in=12t(cache_read=212123 new=77427) out=2995t ttfb=1822ms api=42017ms turnos=6 $0.404
+   2026-08-16 14:28:51 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 23766ms prompt=71356c raw=11929c in=2t(cache_read=8784 new=39421) out=1837t ttfb=1620ms api=22907ms turnos=1 $0.1859
+   2026-08-16 14:31:20 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Me confundí al escribirte era para mi hija Eloísa el mensaje 😊
+   2026-08-16 14:31:26 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Me confundí al escribirte era para mi hija Eloísa el mensaje 😊
+   2026-08-16 14:31:26 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6425ms prompt=62219c raw=4832c in=2t(cache_read=8784 new=35048) out=101t ttfb=1837ms api=5273ms turnos=1 $0.1399
+   2026-08-16 14:31:34 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 14:31:34 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 7179ms prompt=62255c raw=5054c in=2t(cache_read=8784 new=35058) out=153t ttfb=1475ms api=5706ms turnos=1 $0.1407
+   2026-08-16 14:31:51 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 16251ms prompt=66506c raw=10235c in=6t(cache_read=64064 new=74796) out=581t ttfb=1479ms api=15292ms turnos=3 $0.3142
+   2026-08-16 15:01:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 15:01:25 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 15:01:25 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 15:01:25 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 51875 min)
+   2026-08-16 15:02:19 [sistema/claude_call] de=null (-) u=18
+        claude_call memoria-curada: 21761ms prompt=4465c raw=12434c in=2t(cache_read=0 new=17112) out=1504t ttfb=2622ms api=20083ms turnos=1 $0.0887
+   2026-08-16 15:06:25 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 4 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-16 15:13:55 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        hola Maria, que pendeintes tengo?
+   2026-08-16 15:14:05 [sistema/wa_hook_desconocido] de=null (-) u=null
+        wa-hook: desconocido "You": "Dale, te resumo todo: 📝 Tus tareas: 1. iProt Seguridad 2. DDJJ 2025 3. Llamar "
+   2026-08-16 15:14:05 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 8724ms prompt=81817c raw=5685c in=2t(cache_read=0 new=52880) out=319t ttfb=1642ms api=7644ms turnos=1 $0.2132
+   2026-08-16 15:15:19 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        que paso con lo de natali? te respondio algo del cine?
+   2026-08-16 15:15:31 [sistema/-] de=null (-) u=1
+        acción FALLÓ: reenviar_wa — Faltan campos requeridos: messageId, a
+   2026-08-16 15:15:43 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 23126ms prompt=82816c raw=20561c in=14t(cache_read=279739 new=99715) out=966t ttfb=1586ms api=22129ms turnos=7 $0.4830
+   2026-08-16 15:15:49 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 5497ms prompt=83559c raw=4910c in=2t(cache_read=8784 new=44987) out=109t ttfb=1617ms api=4486ms turnos=1 $0.1838
+   2026-08-16 15:15:50 [sistema/wa_hook_desconocido] de=null (-) u=null
+        wa-hook: desconocido "You": "Todavía no, Nati no me respondió nada. Apenas conteste te aviso. ⚠️ Ojo: no pud"
+   2026-08-16 15:33:02 [sistema/-] de=null (-) u=1
+        acción ejecutada: recordar_hecho
+   2026-08-16 15:37:19 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 15:37:21 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 15:37:21 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 15:37:21 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 51911 min)
+   2026-08-16 15:37:24 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 15:37:26 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 15:37:26 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 15:37:26 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 51911 min)
+   2026-08-16 15:38:13 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 16934ms prompt=5093c raw=10519c in=2t(cache_read=0 new=17408) out=1283t ttfb=1497ms api=16306ms turnos=1 $0.0866
+   2026-08-16 19:05:53 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Maria cómo estás? Me agendas en el calendario jueves 3 de septiembre reunión en la escuela de danzas a las 9.30h
+   2026-08-16 19:06:07 [sistema/-] de=null (-) u=18
+        acción ejecutada: crear_evento
+   2026-08-16 19:06:13 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 19727ms prompt=62465c raw=11421c in=6t(cache_read=44967 new=89391) out=906t ttfb=1666ms api=17708ms turnos=3 $0.3667
+   2026-08-16 19:07:57 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Agéndame también el viernes a las 15.30 Ir a ver departamento para mi papá en la dirección que te copio acá independencia 556
+   2026-08-16 19:08:11 [sistema/-] de=null (-) u=18
+        acción ejecutada: crear_evento
+   2026-08-16 19:08:15 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 16923ms prompt=62819c raw=11235c in=6t(cache_read=62817 new=72068) out=865t ttfb=1599ms api=15895ms turnos=3 $0.3066
+   2026-08-16 19:16:23 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Dale
+   2026-08-16 19:16:29 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5318ms prompt=62868c raw=4698c in=2t(cache_read=0 new=44129) out=66t ttfb=1542ms api=4702ms turnos=1 $0.1710
+   2026-08-16 20:12:26 [sistema/-] de=null (-) u=1
+        follow-up #34 cerrado: 541155771290@c.us respondió antes del vencimiento (Coordinar reunión de 3hs entre Diego, Manuel Carrasco y Hernán Ful
+   2026-08-16 20:12:39 [sistema/claude_call] de=null (-) u=1
+        claude_call follow-ups: 12894ms prompt=3249c raw=8842c in=2t(cache_read=0 new=16677) out=935t ttfb=1578ms api=12176ms turnos=1 $0.0779
+   2026-08-16 21:53:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 21:53:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 21:53:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 21:53:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52287 min)
+   2026-08-16 21:58:24 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 30 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-16 22:03:24 [sistema/-] de=null (-) u=1
+        follow-up #36 cerrado: 541155771290@c.us respondió antes del vencimiento (Coordinar reunión 3hs entre Diego, Manuel Carrasco y Hernán Fulco 
+   2026-08-16 22:06:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 22:06:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 22:06:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 22:06:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52300 min)
+   2026-08-16 22:06:14 [sistema/claude_call] de=null (-) u=1
+        claude_call follow-ups: 10096ms prompt=3307c raw=7368c in=2t(cache_read=0 new=16708) out=584t ttfb=1732ms api=9175ms turnos=1 $0.0728
+   2026-08-16 22:24:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 22:24:03 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 22:24:03 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 22:24:03 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52318 min)
+   2026-08-16 22:29:03 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 5 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-16 22:36:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 22:36:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 22:36:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 22:36:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52330 min)
+   2026-08-16 22:43:51 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        hola maria, todo tranqui?
+   2026-08-16 22:43:59 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 7374ms prompt=84627c raw=5357c in=2t(cache_read=0 new=54317) out=229t ttfb=1533ms api=6646ms turnos=1 $0.2182
+   2026-08-16 23:01:09 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:09 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6908ms prompt=1821c raw=7327c in=10t(cache_read=0 new=22563) out=485t ttfb=1260ms api=6302ms turnos=1 $0.0312
+   2026-08-16 23:01:16 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:16 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6408ms prompt=1821c raw=6979c in=10t(cache_read=17396 new=5167) out=441t ttfb=1160ms api=5558ms turnos=1 $0.0110
+   2026-08-16 23:01:24 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:24 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7847ms prompt=1823c raw=7405c in=10t(cache_read=17396 new=5165) out=479t ttfb=1389ms api=6752ms turnos=1 $0.0112
+   2026-08-16 23:01:31 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:31 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7312ms prompt=1820c raw=7501c in=10t(cache_read=17396 new=5167) out=488t ttfb=1446ms api=6131ms turnos=1 $0.0112
+   2026-08-16 23:01:38 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:38 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6830ms prompt=1822c raw=6851c in=10t(cache_read=17396 new=5165) out=401t ttfb=1238ms api=5907ms turnos=1 $0.0108
+   2026-08-16 23:01:45 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:45 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6927ms prompt=1821c raw=7308c in=10t(cache_read=17396 new=5165) out=456t ttfb=1312ms api=5914ms turnos=1 $0.0110
+   2026-08-16 23:01:54 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:01:54 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 9391ms prompt=1823c raw=7994c in=10t(cache_read=17396 new=5167) out=568t ttfb=1191ms api=8417ms turnos=1 $0.0116
+   2026-08-16 23:02:02 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:02 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 8233ms prompt=1824c raw=7835c in=10t(cache_read=17396 new=5165) out=521t ttfb=1397ms api=7044ms turnos=1 $0.0114
+   2026-08-16 23:02:09 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:09 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6493ms prompt=1822c raw=6314c in=10t(cache_read=17396 new=5167) out=319t ttfb=1235ms api=6509ms turnos=1 $0.0104
+   2026-08-16 23:02:16 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:16 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6786ms prompt=1823c raw=7488c in=10t(cache_read=22561 new=0) out=480t ttfb=1194ms api=5895ms turnos=1 $0.0052
+   2026-08-16 23:02:23 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:23 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7369ms prompt=1821c raw=7194c in=10t(cache_read=17396 new=5167) out=442t ttfb=1188ms api=6410ms turnos=1 $0.0110
+   2026-08-16 23:02:30 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:30 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6786ms prompt=1823c raw=7244c in=10t(cache_read=17396 new=5167) out=464t ttfb=1344ms api=5829ms turnos=1 $0.0111
+   2026-08-16 23:02:36 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:36 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6740ms prompt=1820c raw=7146c in=10t(cache_read=17396 new=5167) out=446t ttfb=1238ms api=5840ms turnos=1 $0.0110
+   2026-08-16 23:02:43 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:02:43 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6697ms prompt=1822c raw=7277c in=10t(cache_read=17396 new=5165) out=467t ttfb=1196ms api=5711ms turnos=1 $0.0111
+   2026-08-16 23:08:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:08:23 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:08:23 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:08:23 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52362 min)
+   2026-08-16 23:10:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:10:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:10:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:10:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52364 min)
+   2026-08-16 23:14:21 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:14:23 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:14:23 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:14:23 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52368 min)
+   2026-08-16 23:16:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:16:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:16:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:16:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52370 min)
+   2026-08-16 23:22:59 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Maria quería pedirte que le hagas algunos recordatorios mañana a las 9.00 Orden laboral: Terminar texto curatorial Revisar exell para comuni
+   2026-08-16 23:22:59 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 6314ms prompt=1082c raw=8328c in=10t(cache_read=0 new=27675) out=448t ttfb=1682ms api=5080ms turnos=1 $0
+   2026-08-16 23:23:01 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 6546ms prompt=964c raw=8451c in=10t(cache_read=26048 new=1586) out=441t ttfb=1917ms api=5269ms turnos=1 
+   2026-08-16 23:23:19 [sistema/-] de=null (-) u=18
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:23:19 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7228ms prompt=1856c raw=7246c in=10t(cache_read=0 new=22628) out=446t ttfb=1258ms api=6265ms turnos=1 $0.0311
+   2026-08-16 23:23:19 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 4889ms prompt=804c raw=7078c in=10t(cache_read=26048 new=1540) out=270t ttfb=1461ms api=3648ms turnos=1 
+   2026-08-16 23:23:23 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Personal Certificado de alumna regular Eloisa Inscripción mastrazzi Pagar cooperadora y entradas muestra Pedir turno Elo médico Pedir turno 
+   2026-08-16 23:23:23 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 22934ms prompt=64092c raw=11376c in=6t(cache_read=45490 new=90963) out=908t ttfb=1725ms api=14406ms turnos=3 $0.3732
+   2026-08-16 23:23:54 [sistema/-] de=null (-) u=18
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:23:54 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6417ms prompt=1792c raw=6194c in=10t(cache_read=17396 new=5198) out=333t ttfb=1170ms api=5512ms turnos=1 $0.0105
+   2026-08-16 23:23:58 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Orden de la casa: Expensas Llamar a señora x limpieza Mampara Cuadros Imanes puertas Estantes baños Plantas balcones
+   2026-08-16 23:23:58 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 34697ms prompt=64405c raw=15762c in=6t(cache_read=64648 new=74949) out=2178t ttfb=1641ms api=27145ms turnos=3 $0.3381
+   2026-08-16 23:24:24 [sistema/-] de=null (-) u=18
+        acción ejecutada: programar_mensaje
+   2026-08-16 23:24:24 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5851ms prompt=1594c raw=6342c in=10t(cache_read=17396 new=5131) out=334t ttfb=1126ms api=5011ms turnos=1 $0.0103
+   2026-08-16 23:24:28 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 29447ms prompt=64551c raw=13877c in=6t(cache_read=64377 new=74592) out=1700t ttfb=1590ms api=22392ms turnos=3 $0.3296
+   2026-08-16 23:26:40 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11
+   2026-08-16 23:26:40 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 5946ms prompt=761c raw=8193c in=10t(cache_read=26048 new=1507) out=397t ttfb=1560ms api=4756ms turnos=1 
+   2026-08-16 23:26:51 [sistema/-] de=null (-) u=18
+        acción ejecutada: crear_evento
+   2026-08-16 23:26:55 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 14431ms prompt=64541c raw=9917c in=6t(cache_read=63514 new=73663) out=548t ttfb=1523ms api=12459ms turnos=3 $0.3086
+   2026-08-16 23:28:01 [sistema/wa_hook_desconocido] de=null (-) u=null
+        wa-hook: desconocido "WhatsApp": "Checking for new messages"
+   2026-08-16 23:28:02 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-16 23:28:09 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Me agregas al calendario que el miércoles vaya al museo de la carcova? A las 11
+   2026-08-16 23:28:09 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 7354ms prompt=761c raw=7627c in=10t(cache_read=27555 new=0) out=325t ttfb=2894ms api=4959ms turnos=1 $0.
+   2026-08-16 23:28:11 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 8527ms prompt=68789c raw=6299c in=2t(cache_read=8784 new=38156) out=249t ttfb=2813ms api=6291ms turnos=1 $0.1561
+   2026-08-16 23:28:17 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 7294ms prompt=64419c raw=6453c in=2t(cache_read=8784 new=36271) out=285t ttfb=1588ms api=6023ms turnos=1 $0.1480
+   2026-08-16 23:33:24 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:33:26 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:33:26 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:33:26 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52387 min)
+   2026-08-16 23:35:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:35:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:35:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:35:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52389 min)
+   2026-08-16 23:53:21 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-16 23:53:23 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-16 23:53:23 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-16 23:53:23 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52407 min)
+   2026-08-16 23:56:08 [whatsapp/tercero_libreta] de=5491126829596@c.us (Hernan Fulco) u=1
+        Confirmo que recibí la prueba del sistema, todo ok por acá
+   2026-08-16 23:56:08 [sistema/usuario_como_tercero] de=null (-) u=1
+        gestion-ajena: mensaje de Hernan Fulco (usuario, via whatsapp) ruteado como TERCERO a gestión de Diego (#254: TEST TÉCNICO de ruteo: esperan
+   2026-08-16 23:56:08 [sistema/claude_call] de=null (-) u=2
+        claude_call whatsapp-gestion-ajena: 5595ms prompt=773c raw=7332c in=10t(cache_read=0 new=27557) out=285t ttfb=1750ms api=4241ms turnos=1 $0.
+   2026-08-16 23:56:26 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-16 23:56:29 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 21280ms prompt=90338c raw=13075c in=6t(cache_read=58418 new=115619) out=1417t ttfb=1871ms api=20141ms turnos=3 $0.4856
+   2026-08-16 23:56:35 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5257ms prompt=1487c raw=5949c in=10t(cache_read=0 new=22444) out=238t ttfb=1362ms api=4198ms turnos=1 $0.0297
+   2026-08-17 00:00:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 00:00:08 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 00:00:08 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 00:00:08 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52414 min)
+   2026-08-17 00:00:55 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 16102ms prompt=4240c raw=10432c in=2t(cache_read=0 new=16935) out=1187t ttfb=1579ms api=15045ms turnos=1 $0.0831
+   2026-08-17 00:27:35 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Si Manuel no te confirma mañana a las 11, mándale un recordatorio del tema
+   2026-08-17 00:28:53 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 00:28:55 [sistema/-] de=null (-) u=1
+        acción ejecutada: agregar_pendiente
+   2026-08-17 00:28:59 [sistema/-] de=null (-) u=1
+        Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude: Listo, quedó anotado: si Manuel no confirma antes de ma
+   2026-08-17 00:28:59 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 83459ms prompt=85418c raw=35489c in=6t(cache_read=61678 new=117578) out=6752t ttfb=1573ms api=82839ms turnos=4 $0.5723
+   2026-08-17 00:38:58 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Mariana, ¿me contestaste nada? ¿este último que te mandé está ok?
+   2026-08-17 00:39:14 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 15136ms prompt=85429c raw=8938c in=2t(cache_read=0 new=54819) out=925t ttfb=1786ms api=14370ms turnos=1 $0.2310
+   2026-08-17 00:39:45 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Perfecto, mañana es lunes, igual no martes.
+   2026-08-17 00:40:09 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 23497ms prompt=85525c raw=12327c in=2t(cache_read=8784 new=46087) out=1824t ttfb=1539ms api=23865ms turnos=1 $0.2144
+   2026-08-17 00:40:39 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Selemente, tenés el contacto de Abiel Pacheco y de Carolina Brunatti.
+   2026-08-17 00:40:56 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 15646ms prompt=85945c raw=12124c in=6t(cache_read=64715 new=102376) out=864t ttfb=1611ms api=14552ms turnos=3 $0.4281
+   2026-08-17 00:41:05 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 9403ms prompt=86530c raw=7290c in=4t(cache_read=64170 new=46779) out=367t ttfb=1623ms api=8380ms turnos=2 $0.2122
+   2026-08-17 00:41:27 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Gabriel Pacheco, lo tenes?
+   2026-08-17 00:41:36 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 7751ms prompt=86002c raw=6136c in=2t(cache_read=8784 new=46365) out=224t ttfb=1932ms api=6715ms turnos=1 $0.1916
+   2026-08-17 00:42:29 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Excelente, escribíle a ambos por WhatsApp para coordinar una cena o este miércoles o el miércoles que viene en FICO y cuando te confirmen la
+   2026-08-17 00:43:18 [sistema/-] de=null (-) u=1
+        acción ejecutada: buscar_contacto_global
+   2026-08-17 00:44:06 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 96937ms prompt=85908c raw=65834c in=36t(cache_read=1080349 new=116823) out=6303t ttfb=1814ms api=95938ms turnos=18 $0.
+   2026-08-17 00:44:51 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 44872ms prompt=86956c raw=21117c in=6t(cache_read=76610 new=97401) out=3478t ttfb=1647ms api=43737ms turnos=3 $0.4526
+   2026-08-17 00:45:38 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Carolina Brunatti
+   2026-08-17 00:46:17 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-17 00:46:17 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5765ms prompt=1667c raw=6094c in=10t(cache_read=0 new=22514) out=308t ttfb=1279ms api=4811ms turnos=1 $0.0302
+   2026-08-17 00:46:24 [sistema/-] de=null (-) u=1
+        acción ejecutada: crear_follow_up
+   2026-08-17 00:46:24 [sistema/-] de=null (-) u=1
+        acción ejecutada: crear_follow_up
+   2026-08-17 00:46:24 [sistema/-] de=null (-) u=1
+        acción ejecutada: agregar_pendiente
+   2026-08-17 00:46:24 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-17 00:46:24 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6708ms prompt=1666c raw=6965c in=10t(cache_read=17396 new=5118) out=425t ttfb=1283ms api=6041ms turnos=1 $0.0108
+   2026-08-17 00:46:28 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 49047ms prompt=85959c raw=26743c in=6t(cache_read=76012 new=98032) out=3538t ttfb=1729ms api=39403ms turnos=7 $0.4553
+   2026-08-17 00:46:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]
+   2026-08-17 00:47:15 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Dale, y mándeles invitación al calendario, y a mi tb
+   2026-08-17 00:47:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]
+   2026-08-17 00:47:37 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 00:47:39 [sistema/-] de=null (-) u=1
+        acción ejecutada: agregar_pendiente
+   2026-08-17 00:47:45 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 29178ms prompt=86608c raw=17240c in=6t(cache_read=74978 new=96030) out=1852t ttfb=1492ms api=28229ms turnos=4 $0.4224
+   2026-08-17 00:48:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]
+   2026-08-17 00:48:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]
+   2026-08-17 00:49:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises]
+   2026-08-17 00:49:56 [whatsapp/tercero_libreta] de=5491140402319@c.us (Gabriel Pacheco) u=1
+        Miércoles 19
+   2026-08-17 00:50:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:50:14 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 00:50:23 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-17 00:50:23 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5636ms prompt=1549c raw=6076c in=10t(cache_read=17396 new=5066) out=307t ttfb=1209ms api=4761ms turnos=1 $0.0101
+   2026-08-17 00:50:26 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 29665ms prompt=88339c raw=15350c in=8t(cache_read=133297 new=96878) out=1411t ttfb=1642ms api=23063ms turnos=4 $0.4371
+   2026-08-17 00:50:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:51:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:52:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:52:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:53:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:54:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:54:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:55:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:56:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:56:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:57:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:58:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:58:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 00:59:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:00:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:00:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:01:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:02:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:02:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:03:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:04:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:04:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:05:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:06:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:06:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:07:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:08:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:08:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:09:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:10:08 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:10:48 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:11:28 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:12:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:12:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:13:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:14:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:14:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:15:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:16:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:16:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:17:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:18:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:18:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:19:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:20:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:20:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:21:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:22:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:22:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:23:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:24:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:24:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:25:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:26:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:26:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:27:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:28:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:28:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:29:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:30:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:30:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:31:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:32:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:32:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:33:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:34:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:34:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:35:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:36:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:36:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:37:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:38:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:38:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:39:29 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:40:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:40:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:41:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:42:09 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:42:49 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:43:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:44:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:44:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:45:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:46:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:46:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:47:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:48:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:48:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:49:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:50:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:50:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:51:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:52:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:52:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:53:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:54:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:54:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:55:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:56:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:56:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:57:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:58:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:58:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 01:59:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:00:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:00:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:01:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:02:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:02:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:03:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:04:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:04:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:05:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:06:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:06:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:07:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:08:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:08:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:09:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:10:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:10:50 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:11:30 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:12:10 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:12:51 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:13:31 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:14:11 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:14:51 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:15:31 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:16:11 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:16:51 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:17:31 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:18:11 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:18:23 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 02:18:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 02:18:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 02:18:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52552 min)
+   2026-08-17 02:18:51 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:19:10 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 15575ms prompt=2132c raw=8857c in=2t(cache_read=0 new=16166) out=892t ttfb=1416ms api=14391ms turnos=1 $0.0752
+   2026-08-17 02:19:36 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:20:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 02:20:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 02:20:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 02:20:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52554 min)
+   2026-08-17 02:20:07 [gmail/-] de=Diego Paez <diego@paez.is> (-) u=1
+        Hola Natali, podremos tener una meet mañana lunes a las 14? copio a maria para q coordine. Saludos Diego Paez Email: diego@paez.is THIS MESS
+   2026-08-17 02:20:16 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:20:38 [sistema/-] de=null (-) u=1
+        acción ejecutada: agregar_pendiente
+   2026-08-17 02:20:41 [sistema/claude_call] de=null (-) u=1
+        claude_call gmail: 34119ms prompt=90771c raw=17491c in=6t(cache_read=59884 new=117696) out=2498t ttfb=1773ms api=33150ms turnos=3 $0.5102
+   2026-08-17 02:20:53 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 18827ms prompt=5014c raw=11459c in=2t(cache_read=8775 new=8547) out=1289t ttfb=1640ms api=17929ms turnos=1 $0.05
+   2026-08-17 02:20:56 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:21:36 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:22:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 02:22:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 02:22:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 02:22:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52556 min)
+   2026-08-17 02:22:06 [sistema/-] de=null (-) u=1
+        acción FALLÓ: noop — Acción desconocida: "noop". Debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email
+   2026-08-17 02:22:16 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:22:56 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:23:41 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:24:21 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:25:01 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:25:41 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:26:21 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:27:01 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:27:41 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:28:21 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:29:01 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:29:41 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:30:21 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 02:31:01 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Brunatti Carolina"/"5491141885339" vivos=[diego paez ~ gabriela echaniz ~ ulises ~ gabriel pacheco]
+   2026-08-17 03:45:23 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 03:45:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 03:45:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 03:45:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52639 min)
+   2026-08-17 03:47:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 03:47:06 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 03:47:06 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 03:47:06 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52641 min)
+   2026-08-17 04:44:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 04:44:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 04:44:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 04:44:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 52698 min)
+   2026-08-17 06:50:00 [sistema/wa_hook_desconocido] de=null (-) u=null
+        wa-hook: desconocido "Your account is no longer restricted": "All features are now available for you."
+   2026-08-17 06:50:00 [sistema/wa_hook_desconocido] de=null (-) u=null
+        wa-hook: desconocido "Your account is no longer restricted": "All features are now available for you."
+   2026-08-17 08:34:08 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 09:04:11 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 10:19:10 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 10:49:11 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 11:54:13 [gmail/unknown_first] de=Google Play <googleplay-noreply@google.com> (-) u=1
+         Hi Maria, This is a reminder that your trial for AutoResponder for WA (AutoResponder Pro – Yearly) on Google Play will end on Aug 19, 2026.
+   2026-08-17 11:54:13 [sistema/unknown_llm_trace] de=null (-) u=1
+        unknown-flow/gmail LLM: desconocido · Notificación automática de Google Play sobre un trial de una app (AutoResponder for WA/Tasker), sin re
+   2026-08-17 11:54:13 [sistema/claude_call] de=null (-) u=null
+        claude_call unknown-flow: 6145ms prompt=25974c raw=3742c in=2t(cache_read=0 new=27817) out=142t ttfb=1484ms api=5595ms turnos=1 $0.1175
+   2026-08-17 12:03:05 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Lo del cine con natali, descártalo
+   2026-08-17 12:03:15 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 12:03:19 [telegram/-] de=telegram:590589920 (Diego) u=1
+        Que número tenes de carolina?
+   2026-08-17 12:03:19 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 13592ms prompt=87542c raw=9109c in=6t(cache_read=56267 new=112246) out=389t ttfb=1652ms api=12278ms turnos=3 $0.4560
+   2026-08-17 12:03:42 [sistema/claude_call] de=null (-) u=1
+        claude_call telegram: 21761ms prompt=86705c raw=12809c in=8t(cache_read=132551 new=96938) out=888t ttfb=1847ms api=20482ms turnos=4 $0.4286
+   2026-08-17 12:11:30 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:11:37 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6078ms prompt=67441c raw=4795c in=2t(cache_read=0 new=46178) out=93t ttfb=1613ms api=5448ms turnos=1 $0.1805
+   2026-08-17 12:21:54 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:22:01 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5965ms prompt=67440c raw=4805c in=2t(cache_read=0 new=46195) out=94t ttfb=1684ms api=5006ms turnos=1 $0.1806
+   2026-08-17 12:30:30 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:38 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:38 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6824ms prompt=67441c raw=4990c in=2t(cache_read=0 new=46198) out=130t ttfb=1615ms api=7005ms turnos=1 $0.1812
+   2026-08-17 12:30:48 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:48 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 9693ms prompt=67896c raw=6778c in=4t(cache_read=55247 new=37855) out=245t ttfb=1947ms api=8754ms turnos=2 $0.1684
+   2026-08-17 12:30:55 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 12:30:55 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6267ms prompt=67966c raw=4872c in=2t(cache_read=8784 new=37737) out=107t ttfb=1584ms api=5495ms turnos=1 $0.1520
+   2026-08-17 12:31:02 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6800ms prompt=67742c raw=5800c in=2t(cache_read=8784 new=37619) out=146t ttfb=1544ms api=4395ms turnos=1 $0.1459
+   2026-08-17 12:34:34 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 12:34:36 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 12:34:36 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 12:34:36 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53168 min)
+   2026-08-17 12:35:24 [sistema/claude_call] de=null (-) u=18
+        claude_call memoria-curada: 17022ms prompt=5049c raw=10097c in=2t(cache_read=0 new=17436) out=1167t ttfb=1775ms api=15824ms turnos=1 $0.0851
+   2026-08-17 12:39:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 12:39:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 12:39:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 12:39:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53173 min)
+   2026-08-17 12:42:01 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 12:42:05 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 12:42:05 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 12:42:05 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53176 min)
+   2026-08-17 12:47:05 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 18 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-17 12:55:40 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        (audio de voz, transcripto) María que tengo y en mi agenda y pendientes me mandas un razon en por favor.
+   2026-08-17 12:56:25 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 44270ms prompt=89886c raw=25101c in=14t(cache_read=292782 new=116629) out=2170t ttfb=1781ms api=43504ms turnos=7 $0.57
+   2026-08-17 12:57:26 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        (audio de voz, transcripto) Suspendenme también la amigüe de la catorce con la talí de hoy.
+   2026-08-17 12:58:19 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5975ms prompt=1933c raw=6682c in=10t(cache_read=0 new=22560) out=359t ttfb=1276ms api=5185ms turnos=1 $0.0305
+   2026-08-17 12:58:20 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 12:58:20 [sistema/-] de=null (-) u=1
+        acción ejecutada: responder_email
+   2026-08-17 12:58:25 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 58890ms prompt=89645c raw=24300c in=6t(cache_read=77920 new=100150) out=3703t ttfb=1575ms api=50917ms turnos=4 $0.4674
+   2026-08-17 13:00:05 [sistema/-] de=null (-) u=1
+        programado id=1341 falló (intento #1): waClient no disponible
+   2026-08-17 13:01:05 [sistema/-] de=null (-) u=1
+        programado id=1341 falló (intento #2): waClient no disponible
+   2026-08-17 13:04:38 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:04:39 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:04:39 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:04:39 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53198 min)
+   2026-08-17 13:05:28 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 18759ms prompt=4770c raw=10420c in=2t(cache_read=0 new=17274) out=1231t ttfb=1582ms api=18463ms turnos=1 $0.0853
+   2026-08-17 13:07:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:07:06 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:07:06 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:07:06 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53201 min)
+   2026-08-17 13:12:06 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 17 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-17 13:16:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:16:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:16:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:16:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53210 min)
+   2026-08-17 13:18:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:18:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:18:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:18:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53212 min)
+   2026-08-17 13:33:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:33:04 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:33:04 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:33:04 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53227 min)
+   2026-08-17 13:33:10 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 13:36:07 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 13:36:14 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6005ms prompt=67529c raw=4821c in=2t(cache_read=0 new=46301) out=85t ttfb=1644ms api=4830ms turnos=1 $0.1809
+   2026-08-17 13:36:25 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Hernan Fulco"/"5491126829596" vivos=[]
+   2026-08-17 13:36:46 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 13:36:52 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5970ms prompt=67529c raw=4804c in=2t(cache_read=8784 new=37517) out=80t ttfb=1572ms api=5368ms turnos=1 $0.1506
+   2026-08-17 13:43:22 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:43:24 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:43:24 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:43:24 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53237 min)
+   2026-08-17 13:45:03 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 13:45:05 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 13:45:05 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 13:45:05 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53239 min)
+   2026-08-17 13:45:11 [whatsapp/tercero_libreta] de=5491141935177@c.us (Ulises) u=18
+        Ulises: Reacted ❤️ to "Genial Ulises, muchas gracias! Se lo aviso a Gabi ahora mismo ❤️"
+   2026-08-17 13:45:18 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5800ms prompt=67459c raw=4818c in=2t(cache_read=0 new=46243) out=89t ttfb=1593ms api=5231ms turnos=1 $0.1807
+   2026-08-17 13:45:53 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 17422ms prompt=4110c raw=10167c in=2t(cache_read=0 new=16945) out=1149t ttfb=1540ms api=16455ms turnos=1 $0.0826
+   2026-08-17 13:46:09 [sistema/claude_call] de=null (-) u=18
+        claude_call memoria-curada: 16318ms prompt=4472c raw=10360c in=2t(cache_read=8775 new=8354) out=1213t ttfb=1510ms api=15428ms turnos=1 $0.05
+   2026-08-17 14:08:24 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 14:08:26 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 14:08:26 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 14:08:26 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53262 min)
+   2026-08-17 14:13:26 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 1 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   2026-08-17 14:31:40 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Santiago Bignone"/"5491134274828" vivos=[]
+   2026-08-17 14:52:58 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Gracias María!
+   2026-08-17 14:52:58 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 7579ms prompt=696c raw=7906c in=10t(cache_read=0 new=27641) out=358t ttfb=1772ms api=6350ms turnos=1 $0.
+   2026-08-17 14:53:04 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5579ms prompt=62845c raw=4695c in=2t(cache_read=0 new=44213) out=65t ttfb=1663ms api=5111ms turnos=1 $0.1713
+   2026-08-17 15:17:36 [sistema/mbdiag] de=null (-) u=null
+        mbdiag: buscaba "Doris Capurro"/"5491144471264" vivos=[gabriela echaniz]
+   2026-08-17 15:52:20 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Gracias María!
+   2026-08-17 15:52:20 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 5653ms prompt=696c raw=7649c in=10t(cache_read=0 new=27641) out=332t ttfb=1506ms api=4543ms turnos=1 $0.
+   2026-08-17 15:52:21 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        (audio de voz, transcripto) ¿Cómo están los pendientes con la cena con gavi con caro y la reunión esa con fulcú y con Manu Carrasco? Yo te h
+   2026-08-17 15:52:26 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5507ms prompt=62673c raw=4650c in=2t(cache_read=0 new=44144) out=57t ttfb=1830ms api=4318ms turnos=1 $0.1708
+   2026-08-17 15:53:01 [sistema/-] de=null (-) u=1
+        acción FALLÓ: enviar_wa — enviar_wa: WA "__consulta_placeholder__" no está en libreta ni es usuario activo. Cargá el contacto primero (upser
+   2026-08-17 15:53:11 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 49479ms prompt=91173c raw=25867c in=10t(cache_read=178792 new=121035) out=3505t ttfb=1848ms api=48414ms turnos=5 $0.57
+   2026-08-17 15:54:45 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 15:54:45 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 15:54:45 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-17 15:54:45 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5647ms prompt=1626c raw=6230c in=10t(cache_read=0 new=22504) out=331t ttfb=1254ms api=4828ms turnos=1 $0.0303
+   2026-08-17 15:54:50 [sistema/-] de=null (-) u=1
+        acción ejecutada: agregar_pendiente
+   2026-08-17 15:55:04 [sistema/-] de=null (-) u=null
+        unhandledRejection: No se pudo extraer JSON de la respuesta de Claude: No hace falta esa herramienta acá, ya tengo todo lo necesario para re
+   2026-08-17 15:55:04 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 113708ms prompt=97589c raw=47475c in=12t(cache_read=297642 new=114487) out=8339t ttfb=1626ms api=109600ms turnos=8 $0.
+   2026-08-17 15:59:44 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        Y?
+   2026-08-17 16:00:19 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 35159ms prompt=89963c raw=22587c in=14t(cache_read=299697 new=108293) out=1997t ttfb=1690ms api=34436ms turnos=7 $0.53
+   2026-08-17 16:00:52 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 32327ms prompt=91452c raw=14878c in=4t(cache_read=66418 new=50792) out=2352t ttfb=1668ms api=33606ms turnos=2 $0.2595
+   2026-08-17 18:03:32 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 18:08:28 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        (audio de voz, transcripto) Y lo de Natal y Cancelano, no le envíes más nada ni le dole a te. Cable a te el tema, Cancelano de tus conviento
+   2026-08-17 18:08:31 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Gracias María!
+   2026-08-17 18:08:31 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 7632ms prompt=696c raw=8063c in=10t(cache_read=0 new=27641) out=365t ttfb=1951ms api=7055ms turnos=1 $0.
+   2026-08-17 18:08:37 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 5624ms prompt=62609c raw=4723c in=2t(cache_read=8784 new=35318) out=69t ttfb=1429ms api=4572ms turnos=1 $0.1405
+   2026-08-17 18:08:44 [whatsapp/-] de=5491165286555@c.us (Gabriela Echaniz) u=18
+        Gracias María!
+   2026-08-17 18:08:44 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp-gestion-ajena: 5472ms prompt=696c raw=7456c in=10t(cache_read=27641 new=0) out=303t ttfb=1484ms api=4291ms turnos=1 $0.
+   2026-08-17 18:08:47 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 18503ms prompt=89044c raw=10230c in=2t(cache_read=0 new=56387) out=1246t ttfb=1530ms api=17781ms turnos=1 $0.2430
+   2026-08-17 18:08:51 [sistema/claude_call] de=null (-) u=18
+        claude_call whatsapp: 6542ms prompt=62545c raw=4705c in=2t(cache_read=8784 new=35276) out=65t ttfb=1974ms api=5951ms turnos=1 $0.1403
+   2026-08-17 18:08:52 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        (audio de voz, transcripto) Y ahí me escribí a Carolina para pasar la escena con esa gavipaché con Atillo para después del 2 de septiembre, 
+   2026-08-17 18:09:33 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-17 18:09:33 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7440ms prompt=1886c raw=7500c in=10t(cache_read=0 new=22570) out=485t ttfb=1544ms api=6324ms turnos=1 $0.0312
+   2026-08-17 18:09:37 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 44260ms prompt=88888c raw=17837c in=6t(cache_read=67381 new=106776) out=2449t ttfb=1467ms api=36363ms turnos=3 $0.4701
+   2026-08-17 18:09:49 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        Lo de natali olvídate de todo, lo sigo yo
+   2026-08-17 18:10:02 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 11563ms prompt=88487c raw=7760c in=2t(cache_read=8784 new=47325) out=578t ttfb=1552ms api=10435ms turnos=1 $0.2014
+   2026-08-17 18:10:17 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        Y lo de la cena con caro y gabi, te paso opciones por qué caro me pidió pasarlo para septiembre
+   2026-08-17 18:10:47 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 18:10:47 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 18:10:47 [sistema/-] de=null (-) u=1
+        acción ejecutada: quitar_pendiente
+   2026-08-17 18:10:49 [sistema/-] de=null (-) u=1
+        acción FALLÓ: agregar_pendiente — agregarPendiente: combo inválido (dueno=maria + disparador=respuesta_usuario). Maria no se pregunta a sí m
+   2026-08-17 18:10:53 [sistema/-] de=null (-) u=1
+        acción ejecutada: agregar_pendiente
+   2026-08-17 18:10:58 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 40077ms prompt=88325c raw=27378c in=8t(cache_read=136461 new=99077) out=3170t ttfb=1525ms api=39099ms turnos=7 $0.4726
+   2026-08-17 20:03:32 [sistema/-] de=null (-) u=null
+        meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+   2026-08-17 22:38:26 [sistema/-] de=null (-) u=1
+        follow-up #38 cerrado: 5491126829596@c.us respondió antes del vencimiento (Esperando que Hernán Fulco confirme jueves 20/08 13-16hs (o lunes
+   2026-08-17 22:48:31 [sistema/claude_call] de=null (-) u=1
+        claude_call follow-ups: 4802ms prompt=3894c raw=4750c in=2t(cache_read=0 new=17089) out=90t ttfb=1416ms api=4234ms turnos=1 $0.0671
+   2026-08-17 22:48:36 [sistema/follow_up_reping] de=null (-) u=1
+        follow-up #39 re-ping automático a 541155771290@c.us — reprogramado a 2026-08-19 22:48:36 (Esperando que Manuel Carrasco confirme lunes 24/0
+   2026-08-17 22:48:36 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 5792ms prompt=1607c raw=6330c in=10t(cache_read=0 new=22489) out=335t ttfb=1435ms api=4603ms turnos=1 $0.0303
+   2026-08-17 22:53:26 [sistema/-] de=null (-) u=18
+        follow-up #40 cerrado: 5491141935177@c.us respondió antes del vencimiento (Esperar que Ulises confirme si él y Esteban están libres el próxi
+   2026-08-17 23:05:09 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:09 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6948ms prompt=1822c raw=7089c in=10t(cache_read=0 new=22561) out=447t ttfb=1746ms api=5673ms turnos=1 $0.0310
+   2026-08-17 23:05:16 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:16 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6781ms prompt=1821c raw=7672c in=10t(cache_read=17396 new=5165) out=445t ttfb=1209ms api=5834ms turnos=1 $0.0110
+   2026-08-17 23:05:23 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:23 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6957ms prompt=1823c raw=6794c in=10t(cache_read=17396 new=5167) out=393t ttfb=1236ms api=5964ms turnos=1 $0.0107
+   2026-08-17 23:05:30 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:30 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7209ms prompt=1824c raw=6692c in=10t(cache_read=17396 new=5165) out=360t ttfb=1403ms api=6086ms turnos=1 $0.0106
+   2026-08-17 23:05:37 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:37 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6776ms prompt=1822c raw=7456c in=10t(cache_read=17396 new=5167) out=402t ttfb=1374ms api=6131ms turnos=1 $0.0108
+   2026-08-17 23:05:43 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:43 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6719ms prompt=1823c raw=8000c in=10t(cache_read=17396 new=5165) out=482t ttfb=1264ms api=5701ms turnos=1 $0.0112
+   2026-08-17 23:05:54 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:05:54 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 10701ms prompt=1821c raw=8388c in=10t(cache_read=17396 new=5167) out=616t ttfb=1222ms api=9641ms turnos=1 $0.0118
+   2026-08-17 23:06:01 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:06:01 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6629ms prompt=1823c raw=6004c in=10t(cache_read=17396 new=5167) out=311t ttfb=1359ms api=5641ms turnos=1 $0.0103
+   2026-08-17 23:06:08 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:06:08 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7262ms prompt=1820c raw=6827c in=10t(cache_read=17396 new=5167) out=400t ttfb=1388ms api=6033ms turnos=1 $0.0108
+   2026-08-17 23:06:15 [sistema/-] de=null (-) u=1
+        acción ejecutada: programar_mensaje
+   2026-08-17 23:06:15 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 7281ms prompt=1822c raw=7270c in=10t(cache_read=17396 new=5165) out=467t ttfb=1274ms api=6791ms turnos=1 $0.0111
+   2026-08-17 23:19:20 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 23:19:22 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 23:19:22 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 23:19:22 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53813 min)
+   2026-08-17 23:19:33 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 23:19:35 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 23:19:35 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 23:19:35 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53813 min)
+   2026-08-17 23:20:22 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 17029ms prompt=4293c raw=9800c in=2t(cache_read=0 new=16994) out=1064t ttfb=1567ms api=16005ms turnos=1 $0.0815
+   2026-08-17 23:20:46 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 23921ms prompt=7500c raw=12669c in=2t(cache_read=8775 new=9767) out=1622t ttfb=1582ms api=22795ms turnos=1 $0.06
+   2026-08-17 23:21:04 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 18163ms prompt=2689c raw=11175c in=2t(cache_read=8775 new=7617) out=1213t ttfb=1477ms api=17194ms turnos=1 $0.05
+   2026-08-17 23:21:25 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 20654ms prompt=5489c raw=12749c in=2t(cache_read=8775 new=8758) out=1515t ttfb=1532ms api=19767ms turnos=1 $0.06
+   2026-08-17 23:21:43 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 17762ms prompt=2749c raw=10939c in=2t(cache_read=8775 new=7642) out=1118t ttfb=1517ms api=16776ms turnos=1 $0.04
+   2026-08-17 23:21:59 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 16133ms prompt=4324c raw=11170c in=2t(cache_read=8775 new=8296) out=1225t ttfb=1446ms api=15472ms turnos=1 $0.05
+   2026-08-17 23:22:02 [sistema/-] de=null (-) u=null
+        shutdown por SIGINT
+   2026-08-17 23:22:05 [sistema/wa_apagado] de=null (-) u=null
+        WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+   2026-08-17 23:22:05 [sistema/-] de=null (-) u=1
+        Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   2026-08-17 23:22:05 [sistema/wa_degradado] de=null (-) u=null
+        MODO DEGRADADO: loops arrancados sin WA (caído hace 53816 min)
+   2026-08-17 23:22:51 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 14678ms prompt=2688c raw=8124c in=2t(cache_read=8775 new=7641) out=747t ttfb=2556ms api=12461ms turnos=1 $0.0439
+   2026-08-17 23:22:59 [whatsapp/-] de=541132317896@c.us (Diego) u=1
+        (audio de voz, transcripto) Sí, mandarle un saludo felicitándolo, pero que sea algo más bien de tu parte, no mía.
+   2026-08-17 23:23:08 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 17008ms prompt=4678c raw=9579c in=2t(cache_read=8775 new=8346) out=1022t ttfb=2648ms api=14744ms turnos=1 $0.051
+   2026-08-17 23:23:26 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 17794ms prompt=2311c raw=11153c in=2t(cache_read=8775 new=7437) out=1228t ttfb=1591ms api=16564ms turnos=1 $0.05
+   2026-08-17 23:23:26 [sistema/-] de=null (-) u=1
+        acción FALLÓ: enviar_wa — enviar_wa: WA "PLACEHOLDER" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o
+   2026-08-17 23:23:44 [sistema/claude_call] de=null (-) u=1
+        claude_call memoria-curada: 17922ms prompt=2674c raw=10872c in=2t(cache_read=8775 new=7621) out=1081t ttfb=1398ms api=17116ms turnos=1 $0.04
+   2026-08-17 23:23:45 [sistema/-] de=null (-) u=1
+        acción ejecutada: buscar_contacto_global
+   2026-08-17 23:23:55 [sistema/-] de=null (-) u=1
+        acción ejecutada: enviar_wa
+   2026-08-17 23:23:55 [sistema/claude_call] de=null (-) u=null
+        claude_call moderacion: 6100ms prompt=1595c raw=6032c in=10t(cache_read=0 new=22482) out=302t ttfb=1220ms api=5149ms turnos=1 $0.0301
+   2026-08-17 23:24:06 [sistema/claude_call] de=null (-) u=1
+        claude_call whatsapp: 67067ms prompt=89158c raw=37523c in=26t(cache_read=654693 new=121552) out=2716t ttfb=1610ms api=59894ms turnos=13 $0.7
+   2026-08-17 23:27:05 [sistema/poda_eventos] de=null (-) u=null
+        poda-eventos: 8 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+
+   -- SALIENTES de hoy (resumen) --
+   2026-08-16 11:38:09 [telegram] ->telegram:590589920 :: Reviso el historial: a las 8:26 quedaron registrados 3 mensajes de "ho
+   2026-08-16 11:40:22 [telegram] ->telegram:590589920 :: Che, reviso el log de las 8:26: tengo registrada UNA sola ejecución de
+   2026-08-16 11:41:13 [telegram] ->telegram:590589920 :: Todavía no, le escribí a Nati preguntándole si podía ir al cine hoy pe
+   2026-08-16 12:15:25 [gmail] ->cruiz@froneus.com :: ☀️ *Buen día, Cristian Ruiz.* domingo, 16 de agosto. *🌡️ Clima en Bue
+   2026-08-16 12:45:24 [gmail] ->doris@capurro.com.ar :: ⏰ *En 15min*: joaquin vasco (10:00 a. m.) @Joaquin Vasco, Av. Federico
+   2026-08-16 13:20:10 [whatsapp] ->541132317896@c.us :: 🧊 Prueba EN FRÍO v2.0 — si viste a WhatsApp abrirse solo, mandar esto
+   2026-08-16 13:44:05 [telegram] ->telegram:590589920 :: No tengo el número de Nati anotado en la libreta, así que no le puedo 
+   2026-08-16 13:45:24 [gmail] ->doris@capurro.com.ar :: ⏰ *En 15min*: Global AI - 8th SESSION - Marketing in the AI era (11:00
+   2026-08-16 13:51:52 [telegram] ->telegram:590589920 :: Le escribo ahora a Nati por WhatsApp para preguntarle si podés ir hoy 
+   2026-08-16 13:51:53 [whatsapp] ->5491150105262@c.us :: Hola Nati! Te escribo de parte de Diego para consultarte: ¿podés confi
+   2026-08-16 13:57:01 [whatsapp] ->5491150105262@c.us :: ¿A qué te referís con que hoy no podés? No tengo nada agendado para ho
+   2026-08-16 13:57:22 [whatsapp] ->5491150105262@c.us :: Perdón, pero no tengo ninguna reunión ni gestión anotada a la que refe
+   2026-08-16 14:26:42 [whatsapp] ->5491165286555@c.us :: No tengo ninguna foto de empanadas para mandarte, che 😅 no tengo form
+   2026-08-16 14:26:52 [whatsapp] ->5491165286555@c.us :: No tengo ninguna foto de empanadas guardada ni puedo generar imágenes,
+   2026-08-16 14:27:15 [whatsapp] ->5491165286555@c.us :: No encontré nada sobre el cumple de Juanita, ni en tu historial recien
+   2026-08-16 14:27:44 [whatsapp] ->5491165286555@c.us :: Busqué en todo tu historial (WhatsApp, mail, calendario) y no encontré
+   2026-08-16 14:27:49 [whatsapp] ->5491165286555@c.us :: Sin problema jaja, tranqui 😊
+   2026-08-16 14:31:26 [whatsapp] ->5491165286555@c.us :: Todo bien, tranqui 😊 Si querés que le mande algo a Eloísa avisame y l
+   2026-08-16 14:31:34 [whatsapp] ->5491165286555@c.us :: Todo bien, no hay drama 😊 Si querés que le mande ese mensaje a Eloísa
+   2026-08-16 15:14:05 [whatsapp] ->541132317896@c.us :: Dale, te resumo todo: 📝 *Tus tareas:* 1. iProt Seguridad 2. DDJJ 2025
+   2026-08-16 15:15:49 [whatsapp] ->541132317896@c.us :: Todavía no, Nati no me respondió nada. Apenas conteste te aviso. ⚠️ Oj
+   2026-08-16 16:07:27 [gmail] ->nfunez@iplan.com.ar :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-16 19:06:07 [calendar] ->null :: creado: Reunión en la escuela de danzas (2026-09-03T09:30:00-03:00 → 2
+   2026-08-16 19:06:13 [whatsapp] ->5491165286555@c.us :: ¡Todo bien, gracias! Te agendo la reunión en la escuela de danzas el *
+   2026-08-16 19:08:11 [calendar] ->null :: creado: Ir a ver departamento para el papá (2026-08-21T15:30:00-03:00 
+   2026-08-16 19:08:15 [whatsapp] ->5491165286555@c.us :: Te agendo el viernes 21 de agosto a las 15:30hs (hasta las 16:30hs): I
+   2026-08-16 19:37:27 [gmail] ->nfunez@iplan.com.ar :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-16 20:12:39 [telegram] ->telegram:590589920 :: ⏰ Follow-up vencido — Coordinar reunión de 3hs entre Diego, Manuel Car
+   2026-08-16 22:06:14 [telegram] ->telegram:590589920 :: ⏰ Follow-up vencido — Coordinar reunión 3hs entre Diego, Manuel Carras
+   2026-08-16 22:21:05 [gmail] ->nfunez@iplan.com.ar :: 📊 *Tu semana* (al 16/08) 💬 WhatsApp: 2 recibidos · 2 enviados 📧 Ema
+   2026-08-16 22:21:05 [gmail] ->hernan.fulco@sondeosglobal.com :: 📊 *Tu semana* (al 16/08) 💬 WhatsApp: 3 recibidos · 1 enviados 📧 Ema
+   2026-08-16 22:21:05 [telegram] ->telegram:590589920 :: 📊 *Tu semana* (al 16/08) 💬 WhatsApp: 26 recibidos · 48 enviados 📅 E
+   2026-08-16 22:21:06 [gmail] ->wvera@froneus.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:06 [gmail] ->nkosinski@froneus.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:06 [gmail] ->doris@capurro.com.ar :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 30 enviados 📝 Pend
+   2026-08-16 22:21:07 [gmail] ->sameijeira@froneus.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:07 [gmail] ->cruiz@froneus.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:08 [gmail] ->enrique.sosa@globalnetmobile.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:09 [gmail] ->santiago@capurro.com.ar :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 39 enviados 📝 Pend
+   2026-08-16 22:21:10 [gmail] ->gabyechaniz@gmail.com :: 📊 *Tu semana* (al 16/08) 💬 WhatsApp: 39 recibidos · 28 enviados 📧 E
+   2026-08-16 22:21:10 [gmail] ->andres@nomada.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:11 [gmail] ->jcibils@csml.com.ar :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:21:12 [gmail] ->alfonso.amat@gmail.com :: 📊 *Tu semana* (al 16/08) 📧 Emails: 0 recibidos · 7 enviados 📝 Pendi
+   2026-08-16 22:43:59 [whatsapp] ->541132317896@c.us :: Todo tranqui por acá! Repasando: Hernán confirmó lunes 24/08 de 15 a 1
+   2026-08-16 23:06:24 [gmail] ->nfunez@iplan.com.ar :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-16 23:23:23 [whatsapp] ->5491165286555@c.us :: Listo, te programo el recordatorio con toda la lista para *mañana lune
+   2026-08-16 23:23:58 [whatsapp] ->5491165286555@c.us :: Genial, te sumo también este segundo recordatorio para *mañana lunes 1
+   2026-08-16 23:24:28 [whatsapp] ->5491165286555@c.us :: Dale, te sumo también este tercer recordatorio para *mañana lunes 17/0
+   2026-08-16 23:26:51 [calendar] ->null :: creado: Museo de la Cárcova (2026-08-19T11:00:00-03:00 → 2026-08-19T12
+   2026-08-16 23:26:55 [whatsapp] ->5491165286555@c.us :: Listo, te agrego *Museo de la Cárcova* el miércoles 19/08 de 11:00 a 1
+   2026-08-16 23:56:30 [telegram] ->telegram:590589920 :: Hernán confirmó que recibió la prueba del sistema, todo ok de su lado.
+   2026-08-16 23:56:35 [whatsapp] ->5491126829596@c.us :: Perfecto Hernán, gracias por confirmar!
+   2026-08-17 00:39:14 [telegram] ->telegram:590589920 :: Sí, te había contestado pero hubo un error técnico de mi lado y el men
+   2026-08-17 00:40:09 [telegram] ->telegram:590589920 :: Tenés toda la razón, me comí el nombre del día. Mañana es lunes 17/08,
+   2026-08-17 00:41:05 [telegram] ->telegram:590589920 :: Carolina Brunatti sí la tengo en la libreta: WA 5491141885339@c.us, ma
+   2026-08-17 00:41:36 [telegram] ->telegram:590589920 :: Sí, a Gabriel Pacheco lo tengo: WA +54 9 11 4040-2319, mail gap2612@gm
+   2026-08-17 00:44:52 [telegram] ->telegram:590589920 :: Che, para no mandar mal el mensaje: mencionaste "escribíle a ambos" pe
+   2026-08-17 00:46:21 [whatsapp] ->5491140402319@c.us :: Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo para coord
+   2026-08-17 00:46:28 [telegram] ->telegram:590589920 :: Listo, les escribo ahora a Gabriel Pacheco y a Carolina Brunatti para 
+   2026-08-17 00:47:45 [telegram] ->telegram:590589920 :: Anotado. Todavía estoy esperando que Gabriel y Carolina me confirmen q
+   2026-08-17 00:50:33 [whatsapp] ->5491140402319@c.us :: Genial, anotado miércoles 19! Apenas confirme Carolina también les avi
+   2026-08-17 02:52:04 [gmail] ->nfunez@iplan.com.ar :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 07:00:05 [telegram] ->telegram:590589920 :: ☀️ *Buen día, Diego.* lunes, 17 de agosto. *🌡️ Clima en Buenos Aires,
+   2026-08-17 10:00:05 [gmail] ->hernan.fulco@sondeosglobal.com :: ☀️ *Buen día, Hernan Fulco.* lunes, 17 de agosto. *🌡️ Clima en Buenos
+   2026-08-17 10:00:07 [gmail] ->nfunez@iplan.com.ar :: ☀️ *Buen día, Natali Funez.* lunes, 17 de agosto. *🌡️ Clima en Buenos
+   2026-08-17 10:00:08 [gmail] ->doris@capurro.com.ar :: ☀️ *Buen día, Doris Capurro.* lunes, 17 de agosto. *🌡️ Clima en Bueno
+   2026-08-17 10:00:09 [gmail] ->nkosinski@froneus.com :: ☀️ *Buen día, Nicolas Kosinski.* lunes, 17 de agosto. *🌡️ Clima en Bu
+   2026-08-17 10:00:10 [gmail] ->wvera@froneus.com :: ☀️ *Buen día, Walter Vera.* lunes, 17 de agosto. *🌡️ Clima en Buenos 
+   2026-08-17 10:00:11 [gmail] ->sameijeira@froneus.com :: ☀️ *Buen día, Sebastian Ameijeira.* lunes, 17 de agosto. *🌡️ Clima en
+   2026-08-17 10:00:12 [gmail] ->enrique.sosa@globalnetmobile.com :: ☀️ *Buen día, Enrique Sosa.* lunes, 17 de agosto. *🌡️ Clima en Buenos
+   2026-08-17 10:00:14 [gmail] ->andres@nomada.com :: ☀️ *Buen día, Andres Neumann.* lunes, 17 de agosto. *🌡️ Clima en Buen
+   2026-08-17 10:00:14 [gmail] ->santiago@capurro.com.ar :: ☀️ *Buen día, Santiago Capurro.* lunes, 17 de agosto. *🌡️ Clima en Bu
+   2026-08-17 10:00:15 [gmail] ->gabyechaniz@gmail.com :: ☀️ *Buen día, Gabriela Echaniz.* lunes, 17 de agosto. *📅 Agenda del d
+   2026-08-17 10:00:16 [gmail] ->jcibils@csml.com.ar :: ☀️ *Buen día, Jaime Cibils.* lunes, 17 de agosto. *📅 Agenda del día* 
+   2026-08-17 10:00:17 [gmail] ->alfonso.amat@gmail.com :: ☀️ *Buen día, Alfonso Amat.* lunes, 17 de agosto. *📅 Agenda del día* 
+   2026-08-17 10:15:05 [gmail] ->santiago@capurro.com.ar :: ⏰ *En 15min*: feriado (07:30 a. m.)
+   2026-08-17 10:45:05 [gmail] ->santiago@capurro.com.ar :: ⏰ *En 15min*: Gimnasio (08:00 a. m.)
+   2026-08-17 11:04:04 [gmail] ->nfunez@iplan.com.ar :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 11:04:05 [gmail] ->nfunez@iplan.com.ar :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 12:00:05 [gmail] ->gabyechaniz@gmail.com :: Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a señora x limpieza 3️⃣ Ma
+   2026-08-17 12:00:05 [gmail] ->gabyechaniz@gmail.com :: Y también tu lista de Personal para hoy 📋 1️⃣ Certificado de alumna r
+   2026-08-17 12:00:05 [gmail] ->gabyechaniz@gmail.com :: Buen día! 🌞 Recordatorio de tu orden laboral de hoy: 1️⃣ Terminar tex
+   2026-08-17 12:00:06 [gmail] ->hernan.fulco@sondeosglobal.com :: ⏰ *En 15min*: MC Daily (09:15 a. m.) Con: cristian.incarnato@sondeos.c
+   2026-08-17 12:03:19 [telegram] ->telegram:590589920 :: Listo, descarto el tema del cine con Natali.
+   2026-08-17 12:03:42 [telegram] ->telegram:590589920 :: Tengo dos Carolinas en la libreta: Carolina Brunatti (5491141885339, l
+   2026-08-17 12:15:05 [gmail] ->cruiz@froneus.com :: ☀️ *Buen día, Cristian Ruiz.* lunes, 17 de agosto. *🌡️ Clima en Bueno
+   2026-08-17 12:30:05 [gmail] ->hernan.fulco@sondeosglobal.com :: ⏰ *En 15min*: Daily CMP (09:45 a. m.) Con: agustin.escobar@sondeosglob
+   2026-08-17 12:30:32 [whatsapp] ->5491165286555@c.us :: Buen día! 🌞 Recordatorio de tu orden laboral de hoy: 1️⃣ Terminar tex
+   2026-08-17 12:30:38 [whatsapp] ->5491165286555@c.us :: Y también tu lista de Personal para hoy 📋 1️⃣ Certificado de alumna r
+   2026-08-17 12:30:48 [whatsapp] ->5491165286555@c.us :: Orden de la casa 🏠 1️⃣ Expensas 2️⃣ Llamar a señora x limpieza 3️⃣ Ma
+   2026-08-17 12:30:55 [whatsapp] ->5491165286555@c.us :: Perdón por el enredo de recién — los recordatorios te habían llegado p
+   2026-08-17 12:56:25 [whatsapp] ->541132317896@c.us :: Dale, te tiro todo: 📅 *Agenda* (hoy no tenés nada anotado) Mar 18/08:
+   2026-08-17 12:58:20 [gmail] ->null :: Hola Natali, Te escribo para avisarte que la reunión de hoy a las 14hs
+   2026-08-17 12:58:25 [whatsapp] ->541132317896@c.us :: Listo, le escribo a Natali cancelando la reunión de hoy a las 14hs y c
+   2026-08-17 13:01:05 [telegram] ->telegram:590589920 :: ⚠️ Tu programado #1341 falla repetidamente (2 intentos). Canal: whatsa
+   2026-08-17 13:36:04 [whatsapp] ->5491126829596@c.us :: ¡Hola Hernan! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 13:36:47 [whatsapp] ->5491126829596@c.us :: ¡Hola Hernan! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 13:45:05 [whatsapp] ->5491150105262@c.us :: ¡Hola Natali! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 13:45:13 [whatsapp] ->5491150105262@c.us :: ¡Hola Natali! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 14:30:26 [whatsapp] ->5491134274828@c.us :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 14:33:55 [whatsapp] ->5491134274828@c.us :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 14:38:26 [whatsapp] ->5491150105262@c.us :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 14:45:37 [whatsapp] ->5491150105262@c.us :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 15:15:26 [whatsapp] ->5491144471264@c.us :: ⏰ *En 15min*: Ada (12:30 p. m.)
+   2026-08-17 15:15:26 [whatsapp] ->5491144471264@c.us :: ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Tel
+   2026-08-17 15:17:36 [whatsapp] ->5491144471264@c.us :: ¡Hola Doris! Te cuento algo útil: ahora también podés hablarme por Tel
+   2026-08-17 15:17:58 [whatsapp] ->5491144471264@c.us :: ⏰ *En 15min*: Ada (12:30 p. m.)
+   2026-08-17 15:56:55 [whatsapp] ->541155771290@c.us :: Hola Manuel! Te reescribo por la reunión de 3hs con Diego y Hernán: qu
+   2026-08-17 16:00:26 [whatsapp] ->5491150080522@c.us :: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por T
+   2026-08-17 16:00:52 [whatsapp] ->541132317896@c.us :: Todavía nada firme en ninguna de las dos: 🔹 *Manuel Carrasco*: le man
+   2026-08-17 16:00:54 [whatsapp] ->5491150080522@c.us :: ¡Hola Nicolas! Te cuento algo útil: ahora también podés hablarme por T
+   2026-08-17 16:45:26 [whatsapp] ->5491138433288@c.us :: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 16:54:37 [whatsapp] ->5491138433288@c.us :: ¡Hola Walter! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 17:30:26 [whatsapp] ->5491126406612@c.us :: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 17:30:39 [whatsapp] ->5491126406612@c.us :: ¡Hola Cristian! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 17:38:26 [whatsapp] ->5491150105262@c.us :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 17:48:58 [whatsapp] ->5491150105262@c.us :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 18:08:47 [whatsapp] ->541132317896@c.us :: Diego, el audio me llegó bastante cortado y no términos como 'Cancelan
+   2026-08-17 18:09:51 [whatsapp] ->541132317896@c.us :: El audio me volvió a llegar cortado — no descifré bien "gavipaché con 
+   2026-08-17 18:10:02 [whatsapp] ->541132317896@c.us :: Dale, con Natali no hago nada más de mi lado.
+   2026-08-17 18:10:58 [whatsapp] ->541132317896@c.us :: Dale, quedo esperando esas opciones de fecha en septiembre. Cuando me 
+   2026-08-17 18:15:26 [whatsapp] ->5491163004389@c.us :: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por
+   2026-08-17 18:18:24 [whatsapp] ->5491163004389@c.us :: ¡Hola Sebastian! Te cuento algo útil: ahora también podés hablarme por
+   2026-08-17 19:00:26 [whatsapp] ->59899643028@c.us :: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por T
+   2026-08-17 19:00:31 [whatsapp] ->59899643028@c.us :: ¡Hola Enrique! Te cuento algo útil: ahora también podés hablarme por T
+   2026-08-17 19:45:26 [whatsapp] ->5491144471264@c.us :: ⏰ *En 15min*: harrods (05:00 p. m.)
+   2026-08-17 19:45:26 [whatsapp] ->5491166010010@c.us :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 19:45:27 [whatsapp] ->5491166010010@c.us :: ¡Hola Santiago! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 19:45:32 [whatsapp] ->5491144471264@c.us :: ⏰ *En 15min*: harrods (05:00 p. m.)
+   2026-08-17 20:30:26 [whatsapp] ->5491164719969@c.us :: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 20:30:28 [whatsapp] ->5491164719969@c.us :: ¡Hola Andres! Te cuento algo útil: ahora también podés hablarme por Te
+   2026-08-17 20:38:26 [whatsapp] ->5491150105262@c.us :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 20:38:26 [whatsapp] ->541132317896@c.us :: Te debo consulta sobre algo pendiente 👇 1. Pasarme las opciones de fe
+   2026-08-17 20:38:28 [whatsapp] ->541132317896@c.us :: Te debo consulta sobre algo pendiente 👇 1. Pasarme las opciones de fe
+   2026-08-17 20:38:33 [whatsapp] ->5491150105262@c.us :: Te debo consulta sobre algo pendiente 👇 1. Natali dijo dos veces "Hoy
+   2026-08-17 21:15:26 [whatsapp] ->5491165286555@c.us :: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 21:15:28 [whatsapp] ->5491165286555@c.us :: ¡Hola Gabriela! Te cuento algo útil: ahora también podés hablarme por 
+   2026-08-17 21:45:26 [whatsapp] ->5491144471264@c.us :: ⏰ *En 15min*: Gordon (07:00 p. m.)
+   2026-08-17 21:45:28 [whatsapp] ->5491144471264@c.us :: ⏰ *En 15min*: Gordon (07:00 p. m.)
+   2026-08-17 22:00:26 [whatsapp] ->5491161991122@c.us :: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Tel
+   2026-08-17 22:00:29 [whatsapp] ->5491161991122@c.us :: ¡Hola Jaime! Te cuento algo útil: ahora también podés hablarme por Tel
+   2026-08-17 22:45:26 [whatsapp] ->5491161549534@c.us :: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por T
+   2026-08-17 22:45:29 [whatsapp] ->5491161549534@c.us :: ¡Hola Alfonso! Te cuento algo útil: ahora también podés hablarme por T
+   2026-08-17 22:48:36 [whatsapp] ->541155771290@c.us :: Hola Manuel! Solo quería confirmar si el lunes 24/08 de 15 a 18hs te s
+   2026-08-17 22:48:39 [whatsapp] ->541155771290@c.us :: Hola Manuel! Solo quería confirmar si el lunes 24/08 de 15 a 18hs te s
+   2026-08-17 23:08:26 [whatsapp] ->541132317896@c.us :: 🎂 *Mañana cumple años:* • Santiago Bignone ¿Le mando un saludo de tu 
+   2026-08-17 23:08:30 [whatsapp] ->541132317896@c.us :: 🎂 *Mañana cumple años:* • Santiago Bignone ¿Le mando un saludo de tu 
+   2026-08-17 23:24:01 [whatsapp] ->5491134274828@c.us :: ¡Hola Santiago! Soy Maria, la secretaria de Diego. Me enteré que mañan
+   2026-08-17 23:24:06 [whatsapp] ->541132317896@c.us :: Le mandé el saludo a Santiago de mi parte, ¡que lo pases lindo mañana!
+
+-- 5) LOGS [MB] hoy --
+2026-08-17 15:08:38: [MB v2.9] 15:08:24 I [notif] entrante de "Gabriela Echaniz": Gracias María!
+2026-08-17 15:08:38: [MB v2.9] 15:08:24 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:11)
+2026-08-17 15:08:38: [MB v2.9] 15:08:24 I [media] audio de "Diego Paez" cazado: PTT-20260817-WA0003.opus (28KB) — subiendo
+2026-08-17 15:08:52: [MB v2.9] 15:08:39 I [notif] entrante de "Gabriela Echaniz": Gracias María!
+2026-08-17 15:08:52: [MB v2.9] 15:08:39 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:13)
+2026-08-17 15:08:52: [MB v2.9] 15:08:40 I [media] audio de "Diego Paez" cazado: PTT-20260817-WA0004.opus (33KB) — subiendo
+2026-08-17 15:09:49: [MB v2.9] 15:08:49 I [media] audio procesado OK
+2026-08-17 15:09:49: [MB v2.9] 15:08:49 I [media] reply a "Diego Paez": ENVIADA
+2026-08-17 15:09:49: [MB v2.9] 15:09:38 I [media] audio procesado OK
+2026-08-17 15:09:59: [MB v2.9] 15:09:50 I [notif] entrante de "Diego Paez": Lo de natali olvídate de todo, lo sigo yo
+2026-08-17 15:09:59: [MB v2.9] 15:09:52 I [outbox] respondido (silencioso) → Diego
+2026-08-17 15:10:09: [MB v2.9] 15:10:03 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-17 15:10:19: [MB v2.9] 15:10:18 I [notif] entrante de "Diego Paez": Y lo de la cena con caro y gabi, te paso opciones por qué ca
+2026-08-17 15:11:07: [MB v2.9] 15:10:59 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-17 15:18:25: [MB v2.9] 15:18:25 I [outbox] respondido (silencioso) → Sebastian Ameijeira
+2026-08-17 16:00:33: [MB v2.9] 16:00:32 I [outbox] respondido (silencioso) → Enrique Sosa
+2026-08-17 16:45:33: [MB v2.9] 16:45:28 I [outbox] respondido (silencioso) → Santiago Capurro
+2026-08-17 16:45:33: [MB v2.9] 16:45:33 I [outbox] respondido (silencioso) → Doris Capurro
+2026-08-17 17:18:04: [MB v2.9] 17:17:55 I [upd] al día (v2.9 code=14, mío=14)
+2026-08-17 17:30:34: [MB v2.9] 17:30:29 I [outbox] respondido (silencioso) → Andres Neumann
+2026-08-17 17:38:34: [MB v2.9] 17:38:29 I [outbox] respondido (silencioso) → Diego
+2026-08-17 17:38:34: [MB v2.9] 17:38:34 I [outbox] respondido (silencioso) → Natali Funez
+2026-08-17 18:15:34: [MB v2.9] 18:15:29 I [outbox] respondido (silencioso) → Gabriela Echaniz
+2026-08-17 18:45:34: [MB v2.9] 18:45:29 I [outbox] respondido (silencioso) → Doris Capurro
+2026-08-17 19:00:34: [MB v2.9] 19:00:30 I [outbox] respondido (silencioso) → Jaime Cibils
+2026-08-17 19:45:34: [MB v2.9] 19:45:30 I [outbox] respondido (silencioso) → Alfonso Amat
+2026-08-17 19:48:44: [MB v2.9] 19:48:40 I [outbox] respondido (silencioso) → 5491155771290
+2026-08-17 19:49:05: [MB v2.9] 19:49:01 I [upd] versión nueva v3.0 (code 15 > 14) — descargando
+2026-08-17 19:49:14: [MB v2.9] 19:49:09 I [upd] descargado 3134KB — ofreciendo instalar
+2026-08-17 19:49:38: [MB v3.0] 19:49:28 I [notif] listener conectado
+2026-08-17 19:49:38: [MB v3.0] 19:49:29 I [frio] accesibilidad conectada
+2026-08-17 19:49:38: [MB v3.0] 19:49:36 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-17 19:50:08: [MB v3.0] 19:50:08 I [upd] al día (v3.0 code=15, mío=15)
+2026-08-17 20:02:28: [MB v3.0] 20:02:20 I [upd] versión nueva v3.1 (code 16 > 15) — descargando
+2026-08-17 20:02:28: [MB v3.0] 20:02:28 I [upd] descargado 3135KB — ofreciendo instalar
+2026-08-17 20:02:55: [MB v3.1] 20:02:46 I [notif] listener conectado
+2026-08-17 20:02:55: [MB v3.1] 20:02:46 I [frio] accesibilidad conectada
+2026-08-17 20:02:55: [MB v3.1] 20:02:53 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-17 20:03:25: [MB v3.1] 20:03:24 I [upd] al día (v3.1 code=16, mío=16)
+2026-08-17 20:08:35: [MB v3.1] 20:08:28 I [frio] abriendo chat 5491132317896 (#76)
+2026-08-17 20:08:35: [MB v3.1] 20:08:30 I [frio] botón send encontrado — tap
+2026-08-17 20:08:35: [MB v3.1] 20:08:31 I [frio] verificación #76: ENVIADO
+2026-08-17 20:08:35: [MB v3.1] 20:08:31 I [outbox] enviado EN FRÍO (accesibilidad) → 5491132317896
+2026-08-17 20:22:56: [MB v3.1] 20:22:48 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:06)
+2026-08-17 20:22:56: [MB v3.1] 20:22:49 I [media] audio de "Diego Paez" cazado: PTT-20260817-WA0005.opus (12KB) — subiendo
+2026-08-17 20:24:06: [MB v3.1] 20:23:59 I [frio] abriendo chat 5491134274828 (#77)
+2026-08-17 20:24:06: [MB v3.1] 20:24:01 I [frio] botón send encontrado — tap
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [frio] verificación #77: ENVIADO
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [outbox] enviado EN FRÍO (accesibilidad) → 5491134274828
+2026-08-17 20:24:16: [MB v3.1] 20:24:08 I [media] audio procesado OK
+2026-08-17 20:24:16: [MB v3.1] 20:24:08 I [media] reply a "Diego Paez": ENVIADA
+2026-08-17 20:26:56: [MB v3.1] 20:26:50 I [upd] versión nueva v3.2 (code 17 > 16) — descargando
+2026-08-17 20:27:06: [MB v3.1] 20:26:59 I [upd] descargado 3136KB — ofreciendo instalar
+2026-08-17 20:27:26: [MB v3.1] 20:27:26 I [upd] versión nueva v3.2 (code 17 > 16) — descargando
+2026-08-17 20:27:36: [MB v3.1] 20:27:29 I [upd] descargado 3136KB — ofreciendo instalar
+2026-08-17 20:28:00: [MB v3.2] 20:27:51 I [notif] listener conectado
+2026-08-17 20:28:00: [MB v3.2] 20:27:52 I [frio] accesibilidad conectada
+2026-08-17 20:28:00: [MB v3.2] 20:27:57 I [upd] al día (v3.2 code=17, mío=17)
+2026-08-17 20:28:10: [MB v3.2] 20:28:03 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-17 20:28:40: [MB v3.2] 20:28:35 I [upd] al día (v3.2 code=17, mío=17)
+
+-- 6) grep frio/outbox/error en out.log hoy --
+2026-08-17 11:31:43: [MB v2.9] 11:31:42 W [frio] timeout #54 — no encontré el botón send
+2026-08-17 11:31:43: [MB v2.9] 11:31:42 I [outbox] cold-send #54 no verificado — queda en cola
+2026-08-17 11:33:54: [MB v2.9] 11:33:54 I [frio] abriendo chat 5491134274828 (#54)
+2026-08-17 11:33:54: [MB v2.9] 11:33:55 I [frio] botón send encontrado — tap
+2026-08-17 11:34:04: [MB v2.9] 11:33:56 I [frio] verificación #54: ENVIADO
+2026-08-17 11:34:04: [MB v2.9] 11:33:56 I [outbox] enviado EN FRÍO (accesibilidad) → 5491134274828
+2026-08-17 11:45:41: [MB v2.9] 11:45:35 I [frio] abriendo chat 5491150105262 (#55)
+2026-08-17 11:45:41: [MB v2.9] 11:45:36 I [frio] botón send encontrado — tap
+2026-08-17 11:45:41: [MB v2.9] 11:45:37 I [frio] verificación #55: ENVIADO
+2026-08-17 11:45:41: [MB v2.9] 11:45:37 I [outbox] enviado EN FRÍO (accesibilidad) → 5491150105262
+2026-08-17 12:17:39: [MB v2.9] 12:17:34 I [frio] abriendo chat 5491144471264 (#56)
+2026-08-17 12:17:39: [MB v2.9] 12:17:36 I [frio] botón send encontrado — tap
+2026-08-17 12:17:39: [MB v2.9] 12:17:37 I [frio] verificación #56: ENVIADO
+2026-08-17 12:17:39: [MB v2.9] 12:17:37 I [outbox] enviado EN FRÍO (accesibilidad) → 5491144471264
+2026-08-17 12:17:59: [MB v2.9] 12:17:57 I [frio] abriendo chat 5491144471264 (#57)
+2026-08-17 12:17:59: [MB v2.9] 12:17:58 I [frio] botón send encontrado — tap
+2026-08-17 12:17:59: [MB v2.9] 12:17:59 I [frio] verificación #57: ENVIADO
+2026-08-17 12:17:59: [MB v2.9] 12:17:59 I [outbox] enviado EN FRÍO (accesibilidad) → 5491144471264
+2026-08-17 12:56:54: [MB v2.9] 12:56:53 I [frio] abriendo chat 5491155771290 (#58)
+2026-08-17 12:56:54: [MB v2.9] 12:56:54 I [frio] botón send encontrado — tap
+2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [frio] verificación #58: ENVIADO
+2026-08-17 12:57:04: [MB v2.9] 12:56:56 I [outbox] enviado EN FRÍO (accesibilidad) → 5491155771290
+2026-08-17 13:00:57: [MB v2.9] 13:00:55 I [outbox] respondido (silencioso) → Nicolas Kosinski
+2026-08-17 13:54:39: [MB v2.9] 13:54:38 I [outbox] respondido (silencioso) → Walter Vera
+2026-08-17 14:30:46: [MB v2.9] 14:30:40 I [outbox] respondido (silencioso) → Cristian Ruiz
+2026-08-17 14:49:00: [MB v2.9] 14:48:59 I [outbox] respondido (silencioso) → Natali Funez
+2026-08-17 15:09:59: [MB v2.9] 15:09:52 I [outbox] respondido (silencioso) → Diego
+2026-08-17 15:18:25: [MB v2.9] 15:18:25 I [outbox] respondido (silencioso) → Sebastian Ameijeira
+2026-08-17 16:00:33: [MB v2.9] 16:00:32 I [outbox] respondido (silencioso) → Enrique Sosa
+2026-08-17 16:45:33: [MB v2.9] 16:45:28 I [outbox] respondido (silencioso) → Santiago Capurro
+2026-08-17 16:45:33: [MB v2.9] 16:45:33 I [outbox] respondido (silencioso) → Doris Capurro
+2026-08-17 17:30:34: [MB v2.9] 17:30:29 I [outbox] respondido (silencioso) → Andres Neumann
+2026-08-17 17:38:34: [MB v2.9] 17:38:29 I [outbox] respondido (silencioso) → Diego
+2026-08-17 17:38:34: [MB v2.9] 17:38:34 I [outbox] respondido (silencioso) → Natali Funez
+2026-08-17 18:15:34: [MB v2.9] 18:15:29 I [outbox] respondido (silencioso) → Gabriela Echaniz
+2026-08-17 18:45:34: [MB v2.9] 18:45:29 I [outbox] respondido (silencioso) → Doris Capurro
+2026-08-17 19:00:34: [MB v2.9] 19:00:30 I [outbox] respondido (silencioso) → Jaime Cibils
+2026-08-17 19:45:34: [MB v2.9] 19:45:30 I [outbox] respondido (silencioso) → Alfonso Amat
+2026-08-17 19:48:44: [MB v2.9] 19:48:40 I [outbox] respondido (silencioso) → 5491155771290
+2026-08-17 19:49:38: [MB v3.0] 19:49:29 I [frio] accesibilidad conectada
+2026-08-17 20:02:55: [MB v3.1] 20:02:46 I [frio] accesibilidad conectada
+2026-08-17 20:08:35: [MB v3.1] 20:08:28 I [frio] abriendo chat 5491132317896 (#76)
+2026-08-17 20:08:35: [MB v3.1] 20:08:30 I [frio] botón send encontrado — tap
+2026-08-17 20:08:35: [MB v3.1] 20:08:31 I [frio] verificación #76: ENVIADO
+2026-08-17 20:08:35: [MB v3.1] 20:08:31 I [outbox] enviado EN FRÍO (accesibilidad) → 5491132317896
+2026-08-17 20:24:06: [MB v3.1] 20:23:59 I [frio] abriendo chat 5491134274828 (#77)
+2026-08-17 20:24:06: [MB v3.1] 20:24:01 I [frio] botón send encontrado — tap
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [frio] verificación #77: ENVIADO
+2026-08-17 20:24:06: [MB v3.1] 20:24:02 I [outbox] enviado EN FRÍO (accesibilidad) → 5491134274828
+2026-08-17 20:28:00: [MB v3.2] 20:27:52 I [frio] accesibilidad conectada
+
+-- 7) marker WA / estado --
+-rw-r--r--  1 root root   21 Jul 11 11:36 tg-wa-down
+-rw-r--r--  1 root root    0 Jul 11 11:42 wa-apagado
+-rw-r--r--  1 root root   13 Aug 17 20:34 wa-hook-latido
+
+done
+
+# exit=0
