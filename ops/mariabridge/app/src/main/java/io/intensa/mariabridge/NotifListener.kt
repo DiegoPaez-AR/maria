@@ -29,10 +29,10 @@ class NotifListener : NotificationListenerService() {
         // Notificaciones de SERVICIO de WhatsApp ("Checking for new messages",
         // backups, llamadas perdidas) — no son mensajes.
         if (tNorm == "whatsapp") return
+        var texto = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
         // Reacciones ("Reacted ❤️ to ...", "Reaccionó ...") — no son texto útil
         // para el hook; generan turnos basura.
         if (texto.matches(Regex("^(Reacted|Reaccionó|Reagiu)\\b.*", RegexOption.IGNORE_CASE))) return
-        var texto = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString() ?: ""
 
         // Resumen agregado ("3 mensajes nuevos") → ignorar, no es contenido real.
         if (texto.matches(Regex("^\\d+ (mensajes?|messages?).*", RegexOption.IGNORE_CASE))) return
