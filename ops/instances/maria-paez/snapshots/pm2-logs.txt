@@ -1,28 +1,3 @@
-3|maria-pa | 2026-08-18 12:37:24: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=202 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:37:25: [MB v3.4] 12:37:20 I [frio] abriendo chat 5491166010010 (#202)
-3|maria-pa | 2026-08-18 12:37:44: [MB-FALLO] #202 motivo=timeout_sin_boton → {"id":202,"cold_fallos":2,"definitivo":false}
-3|maria-pa | 2026-08-18 12:37:58: [MB v3.4] 12:37:45 W [frio] timeout #202 — no encontré el botón send
-3|maria-pa | 2026-08-18 12:37:58: [MB v3.4] 12:37:45 I [outbox] cold-send #202 no verificado — queda en cola
-3|maria-pa | 2026-08-18 12:37:58: [MB v3.4] 12:37:54 I [frio] abriendo chat 5491166010010 (#202)
-3|maria-pa | 2026-08-18 12:38:12: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=202 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:38:18: [MB-FALLO] #202 motivo=timeout_sin_boton → {"id":202,"cold_fallos":3,"definitivo":false}
-3|maria-pa | 2026-08-18 12:38:39: [MB v3.4] 12:38:19 W [frio] timeout #202 — no encontré el botón send
-3|maria-pa | 2026-08-18 12:38:39: [MB v3.4] 12:38:19 I [outbox] cold-send #202 no verificado — queda en cola
-3|maria-pa | 2026-08-18 12:38:39: [MB v3.4] 12:38:35 I [frio] abriendo chat 5491166010010 (#202)
-3|maria-pa | 2026-08-18 12:38:53: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=202 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:38:59: [MB-FALLO] #202 motivo=timeout_sin_boton → {"id":202,"cold_fallos":4,"definitivo":false}
-3|maria-pa | 2026-08-18 12:42:23: [MB v3.4] 12:39:00 W [frio] timeout #202 — no encontré el botón send
-3|maria-pa | 2026-08-18 12:42:23: [MB v3.4] 12:39:00 I [outbox] cold-send #202 no verificado — queda en cola
-3|maria-pa | 2026-08-18 12:42:32: [MB v3.4] 12:42:25 I [frio] abriendo chat 5491166010010 (#202)
-3|maria-pa | 2026-08-18 12:42:47: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=202 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:42:49: [wa-outbox] #203 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Santia…)
-3|maria-pa | 2026-08-18 12:42:49: [MB-FALLO] #202 motivo=timeout_sin_boton → {"id":202,"cold_fallos":5,"definitivo":true}
-3|maria-pa | 2026-08-18 12:42:52: [MB v3.4] 12:42:50 W [frio] timeout #202 — no encontré el botón send
-3|maria-pa | 2026-08-18 12:42:52: [MB v3.4] 12:42:50 I [outbox] cold-send #202 no verificado — queda en cola
-3|maria-pa | 2026-08-18 12:43:02: [MB v3.4] 12:42:54 I [frio] abriendo chat 5491132317896 (#203)
-3|maria-pa | 2026-08-18 12:43:12: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=203 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:43:18: [MB-FALLO] #203 motivo=timeout_sin_boton → {"id":203,"cold_fallos":1,"definitivo":false}
-3|maria-pa | 2026-08-18 12:43:25: [MB v3.4] 12:43:19 W [frio] timeout #203 — no encontré el botón send
 3|maria-pa | 2026-08-18 12:43:25: [MB v3.4] 12:43:19 I [outbox] cold-send #203 no verificado — queda en cola
 3|maria-pa | 2026-08-18 12:47:53: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=203 | chats_vivos=[]
 3|maria-pa | 2026-08-18 12:47:54: [MB v3.4] 12:47:50 I [frio] abriendo chat 5491132317896 (#203)
@@ -197,4 +172,29 @@
 3|maria-pa | 2026-08-18 14:45:00: [MB v3.4] 14:44:53 W [frio] timeout #207 — no encontré el botón send
 3|maria-pa | 2026-08-18 14:45:00: [MB v3.4] 14:44:53 I [outbox] cold-send #207 no verificado — queda en cola
 3|maria-pa | 2026-08-18 14:45:00: [MB v3.4] 14:44:58 I [frio] abriendo chat 5491132317896 (#208)
+3|maria-pa | 2026-08-18 14:45:06: [programados] 2 mensaje(s) debidos, despachando…
+3|maria-pa | 2026-08-18 14:45:06: [wa-outbox] #209 encolado → +5491166010010 (⏰ *En 15min*: Guido <> Santi (03:00 p. m…)
+3|maria-pa | 2026-08-18 14:45:06: [wa-send] programados/1394: sin waClient → outbox #209 (bridge) para Santiago Capurro
+3|maria-pa | 2026-08-18 14:45:06: [programados] ✓ id=1394 (whatsapp/5491166010010@c.us) [meeting_prep:13:9l653rn2gbtbda92dqulargsgc]
+3|maria-pa | 2026-08-18 14:45:06: [wa-outbox] #210 encolado → +5491166010010 (⏰ *En 15min*: Guido EO (03:00 p. m.)…)
+3|maria-pa | 2026-08-18 14:45:06: [wa-send] programados/1395: sin waClient → outbox #210 (bridge) para Santiago Capurro
+3|maria-pa | 2026-08-18 14:45:06: [programados] ✓ id=1395 (whatsapp/5491166010010@c.us) [meeting_prep:13:qk1iqa82dnae9fvo0ttho45c9o]
+3|maria-pa | 2026-08-18 14:45:06: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=209 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:11: [MB-DIAG] buscaba nombre="Hernan Fulco" numero="5491126829596" pendiente=207 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:16: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=208 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:21: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=210 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:22: [MB-FALLO] #208 motivo=timeout_sin_boton → {"id":208,"cold_fallos":4,"definitivo":false}
+3|maria-pa | 2026-08-18 14:45:30: [MB v3.4] 14:45:23 W [frio] timeout #208 — no encontré el botón send
+3|maria-pa | 2026-08-18 14:45:30: [MB v3.4] 14:45:23 I [outbox] cold-send #208 no verificado — queda en cola
+3|maria-pa | 2026-08-18 14:45:30: [MB v3.4] 14:45:28 I [frio] abriendo chat 5491166010010 (#209)
+3|maria-pa | 2026-08-18 14:45:31: [MB-DIAG] buscaba nombre="Hernan Fulco" numero="5491126829596" pendiente=207 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:36: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=208 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:41: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=210 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:46: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=209 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:51: [MB-DIAG] buscaba nombre="Hernan Fulco" numero="5491126829596" pendiente=207 | chats_vivos=[]
+3|maria-pa | 2026-08-18 14:45:52: [MB-FALLO] #209 motivo=timeout_sin_boton → {"id":209,"cold_fallos":1,"definitivo":false}
+3|maria-pa | 2026-08-18 14:46:00: [MB v3.4] 14:45:53 W [frio] timeout #209 — no encontré el botón send
+3|maria-pa | 2026-08-18 14:46:00: [MB v3.4] 14:45:53 I [outbox] cold-send #209 no verificado — queda en cola
+3|maria-pa | 2026-08-18 14:46:00: [MB v3.4] 14:45:58 I [frio] abriendo chat 5491132317896 (#208)
+3|maria-pa | 2026-08-18 14:46:01: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=210 | chats_vivos=[]
 
