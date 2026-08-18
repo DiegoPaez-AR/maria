@@ -59,7 +59,11 @@ object Updater {
         val remoto = j.optInt("versionCode", 0)
         val nombre = j.optString("versionName", "?")
         val apkUrl = j.optString("url", "")
-        if (remoto <= mio) { MbLog.i("upd", "al día (v$nombre code=$remoto, mío=$mio)"); return "al día (v${info.versionName})" }
+        if (remoto <= mio) {
+            MbLog.i("upd", "al día (v$nombre code=$remoto, mío=$mio)")
+            try { (c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(7) } catch (_: Exception) {}
+            return "al día (v${info.versionName})"
+        }
         if (apkUrl.isBlank()) return "json sin url"
 
         MbLog.i("upd", "versión nueva v$nombre (code $remoto > $mio) — descargando")
@@ -78,19 +82,26 @@ object Updater {
         instalandoDesde = System.currentTimeMillis()
         if (desdeUi) {
             c.startActivity(i)
+            // Fallback (v3.3, "trabón" del 17/8): Android a veces dropea el
+            // intent del instalador en silencio. Dejamos TAMBIÉN la notificación
+            // como segunda vía (sin re-descargar). Se cancela sola al quedar al día.
+            _notificarInstalar(c, i, nombre)
         } else {
-            // desde el servicio: Android bloquea abrir pantallas de fondo → notificación 1-tap
-            val nm = c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (Build.VERSION.SDK_INT >= 26)
-                nm.createNotificationChannel(NotificationChannel("mariabridge_upd", "Actualizaciones", NotificationManager.IMPORTANCE_HIGH))
-            val pi = PendingIntent.getActivity(c, 7, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            val n = Notification.Builder(c, "mariabridge_upd")
-                .setContentTitle("MariaBridge v$nombre lista")
-                .setContentText("Tocá para instalar la actualización")
-                .setSmallIcon(android.R.drawable.stat_sys_download_done)
-                .setContentIntent(pi).setAutoCancel(true).build()
-            nm.notify(7, n)
+            _notificarInstalar(c, i, nombre)
         }
         return "v$nombre descargada — instalá"
+    }
+
+    private fun _notificarInstalar(c: Context, i: Intent, nombre: String) {
+        val nm = c.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= 26)
+            nm.createNotificationChannel(NotificationChannel("mariabridge_upd", "Actualizaciones", NotificationManager.IMPORTANCE_HIGH))
+        val pi = PendingIntent.getActivity(c, 7, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val n = Notification.Builder(c, "mariabridge_upd")
+            .setContentTitle("MariaBridge v$nombre lista")
+            .setContentText("Tocá para instalar la actualización")
+            .setSmallIcon(android.R.drawable.stat_sys_download_done)
+            .setContentIntent(pi).setAutoCancel(true).build()
+        nm.notify(7, n)
     }
 }
