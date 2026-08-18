@@ -1,10 +1,3 @@
-3|maria-pa | 2026-08-18 12:09:25: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-08-18 12:09:25: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-08-18 12:09:25: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando resumen-semanal (domingos, tz usuario)
 3|maria-pa | 2026-08-18 12:09:25: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
 3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando poda-eventos (diario)
 3|maria-pa | 2026-08-18 12:09:25: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
@@ -197,4 +190,11 @@
 3|maria-pa | 2026-08-18 13:33:23: [MB v3.4] 13:33:20 I [frio] abriendo chat 5491132317896 (#204)
 3|maria-pa | 2026-08-18 13:33:38: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=204 | chats_vivos=[]
 3|maria-pa | 2026-08-18 13:33:44: [MB-FALLO] #204 motivo=timeout_sin_boton → {"id":204,"cold_fallos":2,"definitivo":false}
+3|maria-pa | 2026-08-18 13:34:06: [meeting-prep/Diego] + id=1396 Personal @ 2026-08-18T18:15:00.000Z
+3|maria-pa | 2026-08-18 13:34:35: [MB v3.4] 13:33:45 W [frio] timeout #204 — no encontré el botón send
+3|maria-pa | 2026-08-18 13:34:35: [MB v3.4] 13:33:45 I [outbox] cold-send #204 no verificado — queda en cola
+3|maria-pa | 2026-08-18 13:34:35: [MB v3.4] 13:34:32 I [frio] abriendo chat 5491132317896 (#204)
+3|maria-pa | 2026-08-18 13:34:35: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=204 | chats_vivos=[]
+3|maria-pa | 2026-08-18 13:34:55: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=204 | chats_vivos=[]
+3|maria-pa | 2026-08-18 13:34:56: [MB-FALLO] #204 motivo=timeout_sin_boton → {"id":204,"cold_fallos":3,"definitivo":false}
 
