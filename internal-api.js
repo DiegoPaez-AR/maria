@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo|mbmedia)(?:\/(\d+))?$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo|mbmedia|mbctl)(?:\/(\d+))?$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -59,6 +59,12 @@ function start({ waClient } = {}) {
         // "id|numero|texto-urlencoded" (o vacío). Evita depender del parseo
         // de JSON de Tasker, que no resolvía %http_data.campo.
         if (_out[2] === 'pendiente.txt') {
+          // Control remoto (2026-08-18) tiene PRIORIDAD: si hay un comando CTL
+          // encolado, se sirve antes que cualquier mensaje.
+          try {
+            const ctl = require('./mb-control').siguiente();
+            if (ctl) { res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end(ctl); }
+          } catch (e) { console.warn('[mb-control] siguiente:', e.message); }
           const p = outbox.siguiente();
           res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
           if (!p) return res.end('');
@@ -90,6 +96,11 @@ function start({ waClient } = {}) {
           const lineas = Array.isArray(b.lineas) ? b.lineas : [];
           for (const l of lineas.slice(0, 100)) console.log(`[MB v${b.ver || '?'}] ${String(l).slice(0, 400)}`);
           return send(200, { ok: true, recibidas: lineas.length });
+        }
+        if (_out[2] === 'mbctl') {
+          const b = await readJsonGrande(req).catch(() => null);
+          if (!b || !b.id) return send(400, { error: 'payload' });
+          return send(200, require('./mb-control').resolver(b));
         }
         if (_out[2] === 'mbmedia') {
           // Audio REAL desde MariaBridge (2026-08-17, 7a): la app caza el .opus

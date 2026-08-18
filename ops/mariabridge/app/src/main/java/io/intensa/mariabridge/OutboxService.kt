@@ -61,6 +61,20 @@ class OutboxService : Service() {
         if (base.isBlank() || secret.isBlank()) return
         Net.get("$base/$secret/pendiente.txt") { code, resp ->
             if (code != 200 || resp.isBlank()) return@get
+            // Comando de control remoto (v3.6): "CTL|id|cmd|argsB64"
+            if (resp.startsWith("CTL|")) {
+                val pc = resp.split("|", limit = 4)
+                if (pc.size >= 3) {
+                    val cid = pc[1]; val cmd = pc[2]
+                    val args = if (pc.size >= 4) try {
+                        org.json.JSONObject(String(android.util.Base64.decode(pc[3], android.util.Base64.DEFAULT)))
+                    } catch (_: Exception) { org.json.JSONObject() } else org.json.JSONObject()
+                    val svc = WaSendService.instancia
+                    if (svc != null) ControlOps.ejecutar(svc, base, secret, cid, cmd, args)
+                    else MbLog.w("ctl", "sin accesibilidad viva — no ejecuto #$cid")
+                }
+                return@get
+            }
             val partes = resp.split("|", limit = 4)
             if (partes.size < 3) return@get
             val id = partes[0]

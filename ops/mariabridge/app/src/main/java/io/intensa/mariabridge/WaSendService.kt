@@ -20,12 +20,17 @@ class WaSendService : AccessibilityService() {
     private val h = Handler(Looper.getMainLooper())
     private val TIMEOUT_MS = 25000L
 
+    companion object { @Volatile var instancia: WaSendService? = null }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
+        instancia = this
         MbLog.init(this)
         MbLog.i("frio", "accesibilidad conectada")
         loop()
     }
+
+    override fun onDestroy() { if (instancia === this) instancia = null; super.onDestroy() }
 
     // Loop de 1s: si hay un cold-send pendiente sin lanzar, abre el chat.
     private fun loop() {
@@ -52,6 +57,8 @@ class WaSendService : AccessibilityService() {
                         } else MbLog.w("frio", "pantalla al timeout: root NULL")
                     } catch (e: Exception) { MbLog.e("frio", "radiografía: ${e.message}") }
                     MbLog.w("frio", "timeout #${t.id} — no encontré el botón send")
+                    // Auto-captura (v3.6): subir screenshot del fallo para diagnóstico
+                    try { ControlOps.ejecutar(this, Prefs.hookBase(this), Prefs.secret(this), "auto-${t.id}", "shot", org.json.JSONObject()) } catch (_: Exception) {}
                     _reportarFallo(t.id, "timeout_sin_boton")
                     goHome()
                     ColdSend.terminar(t.id, false)       // el server decide si reintenta (tope 5)
