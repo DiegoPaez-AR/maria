@@ -1,0 +1,24 @@
+# ejecutado: 2026-08-17T21:37:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   CONF=/root/secretaria/config/instances/maria-paez.conf
+#   if ! grep -q "^RECORDATORIO_CONSULTA_COOLDOWN_H=" "$CONF"; then
+#     echo "" >> "$CONF"
+#     echo "# Cadencia de 'Te debo consulta' (2026-08-17, decisión Diego: 2x/día — antes cada 3h era spam)" >> "$CONF"
+#     echo "RECORDATORIO_CONSULTA_COOLDOWN_H=8" >> "$CONF"
+#     echo "cooldown 8h agregado"
+#   else
+#     sed -i 's/^RECORDATORIO_CONSULTA_COOLDOWN_H=.*/RECORDATORIO_CONSULTA_COOLDOWN_H=8/' "$CONF"
+#     echo "cooldown actualizado a 8h"
+#   fi
+#   cd /root/secretaria && pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+#   echo LISTO
+
+# ───── output ─────
+cooldown 8h agregado
+reload OK
+LISTO
+
+# exit=0
