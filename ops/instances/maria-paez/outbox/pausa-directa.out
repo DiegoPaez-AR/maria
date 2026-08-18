@@ -1,0 +1,27 @@
+# ejecutado: 2026-08-18T12:09:23-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/pd.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB);
+#   const r=db.prepare(`UPDATE programados SET enviado=-2, razon='pausado-emergencia-18-8' WHERE id BETWEEN 1368 AND 1374`).run();
+#   console.log("UPDATE changes:", r.changes);
+#   db.prepare(`SELECT id,enviado,razon FROM programados WHERE id BETWEEN 1368 AND 1374`).all().forEach(x=>console.log(JSON.stringify(x)));
+#   db.close();
+#   JS
+#   node /tmp/pd.cjs; rm -f /tmp/pd.cjs
+#   echo LISTO
+
+# ───── output ─────
+UPDATE changes: 7
+{"id":1368,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+{"id":1369,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+{"id":1370,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+{"id":1371,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+{"id":1372,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+{"id":1373,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+{"id":1374,"enviado":-2,"razon":"pausado-emergencia-18-8"}
+LISTO
+
+# exit=0
