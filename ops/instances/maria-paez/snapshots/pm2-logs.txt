@@ -1,200 +1,200 @@
-3|maria-pa | 2026-08-14 18:13:14:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-14 18:13:14:     at async _turnoUsuario (/root/secretaria/wa-hook.js:118:20)
-3|maria-pa | 2026-08-14 18:13:14: Error: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-14 18:13:14: No encuentro en el historial reciente a qué se refiere lo del viernes 21/8 de 9 a 12 — no veo ninguna consulta previa (mía a vos, o de algún tercero) sobre ese horario. Además esa franja se te pisa con la MC Daily (9:15) y la Daily CMP (9:45) que ya tenés agendadas ese día. ¿De qué reunión o coordinación es esto? Contame con quién es y lo agendo ya.
-3|maria-pa | 2026-08-14 18:13:14:     at extraerJSON (/root/secretaria/claude-client.js:522:9)
-3|maria-pa | 2026-08-14 18:13:14:     at invocarClaudeJSON (/root/secretaria/claude-client.js:533:30)
-3|maria-pa | 2026-08-14 18:13:14:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-14 18:13:14:     at async _turnoUsuario (/root/secretaria/wa-hook.js:118:20)
-3|maria-pa | 2026-08-14 18:13:14: [unhandledRejection] Error: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-14 18:13:14: No encuentro en el historial reciente a qué se refiere lo del viernes 21/8 de 9 a 12 — no veo ninguna consulta previa (mía a vos, o de algún tercero) sobre ese horario. Además esa franja se te pisa con la MC Daily (9:15) y la Daily CMP (9:45) que ya tenés agendadas ese día. ¿De qué reunión o coordinación es esto? Contame con quién es y lo agendo ya.
-3|maria-pa | 2026-08-14 18:13:14:     at extraerJSON (/root/secretaria/claude-client.js:522:9)
-3|maria-pa | 2026-08-14 18:13:14:     at invocarClaudeJSON (/root/secretaria/claude-client.js:533:30)
-3|maria-pa | 2026-08-14 18:13:14:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-14 18:13:14:     at async _turnoUsuario (/root/secretaria/wa-hook.js:118:20)
-3|maria-pa | 2026-08-14 18:28:27: [wa-hook] turno falló post-deadline: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-14 18:28:27: No encuentro el contexto de a qué te referís con "el viernes 21/8 de 9 a 12hs estaría perfecto" — no tengo registrada ninguna propuesta previa (mía ni de un tercero) sobre una reunión o cita para esa franja. ¿Me contás con quién es y qué título le pongo al evento? Así te lo agendo bien.
-3|maria-pa | 2026-08-14 18:28:27: Error: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-14 18:28:27: No encuentro el contexto de a qué te referís con "el viernes 21/8 de 9 a 12hs estaría perfecto" — no tengo registrada ninguna propuesta previa (mía ni de un tercero) sobre una reunión o cita para esa franja. ¿Me contás con quién es y qué título le pongo al evento? Así te lo agendo bien.
-3|maria-pa | 2026-08-14 18:28:27:     at extraerJSON (/root/secretaria/claude-client.js:522:9)
-3|maria-pa | 2026-08-14 18:28:27:     at invocarClaudeJSON (/root/secretaria/claude-client.js:533:30)
-3|maria-pa | 2026-08-14 18:28:27:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-3|maria-pa | 2026-08-14 18:28:27:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-14 18:28:27:     at async _turnoUsuario (/root/secretaria/wa-hook.js:118:20)
-3|maria-pa | 2026-08-14 18:28:27: [unhandledRejection] Error: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-14 18:28:27: No encuentro el contexto de a qué te referís con "el viernes 21/8 de 9 a 12hs estaría perfecto" — no tengo registrada ninguna propuesta previa (mía ni de un tercero) sobre una reunión o cita para esa franja. ¿Me contás con quién es y qué título le pongo al evento? Así te lo agendo bien.
-3|maria-pa | 2026-08-14 18:28:27:     at extraerJSON (/root/secretaria/claude-client.js:522:9)
-3|maria-pa | 2026-08-14 18:28:27:     at invocarClaudeJSON (/root/secretaria/claude-client.js:533:30)
-3|maria-pa | 2026-08-14 18:28:27:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-3|maria-pa | 2026-08-14 18:28:27:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-14 18:28:27:     at async _turnoUsuario (/root/secretaria/wa-hook.js:118:20)
-3|maria-pa | 2026-08-14 23:41:25: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 00:40:45: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 03:07:02: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "5491132317896@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-3|maria-pa | 2026-08-15 03:09:24: ⚠️ [MODO DEGRADADO] WA caído hace 49903 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-15 03:09:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-15 04:59:33: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 06:50:45: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 08:48:39: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 09:30:24: [programados] ✗ id=1335 falló: waClient no disponible
-3|maria-pa | 2026-08-15 09:31:24: [programados] ✗ id=1335 falló: waClient no disponible
-3|maria-pa | 2026-08-15 09:35:24: [programados] ✗ id=1336 falló: waClient no disponible
-3|maria-pa | 2026-08-15 09:36:24: [programados] ✗ id=1336 falló: waClient no disponible
-3|maria-pa | 2026-08-15 09:40:28: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 17:03:47: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 17:08:59: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 19:11:10: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 22:55:26: ⚠️ [MODO DEGRADADO] WA caído hace 51089 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-15 22:55:26: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-15 23:10:56: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 23:34:53: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-15 23:42:25: ⚠️ [MODO DEGRADADO] WA caído hace 51136 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-15 23:42:25: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 03:25:13: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 08:06:08: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 08:21:09: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 08:30:08: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-16 08:30:08: Viendo el historial, a las 8:26 me quedaron registrados 3 mensajes de "hola" salientes hacia tu WhatsApp, pero no los mandé yo a propósito en esta conversación — no tengo ninguna acción mía que diga "hola" x3. Lo único que hice recién fue escribirle a Natali por WhatsApp preguntando por el cine.
-3|maria-pa | 2026-08-16 08:30:08: 
-3|maria-pa | 2026-08-16 08:30:08: Me parece raro y lo voy a tener en cuenta, pero no tengo forma de rastrear más el origen de esos 3 "hola" desde acá. Si te sigue pasando avisame.
-3|maria-pa | 2026-08-16 09:07:24: ⚠️ [MODO DEGRADADO] WA caído hace 51701 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 09:07:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 10:19:56: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 11:23:05: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 12:01:25: ⚠️ [MODO DEGRADADO] WA caído hace 51875 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 12:01:25: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 12:15:31: [executor] acción #0 (reenviar_wa) falló: Faltan campos requeridos: messageId, a
-3|maria-pa | 2026-08-16 12:37:21: ⚠️ [MODO DEGRADADO] WA caído hace 51911 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 12:37:21: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 12:37:26: ⚠️ [MODO DEGRADADO] WA caído hace 51911 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 12:37:26: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 17:58:42: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 18:53:24: ⚠️ [MODO DEGRADADO] WA caído hace 52287 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 18:53:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 19:06:04: ⚠️ [MODO DEGRADADO] WA caído hace 52300 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 19:06:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 19:24:03: ⚠️ [MODO DEGRADADO] WA caído hace 52318 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 19:24:03: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 19:36:24: ⚠️ [MODO DEGRADADO] WA caído hace 52330 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 19:36:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:08:23: ⚠️ [MODO DEGRADADO] WA caído hace 52362 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:08:23: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:10:04: ⚠️ [MODO DEGRADADO] WA caído hace 52364 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:10:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:14:23: ⚠️ [MODO DEGRADADO] WA caído hace 52368 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:14:23: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:16:04: ⚠️ [MODO DEGRADADO] WA caído hace 52370 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:16:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:33:26: ⚠️ [MODO DEGRADADO] WA caído hace 52387 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:33:26: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:35:04: ⚠️ [MODO DEGRADADO] WA caído hace 52389 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:35:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 20:53:23: ⚠️ [MODO DEGRADADO] WA caído hace 52407 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 20:53:23: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 21:00:08: ⚠️ [MODO DEGRADADO] WA caído hace 52414 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 21:00:08: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 21:28:59: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-16 21:28:59: Listo, quedó anotado: si Manuel no confirma antes de mañana martes 17/08 a las 11, le mando un WhatsApp recordándole el tema de la reunión del lunes 24/08 (15 a 18hs con vos y Hernán). Sigo atenta.
-3|maria-pa | 2026-08-16 22:12:05: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-3|maria-pa | 2026-08-16 22:14:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
-3|maria-pa | 2026-08-16 22:39:04: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-16 23:18:24: ⚠️ [MODO DEGRADADO] WA caído hace 52552 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 23:18:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 23:20:04: ⚠️ [MODO DEGRADADO] WA caído hace 52554 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 23:20:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 23:20:38: [agregar_pendiente] no creo follow_up auto (Funeznatali@hotmail.com): email "Funeznatali@hotmail.com" no está en libreta ni es usuario activo
-3|maria-pa | 2026-08-16 23:22:04: ⚠️ [MODO DEGRADADO] WA caído hace 52556 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-16 23:22:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-16 23:22:06: [executor] acción #0 (noop) falló: Acción desconocida: "noop". Debe ser EXACTAMENTE uno de: crear_evento, modificar_evento, borrar_evento, responder_email, enviar_email, enviar_wa, reenviar_wa, agregar_pendiente, quitar_pendiente, posponer_pendiente, programar_mensaje, cancelar_programado, crear_follow_up, cerrar_follow_up, recordar_hecho, olvidar_hecho, upsert_contacto, cambiar_visibilidad_contacto, set_cumple_contacto, crear_usuario, actualizar_usuario, borrar_usuario, set_calendar_acceso, buscar_contacto_global, buscar_slots_comunes, confirmar_prospecto_pendiente, rechazar_prospecto_pendiente, vincular_telegram, configurar_brief, configurar_ubicacion, configurar_caldav, iniciar_microsoft_auth, configurar_microsoft.
-3|maria-pa | 2026-08-17 00:45:24: ⚠️ [MODO DEGRADADO] WA caído hace 52639 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 00:45:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 00:47:06: ⚠️ [MODO DEGRADADO] WA caído hace 52641 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 00:47:06: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 01:44:04: ⚠️ [MODO DEGRADADO] WA caído hace 52698 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 01:44:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 04:12:33: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-17 09:34:36: ⚠️ [MODO DEGRADADO] WA caído hace 53168 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 09:34:36: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 09:39:24: ⚠️ [MODO DEGRADADO] WA caído hace 53173 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 09:39:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 09:42:05: ⚠️ [MODO DEGRADADO] WA caído hace 53176 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 09:42:05: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 09:50:03: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-17 10:00:05: [programados] ✗ id=1341 falló: waClient no disponible
-3|maria-pa | 2026-08-17 10:01:05: [programados] ✗ id=1341 falló: waClient no disponible
-3|maria-pa | 2026-08-17 10:04:39: ⚠️ [MODO DEGRADADO] WA caído hace 53198 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:04:39: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 10:07:06: ⚠️ [MODO DEGRADADO] WA caído hace 53201 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:07:06: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 10:16:24: ⚠️ [MODO DEGRADADO] WA caído hace 53210 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:16:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 10:18:04: ⚠️ [MODO DEGRADADO] WA caído hace 53212 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:18:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 10:33:04: ⚠️ [MODO DEGRADADO] WA caído hace 53227 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:33:04: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 10:43:24: ⚠️ [MODO DEGRADADO] WA caído hace 53237 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:43:24: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 10:45:05: ⚠️ [MODO DEGRADADO] WA caído hace 53239 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 10:45:05: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 11:08:26: ⚠️ [MODO DEGRADADO] WA caído hace 53262 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 11:08:26: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 12:53:01: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "__consulta_placeholder__" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-3|maria-pa | 2026-08-17 12:54:51: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-17 12:55:04: [wa-hook] turno falló post-deadline: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-17 12:55:04: No hace falta esa herramienta acá, ya tengo todo lo necesario para responder.
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: **Respuesta a Diego:**
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: Te cuento cómo está todo:
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: 🍽️ *Cena con Gabi y Caro:* Gabriel ya confirmó el miércoles 19. Carolina todavía no me contestó nada — sigo esperándola, apenas confirme reservo en Fico y armo el evento.
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: 🤝 *Reunión con Fulco y Manu Carrasco:* Hernán ya había confirmado el lunes 24/08 de 15 a 18hs. A Manu Carrasco el recordatorio de las 11 se me había pasado — recién ahora se lo mandé, todavía no m
-3|maria-pa | 2026-08-17 12:55:04: Error: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-17 12:55:04: No hace falta esa herramienta acá, ya tengo todo lo necesario para responder.
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: **Respuesta a Diego:**
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: Te cuento cómo está todo:
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: 🍽️ *Cena con Gabi y Caro:* Gabriel ya confirmó el miércoles 19. Carolina todavía no me contestó nada — sigo esperándola, apenas confirme reservo en Fico y armo el evento.
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: 🤝 *Reunión con Fulco y Manu Carrasco:* Hernán ya había confirmado el lunes 24/08 de 15 a 18hs. A Manu Carrasco el recordatorio de las 11 se me había pasado — recién ahora se lo mandé, todavía no m
-3|maria-pa | 2026-08-17 12:55:04:     at extraerJSON (/root/secretaria/claude-client.js:522:9)
-3|maria-pa | 2026-08-17 12:55:04:     at invocarClaudeJSON (/root/secretaria/claude-client.js:533:30)
-3|maria-pa | 2026-08-17 12:55:04:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-3|maria-pa | 2026-08-17 12:55:04:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-17 12:55:04:     at async _turnoUsuario (/root/secretaria/wa-hook.js:135:20)
-3|maria-pa | 2026-08-17 12:55:04: [unhandledRejection] Error: No se pudo extraer JSON de la respuesta de Claude:
-3|maria-pa | 2026-08-17 12:55:04: No hace falta esa herramienta acá, ya tengo todo lo necesario para responder.
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: **Respuesta a Diego:**
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: Te cuento cómo está todo:
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: 🍽️ *Cena con Gabi y Caro:* Gabriel ya confirmó el miércoles 19. Carolina todavía no me contestó nada — sigo esperándola, apenas confirme reservo en Fico y armo el evento.
-3|maria-pa | 2026-08-17 12:55:04: 
-3|maria-pa | 2026-08-17 12:55:04: 🤝 *Reunión con Fulco y Manu Carrasco:* Hernán ya había confirmado el lunes 24/08 de 15 a 18hs. A Manu Carrasco el recordatorio de las 11 se me había pasado — recién ahora se lo mandé, todavía no m
-3|maria-pa | 2026-08-17 12:55:04:     at extraerJSON (/root/secretaria/claude-client.js:522:9)
-3|maria-pa | 2026-08-17 12:55:04:     at invocarClaudeJSON (/root/secretaria/claude-client.js:533:30)
-3|maria-pa | 2026-08-17 12:55:04:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-3|maria-pa | 2026-08-17 12:55:04:     at async invocarClaudeJSONConConsultas (/root/secretaria/claude-client.js:653:14)
-3|maria-pa | 2026-08-17 12:55:04:     at async _turnoUsuario (/root/secretaria/wa-hook.js:135:20)
-3|maria-pa | 2026-08-17 15:10:49: [executor] acción #0 (agregar_pendiente) falló: agregarPendiente: combo inválido (dueno=maria + disparador=respuesta_usuario). Maria no se pregunta a sí misma.
-3|maria-pa | 2026-08-17 20:03:18: [TG] poll error (reintento en 15s): fetch failed
-3|maria-pa | 2026-08-17 20:19:22: ⚠️ [MODO DEGRADADO] WA caído hace 53813 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 20:19:22: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 20:19:35: ⚠️ [MODO DEGRADADO] WA caído hace 53813 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 20:19:35: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 20:22:05: ⚠️ [MODO DEGRADADO] WA caído hace 53816 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 20:22:05: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 20:23:26: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "PLACEHOLDER" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
-3|maria-pa | 2026-08-17 21:26:22: ⚠️ [MODO DEGRADADO] WA caído hace 53880 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 21:26:22: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 21:28:05: ⚠️ [MODO DEGRADADO] WA caído hace 53882 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 21:28:05: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 21:37:03: ⚠️ [MODO DEGRADADO] WA caído hace 53891 min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)
-3|maria-pa | 2026-08-17 21:37:03: ⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.
-3|maria-pa | 2026-08-17 22:11:55: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-3|maria-pa | 2026-08-17 23:27:00: [TG] poll error (reintento en 15s): fetch failed
+3|maria-pa | 2026-08-17 21:19:28: [MB v3.2] 21:19:21 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:38 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:39 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:39 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:19:38: [MB v3.2] 21:19:39 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:20:05: [MB v3.3] 21:19:56 I [notif] listener conectado
+3|maria-pa | 2026-08-17 21:20:05: [MB v3.3] 21:19:56 I [frio] accesibilidad conectada
+3|maria-pa | 2026-08-17 21:20:05: [MB v3.3] 21:20:03 I [svc] OutboxService arrancó (loop nuevo)
+3|maria-pa | 2026-08-17 21:25:14: [MB v3.3] 21:23:58 I [upd] al día (v3.3 code=18, mío=18)
+3|maria-pa | 2026-08-17 21:26:21: 
+3|maria-pa | 2026-08-17 21:26:21: ▸ SIGINT recibido, cerrando…
+3|maria-pa | 2026-08-17 21:26:22: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-08-17 21:26:22: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-08-17 21:26:22:   Owner:      Diego (id=1)
+3|maria-pa | 2026-08-17 21:26:22:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-08-17 21:26:22:   Gmail poll: cada 300s
+3|maria-pa | 2026-08-17 21:26:22: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-08-17 21:26:22: ✓ whisper OK
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-08-17 21:26:22: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-08-17 21:26:22: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-08-17 21:26:22: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-08-17 21:26:22: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-08-17 21:26:22: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-08-17 21:26:22: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-08-17 21:26:22: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-08-17 21:26:22: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+3|maria-pa | 2026-08-17 21:26:22: [wa-hook-watchdog] activo (cada 30min, umbral 12h)
+3|maria-pa | 2026-08-17 21:26:22: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-08-17 21:26:22: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-08-17 21:26:22: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-08-17 21:27:12: [memoria-curada] Diego × Diego Paez: nota actualizada (4 eventos nuevos, 3191 chars)
+3|maria-pa | 2026-08-17 21:27:13: [memoria-curada] tick: 1/337 contactos curados
+3|maria-pa | 2026-08-17 21:28:02: 
+3|maria-pa | 2026-08-17 21:28:02: ▸ SIGINT recibido, cerrando…
+3|maria-pa | 2026-08-17 21:28:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-08-17 21:28:05: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-08-17 21:28:05:   Owner:      Diego (id=1)
+3|maria-pa | 2026-08-17 21:28:05:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-08-17 21:28:05:   Gmail poll: cada 300s
+3|maria-pa | 2026-08-17 21:28:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-08-17 21:28:05: ✓ whisper OK
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-08-17 21:28:05: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-08-17 21:28:05: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-08-17 21:28:05: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-08-17 21:28:05: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-08-17 21:28:05: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-08-17 21:28:05: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-08-17 21:28:05: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-08-17 21:28:05: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+3|maria-pa | 2026-08-17 21:28:05: [wa-hook-watchdog] activo (cada 30min, umbral 12h)
+3|maria-pa | 2026-08-17 21:28:05: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-08-17 21:28:05: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-08-17 21:28:05: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-08-17 21:32:54: [MB v3.3] 21:32:49 I [upd] versión nueva v3.4 (code 19 > 18) — descargando
+3|maria-pa | 2026-08-17 21:33:04: [MB v3.3] 21:33:01 I [upd] descargado 3136KB — ofreciendo instalar
+3|maria-pa | 2026-08-17 21:33:04: [MB v3.3] 21:33:02 I [upd] instalador visible — ventana=true clickables=https://intensa.io/h[EditText],cfS1IoCOSxNtVUwIzomS[EditText],Guardar y arrancar[Button],① Permiso: acceso a [Button],② Quitar restricción[Button],③ Permiso: accesibil[Button],④ Permiso: todos los[But
+3|maria-pa | 2026-08-17 21:33:05: [poda-eventos] telemetría borrada: 2 · archivados: 0
+3|maria-pa | 2026-08-17 21:33:17: [wa-outbox] #79 encolado → +541155771290 (Hola Manuel! Te escribo de nuevo por lo …)
+3|maria-pa | 2026-08-17 21:33:17: [wa-send] follow-ups/re-ping: sin waClient → outbox #79 (bridge)
+3|maria-pa | 2026-08-17 21:33:17: [follow-ups] #42 re-ping (whatsapp) → 541155771290@c.us (nuevo vencimiento 2026-08-20 00:33:17 UTC)
+3|maria-pa | 2026-08-17 21:33:24: [MB v3.3] 21:33:24 I [frio] abriendo chat 5491155771290 (#79)
+3|maria-pa | 2026-08-17 21:33:25: [MB-FALLO] #79 motivo=chat_equivocado → {"id":79,"cold_fallos":1,"definitivo":false}
+3|maria-pa | 2026-08-17 21:33:34: [MB v3.3] 21:33:26 E [frio] #79: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+3|maria-pa | 2026-08-17 21:33:34: [MB v3.3] 21:33:26 I [outbox] cold-send #79 no verificado — queda en cola
+3|maria-pa | 2026-08-17 21:33:34: [MB v3.3] 21:33:33 I [upd] versión nueva v3.4 (code 19 > 18) — descargando
+3|maria-pa | 2026-08-17 21:33:43: [MB-FALLO] #79 motivo=chat_equivocado → {"id":79,"cold_fallos":2,"definitivo":false}
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:40 I [upd] descargado 3136KB — ofreciendo instalar
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:40 I [upd] instalador visible — ventana=true clickables=
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:41 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:41 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:41 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:41 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:41 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:41 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:43 I [frio] abriendo chat 5491155771290 (#79)
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:44 E [frio] #79: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+3|maria-pa | 2026-08-17 21:33:44: [MB v3.3] 21:33:44 I [outbox] cold-send #79 no verificado — queda en cola
+3|maria-pa | 2026-08-17 21:33:54: [MB v3.3] 21:33:53 I [upd] versión nueva v3.4 (code 19 > 18) — descargando
+3|maria-pa | 2026-08-17 21:34:03: [MB-FALLO] #79 motivo=chat_equivocado → {"id":79,"cold_fallos":3,"definitivo":false}
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:33:57 I [upd] descargado 3136KB — ofreciendo instalar
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:33:57 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:33:57 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:33:57 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:33:58 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:34:03 I [frio] abriendo chat 5491155771290 (#79)
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:34:04 E [frio] #79: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+3|maria-pa | 2026-08-17 21:34:04: [MB v3.3] 21:34:04 I [outbox] cold-send #79 no verificado — queda en cola
+3|maria-pa | 2026-08-17 21:34:23: [MB-FALLO] #79 motivo=chat_equivocado → {"id":79,"cold_fallos":4,"definitivo":false}
+3|maria-pa | 2026-08-17 21:34:24: [MB v3.3] 21:34:23 I [frio] abriendo chat 5491155771290 (#79)
+3|maria-pa | 2026-08-17 21:34:24: [MB v3.3] 21:34:23 I [upd] versión nueva v3.4 (code 19 > 18) — descargando
+3|maria-pa | 2026-08-17 21:34:24: [MB v3.3] 21:34:24 E [frio] #79: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+3|maria-pa | 2026-08-17 21:34:24: [MB v3.3] 21:34:24 I [outbox] cold-send #79 no verificado — queda en cola
+3|maria-pa | 2026-08-17 21:34:34: [MB v3.3] 21:34:27 I [upd] descargado 3136KB — ofreciendo instalar
+3|maria-pa | 2026-08-17 21:34:34: [MB v3.3] 21:34:27 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:34: [MB v3.3] 21:34:27 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:34: [MB v3.3] 21:34:27 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:34: [MB v3.3] 21:34:28 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:34:43: [wa-outbox] #80 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Manuel…)
+3|maria-pa | 2026-08-17 21:34:43: [MB-FALLO] #79 motivo=chat_equivocado → {"id":79,"cold_fallos":5,"definitivo":true}
+3|maria-pa | 2026-08-17 21:34:44: [MB v3.3] 21:34:43 I [frio] abriendo chat 5491155771290 (#79)
+3|maria-pa | 2026-08-17 21:34:44: [MB v3.3] 21:34:44 E [frio] #79: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+3|maria-pa | 2026-08-17 21:34:44: [MB v3.3] 21:34:44 I [outbox] cold-send #79 no verificado — queda en cola
+3|maria-pa | 2026-08-17 21:34:49: [wa-outbox] #80 entregado por el teléfono
+3|maria-pa | 2026-08-17 21:34:54: [MB v3.3] 21:34:48 I [frio] abriendo chat 5491132317896 (#80)
+3|maria-pa | 2026-08-17 21:34:54: [MB v3.3] 21:34:49 I [frio] botón send encontrado — tap
+3|maria-pa | 2026-08-17 21:34:54: [MB v3.3] 21:34:50 I [frio] verificación #80: ENVIADO
+3|maria-pa | 2026-08-17 21:34:54: [MB v3.3] 21:34:50 I [outbox] enviado EN FRÍO (accesibilidad) → 5491132317896
+3|maria-pa | 2026-08-17 21:35:04: [MB v3.3] 21:34:55 I [upd] versión nueva v3.4 (code 19 > 18) — descargando
+3|maria-pa | 2026-08-17 21:35:14: [MB v3.3] 21:35:07 I [upd] descargado 3136KB — ofreciendo instalar
+3|maria-pa | 2026-08-17 21:35:14: [MB v3.3] 21:35:08 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:14: [MB v3.3] 21:35:08 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:14: [MB v3.3] 21:35:08 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:14: [MB v3.3] 21:35:08 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:24: [MB v3.3] 21:35:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:24: [MB v3.3] 21:35:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:24: [MB v3.3] 21:35:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:24: [MB v3.3] 21:35:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:44: [MB v3.3] 21:35:40 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:44: [MB v3.3] 21:35:40 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:44: [MB v3.3] 21:35:40 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:44: [MB v3.3] 21:35:40 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:54: [MB v3.3] 21:35:51 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:54: [MB v3.3] 21:35:51 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:54: [MB v3.3] 21:35:51 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:54: [MB v3.3] 21:35:51 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:35:54: [MB v3.3] 21:35:51 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+3|maria-pa | 2026-08-17 21:36:14: [MB v3.4] 21:36:04 I [notif] listener conectado
+3|maria-pa | 2026-08-17 21:36:14: [MB v3.4] 21:36:04 I [frio] accesibilidad conectada
+3|maria-pa | 2026-08-17 21:36:14: [MB v3.4] 21:36:04 I [upd] instalador visible — ventana=false clickables=Done[Button],Open[Button]
+3|maria-pa | 2026-08-17 21:36:23: [MB v3.4] 21:36:17 I [svc] OutboxService arrancó (loop nuevo)
+3|maria-pa | 2026-08-17 21:37:02: 
+3|maria-pa | 2026-08-17 21:37:02: ▸ SIGINT recibido, cerrando…
+3|maria-pa | 2026-08-17 21:37:03: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-08-17 21:37:03: ▸ Maria Paez [maria-paez] iniciando…
+3|maria-pa | 2026-08-17 21:37:03:   Owner:      Diego (id=1)
+3|maria-pa | 2026-08-17 21:37:03:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+3|maria-pa | 2026-08-17 21:37:03:   Gmail poll: cada 300s
+3|maria-pa | 2026-08-17 21:37:03: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3|maria-pa | 2026-08-17 21:37:03: ✓ whisper OK
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando poll de Gmail (cada 300s)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando loop de recordatorios (cada 30min)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando dispatcher de programados (cada 60s)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando morning-brief (por usuario, ventana 4h)
+3|maria-pa | 2026-08-17 21:37:03: [morning-brief] activo, ventana 4h, cada usuario en su tz
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando meeting-prep (cada 5min)
+3|maria-pa | 2026-08-17 21:37:03: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando calendar-watch (cada 8h)
+3|maria-pa | 2026-08-17 21:37:03: [calendar-watch] activo, cada 8.0h
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando follow-ups (cada 5min)
+3|maria-pa | 2026-08-17 21:37:03: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando memoria-curada (cada 24h)
+3|maria-pa | 2026-08-17 21:37:03: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+3|maria-pa | 2026-08-17 21:37:03: [cumple-avisos] activo, ventana 20-23h tz usuario
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando resumen-semanal (domingos, tz usuario)
+3|maria-pa | 2026-08-17 21:37:03: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando poda-eventos (diario)
+3|maria-pa | 2026-08-17 21:37:03: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+3|maria-pa | 2026-08-17 21:37:03: [wa-hook-watchdog] activo (cada 30min, umbral 12h)
+3|maria-pa | 2026-08-17 21:37:03: ▸ arrancando drainer de diferidos (horas de silencio)
+3|maria-pa | 2026-08-17 21:37:03: [diferidos] drainer activo (cada 5min)
+3|maria-pa | 2026-08-17 21:37:03: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+3|maria-pa | 2026-08-17 21:39:46: [MB v3.4] 21:38:22 I [upd] al día (v3.4 code=19, mío=19)
+3|maria-pa | 2026-08-18 03:45:32: [MB v3.4] 03:45:29 I [upd] al día (v3.4 code=19, mío=19)
 
