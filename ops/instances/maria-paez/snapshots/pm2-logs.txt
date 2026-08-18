@@ -1,8 +1,3 @@
-3|maria-pa | 2026-08-18 12:06:00: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=174 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:06:05: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=178 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:06:10: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=177 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:06:15: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=176 | chats_vivos=[]
-3|maria-pa | 2026-08-18 12:06:20: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=174 | chats_vivos=[]
 3|maria-pa | 2026-08-18 12:06:21: [wa-outbox] #201 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Diego …)
 3|maria-pa | 2026-08-18 12:06:21: [MB-FALLO] #176 motivo=timeout_sin_boton → {"id":176,"cold_fallos":5,"definitivo":true}
 3|maria-pa | 2026-08-18 12:06:28: [MB v3.4] 12:06:21 W [frio] timeout #176 — no encontré el botón send
@@ -197,4 +192,9 @@
 3|maria-pa | 2026-08-18 12:42:49: [MB-FALLO] #202 motivo=timeout_sin_boton → {"id":202,"cold_fallos":5,"definitivo":true}
 3|maria-pa | 2026-08-18 12:42:52: [MB v3.4] 12:42:50 W [frio] timeout #202 — no encontré el botón send
 3|maria-pa | 2026-08-18 12:42:52: [MB v3.4] 12:42:50 I [outbox] cold-send #202 no verificado — queda en cola
+3|maria-pa | 2026-08-18 12:43:02: [MB v3.4] 12:42:54 I [frio] abriendo chat 5491132317896 (#203)
+3|maria-pa | 2026-08-18 12:43:12: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=203 | chats_vivos=[]
+3|maria-pa | 2026-08-18 12:43:18: [MB-FALLO] #203 motivo=timeout_sin_boton → {"id":203,"cold_fallos":1,"definitivo":false}
+3|maria-pa | 2026-08-18 12:43:25: [MB v3.4] 12:43:19 W [frio] timeout #203 — no encontré el botón send
+3|maria-pa | 2026-08-18 12:43:25: [MB v3.4] 12:43:19 I [outbox] cold-send #203 no verificado — queda en cola
 
