@@ -1,14 +1,3 @@
-3|maria-pa | 2026-08-18 11:15:19: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=161 | chats_vivos=[]
-3|maria-pa | 2026-08-18 11:15:24: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=162 | chats_vivos=[]
-3|maria-pa | 2026-08-18 11:15:26: [MB-FALLO] #161 motivo=timeout_sin_boton → {"id":161,"cold_fallos":2,"definitivo":false}
-3|maria-pa | 2026-08-18 11:16:44: [MB v3.4] 11:15:25 W [frio] timeout #161 — no encontré el botón send
-3|maria-pa | 2026-08-18 11:16:44: [MB v3.4] 11:15:25 I [outbox] cold-send #161 no verificado — queda en cola
-3|maria-pa | 2026-08-18 11:16:44: [MB v3.4] 11:16:45 I [frio] abriendo chat 5491166010010 (#158)
-3|maria-pa | 2026-08-18 11:16:47: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=160 | chats_vivos=[]
-3|maria-pa | 2026-08-18 11:16:52: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=161 | chats_vivos=[]
-3|maria-pa | 2026-08-18 11:16:57: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=162 | chats_vivos=[]
-3|maria-pa | 2026-08-18 11:17:02: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=163 | chats_vivos=[]
-3|maria-pa | 2026-08-18 11:17:07: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=158 | chats_vivos=[]
 3|maria-pa | 2026-08-18 11:17:09: [wa-outbox] #182 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Santia…)
 3|maria-pa | 2026-08-18 11:17:09: [MB-FALLO] #158 motivo=timeout_sin_boton → {"id":158,"cold_fallos":5,"definitivo":true}
 3|maria-pa | 2026-08-18 11:17:15: [MB v3.4] 11:17:10 W [frio] timeout #158 — no encontré el botón send
@@ -197,4 +186,15 @@
 3|maria-pa | 2026-08-18 11:29:56: [MB v3.4] 11:29:45 W [frio] timeout #164 — no encontré el botón send
 3|maria-pa | 2026-08-18 11:29:56: [MB v3.4] 11:29:45 I [outbox] cold-send #164 no verificado — queda en cola
 3|maria-pa | 2026-08-18 11:30:01: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=164 | chats_vivos=[]
+3|maria-pa | 2026-08-18 11:30:04: [programados] 1 mensaje(s) debidos, despachando…
+3|maria-pa | 2026-08-18 11:30:04: [wa-outbox] #186 encolado → +5491126406612 (¡Hola Cristian! Te cuento algo útil: aho…)
+3|maria-pa | 2026-08-18 11:30:04: [wa-send] programados/1367: sin waClient → outbox #186 (bridge)
+3|maria-pa | 2026-08-18 11:30:04: [programados] ✓ id=1367 (whatsapp/5491126406612@c.us) [usuario]
+3|maria-pa | 2026-08-18 11:30:06: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=165 | chats_vivos=[]
+3|maria-pa | 2026-08-18 11:30:06: [MB v3.4] 11:29:57 I [frio] abriendo chat 5491132317896 (#162)
+3|maria-pa | 2026-08-18 11:30:11: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=162 | chats_vivos=[]
+3|maria-pa | 2026-08-18 11:30:16: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=166 | chats_vivos=[]
+3|maria-pa | 2026-08-18 11:30:21: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=164 | chats_vivos=[]
+3|maria-pa | 2026-08-18 11:30:22: [wa-outbox] #187 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Diego …)
+3|maria-pa | 2026-08-18 11:30:22: [MB-FALLO] #162 motivo=timeout_sin_boton → {"id":162,"cold_fallos":5,"definitivo":true}
 
