@@ -212,7 +212,11 @@ async function _procesarTurno(usuario, chatId, texto, attachmentPath = null) {
   // Backstop determinista (mismo criterio que WA): si una acción visible
   // falló en vivo, no confirmar en silencio — anexar aviso honesto simple.
   const resTurno = turnState.takeTurnResults(chatKey, startTs);
-  const fallas = resTurno.filter(r => !r.ok && !r.stale);
+  // No avisar una falla si una acción del MISMO tipo salió OK después en el
+  // turno (caso saludo Santiago 17/8: enviar_wa falló con "PLACEHOLDER", el
+  // LLM se auto-corrigió y salió — pero el aviso confundía igual).
+  const _okTipos = new Set(resTurno.filter(r => r.ok).map(r => r.accion?.tipo));
+  const fallas = resTurno.filter(r => !r.ok && !r.stale && !_okTipos.has(r.accion?.tipo));
   if (fallas.length) {
     const detalle = fallas.map(r => r.accion?.tipo || '?').join(', ');
     respuesta = (respuesta ? respuesta + '\n\n' : '') + `⚠️ Ojo: no pude completar ${fallas.length === 1 ? 'esta acción' : 'estas acciones'}: ${detalle}.`;

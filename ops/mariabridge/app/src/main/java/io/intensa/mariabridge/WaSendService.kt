@@ -88,15 +88,24 @@ class WaSendService : AccessibilityService() {
         }
         MbLog.i("upd", "instalador visible — ventana=${enVentana} clickables=${botones.joinToString(",").take(200)}")
         if (!enVentana) return false
+        // v3.4 (logs del video de Diego): el botón "Update" NO expone su texto
+        // en el nodo clickable (el texto vive en un hijo TextView). Buscamos el
+        // TEXTO donde esté y clickeamos su ANCESTRO clickable más cercano.
         val objetivos = listOf("instalar", "install", "actualizar", "update", "listo", "done", "abrir", "open")
         for (n in _todosLosNodos(root)) {
-            if (!n.isClickable) continue
             val tt = (n.text?.toString() ?: n.contentDescription?.toString() ?: "").trim().lowercase()
-            if (tt in objetivos) {
-                MbLog.i("upd", "auto-tap '$tt' en el instalador")
-                n.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            if (tt !in objetivos) continue
+            // ancestro clickable (o el propio nodo)
+            var c: AccessibilityNodeInfo? = n
+            var saltos = 0
+            while (c != null && !c.isClickable && saltos < 6) { c = c.parent; saltos++ }
+            if (c != null && c.isClickable) {
+                MbLog.i("upd", "auto-tap '$tt' (ancestro clickable a $saltos salto(s))")
+                c.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 if (tt in listOf("listo", "done", "abrir", "open")) Updater.instalandoDesde = 0L
                 return true
+            } else {
+                MbLog.w("upd", "texto '$tt' visto pero SIN ancestro clickable en 6 saltos")
             }
         }
         return false
