@@ -1,0 +1,192 @@
+# ejecutado: 2026-08-18T12:05:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/pulso.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("== 1. BRIEF de hoy (¿salió por WA?) ==");
+#   db.prepare(`SELECT timestamp,canal,usuario_id FROM eventos WHERE direccion='saliente' AND (cuerpo LIKE '%Buen día%' OR cuerpo LIKE '%☀️%') AND timestamp>=date('now') ORDER BY id LIMIT 6`).all()
+#     .forEach(x=>console.log(x.timestamp.slice(11,16),x.canal,"u"+x.usuario_id));
+#   console.log("== 2. RE-CAMPAÑA hoy ==");
+#   db.prepare(`SELECT id,cuando,enviado,razon FROM programados WHERE texto LIKE '%Telegram%' AND cuando LIKE '2026-08-18%' ORDER BY cuando`).all()
+#     .forEach(r=>console.log("#"+r.id,r.cuando.slice(11,16)+"Z","env:"+r.enviado,r.razon||""));
+#   console.log("== 3. OUTBOX de hoy ==");
+#   db.prepare(`SELECT id,creado,estado,intentos,numero,substr(texto,1,35) t FROM wa_outbox WHERE creado>=date('now') ORDER BY id`).all()
+#     .forEach(r=>console.log("#"+r.id,r.creado.slice(11,16),r.estado,"int:"+r.intentos,r.numero.slice(-8),"|",String(r.t).replace(/\n/g," ")));
+#   console.log("== 4. vinculados TG ==");
+#   console.log(db.prepare(`SELECT COUNT(*) n FROM usuarios WHERE telegram_chat_id IS NOT NULL`).get().n,"de",db.prepare(`SELECT COUNT(*) n FROM usuarios WHERE activo=1`).get().n);
+#   console.log("== 5. entrantes de hoy (actividad) ==");
+#   db.prepare(`SELECT COUNT(*) n, canal FROM eventos WHERE direccion='entrante' AND timestamp>=date('now') GROUP BY canal`).all()
+#     .forEach(x=>console.log(x.canal+":",x.n));
+#   db.close();
+#   JS
+#   node /tmp/pulso.cjs; rm -f /tmp/pulso.cjs
+#   echo "== 6. fallas/avisos en logs de hoy =="
+#   grep -iE "MB-FALLO|chat ABIERTO ES OTRO|CANARY|FALLÓ" ~/.pm2/logs/maria-paez-out.log | grep "2026-08-18" | tail -6
+#   echo "== 7. últimos MB =="
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -6
+#   echo LISTO
+
+# ───── output ─────
+== 1. BRIEF de hoy (¿salió por WA?) ==
+07:00 whatsapp u1
+07:11 whatsapp u1
+10:00 whatsapp u2
+10:00 whatsapp u3
+10:00 whatsapp u6
+10:00 whatsapp u7
+== 2. RE-CAMPAÑA hoy ==
+#1365 13:00Z env:1 usuario
+#1366 13:45Z env:1 usuario
+#1367 14:30Z env:1 usuario
+#1368 15:15Z env:0 usuario
+#1369 16:00Z env:0 usuario
+#1370 16:45Z env:0 usuario
+#1371 17:30Z env:0 usuario
+#1372 18:15Z env:0 usuario
+#1373 19:00Z env:0 usuario
+#1374 19:45Z env:0 usuario
+== 3. OUTBOX de hoy ==
+#79 00:33 vencido int:5 55771290 | Hola Manuel! Te escribo de nuevo po
+#80 00:34 entregado int:1 32317896 | ⚠️ No pude entregar un WhatsApp a M
+#81 07:00 entregado int:2 32317896 | ☀️ *Buen día, Diego.* martes, 18 de
+#82 10:00 entregado int:1 26829596 | ☀️ *Buen día, Hernan Fulco.* martes
+#83 10:00 entregado int:1 50105262 | ☀️ *Buen día, Natali Funez.* martes
+#84 10:00 entregado int:1 44471264 | ☀️ *Buen día, Doris Capurro.* marte
+#85 10:00 vencido int:52 50080522 | ☀️ *Buen día, Nicolas Kosinski.* ma
+#86 10:00 entregado int:1 38433288 | ☀️ *Buen día, Walter Vera.* martes,
+#87 10:00 entregado int:1 63004389 | ☀️ *Buen día, Sebastian Ameijeira.*
+#88 10:00 entregado int:1 99643028 | ☀️ *Buen día, Enrique Sosa.* martes
+#89 10:00 entregado int:1 66010010 | ☀️ *Buen día, Santiago Capurro.* ma
+#90 10:00 entregado int:1 64719969 | ☀️ *Buen día, Andres Neumann.* mart
+#91 10:00 vencido int:14 65286555 | ☀️ *Buen día, Gabriela Echaniz.* ma
+#92 10:00 vencido int:15 61991122 | ☀️ *Buen día, Jaime Cibils.* martes
+#93 10:00 vencido int:64 61549534 | ☀️ *Buen día, Alfonso Amat.* martes
+#94 10:05 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a G
+#95 10:05 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a J
+#96 10:10 vencido int:22 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#97 10:10 vencido int:35 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#98 10:22 vencido int:24 32317896 | ⚠️ No pude entregar un WhatsApp a N
+#99 10:29 vencido int:32 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#100 10:36 vencido int:43 32317896 | ⚠️ No pude entregar un WhatsApp a A
+#101 10:39 vencido int:32 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#102 10:45 vencido int:26 32317896 | ⏰ *En 15min*: Yoga (08:00 a. m.)
+#103 10:45 vencido int:18 66010010 | ⏰ *En 15min*: Run forest Run (08:00
+#104 10:47 vencido int:27 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#105 10:54 vencido int:26 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#106 11:02 vencido int:59 32317896 | Te debo consulta sobre algo pendien
+#107 11:05 vencido int:30 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#108 11:05 vencido int:90 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#109 11:07 vencido int:14 32317896 | ⚠️ No pude entregar un WhatsApp a S
+#110 11:09 vencido int:27 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#111 11:15 vencido int:32 44471264 | ⏰ *En 15min*: Sala 2A Kindergarten 
+#112 11:24 vencido int:55 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#113 11:27 vencido int:15 32317896 | ⏰ Follow-up vencido — Esperando que
+#114 11:29 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#115 11:37 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#116 11:37 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#117 11:45 vencido int:18 26829596 | ⏰ *En 15min*: Reunión Plan salida a
+#118 11:45 vencido int:61 66010010 | ⏰ *En 15min*: Poda árbol (09:00 a. 
+#119 11:47 vencido int:18 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#120 11:49 vencido int:42 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#121 11:54 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a 5
+#122 11:56 vencido int:45 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#123 11:59 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#124 12:00 vencido int:32 26829596 | ⏰ *En 15min*: MC Daily (09:15 a. m.
+#125 12:01 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#126 12:04 vencido int:35 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#127 12:06 vencido int:22 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#128 12:08 vencido int:32 32317896 | ⚠️ No pude entregar un WhatsApp a H
+#129 12:08 vencido int:27 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#130 12:13 vencido int:15 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#131 12:13 vencido int:49 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#132 12:15 vencido int:17 26406612 | ☀️ *Buen día, Cristian Ruiz.* marte
+#133 12:19 vencido int:39 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#134 12:23 vencido int:27 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#135 12:26 vencido int:24 32317896 | ⚠️ No pude entregar un WhatsApp a S
+#136 12:28 vencido int:29 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#137 12:29 vencido int:18 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#138 12:30 vencido int:34 26829596 | ⏰ *En 15min*: Daily CMP (09:45 a. m
+#139 12:31 vencido int:34 32317896 | ⚠️ No pude entregar un WhatsApp a H
+#140 12:38 vencido int:31 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#141 12:40 vencido int:35 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#142 12:42 vencido int:28 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#143 12:44 vencido int:29 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#144 12:45 vencido int:42 26829596 | ⏰ *En 15min*: Sondeos Sales Team Ca
+#145 12:45 vencido int:18 44471264 | ⏰ *En 15min*: nachon llamar (10:00 
+#146 12:46 vencido int:30 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#147 12:51 vencido int:29 32317896 | ⚠️ No pude entregar un WhatsApp a C
+#148 12:56 vencido int:30 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#149 12:59 vencido int:27 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#150 13:00 vencido int:27 74011812 | ¡Hola Nicolas! Te cuento algo útil:
+#151 13:00 vencido int:29 66010010 | ⏰ *En 15min*: UNICCA + STUCCOLOR + 
+#152 13:01 vencido int:32 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#153 13:01 vencido int:25 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#154 13:07 vencido int:47 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#155 13:08 vencido int:32 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#156 13:13 vencido int:26 32317896 | ⚠️ No pude entregar un WhatsApp a H
+#157 13:14 vencido int:28 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#158 13:15 vencido int:31 66010010 | ⏰ *En 15min*: Marcelo / Javier / Sa
+#159 13:18 vencido int:20 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#160 13:21 vencido int:29 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#161 13:24 vencido int:28 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#162 13:26 vencido int:40 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#163 13:28 vencido int:22 32317896 | ⚠️ No pude entregar un WhatsApp a 5
+#164 13:35 vencido int:30 32317896 | ⚠️ No pude entregar un WhatsApp a H
+#165 13:36 vencido int:44 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#166 13:37 vencido int:26 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#167 13:40 vencido int:35 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#168 13:45 vencido int:24 38433288 | ¡Hola Walter! Te cuento algo útil: 
+#169 13:45 vencido int:47 32317896 | ⏰ *En 15min*: Reunión Revisión PoCs
+#170 13:45 vencido int:19 26829596 | ⏰ *En 15min*: Planning CMP (11:00 a
+#171 13:45 vencido int:45 26829596 | ⏰ *En 15min*: Licitación apross (11
+#172 13:45 vencido int:18 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#173 13:46 vencido int:23 32317896 | ⚠️ No pude entregar un WhatsApp a 2
+#174 13:51 pendiente int:32 32317896 | ⚠️ No pude entregar un WhatsApp a S
+#175 13:54 vencido int:20 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#176 13:57 pendiente int:18 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#177 14:03 pendiente int:8 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#178 14:05 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#179 14:06 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#180 14:09 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#181 14:13 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#182 14:17 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a S
+#183 14:19 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#184 14:21 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#185 14:26 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#186 14:30 pendiente int:0 26406612 | ¡Hola Cristian! Te cuento algo útil
+#187 14:30 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#188 14:32 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#189 14:38 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#190 14:39 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#191 14:42 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a W
+#192 14:44 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#193 14:45 pendiente int:0 66010010 | ⏰ *En 15min*: Equity 305 - Weekly U
+#194 14:45 pendiente int:0 26829596 | ⏰ *En 15min*: Reunion Rag Premedic 
+#195 14:48 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a H
+#196 14:52 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#197 14:57 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#198 14:57 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+#199 15:01 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a H
+#200 15:04 pendiente int:0 32317896 | ⚠️ No pude entregar un WhatsApp a D
+== 4. vinculados TG ==
+1 de 16
+== 5. entrantes de hoy (actividad) ==
+== 6. fallas/avisos en logs de hoy ==
+2026-08-18 12:02:01: [MB-FALLO] #175 motivo=timeout_sin_boton → {"id":175,"cold_fallos":4,"definitivo":false}
+2026-08-18 12:02:40: [MB-FALLO] #174 motivo=timeout_sin_boton → {"id":174,"cold_fallos":2,"definitivo":false}
+2026-08-18 12:03:10: [MB-FALLO] #176 motivo=timeout_sin_boton → {"id":176,"cold_fallos":2,"definitivo":false}
+2026-08-18 12:03:44: [MB-FALLO] #174 motivo=timeout_sin_boton → {"id":174,"cold_fallos":3,"definitivo":false}
+2026-08-18 12:04:20: [MB-FALLO] #176 motivo=timeout_sin_boton → {"id":176,"cold_fallos":3,"definitivo":false}
+2026-08-18 12:04:50: [MB-FALLO] #175 motivo=timeout_sin_boton → {"id":175,"cold_fallos":5,"definitivo":true}
+== 7. últimos MB ==
+2026-08-18 12:03:55: [MB v3.4] 12:03:56 I [frio] abriendo chat 5491132317896 (#176)
+2026-08-18 12:04:25: [MB v3.4] 12:04:21 W [frio] timeout #176 — no encontré el botón send
+2026-08-18 12:04:25: [MB v3.4] 12:04:21 I [outbox] cold-send #176 no verificado — queda en cola
+2026-08-18 12:04:35: [MB v3.4] 12:04:26 I [frio] abriendo chat 5491132317896 (#175)
+2026-08-18 12:04:55: [MB v3.4] 12:04:51 W [frio] timeout #175 — no encontré el botón send
+2026-08-18 12:04:55: [MB v3.4] 12:04:51 I [outbox] cold-send #175 no verificado — queda en cola
+LISTO
+
+# exit=0
