@@ -1,0 +1,88 @@
+# ejecutado: 2026-08-17T21:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "== 1. logs upd/instalador de la última hora =="
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | grep -E "upd|instalador" | tail -12
+#   echo "== 2. ¿arrancó v3.3? =="
+#   grep "\[MB v3.3" ~/.pm2/logs/maria-paez-out.log | head -4
+#   echo "== 3. el enviar_wa fallido de las 20:24 (23:24 UTC) =="
+#   grep -B2 -A4 "enviar_wa" ~/.pm2/logs/maria-paez-out.log | grep -A4 -B2 "23:2[0-9]" | head -20
+#   cat > /tmp/dn.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("== eventos sistema 23:15-23:30 UTC (acciones/errores) ==");
+#   db.prepare(`SELECT timestamp,substr(cuerpo,1,120) c FROM eventos WHERE canal='sistema' AND timestamp BETWEEN '2026-08-17 23:15' AND '2026-08-17 23:35' ORDER BY id`).all()
+#     .forEach(x=>console.log(x.timestamp.slice(11,19),"|",String(x.c).replace(/\n/g," ")));
+#   console.log("== cadencia recordatorios: config ==");
+#   db.close();
+#   JS
+#   node /tmp/dn.cjs; rm -f /tmp/dn.cjs
+#   echo "== 4. cadencia de recordatorios en el código =="
+#   grep -n "ultimo_recordatorio\|RECORDATORIO\|3 \* 60\|recordar" /root/secretaria/recordatorios*.js 2>/dev/null | head -8
+#   ls /root/secretaria/*.js | xargs grep -ln "Te debo consulta" 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+== 1. logs upd/instalador de la última hora ==
+2026-08-17 21:19:28: [MB v3.2] 21:19:21 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:28: [MB v3.2] 21:19:21 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:28: [MB v3.2] 21:19:21 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:28: [MB v3.2] 21:19:21 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:37 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:38 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:39 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:39 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-08-17 21:19:38: [MB v3.2] 21:19:39 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+== 2. ¿arrancó v3.3? ==
+2026-08-17 21:20:05: [MB v3.3] 21:19:56 I [notif] listener conectado
+2026-08-17 21:20:05: [MB v3.3] 21:19:56 I [frio] accesibilidad conectada
+2026-08-17 21:20:05: [MB v3.3] 21:20:03 I [svc] OutboxService arrancó (loop nuevo)
+== 3. el enviar_wa fallido de las 20:24 (23:24 UTC) ==
+== eventos sistema 23:15-23:30 UTC (acciones/errores) ==
+23:19:20 | shutdown por SIGINT
+23:19:22 | MODO DEGRADADO: loops arrancados sin WA (caído hace 53813 min)
+23:19:22 | Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+23:19:22 | WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+23:19:33 | shutdown por SIGINT
+23:19:35 | MODO DEGRADADO: loops arrancados sin WA (caído hace 53813 min)
+23:19:35 | Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+23:19:35 | WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+23:20:22 | claude_call memoria-curada: 17029ms prompt=4293c raw=9800c in=2t(cache_read=0 new=16994) out=1064t ttfb=1567ms api=16005
+23:20:46 | claude_call memoria-curada: 23921ms prompt=7500c raw=12669c in=2t(cache_read=8775 new=9767) out=1622t ttfb=1582ms api=22
+23:21:04 | claude_call memoria-curada: 18163ms prompt=2689c raw=11175c in=2t(cache_read=8775 new=7617) out=1213t ttfb=1477ms api=17
+23:21:25 | claude_call memoria-curada: 20654ms prompt=5489c raw=12749c in=2t(cache_read=8775 new=8758) out=1515t ttfb=1532ms api=19
+23:21:43 | claude_call memoria-curada: 17762ms prompt=2749c raw=10939c in=2t(cache_read=8775 new=7642) out=1118t ttfb=1517ms api=16
+23:21:59 | claude_call memoria-curada: 16133ms prompt=4324c raw=11170c in=2t(cache_read=8775 new=8296) out=1225t ttfb=1446ms api=15
+23:22:02 | shutdown por SIGINT
+23:22:05 | MODO DEGRADADO: loops arrancados sin WA (caído hace 53816 min)
+23:22:05 | Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+23:22:05 | WA APAGADO por marker — cero intentos de conexión; loops en modo degradado
+23:22:51 | claude_call memoria-curada: 14678ms prompt=2688c raw=8124c in=2t(cache_read=8775 new=7641) out=747t ttfb=2556ms api=1246
+23:23:08 | claude_call memoria-curada: 17008ms prompt=4678c raw=9579c in=2t(cache_read=8775 new=8346) out=1022t ttfb=2648ms api=147
+23:23:26 | acción FALLÓ: enviar_wa — enviar_wa: WA "PLACEHOLDER" no está en libreta ni es usuario activo. Cargá el contacto primero
+23:23:26 | claude_call memoria-curada: 17794ms prompt=2311c raw=11153c in=2t(cache_read=8775 new=7437) out=1228t ttfb=1591ms api=16
+23:23:44 | claude_call memoria-curada: 17922ms prompt=2674c raw=10872c in=2t(cache_read=8775 new=7621) out=1081t ttfb=1398ms api=17
+23:23:45 | acción ejecutada: buscar_contacto_global
+23:23:55 | claude_call moderacion: 6100ms prompt=1595c raw=6032c in=10t(cache_read=0 new=22482) out=302t ttfb=1220ms api=5149ms tur
+23:23:55 | acción ejecutada: enviar_wa
+23:24:06 | claude_call whatsapp: 67067ms prompt=89158c raw=37523c in=26t(cache_read=654693 new=121552) out=2716t ttfb=1610ms api=59
+23:27:05 | poda-eventos: 8 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+== cadencia recordatorios: config ==
+== 4. cadencia de recordatorios en el código ==
+13:// Si un pendiente tiene `recordar_desde` seteado, el loop lo ignora hasta
+25:const CONSULTA_UMBRAL_H   = Number(process.env.RECORDATORIO_CONSULTA_UMBRAL_H   || 2);
+26:const CONSULTA_COOLDOWN_H = Number(process.env.RECORDATORIO_CONSULTA_COOLDOWN_H || 3);
+27:const TAREA_UMBRAL_H      = Number(process.env.RECORDATORIO_TAREA_UMBRAL_H     || 24);
+28:const TAREA_COOLDOWN_H    = Number(process.env.RECORDATORIO_TAREA_COOLDOWN_H   || 24);
+30:const KEY_ULT_CONSULTA = 'ultimo_recordatorio_consultas';
+31:const KEY_ULT_TAREA    = 'ultimo_recordatorio_tareas';
+35:// todos). Reactivable con RECORDATORIO_TAREAS_ON=1 en el .conf, sin tocar código.
+/root/secretaria/i18n.js
+/root/secretaria/recordatorios.js
+LISTO
+
+# exit=0
