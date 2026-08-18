@@ -31,6 +31,13 @@ const TTL_H = Number(process.env.WA_OUTBOX_TTL_H || 6);
 const MAX_INTENTOS = Number(process.env.WA_OUTBOX_MAX_INTENTOS || 400);  // alto a propósito (2026-08-15): con MariaBridge un mensaje ESPERA a que el chat tenga notif viva; solo vence por TTL (6h). Con Tasker daba igual (confirma al 1er intento).
 
 function encolar({ usuarioId = null, numero, texto, metadata = null }) {
+  // SWITCH MAESTRO (2026-08-18: cuenta EN REVISIÓN por 2ª vez — el loop de la
+  // mañana): con WA_SALIENTE_OFF=1 NADA se encola; los callers caen a su
+  // fallback (wa-send → TG/email; acciones → error honesto al usuario).
+  // Reactivar: sacar la línea del .conf + reload.
+  if (process.env.WA_SALIENTE_OFF === '1') {
+    throw new Error('WA saliente APAGADO (cuenta en revisión) — va por Telegram/email');
+  }
   const digs = String(numero || '').replace(/\D/g, '');
   if (!digs || digs.length < 8) throw new Error(`wa-outbox: número inválido "${numero}"`);
   if (!texto || !String(texto).trim()) throw new Error('wa-outbox: texto vacío');
