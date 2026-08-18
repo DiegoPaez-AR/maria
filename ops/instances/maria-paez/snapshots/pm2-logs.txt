@@ -1,5 +1,3 @@
-3|maria-pa | 2026-08-18 12:09:25: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando poda-eventos (diario)
 3|maria-pa | 2026-08-18 12:09:25: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
 3|maria-pa | 2026-08-18 12:09:25: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
 3|maria-pa | 2026-08-18 12:09:25: [wa-hook-watchdog] activo (cada 30min, umbral 12h)
@@ -197,4 +195,6 @@
 3|maria-pa | 2026-08-18 13:34:35: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=204 | chats_vivos=[]
 3|maria-pa | 2026-08-18 13:34:55: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=204 | chats_vivos=[]
 3|maria-pa | 2026-08-18 13:34:56: [MB-FALLO] #204 motivo=timeout_sin_boton → {"id":204,"cold_fallos":3,"definitivo":false}
+3|maria-pa | 2026-08-18 13:35:10: [MB v3.4] 13:34:57 W [frio] timeout #204 — no encontré el botón send
+3|maria-pa | 2026-08-18 13:35:10: [MB v3.4] 13:34:57 I [outbox] cold-send #204 no verificado — queda en cola
 
