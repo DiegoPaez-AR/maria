@@ -1,23 +1,3 @@
-3|maria-pa | 2026-08-18 07:00:25: [MB v3.4] 07:00:21 I [frio] abriendo chat 5491150080522 (#85)
-3|maria-pa | 2026-08-18 07:00:25: [MB v3.4] 07:00:22 E [frio] #85: chat ABIERTO ES OTRO ("nicolás kosinski" ≠ "Nicolas Kosinski"/5491150080522) — ABORTO sin tocar
-3|maria-pa | 2026-08-18 07:00:25: [MB v3.4] 07:00:22 I [outbox] cold-send #85 no verificado — queda en cola
-3|maria-pa | 2026-08-18 07:00:27: [wa-outbox] #86 entregado por el teléfono
-3|maria-pa | 2026-08-18 07:00:32: [wa-outbox] #87 entregado por el teléfono
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:26 I [frio] abriendo chat 5491138433288 (#86)
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:27 I [frio] botón send encontrado — tap
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:28 I [frio] verificación #86: ENVIADO
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:28 I [outbox] enviado EN FRÍO (accesibilidad) → 5491138433288
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:31 I [frio] abriendo chat 5491163004389 (#87)
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:32 I [frio] botón send encontrado — tap
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:33 I [frio] verificación #87: ENVIADO
-3|maria-pa | 2026-08-18 07:00:35: [MB v3.4] 07:00:33 I [outbox] enviado EN FRÍO (accesibilidad) → 5491163004389
-3|maria-pa | 2026-08-18 07:00:37: [wa-outbox] #88 entregado por el teléfono
-3|maria-pa | 2026-08-18 07:00:41: [MB-FALLO] #85 motivo=chat_equivocado → {"id":85,"cold_fallos":2,"definitivo":false}
-3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:36 I [frio] abriendo chat 59899643028 (#88)
-3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:37 I [frio] botón send encontrado — tap
-3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:38 I [frio] verificación #88: ENVIADO
-3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:38 I [outbox] enviado EN FRÍO (accesibilidad) → 59899643028
-3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:41 I [frio] abriendo chat 5491150080522 (#85)
 3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:42 E [frio] #85: chat ABIERTO ES OTRO ("nicolás kosinski" ≠ "Nicolas Kosinski"/5491150080522) — ABORTO sin tocar
 3|maria-pa | 2026-08-18 07:00:45: [MB v3.4] 07:00:42 I [outbox] cold-send #85 no verificado — queda en cola
 3|maria-pa | 2026-08-18 07:00:47: [wa-outbox] #89 entregado por el teléfono
@@ -197,4 +177,24 @@
 3|maria-pa | 2026-08-18 07:09:55: [MB v3.4] 07:09:52 W [frio] timeout #95 — no encontré el botón send
 3|maria-pa | 2026-08-18 07:09:55: [MB v3.4] 07:09:52 I [outbox] cold-send #95 no verificado — queda en cola
 3|maria-pa | 2026-08-18 07:10:00: [MB-DIAG] buscaba nombre="Nicolas Kosinski" numero="5491150080522" pendiente=85 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:05: [MB v3.4] 07:09:57 I [frio] abriendo chat 5491132317896 (#94)
+3|maria-pa | 2026-08-18 07:10:05: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=95 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:10: [MB-DIAG] buscaba nombre="Alfonso Amat" numero="5491161549534" pendiente=93 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:15: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=94 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:20: [MB-DIAG] buscaba nombre="Nicolas Kosinski" numero="5491150080522" pendiente=85 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:21: [wa-outbox] #96 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Diego …)
+3|maria-pa | 2026-08-18 07:10:21: [MB-FALLO] #94 motivo=timeout_sin_boton → {"id":94,"cold_fallos":5,"definitivo":true}
+3|maria-pa | 2026-08-18 07:10:25: [MB v3.4] 07:10:22 W [frio] timeout #94 — no encontré el botón send
+3|maria-pa | 2026-08-18 07:10:25: [MB v3.4] 07:10:22 I [outbox] cold-send #94 no verificado — queda en cola
+3|maria-pa | 2026-08-18 07:10:30: [MB-DIAG] buscaba nombre="Alfonso Amat" numero="5491161549534" pendiente=93 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:35: [MB v3.4] 07:10:27 I [frio] abriendo chat 5491132317896 (#95)
+3|maria-pa | 2026-08-18 07:10:35: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=96 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:40: [MB-DIAG] buscaba nombre="Nicolas Kosinski" numero="5491150080522" pendiente=85 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:45: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=95 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:50: [MB-DIAG] buscaba nombre="Alfonso Amat" numero="5491161549534" pendiente=93 | chats_vivos=[]
+3|maria-pa | 2026-08-18 07:10:51: [wa-outbox] #97 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a Diego …)
+3|maria-pa | 2026-08-18 07:10:51: [MB-FALLO] #95 motivo=timeout_sin_boton → {"id":95,"cold_fallos":5,"definitivo":true}
+3|maria-pa | 2026-08-18 07:10:55: [MB v3.4] 07:10:52 W [frio] timeout #95 — no encontré el botón send
+3|maria-pa | 2026-08-18 07:10:55: [MB v3.4] 07:10:52 I [outbox] cold-send #95 no verificado — queda en cola
+3|maria-pa | 2026-08-18 07:11:00: [MB-DIAG] buscaba nombre="Nicolas Kosinski" numero="5491150080522" pendiente=85 | chats_vivos=[]
 
