@@ -1,21 +1,3 @@
-3|maria-pa | 2026-08-18 07:59:33: [MB v3.4] 07:58:18 W [frio] timeout #101 — no encontré el botón send
-3|maria-pa | 2026-08-18 07:59:33: [MB v3.4] 07:58:18 I [outbox] cold-send #101 no verificado — queda en cola
-3|maria-pa | 2026-08-18 08:00:03: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=100 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:07: [MB v3.4] 08:00:01 I [frio] abriendo chat 5491132317896 (#100)
-3|maria-pa | 2026-08-18 08:00:08: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=101 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:13: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=102 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:18: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=103 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:23: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=100 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:25: [MB-FALLO] #100 motivo=timeout_sin_boton → {"id":100,"cold_fallos":3,"definitivo":false}
-3|maria-pa | 2026-08-18 08:00:30: [MB v3.4] 08:00:26 W [frio] timeout #100 — no encontré el botón send
-3|maria-pa | 2026-08-18 08:00:30: [MB v3.4] 08:00:26 I [outbox] cold-send #100 no verificado — queda en cola
-3|maria-pa | 2026-08-18 08:00:36: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=102 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:40: [MB v3.4] 08:00:32 I [frio] abriendo chat 5491132317896 (#101)
-3|maria-pa | 2026-08-18 08:00:41: [MB-DIAG] buscaba nombre="Santiago Capurro" numero="5491166010010" pendiente=103 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:46: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=100 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:51: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=101 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:56: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=102 | chats_vivos=[]
-3|maria-pa | 2026-08-18 08:00:57: [MB-FALLO] #101 motivo=timeout_sin_boton → {"id":101,"cold_fallos":3,"definitivo":false}
 3|maria-pa | 2026-08-18 08:02:03: [wa-outbox] #106 encolado → +541132317896 (Te debo consulta sobre algo pendiente 👇…)
 3|maria-pa | 2026-08-18 08:02:03: [wa-send] recordatorios/Diego/respuesta_usuario+drenado: sin waClient → outbox #106 (bridge) para Diego
 3|maria-pa | 2026-08-18 08:02:03: [diferidos] ✓ #19 drenado → Diego (recordatorios/Diego/respuesta_usuario)
@@ -197,4 +179,22 @@
 3|maria-pa | 2026-08-18 08:26:57: [MB v3.4] 08:25:29 I [outbox] cold-send #105 no verificado — queda en cola
 3|maria-pa | 2026-08-18 08:26:57: [MB v3.4] 08:26:55 I [frio] abriendo chat 5491132317896 (#105)
 3|maria-pa | 2026-08-18 08:26:58: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=105 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:03: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=106 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:08: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=107 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:11: [follow-ups] #41 re-ping: sin contexto suficiente — aviso al dueño
+3|maria-pa | 2026-08-18 08:27:11: [wa-outbox] #113 encolado → +541132317896 (⏰ Follow-up vencido — Esperando que Nata…)
+3|maria-pa | 2026-08-18 08:27:11: [wa-send] follow-ups/Diego: sin waClient → outbox #113 (bridge) para Diego
+3|maria-pa | 2026-08-18 08:27:11: [follow-ups] #41 disparado → Diego (5491150105262@c.us no respondió)
+3|maria-pa | 2026-08-18 08:27:13: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=108 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:18: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=105 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:19: [MB-FALLO] #105 motivo=timeout_sin_boton → {"id":105,"cold_fallos":4,"definitivo":false}
+3|maria-pa | 2026-08-18 08:27:27: [MB v3.4] 08:27:20 W [frio] timeout #105 — no encontré el botón send
+3|maria-pa | 2026-08-18 08:27:27: [MB v3.4] 08:27:20 I [outbox] cold-send #105 no verificado — queda en cola
+3|maria-pa | 2026-08-18 08:27:27: [MB v3.4] 08:27:25 I [frio] abriendo chat 5491132317896 (#106)
+3|maria-pa | 2026-08-18 08:27:28: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=107 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:33: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=108 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:38: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=105 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:43: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=106 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:48: [MB-DIAG] buscaba nombre="Diego" numero="5491132317896" pendiente=107 | chats_vivos=[]
+3|maria-pa | 2026-08-18 08:27:50: [MB-FALLO] #106 motivo=timeout_sin_boton → {"id":106,"cold_fallos":2,"definitivo":false}
 
