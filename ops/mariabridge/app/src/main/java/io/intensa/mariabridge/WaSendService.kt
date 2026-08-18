@@ -37,6 +37,20 @@ class WaSendService : AccessibilityService() {
             // deadline
             h.postDelayed({
                 if (ColdSend.pendiente?.id == t.id) {   // seguía sin resolverse
+                    // Radiografía (v3.5, 18/8: TODOS los fríos fallan con "sin botón"
+                    // — ¿WhatsApp cambió el viewId del send?): listar ids y textos
+                    // clickables de la pantalla para ver qué hay realmente.
+                    try {
+                        val r = rootInActiveWindow
+                        if (r != null) {
+                            val vistos = _todosLosNodos(r).filter { it.isClickable }.mapNotNull { n ->
+                                val id = n.viewIdResourceName?.substringAfterLast('/') ?: ""
+                                val tx = (n.text ?: n.contentDescription ?: "").toString().take(15)
+                                if (id.isNotBlank() || tx.isNotBlank()) "$id:$tx" else null
+                            }.joinToString(",").take(250)
+                            MbLog.w("frio", "pantalla al timeout: [$vistos]")
+                        } else MbLog.w("frio", "pantalla al timeout: root NULL")
+                    } catch (e: Exception) { MbLog.e("frio", "radiografía: ${e.message}") }
                     MbLog.w("frio", "timeout #${t.id} — no encontré el botón send")
                     _reportarFallo(t.id, "timeout_sin_boton")
                     goHome()

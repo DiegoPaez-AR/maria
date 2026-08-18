@@ -134,6 +134,16 @@ function registrarFalloCold(id, motivo) {
 }
 
 function _avisarOwnerFalloEntrega(row, meta) {
+  // ANTI-RECURSIÓN (18/8: los avisos de fallo fallaban y generaban avisos de
+  // su propio fallo — 15 avisos-de-avisos en una mañana): un aviso que falla
+  // NO genera otro aviso. Solo log.
+  try {
+    const m0 = JSON.parse(row.metadata_json || '{}');
+    if (m0.tipo === 'aviso_fallo_entrega') {
+      console.warn(`[wa-outbox] aviso #${row.id} tampoco se entregó — NO re-aviso (anti-recursión)`);
+      return;
+    }
+  } catch { /* noop */ }
   const usuarios = require('./usuarios');
   const owner = usuarios.obtenerOwner();
   if (!owner || !owner.wa_cus) return;
