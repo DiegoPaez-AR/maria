@@ -1,0 +1,49 @@
+# ejecutado: 2026-08-19T09:09:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "═══ log del cron de backup ═══"
+#   tail -25 /var/log/maria-backup.log 2>/dev/null || echo "  (log vacío/inexistente)"
+#   echo "═══ existe el script? ═══"
+#   ls -la /root/secretaria/ops/scripts/backup-weekly.sh 2>/dev/null || echo "  ⚠️ NO EXISTE ops/scripts/backup-weekly.sh"
+#   ls /root/secretaria/ops/scripts/ 2>/dev/null | head -12
+#   echo LISTO
+
+# ───── output ─────
+═══ log del cron de backup ═══
+[backup] maria-paez: sesión WA 4.0K
+[backup] extra: config/secrets.conf
+[backup] extra: .env-intensa-api
+[backup] extra: config/instances.bootstrap.json
+[backup] cifrado: 2.8M sha256=892481385361efe990f0acac29e484de4e01867729ffa73592e00ec2c1de3f4c
+[backup] OK — pusheado a branch backups (2.8M)
+[restore-test] OK — el backup descifra y las DBs pasan integrity_check
+[backup] 20260809-0300 — armando backup multi-instancia
+[backup] maria-paez: DB 16M
+[backup] maria-paez: sesión WA 4.0K
+[backup] extra: config/secrets.conf
+[backup] extra: .env-intensa-api
+[backup] extra: config/instances.bootstrap.json
+[backup] cifrado: 2.9M sha256=65e309f8f0d72e7c4cef25b735c05b61ca509a0385ed19a14946509ecc992998
+[backup] OK — pusheado a branch backups (2.9M)
+[restore-test] OK — el backup descifra y las DBs pasan integrity_check
+[backup] 20260816-0300 — armando backup multi-instancia
+[backup] maria-paez: DB 17M
+[backup] maria-paez: sesión WA 4.0K
+[backup] extra: config/secrets.conf
+[backup] extra: .env-intensa-api
+[backup] extra: config/instances.bootstrap.json
+[backup] cifrado: 3.0M sha256=d9e7934073815d6a696d1af2b51fc8cf185ec7818e2701b69f0ceb466e1e4d6b
+[backup] OK — pusheado a branch backups (3.0M)
+[restore-test] OK — el backup descifra y las DBs pasan integrity_check
+═══ existe el script? ═══
+-rwxr-xr-x+ 1 root root 9639 Jul  2 13:48 /root/secretaria/ops/scripts/backup-weekly.sh
+backup-weekly.sh
+borrar-cancelled.sh
+gcontacts-reconcile.sh
+healthcheck-notify.sh
+README.md
+LISTO
+
+# exit=0
