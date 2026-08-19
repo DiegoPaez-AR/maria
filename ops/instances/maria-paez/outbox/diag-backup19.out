@@ -1,0 +1,43 @@
+# ejecutado: 2026-08-19T09:08:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "═══ crontab del root ═══"
+#   crontab -l 2>/dev/null | grep -v "^#" | head -12
+#   echo "═══ script de backup ═══"
+#   ls -la /root/secretaria/ops/backup*.sh 2>/dev/null
+#   echo "═══ branch backups: últimos commits ═══"
+#   cd /root/secretaria && git log origin/backups --format="  %cr — %s" -3 2>/dev/null
+#   echo "═══ log del backup ═══"
+#   ls -la /root/secretaria/state/backup*.log /root/backup*.log 2>/dev/null | head -3
+#   tail -12 /root/secretaria/state/backup.log 2>/dev/null || tail -12 /root/backup.log 2>/dev/null || echo "  (sin log)"
+#   echo "═══ pass presente? ═══"
+#   [ -f /root/secretaria/.backup-pass ] && echo "  .backup-pass existe" || echo "  ⚠️ FALTA .backup-pass"
+#   echo "═══ healthcheck ═══"
+#   ls -la /root/secretaria/ops/healthcheck.sh 2>/dev/null && crontab -l 2>/dev/null | grep -c healthcheck
+#   echo LISTO
+
+# ───── output ─────
+═══ crontab del root ═══
+* * * * * cd /root/secretaria && bash ops/cron-master.sh >> /root/secretaria/ops/.cron.log 2>&1
+* * * * * cd /root/veritas && bash ops/cron.sh >> /root/veritas/ops/.cron.log 2>&1
+0 6 * * * cd /root/secretaria && /usr/bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+0 4 * * * /root/secretaria/ops/scripts/borrar-cancelled.sh >> /root/secretaria/ops/.borrar-cancelled.log 2>&1
+* * * * * cd /root/vendedora && bash ops/cron-master.sh >> /root/vendedora/ops/.cron.log 2>&1
+0 3 * * 0 cd /root/secretaria && bash ops/scripts/backup-weekly.sh >> /var/log/maria-backup.log 2>&1
+*/5 * * * * cd /root/secretaria && bash ops/scripts/healthcheck-notify.sh >> /var/log/maria-healthcheck.log 2>&1
+0 4 * * 0 /root/secretaria/ops/scripts/gcontacts-reconcile.sh
+═══ script de backup ═══
+═══ branch backups: últimos commits ═══
+  2 months ago — backup 20260610-0842
+═══ log del backup ═══
+  (sin log)
+═══ pass presente? ═══
+  .backup-pass existe
+═══ healthcheck ═══
+-rwxr-xr-x+ 1 root root 6335 May 17 15:41 /root/secretaria/ops/healthcheck.sh
+1
+LISTO
+
+# exit=0
