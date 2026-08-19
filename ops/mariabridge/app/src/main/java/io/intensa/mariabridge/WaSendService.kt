@@ -68,13 +68,42 @@ class WaSendService : AccessibilityService() {
         h.postDelayed({ loop() }, 1000)
     }
 
+    // Tope global de aperturas de chat (v3.7, 18/8: dos revisiones de Meta por
+    // martilleo). Ninguna cascada de bugs puede volver a abrir 300 chats.
+    private val aperturas = ArrayDeque<Long>()
+    private val TOPE_HORA = 12
+
+    private fun _topeOk(): Boolean {
+        val ahora = System.currentTimeMillis()
+        while (aperturas.isNotEmpty() && ahora - aperturas.first() > 3_600_000L) aperturas.removeFirst()
+        if (aperturas.size >= TOPE_HORA) {
+            MbLog.w("frio", "TOPE de ${TOPE_HORA} aperturas/hora alcanzado — no abro más chats por ahora")
+            return false
+        }
+        aperturas.addLast(ahora)
+        return true
+    }
+
     private fun abrirChat(num: String, texto: String) {
         try {
+            if (!_topeOk()) { ColdSend.pendiente?.let { _reportarFallo(it.id, "tope_aperturas"); goHome(); ColdSend.terminar(it.id, false) }; return }
             despertarPantalla()
-            val enc = URLEncoder.encode(texto, "UTF-8")
-            val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$num?text=$enc"))
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(i)
+            // v3.7: SIN wa.me — ese link pasa por servidores de Meta (señal de
+            // bot: 314 clics a un número inválido precedieron el 1er bloqueo).
+            // ACTION_SENDTO con smsto: + setPackage abre el chat LOCALMENTE.
+            val i = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:+$num")).apply {
+                setPackage("com.whatsapp")
+                putExtra("sms_body", texto)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            try {
+                startActivity(i)
+            } catch (e: Exception) {
+                MbLog.w("frio", "intent local falló (${e.message}) — fallback whatsapp://send")
+                val alt = Intent(Intent.ACTION_VIEW, Uri.parse("whatsapp://send?phone=$num&text=" + URLEncoder.encode(texto, "UTF-8")))
+                    .apply { setPackage("com.whatsapp"); addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+                startActivity(alt)
+            }
         } catch (e: Exception) { MbLog.e("frio", "abrirChat: ${e.message}") }
     }
 

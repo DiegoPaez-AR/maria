@@ -236,12 +236,17 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
     return { destinoFinal: null, enviado: false, diferido: true, diferidoId: _id };
   }
 
-  // POLÍTICA 2026-08-17 (decisión Diego: "volvamos a WA como ruta principal"):
-  // en la era MariaBridge, WhatsApp vuelve a ser el canal PRINCIPAL para todo
-  // envío a usuarios — sin waClient se encola en wa_outbox y el teléfono lo
-  // manda (silencioso si hay notif viva, en frío si no). TG/email quedan como
-  // FALLBACK solo si el camino WA falla de verdad. (Reemplaza la política
-  // "automáticos sin WA" de 2026-07-07, que era de la era wwebjs post-bloqueos.)
+  // ══ POLÍTICA DE CANALES v4 (2026-08-18, decisión Diego tras la 2ª revisión
+  // de Meta): a USUARIOS, NUNCA por WhatsApp. Telegram si está vinculado,
+  // si no email. WhatsApp queda SOLO para terceros sin Telegram (y para
+  // responder a quien nos escribió). Un usuario que escriba por WA recibe la
+  // respuesta por TG/email + invitación a migrar.
+  if (fallback) {
+    const r = await _enviarTGoEmail(usuario, texto, { tag, metadata, motivo: 'politica_v4_usuarios_sin_wa', logSaliente });
+    if (r) return r;
+    console.warn(`[wa-send] ${tag}: ${usuario.nombre} sin TG ni email — último recurso WhatsApp`);
+  }
+
   if (!client) {
     try {
       const destinoCola = usuario.wa_cus || usuario.wa_lid;
