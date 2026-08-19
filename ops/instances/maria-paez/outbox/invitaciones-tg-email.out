@@ -1,0 +1,69 @@
+# ejecutado: 2026-08-19T03:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   SECRET=<REDACTED> -E '^ASISTENTE_INTERNAL_SECRET=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   export IV_SECRET="$SECRET" IV_PORT="$PORT"
+#   cat > /tmp/invtg.mjs <<'NODE'
+#   import Database from "/root/secretaria/node_modules/better-sqlite3/lib/index.js";
+#   const db = new Database(process.env.MARIA_DB, { readonly: true });
+#   const users = db.prepare(`SELECT id,nombre,email FROM usuarios WHERE activo=1 AND (servido IS NULL OR servido=1)
+#     AND telegram_chat_id IS NULL AND email IS NOT NULL AND email LIKE '%@%' ORDER BY id`).all();
+#   db.close();
+#   console.log(`destinatarios: ${users.length}`);
+#   let ok = 0, fail = 0;
+#   for (const u of users) {
+#     const primer = String(u.nombre).trim().split(/\s+/)[0];
+#     const texto = `Hola ${primer}!
+#   
+#   Te escribo para contarte que ahora también podés hablarme por Telegram — misma Maria, con la misma memoria de todo lo que venimos haciendo.
+#   
+#   Por qué te lo propongo: WhatsApp me viene dando problemas (estoy con el canal limitado por unos días), y Telegram funciona siempre, es más rápido para audios y archivos, y no depende de que WhatsApp ande bien.
+#   
+#   Vincularte toma un minuto:
+#   1. Entrá a https://t.me/MariaPaezAI_bot
+#   2. Tocá "compartir mi número"
+#   Listo — desde ahí me escribís como siempre.
+#   
+#   Mientras tanto seguimos por mail sin problema.
+#   
+#   Un abrazo,
+#   Maria`;
+#     const r = await fetch(`http://127.0.0.1:${process.env.IV_PORT}/accion`, {
+#       method: "POST",
+#       headers: { "x-intensa-secret": process.env.IV_SECRET, "Content-Type": "application/json" },
+#       body: JSON.stringify({ usuarioId: u.id, accion: { tipo: "enviar_email", to: u.email, asunto: "Ahora también podés hablarme por Telegram", texto }, canalOrigen: "gmail" }),
+#     }).then(x => x.json()).catch(e => ({ error: e.message }));
+#     if (r && !r.error) { ok++; console.log(`✔ ${u.nombre} <${u.email}>`); }
+#     else { fail++; console.log(`✗ ${u.nombre}: ${JSON.stringify(r).slice(0,110)}`); }
+#     await new Promise(res => setTimeout(res, 15000));   // cadencia suave
+#   }
+#   console.log(`INVITACIONES: ${ok} enviadas, ${fail} fallos`);
+#   NODE
+#   node /tmp/invtg.mjs
+#   rm -f /tmp/invtg.mjs
+#   echo LISTO
+
+# ───── output ─────
+destinatarios: 14
+✔ Hernan Fulco <hernan.fulco@sondeosglobal.com>
+✔ Natali Funez <nfunez@iplan.com.ar>
+✔ Santiago Bignone <santiagocbignone@gmail.com>
+✔ Doris Capurro <doris@capurro.com.ar>
+✔ Nicolas Kosinski <nkosinski@froneus.com>
+✔ Walter Vera <wvera@froneus.com>
+✔ Cristian Ruiz <cruiz@froneus.com>
+✔ Sebastian Ameijeira <sameijeira@froneus.com>
+✔ Enrique Sosa <enrique.sosa@globalnetmobile.com>
+✔ Santiago Capurro <santiago@capurro.com.ar>
+✔ Andres Neumann <andres@nomada.com>
+✔ Gabriela Echaniz <gabyechaniz@gmail.com>
+✔ Jaime Cibils <jcibils@csml.com.ar>
+✔ Alfonso Amat <alfonso.amat@gmail.com>
+INVITACIONES: 14 enviadas, 0 fallos
+LISTO
+
+# exit=0
