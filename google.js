@@ -686,7 +686,36 @@ async function buscarMensajesCon(email, { dias = 14, max = 50 } = {}) {
 // ── Firma con canal Telegram (2026-07-07, pedido Diego) ────────────────────
 // Va en TODOS los emails salientes: es la vía para que un tercero (que por
 // Telegram no podemos iniciar nosotros) abra el chat con el bot él mismo.
-function _conFirmaTG(texto) {
+// ¿El destinatario es un USUARIO de la instancia sin Telegram vinculado?
+// (2026-08-20, pedido Diego: con WA apagado, Telegram es EL canal — que la
+// invitación viaje en los mails que Maria ya manda, no en campañas sueltas.)
+function _usuarioSinTG(to) {
+  try {
+    const dest = String(Array.isArray(to) ? to[0] : to || '').toLowerCase();
+    const email = (dest.match(/<([^>]+)>/) || [null, dest])[1].trim();
+    if (!email.includes('@')) return null;
+    const usuarios = require('./usuarios');
+    const u = usuarios.listarActivos().find(x => String(x.email || '').toLowerCase() === email);
+    if (!u || u.telegram_chat_id) return null;
+    return u;
+  } catch { return null; }
+}
+
+function _conFirmaTG(texto, to = null) {
+  const uSinTG = _usuarioSinTG(to);
+  if (uSinTG) {
+    const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
+    if (user) {
+      const link = `https://t.me/${user}`;
+      const t0 = String(texto);
+      if (t0.includes(link)) return t0;
+      return `${t0}\n\n—\n💬 ¿Sabías que también podés hablarme por Telegram? Es más rápido para audios y archivos, y ahora es mi canal principal. Vinculate en un minuto: ${link} → tocá "compartir mi número".`;
+    }
+  }
+  return _firmaTGGenerica(texto);
+}
+
+function _firmaTGGenerica(texto) {
   const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
   if (!user) return texto;
   const link = `https://t.me/${user}`;
@@ -699,7 +728,21 @@ function _conFirmaTG(texto) {
   if (reEmailLinea.test(t)) return t.replace(reEmailLinea, `$1\n💬 Telegram: ${link}`);
   return `${t}\n\n—\n💬 Telegram: ${link}`;
 }
-function _conFirmaTGHtml(html) {
+function _conFirmaTGHtml(html, to = null) {
+  const uSinTG = _usuarioSinTG(to);
+  if (uSinTG) {
+    const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
+    if (user) {
+      const link = `https://t.me/${user}`;
+      if (String(html).includes(link)) return html;
+      const firma = `<p style="color:#777;font-size:13px">—<br>💬 ¿Sabías que también podés hablarme por <b>Telegram</b>? Es más rápido para audios y archivos, y ahora es mi canal principal.<br>Vinculate en un minuto: <a href="${link}">${link}</a> → tocá "compartir mi número".</p>`;
+      return /<\/body>/i.test(html) ? html.replace(/<\/body>/i, firma + '</body>') : html + firma;
+    }
+  }
+  return _firmaTGGenericaHtml(html);
+}
+
+function _firmaTGGenericaHtml(html) {
   const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
   if (!user) return html;
   const link = `https://t.me/${user}`;
@@ -712,8 +755,8 @@ async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
   if (!to)                                      throw new Error('enviarEmail: falta "to"');
   if (asunto === undefined || asunto === null)  throw new Error('enviarEmail: falta "asunto"');
   if (texto  === undefined || texto  === null)  throw new Error('enviarEmail: falta "texto"');
-  texto = _conFirmaTG(texto);
-  if (html) html = _conFirmaTGHtml(html);
+  texto = _conFirmaTG(texto, to);
+  if (html) html = _conFirmaTGHtml(html, to);
 
   const auth = await autenticar();
 
@@ -778,9 +821,11 @@ async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
  */
 async function responderEmail(messageId, textoRespuesta, opts = {}) {
   const { replyAll = false, cc: ccOverride } = opts;
-  textoRespuesta = _conFirmaTG(textoRespuesta);
   const auth = await autenticar();
   const original = await leerEmail(messageId);
+  // Firma DESPUÉS de leer el original: así sabemos a quién le respondemos y
+  // podemos invitar a Telegram si es un usuario sin vincular (2026-08-20).
+  textoRespuesta = _conFirmaTG(textoRespuesta, original && original.de);
 
   // Helpers para normalizar listas de direcciones de un header (To/Cc).
   const _split = (h) => (h || '').split(',').map(s => s.trim()).filter(Boolean);
