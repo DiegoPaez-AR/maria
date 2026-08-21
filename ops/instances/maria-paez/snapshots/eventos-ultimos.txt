@@ -1,5 +1,19 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31371  2026-08-21 03:12:50  sistema   interno                                              acción ejecutada: buscar_contacto_global                                                                                                                                                                
+
+31370  2026-08-21 03:12:43  sistema   interno                                              acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+31369  2026-08-21 03:12:43  sistema   interno                                              acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
+
+31368  2026-08-21 03:12:43  sistema   interno                                              claude_call moderacion: 5328ms prompt=1664c raw=6060c in=10t(cache_read=17396 new=5125) out=310t ttfb=1275ms api=4614ms turnos=1 $0.0102                                                                
+
+31367  2026-08-21 03:12:37  sistema   interno                                              acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
+
+31366  2026-08-21 03:12:37  sistema   interno                                              claude_call moderacion: 5452ms prompt=1682c raw=6027c in=10t(cache_read=0 new=22527) out=313t ttfb=1168ms api=4718ms turnos=1 $0.0303                                                                   
+
+31365  2026-08-21 03:12:06  sistema   interno                                              acción ejecutada: buscar_contacto_global                                                                                                                                                                
+
 31364  2026-08-21 03:11:22  telegram  entrante   telegram:590589920                        Ofréceles a Manu y a Fulco el martes de 13 a 15 o jueves de 13 a 18                                                                                                                                     
 
 31363  2026-08-21 03:01:04  sistema   interno                                              WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
@@ -304,27 +318,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                            • 09:00 a. m. — Pagar Monotributo 400                                                                                                                                                                   
                                                                                            • 09:15 a. m. — MC Daily                                                                                                                                                                                
                                                                                            • 09:                                                                                                                                                                                                   
-
-31271  2026-08-20 09:01:10  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31270  2026-08-20 07:00:07  telegram  saliente   telegram:590589920                        ☀️ *Buen día, Diego.* jueves, 20 de agosto.                                                                                                                                                             
-                                                                                                                                                                                                                                                                                                   
-                                                                                           *🌡️ Clima en Buenos Aires, AR*                                                                                                                                                                          
-                                                                                           ☁️ nublado, mín 7° / máx 19°                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                   
-                                                                                           *📅 Agenda del día*                                                                                                                                                                                      
-                                                                                           • 08:00 a. m. — Yoga                                                                                                                                                                                    
-                                                                                           • 12:00 p. m. — GN + VR Weekly                                                                                                                                                                          
-                                                                                           • 03:00 p. m. — The Qua                                                                                                                                                                                 
-
-31269  2026-08-20 05:11:05  sistema   interno                                              poda-eventos: 36 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                       
-
-31268  2026-08-20 00:51:05  telegram  saliente   telegram:590589920                        ⏰ Follow-up vencido — Carolina Brunatti confirme día para cena FICO con Diego y Gabriel                                                                                                                 
-                                                                                                                                                                                                                                                                                                   
-                                                                                           5491141885339@c.us no respondió todavía. ¿Querés que le mande un recordatorio o lo dejamos?                                                                                                             
-
-31267  2026-08-20 00:51:04  sistema   interno                                              follow-up #43 cerrado: 5491140402319@c.us respondió antes del vencimiento (Gabriel Pacheco confirme día para cena FICO con Diego y Carolina)                                                            
-
-31266  2026-08-20 00:36:05  telegram  saliente   telegram:590589920                        ⏰ Follow-up vencido — Esperando que Manuel Carrasco confirme lunes 24/08 15-18hs para la reunión con Diego y Hernán. Si confirma: crear_evento con los tres + invitaciones + avisar a Diego. Si no puede
-
-31265  2026-08-19 22:51:05  telegram  saliente   telegram:590589920                        ⏰ Follow-up vencido — Esperando que Manuel Carrasco confirme lunes 24/08 15-18hs para la reunión con Diego y Hernán. Al confirmar: crear_evento con los tres + invitaciones + avisar a Diego. Si no pued
