@@ -1,5 +1,29 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31430  2026-08-21 12:28:02  sistema   interno                                                   razonamiento Gmail 1a02448ccfefb2ea (Diego): Hernán eligió jueves 27/08 15-18hs; cerré sus pendientes, pero no pude escribirle a Manuel en este turno (restricción: turno iniciado por tercero no puede 
+
+31429  2026-08-21 12:28:02  sistema   interno                                                   claude_call gmail: 80621ms prompt=85875c raw=47784c in=12t(cache_read=263392 new=102205) out=6372t ttfb=1538ms api=75076ms turnos=11 $0.5696                                                            
+
+31428  2026-08-21 12:27:57  sistema   interno                                                   acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31427  2026-08-21 12:27:41  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+31426  2026-08-21 12:27:41  sistema   interno                                                   acción FALLÓ: enviar_email — enviar_email: este turno lo inició un tercero — solo puedo enviar a Diego. Si el pedido es legítimo, consultale primero al usuario (respuesta_a_usuario) y que él lo pida. 
+
+31425  2026-08-21 12:27:41  sistema   interno                                                   [SEGURIDAD] gate_tercero: enviar_email hacia "manucarrasco80@gmail.com" bloqueado en turno de tercero:                                                                                                  
+
+31424  2026-08-21 12:27:32  sistema   interno                                                   acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31423  2026-08-21 12:27:32  sistema   interno                                                   acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
+
+31422  2026-08-21 12:27:32  sistema   interno                                                   claude_call moderacion: 6361ms prompt=1576c raw=6682c in=10t(cache_read=0 new=22480) out=369t ttfb=1272ms api=6111ms turnos=1 $0.0304                                                                   
+
+31421  2026-08-21 12:27:25  sistema   interno                                                   acción ejecutada: olvidar_hecho                                                                                                                                                                         
+
+31420  2026-08-21 12:27:25  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+31419  2026-08-21 12:27:24  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
 31418  2026-08-21 12:26:41  sistema   interno                                                   claude_call gmail: 26873ms prompt=84597c raw=18619c in=10t(cache_read=167637 new=113096) out=1704t ttfb=1454ms api=26386ms turnos=5 $0.5112                                                             
 
 31417  2026-08-21 12:26:14  gmail     entrante   Hernan Fulco <hernan.fulco@sondeosglobal.com>  El jueves de 15 a 18hs.                                                                                                                                                                                 
@@ -303,33 +327,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                                 👤 Guillermo Bagnato — Ejecutivo en The Quantum Alliance (+25 anios liderando organizaciones): Guillermo Bagnato es un co                                                                                
 
 31331  2026-08-20 18:31:11  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31330  2026-08-20 18:01:33  sistema   interno                                                   meeting-prep: 3 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31329  2026-08-20 18:01:28  sistema   interno                                                   claude_call enriquecer-contacto: 21525ms prompt=693c raw=22923c in=905t(cache_read=33531 new=34486) out=481t ttfb=1618ms api=24818ms turnos=5 $0.2216                                                   
-
-31328  2026-08-20 17:45:06  gmail     saliente   hernan.fulco@sondeosglobal.com                 ⏰ *En 15min*: Demo MC (03:00 p. m.)                                                                                                                                                                     
-                                                                                                Con: grey.uzcategui@sondeos.com.ar, bogdan.bedyukh@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, gustavo.garcia@sondeosglobal.com, lautaro.taretto@sondeos                                    
-
-31327  2026-08-20 17:45:06  telegram  saliente   590589920                                      ⏰ *En 15min*: The Quantum Alliance (TQA) y Telecentro (03:00 p. m.)                                                                                                                                     
-                                                                                                Con: corellana@movilgate.com, fherrera@telecentro.net.ar                                                                                                                                                
-                                                                                                👤 Corellana — No hay información confiable sobre esta persona específica. s                                                                                                                             
-
-31326  2026-08-20 17:01:15  sistema   interno                                                   meeting-prep: 4 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31325  2026-08-20 16:15:06  gmail     saliente   doris@capurro.com.ar                           ⏰ *En 15min*: Gotlib (01:30 p. m.)                                                                                                                                                                      
-
-31324  2026-08-20 16:01:41  sistema   interno                                                   meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31323  2026-08-20 16:01:36  sistema   interno                                                   claude_call enriquecer-contacto: 13196ms prompt=679c raw=16431c in=6t(cache_read=33973 new=15857) out=257t ttfb=1604ms api=15312ms turnos=4 $0.1193                                                     
-
-31322  2026-08-20 16:01:23  sistema   interno                                                   claude_call enriquecer-contacto: 16428ms prompt=673c raw=18332c in=901t(cache_read=16332 new=32867) out=267t ttfb=1567ms api=20315ms turnos=4 $0.1825                                                   
-
-31321  2026-08-20 15:45:06  gmail     saliente   santiago@capurro.com.ar                        ⏰ *En 15min*: Almuerzo Dani/Santi/Pablo (01:00 p. m.)                                                                                                                                                   
-                                                                                                Con: pablo@capurro.com.ar, dscheerle@c2scs.com                                                                                                                                                          
-                                                                                                👤 Pablo — Co-Fundador & Chief Strategy Officer en Papumba                                                                                                                                               
-                                                                                                👤 Dscheerle (c2scs.com) — No encuentro da                                                                                                                                                               
-
-31320  2026-08-20 15:06:10  telegram  saliente   telegram:590589920                             Le ofrecimos el lunes 24/08 de 15 a 18hs (el horario que había propuesto Hernán). Todavía estoy esperando que Manu confirme si le sirve ese horario.                                                    
-
-31319  2026-08-20 15:06:10  sistema   interno                                                   claude_call telegram: 10398ms prompt=83052c raw=7671c in=4t(cache_read=53818 new=54052) out=360t ttfb=1736ms api=9546ms turnos=2 $0.2349                                                                
