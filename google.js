@@ -712,7 +712,10 @@ function _conFirmaTG(texto, to = null) {
       return `${t0}\n\n—\n💬 ¿Sabías que también podés hablarme por Telegram? Es más rápido para audios y archivos, y ahora es mi canal principal. Vinculate en un minuto: ${link} → tocá "compartir mi número".`;
     }
   }
-  return _firmaTGGenerica(texto);
+  // Decisión Diego 2026-08-20: la invitación a Telegram va SOLO a usuarios de
+  // la instancia. Terceros (y usuarios ya vinculados) no llevan nada — revierte
+  // la firma genérica a terceros de 2026-07-07.
+  return texto;
 }
 
 function _firmaTGGenerica(texto) {
@@ -739,7 +742,7 @@ function _conFirmaTGHtml(html, to = null) {
       return /<\/body>/i.test(html) ? html.replace(/<\/body>/i, firma + '</body>') : html + firma;
     }
   }
-  return _firmaTGGenericaHtml(html);
+  return html;   // terceros y vinculados: sin firma de Telegram (Diego 20/8)
 }
 
 function _firmaTGGenericaHtml(html) {
