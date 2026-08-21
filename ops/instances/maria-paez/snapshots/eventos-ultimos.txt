@@ -1,5 +1,23 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                           cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ----------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31387  2026-08-21 03:14:43  telegram  saliente   telegram:590589920                        Listo, le mando un mail a Gabriel Pacheco preguntándole si el miércoles 2/9 le viene bien para la cena. Te dejo en copia. Cualquier cosa que conteste te aviso.                                         
+
+31386  2026-08-21 03:14:42  sistema   interno                                              claude_call telegram: 50747ms prompt=83224c raw=19695c in=6t(cache_read=74647 new=93600) out=3249t ttfb=1699ms api=42178ms turnos=3 $0.4327                                                             
+
+31385  2026-08-21 03:14:39  sistema   interno                                              acción ejecutada: enviar_email                                                                                                                                                                          
+
+31384  2026-08-21 03:14:39  gmail     saliente                                             Hola Gabriel!                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                   
+                                                                                           Soy Maria, la secretaria de Diego. Te escribo por la cena con Carolina Brunatti, Natali Funez y Diego.                                                                                                  
+                                                                                                                                                                                                                                                                                                   
+                                                                                           ¿Te viene bien el miércoles 2/9 para la cena?                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                   
+                                                                                           Quedo atenta a tu confirmación.                                                                                                                                                                         
+                                                                                                                                                                                                                                                                                                   
+                                                                                           S                                                                                                                                                                                                       
+
+31383  2026-08-21 03:14:38  sistema   interno                                              claude_call moderacion: 7387ms prompt=1674c raw=6952c in=10t(cache_read=17396 new=5118) out=418t ttfb=1259ms api=7915ms turnos=1 $0.0108                                                                
+
 31382  2026-08-21 03:13:51  telegram  entrante   telegram:590589920                        Y mándale a gabi Pacheco la consulta de si puede el 2/9 para la cena por Mail                                                                                                                           
 
 31381  2026-08-21 03:13:24  telegram  saliente   telegram:590589920                        Les escribí por mail a Manuel y a Hernán ofreciéndoles martes 25/08 de 13 a 15hs o jueves 27/08 de 13 a 18hs para la reunión de los tres. Apenas contesten alguno te aviso.                             
@@ -249,16 +267,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 31289  2026-08-20 10:46:10  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
 
 31288  2026-08-20 10:45:06  telegram  saliente   590589920                                 ⏰ *En 15min*: Yoga (08:00 a. m.)                                                                                                                                                                        
-
-31287  2026-08-20 10:31:25  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31286  2026-08-20 10:31:21  sistema   interno                                              claude_call enriquecer-contacto: 14742ms prompt=632c raw=19790c in=6t(cache_read=16288 new=33959) out=310t ttfb=1581ms api=18689ms turnos=4 $0.1850                                                     
-
-31285  2026-08-20 10:16:10  sistema   interno                                              meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31284  2026-08-20 10:01:10  sistema   interno                                              meeting-prep: 4 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31283  2026-08-20 10:00:15  gmail     saliente   alfonso.amat@gmail.com                    ☀️ *Buen día, Alfonso Amat.* jueves, 20 de agosto.                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                   
-                                                                                           *📅 Agenda del día*                                                                                                                                                                                      
-                                                                                           (sin eventos hoy)                                                                                                                                                                                       
