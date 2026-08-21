@@ -1,5 +1,29 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31468  2026-08-21 16:02:54  sistema   interno                                                   acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
+
+31467  2026-08-21 16:02:54  sistema   interno                                                   claude_call moderacion: 6392ms prompt=1793c raw=6664c in=10t(cache_read=17396 new=5148) out=394t ttfb=1285ms api=5628ms turnos=1 $0.0107                                                                
+
+31466  2026-08-21 16:02:47  sistema   interno                                                   razonamiento Gmail 1a0250a594639e4c (Diego): Gabriel confirmó asistencia; cerré ambos pendientes de espera; necesito de Diego aclarar restaurante (Catalino vs Fico) y su contacto antes de reservar.   
+
+31465  2026-08-21 16:02:47  sistema   interno                                                   claude_call gmail: 100473ms prompt=84028c raw=53227c in=24t(cache_read=609169 new=119718) out=6130t ttfb=1559ms api=92818ms turnos=12 $0.7346                                                           
+
+31464  2026-08-21 16:02:42  sistema   interno                                                   acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31463  2026-08-21 16:02:37  sistema   interno                                                   acción ejecutada: responder_email                                                                                                                                                                       
+
+31462  2026-08-21 16:02:37  gmail     saliente                                                  Hola Gabriel,                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Perfecto, quedás anotado para el miércoles 2/9. Ya le aviso a Diego.                                                                                                                                    
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Gracias por confirmar.                                                                                                                                                                                  
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Saludos,                                                                                                                                                                                                
+
+31461  2026-08-21 16:02:36  sistema   interno                                                   claude_call moderacion: 6256ms prompt=1565c raw=6314c in=10t(cache_read=0 new=22477) out=345t ttfb=1211ms api=5507ms turnos=1 $0.0303                                                                   
+
+31460  2026-08-21 16:02:22  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
 31459  2026-08-21 16:01:51  sistema   interno                                                   acción ejecutada: buscar_contacto_global                                                                                                                                                                
 
 31458  2026-08-21 16:01:36  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
@@ -331,21 +355,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 31370  2026-08-21 03:12:43  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
 
 31369  2026-08-21 03:12:43  sistema   interno                                                   acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
-
-31368  2026-08-21 03:12:43  sistema   interno                                                   claude_call moderacion: 5328ms prompt=1664c raw=6060c in=10t(cache_read=17396 new=5125) out=310t ttfb=1275ms api=4614ms turnos=1 $0.0102                                                                
-
-31367  2026-08-21 03:12:37  sistema   interno                                                   acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
-
-31366  2026-08-21 03:12:37  sistema   interno                                                   claude_call moderacion: 5452ms prompt=1682c raw=6027c in=10t(cache_read=0 new=22527) out=313t ttfb=1168ms api=4718ms turnos=1 $0.0303                                                                   
-
-31365  2026-08-21 03:12:06  sistema   interno                                                   acción ejecutada: buscar_contacto_global                                                                                                                                                                
-
-31364  2026-08-21 03:11:22  telegram  entrante   telegram:590589920                             Ofréceles a Manu y a Fulco el martes de 13 a 15 o jueves de 13 a 18                                                                                                                                     
-
-31363  2026-08-21 03:01:04  sistema   interno                                                   WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
-
-31362  2026-08-21 03:01:04  sistema   interno                                                   Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)                                                                                                       
-
-31361  2026-08-21 03:01:04  sistema   interno                                                   MODO DEGRADADO: loops arrancados sin WA (caído hace 58355 min)                                                                                                                                          
-
-31360  2026-08-21 03:01:02  sistema   interno                                                   shutdown por SIGINT                                                                                                                                                                                     
