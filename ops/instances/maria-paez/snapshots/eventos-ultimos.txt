@@ -1,5 +1,36 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31444  2026-08-21 12:31:38  sistema   interno                                                   claude_call maria-worker: 33315ms prompt=83797c raw=17732c in=8t(cache_read=129514 new=93629) out=1567t ttfb=1679ms api=26689ms turnos=5 $0.4243                                                        
+
+31443  2026-08-21 12:31:33  sistema   interno                                                   acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31442  2026-08-21 12:31:31  sistema   interno                                                   acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+31441  2026-08-21 12:31:28  sistema   interno                                                   acción ejecutada: enviar_email                                                                                                                                                                          
+
+31440  2026-08-21 12:31:28  gmail     saliente                                                  Hola Manuel!                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Soy Maria, la secretaria de Diego. Te escribo para coordinar la reunión de 3 horas con Diego y Hernán Fulco.                                                                                            
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Hernán ya confirmó el jueves 27/08 de 15 a 18hs. ¿Te viene bien ese día y ho                                                                                                                            
+
+31439  2026-08-21 12:31:28  sistema   interno                                                   claude_call moderacion: 5336ms prompt=1782c raw=6345c in=10t(cache_read=17396 new=5159) out=319t ttfb=1385ms api=4505ms turnos=1 $0.0104                                                                
+
+31438  2026-08-21 12:31:21  gmail     entrante   "Rodrigo Páez Canosa" <rpc@sondeosglobal.com>  Rodrigo Páez Canosa ha aceptado esta invitación.                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Ir a ver departamento para el papá                                                                                                                                                                      
+                                                                                                viernes 21 de ago de 2026 ⋅ 3:30pm – 4:30pm                                                                                                                                                             
+                                                                                                Hora estándar de Argentina - Buenos Aires                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                        
+                                                                                                Ubicación                                                                                                                                                                                               
+                                                                                                Independenc                                                                                                                                                                                             
+
+31437  2026-08-21 12:31:20  sistema   interno                                                   unknown-flow/gmail LLM: tercero_de_usuario usuario_id=18 · Rodrigo Páez Canosa es invitado del evento 'Ir a ver departamento para el papá' que Gabriela Echaniz (id=18) le pidió a Maria agendar el 2026
+
+31436  2026-08-21 12:31:20  sistema   interno                                                   claude_call unknown-flow: 13316ms prompt=42653c raw=6959c in=2t(cache_read=0 new=37494) out=815t ttfb=1297ms api=13396ms turnos=1 $0.1716                                                               
+
+31435  2026-08-21 12:31:09  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
+
 31434  2026-08-21 12:30:05  gmail     saliente   hernan.fulco@sondeosglobal.com                 ⏰ *En 15min*: Daily CMP (09:45 a. m.)                                                                                                                                                                   
                                                                                                 Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello                                      
 
@@ -299,28 +330,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 31346  2026-08-20 23:15:06  gmail     saliente   doris@capurro.com.ar                           ⏰ *En 15min*: Churba (08:30 p. m.)                                                                                                                                                                      
 
 31345  2026-08-20 21:31:11  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31344  2026-08-20 21:15:06  gmail     saliente   santiago@capurro.com.ar                        ⏰ *En 15min*: 17.30 EST - Meet Santiago / Ruy x Grupo Pumayna (06:30 p. m.)                                                                                                                             
-                                                                                                Con: rivaldi000@gmail.com                                                                                                                                                                               
-                                                                                                👤 Rivaldi — Legal Officer en PT Samudra Retail Indonesia                                                                                                                                                
-
-31343  2026-08-20 20:21:14  telegram  saliente   telegram:590589920                             ⏰ Follow-up vencido — Esperando que Gabriel Pacheco confirme la cena del 2/9 en Catalino (con Carolina Brunatti, Natali Funez y Diego). Si confirma: mandar WA a Catalino restaurante para reservar y av
-
-31342  2026-08-20 20:21:13  sistema   interno                                                   claude_call follow-ups: 7940ms prompt=2184c raw=6569c in=2t(cache_read=0 new=16177) out=305t ttfb=1503ms api=8748ms turnos=1 $0.0662                                                                    
-
-31341  2026-08-20 20:15:06  gmail     saliente   doris@capurro.com.ar                           ⏰ *En 15min*: Sergio (05:30 p. m.)                                                                                                                                                                      
-
-31340  2026-08-20 19:45:07  gmail     saliente   hernan.fulco@sondeosglobal.com                 ⏰ *En 15min*: Reunión feedback 08/2026 | Noelia Brúscoli  (05:00 p. m.)                                                                                                                                 
-                                                                                                Con: rrhh@sondeosglobal.com, noelia.bruscoli@sondeosglobal.com                                                                                                                                          
-
-31339  2026-08-20 19:45:06  telegram  saliente   590589920                                      ⏰ *En 15min*: Froneus Financiero (05:00 p. m.) @https://meet.google.com/vmp-gudj-eqz                                                                                                                    
-                                                                                                Con: mariela.nigro@areait.com.ar, rsaune@froneus.com, dwinograd@froneus.com                                                                                                                             
-                                                                                                👤 Mariela Nigro — No encontré su rol/ca                                                                                                                                                                 
-
-31338  2026-08-20 19:45:06  telegram  saliente   590589920                                      ⏰ *En 15min*: CieloP (05:00 p. m.)                                                                                                                                                                      
-
-31337  2026-08-20 19:31:26  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31336  2026-08-20 19:31:25  sistema   interno                                                   claude_call enriquecer-contacto: 16013ms prompt=619c raw=13753c in=6t(cache_read=16308 new=32599) out=306t ttfb=1589ms api=15124ms turnos=3 $0.1546                                                     
-
-31335  2026-08-20 18:45:07  gmail     saliente   santiago@capurro.com.ar                        ⏰ *En 15min*: Juana (04:00 p. m.)                                                                                                                                                                       
