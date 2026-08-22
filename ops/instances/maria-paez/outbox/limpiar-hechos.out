@@ -1,0 +1,60 @@
+# ejecutado: 2026-08-22T14:04:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   SECRET=<REDACTED> -E '^ASISTENTE_INTERNAL_SECRET=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   PORT=$(grep -E '^ASISTENTE_INTERNAL_PORT=' config/instances/maria-paez.conf | cut -d= -f2- | tr -d '"')
+#   export LH_SECRET="$SECRET" LH_PORT="$PORT"
+#   cat > /tmp/lh.mjs <<'NODE'
+#   const post = (usuarioId, accion) => fetch(`http://127.0.0.1:${process.env.LH_PORT}/accion`, {
+#     method: "POST", headers: { "x-intensa-secret": process.env.LH_SECRET, "Content-Type": "application/json" },
+#     body: JSON.stringify({ usuarioId, accion, canalOrigen: "whatsapp" }),
+#   }).then(r => r.json()).catch(e => ({ error: e.message }));
+#   
+#   // ── BORRAR (decisión Diego 22/8, auditoría de hechos) ──
+#   const borrar = [
+#     [1, "maria_sin_foto_perfil_propia"],      // clave engañosa; queda maria_foto_perfil_propia
+#     [1, "fotos_subaru_legacy_wa_ids"],        // IDs de la era wwebjs, inútiles con el número nuevo
+#     [1, "nati_cine_20260816"],                // evento puntual cerrado
+#     [1, "cotizacion_volvo_ex30_2026"],        // precios de mayo, vencidos
+#     [1, "tasacion_subaru_legacy_volvo_ditecar"],
+#     [1, "tarea_recurrente_trafico_movistar"], // Diego: borrar
+#     [3, "contacto_backup_ausencia"],          // ausencia de Natali (julio), vencida
+#     [18, "busqueda_propiedad_papa"],          // búsquedas de julio, cerradas
+#     [18, "busqueda_propiedad_gabriela"],
+#   ];
+#   for (const [uid, clave] of borrar) {
+#     const r = await post(uid, { tipo: "olvidar_hecho", clave });
+#     console.log((r && !r.error ? "🗑️  borrado " : "✗ falló ") + `u${uid}/${clave}` + (r && r.error ? " → " + String(r.error).slice(0,80) : ""));
+#   }
+#   // ── ACTUALIZAR: ventana horaria real ──
+#   const r = await post(1, { tipo: "recordar_hecho", clave: "horario_silencio_salientes",
+#     valor: "Ventana de envíos INICIADOS (2026-08-22): solo entre las 08:00 y las 23:00 hora de Buenos Aires. Fuera de esa franja el sistema retiene los mensajes en cola y salen al otro día — no es decisión mía. Responder a quien me escribe no tiene restricción horaria." });
+#   console.log((r && !r.error ? "✔ actualizado " : "✗ falló ") + "horario_silencio_salientes");
+#   NODE
+#   node /tmp/lh.mjs; rm -f /tmp/lh.mjs
+#   echo "── quedan ──"
+#   node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   console.log('total hechos:', db.prepare('SELECT COUNT(*) n FROM hechos').get().n);
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+🗑️  borrado u1/maria_sin_foto_perfil_propia
+🗑️  borrado u1/fotos_subaru_legacy_wa_ids
+🗑️  borrado u1/nati_cine_20260816
+🗑️  borrado u1/cotizacion_volvo_ex30_2026
+🗑️  borrado u1/tasacion_subaru_legacy_volvo_ditecar
+🗑️  borrado u1/tarea_recurrente_trafico_movistar
+🗑️  borrado u3/contacto_backup_ausencia
+🗑️  borrado u18/busqueda_propiedad_papa
+🗑️  borrado u18/busqueda_propiedad_gabriela
+✔ actualizado horario_silencio_salientes
+── quedan ──
+total hechos: 30
+LISTO
+
+# exit=0
