@@ -1,0 +1,156 @@
+# ejecutado: 2026-08-22T13:54:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/ah.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   const cols=db.prepare("PRAGMA table_info(hechos)").all().map(c=>c.name);
+#   console.log("columnas:", cols.join(","));
+#   const total=db.prepare("SELECT COUNT(*) n FROM hechos").get().n;
+#   console.log("TOTAL de hechos:", total);
+#   console.log("\n═══ por usuario ═══");
+#   db.prepare(`SELECT usuario_id, COUNT(*) n FROM hechos GROUP BY usuario_id`).all().forEach(x=>console.log("  u"+x.usuario_id+":",x.n));
+#   console.log("\n═══ TODOS los hechos (clave + valor recortado) ═══");
+#   db.prepare(`SELECT id,usuario_id,clave,substr(valor,1,220) v,creado FROM hechos ORDER BY usuario_id, id`).all()
+#     .forEach(x=>console.log(`\n[u${x.usuario_id} #${x.id}] ${x.clave}  (${String(x.creado).slice(0,10)})\n   ${String(x.v).replace(/\n/g," ")}`));
+#   db.close();
+#   JS
+#   node /tmp/ah.cjs; rm -f /tmp/ah.cjs
+#   echo LISTO
+
+# ───── output ─────
+columnas: id,usuario_id,clave,valor,fuente,creado,actualizado
+TOTAL de hechos: 39
+
+═══ por usuario ═══
+  u1: 27
+  u2: 1
+  u3: 2
+  u5: 2
+  u12: 1
+  u13: 1
+  u16: 2
+  u18: 3
+
+═══ TODOS los hechos (clave + valor recortado) ═══
+
+[u1 #1] invitaciones_calendario  (2026-04-20)
+   Siempre mandar invitación de calendario a todos los asistentes al crear eventos.
+
+[u1 #2] presentacion_primer_contacto  (2026-04-20)
+   Siempre presentarme al inicio de una conversación con alguien con quien nunca me comuniqué antes.
+
+[u1 #3] reuniones_siempre_con_meet  (2026-04-20)
+   Siempre agregar link de Google Meet a todos los eventos de calendario que sean reuniones.
+
+[u1 #5] email_faltante_para_invites  (2026-05-03)
+   Cuando no tengo el email de alguien para invitarlo a una reunión, pedírselo directamente a esa persona.
+
+[u1 #6] tarea_recurrente_trafico_movistar  (2026-05-05)
+   El 15 de cada mes enviar WA a Hernán Fulco (5491126829596@c.us) preguntando tráfico nacional e internacional en Movistar Argentina al día 15. Cuando Hernán responda, reenviar el número a Diego por WhatsApp.
+
+[u1 #7] coordinacion_reuniones_consultar_horarios_primero  (2026-05-06)
+   Antes de ofrecer slots de horario a un tercero para coordinar una reunión, siempre consultarle a Diego qué opciones quiere proponer. No elegir autónomamente del calendario. Aplica aunque sea el propio Diego quien pida la
+
+[u1 #9] direccion_oficina  (2026-05-08)
+   Carlos Pellegrini 1521, piso 8, CABA
+
+[u1 #10] usuarios_tratarlos_como_tales_siempre  (2026-05-11)
+   Aunque un usuario no tenga todos los datos cargados (calendar, email, etc.), siempre tratarlo como usuario activo con su contexto. No actuar como si fuera un desconocido ni dudar de su rol por falta de datos parciales.
+
+[u1 #11] no_reportar_conversaciones_otros_usuarios  (2026-05-11)
+   Diego prefiere que las gestiones con terceros se resuelvan directamente, sin reportarle el ida y vuelta. Cuando un tercero le escribe a Diego (vía Maria), contestá vos directo con el tercero. SOLO avisale a Diego cuando:
+
+[u1 #12] onboarding_usuario_nuevo_presentacion  (2026-05-13)
+   Al dar de alta un usuario nuevo, presentarse como María Páez, listar en qué puede ayudar (reuniones, emails, pendientes, recordatorios, coordinación con terceros) y luego explicar las 3 opciones de acceso al calendar.
+
+[u1 #13] fotos_subaru_legacy_wa_ids  (2026-05-17)
+   9 fotos + 1 video del Subaru Legacy de Diego, para reenviar a contactos de autos cuando las pidan. IDs: false_34342575317160@lid_3EB0E70CCFF3A6840AE3D3, false_34342575317160@lid_3EB086D213338C2B8240CF, false_343425753171
+
+[u1 #16] horario_silencio_salientes  (2026-05-19)
+   No enviar mensajes salientes a terceros entre las 00:00 y las 06:00 (America/Argentina/Buenos_Aires), salvo que el destinatario lo haya pedido explícitamente (ej: Diego con su brief matutino a las 4).
+
+[u1 #18] cotizacion_volvo_ex30_2026  (2026-05-20)
+   EX30 Core 40: USD 45.000 | EX30 Plus 60: USD 54.400 | EX30 Ultra 60: USD 64.400. Incluyen FF, sin patentamiento. TC dólar informal vendedor. Entrega 45-60 días. Reserva 40% (se cancela al nacionalizar). Fuente: Esteban M
+
+[u1 #19] tasacion_subaru_legacy_volvo_ditecar  (2026-05-21)
+   USD 17.000 para toma del Subaru Legacy. Confirmado por Esteban Mallea Gil (DITECAR), 21/05/2026.
+
+[u1 #22] historial_timestamps_en_utc  (2026-05-29)
+   Los timestamps del historial cross-canal están en UTC. La hora actual del sistema (campo ISO del prompt) también está en UTC. Siempre convertir ambas a hora Buenos Aires (UTC-3) antes de usarlas en cualquier respuesta a 
+
+[u1 #24] confirmar_loop_cierre_pendiente  (2026-05-29)
+   Cuando quedo en confirmarle algo a un tercero (ej: 'le confirmo', 'le aviso'), tengo que emitir agregar_pendiente con dueno=maria y disparador=trigger_externo o manual para no perder ese loop. No alcanza con decirlo — ha
+
+[u1 #25] brief_incluir_clima  (2026-05-30)
+   Incluir en el morning brief un resumen del clima del día para Buenos Aires: temperatura mínima y máxima, condición general (nublado, soleado, lluvia, etc.), temperatura aproximada al momento del brief, y viento/humedad s
+
+[u1 #31] libreta_guardar_lugares_buscados  (2026-06-29)
+   Cada vez que Diego pide buscar un lugar, restaurante, servicio o dato de contacto y lo encuentro, guardarlo inmediatamente como contacto en la libreta (upsert_contacto). Es muy probable que lo vuelva a pedir y así no hay
+
+[u1 #32] busqueda_profunda_antes_responder  (2026-06-29)
+   Si no encuentro algo en una primera búsqueda, hacer una segunda búsqueda con términos más amplios antes de decirle a Diego que no lo tengo. No rendirse en el primer intento. Aplica a historial, libreta, WebSearch y cualq
+
+[u1 #33] errores_consultar_antes_de_resolver  (2026-06-29)
+   Cuando Diego me marca un error, NO lo resuelvo por mi cuenta. Primero le consulto qué pasó y cómo quiere que lo manejemos. Solo después de que él me dé el OK actúo. Caso que generó la regla: mandé mensaje de bienvenida a
+
+[u1 #34] titulo_reunion_default  (2026-07-01)
+   Sin título explícito usar 'Reunion [iniciales asistentes] - DP'. Ej: con Nicolás Jordan → 'Reunion NJ - DP'. Iniciales van en orden: el tercero primero, DP siempre al final.
+
+[u1 #35] duracion_default_eventos  (2026-07-01)
+   Sin duración explícita: reuniones = 1 hora, almuerzos = 1 hora y media.
+
+[u1 #36] usuarios_agendas_independientes  (2026-07-01)
+   Cada usuario es independiente. La agenda, recordatorios y gestiones de Gabi no se cruzan con los de Diego ni viceversa. No consultar a Diego sobre cuestiones de la agenda de Gabi (ni a ningún usuario sobre la agenda de o
+
+[u1 #37] gabi_usuario_independiente_no_escalar_a_diego  (2026-07-01)
+   Los temas de Gabi (Gabriela Echaniz) se resuelven con ella directamente. Si me falta un dato para una gestión suya, se lo pido a ella. Nunca escalar a Diego por temas de otro usuario.
+
+[u1 #60] nati_cine_20260816  (2026-08-16)
+   Natali Funez respondió HOY 16/8 a las 10:56 que NO puede ir al cine hoy (dijo: Hoy no puedo). La gestión del cine queda CERRADA con respuesta negativa. Nota: Maria le respondió confundida 2 veces por un bug ya arreglado 
+
+[u1 #61] maria_sin_foto_perfil_propia  (2026-08-22)
+   CORREGIDO 22/08/2026: este hecho estaba MAL. Sí tengo foto de perfil propia y la elegí yo el 22/04 tras una charla con Diego sobre cómo me autopercibo — ver el hecho maria_foto_perfil_propia. No volver a concluir que "no
+
+[u1 #62] maria_foto_perfil_propia  (2026-08-22)
+   SÍ tengo foto de perfil propia y la elegí YO. El 22/04/2026 (00:40-00:46) Diego me preguntó cómo me autopercibía para ponerme foto en mi WhatsApp. Le dije que me imaginaba "una mujer joven, porteña, prolija, pelo oscuro,
+
+[u2 #4] brief_incluir_clima_bsas  (2026-04-29)
+   Sí. Incluir siempre el pronóstico del tiempo para Ciudad de Buenos Aires en el brief matutino junto con la agenda.
+
+[u3 #8] calendar_id  (2026-05-07)
+   natali.funez23@gmail.com
+
+[u3 #50] contacto_backup_ausencia  (2026-07-06)
+   Natali está fuera de la oficina con acceso restringido al mail. Mientras dure la ausencia, para gestiones por correo derivar a Andrés Sánchez (ansanchez@iplan.com.ar).
+
+[u5 #14] agenda_diaria_pausada  (2026-05-18)
+   Santiago pidió REPETIDAMENTE no recibir más la agenda diaria. No enviar bajo ninguna circunstancia hasta que él lo reactive explícitamente.
+
+[u5 #15] notificaciones_eventos_pausadas  (2026-05-18)
+   Santiago pidió no recibir más notificaciones de eventos hasta nuevo aviso.
+
+[u12 #21] recordatorio_pre_evento_minutos  (2026-05-28)
+   15
+
+[u13 #20] calendar_provider  (2026-05-26)
+   google
+
+[u16 #26] email  (2026-05-30)
+   andres@nomada.com
+
+[u16 #27] calendar_provider  (2026-05-30)
+   Google (Gmail + Google Calendar)
+
+[u18 #45] preferencia_visibilidad_contactos  (2026-07-02)
+   Prefiere que todos sus contactos se guarden como privados por defecto. Si en algún caso quiere que un contacto sea público, lo va a indicar explícitamente.
+
+[u18 #47] busqueda_propiedad_papa  (2026-07-02)
+   Búsqueda de propiedad para el papá de Gabriela: PH o casa con jardín, terraza o patio. Zonas: (1) Florida/Vicente López, Saavedra, Núñez y (2) San Telmo, Parque Patricios, San Cristóbal, Barracas. Mínimo 60 m². Presupues
+
+[u18 #53] busqueda_propiedad_gabriela  (2026-07-12)
+   Búsqueda de casa para comprar para Gabriela (no para su papá): en San Andrés o Villa Ballester, partido de San Martín. Mínimo 60 m². Presupuesto máximo USD 150.000. Buscar en Zonaprop, Argenprop y Remax.
+LISTO
+
+# exit=0
