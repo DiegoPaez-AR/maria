@@ -328,6 +328,22 @@ async function procesar(body) {
     return { replies: [] };
   }
 
+  // ⚠️ POLÍTICA v5 (2026-08-22, decisión Diego): los USUARIOS no se atienden por
+  // WhatsApp. Si escribe un usuario (y NO es respuesta a una gestión ajena, que
+  // ya se resolvió arriba), respondemos una NEGATIVA FIJA y no corremos turno:
+  // ni LLM ni acciones. Los terceros sí se atienden normal.
+  if (u && !tercero) {
+    const bot = process.env.TELEGRAM_BOT_USERNAME ? String(process.env.TELEGRAM_BOT_USERNAME).replace(/^@/, '') : 'MariaPaezAI_bot';
+    const primer = String(u.nombre || '').trim().split(/\s+/)[0] || '';
+    const texto = `Hola ${primer}! Por política ahora no puedo atender pedidos por WhatsApp 🙏\n\nEscribime por *Telegram* (t.me/${bot} → tocá "compartir mi número") o por mail a ${process.env.ASISTENTE_FROM_EMAIL || 'maria.paez@intensa.io'} y sigo con lo tuyo al toque.`;
+    mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'entrante', de: u.wa_cus || `${digs}@c.us`, nombre: u.nombre, cuerpo,
+      metadata: { via: 'mariabridge', tipo: 'usuario_por_wa_derivado' } });
+    mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'saliente', de: u.wa_cus || `${digs}@c.us`, nombre: u.nombre, cuerpo: texto,
+      metadata: { via: 'mariabridge', tipo: 'derivacion_a_telegram' } });
+    console.log(`[wa-hook] ${u.nombre} escribió por WA → derivado a Telegram/email (sin turno)`);
+    return { replies: [{ message: texto }] };
+  }
+
   const clave = esNumero ? digs : 'n:' + String(q.sender).trim().toLowerCase();
 
   // Serializar por remitente
