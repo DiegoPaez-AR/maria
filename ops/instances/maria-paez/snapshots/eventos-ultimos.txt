@@ -1,5 +1,28 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                             cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31573  2026-08-22 11:40:58  whatsapp  saliente   541132317896@c.us                           Ahí quedó: cena el miércoles 2/9 a las 21hs en Catalino para 4. Pero me trabé mandando el WA a Catalino — tengo el envío por WhatsApp a terceros caído ahora mismo (cuenta en revisión). No tengo email 
+
+31572  2026-08-22 11:40:58  sistema   interno                                                claude_call whatsapp: 38551ms prompt=86666c raw=19102c in=8t(cache_read=130107 new=95287) out=1957t ttfb=1644ms api=30897ms turnos=5 $0.4373                                                            
+
+31571  2026-08-22 11:40:52  sistema   interno                                                acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31570  2026-08-22 11:40:38  sistema   interno                                                acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+31569  2026-08-22 11:40:38  sistema   interno                                                acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
+
+31568  2026-08-22 11:40:38  sistema   interno                                                claude_call moderacion: 6910ms prompt=1624c raw=7214c in=10t(cache_read=0 new=22494) out=452t ttfb=1489ms api=5853ms turnos=1 $0.0309                                                                   
+
+31567  2026-08-22 11:40:19  whatsapp  entrante   541132317896@c.us                           (audio de voz, transcripto) Escúchame. Bueno, veo que sí lo pudiste escuchar, porque en Telegram me respondiste directamente lo que te pregunte.                                                        
+                                                                                              Podés mandar un whatsapp a este catalino para reservar                                                                                                                                                 
+
+31566  2026-08-22 11:40:19  whatsapp  saliente   541132317896@c.us                           Anotado, son 4 para la cena en Catalino. Me falta el horario para hacer la reserva — ¿va a las 21hs como venían manejando o preferís otro?                                                              
+
+31565  2026-08-22 11:40:19  sistema   interno                                                claude_call whatsapp: 22391ms prompt=86585c raw=13621c in=6t(cache_read=74040 new=94447) out=1082t ttfb=2000ms api=21355ms turnos=4 $0.4042                                                             
+
+31564  2026-08-22 11:40:15  sistema   interno                                                acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31563  2026-08-22 11:40:14  sistema   interno                                                acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
 31562  2026-08-22 11:39:56  whatsapp  entrante   541132317896@c.us                           Somos 4 para la cena                                                                                                                                                                                    
 
 31561  2026-08-22 11:39:02  sistema   interno                                                acción ejecutada: recordar_hecho                                                                                                                                                                        
@@ -283,28 +306,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 31474  2026-08-21 17:45:05  gmail     saliente   hernan.fulco@sondeosglobal.com              ⏰ *En 15min*: Reunión feedback 08/2026 | Gustavo Garcia  (03:00 p. m.)                                                                                                                                  
                                                                                              Con: rrhh@sondeosglobal.com, gustavo.garcia@sondeosglobal.com                                                                                                                                           
                                                                                              👤 Gustavo Garcia — Gerente de Proyectos y QA en Sondeos Global                                                                                                                                          
-
-31473  2026-08-21 17:15:05  gmail     saliente   hernan.fulco@sondeosglobal.com              ⏰ *En 15min*: Reunión feedback 08/2026 | Lautaro Taretto  (02:30 p. m.)                                                                                                                                 
-                                                                                             Con: rrhh@sondeosglobal.com, lautaro.taretto@sondeosglobal.com                                                                                                                                          
-                                                                                             👤 Lautaro Taretto — No pude confirmar con confianza el rol/cargo                                                                                                                                        
-
-31472  2026-08-21 17:01:09  sistema   interno                                                meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31471  2026-08-21 16:31:26  sistema   interno                                                meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31470  2026-08-21 16:31:25  sistema   interno                                                claude_call enriquecer-contacto: 15136ms prompt=680c raw=17163c in=793t(cache_read=16365 new=32789) out=315t ttfb=1547ms api=17408ms turnos=4 $0.1810                                                   
-
-31469  2026-08-21 16:15:05  gmail     saliente   doris@capurro.com.ar                        ⏰ *En 15min*: Alianza-Surcana-Luft (SRDE Project) (01:30 p. m.)                                                                                                                                         
-                                                                                             Con: pablo.petrillo@luftlatam.com, gunninginc@gmail.com, bob.fialka@surcana.com, pmcereijo@alianzapetrolera.com.ar, paul.collens@surcana                                                                
-
-31468  2026-08-21 16:02:54  sistema   interno                                                acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email                                                                                                              
-
-31467  2026-08-21 16:02:54  sistema   interno                                                claude_call moderacion: 6392ms prompt=1793c raw=6664c in=10t(cache_read=17396 new=5148) out=394t ttfb=1285ms api=5628ms turnos=1 $0.0107                                                                
-
-31466  2026-08-21 16:02:47  sistema   interno                                                razonamiento Gmail 1a0250a594639e4c (Diego): Gabriel confirmó asistencia; cerré ambos pendientes de espera; necesito de Diego aclarar restaurante (Catalino vs Fico) y su contacto antes de reservar.   
-
-31465  2026-08-21 16:02:47  sistema   interno                                                claude_call gmail: 100473ms prompt=84028c raw=53227c in=24t(cache_read=609169 new=119718) out=6130t ttfb=1559ms api=92818ms turnos=12 $0.7346                                                           
-
-31464  2026-08-21 16:02:42  sistema   interno                                                acción ejecutada: agregar_pendiente                                                                                                                                                                     
-
-31463  2026-08-21 16:02:37  sistema   interno                                                acción ejecutada: responder_email                                                                                                                                                                       
