@@ -484,6 +484,51 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
 
 // ─── Handlers ───────────────────────────────────────────────────────────
 
+// Restaurada 2026-08-22: se la llevó por delante el borrado de handleWA
+// (vivía pegada a los FSM de WA) y quedó llamada-sin-definir en el camino
+// de EMAIL — prospectos pendientes rotos hasta que la detectó el chequeo
+// de helpers huérfanos.
+async function _abrirProspectoPendiente({ client, canal, from, pushname, cuerpo, messageId, llm }) {
+  const owner = _estadoOwner();
+  const waCusSug = (canal === 'whatsapp' && from && from.endsWith('@c.us')) ? from : null;
+  const emailSug = llm.email_sugerido || (canal === 'gmail' ? (from || '').match(/<([^>]+)>/)?.[1] || from : null);
+
+  guardarProspectoPendiente(canal, from, {
+    canal,
+    from,
+    pushname: pushname || null,
+    nombre_sugerido: llm.nombre_sugerido || null,
+    wa_cus_sugerido: llm.wa_cus_sugerido || waCusSug,
+    email_sugerido:  llm.email_sugerido  || emailSug,
+    razon: llm.razon || '',
+    original_body: cuerpo,
+    messageId,
+    ts: new Date().toISOString(),
+  });
+  if (owner) {
+    mem.log({
+      usuarioId: owner.id,
+      canal: canal === 'whatsapp' ? 'whatsapp' : 'gmail',
+      direccion: 'entrante',
+      de: from, nombre: pushname, cuerpo,
+      metadata: {
+        tipo: 'unknown_pending_created', messageId,
+        nombre_sugerido: llm.nombre_sugerido, razon: llm.razon,
+      },
+    });
+  }
+  const quien = pushname || from;
+  const sugerido = llm.nombre_sugerido ? `*${llm.nombre_sugerido}*` : '(sin nombre detectado)';
+  const razonLn  = llm.razon ? `\nRazón: ${llm.razon}` : '';
+  await _notificarOwner(client,
+    `🕵️ Me escribió *${quien}* (${from}) por ${canal}. Creo que es ${sugerido}.${razonLn}\n\nMensaje: "${cuerpo.slice(0, 400)}"\n\n¿Lo creo como usuario? Decime "sí" / "no" (o acotá nombre/datos si querés).`
+  );
+  // Al remitente NO le contestamos — el owner decide. Si insiste, su mensaje
+  // queda loggeado pero no re-avisamos.
+  console.log(`[unknown-flow/${canal}] prospecto pendiente abierto: ${from} → "${llm.nombre_sugerido || '(?)'}"`);
+  return true;
+}
+
 // handleWA / _handleWA_FSM_primera / _handleWA_FSM_segunda: ELIMINADOS
 // 2026-08-22. Eran el camino de entrada de whatsapp-web.js; desde MariaBridge
 // los mensajes de WhatsApp entran por wa-hook.js, que tiene su propio ruteo

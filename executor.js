@@ -105,6 +105,34 @@ const microsoftProvider = require('./providers/microsoft');
 // Normaliza saltos/tabs LITERALES (\n, \t) que el modelo a veces sobre-escapa
 // en el texto de un tool/acción, para que no salgan como "\n" crudos al
 // destinatario. Solo toca secuencias de escape literales; texto normal intacto.
+// GUARD ANTI-PLACEHOLDER (2026-08-22, caso Catalino): el LLM a veces emite
+// texto de relleno ("placeholder", "TODO", "...") y eso sale como mensaje real
+// a un tercero. Rechazamos antes de encolar. Se perdió el 22/8 en la limpieza
+// de código muerto y estuvo ~2h rompiendo enviar_wa/enviar_email en
+// producción — la llamada quedó, la función no.
+const _TEXTOS_BASURA = [
+  'placeholder', 'texto aqui', 'texto aquí', 'todo:', 'tbd', 'lorem ipsum',
+  'xxx', '...', 'mensaje aqui', 'mensaje aquí', '<texto>', '[texto]',
+];
+function _validarTextoSaliente(texto, accionTipo) {
+  const t = String(texto == null ? '' : texto).trim();
+  if (t.length < 12) {
+    throw new Error(
+      `${accionTipo}: el texto es demasiado corto (${t.length} caracteres). ` +
+      `Escribí el mensaje completo antes de emitir la acción — no se envía texto de relleno.`
+    );
+  }
+  const low = t.toLowerCase();
+  const pega = _TEXTOS_BASURA.find(b => low === b || low.startsWith(b));
+  if (pega) {
+    throw new Error(
+      `${accionTipo}: el texto parece un placeholder ("${t.slice(0, 30)}"). ` +
+      `Redactá el mensaje real y volvé a emitir la acción.`
+    );
+  }
+  return t;
+}
+
 function _normNL(t) {
   if (typeof t !== 'string') return t;
   return t.replace(/\\r\\n/g, '\n').replace(/\\n/g, '\n').replace(/\\t/g, '\t').replace(/\\r/g, '');
@@ -828,6 +856,25 @@ function _quitarPendiente(a, ctx) {
     throw new Error(`quitar_pendiente: no encontré el pendiente (${a.id ?? a.desc ?? `indice=${a.indice}`})`);
   }
   return { id: cerrado.id, desc: cerrado.desc, cerrado: true };
+}
+
+// Normaliza un destino de WhatsApp a wid canónico. Se perdió en la misma
+// limpieza del 22/8 que _validarTextoSaliente: programar_mensaje con
+// canal=whatsapp explotaba con ReferenceError.
+function _resolverDestinoWA(destino) {
+  const d = String(destino == null ? '' : destino).trim();
+  if (!d) throw new Error('programar_mensaje: destino de WhatsApp vacío');
+  if (/@(c\.us|lid)$/.test(d)) return d;
+  const dig = d.replace(/\D/g, '');
+  if (dig.length < 8 || dig.length > 15) {
+    throw new Error(
+      `programar_mensaje: "${destino}" no parece un número de WhatsApp válido ` +
+      `(${dig.length} dígitos). Verificá el código de país con el usuario.`
+    );
+  }
+  // Argentina: WhatsApp usa el "9" móvil tras el 54 (ver formato-9, 15/8).
+  const norm = /^54\d{10}$/.test(dig) ? '549' + dig.slice(2) : dig;
+  return `${norm}@c.us`;
 }
 
 async function _programarMensaje(a, ctx) {

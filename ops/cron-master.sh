@@ -121,6 +121,14 @@ _canary() {
     echo "canary FALLO require-smoke/migración:"; tail -8 "$out"; rm -f "$tdb"; return 1
   fi
   rm -f "$tdb"
+  # HELPERS HUÉRFANOS (2026-08-22): funciones llamadas pero nunca definidas.
+  # Ni `node --check` ni el require-smoke las ven — explotan recién al
+  # ejecutarse. Nos costó 2h de enviar_wa roto en producción (y ya había
+  # pasado antes con _esRemitenteSistemaAutomatico). Es un grep, sale gratis.
+  if ! timeout 30 node ops/tools/huerfanos.js /root/secretaria/*.js >> "$out" 2>&1; then
+    echo "canary FALLO helpers huérfanos:"; grep "HUÉRFANO" "$out" | head -5; return 1
+  fi
+
   if ! timeout 120 env -u MARIA_DB -u MARIA_VAULT_KEY -u OWNER_NOMBRE -u OWNER_WA -u OWNER_EMAIL -u SEC_DESTINATARIO_STRICT \
        npm test >> "$out" 2>&1; then
     echo "canary FALLO npm test:"; grep -E "^not ok" "$out" | head -5; return 1
