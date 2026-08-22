@@ -645,6 +645,30 @@ async function _enviarWA(a, ctx) {
 
   await _moderarSaliente(a.texto, a, ctx, 'enviar_wa', a.a);
 
+  // WARM-UP del número nuevo (2026-08-22): con WA_WARMUP=1 el teléfono NO abre
+  // chats nuevos. Si el destino no viene escribiendo (sin entrante en 24h), el
+  // mensaje quedaría en cola para siempre y el LLM lo cantaría como "ya le
+  // escribí" (pasó con Catalino). Mejor FALLAR con un mensaje instructivo: así
+  // el backstop avisa honesto y Maria propone otro canal.
+  if (process.env.WA_WARMUP === '1') {
+    const digsW = String(a.a).replace(/\D/g, '');
+    let vivo = false;
+    try {
+      vivo = !!mem.db.prepare(
+        `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='entrante'
+           AND replace(replace(COALESCE(de,''),'@c.us',''),'+','') LIKE '%' || ? || '%'
+           AND timestamp >= datetime('now','-24 hours') LIMIT 1`
+      ).get(digsW.slice(-10));
+    } catch { /* noop */ }
+    if (!vivo) {
+      throw new Error(
+        `enviar_wa: el número de WhatsApp es NUEVO y está en período de warm-up — NO puedo iniciar conversaciones con alguien que no me escribió antes. ` +
+        `El mensaje NO se envió. Decíselo al usuario con honestidad y ofrecé alternativa: mandarlo por email si el contacto tiene, o que lo mande él mismo. ` +
+        `(Solo puedo responder a chats donde ya me escribieron.)`
+      );
+    }
+  }
+
   // Canal WA v2 (2026-08-04): sin wwebjs, los mensajes INICIADOS van a una
   // cola que el teléfono (Tasker/MariaBridge) drena mandándolos por la app oficial.
   if (!ctx.waClient) {
