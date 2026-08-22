@@ -1,0 +1,26 @@
+# ejecutado: 2026-08-22T08:28:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vf.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── eventos del 21/04 sobre la foto ──");
+#   db.prepare(`SELECT timestamp,canal,direccion,de,substr(cuerpo,1,90) c,metadata_json m FROM eventos WHERE timestamp LIKE '2026-04-21%' AND (cuerpo LIKE '%foto%' OR cuerpo LIKE '%imagen%' OR cuerpo LIKE '%perfil%') ORDER BY id LIMIT 12`).all()
+#     .forEach(x=>{let via='';try{via=JSON.parse(x.m||'{}').via||''}catch{};console.log(" ",x.timestamp.slice(5,16),x.canal,x.direccion,via,"|",String(x.c).replace(/\n/g," "))});
+#   console.log("── ¿hay hechos sobre la foto/perfil? ──");
+#   db.prepare(`SELECT clave,substr(valor,1,80) v FROM hechos WHERE valor LIKE '%foto%' OR clave LIKE '%foto%' LIMIT 5`).all()
+#     .forEach(x=>console.log("  ",x.clave,"|",x.v));
+#   db.close();
+#   JS
+#   node /tmp/vf.cjs; rm -f /tmp/vf.cjs
+#   echo LISTO
+
+# ───── output ─────
+── eventos del 21/04 sobre la foto ──
+── ¿hay hechos sobre la foto/perfil? ──
+   fotos_subaru_legacy_wa_ids | 9 fotos + 1 video del Subaru Legacy de Diego, para reenviar a contactos de autos
+   maria_sin_foto_perfil_propia | No tengo cara ni foto de perfil propia — soy texto nomás. Detecté en el historia
+LISTO
+
+# exit=0
