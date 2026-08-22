@@ -134,9 +134,19 @@ if [ "$CODE_CHANGED" = 1 ]; then
     echo "canary: commit $HEAD_NOW ya marcado malo — SIN reload, esperando fix"
     CODE_CHANGED=0
   elif _canary; then
+    git rev-parse HEAD > /root/secretaria/state/.ultimo-commit-bueno 2>/dev/null || true
     echo "canary OK ($HEAD_NOW) → reload"
     rm -f "$CANARY_BAD_F"
   else
+    # ROLLBACK DEL DISCO (auditoría 22/8 #7): el reset a origin/main ya ocurrió
+    # antes de validar, así que el código ROTO queda en disco y los muchos
+    # lazy-require del path caliente (internal-api carga wa-hook/wa-outbox/
+    # mb-control por request) lo levantan aunque no recarguemos pm2. Volvemos
+    # el working tree al último commit que pasó el canary.
+    _ULT=$(cat /root/secretaria/state/.ultimo-commit-bueno 2>/dev/null)
+    if [ -n "$_ULT" ]; then
+      git reset --hard "$_ULT" -q && echo "canary: disco revertido al último commit bueno ($_ULT)"
+    fi
     echo "canary FALLÓ ($HEAD_NOW) — NO recargo pm2, prod sigue con la versión anterior en memoria"
     echo "$HEAD_NOW" > "$CANARY_BAD_F"
     _wa_owner "🔴 canary: el deploy ${HEAD_NOW:0:10} falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). Detalle en ops/.cron.log"
@@ -234,17 +244,22 @@ except Exception as ex:
   pm2 logs "$slug" --lines 200 --nostream 2>&1 | tail -200 > "$SNAPS/pm2-logs.txt"
 
   if [ -f "$DB" ]; then
+    # PRIVACIDAD (auditoría 22/8 #12): este snapshot se COMMITEA a git cada
+    # minuto, con historia irreversible. Antes iban 200 chars del cuerpo de
+    # conversaciones de TODOS los usuarios (PII de terceros incluida). Ahora
+    # solo metadatos + 40 chars, suficiente para diagnosticar.
     sqlite3 -header -column "$DB" \
-      'SELECT id, timestamp, canal, direccion, COALESCE(de,""), substr(COALESCE(cuerpo,""),1,200) AS cuerpo FROM eventos ORDER BY id DESC LIMIT 100' \
+      'SELECT id, timestamp, canal, direccion, substr(COALESCE(de,""),1,14) AS de, substr(COALESCE(cuerpo,""),1,40) AS cuerpo FROM eventos ORDER BY id DESC LIMIT 60' \
       > "$SNAPS/eventos-ultimos.txt" 2>&1
     sqlite3 -header -column "$DB" \
-      'SELECT id, estado, creado, dueno, disparador, COALESCE(recordar_desde,"") AS recordar_desde, desc, COALESCE(meta_json,"") FROM pendientes WHERE estado="abierto" ORDER BY id' \
+      'SELECT id, estado, creado, dueno, disparador, COALESCE(recordar_desde,"") AS recordar_desde, substr(desc,1,60) AS desc FROM pendientes WHERE estado="abierto" ORDER BY id' \
       > "$SNAPS/pendientes-abiertos.txt" 2>&1
+    # hechos: solo la CLAVE y el largo — el contenido es memoria personal.
     sqlite3 -header -column "$DB" \
-      'SELECT clave, valor, COALESCE(fuente,""), actualizado FROM hechos ORDER BY clave' \
+      'SELECT usuario_id, clave, length(valor) AS chars, actualizado FROM hechos ORDER BY usuario_id, clave' \
       > "$SNAPS/hechos.txt" 2>&1
     sqlite3 -header -column "$DB" \
-      'SELECT id, cuando, canal, destino, substr(COALESCE(texto,""),1,100) AS texto, COALESCE(razon,"") FROM programados WHERE enviado=0 ORDER BY cuando LIMIT 20' \
+      'SELECT id, cuando, canal, substr(destino,1,14) AS destino, substr(COALESCE(texto,""),1,40) AS texto FROM programados WHERE enviado=0 ORDER BY cuando LIMIT 20' \
       > "$SNAPS/programados.txt" 2>&1
   fi
 

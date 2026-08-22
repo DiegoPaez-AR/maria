@@ -24,6 +24,10 @@ const vinculos = require('./telegram-vinculos');
 const { construirPrompt } = require('./prompt-builder');
 const { invocarClaudeJSONConConsultas, invocarClaudeJSON } = require('./claude-client');
 const gestionAjena = require('./gestion-ajena');
+
+// Turnos en curso por chat (auditoría #11): serializa por conversación sin
+// bloquear el polling ni a los demás chats.
+const _enCursoTG = new Map();
 const loopGuard = require('./loop-guard');
 const { transcribirBuffer } = require('./transcribir');
 
@@ -521,6 +525,12 @@ async function _loop(waEstado) {
           }
         }
         if (!texto.trim()) continue; // resto de media (video/otros docs) sigue ignorado
+        // Cola POR CHAT (auditoría 22/8 #11): antes el await estaba dentro del
+        // loop de polling → un turno lento (hasta 480s) dejaba al canal
+        // PRINCIPAL sin atender a nadie y sin pedir updates. Ahora cada chat
+        // se serializa contra sí mismo y los demás siguen.
+        const _prev = _enCursoTG.get(chatId) || Promise.resolve();
+        const _tarea = _prev.catch(() => {}).then(async () => {
         try {
           if (u) {
             // Ruteo por identidad (Fase 1, 2026-08-16): si este usuario tiene
@@ -540,6 +550,9 @@ async function _loop(waEstado) {
         } finally {
           if (adjunto) { try { fs.unlinkSync(adjunto.path); } catch {} }
         }
+        });
+        _enCursoTG.set(chatId, _tarea);
+        _tarea.finally(() => { if (_enCursoTG.get(chatId) === _tarea) _enCursoTG.delete(chatId); });
       }
       loopGuard.reportar('telegram_polling', true);
     } catch (err) {
