@@ -1,0 +1,19 @@
+# ejecutado: 2026-08-22T16:23:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   bash ops/tools/mb-remoto.sh shot 2>&1 | tail -20
+#   ls -la ops/instances/maria-paez/shots/ 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+acción desconocida: shot}
+total 8
+drwxr-xr-x  2 root root 4096 Aug 22 13:45 .
+drwxr-xr-x+ 6 root root 4096 Aug 22 13:45 ..
+-rw-r--r--  1 root root    0 Aug 22 13:45 .gitkeep
+LISTO
+
+# exit=0
