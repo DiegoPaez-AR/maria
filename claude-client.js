@@ -82,6 +82,16 @@ function _argsBwrap({ attachments = [], extraBinds = [] } = {}) {
   // en su path exacto (incluyendo extensión) para que Claude Code los lea con
   // su tool Read via @<path>.
   for (const att of attachments) {
+    // 🔴 SEGURIDAD (auditoría 22/8): el path viene de un string que puede
+    // controlar un tercero (el texto del mensaje entra al prompt). Sin este
+    // resolve, "/tmp/maria-attach-x/../../root/.ssh/id_rsa" se bind-monteaba.
+    try {
+      const _r = require('path').resolve(att);
+      if (!_r.startsWith('/tmp/maria-attach-')) {
+        console.warn(`[claude-client] attachment fuera de /tmp/maria-attach-*: ${String(att).slice(0, 80)} — IGNORADO`);
+        continue;
+      }
+    } catch { continue; }
     try {
       fs.accessSync(att, fs.constants.R_OK);
       args.push('--ro-bind', att, att);

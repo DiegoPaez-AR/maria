@@ -31,7 +31,10 @@ test('paridad de nombres: switch del executor ↔ tools de action-schemas', () =
   const sw = src.slice(src.indexOf('async function ejecutarUna'), src.indexOf('// ─── Calendar'));
   const cases = new Set([...sw.matchAll(/case '([a-z_]+)':/g)].map(m => m[1]));
   const tools = new Set(TOOLS.map(t => t.name));
-  assert.deepEqual([...cases].filter(x => !tools.has(x)), [], 'cases sin tool');
+  // Acciones INTERNAS (las usa ops/cron, no el LLM): a propósito no están en
+  // el schema para que el modelo no pueda emitirlas.
+  const INTERNAS = new Set(['avisar_owner']);
+  assert.deepEqual([...cases].filter(x => !tools.has(x) && !INTERNAS.has(x)), [], 'cases sin tool');
   assert.deepEqual([...tools].filter(x => !cases.has(x)), [], 'tools sin case');
 });
 

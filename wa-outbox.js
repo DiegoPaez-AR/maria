@@ -76,13 +76,27 @@ function encolar({ usuarioId = null, numero, texto, metadata = null }) {
 
 // Vence lo viejo y devuelve UNO pendiente (el más antiguo vigente).
 function siguiente() {
+  // Vencimiento con RASTRO (auditoría 22/8 #9): antes moría en silencio y el
+  // saliente ya figuraba como enviado en eventos → falsa confirmación.
+  const _porVencer = mem.db.prepare(
+    `SELECT id, usuario_id, numero, substr(texto,1,60) t FROM wa_outbox
+      WHERE estado='pendiente' AND (creado <= datetime('now', ?) OR intentos >= ?)`
+  ).all(`-${TTL_H} hours`, MAX_INTENTOS);
   mem.db.prepare(
     `UPDATE wa_outbox SET estado='vencido' WHERE estado='pendiente' AND (creado <= datetime('now', ?) OR intentos >= ?)`
   ).run(`-${TTL_H} hours`, MAX_INTENTOS);
+  for (const v of _porVencer) {
+    console.warn(`[wa-outbox] #${v.id} VENCIDO sin entregar → ${v.numero}: "${String(v.t).replace(/\n/g, ' ')}"`);
+    try {
+      mem.log({ usuarioId: v.usuario_id || null, canal: 'sistema', direccion: 'interno',
+        cuerpo: `wa-outbox: mensaje #${v.id} a ${v.numero} VENCIÓ sin entregarse: "${String(v.t).replace(/\n/g, ' ')}"`,
+        metadata: { tipo: 'wa_outbox_vencido', outboxId: v.id, numero: v.numero } });
+    } catch { /* noop */ }
+  }
   // Lease anti-duplicado (2026-08-16): no re-servir un mensaje ya entregado a un
   // poller en los últimos LEASE_S segundos. Evita el triple-envío por polls
   // concurrentes de MariaBridge (agarraban el mismo id antes de confirmar).
-  const LEASE_S = Number(process.env.WA_OUTBOX_LEASE_S || 20);
+  const LEASE_S = Number(process.env.WA_OUTBOX_LEASE_S || 90);  // > pausa humana de la app (hasta 25s) — con 20s el mismo mensaje se servía dos veces (auditoría #5)
   // Ventana horaria: fuera de horario NO se sirve nada (queda en cola).
   if (!_enVentana()) return null;
   const row = mem.db.prepare(

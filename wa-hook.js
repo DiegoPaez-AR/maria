@@ -103,7 +103,12 @@ function _matchLibreta(digs) {
 // ── Stash de respuestas que no llegaron al deadline ────────────────────────
 const _stash = new Map(); // digs -> { ts, replies: [] }
 function _stashGuardar(digs, textos) {
-  _stash.set(digs, { ts: Date.now(), replies: textos });
+  // Poda por TTL (auditoría 22/8): un remitente que nunca vuelve dejaba su
+  // entrada para siempre — sólo se borraba al leer.
+  const TTL = 6 * 3600_000;
+  const ahora = Date.now();
+  for (const [k, v] of _stash) if (ahora - (v.ts || 0) > TTL) _stash.delete(k);
+  _stash.set(digs, { ts: ahora, replies: textos });
 }
 function _stashSacar(digs) {
   const e = _stash.get(digs);
@@ -269,7 +274,25 @@ async function procesar(body) {
       }
     }
   } else {
+    // 🔴 SEGURIDAD (auditoría 22/8): el "nombre" que manda la notificación es
+    // el pushname que ELIGE el remitente cuando el número no está agendado.
+    // Solo confiamos en él si ya hubo conversación previa con ese nombre
+    // (contacto con historial). Si no, se trata como desconocido.
     const n = String(q.sender).trim().toLowerCase();
+    const _yaHabloAntes = (() => {
+      try {
+        return !!mem.db.prepare(
+          `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='entrante'
+             AND lower(trim(COALESCE(nombre,''))) = ? AND timestamp <= datetime('now','-1 minutes') LIMIT 1`
+        ).get(n);
+      } catch { return false; }
+    })();
+    if (!_yaHabloAntes) {
+      mem.log({ canal: 'sistema', direccion: 'interno',
+        cuerpo: `wa-hook: "${String(q.sender).slice(0, 40)}" escribió sin número visible y SIN historial previo — no ruteo (identidad no verificable)`,
+        metadata: { tipo: 'wa_hook_identidad_no_verificada' } });
+      return { replies: [] };
+    }
     const us = usuarios.listarActivos().filter(x => String(x.nombre || '').trim().toLowerCase() === n);
     if (us.length === 1) {
       u = us[0];

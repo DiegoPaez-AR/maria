@@ -37,8 +37,16 @@ function resolver(id) {
 
 /** Publica un archivo (por id de media o path absoluto) → URL con token. */
 function publicar(idOPath) {
-  const abs = idOPath.startsWith('/') ? idOPath : resolver(idOPath);
-  if (!abs || !fs.existsSync(abs)) throw new Error(`media-store: no existe "${idOPath}"`);
+  const abs = idOPath.startsWith('/') ? path.resolve(idOPath) : resolver(idOPath);
+  // 🔴 SEGURIDAD (auditoría 22/8): la rama "path absoluto" salteaba el guard
+  // anti-traversal → enviar_archivo_wa con "/root/secretaria/config/secrets.conf"
+  // publicaba el archivo a la web ANTES de validar destinatario. Solo se puede
+  // publicar lo que está en MEDIA_DIR o en los adjuntos temporales del turno.
+  const _base = path.resolve(MEDIA_DIR);
+  if (!abs || !(abs.startsWith(_base + path.sep) || abs.startsWith('/tmp/maria-attach-'))) {
+    throw new Error(`media-store: "${String(idOPath).slice(0, 60)}" no es un archivo publicable (solo adjuntos guardados)`);
+  }
+  if (!fs.existsSync(abs)) throw new Error(`media-store: no existe "${idOPath}"`);
   _asegurarDir(PUB_DIR);
   const ext = (abs.match(/\.(\w{1,5})$/) || [])[1] || 'bin';
   const token = crypto.randomBytes(8).toString('hex');

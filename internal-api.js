@@ -303,7 +303,7 @@ function start({ waClient } = {}) {
       }
 
       if (req.url === '/reload-usuarios') {
-        usuarios.refrescarCache?.();
+        // refrescarCache no existe — endpoint no-op (auditoría). Se mantiene por compat de callers viejos.
         return send(200, { ok: true, usuarios: usuarios.listarActivos().length });
       }
 

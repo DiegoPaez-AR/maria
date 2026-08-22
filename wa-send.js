@@ -256,13 +256,7 @@ async function enviarWAUsuario(client, usuario, texto, opts = {}) {
         usuarioId: usuario.id, numero: String(destinoCola).replace(/@.*/, ''), texto,
         metadata: { ...(metadata || {}), via: 'outbox_bridge', tag },
       });
-      if (logSaliente) {
-        try {
-          mem.log({ usuarioId: usuario.id, canal: 'whatsapp', direccion: 'saliente',
-            de: destinoCola, nombre: usuario.nombre, cuerpo: texto,
-            metadata: { ...(metadata || {}), via: 'outbox_bridge', outboxId: id, tag } });
-        } catch { /* noop */ }
-      }
+      // el saliente se loguea al confirmar la entrega real (auditoría #10)
       console.log(`[wa-send] ${tag}: sin waClient → outbox #${id} (bridge) para ${usuario.nombre}`);
       return { destinoFinal: destinoCola, enviado: true, canal: 'whatsapp', outboxId: id };
     } catch (errCola) {
@@ -339,12 +333,7 @@ async function enviarWADirecto(client, destinoCrudo, texto, opts = {}) {
       usuarioId, numero: String(destinoCrudo).replace(/@.*/, ''), texto,
       metadata: { ...(metadata || {}), via: 'outbox_bridge', tag },
     });
-    if (logSaliente) {
-      try {
-        mem.log({ usuarioId, canal: 'whatsapp', direccion: 'saliente', de: destinoCrudo,
-          cuerpo: texto, metadata: { ...(metadata || {}), via: 'outbox_bridge', outboxId: id, tag } });
-      } catch { /* noop */ }
-    }
+    // idem: el saliente se loguea al confirmar la entrega real (auditoría #10)
     console.log(`[wa-send] ${tag}: sin waClient → outbox #${id} (bridge)`);
     return { destinoFinal: destinoCrudo, enviado: true, outboxId: id };
   }

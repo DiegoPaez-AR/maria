@@ -76,7 +76,10 @@ Ante la MÍNIMA duda: {"relacionado": false, "n": null}.`;
   const { json } = await invocarClaudeJSON(prompt, {
     timeoutMs: 25000,
     extraArgs: ['--model', process.env.MARIA_MOD_MODEL || 'haiku'],
-    audit: { usuarioId: u.id, canal: `${canal}-gestion-ajena` },
+    // 🔴 SEGURIDAD (auditoría 22/8): usuarioId != null habilitaba las tools MCP
+    // en un clasificador que recibe texto de un remitente → prompt injection
+    // podía mandar WhatsApps/mails. Igual criterio que el pre-pass de Telegram.
+    audit: { usuarioId: null, canal: `${canal}-gestion-ajena` },
   });
   if (!json || json.relacionado !== true || !json.n) return null;
   const g = gestiones[Number(json.n) - 1];

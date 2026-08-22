@@ -808,15 +808,19 @@ function porContacto(usuarioId, identificador, { limit = 20 } = {}) {
   return qPorContactoUsuario.all(usuarioId, identificador, identificador, limit).map(hidratar);
 }
 
+// LIMIT defensivo (auditoría 22/8): antes traía TODOS los eventos de la
+// ventana y recortaba en JS — un loop de eventos sistema inflaba memoria y
+// tiempo. Se piden los N más recientes y se revierte al orden cronológico.
 const qDesdeHorasUsuario = db.prepare(`
   SELECT id, timestamp, usuario_id, canal, direccion, de, nombre, asunto, cuerpo, tipo_original, metadata_json
   FROM eventos
   WHERE usuario_id = ? -- idem: sin eventos sistema NULL (2026-07-02)
     AND timestamp >= datetime('now', ?)
-  ORDER BY timestamp ASC, id ASC
+  ORDER BY timestamp DESC, id DESC
+  LIMIT ?
 `);
-function desdeHoras(usuarioId, horas) {
-  return qDesdeHorasUsuario.all(usuarioId, `-${Number(horas)} hours`).map(hidratar);
+function desdeHoras(usuarioId, horas, { max = 400 } = {}) {
+  return qDesdeHorasUsuario.all(usuarioId, `-${Number(horas)} hours`, Number(max)).map(hidratar).reverse();
 }
 
 function contextoCrossCanal(usuarioId, { desdeHoras: horas = 24, max = 50, tz = null } = {}) {

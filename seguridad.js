@@ -217,9 +217,9 @@ function validarDestinatario({ usuario, canal, destino }) {
         SELECT 1 FROM eventos
         WHERE usuario_id = ? AND canal = 'gmail' AND direccion = 'entrante'
           AND timestamp >= datetime('now', '-30 days')
-          AND LOWER(de) LIKE ?
+          AND LOWER(de) LIKE ? ESCAPE '\\'
         LIMIT 1
-      `).get(usuario.id, `%${dest}%`);
+      `).get(usuario.id, `%${String(dest).replace(/[%_\\]/g, (c) => '\\' + c)}%`);   // escape LIKE (auditoría 22/8: dest lo emite el LLM)
       if (fila) {
         return { ok: true, motivo: 'hilo activo (entrante reciente)' };
       }

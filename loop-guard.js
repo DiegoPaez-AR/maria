@@ -29,11 +29,12 @@ async function _avisarOwner(texto) {
   try {
     const owner = usuarios.obtenerOwner();
     if (!owner) return;
-    const dest = owner.wa_lid || owner.wa_cus;
-    if (dest && _waClient) {
-      await waSend.enviarWADirecto(_waClient, dest, texto, { tag: 'loop_guard', usuarioId: owner.id });
-      return;
-    }
+    // Política v4/v5: al owner se le habla por Telegram → email (auditoría):
+    // enviarWAUsuario aplica la cadena correcta aunque no haya waClient.
+    try {
+      const r = await waSend.enviarWAUsuario(_waClient, owner, texto, { tag: 'loop_guard', logSaliente: false });
+      if (r) return;
+    } catch (e) { console.warn('[loop-guard] aviso por canal preferido falló:', e.message); }
     // Fallback mail (ojo: si la causa es el propio OAuth, esto también falla —
     // por eso WA es el canal preferido).
     if (owner.email) {

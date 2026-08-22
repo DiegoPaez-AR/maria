@@ -77,9 +77,12 @@ _wa_owner() {
   _own=$(grep -E '^OWNER_WA=' "$_cf" | cut -d= -f2- | tr -d '"')
   _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' /root/secretaria/config/secrets.conf 2>/dev/null | cut -d= -f2- | tr -d '"')
   [ -z "$_sec" ] && _sec=$(grep -E '^ASISTENTE_INTERNAL_SECRET=' "$_cf" | cut -d= -f2- | tr -d '"')
-  [ -n "$_port" ] && [ -n "$_own" ] && [ -n "$_sec" ] && curl -s -m 10 -X POST "http://127.0.0.1:$_port/send-wa" \
+  # Auditoría 22/8 (#8): /send-wa devuelve 503 sin waClient (o sea SIEMPRE en la
+  # era MariaBridge) → las alertas de canary fallido no llegaban a nadie hace
+  # semanas. /accion con enviar_wa usa la cadena correcta (TG → email → outbox).
+  [ -n "$_port" ] && [ -n "$_sec" ] && curl -s -m 15 -X POST "http://127.0.0.1:$_port/accion" \
     -H "x-intensa-secret: $_sec" -H 'Content-Type: application/json' \
-    -d "{\"to\":\"$_own\",\"body\":\"$_msg\"}" >/dev/null 2>&1 || true
+    -d "{\"usuarioId\":1,\"accion\":{\"tipo\":\"avisar_owner\",\"texto\":\"$_msg\"},\"canalOrigen\":\"sistema\"}" >/dev/null 2>&1 || true
 }
 _canary() {
   local out=/tmp/canary-tick.log
@@ -110,7 +113,9 @@ _canary() {
           './moderacion','./loop-guard','./wa-validate','./vault','./i18n',
           './calendar-watch','./cumple-avisos','./diferidos-drainer','./poda-eventos',
           './memoria-curada','./clima','./providers','./google','./context-fetcher',
-          './net-retry','./wa-send','./telegram-vinculos','./telegram-handler'].forEach(m => require(m));
+          './net-retry','./wa-send','./telegram-vinculos','./telegram-handler',
+          './wa-hook','./wa-outbox','./gestion-ajena','./mb-control','./media-store',
+          './unknown-flow','./silencio','./session-manager','./transcribir'].forEach(m => require(m));
          console.log('requires OK');
        " >> "$out" 2>&1 ); then
     echo "canary FALLO require-smoke/migración:"; tail -8 "$out"; rm -f "$tdb"; return 1

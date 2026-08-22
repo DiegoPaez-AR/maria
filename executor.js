@@ -162,6 +162,7 @@ async function ejecutarUna(accion, ctx) {
     case 'enviar_email':       return await _enviarEmail(accion, ctx);
     case 'enviar_wa':          return await _enviarWA(accion, ctx);
     case 'enviar_archivo_wa':  return await _enviarArchivoWA(accion, ctx);
+    case 'avisar_owner':       return await _avisarOwner(accion, ctx);   // interna (ops/cron), no está en el schema del LLM
     case 'agregar_pendiente':  return _agregarPendiente(accion, ctx);
     case 'quitar_pendiente':   return _quitarPendiente(accion, ctx);
     case 'posponer_pendiente': return _posponerPendiente(accion, ctx);
@@ -735,6 +736,17 @@ async function _enviarWA(a, ctx) {
 // WhatsApp — publicamos el archivo como LINK con token (intensa.io/_dl, vive
 // 30 días) y mandamos texto+link por el camino normal de enviar_wa (hereda
 // moderación, validación de destinatario, outbox y auto-gestión).
+// Aviso al owner por el canal correcto (Telegram → email → WA). La usa
+// ops/cron-master.sh para las alertas de canary/deploy (auditoría #8).
+async function _avisarOwner(a) {
+  _requerir(a, ['texto']);
+  const owner = usuarios.obtenerOwner();
+  if (!owner) throw new Error('avisar_owner: no hay owner configurado');
+  const waSend = require('./wa-send');
+  const r = await waSend.enviarWAUsuario(null, owner, String(a.texto), { tag: 'aviso_ops', logSaliente: false });
+  return { avisado: true, canal: (r && r.canal) || 'desconocido' };
+}
+
 async function _enviarArchivoWA(a, ctx) {
   _requerir(a, ['a', 'archivo']);
   const mediaStore = require('./media-store');
