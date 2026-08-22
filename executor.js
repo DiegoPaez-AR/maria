@@ -548,6 +548,7 @@ async function _responderEmail(a, ctx) {
 //  - acepta to/cc/bcc (string o array) y replyTo opcional
 //  - devuelve { id, threadId } del mensaje nuevo
 async function _enviarEmail(a, ctx) {
+  if (a && a.texto) _validarTextoSaliente(a.texto, 'enviar_email');
   _requerir(a, ['to', 'asunto', 'texto']);
   a.texto = _normNL(a.texto);
   // Validar destinatarios contra libreta visible / usuarios activos.
@@ -635,9 +636,25 @@ function _resolverDestinoWA(a) {
   return waSend.resolverPorPersistencia(a);
 }
 
+// Textos basura que el LLM a veces emite como relleno mientras "piensa"
+// (22/8: le mandó literalmente "placeholder" a Catalino Restaurante). Un
+// mensaje a un tercero real no se puede recuperar → guard determinístico.
+const RE_TEXTO_BASURA = /^\s*(placeholder|lorem ipsum|todo|tbd|xxx+|test|texto|mensaje|\.{2,}|-{2,}|\[.*\]|<.*>)\s*$/i;
+
+function _validarTextoSaliente(texto, accion) {
+  const t = String(texto || '').trim();
+  if (t.length < 12 || RE_TEXTO_BASURA.test(t)) {
+    throw new Error(
+      `${accion}: el texto ("${t.slice(0, 40)}") no es un mensaje real — parece un placeholder o quedó incompleto. ` +
+      `NO lo envié. Escribí el mensaje COMPLETO y volvé a emitir la acción.`
+    );
+  }
+}
+
 async function _enviarWA(a, ctx) {
   _requerir(a, ['a', 'texto']);
   a.texto = _normNL(a.texto);
+  _validarTextoSaliente(a.texto, 'enviar_wa');
 
   // Validar destinatario contra libreta visible / usuarios activos.
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
