@@ -1,0 +1,29 @@
+# ejecutado: 2026-08-22T14:53:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; grep -i "canary" ops/.cron.log | tail -2
+#   [ -f state/.canary-bad-commit ] && echo "⚠️ BLOQUEADO: $(cat state/.canary-bad-commit)" || echo "canary limpio ✓"
+#   echo "── npm test en el VPS ──"; npm test 2>&1 | tail -6
+#   echo "── lease efectivo ──"; node -e "console.log('LEASE_S:', process.env.WA_OUTBOX_LEASE_S || '90 (default nuevo)')"
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+canary OK (5c8d50c36b83538eb024112ae89aa647a5c9c574) → reload
+canary OK (e944ff8a3e967ff9b18251458fb4906b983ce23d) → reload
+canary limpio ✓
+── npm test en el VPS ──
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16911.383668
+── lease efectivo ──
+LEASE_S: 90 (default nuevo)
+LISTO
+
+# exit=0
