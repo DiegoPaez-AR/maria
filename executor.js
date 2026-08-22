@@ -648,6 +648,32 @@ async function _enviarWA(a, ctx) {
 
   await _moderarSaliente(a.texto, a, ctx, 'enviar_wa', a.a);
 
+  // POLÍTICA v5 — CORTAR DE RAÍZ (decisión Diego 2026-08-22): si el destino es
+  // un USUARIO activo, el mensaje NO sale por WhatsApp. Va por Telegram y, si
+  // no tiene, por email. El razonamiento de Diego: si Maria le escribe por WA
+  // y esa persona contesta por WA, el wa-hook le devuelve la negativa fija
+  // ("no puedo atenderte por acá") — abrir una conversación en un canal donde
+  // después se la cerrás es absurdo. Hasta hoy el guard sólo vivía en
+  // enviarWAUsuario, así que un `enviar_wa` con el número crudo lo esquivaba
+  // (caso Nati, 22/8: usuaria, y el mensaje salió igual por WhatsApp).
+  const _destUsuario = (() => {
+    try { return usuarios.resolverPorWa(a.a); } catch { return null; }
+  })();
+  if (_destUsuario && _destUsuario.activo) {
+    const r = await waSend.enviarWAUsuario(null, _destUsuario, a.texto, {
+      tag: `enviar_wa/usuario:${_destUsuario.nombre}`,
+      metadata: { destinoOriginal: a.a, canalOrigen: ctx.canalOrigen || null, motivo: 'politica_v5_usuario_sin_wa' },
+    });
+    const canalReal = r && r.canal === 'gmail' ? 'email' : (r && r.canal) || 'su canal';
+    const gestionU = _autoGestionTercero(a, ctx);
+    return {
+      a: a.a, enviado: !!(r && r.enviado), via: canalReal,
+      usuario_destino: _destUsuario.nombre, gestion_auto: gestionU,
+      nota: `${_destUsuario.nombre} es usuario de Maria, así que por política NO se le escribe por WhatsApp: el mensaje salió por ${canalReal.toUpperCase()}. ` +
+            `Contáselo así al usuario que te lo pidió — NO digas que se lo mandaste por WhatsApp.`,
+    };
+  }
+
   // WARM-UP del número nuevo (2026-08-22): con WA_WARMUP=1 el teléfono NO abre
   // chats nuevos. Si el destino no viene escribiendo (sin entrante en 24h), el
   // mensaje quedaría en cola para siempre y el LLM lo cantaría como "ya le
@@ -682,7 +708,14 @@ async function _enviarWA(a, ctx) {
       metadata: { destinoOriginal: a.a, canalOrigen: ctx.canalOrigen || null },
     });
     const gestion = _autoGestionTercero(a, ctx);
-    return { a: a.a, enviado: true, via: 'telefono', outboxId: id, gestion_auto: gestion, nota: 'sale del teléfono en menos de 1 minuto' };
+    return {
+      a: a.a, encolado: true, enviado: false, via: 'telefono', outboxId: id, gestion_auto: gestion,
+      // La capa de comportamiento humano (22/8) mete jitter de 30s-4min y
+      // cadencia de 3-8min entre chats distintos. Decir "ya se lo mandé" es
+      // falso: Diego miró WhatsApp Web en el hueco y no vio nada (22/8).
+      nota: 'QUEDÓ EN COLA, todavía NO salió. El teléfono lo manda en unos minutos (hay una pausa deliberada para que el uso parezca humano). ' +
+            'Decile al usuario "se lo mando ahora/en unos minutos", NUNCA "ya se lo mandé". Si te preguntan si respondió, aclarales que puede ni haber salido todavía.',
+    };
   }
 
   let destinoFinal;
@@ -888,18 +921,39 @@ async function _programarMensaje(a, ctx) {
   if (!_v.ok) throw new Error(`programar_mensaje: ${_v.motivo}.`);
   await _moderarSaliente(`${a.asunto || ''}\n${a.texto || ''}`, a, ctx, 'programar_mensaje', a.destino);
   let destino = a.destino;
-  if (a.canal === 'whatsapp') destino = _resolverDestinoWA(destino);
+  let canalFinal = a.canal;
+  if (canalFinal === 'whatsapp') {
+    // Misma política v5 que enviar_wa: a un USUARIO no se le programa un
+    // WhatsApp. Si tiene email, el programado se convierte a gmail; si no,
+    // falla explícito (mejor que agendar algo que después no sale).
+    const uDest = (() => { try { return usuarios.resolverPorWa(destino); } catch { return null; } })();
+    if (uDest && uDest.activo) {
+      if (uDest.email) {
+        canalFinal = 'gmail';
+        destino = uDest.email;
+        console.log(`[executor] programar_mensaje: ${uDest.nombre} es usuario → programado por EMAIL (politica_v5_usuario_sin_wa)`);
+      } else {
+        throw new Error(
+          `programar_mensaje: ${uDest.nombre} es usuario de Maria y por política no se le escribe por WhatsApp, ` +
+          `pero no tiene email cargado. Pedile el mail al usuario o programalo por otro medio.`
+        );
+      }
+    } else {
+      destino = _resolverDestinoWA(destino);
+    }
+  }
   const id = mem.programarMensaje({
     usuarioId: ctx.usuario.id,
     cuando: a.cuando,
-    canal: a.canal,
+    canal: canalFinal,
     destino,
     asunto: a.asunto || null,
     texto: a.texto,
     razon: a.razon || 'usuario',
     metadata: a.metadata || null,
   });
-  return { id, cuando: a.cuando, canal: a.canal, destino, programado: true };
+  return { id, cuando: a.cuando, canal: canalFinal, destino, programado: true,
+    ...(canalFinal !== a.canal ? { nota: `El destinatario es usuario de Maria: se programó por ${canalFinal.toUpperCase()}, no por WhatsApp. Aclaráselo al usuario.` } : {}) };
 }
 
 function _cancelarProgramado(a, ctx) {
