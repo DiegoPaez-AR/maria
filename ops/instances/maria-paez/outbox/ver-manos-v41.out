@@ -1,0 +1,30 @@
+# ejecutado: 2026-08-22T09:37:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vm.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,300) r FROM mb_control ORDER BY id DESC LIMIT 5").all()
+#     .reverse().forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"] →",(x.r||"(sin resultado)").slice(0,260)));
+#   db.close();
+#   JS
+#   node /tmp/vm.cjs; rm -f /tmp/vm.cjs
+#   echo "── logs ctl ──"; grep "\[ctl\]" ~/.pm2/logs/maria-paez-out.log | tail -5
+#   echo LISTO
+
+# ───── output ─────
+#6 nodos [ok] → [||423,839] [|--|464,839] [||360,1436] [|Messages notificat|195,1303] [|WhatsApp notificat|305,1303] [|Moto notification:|415,1303] [|Hello You notifica|525,1303] [|Games notification|635,1303] [|Security & privacy|697,1303] 
+#7 ping [pendiente] → (sin resultado)
+#8 home [pendiente] → (sin resultado)
+#9 tap [pendiente] → (sin resultado)
+#10 nodos [pendiente] → (sin resultado)
+── logs ctl ──
+2026-08-22 09:26:34: [MB v3.9] 09:25:55 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:26:34: [MB v3.9] 09:26:33 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:26:47: [MB v3.9] 09:26:38 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:26:47: [MB v3.9] 09:26:43 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:30:52: [MB v3.9] 09:28:44 I [ctl] comando #2: tap {"x":446,"y":816}
+LISTO
+
+# exit=0
