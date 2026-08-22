@@ -1,0 +1,12 @@
+{
+  "ts": "2026-08-22T20:05:03Z",
+  "instance": "maria-paez",
+  "overall_ok": false,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":709864,"restarts":332} }
+    ,"snapshot_recent": { "ok": false, "detail": {"age_seconds":420,"hint":"cron-master.sh no está corriendo o falla"} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":19448} }
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":7} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+  }
+}
