@@ -1,0 +1,57 @@
+# ejecutado: 2026-08-22T12:25:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vv5.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("═══ 1. DERIVACIÓN: usuario por WA ═══");
+#   db.prepare(`SELECT timestamp,direccion,substr(cuerpo,1,100) c,metadata_json m FROM eventos WHERE canal='whatsapp' AND timestamp>=datetime('now','-45 minutes') ORDER BY id`).all()
+#     .forEach(x=>{let t='';try{t=JSON.parse(x.m||'{}').tipo||''}catch{};console.log(" ",x.timestamp.slice(11,19),x.direccion==='entrante'?'←':'→',t,"|",String(x.c).replace(/\n/g," "))});
+#   console.log("═══ 2. RESERVA a Catalino: outbox ═══");
+#   db.prepare(`SELECT id,creado,estado,intentos,numero,substr(texto,1,80) t,metadata_json m FROM wa_outbox WHERE creado>=datetime('now','-45 minutes') ORDER BY id`).all()
+#     .forEach(x=>console.log("  #"+x.id,x.creado.slice(11,16),"["+x.estado+"] int:"+x.intentos,x.numero,"|",String(x.t).replace(/\n/g," ")));
+#   console.log("═══ 3. pedido por Telegram + respuesta ═══");
+#   db.prepare(`SELECT timestamp,direccion,substr(cuerpo,1,110) c FROM eventos WHERE canal='telegram' AND timestamp>=datetime('now','-45 minutes') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),x.direccion==='entrante'?'←':'→',String(x.c).replace(/\n/g," ")));
+#   console.log("═══ 4. acciones ═══");
+#   db.prepare(`SELECT timestamp,substr(cuerpo,1,90) c FROM eventos WHERE canal='sistema' AND timestamp>=datetime('now','-45 minutes') AND (cuerpo LIKE '%acción%' OR cuerpo LIKE '%wa-hook%') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),String(x.c).replace(/\n/g," ")));
+#   db.close();
+#   JS
+#   node /tmp/vv5.cjs; rm -f /tmp/vv5.cjs
+#   echo "═══ 5. MariaBridge: cómo salió el envío ═══"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -12
+#   echo LISTO
+
+# ───── output ─────
+═══ 1. DERIVACIÓN: usuario por WA ═══
+  14:59:49 ← usuario_por_wa_derivado | (audio de voz, transcripto) María, ya quedó agendada la reunión con Fulco y con Manu Carrasco, ¿para
+  14:59:49 → derivacion_a_telegram | Hola Diego! Por política ahora no puedo atender pedidos por WhatsApp 🙏  Escribime por *Telegram* (t.
+  15:09:45 →  | placeholder
+  15:09:52 →  | Hola, disculpen el mensaje anterior, fue un error técnico de mi lado, por favor ignorarlo. Les escri
+═══ 2. RESERVA a Catalino: outbox ═══
+  #236 15:04 [entregado] int:2 5491163846461 | placeholder
+  #237 15:05 [entregado] int:1 5491163846461 | Hola, disculpen el mensaje anterior, fue un error técnico de mi lado, por favor 
+═══ 3. pedido por Telegram + respuesta ═══
+  15:04:18 ← María, ¿puedes mandar un whatsapp a Catalino Restaurant para hacer la reserva del 2 de septiembre a las 9 de l
+  15:05:14 → Che, perdón, tuve un problemita técnico: al ir a escribirle a Catalino se disparó por error un mensaje con un 
+═══ 4. acciones ═══
+  15:04:47 acción ejecutada: enviar_wa
+  15:05:01 acción ejecutada: enviar_wa
+═══ 5. MariaBridge: cómo salió el envío ═══
+2026-08-22 11:59:43: [MB v4.1] 11:59:39 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:05)
+2026-08-22 11:59:43: [MB v4.1] 11:59:40 I [media] audio de "Diego Paez" cazado: PTT-20260822-WA0003.opus (10KB) — subiendo
+2026-08-22 11:59:53: [MB v4.1] 11:59:51 I [media] audio procesado OK
+2026-08-22 11:59:53: [MB v4.1] 11:59:51 I [media] reply a "Diego Paez": ENVIADA
+2026-08-22 12:09:48: [MB v4.1] 12:09:42 I [frio] abriendo chat 5491163846461 (#236)
+2026-08-22 12:09:48: [MB v4.1] 12:09:45 I [frio] botón send encontrado — tap
+2026-08-22 12:09:48: [MB v4.1] 12:09:46 I [frio] verificación #236: ENVIADO
+2026-08-22 12:09:48: [MB v4.1] 12:09:46 I [outbox] enviado EN FRÍO (accesibilidad) → 5491163846461
+2026-08-22 12:09:58: [MB v4.1] 12:09:51 I [frio] abriendo chat 5491163846461 (#237)
+2026-08-22 12:09:58: [MB v4.1] 12:09:52 I [frio] botón send encontrado — tap
+2026-08-22 12:09:58: [MB v4.1] 12:09:54 I [frio] verificación #237: ENVIADO
+2026-08-22 12:09:58: [MB v4.1] 12:09:54 I [outbox] enviado EN FRÍO (accesibilidad) → 5491163846461
+LISTO
+
+# exit=0
