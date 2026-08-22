@@ -15,6 +15,22 @@ cd /root/secretaria || exit 1
 
 DEDUP_S=21600  # 6h
 
+# ── AUTO-RESCATE DEL CANAL DE DEPLOY (incidente 2026-08-22) ────────────────
+# cron-master toma un flock global y, si un script del inbox se cuelga, retiene
+# el lock para siempre: cero snapshots, cero inbox, cero outbox, en SILENCIO.
+# Este healthcheck corre desde su propio crontab (fuera del lock), así que es
+# el único que puede rescatarlo. Matamos cualquier tenedor del lock con más de
+# 10 min de vida (un tick sano dura segundos). Los hijos heredan el fd, así que
+# fuser los lista y caen con el padre.
+for _p in $(fuser /tmp/maria-cron-master.lock 2>/dev/null); do
+  _et=$(ps -o etimes= -p "$_p" 2>/dev/null | tr -d ' ')
+  if [ -n "$_et" ] && [ "$_et" -gt 600 ]; then
+    echo "[hc] cron-master colgado: pid $_p hace ${_et}s — lo mato para liberar el canal"
+    kill -9 "$_p" 2>/dev/null
+  fi
+done
+
+
 for cf in config/instances/*.conf; do
   slug=$(basename "$cf" .conf)
   override=$(grep -E '^ASISTENTE_SLUG=' "$cf" | head -1 | cut -d= -f2- | tr -d '"')

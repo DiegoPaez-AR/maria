@@ -145,11 +145,17 @@ if [ "$CODE_CHANGED" = 1 ]; then
     # el working tree al último commit que pasó el canary.
     _ULT=$(cat /root/secretaria/state/.ultimo-commit-bueno 2>/dev/null)
     if [ -n "$_ULT" ]; then
-      git reset --hard "$_ULT" -q && echo "canary: disco revertido al último commit bueno ($_ULT)"
+      # OJO (incidente 2026-08-22): revertir TODO el árbol re-instalaba la
+      # versión VIEJA de este mismo script. Como los cambios a cron-master.sh
+      # tienen lag de 1 tick, el canary volvía a correr con la lista de
+      # require-smoke vieja, fallaba de nuevo, revertía de nuevo… loop eterno.
+      # Revertimos SOLO el código de runtime; ops/ (y este script) quedan al día.
+      git checkout "$_ULT" -q -- . ':!ops' ':!config' \
+        && echo "canary: runtime revertido al último commit bueno ($_ULT) — ops/ queda al día"
     fi
     echo "canary FALLÓ ($HEAD_NOW) — NO recargo pm2, prod sigue con la versión anterior en memoria"
     echo "$HEAD_NOW" > "$CANARY_BAD_F"
-    _wa_owner "🔴 canary: el deploy ${HEAD_NOW:0:10} falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. OJO: no reinicies pm2 hasta pushear el fix (el disco tiene el código roto). Detalle en ops/.cron.log"
+    _wa_owner "🔴 canary: el deploy ${HEAD_NOW:0:10} falló los checks — pm2 NO se recargó, Maria sigue corriendo la versión anterior EN MEMORIA. El disco ya fue revertido al último commit bueno, así que reiniciar pm2 es seguro. Detalle en ops/.cron.log"
     CODE_CHANGED=0
   fi
 fi
@@ -219,7 +225,12 @@ for inst in "${INSTANCES[@]}"; do
           [ -f /root/secretaria/config/secrets.conf ] && . /root/secretaria/config/secrets.conf
           set +a
         fi
-        bash "$cmd_file" 2>&1
+        # TIMEOUT OBLIGATORIO (incidente 2026-08-22): un script que no termina
+        # retiene el flock global y CONGELA el canal entero — sin snapshots,
+        # sin inbox, sin outbox, en silencio. 5 min es más que de sobra.
+        timeout --kill-after=30 300 bash "$cmd_file" 2>&1
+        _rc=$?
+        [ $_rc -eq 124 ] || [ $_rc -eq 137 ] && echo "⏱️ TIMEOUT: el script pasó los 300s y fue matado (rc=$_rc)"
       )
       echo ""
       echo "# exit=$?"
