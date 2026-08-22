@@ -1,0 +1,86 @@
+# ejecutado: 2026-08-22T20:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── TODO lo que vio el bridge entre 19:40 y 20:05 ──"
+#   timeout 20 awk '/2026-08-22 19:4[0-9]|2026-08-22 20:0[0-5]/' /root/.pm2/logs/maria-paez-out.log | grep -E "\[MB|wa-hook|wa-outbox|entrante" | head -40
+#   echo ""
+#   echo "── entrantes de WhatsApp registrados hoy después de las 19:00 ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,de,nombre,substr(cuerpo,1,80) c FROM eventos
+#      WHERE canal='whatsapp' AND direccion='entrante' AND timestamp >= datetime('now','-1 day')
+#      ORDER BY timestamp DESC LIMIT 15"""):
+#       print(' ',r['timestamp'],'|',r['nombre'] or r['de'],'|',(r['c'] or '').replace('\n',' '))
+#   print("\n── outbox 239 (el mensaje a Fico) ──")
+#   for r in db.execute("SELECT id,numero,estado,creado,entregado,substr(texto,1,60) t FROM wa_outbox WHERE id>=238"):
+#       print(' ',dict(r))
+#   print("\n── gestiones/follow-ups abiertos ──")
+#   try:
+#       for r in db.execute("""SELECT id,desc,dueno,disparador,esperando_de,estado FROM pendientes
+#           WHERE estado='abierto' AND esperando_de IS NOT NULL LIMIT 10"""):
+#           print(' ',dict(r))
+#   except Exception as e: print('  (', e, ')')
+#   db.close()
+#   PY
+#   echo ""
+#   echo "── notificaciones descartadas por los filtros del bridge ──"
+#   timeout 15 grep -E "\[MB.*(descart|filtr|dedupe|sin acción|eco|vacío)" /root/.pm2/logs/maria-paez-out.log | tail -15
+#   echo LISTO
+
+# ───── output ─────
+── TODO lo que vio el bridge entre 19:40 y 20:05 ──
+2026-08-22 19:41:24: [wa-outbox] #239 encolado → +5491134897992 (Hola! Soy Maria, la secretaria de Diego …)
+2026-08-22 19:45:53: [MB v4.4] 19:45:54 I [frio] abriendo chat 5491134897992 (#239)
+2026-08-22 19:46:03: [MB v4.4] 19:45:55 I [frio] botón send encontrado — 'escribiendo' 12s antes de enviar
+2026-08-22 19:46:07: [wa-outbox] #239 entregado por el teléfono
+2026-08-22 19:46:13: [MB v4.4] 19:46:08 I [frio] verificación #239: ENVIADO
+2026-08-22 19:46:13: [MB v4.4] 19:46:08 I [outbox] enviado EN FRÍO (accesibilidad) → 5491134897992
+2026-08-22 19:47:23: [MB v4.4] 19:47:23 I [notif] entrante de "Fico restaurante": Hola
+2026-08-22 19:47:33: [MB v4.4] 19:47:31 I [notif] entrante de "Fico restaurante": si, tenemos lugar
+2026-08-22 19:47:53: [MB v4.4] 19:47:45 I [notif] entrante de "Fico restaurante": ya la dejo anotada
+
+── entrantes de WhatsApp registrados hoy después de las 19:00 ──
+  2026-08-22 22:59:36 | Gabriel Pacheco | Ok.
+  2026-08-22 22:36:08 | Natali Funez | Hola María cómo estás? Si dale
+  2026-08-22 14:59:49 | Diego | (audio de voz, transcripto) María, ya quedó agendada la reunión con Fulco y con 
+  2026-08-22 11:40:19 | Diego | (audio de voz, transcripto) Escúchame. Bueno, veo que sí lo pudiste escuchar, po
+  2026-08-22 11:39:56 | Diego | Somos 4 para la cena
+  2026-08-22 11:38:37 | Diego | (el usuario mandó un AUDIO que no podés escuchar por WhatsApp — pedile que te lo
+  2026-08-22 11:36:59 | Diego | (audio de voz, transcripto) María, ¿en qué quedó el tema de la cena con Gabriel 
+  2026-08-22 11:22:53 | Diego | si buscas en tu historial al principio, vas a ver nuestra conversacion acerca de
+  2026-08-22 11:20:35 | Diego | esta sos vos Maria, ahora te voy a subir la foto al WA por que se borro. Pero la
+  2026-08-22 11:17:42 | Diego | (te mandé una imagen — mirala) (sistema: adjunto guardado con id "2026-08-22-cd5
+  2026-08-22 02:58:03 | Diego | (te mandé una imagen — mirala) (sistema: adjunto guardado con id "2026-08-22-81a
+  2026-08-22 02:57:42 | Diego | hola Maria, todo bien? te mando tu foto
+
+── outbox 239 (el mensaje a Fico) ──
+  {'id': 238, 'numero': '5491150105262', 'estado': 'entregado', 'creado': '2026-08-22 22:23:51', 'entregado': '2026-08-22 22:25:31', 't': 'Hola Nati! Soy Maria, la secretaria de Diego. Te escribo de '}
+  {'id': 239, 'numero': '5491134897992', 'estado': 'entregado', 'creado': '2026-08-22 22:41:24', 'entregado': '2026-08-22 22:46:07', 't': 'Hola! Soy Maria, la secretaria de Diego Paez. Quería consult'}
+  {'id': 240, 'numero': '5491140402319', 'estado': 'entregado', 'creado': '2026-08-22 22:52:04', 'entregado': '2026-08-22 22:57:14', 't': 'Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo '}
+
+── gestiones/follow-ups abiertos ──
+  ( no such column: esperando_de )
+
+── notificaciones descartadas por los filtros del bridge ──
+2026-08-18 17:30:37: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:31:17: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:31:37: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:32:17: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:32:38: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:32:58: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:34:10: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:34:50: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 17:40:21: [MB-DIAG] buscaba nombre="Gabriel Pacheco" numero="5491140402319" pendiente=229 | chats_vivos=[]
+2026-08-18 23:46:25: [MB v3.6] 23:46:23 I [notif] sin acción de reply — descarto no-chat: "WhatsApp Support"
+2026-08-19 01:58:07: [MB v3.6] 01:58:04 I [notif] sin acción de reply — descarto no-chat: "Number not verified"
+2026-08-22 08:36:59: [MB-MEDIA] audio de "Diego Paez" (30KB) → "María, ¿en qué quedó el tema de la cena con Gabriel Pacheco y con Cara Brunati p"
+2026-08-22 10:49:44: [MB v4.1] 10:46:35 I [notif] sin acción de reply — descarto no-chat: "Recent WhatsApp login"
+2026-08-22 19:59:43: [MB v4.4] 19:59:37 I [notif] entrante de "Gabriel Pacheco": Ok.
+2026-08-22 20:06:13: [MB v4.4] 20:06:06 I [notif] dup ignorado de "Gabriel Pacheco"
+LISTO
+
+# exit=0
