@@ -1,0 +1,74 @@
+# ejecutado: 2026-08-22T08:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/bcf.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── hecho actual completo ──");
+#   const h=db.prepare(`SELECT clave,valor,creado FROM hechos WHERE clave='maria_sin_foto_perfil_propia'`).get();
+#   console.log(h ? h.creado+" | "+h.valor : "(no está)");
+#   console.log("\n── búsqueda amplia: foto/perfil/avatar/imagen/cara (todo el historial) ──");
+#   db.prepare(`SELECT timestamp,canal,direccion,substr(cuerpo,1,150) c FROM eventos
+#     WHERE (cuerpo LIKE '%foto de perfil%' OR cuerpo LIKE '%avatar%' OR cuerpo LIKE '%tu cara%' OR cuerpo LIKE '%te ves%'
+#         OR cuerpo LIKE '%cómo te imaginás%' OR cuerpo LIKE '%como te imaginas%' OR cuerpo LIKE '%elegí%' OR cuerpo LIKE '%elegi %')
+#       AND cuerpo NOT LIKE '%Subaru%' ORDER BY id LIMIT 25`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(0,16),x.canal.slice(0,3),x.direccion==='entrante'?'←':'→',String(x.c).replace(/\n/g," ")));
+#   console.log("\n── abril 2026: primeros eventos (arranque de Maria) ──");
+#   db.prepare(`SELECT timestamp,canal,direccion,substr(cuerpo,1,120) c FROM eventos WHERE timestamp LIKE '2026-04%' ORDER BY id LIMIT 15`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(0,16),x.canal.slice(0,3),x.direccion==='entrante'?'←':'→',String(x.c).replace(/\n/g," ")));
+#   db.close();
+#   JS
+#   node /tmp/bcf.cjs; rm -f /tmp/bcf.cjs
+#   echo LISTO
+
+# ───── output ─────
+── hecho actual completo ──
+2026-08-22 11:24:50 | No tengo cara ni foto de perfil propia — soy texto nomás. Detecté en el historial (21/04 y 22/08) mensajes mal atribuidos o con contenido inconsistente sobre 'elegir mi foto de perfil' y una imagen que se etiquetó como 'sos vos Maria'. Es un error/confusión de atribución, no algo real que haya pedido o decidido. No usar ninguna imagen como mi foto de perfil ni retomar esa narrativa.
+
+── búsqueda amplia: foto/perfil/avatar/imagen/cara (todo el historial) ──
+  2026-04-22 00:41 wha → ¡Qué buena idea! El audio llegó un poco cortado así que entendí más o menos, pero creo que me estás preguntando cómo me imaginaría a mí misma para bus
+  2026-04-22 00:46 wha → Sí, está ahí. El link directo para descargar es: https://images.pexels.com/photos/3791554/pexels-photo-3791554.jpeg — bajala desde ahí y subila como m
+  2026-04-22 00:51 wha ← No veo una foto de perfil tuya
+  2026-04-22 00:51 wha → Diego, Rubén Ward me preguntó por qué no ve mi foto de perfil. ¿Ya pudiste subirla?
+  2026-04-23 16:39 wha → Hola Hernán! Gracias por escribir. Para compartir el calendario conmigo hacés lo siguiente:  1. Entrá a Google Calendar desde la web (calendar.google.
+  2026-05-07 00:53 wha → ¡Hola Natali! Soy María Paez, la asistente personal de Diego. A partir de ahora también voy a ser tu secretaria personal 😊  Para poder ver tu agenda y
+  2026-05-07 01:16 wha → ¡Hola Fernando! Soy María Paez, la asistente personal de Diego. A partir de ahora también voy a ser tu secretaria personal 😊  Para poder ayudarte con 
+  2026-05-07 04:25 wha → Diego, llegué hasta el formulario del GCBA y cargué la patente *AD490WX*, pero al intentar enviarlo saltó el reCAPTCHA de selección de imágenes (te pi
+  2026-05-13 15:15 wha → ¡Claro! Para darme acceso completo a tu calendar de Google, seguí estos pasos:  1️⃣ Entrá a *Google Calendar* (calendar.google.com) 2️⃣ En el panel iz
+  2026-05-14 12:13 wha → ¡Hola Santiago! Tenés tres opciones, elegís la que más te cómoda:  *1. Acceso completo (recomendada)* Compartís tu Google Calendar con maria.paez.secr
+  2026-05-14 12:14 wha → Perfecto, Santiago. Para darme acceso completo hacé esto:  1. Abrí Google Calendar en la web (calendar.google.com) 2. A la izquierda, buscá tu calenda
+  2026-05-14 23:17 wha → Para que te lleguen mis recordatorios y reuniones directo en tu Google Calendar, necesito que me des acceso de escritura a tu calendario. Así puedo cr
+  2026-05-15 19:25 wha → Fácil. Desde Google Calendar:  1. Entrás a calendar.google.com 2. En el panel izquierdo, buscás tu calendar "Santiago Bignone" 3. Hacés clic en los tr
+  2026-05-16 23:29 wha → Acá va el resumen del brochure:  *Innovation Experience Global AI* Programa para empresarios y líderes que quieren implementar IA en sus negocios, apr
+  2026-05-18 17:49 wha → Ariel de Espasa me aclaró la cotización que te mandó: la diferencia de *$40.000.000* ya tiene todo incluido — flete, formularios y el patentamiento he
+  2026-05-26 14:04 wha → Hola Natali! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu Go
+  2026-05-26 14:04 wha → Hola Natali! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu Go
+  2026-05-26 14:04 wha → Hola Fernando! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu 
+  2026-05-26 14:04 wha → Hola Fernando! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu 
+  2026-05-26 14:04 wha → Hola Cristian! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu 
+  2026-05-26 14:04 wha → Hola Cristian! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu 
+  2026-05-26 14:04 wha → Hola Sebastián! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu
+  2026-05-26 14:04 wha → Hola Sebastián! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu
+  2026-05-26 14:04 wha → Hola Rubén! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu Goo
+  2026-05-26 14:04 wha → Hola Rubén! Quería contarte que cambié mi dirección de email: de ahora en más soy *maria.paez@intensa.io*.  Aprovecho para invitarte a conectar tu Goo
+
+── abril 2026: primeros eventos (arranque de Maria) ──
+  2026-04-18 15:45 sis → memory.js inicializado OK
+  2026-04-18 19:42 cal → creado: TEST Maria — borrame (2026-04-19T15:00:00-03:00 → 2026-04-19T15:30:00-03:00)
+  2026-04-18 19:42 sis → acción ejecutada: crear_evento
+  2026-04-18 19:42 cal → borrado: evento 9221428fe01smje7ted3sk3sl8
+  2026-04-18 19:42 sis → acción ejecutada: borrar_evento
+  2026-04-18 19:58 sis → Maria arrancó — WA conectado, poll Gmail iniciado
+  2026-04-18 20:02 sis → shutdown por SIGINT
+  2026-04-18 20:02 sis → Maria arrancó — WA conectado, poll Gmail iniciado
+  2026-04-18 20:04 wha ← maria, que tengo manana?
+  2026-04-18 20:04 wha → Mañana domingo 19/04 no tenés nada agendado, día libre 🙌
+  2026-04-18 20:04 wha ← y el lunes?
+  2026-04-18 20:04 wha → El lunes 20/04 tenés:  📌 *Office* (todo el día) 🕙 10:45 — Seguimiento comercial 🕛 12:00 — Seguimiento Diego / Nico
+  2026-04-18 20:08 wha ← María y el martes que tengo en la agenda.
+  2026-04-18 20:09 wha → El martes 21/04 tenés:  📌 *Office* (todo el día) 🕙 11:00 — DIATRES - Reunión 🕞 15:30 — Personal
+  2026-04-18 20:11 gma ← María, quisiera cenar esta noche con Diego, está disponible?   Natali Funez  Lider Fidelización & Retención  +549
+LISTO
+
+# exit=0
