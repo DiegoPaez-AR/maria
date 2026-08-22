@@ -1,0 +1,43 @@
+# ejecutado: 2026-08-22T19:11:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── HEAD / canary ──"; git log --oneline -1 | cut -c1-80
+#   cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ CANARY MALO" || echo "canary limpio ✓"
+#   timeout 20 pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       if p['name']!='maria-paez': continue
+#       e=p['pm2_env']; print('  pm2 up=%dmin status=%s'%((time.time()*1000-e['pm_uptime'])/60000, e['status']))"
+#   echo "── huérfanos ──"; timeout 30 node ops/tools/huerfanos.js /root/secretaria/*.js
+#   echo "── el guard rechaza placeholder ──"
+#   timeout 40 node -e "
+#   const {ejecutarAcciones}=require('/root/secretaria/executor');
+#   const u=require('/root/secretaria/usuarios').obtenerOwner();
+#   ejecutarAcciones([{tipo:'enviar_wa',a:'5491150105262',texto:'placeholder'}],{usuario:u,waClient:null,canalOrigen:'telegram'})
+#    .then(r=>console.log('  →', r[0].ok?'❌ PASÓ (mal)':'✓ rechazado: '+String(r[0].error).slice(0,80)))
+#    .catch(e=>console.log('  err:', e.message));"
+#   echo "── errores recientes ──"; timeout 10 tail -5 /root/.pm2/logs/maria-paez-error.log
+#   echo LISTO
+
+# ───── output ─────
+── HEAD / canary ──
+5187779103a inbox: verificar fix de helpers
+canary limpio ✓
+  pm2 up=34min status=online
+── huérfanos ──
+helpers huérfanos: ninguno ✓
+── el guard rechaza placeholder ──
+[executor] acción #0 (enviar_wa) falló: enviar_wa: el texto es demasiado corto (11 caracteres). Escribí el mensaje completo antes de emitir la acción — no se envía texto de relleno.
+  → ✓ rechazado: enviar_wa: el texto es demasiado corto (11 caracteres). Escribí el mensaje compl
+── errores recientes ──
+2026-08-22 17:38:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:39:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:40:50: [TG] poll error (reintento en 15s): fetch failed
+2026-08-22 18:20:31: [executor] acción #0 (enviar_wa) falló: _validarTextoSaliente is not defined
+2026-08-22 18:20:34: [executor] acción #0 (enviar_wa) falló: _validarTextoSaliente is not defined
+LISTO
+
+# exit=0
