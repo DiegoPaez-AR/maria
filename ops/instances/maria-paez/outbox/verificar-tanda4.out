@@ -1,0 +1,35 @@
+# ejecutado: 2026-08-22T15:15:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary (ojo: cron-master tiene lag de 1 tick) ──"
+#   grep -i "canary" ops/.cron.log | tail -3
+#   [ -f state/.canary-bad-commit ] && echo "⚠️ BLOQUEADO: $(cat state/.canary-bad-commit)" || echo "canary limpio ✓"
+#   ls -la state/.ultimo-commit-bueno 2>/dev/null && echo "marcador de rollback: $(cat state/.ultimo-commit-bueno)" || echo "(marcador aún no creado — se crea en el próximo canary OK)"
+#   echo "── tests ──"; npm test 2>&1 | grep -E "^# (pass|fail)" 
+#   echo "── telegram vivo ──"; grep "TG" ~/.pm2/logs/maria-paez-out.log | tail -2
+#   echo "── snapshots sin PII ──"; head -3 ops/instances/maria-paez/snapshots/hechos.txt 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+── canary (ojo: cron-master tiene lag de 1 tick) ──
+canary OK (e944ff8a3e967ff9b18251458fb4906b983ce23d) → reload
+canary OK (f4ad6d5ed6adaf49c0d350696dce986468165f58) → reload
+canary OK (8c93f403d703083feb2f9f1f522c0a94b35646d8) → reload
+canary limpio ✓
+(marcador aún no creado — se crea en el próximo canary OK)
+── tests ──
+# pass 33
+# fail 0
+── telegram vivo ──
+2026-08-22 13:35:52: [TG] transcribiendo audio…
+2026-08-22 13:36:02: [TG audio→texto] La reunión con Manu Carrasco y Fulco quedó para cuando entonces, le había mandado un
+── snapshots sin PII ──
+usuario_id  clave                                              chars  actualizado        
+----------  -------------------------------------------------  -----  -------------------
+1           brief_incluir_clima                                279    2026-05-30 10:45:15
+LISTO
+
+# exit=0
