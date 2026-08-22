@@ -1,5 +1,27 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                             cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31561  2026-08-22 11:39:02  sistema   interno                                                acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+31560  2026-08-22 11:39:01  sistema   interno                                                acción ejecutada: recordar_hecho                                                                                                                                                                        
+
+31559  2026-08-22 11:38:55  whatsapp  saliente   541132317896@c.us                           No pude escuchar el audio 🙈 Mandámelo por Telegram (ahí sí lo transcribo) o escribime la posta en texto. De paso, seguimos con lo de Catalino: ¿reservamos a las 21hs como veníamos manejando o querés o
+
+31558  2026-08-22 11:38:55  sistema   interno                                                claude_call whatsapp: 17172ms prompt=86048c raw=11644c in=6t(cache_read=73138 new=93226) out=888t ttfb=1558ms api=17067ms turnos=3 $0.3962                                                              
+
+31557  2026-08-22 11:38:38  telegram  saliente   telegram:590589920                          Sí! Gabriel confirmó el jueves 21/08 por mail que puede el miércoles 2/9. Es en Catalino (la data que vos me pasaste: Enrique Martínez 732, tel +54 9 11 6384-6461, ya la guardé en la libreta). Me falt
+
+31556  2026-08-22 11:38:37  whatsapp  entrante   541132317896@c.us                           (el usuario mandó un AUDIO que no podés escuchar por WhatsApp — pedile que te lo mande por TELEGRAM, que ahí sí lo escuchás (ya está vinculado), o que te lo escriba en texto)                          
+
+31555  2026-08-22 11:38:37  whatsapp  saliente   541132317896@c.us                           Sí! Gabriel confirmó el jueves 21/08 por mail que puede el miércoles 2/9. Es en Catalino (la data que vos me pasaste: Enrique Martínez 732, tel +54 9 11 6384-6461, ya la guardé en la libreta). Me falt
+
+31554  2026-08-22 11:38:37  sistema   interno                                                claude_call whatsapp: 45073ms prompt=101416c raw=23533c in=6t(cache_read=84729 new=113565) out=3575t ttfb=1516ms api=44225ms turnos=5 $0.5229                                                           
+
+31553  2026-08-22 11:38:31  sistema   interno                                                acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31552  2026-08-22 11:38:31  sistema   interno                                                acción ejecutada: upsert_contacto                                                                                                                                                                       
+
+31551  2026-08-22 11:38:30  sistema   interno                                                acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
 31550  2026-08-22 11:37:52  sistema   interno                                                claude_call whatsapp: 53209ms prompt=85882c raw=29125c in=14t(cache_read=289830 new=113612) out=3394t ttfb=1680ms api=52890ms turnos=7 $0.5752                                                          
 
 31549  2026-08-22 11:36:59  whatsapp  entrante   541132317896@c.us                           (audio de voz, transcripto) María, ¿en qué quedó el tema de la cena con Gabriel Pacheco y con Cara Brunati para el 2 de septiembre?                                                                     
@@ -292,37 +314,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                              Gracias por confirmar.                                                                                                                                                                                  
                                                                                                                                                                                                                                                                                                      
                                                                                              Saludos,                                                                                                                                                                                                
-
-31461  2026-08-21 16:02:36  sistema   interno                                                claude_call moderacion: 6256ms prompt=1565c raw=6314c in=10t(cache_read=0 new=22477) out=345t ttfb=1211ms api=5507ms turnos=1 $0.0303                                                                   
-
-31460  2026-08-21 16:02:22  sistema   interno                                                acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-31459  2026-08-21 16:01:51  sistema   interno                                                acción ejecutada: buscar_contacto_global                                                                                                                                                                
-
-31458  2026-08-21 16:01:36  sistema   interno                                                acción ejecutada: quitar_pendiente                                                                                                                                                                      
-
-31457  2026-08-21 16:01:09  sistema   interno                                                meeting-prep: 3 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31456  2026-08-21 16:01:06  gmail     entrante   Gabriel P <gap2612@gmail.com>               Perfecto, allí estaré.                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                     
-                                                                                             Gabriel Pacheco                                                                                                                                                                                         
-                                                                                             Movil: +541140402319                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                     
-                                                                                             El vie, 21 de ago de 2026, 00:14, Maria Paez <maria.paez@intensa.io>                                                                                                                                    
-                                                                                             escribió:                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                     
-                                                                                             > Soy Maria, la secretaria de Diego. Te escrib                                                                                                                                                          
-
-31455  2026-08-21 15:45:05  gmail     saliente   santiago@capurro.com.ar                     ⏰ *En 15min*: Almuerzo SC PC (01:00 p. m.)                                                                                                                                                              
-                                                                                             Con: pablo@capurro.com.ar                                                                                                                                                                               
-                                                                                             👤 Pablo — Co-Fundador & Chief Strategy Officer en Papumba                                                                                                                                               
-
-31454  2026-08-21 15:31:10  sistema   interno                                                meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31453  2026-08-21 14:31:27  sistema   interno                                                meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31452  2026-08-21 14:31:24  sistema   interno                                                claude_call enriquecer-contacto: 17323ms prompt=622c raw=17328c in=6t(cache_read=16292 new=33646) out=264t ttfb=1423ms api=20603ms turnos=4 $0.1813                                                     
-
-31451  2026-08-21 14:15:05  gmail     saliente   santiago@capurro.com.ar                     ⏰ *En 15min*: Juan Ganzabal (11:30 a. m.)                                                                                                                                                               
