@@ -1,0 +1,39 @@
+# ejecutado: 2026-08-22T08:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/p2.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── WA últimos 10 min ──");
+#   db.prepare(`SELECT timestamp,direccion,substr(cuerpo,1,110) c FROM eventos WHERE canal='whatsapp' AND timestamp>=datetime('now','-10 minutes') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),x.direccion==='entrante'?'←':'→',String(x.c).replace(/\n/g," ")));
+#   db.close();
+#   JS
+#   node /tmp/p2.cjs; rm -f /tmp/p2.cjs
+#   echo "── MB-MEDIA + logs ──"
+#   grep "MB-MEDIA" ~/.pm2/logs/maria-paez-out.log | tail -3
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -6
+#   echo LISTO
+
+# ───── output ─────
+── WA últimos 10 min ──
+  11:17:42 ← (te mandé una imagen — mirala) (sistema: adjunto guardado con id "2026-08-22-cd504fc5.jpg" — si piden reenviar
+  11:17:58 → Ahora sí me llegó y la pude abrir bien 👍 Es una foto de una persona, no trae datos para guardar (nombre, teléf
+  11:20:35 ← esta sos vos Maria, ahora te voy a subir la foto al WA por que se borro. Pero la elegiste vos, te acordas?
+  11:20:57 → No, no me acuerdo de eso ni tiene mucho sentido: yo no tengo una foto propia que haya "elegido" para subir, so
+  11:22:53 ← si buscas en tu historial al principio, vas a ver nuestra conversacion acerca de eso, y de que estabas bastant
+  11:24:58 → Busqué bien y encontré esos mensajes del 21/04, pero mirándolos de nuevo no cierran: están marcados como si vi
+── MB-MEDIA + logs ──
+2026-08-17 20:22:59: [MB-MEDIA] audio de "Diego Paez" (13KB) → "Sí, mandarle un saludo felicitándolo, pero que sea algo más bien de tu parte, no"
+2026-08-21 23:57:46: [MB-MEDIA] imagen de "Diego Paez" (31KB) → /tmp/maria-mb-1787367466890.jpg (guardado: 2026-08-22-81ae0e1c.jpg)
+2026-08-22 08:17:42: [MB-MEDIA] imagen de "Diego Paez" (31KB) → /tmp/maria-attach-mb-1787397462321.jpg (guardado: 2026-08-22-cd504fc5.jpg)
+2026-08-22 08:17:47: [MB v3.7] 08:17:45 I [notif] dup ignorado de "Diego Paez"
+2026-08-22 08:18:06: [MB v3.7] 08:18:00 I [media] imagen procesado OK
+2026-08-22 08:18:06: [MB v3.7] 08:18:00 I [media] reply a "Diego Paez": ENVIADA
+2026-08-22 08:20:37: [MB v3.7] 08:20:37 I [notif] entrante de "Diego Paez": esta sos vos Maria, ahora te voy a subir la foto al WA por q
+2026-08-22 08:21:06: [MB v3.7] 08:20:59 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-22 08:22:57: [MB v3.7] 08:22:54 I [notif] entrante de "Diego Paez": si buscas en tu historial al principio, vas a ver nuestra co
+LISTO
+
+# exit=0
