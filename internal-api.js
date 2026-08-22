@@ -140,7 +140,7 @@ function start({ waClient } = {}) {
             // (mismo pipeline attachmentPath de Gmail/Telegram). Además se
             // PERSISTE en media-store (30d) para poder reenviarlo después.
             const fs2 = require('fs');
-            const tmp = `/tmp/maria-mb-${Date.now()}.${ext}`;
+            const tmp = `/tmp/maria-attach-mb-${Date.now()}.${ext}`;   // prefijo maria-attach-* = el sandbox lo bind-mountea (si no, el LLM no puede leerlo)
             fs2.writeFileSync(tmp, buf);
             let mediaId = null;
             try { mediaId = require('./media-store').guardar(buf, b.fileName || `x.${ext}`); } catch (e) { console.warn('[mbmedia] guardar falló:', e.message); }
