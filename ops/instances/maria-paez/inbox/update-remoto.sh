@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "── ¿v3.9 publicada? ──"
+curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+cat > /tmp/ur.cjs <<'JS'
+const c=require("/root/secretaria/mb-control.js");
+// 1. abrir MariaBridge (coords del dump: MariaBridge 446,816) y 2. sacar foto
+console.log("tap MariaBridge:", c.encolar("tap",{x:446,y:816}));
+JS
+node /tmp/ur.cjs; rm -f /tmp/ur.cjs
+echo LISTO
