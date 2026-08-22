@@ -1,0 +1,40 @@
+# ejecutado: 2026-08-22T16:21:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/i43d.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,400) r FROM mb_control ORDER BY id DESC LIMIT 3").all()
+#     .reverse().forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"]",(x.r||"").slice(0,380)));
+#   db.close();
+#   JS
+#   node /tmp/i43d.cjs; rm -f /tmp/i43d.cjs
+#   echo "── pido nodos + shot ──"
+#   cat > /tmp/i43e.cjs <<'JS'
+#   const c=require("/root/secretaria/mb-control.js");
+#   console.log("nodos:", c.encolar("nodos"));
+#   JS
+#   node /tmp/i43e.cjs; rm -f /tmp/i43e.cjs
+#   sleep 25
+#   cat > /tmp/i43f.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,900) r FROM mb_control ORDER BY id DESC LIMIT 2").all()
+#     .reverse().forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"]",(x.r||"")));
+#   db.close();
+#   JS
+#   node /tmp/i43f.cjs; rm -f /tmp/i43f.cjs
+#   echo LISTO
+
+# ───── output ─────
+#17 tap [ok] tap 446,816 ✓
+#18 nodos [ok] [|https://intensa.io|360,302] [|cfS1IoCOSxNtVUwIzo|360,381] [|Guardar y arrancar|360,463] [|① Permiso: acceso |360,547] [|② Quitar restricci|360,631] [|③ Permiso: accesib|360,715] [|④ Permiso: todos l|360,799] [|Buscar actualizaci|360,883] 
+#19 tap [ok] tap 360,883 ✓
+── pido nodos + shot ──
+[mb-control] #20 encolado: nodos 
+nodos: 20
+#19 tap [ok] tap 360,883 ✓
+#20 nodos [ok] [|Do you want to upd|342,801] [|Cancel|213,932] 
+LISTO
+
+# exit=0
