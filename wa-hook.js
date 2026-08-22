@@ -118,6 +118,25 @@ function _stashSacar(digs) {
   return e.replies;
 }
 
+// Aviso al owner cuando se descarta un entrante por identidad no verificable.
+// Dedupe 6h por remitente para que un insistente no genere una catarata.
+const _descartesAvisados = new Map(); // sender -> ts
+async function _avisarOwnerDescarte(sender, cuerpo, motivo) {
+  try {
+    const ahora = Date.now();
+    for (const [k, t] of _descartesAvisados) if (ahora - t > 6 * 3600_000) _descartesAvisados.delete(k);
+    if (_descartesAvisados.has(sender)) return;
+    _descartesAvisados.set(sender, ahora);
+    const owner = usuarios.obtenerOwner();
+    if (!owner) return;
+    await require('./wa-send').enviarWAUsuario(null, owner,
+      `⚠️ Descarté un WhatsApp de *${sender}* porque no pude verificar quién es.\n\n` +
+      `Decía: "${cuerpo}"\n\n` +
+      `Si es legítimo, agendalo en la libreta y volvé a pedirle que escriba.`,
+      { tag: 'wa-hook/descarte-identidad', metadata: { tipo: 'wa_hook_descarte_avisado' } });
+  } catch (e) { console.warn('[wa-hook] no pude avisar el descarte:', e.message); }
+}
+
 // ── Serialización por remitente ────────────────────────────────────────────
 const _enProceso = new Map(); // digs -> Promise
 
@@ -238,6 +257,36 @@ async function procesar(body) {
     // Solo confiamos en él si ya hubo conversación previa con ese nombre
     // (contacto con historial). Si no, se trata como desconocido.
     const n = String(q.sender).trim().toLowerCase();
+
+    // El riesgo REAL es la suplantación de un USUARIO (el pushname lo elige el
+    // remitente si no está agendado). Suplantar a un tercero de la libreta no
+    // habilita nada: el turno corre con permisos de tercero.
+    const _matcheaUsuario = usuarios.listarActivos()
+      .some(x => String(x.nombre || '').trim().toLowerCase() === n);
+    const _enLibreta = (() => {
+      try {
+        return !!mem.db.prepare(`SELECT 1 FROM contactos WHERE lower(trim(nombre)) = ? LIMIT 1`).get(n);
+      } catch { return false; }
+    })();
+    // ¿Maria le escribió a un chat con ese nombre hace poco? Entonces esta
+    // respuesta es de una gestión que ella misma abrió — legítima por
+    // construcción. (REGRESIÓN 22/8: el guard sólo miraba historial ENTRANTE,
+    // así que la primera respuesta de cualquier comercio agendado en el
+    // teléfono se descartaba EN SILENCIO. Caso Fico restaurante: confirmó la
+    // reserva y Maria nunca se enteró.)
+    const _maríaLeEscribió = (() => {
+      try {
+        return !!mem.db.prepare(
+          `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='saliente'
+             AND lower(trim(COALESCE(nombre,''))) = ? AND timestamp >= datetime('now','-30 days') LIMIT 1`
+        ).get(n)
+        || !!mem.db.prepare(
+          `SELECT 1 FROM wa_outbox o JOIN contactos c
+              ON replace(replace(COALESCE(c.whatsapp,''),'@c.us',''),'+','') LIKE '%' || substr(o.numero, -10)
+             WHERE lower(trim(c.nombre)) = ? AND o.creado >= datetime('now','-30 days') LIMIT 1`
+        ).get(n);
+      } catch { return false; }
+    })();
     const _yaHabloAntes = (() => {
       try {
         return !!mem.db.prepare(
@@ -246,10 +295,17 @@ async function procesar(body) {
         ).get(n);
       } catch { return false; }
     })();
-    if (!_yaHabloAntes) {
-      mem.log({ canal: 'sistema', direccion: 'interno',
-        cuerpo: `wa-hook: "${String(q.sender).slice(0, 40)}" escribió sin número visible y SIN historial previo — no ruteo (identidad no verificable)`,
-        metadata: { tipo: 'wa_hook_identidad_no_verificada' } });
+
+    const _confiable = _yaHabloAntes || _maríaLeEscribió || (_enLibreta && !_matcheaUsuario);
+    if (!_confiable) {
+      const _motivo = _matcheaUsuario
+        ? `"${String(q.sender).slice(0, 40)}" usa el nombre de un USUARIO pero escribió sin número visible y sin historial — posible suplantación, NO ruteo`
+        : `"${String(q.sender).slice(0, 40)}" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)`;
+      mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: ${_motivo}`,
+        metadata: { tipo: 'wa_hook_identidad_no_verificada', sender: String(q.sender).slice(0, 60), cuerpo: String(cuerpo).slice(0, 200) } });
+      // Un descarte SILENCIOSO es peor que el riesgo que evita: el owner tiene
+      // que poder ver que se tiró un mensaje. Dedupe de 6h por remitente.
+      _avisarOwnerDescarte(String(q.sender).slice(0, 40), String(cuerpo).slice(0, 160), _motivo);
       return { replies: [] };
     }
     const us = usuarios.listarActivos().filter(x => String(x.nombre || '').trim().toLowerCase() === n);
