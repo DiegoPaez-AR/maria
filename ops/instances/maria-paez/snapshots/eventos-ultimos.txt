@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31639  2026-08-22 15:05:01  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+31638  2026-08-22 15:05:01  sistema   interno                        claude_call moderacion: 5514ms prompt=1704c raw=6173c in=10t(cache_read=17396 new=5119) out=309t ttfb=1187ms api=4591ms turnos=1 $0.0102                                                                
+
+31637  2026-08-22 15:04:47  sistema   interno                        acción ejecutada: enviar_wa                                                                                                                                                                             
+
+31636  2026-08-22 15:04:47  sistema   interno                        claude_call moderacion: 11780ms prompt=1459c raw=9029c in=10t(cache_read=0 new=22432) out=554t ttfb=1295ms api=10846ms turnos=1 $0.0312                                                                 
+
+31635  2026-08-22 15:04:18  telegram  entrante   telegram:590589920  María, ¿puedes mandar un whatsapp a Catalino Restaurant para hacer la reserva del 2 de septiembre a las 9 de la noche para 4?                                                                           
+
 31634  2026-08-22 14:59:49  whatsapp  saliente   541132317896@c.us   Hola Diego! Por política ahora no puedo atender pedidos por WhatsApp 🙏                                                                                                                                  
                                                                                                                                                                                                                                                                              
                                                                      Escribime por *Telegram* (t.me/MariaPaezAI_bot → tocá "compartir mi número") o por mail a maria.paez@intensa.io y sigo con lo tu                                                                        
@@ -202,16 +212,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")     cuerpo
 31541  2026-08-22 11:20:57  whatsapp  saliente   541132317896@c.us   No, no me acuerdo de eso ni tiene mucho sentido: yo no tengo una foto propia que haya "elegido" para subir, soy texto nomás, no manejo una imagen mía. La única foto que pasó por acá hoy es la que vos 
 
 31540  2026-08-22 11:20:57  sistema   interno                        claude_call whatsapp: 21562ms prompt=85535c raw=11627c in=4t(cache_read=17661 new=92798) out=970t ttfb=1577ms api=19527ms turnos=2 $0.3791                                                              
-
-31539  2026-08-22 11:20:35  whatsapp  entrante   541132317896@c.us   esta sos vos Maria, ahora te voy a subir la foto al WA por que se borro. Pero la elegiste vos, te acordas?                                                                                              
-
-31538  2026-08-22 11:17:58  whatsapp  saliente   541132317896@c.us   Ahora sí me llegó y la pude abrir bien 👍 Es una foto de una persona, no trae datos para guardar (nombre, teléfono, etc.) — ¿la quería para algo puntual o era solo para probar el envío?                
-
-31537  2026-08-22 11:17:58  sistema   interno                        claude_call whatsapp: 16016ms prompt=85643c raw=9374c in=4t(cache_read=0 new=111684) out=700t ttfb=1663ms api=14988ms turnos=2 $0.4406                                                                  
-
-31536  2026-08-22 11:17:42  whatsapp  entrante   541132317896@c.us   (te mandé una imagen — mirala)                                                                                                                                                                          
-                                                                     (sistema: adjunto guardado con id "2026-08-22-cd504fc5.jpg" — si piden reenviarlo/compartirlo usá enviar_archivo_wa con ese id)                                                                         
-
-31535  2026-08-22 11:03:04  telegram  saliente   telegram:590589920  Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                             
-                                                                     1. Confirmarle a Diego que Gabriel Pacheco puede el miércoles 2/9 para la cena — pedirle el contacto del restaurante (Catalino o Fico?) para hacer la reserva —                                         
