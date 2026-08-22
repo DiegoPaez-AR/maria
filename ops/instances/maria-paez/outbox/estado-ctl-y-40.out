@@ -1,0 +1,43 @@
+# ejecutado: 2026-08-22T09:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── build v4.0 ──"
+#   grep -E "APK_OK|APK_FAIL|^e: file" /root/mariabridge-build.log | tail -2
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   cat > /tmp/ec.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── comandos de control ──");
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,140) r FROM mb_control ORDER BY id DESC LIMIT 6").all()
+#     .forEach(x=>console.log("  #"+x.id,x.cmd,"["+x.estado+"]",(x.r||"").slice(0,120)));
+#   db.close();
+#   JS
+#   node /tmp/ec.cjs; rm -f /tmp/ec.cjs
+#   echo "── versión app + últimos ctl ──"
+#   grep "\[MB v" ~/.pm2/logs/maria-paez-out.log | tail -2
+#   grep "\[ctl\]" ~/.pm2/logs/maria-paez-out.log | tail -4
+#   echo LISTO
+
+# ───── output ─────
+── build v4.0 ──
+APK_OK url=https://intensa.io/_dl/mb-2934fbe4dc7a501b.apk size=3.1M latest.json=v4.0(25)
+{"versionCode": 25, "versionName": "4.0", "url": "https://intensa.io/_dl/mb-2934fbe4dc7a501b.apk"}
+
+── comandos de control ──
+  #6 nodos [ok] [||423,839] [|--|464,839] [||360,1436] [|Messages notificat|195,1303] [|WhatsApp notificat|305,1303] [|Moto notification
+  #5 tap [pendiente] 
+  #4 home [ok] home
+  #3 nodos [ok] [|Invite|167,942] [|SMS|560,942] 
+  #2 tap [enviado] 
+  #1 nodos [ok] [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] 
+── versión app + últimos ctl ──
+2026-08-22 09:25:51: [MB v3.9] 09:25:45 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:25:51: [MB v3.9] 09:25:50 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:25:41: [MB v3.9] 09:25:35 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:25:41: [MB v3.9] 09:25:40 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:25:51: [MB v3.9] 09:25:45 I [ctl] comando #2: tap {"x":446,"y":816}
+2026-08-22 09:25:51: [MB v3.9] 09:25:50 I [ctl] comando #2: tap {"x":446,"y":816}
+LISTO
+
+# exit=0
