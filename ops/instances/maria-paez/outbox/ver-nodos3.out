@@ -1,0 +1,33 @@
+# ejecutado: 2026-08-22T09:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vn3.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,420) r FROM mb_control ORDER BY id DESC LIMIT 3").all()
+#     .forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"] →",x.r||"(sin resultado)"));
+#   db.close();
+#   JS
+#   node /tmp/vn3.cjs; rm -f /tmp/vn3.cjs
+#   echo "── logs ctl ──"; grep -E "\[ctl\]|MB-CTL" ~/.pm2/logs/maria-paez-out.log | tail -6
+#   echo "── versión de la app ──"; grep "\[MB v" ~/.pm2/logs/maria-paez-out.log | tail -2
+#   echo LISTO
+
+# ───── output ─────
+#3 nodos [ok] → [|Invite|167,942] [|SMS|560,942] 
+#2 tap [enviado] → (sin resultado)
+#1 nodos [ok] → [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play Store|619,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+── logs ctl ──
+2026-08-22 08:57:08: [MB v3.7] 08:57:06 I [ctl] comando #auto-234: shot {}
+2026-08-22 08:57:48: [MB v3.7] 08:57:46 I [ctl] comando #auto-234: shot {}
+2026-08-22 08:58:04: [MB-CTL] #3 → OK: [|Invite|167,942] [|SMS|560,942] 
+2026-08-22 08:58:08: [MB v3.7] 08:58:05 I [ctl] comando #3: nodos {}
+2026-08-22 08:58:08: [MB v3.7] 08:58:05 I [ctl] #3 → OK [|Invite|167,942] [|SMS|560,942] 
+2026-08-22 08:58:28: [MB v3.7] 08:58:25 I [ctl] comando #auto-234: shot {}
+── versión de la app ──
+2026-08-22 08:59:58: [MB v3.7] 08:59:51 E [frio] #235: chat ABIERTO ES OTRO ("diego paez" ≠ "Diego|R"/5491132317896) — ABORTO sin tocar
+2026-08-22 08:59:58: [MB v3.7] 08:59:51 I [outbox] cold-send #235 no verificado — queda en cola
+LISTO
+
+# exit=0
