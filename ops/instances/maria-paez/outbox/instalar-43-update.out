@@ -1,0 +1,26 @@
+# ejecutado: 2026-08-22T16:28:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,300) r FROM mb_control ORDER BY id DESC LIMIT 3').all().reverse().forEach(x=>console.log('#'+x.id,x.cmd,'['+x.estado+']',(x.r||'')));db.close();"
+#   echo "── tap Update (espejo de Cancel 213,932) ──"
+#   ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('tap',{x:507,y:932}))" | tail -1)
+#   sleep 20
+#   node -e "console.log(require('/root/secretaria/mb-control').encolar('nodos'))" >/dev/null
+#   sleep 25
+#   node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,600) r FROM mb_control ORDER BY id DESC LIMIT 3').all().reverse().forEach(x=>console.log('#'+x.id,x.cmd,'['+x.estado+']',(x.r||'')));db.close();"
+#   echo LISTO
+
+# ───── output ─────
+#19 tap [ok] tap 360,883 ✓
+#20 nodos [ok] [|Do you want to upd|342,801] [|Cancel|213,932] 
+#21 shot [enviado] 
+── tap Update (espejo de Cancel 213,932) ──
+#21 shot [fallo] sin respuesta tras 3 reintentos
+#22 tap [ok] tap 507,932 ✓
+#23 nodos [ok] root null
+LISTO
+
+# exit=0
