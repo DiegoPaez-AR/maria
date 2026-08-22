@@ -1,0 +1,18 @@
+# ejecutado: 2026-08-22T13:25:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/dr2.cjs <<'JS'
+#   const c=require("/root/secretaria/mb-control.js");
+#   console.log("tap 'Buscar actualización' (360,883):", c.encolar("tap",{x:360,y:883}));
+#   JS
+#   node /tmp/dr2.cjs; rm -f /tmp/dr2.cjs
+#   echo LISTO
+
+# ───── output ─────
+[mb-control] #14 encolado: tap {"x":360,"y":883}
+tap 'Buscar actualización' (360,883): 14
+LISTO
+
+# exit=0
