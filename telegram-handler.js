@@ -203,7 +203,7 @@ async function _procesarTurno(usuario, chatId, texto, attachmentPath = null) {
   // Los turnos de TERCEROS (más abajo) siguen sessionless a propósito:
   // no se mezclan interlocutores en la historia lineal del usuario.
   const auditTG = { usuarioId: usuario.id, canal: 'telegram', chatKey, turnStartTs: startTs, turnoTercero: false };
-  const SESIONES_ON = process.env.MARIA_SESIONES === '1'
+  const SESIONES_ON = sesiones.habilitado(usuario)
     && prompt && typeof prompt === 'object' && !!prompt.system;
   let json;
   try {

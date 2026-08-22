@@ -383,7 +383,7 @@ async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderE
     // interlocutores en la historia lineal de la sesión del usuario.
     const _esTurnoDeUsuario = !!entrada.de && !!usuario.email
       && String(entrada.de).toLowerCase().includes(String(usuario.email).toLowerCase());
-    const SESIONES_ON = process.env.MARIA_SESIONES === '1'
+    const SESIONES_ON = sesiones.habilitado(usuario)
       && prompt && typeof prompt === 'object' && !!prompt.system
       && _esTurnoDeUsuario;
     const auditGmail = { usuarioId: usuario.id, canal: 'gmail', chatKey: _chatKeyGmail, turnStartTs: _turnT0, turnoTercero: !_esTurnoDeUsuario };

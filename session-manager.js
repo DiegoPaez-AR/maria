@@ -10,6 +10,8 @@
 //
 // Killswitch general: MARIA_SESIONES=1 lo prende en los handlers (default
 // APAGADO — los handlers ni tocan este módulo si no está seteado).
+// Rollout gradual (2026-08-22): MARIA_SESIONES_USUARIOS="Diego,Ana" limita
+// las sesiones a esos usuarios (por nombre o por id). Vacío = todos.
 
 const crypto = require('crypto');
 const mem = require('./memory');
@@ -23,6 +25,20 @@ const _envInt = (k, def) => {
   const v = parseInt(process.env[k], 10);
   return Number.isFinite(v) ? v : def;
 };
+
+/**
+ * ¿Este usuario usa sesiones? Killswitch + allowlist opcional para probar el
+ * cambio con un usuario antes de soltarlo a los 15.
+ */
+function habilitado(usuario) {
+  if (process.env.MARIA_SESIONES !== '1') return false;
+  const lista = String(process.env.MARIA_SESIONES_USUARIOS || '').trim();
+  if (!lista) return true;
+  if (!usuario) return false;
+  const permitidos = lista.split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+  return permitidos.includes(String(usuario.id))
+      || permitidos.includes(String(usuario.nombre || '').toLowerCase());
+}
 
 /** Sesión guardada del usuario: { id, turnos, creada, promptHash } o null. */
 function getSesion(usuarioId) {
@@ -99,6 +115,7 @@ function promptHashDe(systemTxt) {
 }
 
 module.exports = {
+  habilitado,
   getSesion,
   guardarSesion,
   resetSesion,
