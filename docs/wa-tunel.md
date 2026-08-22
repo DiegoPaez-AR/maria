@@ -1,3 +1,8 @@
+> ⚠️ **OBSOLETO desde el 22/8/2026.** El túnel existía para que el Chromium
+> de whatsapp-web.js saliera con IP argentina. Con la jubilación de
+> whatsapp-web.js no hay Chromium ni túnel. Se conserva por historia.
+> Arquitectura vigente: [ARQUITECTURA.md](ARQUITECTURA.md).
+
 # Túnel WA — salida por IP argentina (desde 2026-07-05)
 
 ## Qué es
