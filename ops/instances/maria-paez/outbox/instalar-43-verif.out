@@ -1,0 +1,53 @@
+# ejecutado: 2026-08-22T16:30:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── logs [MB] últimos ──"
+#   grep "\[MB" /root/.pm2/logs/maria-paez-out.log | tail -25
+#   echo "── versión publicada ──"; curl -s https://intensa.io/_dl/mariabridge-latest.json; echo
+#   echo "── ping ──"
+#   ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('ping'))" | tail -1)
+#   sleep 30
+#   node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,300) r FROM mb_control ORDER BY id DESC LIMIT 4').all().reverse().forEach(x=>console.log('#'+x.id,x.cmd,'['+x.estado+']',(x.r||'')));db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── logs [MB] últimos ──
+2026-08-22 16:17:07: [MB v4.2] 16:17:07 I [upd] versión nueva v4.3 (code 28 > 27) — descargando
+2026-08-22 16:17:17: [MB v4.2] 16:17:16 I [upd] descargado 3144KB — ofreciendo instalar
+2026-08-22 16:17:17: [MB v4.2] 16:17:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-22 16:17:17: [MB v4.2] 16:17:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-22 16:17:17: [MB v4.2] 16:17:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-22 16:17:17: [MB v4.2] 16:17:16 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-22 16:17:17: [MB v4.2] 16:17:17 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-22 16:17:17: [MB v4.2] 16:17:17 I [upd] instalador visible — ventana=true clickables=Do you want to updat[TextView],Cancel[Button]
+2026-08-22 16:21:05: [MB-CTL] #20 → OK: [|Do you want to upd|342,801] [|Cancel|213,932] 
+2026-08-22 16:21:07: [MB v4.2] 16:21:06 I [ctl] comando #20: nodos {}
+2026-08-22 16:21:07: [MB v4.2] 16:21:06 I [ctl] #20 → OK [|Do you want to upd|342,801] [|Cancel|213,932] 
+2026-08-22 16:25:07: [MB v4.2] 16:25:06 I [ctl] comando #21: shot {}
+2026-08-22 16:28:08: [MB v4.2] 16:28:07 I [ctl] comando #21: shot {}
+2026-08-22 16:28:18: [MB v4.2] 16:28:12 I [ctl] comando #21: shot {}
+2026-08-22 16:28:18: [MB v4.2] 16:28:17 I [ctl] comando #21: shot {}
+2026-08-22 16:28:20: [MB-CTL] #22 → OK: tap 507,932 ✓
+2026-08-22 16:28:25: [MB-CTL] #23 → OK: root null
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [ctl] comando #22: tap {"x":507,"y":932}
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [ctl] #22 → OK tap 507,932 ✓
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:27 I [ctl] comando #23: nodos {}
+2026-08-22 16:28:28: [MB v4.2] 16:28:27 I [ctl] #23 → OK root null
+── versión publicada ──
+{"versionCode": 28, "versionName": "4.3", "url": "https://intensa.io/_dl/mb-30b8a01a67688d9e.apk"}
+
+── ping ──
+#21 shot [fallo] sin respuesta tras 3 reintentos
+#22 tap [ok] tap 507,932 ✓
+#23 nodos [ok] root null
+#24 ping [ok] pong v4.2
+LISTO
+
+# exit=0
