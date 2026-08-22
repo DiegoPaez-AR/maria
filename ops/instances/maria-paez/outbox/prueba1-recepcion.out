@@ -1,0 +1,42 @@
+# ejecutado: 2026-08-21T23:59:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/p1.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── eventos WA últimos 15 min ──");
+#   db.prepare(`SELECT timestamp,direccion,de,nombre,substr(cuerpo,1,80) c FROM eventos WHERE canal='whatsapp' AND timestamp>=datetime('now','-15 minutes') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),x.direccion==='entrante'?'←':'→',(x.nombre||x.de||'').slice(0,20),"|",String(x.c).replace(/\n/g," ")));
+#   console.log("── outbox reciente ──");
+#   db.prepare(`SELECT id,estado,intentos,numero,substr(texto,1,45) t FROM wa_outbox ORDER BY id DESC LIMIT 3`).all()
+#     .forEach(x=>console.log("  #"+x.id,x.estado,"int:"+x.intentos,x.numero.slice(-8),"|",String(x.t).replace(/\n/g," ")));
+#   db.close();
+#   JS
+#   node /tmp/p1.cjs; rm -f /tmp/p1.cjs
+#   echo "── logs MB últimos ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -8
+#   echo LISTO
+
+# ───── output ─────
+── eventos WA últimos 15 min ──
+  02:57:42 ← Diego | hola Maria, todo bien? te mando tu foto
+  02:58:03 → Diego | Todo bien por acá! Pero no me llegó ninguna foto, che — ¿la podés volver a manda
+  02:58:03 ← Diego | (te mandé una imagen — mirala) (sistema: adjunto guardado con id "2026-08-22-81a
+  02:58:18 → Diego | Diego, me llegó el aviso de la imagen pero no logro abrirla de mi lado, tengo un
+── outbox reciente ──
+  #233 vencido int:21 44471264 | ⏰ *En 15min*: Miran diagnostico neuro (06:00 
+  #232 vencido int:22 32317896 | ⏰ *En 15min*: Reunion PoCs (06:00 p. m.) Con:
+  #231 vencido int:20 32317896 | ⚠️ No pude entregar un WhatsApp a Gabriel Pac
+── logs MB últimos ──
+2026-08-21 23:47:11: [MB v3.7] 23:47:06 I [ctl] #1 → OK [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play Store|619,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+2026-08-21 23:58:05: [MB v3.7] 23:57:43 I [notif] entrante de "Diego Paez": hola Maria, todo bien? te mando tu foto
+2026-08-21 23:58:05: [MB v3.7] 23:57:45 I [notif] entrante de "Diego Paez": 📷 Photo
+2026-08-21 23:58:05: [MB v3.7] 23:57:47 I [media] imagen de "Diego Paez" cazado: IMG-20260821-WA0000.jpg (31KB) — subiendo
+2026-08-21 23:58:05: [MB v3.7] 23:57:49 I [notif] dup ignorado de "Diego Paez"
+2026-08-21 23:58:11: [MB v3.7] 23:58:05 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-21 23:58:21: [MB v3.7] 23:58:20 I [media] imagen procesado OK
+2026-08-21 23:58:21: [MB v3.7] 23:58:20 I [media] reply a "Diego Paez": ENVIADA
+LISTO
+
+# exit=0

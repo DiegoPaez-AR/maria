@@ -1,5 +1,16 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                                cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ---------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31512  2026-08-22 02:58:18  whatsapp  saliente   541132317896@c.us                              Diego, me llegó el aviso de la imagen pero no logro abrirla de mi lado, tengo un problema para procesarla. ¿Me la podés volver a mandar?                                                                
+
+31511  2026-08-22 02:58:18  sistema   interno                                                   claude_call whatsapp: 14597ms prompt=85097c raw=11587c in=6t(cache_read=118032 new=46169) out=549t ttfb=1655ms api=13959ms turnos=3 $0.2279                                                             
+
+31510  2026-08-22 02:58:03  whatsapp  entrante   541132317896@c.us                              (te mandé una imagen — mirala)                                                                                                                                                                          
+                                                                                                (sistema: adjunto guardado con id "2026-08-22-81ae0e1c.jpg" — si piden reenviarlo/compartirlo usá enviar_archivo_wa con ese id)                                                                         
+
+31509  2026-08-22 02:58:03  whatsapp  saliente   541132317896@c.us                              Todo bien por acá! Pero no me llegó ninguna foto, che — ¿la podés volver a mandar?                                                                                                                      
+
+31508  2026-08-22 02:58:03  sistema   interno                                                   claude_call whatsapp: 20447ms prompt=84455c raw=13251c in=6t(cache_read=55202 new=109760) out=973t ttfb=1529ms api=19739ms turnos=3 $0.4536                                                             
+
 31507  2026-08-22 02:57:42  whatsapp  entrante   541132317896@c.us                              hola Maria, todo bien? te mando tu foto                                                                                                                                                                 
 
 31506  2026-08-22 02:48:04  sistema   interno                                                   poda-eventos: 8 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)                                                                                                        
@@ -260,16 +271,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
                                                                                                 (sin eventos hoy)                                                                                                                                                                                       
 
 31413  2026-08-21 12:15:05  gmail     saliente   santiago@capurro.com.ar                        ⏰ *En 15min*: Adri Yetma (09:30 a. m.)                                                                                                                                                                  
-
-31412  2026-08-21 12:00:05  gmail     saliente   hernan.fulco@sondeosglobal.com                 ⏰ *En 15min*: MC Daily (09:15 a. m.)                                                                                                                                                                    
-                                                                                                Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgloba                                     
-
-31411  2026-08-21 11:45:05  gmail     saliente   hernan.fulco@sondeosglobal.com                 ⏰ *En 15min*: PlanningMC (09:00 a. m.)                                                                                                                                                                  
-                                                                                                Con: gustavo.garcia@sondeosglobal.com, elina.torello@sondeosglobal.com, victoria.britos@sondeosglobal.com                                                                                               
-                                                                                                👤 Gustavo Garcia — Gerente de Proyectos y QA en Sondeos                                                                                                                                                 
-
-31410  2026-08-21 11:31:09  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31409  2026-08-21 11:01:10  sistema   interno                                                   meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31408  2026-08-21 10:46:10  sistema   interno                                                   meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
