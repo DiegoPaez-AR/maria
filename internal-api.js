@@ -84,7 +84,12 @@ function start({ waClient } = {}) {
               if (c) nombre = c.nombre;
             }
           } catch {}
-          return res.end(`${p.id}|${p.numero}|${encodeURIComponent(p.texto)}|${encodeURIComponent(nombre)}`);
+          // 5º campo: modo del envío (2026-08-21, número NUEVO de Maria).
+          // WA_WARMUP=1 → "R" = reply-only: la app responde si hay notif viva
+          // del chat, pero NO abre chats nuevos (cero cold-send mientras el
+          // número madura). Sin warmup → "F" (full, cold-send permitido).
+          const modo = process.env.WA_WARMUP === '1' ? 'R' : 'F';
+          return res.end(`${p.id}|${p.numero}|${encodeURIComponent(p.texto)}|${encodeURIComponent(nombre)}|${modo}`);
         }
         if (_out[2] === 'confirmar-ultimo') {
           return send(200, outbox.confirmarUltimo());

@@ -75,17 +75,18 @@ class OutboxService : Service() {
                 }
                 return@get
             }
-            val partes = resp.split("|", limit = 4)
+            val partes = resp.split("|", limit = 5)
             if (partes.size < 3) return@get
             val id = partes[0]
             val numero = partes[1]
             val texto = try { URLDecoder.decode(partes[2], "UTF-8") } catch (_: Exception) { partes[2] }
             val nombre = if (partes.size >= 4) try { URLDecoder.decode(partes[3], "UTF-8") } catch (_: Exception) { partes[3] } else ""
-            enviar(base, secret, id, numero, nombre, texto)
+            val modo = if (partes.size >= 5) partes[4].trim() else "F"
+            enviar(base, secret, id, numero, nombre, texto, modo)
         }
     }
 
-    private fun enviar(base: String, secret: String, id: String, numero: String, nombre: String, texto: String) {
+    private fun enviar(base: String, secret: String, id: String, numero: String, nombre: String, texto: String, modo: String = "F") {
         // Respuesta silenciosa por RemoteInput: primero por NOMBRE (título de la
         // notif = nombre agendado), luego por NÚMERO (chats no agendados).
         var ok = false
@@ -94,9 +95,13 @@ class OutboxService : Service() {
         if (ok) {
             Net.get("$base/$secret/confirmar/$id") { _, _ -> }   // confirmar SOLO tras enviar
             log("respondido (silencioso) → ${if (nombre.isNotBlank()) nombre else numero}")
+        } else if (modo == "R") {
+            // WARM-UP (v3.8, número nuevo): reply-only. Sin notif viva NO se
+            // abre ningún chat — el mensaje espera en la cola sin confirmar.
+            MbLog.i("outbox", "warm-up: #$id a $numero necesita chat nuevo — NO abro (reply-only), espera en cola")
         } else {
-            // Sin notif viva → ENVÍO EN FRÍO por accesibilidad (abre wa.me + tap
-            // por viewId + verifica). Un cold-send a la vez; si ya hay uno, espera.
+            // Sin notif viva → ENVÍO EN FRÍO por accesibilidad (abre el chat con
+            // intent local + tap por viewId + verifica). Un cold-send a la vez.
             val encolado = ColdSend.encolar(ColdSend.Target(id, numero, texto, nombre)) { doneId, okCold ->
                 if (okCold) {
                     Net.get("$base/$secret/confirmar/$doneId") { _, _ -> }
