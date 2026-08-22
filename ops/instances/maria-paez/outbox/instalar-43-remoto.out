@@ -1,0 +1,29 @@
+# ejecutado: 2026-08-22T16:15:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── versión publicada ──"; curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   cat > /tmp/i43.cjs <<'JS'
+#   const c=require("/root/secretaria/mb-control.js");
+#   console.log("home:", c.encolar("home"));
+#   console.log("tap MariaBridge:", c.encolar("tap",{x:446,y:816}));
+#   console.log("nodos (confirmar pantalla):", c.encolar("nodos"));
+#   JS
+#   node /tmp/i43.cjs; rm -f /tmp/i43.cjs
+#   echo LISTO
+
+# ───── output ─────
+── versión publicada ──
+{"versionCode": 28, "versionName": "4.3", "url": "https://intensa.io/_dl/mb-30b8a01a67688d9e.apk"}
+
+[mb-control] #16 encolado: home 
+home: 16
+[mb-control] #17 encolado: tap {"x":446,"y":816}
+tap MariaBridge: 17
+[mb-control] #18 encolado: nodos 
+nodos (confirmar pantalla): 18
+LISTO
+
+# exit=0
