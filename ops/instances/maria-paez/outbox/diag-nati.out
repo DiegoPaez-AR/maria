@@ -1,0 +1,120 @@
+# ejecutado: 2026-08-22T18:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── logs del intento (enviar_wa / wa-send / outbox) ──"
+#   timeout 20 grep -nE "enviar_wa|wa-send|wa-outbox|5491150105262|executor.*FALL|accion.*FALL" /root/.pm2/logs/maria-paez-out.log | tail -30
+#   echo ""
+#   echo "── errores ──"
+#   timeout 15 tail -60 /root/.pm2/logs/maria-paez-error.log | tail -20
+#   echo ""
+#   echo "── ¿quién es Nati? usuario o contacto ──"
+#   timeout 20 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print(" usuarios que matchean:")
+#   for r in db.execute("SELECT id,nombre,activo,servido,wa_cus,wa_lid,email,telegram_chat_id FROM usuarios WHERE nombre LIKE '%Nat%'"):
+#       print("  ", dict(r))
+#   print(" contactos que matchean:")
+#   for r in db.execute("SELECT id,usuario_id,nombre,whatsapp,email,no_contactar FROM contactos WHERE nombre LIKE '%Nat%'"):
+#       print("  ", dict(r))
+#   print(" outbox reciente:")
+#   for r in db.execute("SELECT id,numero,estado,intentos,substr(texto,1,50) t FROM wa_outbox ORDER BY id DESC LIMIT 6"):
+#       print("  ", dict(r))
+#   db.close()
+#   PY
+#   echo ""
+#   echo "── vars de política en el proceso ──"
+#   timeout 20 node -e "
+#   const e=process.env;
+#   for (const k of ['WA_SALIENTE_OFF','WA_WARMUP','WA_VENTANA_DESDE','WA_VENTANA_HASTA','MARIA_SESIONES','MARIA_SESIONES_USUARIOS'])
+#     console.log('  '+k+'='+(e[k]===undefined?'(no seteada)':e[k]));"
+#   echo LISTO
+
+# ───── output ─────
+── logs del intento (enviar_wa / wa-send / outbox) ──
+254599:2026-08-22 00:33:04: [wa-send] recordatorios/Diego/respuesta_usuario: en silencio (America/Argentina/Buenos_Aires) → diferido #20 hasta las 8h
+254603:2026-08-22 04:00:05: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+254605:2026-08-22 07:00:06: [wa-send] morning-brief/Hernan Fulco: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
+254607:2026-08-22 07:00:07: [wa-send] morning-brief/Natali Funez: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Natali Funez
+254609:2026-08-22 07:00:08: [wa-send] morning-brief/Doris Capurro: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Doris Capurro
+254611:2026-08-22 07:00:10: [wa-send] morning-brief/Nicolas Kosinski: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Nicolas Kosinski
+254613:2026-08-22 07:00:11: [wa-send] morning-brief/Walter Vera: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Walter Vera
+254615:2026-08-22 07:00:13: [wa-send] morning-brief/Sebastian Ameijeira: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Sebastian Ameijeira
+254617:2026-08-22 07:00:14: [wa-send] morning-brief/Enrique Sosa: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Enrique Sosa
+254619:2026-08-22 07:00:15: [wa-send] morning-brief/Santiago Capurro: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Santiago Capurro
+254621:2026-08-22 07:00:16: [wa-send] morning-brief/Andres Neumann: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Andres Neumann
+254623:2026-08-22 07:00:17: [wa-send] morning-brief/Gabriela Echaniz: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Gabriela Echaniz
+254625:2026-08-22 07:00:18: [wa-send] morning-brief/Jaime Cibils: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Jaime Cibils
+254627:2026-08-22 07:00:18: [wa-send] morning-brief/Alfonso Amat: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Alfonso Amat
+254629:2026-08-22 08:03:04: [wa-send] recordatorios/Diego/respuesta_usuario+drenado: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+254642:2026-08-22 08:24:59: [wa-send] wa-hook/deadline: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+254645:2026-08-22 08:33:04: [wa-send] recordatorios/Diego/respuesta_usuario: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+254654:2026-08-22 08:38:38: [wa-send] wa-hook/deadline: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+254704:2026-08-22 08:53:20: [wa-outbox] #234 encolado → +5491163846461 (Hola! Soy Maria, la secretaria de Diego …)
+254741:2026-08-22 08:58:24: [wa-outbox] #235 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a 549116…)
+254770:2026-08-22 09:15:05: [wa-send] morning-brief/Cristian Ruiz: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Cristian Ruiz
+255251:2026-08-22 12:04:47: [wa-outbox] #236 encolado → +5491163846461 (placeholder…)
+255252:2026-08-22 12:05:01: [wa-outbox] #237 encolado → +5491163846461 (Hola, disculpen el mensaje anterior, fue…)
+255254:2026-08-22 12:09:45: [wa-outbox] #236 entregado por el teléfono
+255259:2026-08-22 12:09:52: [wa-outbox] #237 entregado por el teléfono
+255406:2026-08-22 13:15:04: [wa-send] programados/1494: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Doris Capurro
+255605:2026-08-22 16:55:05: [wa-send] aviso_ops: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+255676:2026-08-22 17:00:43: [wa-send] loop_guard: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+255677:2026-08-22 17:05:03: [wa-send] internal-api/send-wa: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+255679:2026-08-22 17:45:04: [wa-send] internal-api/send-wa: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+
+── errores ──
+2026-08-22 17:31:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:31:52: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:32:18: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:32:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:33:19: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:33:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:34:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:34:50: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:35:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:35:50: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:36:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:36:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:37:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:37:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:39:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:40:50: [TG] poll error (reintento en 15s): fetch failed
+2026-08-22 18:20:31: [executor] acción #0 (enviar_wa) falló: _validarTextoSaliente is not defined
+2026-08-22 18:20:34: [executor] acción #0 (enviar_wa) falló: _validarTextoSaliente is not defined
+
+── ¿quién es Nati? usuario o contacto ──
+ usuarios que matchean:
+   {'id': 3, 'nombre': 'Natali Funez', 'activo': 1, 'servido': 1, 'wa_cus': '5491150105262@c.us', 'wa_lid': '232637088149596@lid', 'email': 'nfunez@iplan.com.ar', 'telegram_chat_id': None}
+   {'id': 15, 'nombre': 'Guillermo Bagnato', 'activo': 0, 'servido': 1, 'wa_cus': None, 'wa_lid': '114207659921663@lid', 'email': 'g@thequantumalliance.com', 'telegram_chat_id': None}
+ contactos que matchean:
+   {'id': 80, 'usuario_id': 2, 'nombre': 'Cristian Incarnato', 'whatsapp': '5491133126919@c.us', 'email': None, 'no_contactar': 0}
+   {'id': 96, 'usuario_id': 1, 'nombre': 'Natali Funez', 'whatsapp': '5491150105262@c.us', 'email': 'nfunez@iplan.com.ar', 'no_contactar': 0}
+   {'id': 155, 'usuario_id': 1, 'nombre': 'Damian Lanatta', 'whatsapp': '5491142991023@c.us', 'email': 'damian.lanatta@gmail.com', 'no_contactar': 0}
+   {'id': 166, 'usuario_id': 1, 'nombre': 'Brunatti Carolina', 'whatsapp': '5491141885339@c.us', 'email': 'carolina.brunatti@telefonica.com', 'no_contactar': 0}
+   {'id': 275, 'usuario_id': 1, 'nombre': 'Guillermo Bagnato', 'whatsapp': '5491149353680@c.us', 'email': 'G@thequantumalliance.com', 'no_contactar': 0}
+   {'id': 359, 'usuario_id': 2, 'nombre': 'Cristian Incarnato (sondeos.com.ar)', 'whatsapp': None, 'email': 'cristian.incarnato@sondeos.com.ar', 'no_contactar': 0}
+   {'id': 384, 'usuario_id': 2, 'nombre': 'Cristian Incarnato (sondeosglobal.com)', 'whatsapp': None, 'email': 'cristian.incarnato@sondeosglobal.com', 'no_contactar': 0}
+ outbox reciente:
+   {'id': 237, 'numero': '5491163846461', 'estado': 'entregado', 'intentos': 1, 't': 'Hola, disculpen el mensaje anterior, fue un error '}
+   {'id': 236, 'numero': '5491163846461', 'estado': 'entregado', 'intentos': 2, 't': 'placeholder'}
+   {'id': 235, 'numero': '541132317896', 'estado': 'vencido', 'intentos': 5, 't': '⚠️ No pude entregar un WhatsApp a 5491163846461: n'}
+   {'id': 234, 'numero': '5491163846461', 'estado': 'vencido', 'intentos': 11, 't': 'Hola! Soy Maria, la secretaria de Diego Paez. Quer'}
+   {'id': 233, 'numero': '5491144471264', 'estado': 'vencido', 'intentos': 21, 't': '⏰ *En 15min*: Miran diagnostico neuro (06:00 p. m.'}
+   {'id': 232, 'numero': '541132317896', 'estado': 'vencido', 'intentos': 22, 't': '⏰ *En 15min*: Reunion PoCs (06:00 p. m.)\nCon: nkos'}
+
+── vars de política en el proceso ──
+  WA_SALIENTE_OFF=0
+  WA_WARMUP=0
+  WA_VENTANA_DESDE=8
+  WA_VENTANA_HASTA=23
+  MARIA_SESIONES=1
+  MARIA_SESIONES_USUARIOS=Diego
+LISTO
+
+# exit=0
