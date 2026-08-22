@@ -1,0 +1,24 @@
+# ejecutado: 2026-08-22T13:24:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "hora VPS: $(date '+%H:%M %Z')"
+#   echo "── polls del teléfono (últimos 3) ──"
+#   grep "pendiente.txt" /var/log/nginx/intensa.io.access.log | tail -3 | sed -E 's/.*\[([^]]+)\].*/  \1/'
+#   echo "── últimos logs MB ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -4
+
+# ───── output ─────
+hora VPS: 13:24 -03
+── polls del teléfono (últimos 3) ──
+  22/Aug/2026:13:23:47 -0300
+  22/Aug/2026:13:23:52 -0300
+  22/Aug/2026:13:23:57 -0300
+── últimos logs MB ──
+2026-08-22 13:23:50: [MB v4.1] 13:23:49 I [ctl] comando #12: tap {"x":446,"y":816}
+2026-08-22 13:23:50: [MB v4.1] 13:23:49 I [ctl] #12 → OK tap 446,816 ✓
+2026-08-22 13:24:00: [MB v4.1] 13:23:54 I [ctl] comando #13: nodos {}
+2026-08-22 13:24:00: [MB v4.1] 13:23:54 I [ctl] #13 → OK [|https://intensa.io|360,302] [|cfS1IoCOSxNtVUwIzo|360,381] [|Guardar y arrancar|360,463] [|① Permiso: acceso |360,547] [|② Quitar restricci|360,631] [|③ Permiso: accesib|360,715] [|④ Permiso: todos l|360,799] [|Buscar actualizaci|360,883] 
+
+# exit=0
