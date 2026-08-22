@@ -33,6 +33,15 @@ function encolar(cmd, args = null) {
 
 // Sirve el próximo comando pendiente como línea "CTL|id|cmd|argsB64" (o null).
 function siguiente() {
+  // Re-armar huérfanos (22/8): un comando servido que no reportó resultado en
+  // 3 min vuelve a pendiente — antes quedaba "enviado" para siempre si el
+  // teléfono estaba ocupado o se cortó la red.
+  try {
+    const r = mem.db.prepare(
+      `UPDATE mb_control SET estado='pendiente' WHERE estado='enviado' AND creado <= datetime('now','-3 minutes')`
+    ).run();
+    if (r.changes) console.log(`[mb-control] ${r.changes} comando(s) huérfano(s) re-armados`);
+  } catch { /* noop */ }
   const row = mem.db.prepare(`SELECT * FROM mb_control WHERE estado='pendiente' ORDER BY id LIMIT 1`).get();
   if (!row) return null;
   mem.db.prepare(`UPDATE mb_control SET estado='enviado' WHERE id=?`).run(row.id);

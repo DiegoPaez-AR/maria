@@ -88,20 +88,23 @@ class WaSendService : AccessibilityService() {
         try {
             if (!_topeOk()) { ColdSend.pendiente?.let { _reportarFallo(it.id, "tope_aperturas"); goHome(); ColdSend.terminar(it.id, false) }; return }
             despertarPantalla()
-            // v3.7: SIN wa.me — ese link pasa por servidores de Meta (señal de
-            // bot: 314 clics a un número inválido precedieron el 1er bloqueo).
-            // ACTION_SENDTO con smsto: + setPackage abre el chat LOCALMENTE.
-            val i = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:+$num")).apply {
+            // v4.0: whatsapp://send es el PRIMARIO. Sigue SIN wa.me (nada de
+            // telemetría a Meta), pero a diferencia de smsto: NO depende de que
+            // el número esté en la agenda del teléfono — smsto: mostraba
+            // "Invite/SMS" para contactos no agendados aunque tuvieran WhatsApp
+            // (caso Catalino 22/8).
+            val uri = Uri.parse("whatsapp://send?phone=$num&text=" + URLEncoder.encode(texto, "UTF-8"))
+            val i = Intent(Intent.ACTION_VIEW, uri).apply {
                 setPackage("com.whatsapp")
-                putExtra("sms_body", texto)
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             try {
                 startActivity(i)
             } catch (e: Exception) {
-                MbLog.w("frio", "intent local falló (${e.message}) — fallback whatsapp://send")
-                val alt = Intent(Intent.ACTION_VIEW, Uri.parse("whatsapp://send?phone=$num&text=" + URLEncoder.encode(texto, "UTF-8")))
-                    .apply { setPackage("com.whatsapp"); addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+                MbLog.w("frio", "whatsapp://send falló (${e.message}) — fallback smsto:")
+                val alt = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:+$num")).apply {
+                    setPackage("com.whatsapp"); putExtra("sms_body", texto); addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 startActivity(alt)
             }
         } catch (e: Exception) { MbLog.e("frio", "abrirChat: ${e.message}") }
@@ -109,7 +112,9 @@ class WaSendService : AccessibilityService() {
 
     private val SIN_WA = listOf(
         "no está en whatsapp", "isn't on whatsapp", "is not on whatsapp",
-        "não está no whatsapp", "no esta en whatsapp")
+        "não está no whatsapp", "no esta en whatsapp",
+        // pantalla de invitación (v4.0): aparece cuando el chat no se pudo abrir
+        "invite to whatsapp", "invitar a whatsapp")
 
     private fun _esDialogoSinWA(root: AccessibilityNodeInfo): Boolean {
         for (frase in listOf("WhatsApp")) {
