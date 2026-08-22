@@ -1,5 +1,15 @@
 id     timestamp            canal     direccion  COALESCE(de,"")                             cuerpo                                                                                                                                                                                                  
 -----  -------------------  --------  ---------  ------------------------------------------  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+31583  2026-08-22 11:53:33  sistema   interno                                                claude_call maria-worker: 28984ms prompt=84456c raw=17978c in=10t(cache_read=166584 new=111069) out=1261t ttfb=1578ms api=21916ms turnos=6 $0.4964                                                      
+
+31582  2026-08-22 11:53:29  sistema   interno                                                acción ejecutada: agregar_pendiente                                                                                                                                                                     
+
+31581  2026-08-22 11:53:26  sistema   interno                                                acción ejecutada: quitar_pendiente                                                                                                                                                                      
+
+31580  2026-08-22 11:53:20  sistema   interno                                                acción ejecutada: enviar_wa                                                                                                                                                                             
+
+31579  2026-08-22 11:53:20  sistema   interno                                                claude_call moderacion: 6139ms prompt=1633c raw=6365c in=10t(cache_read=0 new=22499) out=320t ttfb=1263ms api=5455ms turnos=1 $0.0302                                                                   
+
 31578  2026-08-22 11:52:01  sistema   interno                                                claude_call memoria-curada: 26667ms prompt=7809c raw=13028c in=2t(cache_read=0 new=18637) out=1686t ttfb=1930ms api=25614ms turnos=1 $0.0983                                                            
 
 31577  2026-08-22 11:51:04  sistema   interno                                                WA APAGADO por marker — cero intentos de conexión; loops en modo degradado                                                                                                                              
@@ -286,19 +296,3 @@ id     timestamp            canal     direccion  COALESCE(de,"")                
 31485  2026-08-21 20:15:05  gmail     saliente   santiago@capurro.com.ar                     ⏰ *En 15min*: Acquisition & Construction Loan - 3635 Justison Rd (05:30 p. m.)                                                                                                                          
 
 31484  2026-08-21 20:15:05  gmail     saliente   doris@capurro.com.ar                        ⏰ *En 15min*: Taller honda (05:30 p. m.)                                                                                                                                                                
-
-31483  2026-08-21 19:45:05  gmail     saliente   hernan.fulco@sondeosglobal.com              ⏰ *En 15min*: Preplanning CMP (05:00 p. m.)                                                                                                                                                             
-                                                                                             Con: alejandro.furgeri@sondeos.com.ar, bogdan.bedyukh@sondeos.com.ar, cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, gustavo.garcia@sondeo                                            
-
-31482  2026-08-21 18:45:05  gmail     saliente   hernan.fulco@sondeosglobal.com              ⏰ *En 15min*: Preplanning MC (04:00 p. m.)                                                                                                                                                              
-                                                                                             Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeos.com.ar, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosgl                                           
-
-31481  2026-08-21 18:45:05  telegram  saliente   590589920                                   ⏰ *En 15min*: Avance Semanal con DP (04:00 p. m.)                                                                                                                                                       
-                                                                                             Con: wvera@froneus.com                                                                                                                                                                                  
-                                                                                             👤 Walter Vera — CTO en Froneus: Walter Vera es un contacto de Diego (WA: 5491138433288@c.us, email: wvera@froneus.com), pero ha                                                                         
-
-31480  2026-08-21 18:31:10  sistema   interno                                                meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)                                                                                                                                                     
-
-31479  2026-08-21 18:31:04  telegram  saliente   telegram:590589920                          Te debo consulta sobre algo pendiente 👇                                                                                                                                                                 
-                                                                                                                                                                                                                                                                                                     
-                                                                                             1. Confirmarle a Diego que Gabriel Pacheco puede el miércoles 2/9 para la cena — pedirle el contacto del restaurante (Catalino o Fico?) para hacer la reserva —                                         
