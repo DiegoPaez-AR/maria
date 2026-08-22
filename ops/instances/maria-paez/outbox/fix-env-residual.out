@@ -1,0 +1,31 @@
+# ejecutado: 2026-08-22T08:51:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   CONF=config/instances/maria-paez.conf
+#   # pm2 NO borra vars al eliminarlas del .conf (las mergea) → WA_SALIENTE_OFF seguía
+#   # en el env del proceso y bloqueaba TODO envío (caso reserva Catalino 22/8).
+#   grep -q "^WA_SALIENTE_OFF=" "$CONF" || echo "WA_SALIENTE_OFF=0" >> "$CONF"
+#   sed -i 's/^WA_SALIENTE_OFF=.*/WA_SALIENTE_OFF=0/' "$CONF"
+#   grep -E "^WA_(SALIENTE_OFF|WARMUP)=" "$CONF"
+#   pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+#   sleep 3
+#   node -e "
+#   const {execSync}=require('child_process');
+#   const env=JSON.parse(execSync('pm2 jlist').toString()).find(p=>p.name==='maria-paez').pm2_env;
+#   console.log('env efectivo → WA_SALIENTE_OFF:', env.WA_SALIENTE_OFF, '| WA_WARMUP:', env.WA_WARMUP);
+#   "
+#   if pgrep -f mb-build-worker >/dev/null; then echo "build corriendo"; else nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 & echo "build v3.9 lanzado"; fi
+#   echo LISTO
+
+# ───── output ─────
+WA_WARMUP=1
+WA_SALIENTE_OFF=0
+reload OK
+env efectivo → WA_SALIENTE_OFF: 0 | WA_WARMUP: 1
+build v3.9 lanzado
+LISTO
+
+# exit=0
