@@ -1,0 +1,32 @@
+# ejecutado: 2026-08-22T16:17:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/i43b.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── comandos ──");
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,300) r FROM mb_control ORDER BY id DESC LIMIT 4").all()
+#     .reverse().forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"]",(x.r||"").slice(0,280)));
+#   db.close();
+#   JS
+#   node /tmp/i43b.cjs; rm -f /tmp/i43b.cjs
+#   # si la app está abierta, tocar "Buscar actualización" (360,883)
+#   cat > /tmp/i43c.cjs <<'JS'
+#   const c=require("/root/secretaria/mb-control.js");
+#   console.log("tap Buscar actualización:", c.encolar("tap",{x:360,y:883}));
+#   JS
+#   node /tmp/i43c.cjs; rm -f /tmp/i43c.cjs
+#   echo LISTO
+
+# ───── output ─────
+── comandos ──
+#15 nodos [ok] [|https://intensa.io|360,302] [|cfS1IoCOSxNtVUwIzo|360,381] [|Guardar y arrancar|360,463] [|① Permiso: acceso |360,547] [|② Quitar restricci|360,631] [|③ Permiso: accesib|360,715] [|④ Permiso: todos l|360,799] [|Buscar actualizaci|360,883] 
+#16 home [ok] home
+#17 tap [ok] tap 446,816 ✓
+#18 nodos [ok] [|https://intensa.io|360,302] [|cfS1IoCOSxNtVUwIzo|360,381] [|Guardar y arrancar|360,463] [|① Permiso: acceso |360,547] [|② Quitar restricci|360,631] [|③ Permiso: accesib|360,715] [|④ Permiso: todos l|360,799] [|Buscar actualizaci|360,883] 
+[mb-control] #19 encolado: tap {"x":360,"y":883}
+tap Buscar actualización: 19
+LISTO
+
+# exit=0
