@@ -1,0 +1,86 @@
+# ejecutado: 2026-08-22T19:26:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── outbox completo reciente ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   cols=[r[1] for r in db.execute("PRAGMA table_info(wa_outbox)")]
+#   print("  columnas:", cols)
+#   for r in db.execute("SELECT * FROM wa_outbox ORDER BY id DESC LIMIT 5"):
+#       d=dict(r); d['texto']=(d.get('texto') or '')[:60]
+#       print("  ", d)
+#   db.close()
+#   PY
+#   echo ""
+#   echo "── logs del envío a Nati ──"
+#   timeout 20 grep -nE "5491150105262|Nati|Natali" /root/.pm2/logs/maria-paez-out.log | tail -20
+#   echo ""
+#   echo "── qué sirvió el teléfono (pendiente.txt) ──"
+#   timeout 15 grep -E "\[MB" /root/.pm2/logs/maria-paez-out.log | tail -12
+#   echo ""
+#   echo "── ventana horaria / hora del VPS ──"
+#   date; timeout 15 node -e "
+#   const e=process.env;
+#   console.log('  ventana', e.WA_VENTANA_DESDE||'(default)', '-', e.WA_VENTANA_HASTA||'(default)');
+#   console.log('  WA_WARMUP=', e.WA_WARMUP, ' WA_SALIENTE_OFF=', e.WA_SALIENTE_OFF);
+#   const o=require('/root/secretaria/wa-outbox');
+#   console.log('  siguiente() devuelve:', JSON.stringify(o.siguiente&&o.siguiente()||null).slice(0,200));"
+#   echo LISTO
+
+# ───── output ─────
+── outbox completo reciente ──
+  columnas: ['id', 'creado', 'usuario_id', 'numero', 'texto', 'estado', 'intentos', 'tomado_en', 'entregado', 'metadata_json', 'no_antes']
+   {'id': 238, 'creado': '2026-08-22 22:23:51', 'usuario_id': 1, 'numero': '5491150105262', 'texto': 'Hola Nati! Soy Maria, la secretaria de Diego. Te escribo de ', 'estado': 'entregado', 'intentos': 1, 'tomado_en': '2026-08-22 22:25:16', 'entregado': '2026-08-22 22:25:31', 'metadata_json': '{"destinoOriginal":"5491150105262@c.us","canalOrigen":"telegram"}', 'no_antes': '2026-08-22 22:25:00'}
+   {'id': 237, 'creado': '2026-08-22 15:05:01', 'usuario_id': 1, 'numero': '5491163846461', 'texto': 'Hola, disculpen el mensaje anterior, fue un error técnico de', 'estado': 'entregado', 'intentos': 1, 'tomado_en': '2026-08-22 15:09:48', 'entregado': '2026-08-22 15:09:52', 'metadata_json': '{"destinoOriginal":"5491163846461@c.us","canalOrigen":"telegram"}', 'no_antes': None}
+   {'id': 236, 'creado': '2026-08-22 15:04:47', 'usuario_id': 1, 'numero': '5491163846461', 'texto': 'placeholder', 'estado': 'entregado', 'intentos': 2, 'tomado_en': '2026-08-22 15:09:44', 'entregado': '2026-08-22 15:09:45', 'metadata_json': '{"destinoOriginal":"5491163846461@c.us","canalOrigen":"telegram"}', 'no_antes': None}
+   {'id': 235, 'creado': '2026-08-22 11:58:24', 'usuario_id': 1, 'numero': '541132317896', 'texto': '⚠️ No pude entregar un WhatsApp a 5491163846461: no pude ent', 'estado': 'vencido', 'intentos': 5, 'tomado_en': '2026-08-22 11:59:48', 'entregado': None, 'metadata_json': '{"tipo":"aviso_fallo_entrega","outboxId":234,"cold_fallos":5,"cold_motivo":"chat_equivocado"}', 'no_antes': None}
+   {'id': 234, 'creado': '2026-08-22 11:53:20', 'usuario_id': 1, 'numero': '5491163846461', 'texto': 'Hola! Soy Maria, la secretaria de Diego Paez. Quería consult', 'estado': 'vencido', 'intentos': 11, 'tomado_en': '2026-08-22 11:58:18', 'entregado': None, 'metadata_json': '{"destinoOriginal":"5491163846461@c.us","canalOrigen":"maria-worker","cold_fallos":5,"cold_motivo":"timeout_sin_boton"}', 'no_antes': None}
+
+── logs del envío a Nati ──
+255107:2026-08-22 11:19:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255143:2026-08-22 11:41:23:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255178:2026-08-22 11:43:34:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255213:2026-08-22 11:45:05:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255269:2026-08-22 12:26:25:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255305:2026-08-22 13:05:25:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255340:2026-08-22 13:07:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255375:2026-08-22 13:09:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255449:2026-08-22 14:51:25:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255484:2026-08-22 14:59:23:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255519:2026-08-22 15:12:21:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255611:2026-08-22 16:56:23:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255646:2026-08-22 16:59:24:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255685:2026-08-22 17:48:04:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255758:2026-08-22 18:20:08: [TG audio→texto] Mandale un whatsapp a Natifunes a ver si cenamos esta noche.
+255764:2026-08-22 18:36:21:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+255795:2026-08-22 19:23:36: [TG audio→texto] ¿Le podés preguntar de nuevo Nati si cenamos esta noche? Ahora debería funcionar por WhatsApp.
+255796:2026-08-22 19:23:51: [wa-outbox] #238 encolado → +5491150105262 (Hola Nati! Soy Maria, la secretaria de D…)
+255797:2026-08-22 19:25:23: [MB v4.4] 19:25:19 I [frio] abriendo chat 5491150105262 (#238)
+255801:2026-08-22 19:25:33: [MB v4.4] 19:25:33 I [outbox] enviado EN FRÍO (accesibilidad) → 5491150105262
+
+── qué sirvió el teléfono (pendiente.txt) ──
+2026-08-22 18:00:32: [MB v4.4] 18:00:26 I [svc] OutboxService arrancó (loop nuevo)
+2026-08-22 18:01:02: [MB v4.4] 18:00:58 I [upd] al día (v4.4 code=29, mío=29)
+2026-08-22 18:02:05: [MB-CTL] #29 → OK: pong v4.4
+2026-08-22 18:02:10: [MB-CTL] #30 → OK: pantalla despertada
+2026-08-22 18:02:12: [MB v4.4] 18:02:07 I [ctl] comando #29: ping {}
+2026-08-22 18:02:12: [MB v4.4] 18:02:07 I [ctl] #29 → OK pong v4.4
+2026-08-22 18:02:12: [MB v4.4] 18:02:12 I [ctl] comando #30: despertar {}
+2026-08-22 18:02:12: [MB v4.4] 18:02:12 I [ctl] #30 → OK pantalla despertada
+2026-08-22 19:25:23: [MB v4.4] 19:25:19 I [frio] abriendo chat 5491150105262 (#238)
+2026-08-22 19:25:23: [MB v4.4] 19:25:22 I [frio] botón send encontrado — 'escribiendo' 9s antes de enviar
+2026-08-22 19:25:33: [MB v4.4] 19:25:33 I [frio] verificación #238: ENVIADO
+2026-08-22 19:25:33: [MB v4.4] 19:25:33 I [outbox] enviado EN FRÍO (accesibilidad) → 5491150105262
+
+── ventana horaria / hora del VPS ──
+Sat Aug 22 07:26:02 PM -03 2026
+  ventana 8 - 23
+  WA_WARMUP= 0  WA_SALIENTE_OFF= 0
+  siguiente() devuelve: null
+LISTO
+
+# exit=0
