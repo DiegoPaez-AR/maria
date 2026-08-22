@@ -98,9 +98,14 @@ class NotifListener : NotificationListenerService() {
                             }
                             return@Thread   // media procesada — NO hacemos el POST del hint
                         }
+                        // Subida hecha pero sin respuesta útil: el server igual lo
+                        // está procesando — NO mandamos el hint (duplicaba el turno
+                        // y contradecía la respuesta real, bug 22/8).
+                        MbLog.w("media", "$tipoMedia subido pero sin respuesta a tiempo — NO mando hint")
+                        return@Thread
                     } else MbLog.w("media", "no apareció el archivo ($tipoMedia) de \"$titulo\" — caigo al hint")
                 } catch (e: Exception) { MbLog.e("media", "caza falló: ${e.message}") }
-                _postNormal(base, secret, titulo, texto)   // fallback
+                _postNormal(base, secret, titulo, texto)   // fallback solo si NO se pudo cazar
             }.apply { isDaemon = true }.start()
             return
         }

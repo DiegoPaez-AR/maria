@@ -12,14 +12,14 @@ object Net {
     // LLM — ahora el cliente es nuestro y el deadline lo decidimos nosotros.
     // 1 reintento automático ante timeout/red (los POST son idempotentes del
     // lado del hook: dedupe por contenido+turno).
-    fun postJson(url: String, body: String, onResult: ((Int, String) -> Unit)? = null) {
+    fun postJson(url: String, body: String, timeoutMs: Int = 90000, onResult: ((Int, String) -> Unit)? = null) {
         pool.execute {
             var intento = 0
             while (intento < 2) {
                 try {
                     val c = URL(url).openConnection() as HttpURLConnection
                     c.requestMethod = "POST"
-                    c.connectTimeout = 15000; c.readTimeout = 90000
+                    c.connectTimeout = 15000; c.readTimeout = timeoutMs
                     c.doOutput = true
                     c.setRequestProperty("Content-Type", "application/json")
                     c.outputStream.use { it.write(body.toByteArray()) }

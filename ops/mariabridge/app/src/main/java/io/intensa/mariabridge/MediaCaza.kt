@@ -80,13 +80,17 @@ object MediaCaza {
                 .put("tipo", tipo).put("caption", caption)
             var resultado: JSONObject? = null
             val lock = Object()
-            Net.postJson("$base/$secret/mbmedia", body.toString()) { code, resp ->
+            // 240s: transcripción (whisper) + turno completo del LLM pueden pasar
+            // los 90s por default — el timeout hacía que la app cayera al hint y
+            // el usuario recibiera "no puedo escuchar audios" DESPUÉS de la
+            // respuesta real (bug 22/8).
+            Net.postJson("$base/$secret/mbmedia", body.toString(), 240000) { code, resp ->
                 synchronized(lock) {
                     resultado = if (code == 200) try { JSONObject(resp) } catch (_: Exception) { null } else null
                     lock.notifyAll()
                 }
             }
-            synchronized(lock) { lock.wait(120_000) }
+            synchronized(lock) { lock.wait(250_000) }
             resultado
         } catch (e: Exception) { MbLog.e("media", "subida falló: ${e.message}"); null }
     }
