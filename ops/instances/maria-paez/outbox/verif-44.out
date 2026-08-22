@@ -1,0 +1,28 @@
+# ejecutado: 2026-08-22T18:02:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   timeout 20 node -e "const c=require('/root/secretaria/mb-control'); c.encolar('ping'); c.encolar('despertar');"
+#   sleep 30
+#   timeout 20 node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,120) r FROM mb_control ORDER BY id DESC LIMIT 3').all().reverse().forEach(x=>console.log(' #'+x.id,x.cmd,'['+x.estado+']',x.r||''));db.close();"
+#   echo "── logs de la app ──"; timeout 10 grep "\[MB" /root/.pm2/logs/maria-paez-out.log | tail -6
+#   echo LISTO
+
+# ───── output ─────
+[mb-control] #29 encolado: ping 
+[mb-control] #30 encolado: despertar 
+ #28 ping [ok] pong v4.3
+ #29 ping [ok] pong v4.4
+ #30 despertar [ok] pantalla despertada
+── logs de la app ──
+2026-08-22 18:02:05: [MB-CTL] #29 → OK: pong v4.4
+2026-08-22 18:02:10: [MB-CTL] #30 → OK: pantalla despertada
+2026-08-22 18:02:12: [MB v4.4] 18:02:07 I [ctl] comando #29: ping {}
+2026-08-22 18:02:12: [MB v4.4] 18:02:07 I [ctl] #29 → OK pong v4.4
+2026-08-22 18:02:12: [MB v4.4] 18:02:12 I [ctl] comando #30: despertar {}
+2026-08-22 18:02:12: [MB v4.4] 18:02:12 I [ctl] #30 → OK pantalla despertada
+LISTO
+
+# exit=0
