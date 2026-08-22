@@ -1,0 +1,76 @@
+# ejecutado: 2026-08-22T08:46:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/dar.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── conversación completa últimos 40 min (WA + TG) ──");
+#   db.prepare(`SELECT timestamp,canal,direccion,substr(cuerpo,1,130) c FROM eventos WHERE canal IN ('whatsapp','telegram') AND timestamp>=datetime('now','-40 minutes') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),x.canal.slice(0,3),x.direccion==='entrante'?'←':'→',String(x.c).replace(/\n/g," ")));
+#   console.log("── acciones ejecutadas/fallidas últimos 40 min ──");
+#   db.prepare(`SELECT timestamp,substr(cuerpo,1,110) c FROM eventos WHERE canal='sistema' AND timestamp>=datetime('now','-40 minutes') AND (cuerpo LIKE '%acción%' OR cuerpo LIKE '%FALL%') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),String(x.c).replace(/\n/g," ")));
+#   console.log("── outbox reciente ──");
+#   db.prepare(`SELECT id,creado,estado,intentos,numero,substr(texto,1,50) t FROM wa_outbox WHERE creado>=datetime('now','-40 minutes') ORDER BY id`).all()
+#     .forEach(x=>console.log("  #"+x.id,x.creado.slice(11,16),x.estado,"int:"+x.intentos,x.numero.slice(-8),"|",String(x.t).replace(/\n/g," ")));
+#   db.close();
+#   JS
+#   node /tmp/dar.cjs; rm -f /tmp/dar.cjs
+#   echo "── MB logs (audio/warmup) ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -12
+#   echo "── MB-MEDIA ──"; grep "MB-MEDIA" ~/.pm2/logs/maria-paez-out.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+── conversación completa últimos 40 min (WA + TG) ──
+  11:17:42 wha ← (te mandé una imagen — mirala) (sistema: adjunto guardado con id "2026-08-22-cd504fc5.jpg" — si piden reenviarlo/compartirlo usá e
+  11:17:58 wha → Ahora sí me llegó y la pude abrir bien 👍 Es una foto de una persona, no trae datos para guardar (nombre, teléfono, etc.) — ¿la que
+  11:20:35 wha ← esta sos vos Maria, ahora te voy a subir la foto al WA por que se borro. Pero la elegiste vos, te acordas?
+  11:20:57 wha → No, no me acuerdo de eso ni tiene mucho sentido: yo no tengo una foto propia que haya "elegido" para subir, soy texto nomás, no ma
+  11:22:53 wha ← si buscas en tu historial al principio, vas a ver nuestra conversacion acerca de eso, y de que estabas bastante emocionada de pode
+  11:24:58 wha → Busqué bien y encontré esos mensajes del 21/04, pero mirándolos de nuevo no cierran: están marcados como si vinieran de vos, pero 
+  11:24:59 tel → Busqué bien y encontré esos mensajes del 21/04, pero mirándolos de nuevo no cierran: están marcados como si vinieran de vos, pero 
+  11:33:04 tel → Te debo consulta sobre algo pendiente 👇  1. Confirmarle a Diego que Gabriel Pacheco puede el miércoles 2/9 para la cena — pedirle 
+  11:36:59 wha ← (audio de voz, transcripto) María, ¿en qué quedó el tema de la cena con Gabriel Pacheco y con Cara Brunati para el 2 de septiembre
+  11:38:37 wha → Sí! Gabriel confirmó el jueves 21/08 por mail que puede el miércoles 2/9. Es en Catalino (la data que vos me pasaste: Enrique Mart
+  11:38:37 wha ← (el usuario mandó un AUDIO que no podés escuchar por WhatsApp — pedile que te lo mande por TELEGRAM, que ahí sí lo escuchás (ya es
+  11:38:38 tel → Sí! Gabriel confirmó el jueves 21/08 por mail que puede el miércoles 2/9. Es en Catalino (la data que vos me pasaste: Enrique Mart
+  11:38:55 wha → No pude escuchar el audio 🙈 Mandámelo por Telegram (ahí sí lo transcribo) o escribime la posta en texto. De paso, seguimos con lo 
+  11:39:56 wha ← Somos 4 para la cena
+  11:40:19 wha → Anotado, son 4 para la cena en Catalino. Me falta el horario para hacer la reserva — ¿va a las 21hs como venían manejando o prefer
+  11:40:19 wha ← (audio de voz, transcripto) Escúchame. Bueno, veo que sí lo pudiste escuchar, porque en Telegram me respondiste directamente lo qu
+  11:40:58 wha → Ahí quedó: cena el miércoles 2/9 a las 21hs en Catalino para 4. Pero me trabé mandando el WA a Catalino — tengo el envío por Whats
+── acciones ejecutadas/fallidas últimos 40 min ──
+  11:24:50 acción ejecutada: recordar_hecho
+  11:38:30 acción ejecutada: quitar_pendiente
+  11:38:31 acción ejecutada: upsert_contacto
+  11:38:31 acción ejecutada: agregar_pendiente
+  11:39:01 acción ejecutada: recordar_hecho
+  11:39:02 acción ejecutada: recordar_hecho
+  11:40:14 acción ejecutada: quitar_pendiente
+  11:40:15 acción ejecutada: agregar_pendiente
+  11:40:38 acción FALLÓ: enviar_wa — WA saliente APAGADO (cuenta en revisión) — va por Telegram/email
+  11:40:38 acción ejecutada: quitar_pendiente
+  11:40:52 acción ejecutada: agregar_pendiente
+── outbox reciente ──
+── MB logs (audio/warmup) ──
+2026-08-22 08:26:12: [MB v3.7] 08:26:09 I [notif] dup ignorado de "Diego Paez"
+2026-08-22 08:36:51: [MB v3.7] 08:36:47 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:13)
+2026-08-22 08:36:51: [MB v3.7] 08:36:48 I [media] audio de "Diego Paez" cazado: PTT-20260822-WA0001.opus (29KB) — subiendo
+2026-08-22 08:39:05: [MB v3.7] 08:38:57 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-22 08:39:05: [MB v3.7] 08:39:01 I [upd] versión nueva v3.8 (code 23 > 22) — descargando
+2026-08-22 08:39:14: [MB v3.7] 08:39:06 I [upd] descargado 3142KB — ofreciendo instalar
+2026-08-22 08:39:55: [MB v3.7] 08:39:48 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:20)
+2026-08-22 08:39:55: [MB v3.7] 08:39:49 I [media] audio de "Diego Paez" cazado: PTT-20260822-WA0002.opus (46KB) — subiendo
+2026-08-22 08:40:21: [MB v3.7] 08:39:57 I [notif] entrante de "Diego Paez": Somos 4 para la cena
+2026-08-22 08:40:27: [MB v3.7] 08:40:21 I [notif] reply inline a "Diego Paez": ENVIADA
+2026-08-22 08:41:05: [MB v3.7] 08:41:00 I [media] audio procesado OK
+2026-08-22 08:41:05: [MB v3.7] 08:41:00 I [media] reply a "Diego Paez": ENVIADA
+── MB-MEDIA ──
+2026-08-22 08:17:42: [MB-MEDIA] imagen de "Diego Paez" (31KB) → /tmp/maria-attach-mb-1787397462321.jpg (guardado: 2026-08-22-cd504fc5.jpg)
+2026-08-22 08:36:59: [MB-MEDIA] audio de "Diego Paez" (30KB) → "María, ¿en qué quedó el tema de la cena con Gabriel Pacheco y con Cara Brunati p"
+2026-08-22 08:40:04: [MB-MEDIA] audio de "Diego Paez" (47KB) → "Escúchame. Bueno, veo que sí lo pudiste escuchar, porque en Telegram me respondi"
+LISTO
+
+# exit=0
