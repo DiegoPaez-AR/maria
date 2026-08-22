@@ -24,9 +24,10 @@ import java.net.URL
 object Updater {
     @Volatile private var chequeando = false
     // Ventana de auto-instalación (v2.6): cuando hay un APK nuestro listo para
-    // instalar, la accesibilidad puede tocar "Instalar" sola. 10 min de margen.
+    // instalar, la accesibilidad puede tocar "Instalar" sola. v4.4: 30 min
+    // (con 10 la ventana se vencía mientras el operador remoto iba y venía).
     @Volatile var instalandoDesde: Long = 0L
-    fun enVentanaInstalacion() = System.currentTimeMillis() - instalandoDesde < 10 * 60_000L
+    fun enVentanaInstalacion() = System.currentTimeMillis() - instalandoDesde < 30 * 60_000L
 
     fun chequear(c: Context, desdeUi: Boolean, onEstado: ((String) -> Unit)? = null) {
         if (chequeando) return

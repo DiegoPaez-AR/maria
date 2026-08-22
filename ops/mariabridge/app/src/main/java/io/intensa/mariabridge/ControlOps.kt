@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.graphics.Path
 import android.os.Build
+import android.os.PowerManager
 import android.util.Base64
 import android.view.accessibility.AccessibilityNodeInfo
 import org.json.JSONObject
@@ -19,14 +20,38 @@ object ControlOps {
 
     fun ejecutar(svc: AccessibilityService, base: String, secret: String, id: String, cmd: String, args: JSONObject) {
         MbLog.i("ctl", "comando #$id: $cmd $args")
+        // v4.4: con la pantalla apagada, rootInActiveWindow es null y
+        // takeScreenshot falla — las manos remotas quedaban ciegas (bloqueó la
+        // instalación de la 4.3 el 22/8). Despertamos antes de mirar o tocar.
+        if (cmd == "tap" || cmd == "shot" || cmd == "nodos") {
+            if (_despertarSiHaceFalta(svc)) {
+                MbLog.i("ctl", "pantalla apagada — despertada antes de '$cmd'")
+                try { Thread.sleep(1500) } catch (_: Exception) {}
+            }
+        }
         when (cmd) {
             "ping" -> _reportar(base, secret, id, true, null, "pong v${_ver(svc)}")
+            "despertar" -> { val d = _despertarSiHaceFalta(svc); _reportar(base, secret, id, true, null, if (d) "pantalla despertada" else "ya estaba encendida") }
             "home" -> { svc.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME); _reportar(base, secret, id, true, null, "home") }
             "nodos" -> _reportar(base, secret, id, true, null, _dumpNodos(svc))
             "tap" -> _tap(svc, base, secret, id, args)
             "shot" -> _shot(svc, base, secret, id)
             else -> _reportar(base, secret, id, false, null, "cmd desconocido: $cmd")
         }
+    }
+
+    /** Devuelve true si la pantalla estaba apagada y la despertó. */
+    private fun _despertarSiHaceFalta(svc: AccessibilityService): Boolean {
+        return try {
+            val pm = svc.getSystemService(android.content.Context.POWER_SERVICE) as PowerManager
+            if (pm.isInteractive) return false
+            @Suppress("DEPRECATION")
+            val wl = pm.newWakeLock(
+                PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+                "MariaBridge:ctl")
+            wl.acquire(20000)
+            true
+        } catch (e: Exception) { MbLog.w("ctl", "despertar falló: ${e.message}"); false }
     }
 
     private fun _tap(svc: AccessibilityService, base: String, secret: String, id: String, args: JSONObject) {

@@ -128,6 +128,70 @@ class WaSendService : AccessibilityService() {
         return false
     }
 
+    // v4.4: el botón "Update" del instalador NO aparece en rootInActiveWindow
+    // (lección 11: solo se ve "Cancel"). Miramos TODAS las ventanas visibles y,
+    // si aun así no aparece, tocamos por geometría el espejo de Cancel.
+    @Volatile private var _ventanaEspejo = 0L
+    @Volatile private var _intentosEspejo = 0
+    @Volatile private var _ultimoEspejo = 0L
+    @Volatile private var _ultimoLogInstalador = 0L
+
+    private fun _rootsVisibles(): List<AccessibilityNodeInfo> {
+        val out = mutableListOf<AccessibilityNodeInfo>()
+        try { rootInActiveWindow?.let { out.add(it) } } catch (_: Exception) {}
+        try {
+            for (w in windows) {
+                val r = try { w.root } catch (_: Exception) { null } ?: continue
+                if (out.none { it == r }) out.add(r)
+            }
+        } catch (_: Exception) {}
+        return out
+    }
+
+    private fun _autoInstalarTodo(): Boolean {
+        val roots = _rootsVisibles()
+        if (roots.isEmpty()) return false
+        for (r in roots) if (_autoInstalar(r)) return true
+        if (!Updater.enVentanaInstalacion()) return false
+        // Plan B geométrico, con tope: 3 intentos por ventana de instalación
+        // y 8s entre toques (nunca martillar — lección 5).
+        if (Updater.instalandoDesde != _ventanaEspejo) { _ventanaEspejo = Updater.instalandoDesde; _intentosEspejo = 0 }
+        val ahora = System.currentTimeMillis()
+        if (_intentosEspejo >= 3 || ahora - _ultimoEspejo < 8000) return false
+        for (r in roots) {
+            if (_tapEspejoDeCancel(r)) { _ultimoEspejo = ahora; _intentosEspejo++; return true }
+        }
+        return false
+    }
+
+    private fun _tapEspejoDeCancel(root: AccessibilityNodeInfo): Boolean {
+        val cancelar = listOf("cancel", "cancelar", "cancelar ")
+        for (n in _todosLosNodos(root)) {
+            val tt = (n.text?.toString() ?: n.contentDescription?.toString() ?: "").trim().lowercase()
+            if (tt !in cancelar) continue
+            var c: AccessibilityNodeInfo? = n; var saltos = 0
+            while (c != null && !c.isClickable && saltos < 6) { c = c.parent; saltos++ }
+            val nodo = c ?: n
+            val r = android.graphics.Rect(); nodo.getBoundsInScreen(r)
+            val ancho = resources.displayMetrics.widthPixels
+            if (ancho <= 0) return false
+            val x = (ancho - r.centerX()).coerceIn(8, ancho - 8)
+            val y = r.centerY()
+            if (kotlin.math.abs(x - r.centerX()) < 60) {
+                MbLog.w("upd", "Cancel está centrado ($x vs ${r.centerX()}) — sin espejo confiable, no toco")
+                return false
+            }
+            MbLog.i("upd", "0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en $x,$y (intento ${_intentosEspejo + 1}/3)")
+            val path = android.graphics.Path().apply { moveTo(x.toFloat(), y.toFloat()) }
+            val g = android.accessibilityservice.GestureDescription.Builder()
+                .addStroke(android.accessibilityservice.GestureDescription.StrokeDescription(path, 0, 60)).build()
+            val ok = dispatchGesture(g, null, null)
+            if (!ok) MbLog.w("upd", "dispatchGesture rechazado en el plan B")
+            return ok
+        }
+        return false
+    }
+
     // Auto-instalación de updates (v2.6): cuando NUESTRO APK está en ventana de
     // instalación, tocamos Instalar/Actualizar/Listo solos. Guard: SOLO dentro
     // de la ventana de 10min que abre Updater — jamás tocamos installs ajenos.
@@ -142,7 +206,11 @@ class WaSendService : AccessibilityService() {
                 if (tt.isNotBlank()) botones.add("${tt.take(20)}[${(n.className ?: "").toString().substringAfterLast('.')}]")
             }
         }
-        MbLog.i("upd", "instalador visible — ventana=${enVentana} clickables=${botones.joinToString(",").take(200)}")
+        val ahoraLog = System.currentTimeMillis()
+        if (ahoraLog - _ultimoLogInstalador > 5000) {
+            _ultimoLogInstalador = ahoraLog
+            MbLog.i("upd", "instalador visible — ventana=${enVentana} clickables=${botones.joinToString(",").take(200)}")
+        }
         if (!enVentana) return false
         // v3.4 (logs del video de Diego): el botón "Update" NO expone su texto
         // en el nodo clickable (el texto vive en un hijo TextView). Buscamos el
@@ -170,8 +238,7 @@ class WaSendService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         val pkg0 = event?.packageName?.toString() ?: return
         if (pkg0.contains("packageinstaller")) {
-            val r = rootInActiveWindow ?: return
-            _autoInstalar(r)
+            _autoInstalarTodo()
             return
         }
         val t = ColdSend.pendiente ?: return

@@ -13,7 +13,7 @@ set -e
 cd /root/secretaria
 SLUG="${ASISTENTE_SLUG:-maria-paez}"
 SHOTS="ops/instances/$SLUG/shots"
-ACCION="${1:?uso: mb-remoto.sh {shot|tap X Y|nodos|home|ping|estado}}"
+ACCION="${1:?uso: mb-remoto.sh {shot|tap X Y|nodos|home|ping|despertar|estado}}"
 
 _esperar_resultado() {  # $1 = id, espera hasta 90s
   for i in $(seq 1 18); do
@@ -53,7 +53,7 @@ case "$ACCION" in
     echo "comando #$ID (tap $X,$Y) encolado — esperando…"
     _esperar_resultado "$ID"
     ;;
-  nodos|home|ping)
+  nodos|home|ping|despertar)
     ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('$ACCION'))")
     echo "comando #$ID ($ACCION) encolado — esperando…"
     _esperar_resultado "$ID"
