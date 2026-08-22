@@ -1,0 +1,51 @@
+# ejecutado: 2026-08-22T00:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── logs del turno con la imagen (23:57-23:59) ──"
+#   grep -E "MB-MEDIA|adjunto|attachment|maria-mb" ~/.pm2/logs/maria-paez-out.log | tail -8
+#   echo "── ¿el archivo llegó a media-store? ──"
+#   ls -la /root/secretaria/state/maria-paez/media/ 2>/dev/null | tail -4
+#   echo "── ¿cómo se pasan los adjuntos al LLM? (prompt-builder) ──"
+#   grep -n "attachmentPath\|@\${" /root/secretaria/prompt-builder.js | head -8
+#   echo "── sandbox: ¿bwrap monta /tmp? ──"
+#   grep -n "bwrap\|--bind\|/tmp" /root/secretaria/claude-client.js | head -10
+#   echo LISTO
+
+# ───── output ─────
+── logs del turno con la imagen (23:57-23:59) ──
+2026-07-01 11:50:10: [WA →3ro] Diego/Gabi: No es nada de tu lado, el problema está de mi lado con los contactos adjuntos — a veces no me llegan bien. ¿Me mandás los números directamente acá en el chat, e
+2026-08-17 09:55:40: [MB-MEDIA] audio de "Diego Paez" (13KB) → "María que tengo y en mi agenda y pendientes me mandas un razon en por favor."
+2026-08-17 09:57:26: [MB-MEDIA] audio de "Diego Paez" (12KB) → "Suspendenme también la amigüe de la catorce con la talí de hoy."
+2026-08-17 12:52:21: [MB-MEDIA] audio de "Diego Paez" (51KB) → "¿Cómo están los pendientes con la cena con gavi con caro y la reunión esa con fu"
+2026-08-17 15:08:28: [MB-MEDIA] audio de "Diego Paez" (28KB) → "Y lo de Natal y Cancelano, no le envíes más nada ni le dole a te.
+2026-08-17 15:08:52: [MB-MEDIA] audio de "Diego Paez" (33KB) → "Y ahí me escribí a Carolina para pasar la escena con esa gavipaché con Atillo pa"
+2026-08-17 20:22:59: [MB-MEDIA] audio de "Diego Paez" (13KB) → "Sí, mandarle un saludo felicitándolo, pero que sea algo más bien de tu parte, no"
+2026-08-21 23:57:46: [MB-MEDIA] imagen de "Diego Paez" (31KB) → /tmp/maria-mb-1787367466890.jpg (guardado: 2026-08-22-81ae0e1c.jpg)
+── ¿el archivo llegó a media-store? ──
+total 40
+drwxr-xr-x  2 root root  4096 Aug 21 23:57 .
+drwxr-xr-x+ 6 root root  4096 Aug 17 10:18 ..
+-rw-r--r--  1 root root 31837 Aug 21 23:57 2026-08-22-81ae0e1c.jpg
+── ¿cómo se pasan los adjuntos al LLM? (prompt-builder) ──
+81:    const lugar  = e.ubicacion ? ` — @${e.ubicacion}` : '';
+380:  const { de, nombre, asunto, cuerpo, esAudio, messageId, para, cc, otrosDestinatarios, attachmentPath, attachmentPaths } = entrada;
+445:  // multimodal nativa). attachmentPath = WA (uno solo); attachmentPaths =
+448:    ...(attachmentPath ? [attachmentPath] : []),
+449:    ...(Array.isArray(attachmentPaths) ? attachmentPaths : []),
+455:    for (const ap of paths) lineas.push(`@${ap}`);
+── sandbox: ¿bwrap monta /tmp? ──
+11:// Capa 4 — sandbox del subproceso de Claude con bubblewrap (bwrap).
+12:// Si bwrap está instalado y CLAUDE_NO_SANDBOX !== '1', envolvemos cada
+18:// Detección del binario: cacheada al boot del módulo. Si bwrap aparece
+22:  for (const cand of ['/usr/bin/bwrap', '/usr/local/bin/bwrap']) {
+32:  console.warn('[claude-client] ⚠ bwrap no disponible — claude corre SIN sandbox. ' +
+36:// Construye los argumentos de bwrap para una invocación dada.
+45:// /tmp/maria-attach-*). bwrap soporta --ro-bind tanto de archivos como de
+53:    '--tmpfs', '/tmp',
+70:    '--bind',    '/root/.claude', '/root/.claude',
+72:    '--bind',    '/root/.cache/claude-cli-nodejs', '/root/.cache/claude-cli-nodejs',
+LISTO
+
+# exit=0
