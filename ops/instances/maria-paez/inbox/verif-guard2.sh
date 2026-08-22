@@ -1,0 +1,13 @@
+#!/bin/bash
+cd /root/secretaria
+timeout 30 node -e "
+const mem=require('/root/secretaria/memory');
+const n='fico restaurante';
+const enLibreta=!!mem.db.prepare(\"SELECT 1 FROM contactos WHERE lower(trim(nombre)) = ? LIMIT 1\").get(n);
+const saliente=!!mem.db.prepare(\"SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='saliente' AND lower(trim(COALESCE(nombre,''))) = ? AND timestamp >= datetime('now','-30 days') LIMIT 1\").get(n);
+const porOutbox=!!mem.db.prepare(\"SELECT 1 FROM wa_outbox o JOIN contactos c ON replace(replace(COALESCE(c.whatsapp,''),'@c.us',''),'+','') LIKE '%' || substr(o.numero, -10) WHERE lower(trim(c.nombre)) = ? AND o.creado >= datetime('now','-30 days') LIMIT 1\").get(n);
+const esUsuario=require('/root/secretaria/usuarios').listarActivos().some(x=>String(x.nombre||'').trim().toLowerCase()===n);
+console.log('  en libreta:', enLibreta, '| Maria le escribió (eventos):', saliente, '| (outbox):', porOutbox, '| matchea un usuario:', esUsuario);
+console.log('  ⇒ CONFIABLE:', (saliente||porOutbox||(enLibreta && !esUsuario)) ? 'SÍ, se rutea ✓' : 'NO, se descarta');
+"
+echo LISTO
