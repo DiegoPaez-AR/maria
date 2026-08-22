@@ -1,0 +1,42 @@
+# ejecutado: 2026-08-22T11:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/ec2.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   console.log("── outbox: mensajes a Catalino / pendientes ──");
+#   db.prepare(`SELECT id,creado,estado,intentos,numero,substr(texto,1,60) t FROM wa_outbox WHERE creado>=datetime('now','-3 hours') ORDER BY id`).all()
+#     .forEach(x=>console.log("  #"+x.id,x.creado.slice(11,16),x.estado,"int:"+x.intentos,x.numero,"|",String(x.t).replace(/\n/g," ")));
+#   console.log("── contacto Catalino ──");
+#   db.prepare(`SELECT id,nombre,whatsapp,email FROM contactos WHERE nombre LIKE '%atalino%'`).all()
+#     .forEach(x=>console.log("  #"+x.id,x.nombre,"|",x.whatsapp,"|",x.email||"sin mail"));
+#   console.log("── lo que Maria dijo (últimos 15 min) ──");
+#   db.prepare(`SELECT timestamp,canal,direccion,substr(cuerpo,1,120) c FROM eventos WHERE timestamp>=datetime('now','-15 minutes') AND canal IN ('whatsapp','telegram') ORDER BY id`).all()
+#     .forEach(x=>console.log(" ",x.timestamp.slice(11,19),x.canal.slice(0,3),x.direccion==='entrante'?'←':'→',String(x.c).replace(/\n/g," ")));
+#   db.close();
+#   JS
+#   node /tmp/ec2.cjs; rm -f /tmp/ec2.cjs
+#   echo "── logs MB (¿warm-up frenó algo?) ──"
+#   grep "\[MB " ~/.pm2/logs/maria-paez-out.log | tail -8
+#   echo LISTO
+
+# ───── output ─────
+── outbox: mensajes a Catalino / pendientes ──
+  #234 11:53 vencido int:11 5491163846461 | Hola! Soy Maria, la secretaria de Diego Paez. Quería consult
+  #235 11:58 vencido int:5 541132317896 | ⚠️ No pude entregar un WhatsApp a 5491163846461: no pude ent
+── contacto Catalino ──
+  #524 Catalino restaurante | 5491163846461@c.us | sin mail
+── lo que Maria dijo (últimos 15 min) ──
+── logs MB (¿warm-up frenó algo?) ──
+2026-08-22 09:38:14: [MB v4.1] 09:38:14 I [ctl] #7 → OK pong v4.1
+2026-08-22 09:40:23: [MB v4.1] 09:39:02 I [ctl] comando #8: home {}
+2026-08-22 09:40:23: [MB v4.1] 09:39:02 I [ctl] #8 → OK home
+2026-08-22 09:40:23: [MB v4.1] 09:40:09 I [ctl] comando #9: tap {"x":446,"y":816}
+2026-08-22 09:40:23: [MB v4.1] 09:40:09 I [ctl] #9 → OK tap 446,816 ✓
+2026-08-22 09:47:30: [MB v4.1] 09:46:34 I [ctl] comando #10: nodos {}
+2026-08-22 09:47:30: [MB v4.1] 09:47:28 I [ctl] #10 → OK [||423,839] [|--|464,839] [||360,1436] [|Messages notificat|195,1303] [|WhatsApp notificat|305,1303] [|Moto notification:|415,1303] [|Hello You notifica|525,1303] [|Games notification|635,1303] [|Security & privacy|697,1303] 
+2026-08-22 10:49:44: [MB v4.1] 10:46:35 I [notif] sin acción de reply — descarto no-chat: "Recent WhatsApp login"
+LISTO
+
+# exit=0
