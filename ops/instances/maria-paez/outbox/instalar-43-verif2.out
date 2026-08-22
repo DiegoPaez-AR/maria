@@ -1,0 +1,32 @@
+# ejecutado: 2026-08-22T16:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   node -e "console.log(require('/root/secretaria/mb-control').encolar('nodos'))" >/dev/null
+#   sleep 25
+#   node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,700) r FROM mb_control ORDER BY id DESC LIMIT 2').all().reverse().forEach(x=>console.log('#'+x.id,x.cmd,'['+x.estado+']',(x.r||'')));db.close();"
+#   echo "── logs ──"
+#   grep "\[MB" /root/.pm2/logs/maria-paez-out.log | tail -12
+#   echo LISTO
+
+# ───── output ─────
+#24 ping [ok] pong v4.2
+#25 nodos [ok] root null
+── logs ──
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:22 I [upd] instalador visible — ventana=false clickables=Cancel[Button]
+2026-08-22 16:28:28: [MB v4.2] 16:28:27 I [ctl] comando #23: nodos {}
+2026-08-22 16:28:28: [MB v4.2] 16:28:27 I [ctl] #23 → OK root null
+2026-08-22 16:30:05: [MB-CTL] #24 → OK: pong v4.2
+2026-08-22 16:30:08: [MB v4.2] 16:30:07 I [ctl] comando #24: ping {}
+2026-08-22 16:30:08: [MB v4.2] 16:30:07 I [ctl] #24 → OK pong v4.2
+2026-08-22 16:32:05: [MB-CTL] #25 → OK: root null
+2026-08-22 16:32:08: [MB v4.2] 16:32:07 I [ctl] comando #25: nodos {}
+2026-08-22 16:32:08: [MB v4.2] 16:32:07 I [ctl] #25 → OK root null
+LISTO
+
+# exit=0
