@@ -1,0 +1,28 @@
+# ejecutado: 2026-08-21T23:56:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vc.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,400) r,creado,resuelto FROM mb_control ORDER BY id DESC LIMIT 3").all()
+#     .forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"]",x.resuelto?("resuelto "+x.resuelto.slice(11,19)):"", "\n   →",x.r||"(sin resultado)"));
+#   db.close();
+#   JS
+#   node /tmp/vc.cjs; rm -f /tmp/vc.cjs
+#   echo "── logs [ctl] ──"
+#   grep -E "\[MB .*ctl\]|MB-CTL" ~/.pm2/logs/maria-paez-out.log | tail -5
+#   echo LISTO
+
+# ───── output ─────
+#1 nodos [ok] resuelto 02:47:04 
+   → [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play Store|619,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+── logs [ctl] ──
+2026-08-18 17:52:24: [MB v3.6] 17:52:22 I [ctl] comando #auto-232: shot {}
+2026-08-18 17:53:04: [MB v3.6] 17:53:01 I [ctl] comando #auto-232: shot {}
+2026-08-21 23:47:04: [MB-CTL] #1 → OK: [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: G
+2026-08-21 23:47:11: [MB v3.7] 23:47:06 I [ctl] comando #1: nodos {}
+2026-08-21 23:47:11: [MB v3.7] 23:47:06 I [ctl] #1 → OK [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play Store|619,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+LISTO
+
+# exit=0
