@@ -1,7 +1,7 @@
 // index.js — entry point unificado de Maria (multi-user)
 //
 // Un solo proceso que:
-//   1) arranca el cliente de WhatsApp (whatsapp-handler.js)
+//   1) el canal WhatsApp es MariaBridge (app Android + wa-hook + wa_outbox)
 //   2) cuando WA está listo, inicia el poll de Gmail + loops por usuario
 //      (recordatorios, programados, morning-brief, meeting-prep)
 //   3) todos comparten memory (SQLite, multi-user) y google.js
@@ -24,7 +24,6 @@ const fs = require('fs');
 const mem = require('./memory');
 const usuarios = require('./usuarios');
 const { verificarDependencias } = require('./transcribir');
-const { crearClienteWA, recuperarMensajesPerdidos } = require('./whatsapp-handler');
 const { iniciarPoll } = require('./gmail-handler');
 const { iniciarRecordatorios } = require('./recordatorios');
 const { iniciarProgramados } = require('./programados');
@@ -69,7 +68,6 @@ let cumpleAvisosInterval = null;
 let resumenSemanalInterval = null;
 let podaEventosInterval = null;
 let diferidosInterval = null;
-let waClient = null;
 
 async function main() {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -108,8 +106,7 @@ async function main() {
   // 3a) Telegram de respaldo — arranca ANTES de WhatsApp a propósito: si WA
   //     no llega a ready (sesión caída, QR pendiente), el respaldo tiene que
   //     estar vivo para avisar a los usuarios vinculados y atenderlos.
-  const waEstado = { ready: false };
-  iniciarTelegram({ waEstado });
+  iniciarTelegram({});
 
   // ── Arranque de loops (extraído de onReady, 2026-07-05) ──────────────────
   // Idempotente: puede llamarse desde onReady (modo normal, client vivo) o
@@ -196,116 +193,17 @@ async function main() {
       });
   };
 
-  // MODO DEGRADADO (2026-07-05, incidente WA-en-revisión): si el marker de
-  // WA-caído (lo escribe el loop de Telegram) tiene >5 min al boot, WhatsApp
-  // no va a volver solo — arrancamos gmail + loops SIN esperar el ready para
-  // que Maria siga operando por email/Telegram. Cuando WA finalmente conecte,
-  // onReady hace exit(0) → pm2 reinicia limpio en modo normal.
-  const WA_DEGRADADO_MS = Number(process.env.WA_DEGRADADO_MS || 5 * 60 * 1000);
-  try {
-    const _mk = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'tg-wa-down');
-    if (fs.existsSync(_mk)) {
-      const _desde = Number(String(fs.readFileSync(_mk, 'utf8')).split(' ')[0]) || 0;
-      if (_desde && Date.now() - _desde > WA_DEGRADADO_MS) {
-        _modoDegradado = true;
-        waEstado.degradado = true;
-        console.warn(`⚠️ [MODO DEGRADADO] WA caído hace ${Math.round((Date.now() - _desde) / 60000)} min — arranco gmail+loops SIN WhatsApp (envíos a usuarios via telegram/email)`);
-        mem.log({ canal: 'sistema', direccion: 'interno',
-          cuerpo: `MODO DEGRADADO: loops arrancados sin WA (caído hace ${Math.round((Date.now() - _desde) / 60000)} min)`,
-          metadata: { tipo: 'wa_degradado' } });
-        arrancarLoops(null);
-      }
-    }
-  } catch (e) { console.warn('[degradado] check falló:', e.message); }
-
-  // WA APAGADO (2026-07-05, re-bloqueo de la cuenta): con el marker presente,
-  // CERO intentos de conexión a WhatsApp — ni cliente, ni QR, ni señales a
-  // Meta. Maria opera por email/Telegram. Para reactivar cuando la cuenta se
-  // libere: rm state/<slug>/wa-apagado && pm2 restart maria-paez.
-  const _waApagadoF = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'wa-apagado');
-  if (fs.existsSync(_waApagadoF)) {
-    console.warn('⛔ [WA APAGADO] marker presente — NO inicializo WhatsApp (cuenta en descanso). Loops sin WA.');
-    mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: 'WA APAGADO por marker — cero intentos de conexión; loops en modo degradado', metadata: { tipo: 'wa_apagado' } });
-    _modoDegradado = true;
-    waEstado.degradado = true;
-    arrancarLoops(null);
-    return; // sin crearClienteWA — el proceso vive solo con gmail/TG/loops
-  }
-
-  // WA EN REPOSO (2026-07-05): tras un intento fallido de conexión, el
-  // whatsapp-handler anota wa-retry-after (+30min). Mientras no venza:
-  // loops sin WA, CERO conexiones, y reinicio programado para reintentar.
-  const _waRetryF = path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'wa-retry-after');
-  try {
-    if (fs.existsSync(_waRetryF)) {
-      const hasta = Number(fs.readFileSync(_waRetryF, 'utf8').trim()) || 0;
-      if (Date.now() < hasta) {
-        const min = Math.ceil((hasta - Date.now()) / 60000);
-        console.warn(`⏸ [WA REPOSO] próximo intento de conexión en ~${min} min — loops sin WA mientras tanto`);
-        _modoDegradado = true;
-        waEstado.degradado = true;
-        arrancarLoops(null);
-        setTimeout(() => {
-          console.log('[WA REPOSO] cumplido — reinicio para reintentar la conexión');
-          process.exit(0);
-        }, Math.min(hasta - Date.now() + 5000, 2 ** 31 - 1));
-        return;
-      }
-      fs.unlinkSync(_waRetryF); // venció — intento normal
-    }
-  } catch (e) { console.warn('[WA reposo] check falló:', e.message); }
-
-  // Guard del túnel (2026-07-05): si WA_PROXY está configurado pero el túnel
-  // está caído (la Mac de Diego apagada/sin internet), NO intentamos conectar
-  // WA — sería salir por la IP alemana justo cuando queremos evitarla. Reposo
-  // de 10min y reintento (el túnel tiene KeepAlive del lado de la Mac).
-  if (process.env.WA_PROXY) {
-    const _m = process.env.WA_PROXY.match(/([\d.]+):(\d+)/);
-    if (_m) {
-      const _tunelVivo = await new Promise((res) => {
-        const s = require('net').connect({ host: _m[1], port: Number(_m[2]), timeout: 3000 },
-          () => { s.destroy(); res(true); });
-        s.on('error', () => res(false));
-        s.on('timeout', () => { s.destroy(); res(false); });
-      });
-      if (!_tunelVivo) {
-        console.warn(`⏸ [WA túnel] proxy ${process.env.WA_PROXY} no responde — sin conexión WA hasta que vuelva (chequeo en 10min)`);
-        mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `WA_PROXY caído (${process.env.WA_PROXY}) — no intento conectar WA`, metadata: { tipo: 'wa_tunel_caido' } });
-        _modoDegradado = true;
-        waEstado.degradado = true;
-        arrancarLoops(null);
-        setTimeout(() => process.exit(0), 10 * 60 * 1000);
-        return;
-      }
-      console.log(`✓ [WA túnel] proxy ${process.env.WA_PROXY} responde — Chromium saldrá por ahí`);
-    }
-  }
-
-  // 3) WhatsApp — cuando esté listo arrancamos Gmail + loops
-  waClient = crearClienteWA({
-    waEstado,
-    onReady: (client) => {
-      waEstado.ready = true;
-      if (_modoDegradado) {
-        // Los loops corren con client=null — reinicio limpio a modo normal.
-        // CRÍTICO (bug 2026-07-05, loop de ~8s post-liberación de la cuenta):
-        // borrar el marker ANTES del exit — si queda, el próximo boot re-entra
-        // en degradado, WA reconecta, exit(0), y así al infinito (el loop de
-        // Telegram que lo limpiaba nunca llegaba a su segundo ciclo).
-        try { fs.unlinkSync(path.join(path.dirname(path.dirname(process.env.MARIA_DB || './db/x')), 'tg-wa-down')); } catch {}
-        console.log('✅ WA volvió estando en modo degradado — exit(0) para reinicio limpio con WA');
-        mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: 'WA recuperado en modo degradado — reinicio limpio' });
-        setTimeout(() => process.exit(0), 1500);
-        return;
-      }
-      arrancarLoops(client);
-      // Catch-up de mensajes llegados durante la caída (pedido Diego
-      // 2026-07-05): a los 15s del ready, secuencial y con dedupe por DB.
-      setTimeout(() => { recuperarMensajesPerdidos(client).catch(e => console.error('[catch-up]', e.message)); }, 15_000);    },
-  });
-
-  waClient.initialize();
+  // CANAL WHATSAPP = MARIABRIDGE (2026-08-22, jubilación de whatsapp-web.js).
+  // Ya no existe cliente de WhatsApp dentro del proceso: los entrantes llegan
+  // por HTTP al wa-hook desde el teléfono, y los salientes se encolan en
+  // wa_outbox y los drena la app. Por eso los loops arrancan SIEMPRE con
+  // client=null — que ahora significa una sola cosa (usá el bridge), no dos.
+  //
+  // Lo que se fue con esto: Chromium/Puppeteer, el QR, el túnel SSH, los
+  // markers wa-apagado / wa-retry-after / tg-wa-down y el modo degradado.
+  arrancarLoops(null);
 }
+
 
 // ─── Shutdown limpio ────────────────────────────────────────────────────
 
@@ -327,13 +225,7 @@ function shutdown(sig) {
   if (cumpleAvisosInterval) clearInterval(cumpleAvisosInterval);
   if (resumenSemanalInterval) clearInterval(resumenSemanalInterval);
   if (podaEventosInterval) clearInterval(podaEventosInterval);
-  const done = () => process.exit(0);
-  if (waClient) {
-    waClient.destroy().then(done).catch(done);
-    setTimeout(done, 5000).unref();
-  } else {
-    done();
-  }
+  process.exit(0);
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));

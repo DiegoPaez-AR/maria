@@ -34,12 +34,10 @@ const { transcribirBuffer } = require('./transcribir');
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const API = `https://api.telegram.org/bot${TOKEN}`;
 const POLL_TIMEOUT_S = 45;
-const WA_DOWN_UMBRAL_MS = Number(process.env.TG_WA_DOWN_UMBRAL_MS || 10 * 60 * 1000);
 
 // estado en disco (sobrevive restarts): offset del polling + aviso wa-down
 const _stateDir = process.env.MARIA_DB ? path.dirname(path.dirname(process.env.MARIA_DB)) : '.';
 const OFFSET_F  = path.join(_stateDir, 'tg-offset');
-const WADOWN_F  = path.join(_stateDir, 'tg-wa-down');
 
 let _detenido = false;
 
@@ -408,33 +406,12 @@ async function _procesarNoVinculado(chatId, texto, remitente = null) {
   }
 }
 
-// ── Detección de WhatsApp caído + broadcast ────────────────────────────────
-async function _chequearWaDown(waEstado) {
-  try {
-    if (waEstado.ready) {
-      if (fs.existsSync(WADOWN_F)) {
-        const contenido = fs.readFileSync(WADOWN_F, 'utf8');
-        fs.unlinkSync(WADOWN_F);
-        if (contenido.includes('avisado')) {
-          await _broadcast('✅ WhatsApp volvió — seguimos por el canal de siempre. Gracias por la paciencia.');
-        }
-      }
-      return;
-    }
-    // WA no está ready
-    if (!fs.existsSync(WADOWN_F)) {
-      fs.writeFileSync(WADOWN_F, String(Date.now()));
-      return;
-    }
-    const contenido = fs.readFileSync(WADOWN_F, 'utf8');
-    if (contenido.includes('avisado')) return;
-    const desde = Number(contenido.trim()) || Date.now();
-    if (Date.now() - desde > WA_DOWN_UMBRAL_MS) {
-      fs.writeFileSync(WADOWN_F, `${desde} avisado`);
-      await _broadcast('⚠️ Se me cayó WhatsApp (estamos trabajando para recuperarlo). Mientras tanto seguime escribiendo por acá — funciono igual.');
-    }
-  } catch (e) { console.warn('[TG] chequeo wa-down:', e.message); }
-}
+// Detección de "WhatsApp caído" + broadcast: ELIMINADA 2026-08-22 con la
+// jubilación de whatsapp-web.js. Ya no hay un `ready` que mirar, y con la
+// política v5 los usuarios no dependen de WhatsApp (van por Telegram/email).
+// La salud del canal la vigila wa-hook-watchdog: si el teléfono deja de dar
+// señales, avisa AL OWNER (no a todos). _broadcast se conserva: lo usan otros
+// avisos generales.
 
 async function _broadcast(texto) {
   const vinculados = usuarios.listarActivos().filter(u => u.telegram_chat_id);
@@ -450,11 +427,10 @@ async function _broadcast(texto) {
 }
 
 // ── Loop principal (long polling encadenado, sin solapes) ──────────────────
-async function _loop(waEstado) {
+async function _loop() {
   let offset = _leerOffset();
   while (!_detenido) {
     try {
-      await _chequearWaDown(waEstado);
       const updates = await _api('getUpdates', { offset: offset + 1, timeout: POLL_TIMEOUT_S, allowed_updates: ['message'] });
       for (const up of updates) {
         offset = Math.max(offset, up.update_id);
@@ -565,13 +541,13 @@ async function _loop(waEstado) {
   }
 }
 
-function iniciarTelegram({ waEstado } = {}) {
+function iniciarTelegram(_opts = {}) {
   if (!TOKEN) {
     console.log('[TG] TELEGRAM_BOT_TOKEN no seteado — canal de respaldo APAGADO');
     return null;
   }
   console.log('▸ arrancando telegram-handler (canal de respaldo, long polling)');
-  _loop(waEstado || { ready: false }).catch(e => console.error('[TG] loop murió:', e.message));
+  _loop().catch(e => console.error('[TG] loop murió:', e.message));
   return { detener: () => { _detenido = true; } };
 }
 

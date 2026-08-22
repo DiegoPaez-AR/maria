@@ -107,7 +107,7 @@ _canary() {
                 WA_AUTH_DIR=/tmp/canary-wa-auth
          timeout 60 node -e "
          ['./memory','./usuarios','./seguridad','./executor','./prompt-builder',
-          './claude-client','./whatsapp-handler','./gmail-handler','./internal-api',
+          './claude-client','./gmail-handler','./internal-api',
           './morning-brief','./meeting-prep','./follow-ups','./recordatorios',
           './programados','./maria-worker','./turn-state','./action-schemas',
           './moderacion','./loop-guard','./wa-validate','./vault','./i18n',

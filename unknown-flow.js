@@ -222,20 +222,16 @@ function _evidenciaDuraDeGestion(usuarioId, remitente) {
 
 // ─── Notificación al owner ──────────────────────────────────────────────
 
-async function _notificarOwner(waClient, texto) {
+async function _notificarOwner(_waClient, texto) {
   const owner = _estadoOwner();
-  if (!owner || !waClient) return false;
-  const destino = owner.wa_lid || owner.wa_cus;
-  if (!destino) {
-    console.warn('[unknown-flow] owner no tiene wa_lid ni wa_cus — no notifico');
-    return false;
-  }
+  if (!owner) return false;
+  // Era bridge (2026-08-22): no hay client de WA. wa-send rutea al owner por
+  // el canal que corresponda (Telegram → email → WhatsApp) según política v5.
+  // Antes, sin client, esto devolvía false EN SILENCIO: los escalados del
+  // unknown-flow por email nunca llegaban.
   try {
-    await waClient.sendMessage(destino, texto);
-    mem.log({
-      usuarioId: owner.id,
-      canal: 'whatsapp', direccion: 'saliente',
-      de: destino, cuerpo: texto,
+    await require('./wa-send').enviarWAUsuario(null, owner, texto, {
+      tag: 'unknown-flow-aviso',
       metadata: { tipo: 'unknown_flow_aviso' },
     });
     return true;
@@ -244,6 +240,7 @@ async function _notificarOwner(waClient, texto) {
     return false;
   }
 }
+
 
 // ─── Pre-pass: lookup en tabla contactos (cross-usuario) ────────────────
 
@@ -487,374 +484,11 @@ Respondé SOLO con JSON válido, sin markdown, sin texto antes ni después:
 
 // ─── Handlers ───────────────────────────────────────────────────────────
 
-/**
- * Handler para WhatsApp. Devuelve true si fue procesado acá.
- */
-async function handleWA({ client, msg, contact = null, cuerpo, from: fromArg = null, mediaInfo = null, reprocesarComoUsuario }) {
-  // `from` viene normalizado por el handler (@lid resuelto a @c.us estable).
-  // Caemos a msg.from solo si el handler no lo paso (compat).
-  const from = fromArg || msg.from;
-  const pushname = msg._data?.notifyName || null;
-  const messageId = msg.id?._serialized || null;
-  // Chat vivo del mensaje entrante: lo usamos para leer el historial real de
-  // WA sin depender de getChatById(from), que falla si el jid roto/rota.
-  const chat = (msg && typeof msg.getChat === 'function') ? await msg.getChat().catch(() => null) : null;
-  const owner = _estadoOwner();
-  // cusReal = @c.us real del remitente (resuelto vía msg.getContact()), aunque
-  // msg.from sea @lid. Es la clave estable; el @lid rota.
-  const _cusCand = contact?.id?._serialized || null;
-  const cusReal = (_cusCand && _cusCand.endsWith('@c.us') && _cusCand !== from) ? _cusCand : null;
+// handleWA / _handleWA_FSM_primera / _handleWA_FSM_segunda: ELIMINADOS
+// 2026-08-22. Eran el camino de entrada de whatsapp-web.js; desde MariaBridge
+// los mensajes de WhatsApp entran por wa-hook.js, que tiene su propio ruteo
+// (política v5 + gestion-ajena). Código inalcanzable desde el 15/8.
 
-  // Si YA hay un prospecto pendiente para este remitente, registramos el
-  // mensaje y esperamos al owner — no volvemos a molestar.
-  const pendPrev = leerProspectoPendiente('whatsapp', from);
-  if (pendPrev) {
-    if (owner) {
-      mem.log({
-        usuarioId: owner.id,
-        canal: 'whatsapp', direccion: 'entrante',
-        de: from, nombre: pushname, cuerpo,
-        metadata: { tipo: 'unknown_pending_followup', messageId, pendDesde: pendPrev.ts, ...(mediaInfo || {}) },
-      });
-    }
-    console.log(`[unknown-flow/wa] prospecto pendiente ya existente para ${from} — esperando owner`);
-    return true;
-  }
-
-  // Si ya preguntamos "para quién va" (FSM legacy), seguimos el flujo viejo.
-  const estadoFSM = leerEstado('whatsapp', from);
-  if (estadoFSM) {
-    return await _handleWA_FSM_segunda({ client, from, pushname, cuerpo, cusReal, estado: estadoFSM, reprocesarComoUsuario });
-  }
-
-  // Pre-pass barato: ¿está `from` en la libreta de algún usuario? Si hay
-  // match único → rutear directo como tercero de ese usuario sin LLM.
-  // Si from es @lid, también probamos con cusReal (el @c.us que nos da
-  // msg.getContact()).
-  const lookupContactos = _lookupEnContactos({ from, senderEmail: null, cusReal });
-  if (lookupContactos && lookupContactos.match) {
-    const { contacto, usuario } = lookupContactos.match;
-    console.log(`[unknown-flow/wa] match en contactos: ${from} = "${contacto.nombre}" de ${usuario.nombre} (id=${usuario.id})`);
-    return await _routearComoTerceroDeUsuario({
-      client, match: usuario, from, pushname, cuerpo, messageId,
-      razon: `matcheo por libreta: "${contacto.nombre}" está registrado en los contactos de ${usuario.nombre}`,
-      mediaInfo,
-      via: 'libreta',
-      reprocesarComoUsuario,
-    });
-  }
-
-  // Primera vez → LLM pre-pass (eventualmente con info de contactos ambiguos).
-  const llm = await _resolverConLLM({
-    canal: 'whatsapp', cuerpo, from, pushname, waClient: client, chat,
-    contactosAmbiguos: lookupContactos?.ambiguo || null,
-  });
-
-  if (llm && llm.resolucion === 'usuario_activo' && llm.usuario_id) {
-    const match = usuarios.obtener(llm.usuario_id);
-    if (match && match.activo) {
-      return await _routearAUsuarioActivo({
-        client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
-        via: 'llm',
-        mediaInfo,
-        reprocesarComoUsuario,
-      });
-    }
-    // LLM alucinó id → fallback al FSM abajo.
-  }
-
-  if (llm && llm.resolucion === 'tercero_de_usuario' && llm.usuario_id) {
-    const match = usuarios.obtener(llm.usuario_id);
-    if (match && match.activo) {
-      // Candado homónimos (2026-06-12): si la libreta dio match AMBIGUO (mismo
-      // número en libretas de 2+ usuarios), el LLM solo puede desempatar con
-      // evidencia dura verificable en código: gestión activa (follow_up
-      // abierto o pendiente de Maria esperando a ESTE remitente) del usuario
-      // elegido. Sin eso → preguntar, nunca auto-rutear.
-      if (lookupContactos && lookupContactos.ambiguo) {
-        const evidencia = _evidenciaDuraDeGestion(match.id, { from, cusReal });
-        if (!evidencia) {
-          console.log(`[unknown-flow/wa] libreta ambigua y sin gestión activa verificable — no auto-ruteo a ${match.nombre}; pregunto`);
-          return await _handleWA_FSM_primera({
-            client, from, pushname, cuerpo, messageId, cusReal,
-            candidatos: lookupContactos.ambiguo.map(h => h.usuario.id),
-          });
-        }
-        console.log(`[unknown-flow/wa] libreta ambigua pero ${match.nombre} tiene ${evidencia} esperando a este remitente — ruteo`);
-      }
-      return await _routearComoTerceroDeUsuario({
-        client, match, from, pushname, cuerpo, messageId, razon: llm.razon || '',
-        via: 'llm',
-        mediaInfo,
-        reprocesarComoUsuario,
-      });
-    }
-    // LLM alucinó id → fallback al FSM abajo.
-  }
-
-  if (llm && llm.resolucion === 'prospecto_pendiente') {
-    return await _abrirProspectoPendiente({
-      client, canal: 'whatsapp', from, pushname, cuerpo, messageId, llm,
-    });
-  }
-
-  // desconocido (o LLM falló) → FSM legacy primera vez (preguntar). Si la
-  // libreta dio ambiguo, arrastramos los candidatos para que la segunda
-  // vuelta desempate solo entre ellos.
-  return await _handleWA_FSM_primera({
-    client, from, pushname, cuerpo, messageId, cusReal,
-    candidatos: lookupContactos && lookupContactos.ambiguo ? lookupContactos.ambiguo.map(h => h.usuario.id) : null,
-  });
-}
-
-async function _routearAUsuarioActivo({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', mediaInfo = null, reprocesarComoUsuario }) {
-  // Capturar @lid si corresponde.
-  let capturadoLid = false;
-  if (from && from.endsWith('@lid') && !match.wa_lid) {
-    usuarios.setWaLid(match.id, from);
-    capturadoLid = true;
-    console.log(`[unknown-flow/wa] capturado @lid para ${match.nombre}: ${from}`);
-  }
-  const owner = _estadoOwner();
-  if (owner) {
-    mem.log({
-      usuarioId: owner.id,
-      canal: 'whatsapp', direccion: 'entrante',
-      de: from, nombre: pushname, cuerpo,
-      metadata: { tipo: 'unknown_llm_rute', messageId, a_usuario: match.id, razon, via, ...(mediaInfo || {}) },
-    });
-  }
-  // No ack-eamos al remitente ni avisamos al owner — la respuesta del LLM del
-  // usuario (via reprocesarComoUsuario) es la que le contesta al remitente.
-  // Si alguien quiere ver la ruta, queda en el evento mem.log de arriba.
-  try {
-    await reprocesarComoUsuario(match, {
-      de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
-      contextoRemitente: { esTercero: false, razon, via, identificadoComo: 'usuario_activo' },
-    });
-  } catch (err) {
-    console.error('[unknown-flow/wa] reprocesar falló:', err.message);
-  }
-  console.log(`[unknown-flow/wa] LLM routeó ${from} → ${match.nombre} (id=${match.id})${capturadoLid ? ' [@lid capturado]' : ''}`);
-  return true;
-}
-
-/**
- * El remitente no es un usuario, pero es un tercero respondiéndole a Maria
- * algo que uno de los usuarios le pidió gestionar (ej. pedile el menú a X).
- * Reprocesamos el mensaje en el contexto del usuario dueño de la gestión —
- * el prompt normal del usuario sabe manejar "te escribe un tercero".
- *
- * No ack-eamos al tercero: quien decide qué responder es el LLM del prompt
- * del usuario (puede ser responder directo, puede ser preguntarle al usuario
- * antes, etc.).
- */
-async function _routearComoTerceroDeUsuario({ client, match, from, pushname, cuerpo, messageId, razon, via = 'llm', mediaInfo = null, reprocesarComoUsuario }) {
-  const quien = pushname || from;
-  // Loggear el mensaje entrante en el bucket del USUARIO (no del owner) para
-  // que aparezca en su historial cross-canal cuando armemos su próximo prompt.
-  mem.log({
-    usuarioId: match.id,
-    canal: 'whatsapp', direccion: 'entrante',
-    de: from, nombre: pushname, cuerpo,
-    metadata: { tipo: 'unknown_llm_tercero', messageId, razon, via, ...(mediaInfo || {}) },
-  });
-  // No avisamos al owner ni ack-eamos al tercero — el LLM del usuario decide
-  // qué responder en el reprocesarComoUsuario de abajo.
-  try {
-    await reprocesarComoUsuario(match, {
-      de: from, nombre: pushname || from, cuerpo, esAudio: false, messageId,
-      contextoRemitente: { esTercero: true, razon, via, identificadoComo: 'tercero_de_usuario' },
-    });
-  } catch (err) {
-    console.error('[unknown-flow/wa] reprocesar tercero falló:', err.message);
-  }
-  console.log(`[unknown-flow/wa] tercero_de_usuario: ${from} (${quien}) → contexto de ${match.nombre} (id=${match.id})`);
-  return true;
-}
-
-async function _abrirProspectoPendiente({ client, canal, from, pushname, cuerpo, messageId, llm }) {
-  const owner = _estadoOwner();
-  const waCusSug = (canal === 'whatsapp' && from && from.endsWith('@c.us')) ? from : null;
-  const emailSug = llm.email_sugerido || (canal === 'gmail' ? (from || '').match(/<([^>]+)>/)?.[1] || from : null);
-
-  guardarProspectoPendiente(canal, from, {
-    canal,
-    from,
-    pushname: pushname || null,
-    nombre_sugerido: llm.nombre_sugerido || null,
-    wa_cus_sugerido: llm.wa_cus_sugerido || waCusSug,
-    email_sugerido:  llm.email_sugerido  || emailSug,
-    razon: llm.razon || '',
-    original_body: cuerpo,
-    messageId,
-    ts: new Date().toISOString(),
-  });
-  if (owner) {
-    mem.log({
-      usuarioId: owner.id,
-      canal: canal === 'whatsapp' ? 'whatsapp' : 'gmail',
-      direccion: 'entrante',
-      de: from, nombre: pushname, cuerpo,
-      metadata: {
-        tipo: 'unknown_pending_created', messageId,
-        nombre_sugerido: llm.nombre_sugerido, razon: llm.razon,
-      },
-    });
-  }
-  const quien = pushname || from;
-  const sugerido = llm.nombre_sugerido ? `*${llm.nombre_sugerido}*` : '(sin nombre detectado)';
-  const razonLn  = llm.razon ? `\nRazón: ${llm.razon}` : '';
-  await _notificarOwner(client,
-    `🕵️ Me escribió *${quien}* (${from}) por ${canal}. Creo que es ${sugerido}.${razonLn}\n\nMensaje: "${cuerpo.slice(0, 400)}"\n\n¿Lo creo como usuario? Decime "sí" / "no" (o acotá nombre/datos si querés).`
-  );
-  // Al remitente NO le contestamos — el owner decide. Si insiste, su mensaje
-  // queda loggeado pero no re-avisamos.
-  console.log(`[unknown-flow/${canal}] prospecto pendiente abierto: ${from} → "${llm.nombre_sugerido || '(?)'}"`);
-  return true;
-}
-
-async function _handleWA_FSM_primera({ client, from, pushname, cuerpo, messageId, cusReal = null, candidatos = null }) {
-  const owner = _estadoOwner();
-  const preguntaTxt = `¡Hola! Soy María, asistente personal. No te tengo registrado. ¿Para quién de las personas que asisto es este mensaje?`;
-  try {
-    await client.sendMessage(from, preguntaTxt);
-  } catch (err) {
-    console.error('[unknown-flow/wa] sendMessage falló:', err.message);
-  }
-  guardarEstado('whatsapp', from, {
-    canal: 'whatsapp', original_body: cuerpo, messageId, pushname,
-    etapa: 'pregunta',
-    cusReal: cusReal || null,
-    candidatos: candidatos && candidatos.length ? candidatos : null,
-    ts: new Date().toISOString(),
-  });
-  if (owner) {
-    mem.log({
-      usuarioId: owner.id,
-      canal: 'whatsapp', direccion: 'entrante',
-      de: from, nombre: pushname, cuerpo,
-      metadata: { tipo: 'unknown_first', messageId },
-    });
-  }
-  // No avisamos al owner acá — si el remitente responde bien, Maria resuelve
-  // sola. Si no responde o responde mal, el cierre (_handleWA_FSM_segunda
-  // branch sin match) le avisa con contenido.
-  console.log(`[unknown-flow/wa] primer contacto de ${from} — preguntando (FSM)`);
-  return true;
-}
-
-/**
- * Cierre neutro + escalado al owner cuando no pudimos rutear con certeza.
- * Al tercero NUNCA le exponemos la lista de usuarios; el owner sí ve los
- * candidatos en el aviso y puede rutear a mano.
- */
-async function _cerrarYEscalarWA({ client, from, pushname, cuerpo, estado, motivo }) {
-  try {
-    await client.sendMessage(from, `Gracias. Le hago llegar tu mensaje a quien corresponde.`);
-  } catch (err) {
-    console.error('[unknown-flow/wa] cierre neutro falló:', err.message);
-  }
-  await _notificarOwner(client,
-    `⚠️ No pude rutear con certeza un mensaje de *${pushname || from}* (${from}) por WA — ${motivo}.\n\n` +
-    `Mensaje original: "${(estado?.original_body || '').slice(0, 400)}"\n` +
-    `Última respuesta: "${(cuerpo || '').slice(0, 400)}"\n\n` +
-    `Le dije que le hago llegar el mensaje. Decime a quién va y se lo paso.`
-  );
-  limpiarEstado('whatsapp', from);
-  console.log(`[unknown-flow/wa] escalado a owner: ${from} — ${motivo}`);
-  return true;
-}
-
-async function _handleWA_FSM_segunda({ client, from, pushname, cuerpo, cusReal = null, estado, reprocesarComoUsuario }) {
-  const candidatosPrevios = (estado.candidatos || [])
-    .map(id => usuarios.obtener(id))
-    .filter(u => u && u.activo);
-  const res = matchearUsuario(cuerpo, candidatosPrevios.length ? candidatosPrevios : null);
-  let match = res && res.match ? res.match : null;
-
-  // Homónimos: match múltiple NUNCA auto-rutea. Desempate silencioso por
-  // libreta (¿el remitente está en la libreta de exactamente uno?); si no,
-  // UNA repregunta sin exponer la lista; si sigue ambiguo → owner.
-  if (!match && res && res.multiple) {
-    const porLibreta = _desempatarPorLibreta(res.multiple, { from, cusReal: cusReal || estado.cusReal || null });
-    if (porLibreta) {
-      match = porLibreta;
-      console.log(`[unknown-flow/wa] homónimos desempatados por libreta → ${match.nombre}`);
-    } else if (estado.etapa !== 'desambiguando') {
-      try {
-        await client.sendMessage(from, `¿Me confirmás nombre y apellido completos de la persona, así dirijo bien tu mensaje?`);
-      } catch (err) {
-        console.error('[unknown-flow/wa] repregunta falló:', err.message);
-      }
-      guardarEstado('whatsapp', from, { ...estado, etapa: 'desambiguando', candidatos: res.multiple.map(u => u.id) });
-      console.log(`[unknown-flow/wa] homónimos (${res.multiple.map(u => u.nombre).join(' / ')}) — repregunto sin exponer lista`);
-      return true;
-    } else {
-      return await _cerrarYEscalarWA({
-        client, from, pushname, cuerpo, estado,
-        motivo: `siguió ambiguo entre: ${res.multiple.map(u => u.nombre).join(', ')}`,
-      });
-    }
-  }
-
-  if (match) {
-    let capturadoLid = false;
-    if (from && from.endsWith('@lid') && !match.wa_lid) {
-      usuarios.setWaLid(match.id, from);
-      capturadoLid = true;
-    }
-    // No ack-eamos al remitente ni avisamos al owner — la respuesta del
-    // reprocesarComoUsuario de abajo se encarga de contestarle. El hecho
-    // queda en la consola y en el historial del usuario.
-    limpiarEstado('whatsapp', from);
-    if (capturadoLid) console.log(`[unknown-flow/wa] @lid capturado para ${match.nombre}: ${from}`);
-    try {
-      await reprocesarComoUsuario(match, {
-        de: from, nombre: pushname || from,
-        cuerpo: estado.original_body, esAudio: false,
-        messageId: estado.messageId,
-        contextoRemitente: {
-          esTercero: true,
-          razon: `el desconocido respondió "${cuerpo.slice(0, 120)}" cuando le pregunté para quién era el mensaje, y matcheamos por nombre con ${match.nombre}`,
-          via: 'fsm_manual',
-          identificadoComo: 'tercero_de_usuario',
-        },
-      });
-    } catch (err) {
-      console.error('[unknown-flow/wa] reprocesar falló:', err.message);
-    }
-    console.log(`[unknown-flow/wa] FSM routeó ${from} → ${match.nombre}`);
-    return true;
-  }
-  // Sin match. Si veníamos de una desambiguación (o sabíamos por libreta que
-  // el remitente es contacto de algún candidato), no mentimos con "no
-  // conozco" — escalamos al owner con cierre neutro.
-  if (estado.etapa === 'desambiguando' || (estado.candidatos && estado.candidatos.length)) {
-    return await _cerrarYEscalarWA({ client, from, pushname, cuerpo, estado, motivo: 'sin match tras preguntar' });
-  }
-  try {
-    await client.sendMessage(from, `Perdón, no conozco a esa persona. Cierro acá.`);
-  } catch (err) {
-    console.error('[unknown-flow/wa] cerrar falló:', err.message);
-  }
-  const msgOriginal = (estado?.original_body || '').slice(0, 400);
-  const respuestaDesc = cuerpo.slice(0, 400);
-  await _notificarOwner(client,
-    `❌ Cerré el thread con *${pushname || from}* (${from}) por WA — no pude identificar para quién.\n\n` +
-    `Mensaje original: "${msgOriginal}"\n` +
-    `Su respuesta a "¿para quién va?": "${respuestaDesc}"\n\n` +
-    `Lo asumí erróneo. Si era para vos, avisame y te paso el contenido.`
-  );
-  limpiarEstado('whatsapp', from);
-  console.log(`[unknown-flow/wa] FSM cerrado ${from} — sin match`);
-  return true;
-}
-
-// Remitentes automáticos / de sistema (no-reply de Google, alertas Workspace,
-// mailer-daemon, etc.). NO se escalan al owner ni cuentan como "desconocido sin
-// rutear": son ruido. Los rebotes (mailer-daemon/postmaster) ya se listan
-// aparte en el daily-report.
 const _SISTEMA_LOCALPART_RE = /^(no-?reply|noreply|no_reply|do-?not-?reply|donotreply|mailer-daemon|postmaster|bounce|bounces)([._+-].*)?$/i;
 const _SISTEMA_EXACTOS = new Set([
   'no-reply@accounts.google.com',
@@ -1188,7 +822,6 @@ async function _handleEmail_FSM_segunda({ waClient, email, estado, reprocesarCom
 }
 
 module.exports = {
-  handleWA,
   handleEmail,
   matchearUsuario,
   // legacy FSM (por compatibilidad):

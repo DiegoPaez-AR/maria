@@ -29,8 +29,15 @@ test('fallback inverso: 549... prueba también 54...', async () => {
   assert.equal(await normalizarWaCus('+54 9 11 6555 1234', c), '541165551234@c.us');
 });
 
-test('sin client → error instructivo', async () => {
-  await assert.rejects(() => normalizarWaCus('5491100000000', null), /no tengo cliente/);
+test('sin client (era bridge) → normaliza offline, no explota', async () => {
+  assert.equal(await normalizarWaCus('5491100000000', null), '5491100000000@c.us');
+  // AR sin el "9" móvil se completa (formato de envío del bridge)
+  assert.equal(await normalizarWaCus('+54 11 6555 1234', null), '5491165551234@c.us');
+});
+
+test('sin client + número imposible → error instructivo', async () => {
+  await assert.rejects(() => normalizarWaCus('123', null), /entre 8 y 15/);
+  await assert.rejects(() => normalizarWaCus('hola', null), /no contiene dígitos/);
 });
 
 test('sin dígitos → error', async () => {

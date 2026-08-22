@@ -1,8 +1,8 @@
 // internal-api.js — HTTP API local de Maria, escucha en 127.0.0.1:$ASISTENTE_INTERNAL_PORT.
 // Lo consume el servicio `intensa-api` para:
-//   POST /send-wa        { to, body }                 → manda WhatsApp
+//   POST /send-wa        { to, body }                 → WhatsApp por el bridge (usuarios: TG/email, política v5)
 //   POST /send-email     { to, subject, html, text }  → manda email vía Gmail
-//   POST /validate-wa     { wa }                          → corre normalizarWaCus contra el client vivo de WA
+//   POST /validate-wa     { wa }                          → normaliza formato del wid (sin lookup: no hay wwebjs)
 //   POST /update-usuario  { id, ...campos }                  → mutación de usuarios desde el proceso vivo (evita WAL stale reads)
 //   POST /reload-usuarios                              → re-lee la tabla usuarios (cache invalidate)
 //   GET  /health                                       → healthcheck
@@ -217,29 +217,27 @@ function start({ waClient } = {}) {
       if (req.url === '/send-wa') {
         const { to, body: text, usuarioId = null, nombre = null } = body;
         if (!to || !text) return send(400, { error: 'bad_body', need: 'to + body' });
-        if (!waClient) return send(503, { error: 'wa_not_ready' });
-        // Normalizar destino: si no tiene @c.us, agregarlo
-        const dest = to.includes('@') ? to : `${to}@c.us`;
+        // ERA BRIDGE (2026-08-22): ya no hay waClient. El canal WA real es la
+        // cola wa_outbox que drena el teléfono. Además, si el destino es un
+        // USUARIO, la política v5 manda: no se le escribe por WhatsApp, sale
+        // por Telegram/email. Esto revive los avisos de ops (healthcheck,
+        // backup, canary) que devolvían 503 desde que se apagó wwebjs.
         try {
-          // Verificar primero si el número está registrado en WhatsApp.
-          // Esto evita el error opaco 'Evaluation failed' cuando el número no
-          // tiene cuenta de WA o tiene problemas de getNumberId.
-          let resolvedDest = dest;
-          try {
-            const numberId = await waClient.getNumberId(dest);
-            if (numberId && numberId._serialized) resolvedDest = numberId._serialized;
-            else console.warn(`[internal-api/send-wa] getNumberId returned null para ${dest} — intento envío igual`);
-          } catch (resErr) {
-            console.warn(`[internal-api/send-wa] getNumberId error para ${dest}:`, resErr.message);
+          const waSend = require('./wa-send');
+          let destinatario = null;
+          try { destinatario = usuarios.resolverPorWa(to); } catch { /* noop */ }
+          if (destinatario && destinatario.activo) {
+            const r = await waSend.enviarWAUsuario(null, destinatario, text, {
+              tag: 'internal-api/send-wa',
+              metadata: { tipo: 'internal-api/send-wa', origen: 'ops' },
+            });
+            return send(200, { ok: true, via: r?.canal || 'usuario', sent_to: destinatario.nombre });
           }
-          await waClient.sendMessage(resolvedDest, text);
-          mem.log({
-            usuarioId,
-            canal: 'whatsapp', direccion: 'saliente',
-            de: resolvedDest, nombre, cuerpo: text,
-            metadata: { tipo: 'internal-api/send-wa' },
+          const r = await waSend.enviarWADirecto(null, to, text, {
+            usuarioId, tag: 'internal-api/send-wa',
+            metadata: { tipo: 'internal-api/send-wa', nombre },
           });
-          return send(200, { ok: true, sent_to: resolvedDest });
+          return send(200, { ok: true, via: 'outbox', outboxId: r?.outboxId || null, sent_to: to });
         } catch (err) {
           console.error('[internal-api/send-wa] error:', err.stack || err.message);
           return send(502, { error: 'wa_send_failed', detail: err.message });
@@ -252,11 +250,12 @@ function start({ waClient } = {}) {
       if (req.url === '/validate-wa') {
         const { wa } = body;
         if (!wa) return send(400, { error: 'bad_body', need: 'wa' });
-        if (!waClient) return send(503, { error: 'wa_not_ready' });
+        // Sin wwebjs no hay lookup contra Meta: normalizamos formato y
+        // avisamos que NO está verificado (lo verifica el teléfono al enviar).
         const { normalizarWaCus } = require('./wa-validate');
         try {
-          const resolved = await normalizarWaCus(wa, waClient);
-          return send(200, { ok: true, input: wa, resolved });
+          const resolved = await normalizarWaCus(wa, null);
+          return send(200, { ok: true, input: wa, resolved, verificado: false });
         } catch (err) {
           return send(200, { ok: false, input: wa, error: err.message });
         }
@@ -284,11 +283,11 @@ function start({ waClient } = {}) {
       if (req.url === '/update-usuario') {
         const { id, ...patch } = body;
         if (!id) return send(400, { error: 'bad_body', need: 'id + fields' });
-        // Si viene wa_cus y tenemos waClient, validar antes de persistir.
-        if (patch.wa_cus && waClient) {
+        // Normalización de formato del wa_cus (sin lookup: era bridge).
+        if (patch.wa_cus) {
           try {
             const waValidate = require('./wa-validate');
-            patch.wa_cus = await waValidate.normalizarWaCus(patch.wa_cus, waClient);
+            patch.wa_cus = await waValidate.normalizarWaCus(patch.wa_cus, null);
           } catch (e) {
             return send(400, { error: 'wa_validate_failed', detail: e.message });
           }

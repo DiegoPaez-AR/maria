@@ -18,6 +18,8 @@ const usuarios = require('./usuarios');
 const waSend = require('./wa-send');
 
 let _waClient = null;
+// setWaClient: no-op desde 2026-08-22 (jubilación de whatsapp-web.js). Se
+// conserva por compat de callers; _avisarOwner ya rutea por wa-send.
 function setWaClient(c) { _waClient = c; }
 
 const UMBRAL = Number(process.env.MARIA_LOOP_FALLOS_UMBRAL || 3);
