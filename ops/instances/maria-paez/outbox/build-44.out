@@ -1,0 +1,20 @@
+# ejecutado: 2026-08-22T16:52:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   nohup bash /root/mb-build-worker.sh > /tmp/mbbuild.log 2>&1 &
+#   echo "build lanzado"
+#   sleep 5
+#   tail -3 /root/mariabridge-build.log 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+build lanzado
+=== rebuild Sat Aug 22 04:52:02 PM -03 2026 ===
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+LISTO
+
+# exit=0
