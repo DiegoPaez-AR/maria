@@ -1,0 +1,29 @@
+# ejecutado: 2026-08-21T23:47:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   echo "── build v3.8 ──"
+#   pgrep -f mb-build-worker >/dev/null && echo compilando || echo terminó
+#   grep -E "APK_OK|APK_FAIL|^e: file" /root/mariabridge-build.log | tail -2
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   echo "── manos remotas: pedir dump de nodos (diagnóstico del botón send, NO envía nada) ──"
+#   cat > /tmp/ctl.cjs <<'JS'
+#   const c=require("/root/secretaria/mb-control.js");
+#   console.log("comando encolado id:", c.encolar("nodos"));
+#   JS
+#   node /tmp/ctl.cjs; rm -f /tmp/ctl.cjs
+#   echo LISTO
+
+# ───── output ─────
+── build v3.8 ──
+terminó
+APK_OK url=https://intensa.io/_dl/mb-fc6767e3a50b30d0.apk size=3.1M latest.json=v3.8(23)
+{"versionCode": 23, "versionName": "3.8", "url": "https://intensa.io/_dl/mb-fc6767e3a50b30d0.apk"}
+
+── manos remotas: pedir dump de nodos (diagnóstico del botón send, NO envía nada) ──
+[mb-control] #1 encolado: nodos 
+comando encolado id: 1
+LISTO
+
+# exit=0
