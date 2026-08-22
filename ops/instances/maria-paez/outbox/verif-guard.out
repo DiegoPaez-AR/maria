@@ -1,0 +1,39 @@
+# ejecutado: 2026-08-22T20:15:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MALO" || echo "limpio ✓"
+#   echo "── descartes por identidad ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,140) c FROM eventos
+#      WHERE canal='sistema' AND cuerpo LIKE '%identidad no verificable%' ORDER BY timestamp DESC LIMIT 8"""):
+#       print(' ',r['timestamp'],'|',r['c'])
+#   print(" ── Fico en libreta? ──")
+#   for r in db.execute("SELECT id,usuario_id,nombre,whatsapp FROM contactos WHERE lower(nombre) LIKE '%fico%'"):
+#       print('  ',dict(r))
+#   db.close()
+#   PY
+#   echo "── simulacro con el guard nuevo ──"
+#   timeout 40 node -e "
+#   require('/root/secretaria/wa-hook').procesar({query:{sender:'Fico restaurante', message:'(prueba interna, ignorar)'}})
+#    .then(r=>console.log('  ruteado:', JSON.stringify(r).slice(0,150)))
+#    .catch(e=>console.log('  err:', e.message));" 2>&1 | tail -4
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+limpio ✓
+── descartes por identidad ──
+  2026-08-22 22:47:43 | wa-hook: "Fico restaurante" escribió sin número visible y SIN historial previo — no ruteo (identidad no verificable)
+  2026-08-22 22:47:30 | wa-hook: "Fico restaurante" escribió sin número visible y SIN historial previo — no ruteo (identidad no verificable)
+  2026-08-22 22:47:22 | wa-hook: "Fico restaurante" escribió sin número visible y SIN historial previo — no ruteo (identidad no verificable)
+ ── Fico en libreta? ──
+   {'id': 115, 'usuario_id': 1, 'nombre': 'Fico restaurante', 'whatsapp': '5491134897992@c.us'}
+── simulacro con el guard nuevo ──
+LISTO
+
+# exit=0
