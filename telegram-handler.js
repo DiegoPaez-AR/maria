@@ -21,9 +21,10 @@ const usuarios = require('./usuarios');
 const seguridad = require('./seguridad');
 const turnState = require('./turn-state');
 const vinculos = require('./telegram-vinculos');
-const { construirPrompt } = require('./prompt-builder');
+const { construirPrompt, construirTurnoSesion } = require('./prompt-builder');
 const { invocarClaudeJSONConConsultas, invocarClaudeJSON } = require('./claude-client');
 const gestionAjena = require('./gestion-ajena');
+const sesiones = require('./session-manager');
 
 // Turnos en curso por chat (auditoría #11): serializa por conversación sin
 // bloquear el polling ni a los demás chats.
@@ -194,12 +195,53 @@ async function _procesarTurno(usuario, chatId, texto, attachmentPath = null) {
     de: chatKey, nombre: usuario.nombre, cuerpo: texto });
 
   const prompt = await construirPrompt({ usuario, canal: 'telegram', entrada });
+  // ─── Sesiones persistentes (MARIA_SESIONES=1, default APAGADO) ──────────
+  // Cableado 2026-08-22. Telegram es el canal principal de los usuarios desde
+  // la política v5, y era el único que seguía re-mandando el system entero
+  // (~64k chars) en CADA turno. Mismo patrón que gmail-handler: con sesión
+  // viva mandamos solo el turno compacto y la API relee del prompt cache.
+  // Los turnos de TERCEROS (más abajo) siguen sessionless a propósito:
+  // no se mezclan interlocutores en la historia lineal del usuario.
+  const auditTG = { usuarioId: usuario.id, canal: 'telegram', chatKey, turnStartTs: startTs, turnoTercero: false };
+  const SESIONES_ON = process.env.MARIA_SESIONES === '1'
+    && prompt && typeof prompt === 'object' && !!prompt.system;
   let json;
   try {
-    ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, {
-      audit: { usuarioId: usuario.id, canal: 'telegram', chatKey, turnStartTs: startTs, turnoTercero: false },
-      sesion: 'off',
-    }));
+    if (!SESIONES_ON) {
+      ({ json } = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditTG, sesion: 'off' }));
+    } else {
+      // Mutex por usuario: Telegram y Gmail comparten la sesión del usuario.
+      json = await sesiones.lockUsuario(usuario.id, async () => {
+        const hash = sesiones.promptHashDe(prompt.system);
+        let ses = sesiones.getSesion(usuario.id);
+        if (ses && sesiones.debeRotar(ses, hash)) {
+          console.log(`[TG sesion/${usuario.nombre}] rotando sesión (turnos=${ses.turnos}, creada=${ses.creada})`);
+          sesiones.resetSesion(usuario.id);
+          ses = null;
+        }
+        const turnoInicial = async () => {
+          const r = await invocarClaudeJSONConConsultas(prompt, { usuario }, { audit: auditTG, sesion: 'nueva', sesionTurno: 1 });
+          if (r.sessionId) {
+            sesiones.guardarSesion(usuario.id, { id: r.sessionId, turnos: 1, creada: new Date().toISOString(), promptHash: hash });
+          }
+          return r.json;
+        };
+        if (!ses) return await turnoInicial();
+        const turno = await construirTurnoSesion({ usuario, canal: 'telegram', entrada });
+        try {
+          const r = await invocarClaudeJSONConConsultas(turno, { usuario }, {
+            audit: auditTG, resumeId: ses.id, sesion: 'resume', sesionTurno: ses.turnos + 1,
+          });
+          sesiones.guardarSesion(usuario.id, { ...ses, id: r.sessionId || ses.id, turnos: ses.turnos + 1 });
+          return r.json;
+        } catch (err) {
+          if (err.codigo !== 'RESUME_FALLIDO') throw err;
+          console.warn(`[TG sesion/${usuario.nombre}] resume falló (${err.message}) — roto sesión y reintento con prompt completo`);
+          sesiones.resetSesion(usuario.id);
+          return await turnoInicial();
+        }
+      });
+    }
   } catch (err) {
     console.error(`[TG/${usuario.nombre}] Claude falló:`, err.message);
     mem.log({ usuarioId: usuario.id, canal: 'sistema', direccion: 'interno',
