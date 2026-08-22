@@ -1,0 +1,97 @@
+# ejecutado: 2026-08-22T17:44:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── HEAD / canary ──"; git log --oneline -1; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MARKER MALO" || echo "sin marker (OK)"
+#   echo "── pm2 ──"; timeout 20 pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       if 'maria' not in p['name']: continue
+#       e=p['pm2_env']; print(p['name'], e['status'], 'restarts=%s'%e['restart_time'], 'up=%dmin'%((time.time()*1000-e['pm_uptime'])/60000))"
+#   echo "── wwebjs realmente fuera? ──"
+#   timeout 10 pgrep -c chromium >/dev/null && echo "⚠️ chromium vivo" || echo "sin chromium ✓"
+#   ls node_modules/whatsapp-web.js >/dev/null 2>&1 && echo "(node_modules aún tiene wwebjs — pendiente npm prune)" || echo "node_modules limpio"
+#   echo "── SALIENTES desde 16:50 (buscando duplicados de la Maria fantasma) ──"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ.get('MARIA_DB'))
+#   db.row_factory=sqlite3.Row
+#   q="""SELECT timestamp,canal,COALESCE(nombre,de) dest,substr(cuerpo,1,70) c
+#        FROM eventos WHERE direccion='saliente' AND timestamp >= datetime('now','-70 minutes')
+#        ORDER BY timestamp"""
+#   rs=db.execute(q).fetchall()
+#   print(f"{len(rs)} salientes en los últimos 70 min")
+#   for r in rs: print(' ', r['timestamp'], r['canal'], '→', r['dest'], '|', (r['c'] or '').replace('\n',' '))
+#   print('── duplicados exactos (mismo destino + mismo texto) ──')
+#   for r in db.execute("""SELECT COUNT(*) n, COALESCE(nombre,de) d, substr(cuerpo,1,60) c
+#        FROM eventos WHERE direccion='saliente' AND timestamp >= datetime('now','-70 minutes')
+#        GROUP BY d, c HAVING n>1"""):
+#       print('  ⚠️', r[0], 'veces →', r[1], '|', (r[2] or '').replace('\n',' '))
+#   print('── outbox WA reciente ──')
+#   for r in db.execute("SELECT id,numero,estado,intentos,substr(texto,1,45) t FROM wa_outbox ORDER BY id DESC LIMIT 8"):
+#       print('  #%s'%r[0], r[1], r[2], 'int=%s'%r[3], (r[4] or '').replace('\n',' '))
+#   db.close()
+#   PY
+#   echo "── qué hizo reenviar-gabi-wa ──"; head -30 ops/instances/maria-paez/outbox/reenviar-gabi-wa.out 2>/dev/null | tail -18
+#   echo "── errores del runtime ──"; timeout 10 tail -40 /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -12
+#   echo LISTO
+
+# ───── output ─────
+── HEAD / canary ──
+7821d9e86e7 ops: snapshot 2026-08-22T17:43:01-03:00
+sin marker (OK)
+── pm2 ──
+maria-paez online restarts=332 up=44min
+── wwebjs realmente fuera? ──
+sin chromium ✓
+(node_modules aún tiene wwebjs — pendiente npm prune)
+── SALIENTES desde 16:50 (buscando duplicados de la Maria fantasma) ──
+1 salientes en los últimos 70 min
+  2026-08-22 20:05:03 telegram → Diego | ALERTA healthcheck maria-paez: fallaron: snapshot_recent. Detalle en o
+── duplicados exactos (mismo destino + mismo texto) ──
+── outbox WA reciente ──
+  #237 5491163846461 entregado int=1 Hola, disculpen el mensaje anterior, fue un e
+  #236 5491163846461 entregado int=2 placeholder
+  #235 541132317896 vencido int=5 ⚠️ No pude entregar un WhatsApp a 54911638464
+  #234 5491163846461 vencido int=11 Hola! Soy Maria, la secretaria de Diego Paez.
+  #233 5491144471264 vencido int=21 ⏰ *En 15min*: Miran diagnostico neuro (06:00 
+  #232 541132317896 vencido int=22 ⏰ *En 15min*: Reunion PoCs (06:00 p. m.) Con:
+  #231 541132317896 vencido int=20 ⚠️ No pude entregar un WhatsApp a Gabriel Pac
+  #230 541132317896 vencido int=16 ⚠️ No pude entregar un WhatsApp a Santiago Ca
+── qué hizo reenviar-gabi-wa ──
+#   const gabi=db.prepare(\"SELECT wa_cus FROM usuarios WHERE id=18\").get();
+#   const num=String(gabi.wa_cus).replace('@c.us','');
+#   let n=0;
+#   for (const r of rows) {
+#     db.prepare(\"INSERT INTO wa_outbox (usuario_id, numero, texto, metadata_json) VALUES (18, ?, ?, ?)\").run(num, r.texto, JSON.stringify({tipo:'reenvio_recordatorio', programado:r.id}));
+#     n++;
+#   }
+#   db.prepare(\"INSERT INTO wa_outbox (usuario_id, numero, texto, metadata_json) VALUES (18, ?, ?, ?)\").run(num,
+#     'Perdón por el enredo de recién — los recordatorios te habían llegado por mail por un tema técnico mío, ya está resuelto. El Museo de la Cárcova del miércoles ya está en tu calendario ✓', JSON.stringify({tipo:'aclaracion'}));
+#   console.log('encolados a Gabi:', n+1);
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+encolados a Gabi: 4
+LISTO
+
+# exit=0
+── errores del runtime ──
+2026-08-22 17:34:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:34:50: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:35:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:35:50: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:36:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:36:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:37:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:37:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:39:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:40:50: [TG] poll error (reintento en 15s): fetch failed
+LISTO
+
+# exit=0
