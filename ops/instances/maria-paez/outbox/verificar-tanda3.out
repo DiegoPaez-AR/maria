@@ -1,0 +1,28 @@
+# ejecutado: 2026-08-22T15:01:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   grep -i "canary" ops/.cron.log | tail -2
+#   [ -f state/.canary-bad-commit ] && echo "⚠️ BLOQUEADO: $(cat state/.canary-bad-commit)" || echo "canary limpio ✓"
+#   npm test 2>&1 | tail -4
+#   echo "── build app ──"; grep -E "APK_OK|APK_FAIL|^e: file" /root/mariabridge-build.log | tail -2
+#   curl -s https://intensa.io/_dl/mariabridge-latest.json; echo ""
+#   echo LISTO
+
+# ───── output ─────
+canary OK (e944ff8a3e967ff9b18251458fb4906b983ce23d) → reload
+canary OK (f4ad6d5ed6adaf49c0d350696dce986468165f58) → reload
+canary limpio ✓
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8065.626164
+── build app ──
+APK_OK url=https://intensa.io/_dl/mb-30b8a01a67688d9e.apk size=3.1M latest.json=v4.3(28)
+{"versionCode": 28, "versionName": "4.3", "url": "https://intensa.io/_dl/mb-30b8a01a67688d9e.apk"}
+
+LISTO
+
+# exit=0
