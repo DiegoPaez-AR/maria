@@ -1,0 +1,15 @@
+#!/bin/bash
+cd /root/secretaria
+CF=$(ls config/instances/*.conf 2>/dev/null | head -1)
+echo "conf: $CF"
+grep -q '^MARIA_SESIONES=' "$CF" && sed -i 's/^MARIA_SESIONES=.*/MARIA_SESIONES=1/' "$CF" || echo 'MARIA_SESIONES=1' >> "$CF"
+grep -q '^MARIA_SESIONES_USUARIOS=' "$CF" && sed -i 's/^MARIA_SESIONES_USUARIOS=.*/MARIA_SESIONES_USUARIOS=Diego/' "$CF" || echo 'MARIA_SESIONES_USUARIOS=Diego' >> "$CF"
+grep -E '^MARIA_SESION' "$CF"
+timeout 60 pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+sleep 6
+timeout 20 node -e "console.log('env en proceso:', require('child_process').execSync('pm2 jlist').toString().includes('MARIA_SESIONES')?'presente':'?')" 2>/dev/null
+echo "── ping al teléfono (versión de la app) ──"
+timeout 20 node -e "console.log('id', require('/root/secretaria/mb-control').encolar('ping'))"
+sleep 25
+timeout 20 node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,120) r FROM mb_control ORDER BY id DESC LIMIT 2').all().reverse().forEach(x=>console.log(' #'+x.id,x.cmd,'['+x.estado+']',x.r||''));db.close();"
+echo LISTO
