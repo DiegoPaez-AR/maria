@@ -1,0 +1,20 @@
+# ejecutado: 2026-08-22T09:15:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/lc.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB);
+#   const p=db.prepare("SELECT id,numero,substr(texto,1,40) t FROM wa_outbox WHERE estado='pendiente'").all();
+#   p.forEach(x=>console.log("  venciendo #"+x.id,x.numero.slice(-8),"|",x.t));
+#   console.log("vencidos:", db.prepare("UPDATE wa_outbox SET estado='vencido' WHERE estado='pendiente'").run().changes);
+#   db.close();
+#   JS
+#   node /tmp/lc.cjs; rm -f /tmp/lc.cjs
+#   echo LISTO
+
+# ───── output ─────
+vencidos: 0
+LISTO
+
+# exit=0
