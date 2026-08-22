@@ -1,0 +1,110 @@
+# ejecutado: 2026-08-22T18:13:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── turnos de sesión en el log (nueva / resume / rotación) ──"
+#   timeout 15 grep -E "sesion|\[TG sesion" /root/.pm2/logs/maria-paez-out.log | tail -25
+#   echo ""
+#   echo "── estado de la sesión guardada ──"
+#   timeout 20 node -e "
+#   const mem=require('/root/secretaria/memory'), us=require('/root/secretaria/usuarios');
+#   const u=us.listarActivos().find(x=>x.nombre==='Diego');
+#   const raw=mem.getEstadoUsuario(u.id,'claude_sesion');
+#   console.log(' Diego id='+u.id, '→', raw||'(sin sesión)');
+#   "
+#   echo ""
+#   echo "── últimos turnos por Telegram (in/out) ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,direccion,substr(cuerpo,1,150) c FROM eventos
+#      WHERE canal='telegram' AND timestamp >= datetime('now','-3 hours') ORDER BY timestamp"""):
+#       f = '→' if r['direccion']=='entrante' else '←'
+#       print(' ',r['timestamp'],f,(r['c'] or '').replace('\n',' | '))
+#   db.close()
+#   PY
+#   echo ""
+#   echo "── costo/tokens de los últimos turnos ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os,json
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   try:
+#       rs=db.execute("""SELECT timestamp, metadata FROM eventos
+#          WHERE timestamp >= datetime('now','-3 hours') AND metadata LIKE '%tokens%'
+#          ORDER BY timestamp DESC LIMIT 12""").fetchall()
+#       for r in rs:
+#           try:
+#               m=json.loads(r['metadata'])
+#           except Exception: continue
+#           k={x:m[x] for x in m if 'token' in x.lower() or x in ('sesion','canal_origen','costo')}
+#           if k: print(' ',r['timestamp'],k)
+#   except Exception as e: print(' (sin telemetría de tokens:',e,')')
+#   db.close()
+#   PY
+#   echo "── acciones fallidas recientes ──"
+#   timeout 15 grep -iE "acción FALLÓ|accion fallo|turn-results|FALLO" /root/.pm2/logs/maria-paez-out.log | tail -8
+#   echo LISTO
+
+# ───── output ─────
+── turnos de sesión en el log (nueva / resume / rotación) ──
+2026-07-01 09:11:33: [WA sesion/Diego] rotando sesión (turnos=5, creada=2026-07-01T01:58:02.295Z)
+2026-07-01 11:08:42: [WA sesion/Diego] rotando sesión (turnos=9, creada=2026-07-01T12:12:07.247Z)
+2026-07-01 13:34:37: [WA sesion/Diego] rotando sesión (turnos=7, creada=2026-07-01T14:11:29.025Z)
+2026-07-01 14:19:49: [WA sesion/Diego] rotando sesión (turnos=1, creada=2026-07-01T16:35:07.399Z)
+2026-07-01 15:03:56: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=1, creada=2026-07-01T14:31:24.345Z)
+2026-07-01 20:10:11: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=30, creada=2026-07-01T18:04:21.776Z)
+2026-07-01 20:53:47: [WA sesion/Diego] rotando sesión (turnos=17, creada=2026-07-01T17:20:14.870Z)
+2026-07-01 22:14:21: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=9, creada=2026-07-01T23:11:40.256Z)
+2026-07-01 23:08:25: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=30, creada=2026-07-02T01:14:57.948Z)
+2026-07-02 00:01:32: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=11, creada=2026-07-02T02:08:31.612Z)
+2026-07-02 13:36:19: [WA sesion/Diego] rotando sesión (turnos=6, creada=2026-07-01T23:54:36.612Z)
+2026-07-02 23:29:06: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=30, creada=2026-07-02T03:01:38.460Z)
+2026-07-03 16:38:15: [WA sesion/Gabriela Echaniz] rotando sesión (turnos=27, creada=2026-07-03T02:29:36.039Z)
+2026-07-03 16:43:07: [WA sesion/Diego] rotando sesión (turnos=1, creada=2026-07-02T16:37:22.671Z)
+2026-07-03 17:26:46: [WA sesion/Diego] rotando sesión (turnos=3, creada=2026-07-03T19:44:28.152Z)
+2026-07-05 22:00:22: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=1, creada=2026-07-03T19:38:20.085Z)
+2026-07-07 22:49:23: [GMAIL sesion/Diego] rotando sesión (turnos=15, creada=2026-07-03T20:27:15.798Z)
+2026-07-08 09:45:32: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=9, creada=2026-07-06T01:29:27.242Z)
+2026-07-10 07:05:33: [GMAIL sesion/Natali Funez] rotando sesión (turnos=3, creada=2026-07-06T00:07:52.221Z)
+2026-07-22 13:01:07: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=4, creada=2026-07-08T12:46:00.256Z)
+2026-07-24 15:46:07: [GMAIL sesion/Doris Capurro] rotando sesión (turnos=1, creada=2026-07-07T14:47:00.319Z)
+2026-08-02 08:36:08: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=12, creada=2026-07-22T16:02:07.636Z)
+2026-08-16 23:20:07: [GMAIL sesion/Diego] rotando sesión (turnos=3, creada=2026-07-08T01:49:45.687Z)
+2026-08-20 08:21:14: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=7, creada=2026-08-02T11:38:01.981Z)
+2026-08-22 18:02:41: [TG sesion/Diego] rotando sesión (turnos=1, creada=2026-08-17T02:20:41.763Z)
+
+── estado de la sesión guardada ──
+ Diego id=1 → {"id":"19af2846-de6a-405a-925c-344741979cd4","turnos":6,"creada":"2026-08-22T21:02:57.504Z","promptHash":"e0b506407bbf3302"}
+
+── últimos turnos por Telegram (in/out) ──
+  2026-08-22 20:05:03 ← ALERTA healthcheck maria-paez: fallaron: snapshot_recent. Detalle en ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json
+  2026-08-22 20:45:04 ← healthcheck maria-paez: recuperado, todos los checks OK
+  2026-08-22 21:02:41 → ¿Qué pendiente tenemos María de Míos y tuyo para mí?
+  2026-08-22 21:02:57 ← Dale, te paso todo lo que tenemos abierto: |  | Tuyas (para hacer vos): | 1. iProt Seguridad | 2. DDJJ 2025 | 3. Llamar a Poggetti | 4. Pasajes a Japón (fechas 1,
+  2026-08-22 21:03:46 → Capaz no lo sé hasta ver, pero vi que Catalino respondió que no a ver en los miércoles así que voy a buscar otra opción.
+  2026-08-22 21:04:04 ← Dale, cerré el tema Catalino de mi lado. Avisame si querés que te busque otra opción para el miércoles 2/9 a las 21hs para 4, o si preferís encargarte
+  2026-08-22 21:08:55 → Contame cómo viene la semana que viene y qué tenés pendiente conmigo.
+  2026-08-22 21:09:11 → Y de eso, de lunes, ¿puedo mover la reunión que tengo a algún otro lado?
+  2026-08-22 21:09:11 ← Así viene la semana que viene: |  | Lunes 24/08 | 10:00-10:30 Fundraising (Monaco) [meet] | 17:00-18:00 Seguimiento Diego/Nico [meet] |  | Martes 25/08 | 08:00-12:0
+  2026-08-22 21:09:28 ← Claro, decime cuál de las dos del lunes: la de Fundraising (Monaco) de 10:00 a 10:30, o la de Seguimiento Diego/Nico de 17:00 a 18:00. Y contame a qué
+  2026-08-22 21:09:35 → ¿Salió lo que te pedí recién?
+  2026-08-22 21:09:45 ← Todavía no, porque me falta un dato: ¿cuál de las dos reuniones del lunes querés mover, la de Fundraising (Monaco) 10:00-10:30 o la de Seguimiento Die
+  2026-08-22 21:10:27 → y le mandas un whatsapp a Santi por favor preguntándole si me confirma la reunión que le mandé recién que le pregunté
+  2026-08-22 21:11:15 ← Tengo varios Santi en la libreta, decime cuál es: Santiago Paez (tu hijo), Santiago Bignone, Santiago Capurro o Santiago Rodriguez. Y de paso pasame e
+
+── costo/tokens de los últimos turnos ──
+ (sin telemetría de tokens: no such column: metadata )
+── acciones fallidas recientes ──
+2026-08-22 08:57:05: [MB-FALLO] #234 motivo=timeout_sin_boton → {"id":234,"cold_fallos":3,"definitivo":false}
+2026-08-22 08:57:45: [MB-FALLO] #234 motivo=timeout_sin_boton → {"id":234,"cold_fallos":4,"definitivo":false}
+2026-08-22 08:58:24: [MB-FALLO] #234 motivo=timeout_sin_boton → {"id":234,"cold_fallos":5,"definitivo":true}
+2026-08-22 08:58:30: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":1,"definitivo":false}
+2026-08-22 08:58:49: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":2,"definitivo":false}
+2026-08-22 08:59:09: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":3,"definitivo":false}
+2026-08-22 08:59:30: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":4,"definitivo":false}
+2026-08-22 08:59:50: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":5,"definitivo":true}
+LISTO
+
+# exit=0
