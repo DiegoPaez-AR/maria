@@ -37,8 +37,16 @@ function siguiente() {
   // 3 min vuelve a pendiente — antes quedaba "enviado" para siempre si el
   // teléfono estaba ocupado o se cortó la red.
   try {
+    // Tope de re-armes: 3 (columna intentos) — después se marca 'fallo' y se
+    // deja de reintentar (el tap sin canPerformGestures loopeó el 22/8).
+    try { mem.db.exec(`ALTER TABLE mb_control ADD COLUMN intentos INTEGER NOT NULL DEFAULT 0`); } catch { /* ya existe */ }
+    mem.db.prepare(
+      `UPDATE mb_control SET estado='fallo', resultado=COALESCE(resultado,'sin respuesta tras 3 reintentos')
+        WHERE estado='enviado' AND intentos >= 3`
+    ).run();
     const r = mem.db.prepare(
-      `UPDATE mb_control SET estado='pendiente' WHERE estado='enviado' AND creado <= datetime('now','-3 minutes')`
+      `UPDATE mb_control SET estado='pendiente', intentos=intentos+1
+        WHERE estado='enviado' AND creado <= datetime('now','-3 minutes') AND intentos < 3`
     ).run();
     if (r.changes) console.log(`[mb-control] ${r.changes} comando(s) huérfano(s) re-armados`);
   } catch { /* noop */ }

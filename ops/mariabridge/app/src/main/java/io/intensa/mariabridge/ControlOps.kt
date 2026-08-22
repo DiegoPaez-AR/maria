@@ -35,10 +35,14 @@ object ControlOps {
         val path = Path().apply { moveTo(x.toFloat(), y.toFloat()) }
         val g = GestureDescription.Builder()
             .addStroke(GestureDescription.StrokeDescription(path, 0, 60)).build()
-        svc.dispatchGesture(g, object : AccessibilityService.GestureResultCallback() {
+        val despachado = svc.dispatchGesture(g, object : AccessibilityService.GestureResultCallback() {
             override fun onCompleted(d: GestureDescription?) { _reportar(base, secret, id, true, null, "tap $x,$y ✓") }
             override fun onCancelled(d: GestureDescription?) { _reportar(base, secret, id, false, null, "tap $x,$y cancelado") }
         }, null)
+        // Si el servicio no puede despachar gestos (falta canPerformGestures o
+        // Android lo rechaza), NO hay callback → reportar YA para no dejar el
+        // comando huérfano (causa del loop del 22/8).
+        if (!despachado) _reportar(base, secret, id, false, null, "dispatchGesture rechazado (¿falta canPerformGestures?)")
     }
 
     private fun _shot(svc: AccessibilityService, base: String, secret: String, id: String) {
