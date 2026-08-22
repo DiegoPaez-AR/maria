@@ -1,0 +1,60 @@
+# ejecutado: 2026-08-22T17:46:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── ¿el .out de Gabi es de HOY o viejo? ──"
+#   head -3 ops/instances/maria-paez/outbox/reenviar-gabi-wa.out 2>/dev/null
+#   echo "── último id del outbox (si no hay >237, no se encoló nada hoy) ──"
+#   timeout 20 python3 -c "
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB'])
+#   print('  max id =', db.execute('SELECT MAX(id) FROM wa_outbox').fetchone()[0])
+#   for r in db.execute(\"SELECT id,numero,estado,created_at FROM wa_outbox WHERE created_at >= datetime('now','-3 hours')\"):
+#       print('  reciente:', r)
+#   db.close()"
+#   echo "── telegram recuperado? ──"
+#   timeout 10 tail -60 /root/.pm2/logs/maria-paez-out.log | grep -i "telegram\|\[TG\]" | tail -5
+#   timeout 10 tail -5 /root/.pm2/logs/maria-paez-error.log
+#   echo "── npm prune (saca Puppeteer del disco) ──"
+#   du -sh node_modules 2>/dev/null
+#   timeout 240 npm prune --omit=dev >/dev/null 2>&1 && echo "prune OK" || echo "prune falló/timeout"
+#   du -sh node_modules 2>/dev/null
+#   ls node_modules/whatsapp-web.js >/dev/null 2>&1 && echo "⚠️ wwebjs sigue" || echo "wwebjs FUERA ✓"
+#   ls node_modules/puppeteer >/dev/null 2>&1 && echo "⚠️ puppeteer sigue" || echo "puppeteer FUERA ✓"
+#   echo "── smoke post-prune (sin arrancar nada) ──"
+#   timeout 60 node -e "['./memory','./usuarios','./executor','./prompt-builder','./telegram-handler','./wa-hook','./internal-api','./session-manager','./unknown-flow'].forEach(m=>require(m)); console.log('requires OK')"
+#   echo LISTO
+
+# ───── output ─────
+── ¿el .out de Gabi es de HOY o viejo? ──
+# ejecutado: 2026-08-17T09:28:03-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+── último id del outbox (si no hay >237, no se encoló nada hoy) ──
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+sqlite3.OperationalError: no such column: created_at
+  max id = 237
+── telegram recuperado? ──
+2026-08-22 16:59:24: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+2026-08-22 17:00:43: [wa-send] loop_guard: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-08-22 17:05:03: [wa-send] internal-api/send-wa: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-08-22 17:45:04: [wa-send] internal-api/send-wa: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-08-22 17:37:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:39:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:40:50: [TG] poll error (reintento en 15s): fetch failed
+── npm prune (saca Puppeteer del disco) ──
+358M	node_modules
+prune OK
+280M	node_modules
+wwebjs FUERA ✓
+puppeteer FUERA ✓
+── smoke post-prune (sin arrancar nada) ──
+requires OK
+LISTO
+
+# exit=0
