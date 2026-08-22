@@ -1,0 +1,15 @@
+#!/bin/bash
+cd /root/secretaria
+cat > /tmp/fm.cjs <<'JS'
+const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB);
+try { db.exec("ALTER TABLE wa_outbox ADD COLUMN no_antes DATETIME"); console.log("columna no_antes creada ✓"); }
+catch(e){ console.log("no_antes:", e.message.includes("duplicate") ? "ya existía ✓" : "ERROR "+e.message); }
+const cols=db.prepare("PRAGMA table_info(wa_outbox)").all().map(c=>c.name);
+console.log("verificación:", cols.includes("no_antes") ? "OK ✓" : "FALTA ✗");
+db.close();
+JS
+node /tmp/fm.cjs; rm -f /tmp/fm.cjs
+# smoke: requerir el módulo confirma que arranca sin romper
+node -e "process.env.MARIA_DB=process.env.MARIA_DB; require('/root/secretaria/wa-outbox.js'); console.log('require wa-outbox OK');"
+pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+echo LISTO
