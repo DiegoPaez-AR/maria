@@ -1,11 +1,3 @@
-3|maria-pa | 2026-08-21 23:43:04: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-08-21 23:43:04: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-3|maria-pa | 2026-08-21 23:43:04: [wa-hook-watchdog] activo (cada 30min, umbral 12h)
-3|maria-pa | 2026-08-21 23:43:04: ▸ arrancando drainer de diferidos (horas de silencio)
-3|maria-pa | 2026-08-21 23:43:04: [diferidos] drainer activo (cada 5min)
-3|maria-pa | 2026-08-21 23:43:04: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-3|maria-pa | 2026-08-21 23:44:08: [memoria-curada] Diego × Hernan Fulco: nota actualizada (3 eventos nuevos, 2722 chars)
-3|maria-pa | 2026-08-21 23:44:24: [memoria-curada] Andres Neumann × Andres Neumann: nota actualizada (3 eventos nuevos, 2774 chars)
 3|maria-pa | 2026-08-21 23:44:24: [memoria-curada] tick: 2/361 contactos curados
 3|maria-pa | 2026-08-21 23:47:04: [MB-CTL] #1 → OK: [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: G
 3|maria-pa | 2026-08-21 23:47:11: [MB v3.7] 23:47:06 I [ctl] comando #1: nodos {}
@@ -197,4 +189,12 @@
 3|maria-pa | 2026-08-22 08:52:02: [memoria-curada] tick: 1/362 contactos curados
 3|maria-pa | 2026-08-22 08:53:04: [maria-worker] ejecutando pendiente 279 (Diego, intento 1/3): Reservar en Catalino miércoles 2/9 21hs para 4 personas (no pude mandar el WA, envíos por WhatsApp a
 3|maria-pa | 2026-08-22 08:53:20: [wa-outbox] #234 encolado → +5491163846461 (Hola! Soy Maria, la secretaria de Diego …)
+3|maria-pa | 2026-08-22 08:54:11: [MB v3.7] 08:54:09 I [frio] abriendo chat 5491163846461 (#234)
+3|maria-pa | 2026-08-22 08:54:21: [MB-DIAG] buscaba nombre="Catalino restaurante|R" numero="5491163846461" pendiente=234 | chats_vivos=[diego paez]
+3|maria-pa | 2026-08-22 08:54:33: [MB-FALLO] #234 motivo=timeout_sin_boton → {"id":234,"cold_fallos":1,"definitivo":false}
+3|maria-pa | 2026-08-22 08:54:41: [MB v3.7] 08:54:34 W [frio] pantalla al timeout: [:Security & priv]
+3|maria-pa | 2026-08-22 08:54:41: [MB v3.7] 08:54:34 W [frio] timeout #234 — no encontré el botón send
+3|maria-pa | 2026-08-22 08:54:41: [MB v3.7] 08:54:34 I [ctl] comando #auto-234: shot {}
+3|maria-pa | 2026-08-22 08:54:41: [MB v3.7] 08:54:34 I [outbox] cold-send #234 no verificado — queda en cola
+3|maria-pa | 2026-08-22 08:55:02: [MB-DIAG] buscaba nombre="Catalino restaurante|R" numero="5491163846461" pendiente=234 | chats_vivos=[diego paez]
 
