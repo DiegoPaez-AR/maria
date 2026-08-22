@@ -17,7 +17,13 @@ import android.app.RemoteInput
 object ReplyRegistry {
     data class Accion(val pending: PendingIntent, val remoteInput: RemoteInput, val actionIntent: Intent?)
 
-    private val porChat = HashMap<String, Accion>()
+    // ConcurrentHashMap (auditoría 22/8 #6): se escribe desde el hilo del
+    // NotificationListener y se lee/itera desde el pool de red →
+    // ConcurrentModificationException intermitente que devolvía false y
+    // disparaba un cold-send innecesario (= apertura de chat = riesgo Meta).
+    private val porChat = java.util.concurrent.ConcurrentHashMap<String, Accion>()
+    private val vistoEn = java.util.concurrent.ConcurrentHashMap<String, Long>()
+    private const val TTL_CHAT_MS = 6 * 3600_000L
 
     /** @return true si la notif tenía acción de Responder (= es un CHAT real). */
     fun registrarDesde(sbnKey: String, titulo: String, n: Notification): Boolean {
@@ -30,7 +36,10 @@ object ReplyRegistry {
             val ris = a.remoteInputs ?: continue
             for (ri in ris) {
                 if (ri.resultKey != null) {
-                    porChat[normalizar(titulo)] = Accion(a.actionIntent, ri, null)
+                    val k = normalizar(titulo)
+                    porChat[k] = Accion(a.actionIntent, ri, null)
+                    vistoEn[k] = System.currentTimeMillis()
+                    _podar()
                     return true
                 }
             }
@@ -45,9 +54,10 @@ object ReplyRegistry {
      *  siempre. 4-25s según el largo del mensaje. */
     fun responder(c: Context, buscado: String, texto: String): Boolean {
         val acc = buscarAccion(buscado) ?: return false
-        val pausa = (4000L + texto.length * 40L + (0..6000).random()).coerceAtMost(25000L)
-        MbLog.i("humano", "espero ${pausa / 1000}s antes de responder a \"$buscado\"")
-        try { Thread.sleep(pausa) } catch (_: Exception) {}
+        // La pausa humana la aplica el CALLER en su propio hilo (auditoría #5):
+        // dormir acá bloqueaba un hilo del pool de red y hacía que el lease del
+        // outbox venciera → doble envío.
+        Humano.pausar(texto.length, buscado)
         return try {
             val intent = Intent()
             val bundle = Bundle()
@@ -79,6 +89,13 @@ object ReplyRegistry {
         var d = s.filter { it.isDigit() }
         if (d.startsWith("549")) d = "54" + d.substring(3)
         return d
+    }
+
+    /** Evicción por TTL: los PendingIntent viejos no sirven y el mapa crecía indefinido. */
+    private fun _podar() {
+        val ahora = System.currentTimeMillis()
+        val muertos = vistoEn.filterValues { ahora - it > TTL_CHAT_MS }.keys
+        for (k in muertos) { porChat.remove(k); vistoEn.remove(k) }
     }
 
     private fun normalizar(s: String): String =

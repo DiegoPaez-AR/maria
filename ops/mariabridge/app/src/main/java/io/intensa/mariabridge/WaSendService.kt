@@ -65,7 +65,8 @@ class WaSendService : AccessibilityService() {
                 }
             }, TIMEOUT_MS)
         }
-        h.postDelayed({ loop() }, 1000)
+        // Batería (auditoría): 1s solo si hay un cold-send en curso; si no, 5s.
+        h.postDelayed({ loop() }, if (ColdSend.pendiente != null) 1000 else 5000)
     }
 
     // Tope global de aperturas de chat (v3.7, 18/8: dos revisiones de Meta por

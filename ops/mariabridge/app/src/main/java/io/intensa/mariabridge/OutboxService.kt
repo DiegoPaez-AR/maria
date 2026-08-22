@@ -21,7 +21,9 @@ import java.net.URLDecoder
  */
 class OutboxService : Service() {
     private val POLL_MS = 5000L
-    private var run = true
+    private val POLL_LENTO_MS = 30000L
+    @Volatile private var ultimoConTrabajo = System.currentTimeMillis()
+    @Volatile private var run = true
     private val CH = "mariabridge_fg"
 
     override fun onBind(i: Intent?): IBinder? = null
@@ -52,7 +54,10 @@ class OutboxService : Service() {
                 proximoUpd = System.currentTimeMillis() + 6 * 3600 * 1000L
                 Updater.chequear(this, desdeUi = false)
             }
-            try { Thread.sleep(POLL_MS) } catch (_: Exception) {}
+            // Backoff (auditoría, batería): 5s con trabajo reciente, hasta 30s
+            // si la cola viene vacía. Antes: 17k requests/día siempre.
+            val espera = if (System.currentTimeMillis() - ultimoConTrabajo < 5 * 60_000L) POLL_MS else POLL_LENTO_MS
+            try { Thread.sleep(espera) } catch (_: Exception) {}
         }
     }
 
@@ -61,6 +66,7 @@ class OutboxService : Service() {
         if (base.isBlank() || secret.isBlank()) return
         Net.get("$base/$secret/pendiente.txt") { code, resp ->
             if (code != 200 || resp.isBlank()) return@get
+            ultimoConTrabajo = System.currentTimeMillis()
             // Comando de control remoto (v3.6): "CTL|id|cmd|argsB64"
             if (resp.startsWith("CTL|")) {
                 val pc = resp.split("|", limit = 4)

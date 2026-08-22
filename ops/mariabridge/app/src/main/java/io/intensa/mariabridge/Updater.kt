@@ -65,6 +65,12 @@ object Updater {
             return "al día (v${info.versionName})"
         }
         if (apkUrl.isBlank()) return "json sin url"
+        // El APK debe venir del MISMO host que el hook y por https (auditoría):
+        // el json es remoto, no se acepta que redirija a cualquier lado.
+        if (!apkUrl.startsWith("https://$host/")) {
+            MbLog.e("upd", "apkUrl fuera del host esperado ($apkUrl) — descarto")
+            return "url no confiable"
+        }
 
         MbLog.i("upd", "versión nueva v$nombre (code $remoto > $mio) — descargando")
         val f = File(c.getExternalFilesDir(null), "mariabridge-update.apk")

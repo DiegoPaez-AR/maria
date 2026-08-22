@@ -6,7 +6,9 @@ import java.net.URL
 import java.util.concurrent.Executors
 
 object Net {
-    private val pool = Executors.newFixedThreadPool(2)
+    // 6 hilos (auditoría #5): con 2, una subida de audio (240s) ocupaba la
+    // mitad del pool y los GET del poller salían en ráfaga al liberarse.
+    private val pool = Executors.newFixedThreadPool(6)
 
     // readTimeout 90s (v2.4): el server puede tardar lo que tarde el turno del
     // LLM — ahora el cliente es nuestro y el deadline lo decidimos nosotros.

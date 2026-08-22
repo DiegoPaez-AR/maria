@@ -26,7 +26,10 @@ object MediaCaza {
     private val EXT_DOC = listOf(".pdf")
     private val EXT_VIDEO = listOf(".mp4", ".3gp", ".mov")
     private const val TIMEOUT_MS = 12_000L
-    private const val FRESCURA_MS = 45_000L      // el archivo debe ser de ahora
+    // Ventana estrecha (auditoría): con 45s, dos medios simultáneos de chats
+    // distintos podían atribuirse al remitente equivocado. El archivo tiene que
+    // ser POSTERIOR a la notificación (con 3s de gracia por el reloj) y reciente.
+    private const val FRESCURA_MS = 12_000L
     private const val MAX_BYTES = 10 * 1024 * 1024
 
     fun tenemosPermiso(): Boolean =
@@ -63,7 +66,7 @@ object MediaCaza {
             for (sub in lugares) {
                 sub.listFiles { x -> x.isFile && exts.any { e -> x.name.lowercase().endsWith(e) } && !x.name.startsWith(".") }
                     ?.forEach { f ->
-                        if (f.lastModified() >= desdeTs - FRESCURA_MS &&
+                        if (f.lastModified() >= desdeTs - 3_000L && f.lastModified() <= desdeTs + FRESCURA_MS &&
                             (mejor == null || f.lastModified() > mejor!!.lastModified())) mejor = f
                     }
             }
