@@ -1,0 +1,27 @@
+# ejecutado: 2026-08-22T09:36:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/tm.cjs <<'JS'
+#   const c=require("/root/secretaria/mb-control.js");
+#   console.log("ping:", c.encolar("ping"));
+#   console.log("home:", c.encolar("home"));
+#   console.log("tap MariaBridge (446,816):", c.encolar("tap",{x:446,y:816}));
+#   console.log("nodos:", c.encolar("nodos"));
+#   JS
+#   node /tmp/tm.cjs; rm -f /tmp/tm.cjs
+#   echo LISTO
+
+# ───── output ─────
+[mb-control] #7 encolado: ping 
+ping: 7
+[mb-control] #8 encolado: home 
+home: 8
+[mb-control] #9 encolado: tap {"x":446,"y":816}
+tap MariaBridge (446,816): 9
+[mb-control] #10 encolado: nodos 
+nodos: 10
+LISTO
+
+# exit=0
