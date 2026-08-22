@@ -40,10 +40,14 @@ object ReplyRegistry {
 
     fun titulosVivos(): List<String> = porChat.keys.toList()
 
-    /** Responde al chat que matchee por nombre/número. Flexible: exacto →
-     *  contains bidireccional → por dígitos. true si pudo. */
+    /** Responde al chat que matchee por nombre/número (exacto o número). true si pudo.
+     *  v4.2: espera humana antes de responder — nadie contesta en 2 segundos
+     *  siempre. 4-25s según el largo del mensaje. */
     fun responder(c: Context, buscado: String, texto: String): Boolean {
         val acc = buscarAccion(buscado) ?: return false
+        val pausa = (4000L + texto.length * 40L + (0..6000).random()).coerceAtMost(25000L)
+        MbLog.i("humano", "espero ${pausa / 1000}s antes de responder a \"$buscado\"")
+        try { Thread.sleep(pausa) } catch (_: Exception) {}
         return try {
             val intent = Intent()
             val bundle = Bundle()

@@ -30,6 +30,28 @@ mem.db.exec(`CREATE TABLE IF NOT EXISTS wa_outbox (
 const TTL_H = Number(process.env.WA_OUTBOX_TTL_H || 6);
 const MAX_INTENTOS = Number(process.env.WA_OUTBOX_MAX_INTENTOS || 400);  // alto a propósito (2026-08-15): con MariaBridge un mensaje ESPERA a que el chat tenga notif viva; solo vence por TTL (6h). Con Tasker daba igual (confirma al 1er intento).
 
+// ── Comportamiento humano (2026-08-22, pedido Diego tras 3 sanciones de Meta) ──
+// Ventana horaria, jitter y cadencia entre chats: nada de ráfagas ni horarios
+// exactos. Aplica a lo que Maria INICIA (esta cola); las respuestas a quien nos
+// escribe van por RemoteInput y no pasan por acá.
+const HORA_DESDE = Number(process.env.WA_VENTANA_DESDE || 8);
+const HORA_HASTA = Number(process.env.WA_VENTANA_HASTA || 23);
+const CADENCIA_MIN_MS = Number(process.env.WA_CADENCIA_MIN_MS || 3 * 60_000);
+const CADENCIA_MAX_MS = Number(process.env.WA_CADENCIA_MAX_MS || 8 * 60_000);
+const JITTER_MAX_MS = Number(process.env.WA_JITTER_MAX_MS || 240_000);
+const TZ = process.env.ASISTENTE_TZ || 'America/Argentina/Buenos_Aires';
+
+function _horaLocal() {
+  try {
+    return Number(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, hour: '2-digit', hour12: false }).format(new Date()));
+  } catch { return new Date().getHours(); }
+}
+function _enVentana() {
+  const h = _horaLocal();
+  return h >= HORA_DESDE && h < HORA_HASTA;
+}
+try { mem.db.exec(`ALTER TABLE wa_outbox ADD COLUMN no_antes DATETIME`); } catch { /* ya existe */ }
+
 function encolar({ usuarioId = null, numero, texto, metadata = null }) {
   // SWITCH MAESTRO (2026-08-18: cuenta EN REVISIÓN por 2ª vez — el loop de la
   // mañana): con WA_SALIENTE_OFF=1 NADA se encola; los callers caen a su
@@ -41,9 +63,13 @@ function encolar({ usuarioId = null, numero, texto, metadata = null }) {
   const digs = String(numero || '').replace(/\D/g, '');
   if (!digs || digs.length < 8) throw new Error(`wa-outbox: número inválido "${numero}"`);
   if (!texto || !String(texto).trim()) throw new Error('wa-outbox: texto vacío');
+  // Jitter: nada sale en el minuto exacto (los programados salían 10:00:00 en
+  // punto = firma de bot). 30s a 4min de desfase aleatorio.
+  const jitter = 30_000 + Math.floor(Math.random() * JITTER_MAX_MS);
+  const noAntes = new Date(Date.now() + jitter).toISOString().replace('T', ' ').slice(0, 19);
   const r = mem.db.prepare(
-    `INSERT INTO wa_outbox (usuario_id, numero, texto, metadata_json) VALUES (?, ?, ?, ?)`
-  ).run(usuarioId, digs, String(texto), metadata ? JSON.stringify(metadata) : null);
+    `INSERT INTO wa_outbox (usuario_id, numero, texto, metadata_json, no_antes) VALUES (?, ?, ?, ?, ?)`
+  ).run(usuarioId, digs, String(texto), metadata ? JSON.stringify(metadata) : null, noAntes);
   console.log(`[wa-outbox] #${r.lastInsertRowid} encolado → +${digs} (${String(texto).slice(0, 40)}…)`);
   return r.lastInsertRowid;
 }
@@ -57,12 +83,28 @@ function siguiente() {
   // poller en los últimos LEASE_S segundos. Evita el triple-envío por polls
   // concurrentes de MariaBridge (agarraban el mismo id antes de confirmar).
   const LEASE_S = Number(process.env.WA_OUTBOX_LEASE_S || 20);
+  // Ventana horaria: fuera de horario NO se sirve nada (queda en cola).
+  if (!_enVentana()) return null;
   const row = mem.db.prepare(
     `SELECT * FROM wa_outbox WHERE estado='pendiente'
        AND (tomado_en IS NULL OR tomado_en <= datetime('now', ?))
+       AND (no_antes IS NULL OR no_antes <= datetime('now'))
      ORDER BY id ASC LIMIT 1`
   ).get(`-${LEASE_S} seconds`);
   if (!row) return null;
+  // Cadencia entre CHATS DISTINTOS: si el último servido fue a otro número hace
+  // menos de 3-8 min (aleatorio), esperamos. Al MISMO chat no aplica
+  // (conversación natural).
+  try {
+    const ult = mem.db.prepare(
+      `SELECT numero, tomado_en FROM wa_outbox WHERE tomado_en IS NOT NULL ORDER BY tomado_en DESC LIMIT 1`
+    ).get();
+    if (ult && String(ult.numero) !== String(row.numero)) {
+      const espera = CADENCIA_MIN_MS + Math.floor(Math.random() * (CADENCIA_MAX_MS - CADENCIA_MIN_MS));
+      const desde = Date.parse(String(ult.tomado_en).replace(' ', 'T') + 'Z');
+      if (Number.isFinite(desde) && Date.now() - desde < espera) return null;
+    }
+  } catch { /* noop */ }
   mem.db.prepare(`UPDATE wa_outbox SET intentos = intentos + 1, tomado_en = CURRENT_TIMESTAMP WHERE id = ?`).run(row.id);
   return { id: row.id, numero: _numeroEnvio(row.numero), texto: row.texto };
 }

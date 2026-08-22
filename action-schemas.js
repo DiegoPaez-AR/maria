@@ -94,7 +94,7 @@ const TOOLS = [
     name: 'upsert_contacto',
     description: 'Crea o actualiza un contacto en la libreta del usuario. Para poder mandarle WA después, incluí whatsapp.',
     inputSchema: { type: 'object', additionalProperties: true, required: ['nombre'],
-      properties: { nombre: s(''), whatsapp: s('wid, ej 5491...@c.us'), email: s(''), notas: s(''), cumple: s('YYYY-MM-DD o --MM-DD'), telegram: s('username de Telegram sin @ (si te lo dan o lo ves en un mensaje reenviado)') } },
+      properties: { nombre: s(''), whatsapp: s('wid, ej 5491...@c.us'), email: s(''), notas: s(''), cumple: s('YYYY-MM-DD o --MM-DD'), telegram: s('username de Telegram sin @ (si te lo dan o lo ves en un mensaje reenviado)'), no_contactar: { type: 'boolean', description: 'true = esta persona pidió no ser contactada; no se le escribe nunca más' } } },
   },
   { name: 'cambiar_visibilidad_contacto', description: 'Cambia visibilidad de un contacto (privada|publica). Identificá por contactoId | nombre | whatsapp | email.',
     inputSchema: { type: 'object', additionalProperties: true, required: ['visibilidad'], properties: { visibilidad: s('privada|publica', { enum: ['privada', 'publica'] }), contactoId: { type: 'integer' }, nombre: s(''), whatsapp: s(''), email: s('') }, forzar_nuevo: { type: 'boolean', description: 'true SOLO si el usuario confirmó que es OTRA persona distinta de un contacto parecido existente' } } },

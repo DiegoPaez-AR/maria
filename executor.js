@@ -656,6 +656,17 @@ async function _enviarWA(a, ctx) {
   a.texto = _normNL(a.texto);
   _validarTextoSaliente(a.texto, 'enviar_wa');
 
+  // OPT-OUT (2026-08-22): si el contacto pidió no ser contactado, no se le
+  // escribe más. Nunca.
+  try {
+    const digsNC = String(a.a).replace(/\D/g, '').slice(-10);
+    const nc = mem.db.prepare(
+      `SELECT nombre FROM contactos WHERE no_contactar = 1
+        AND replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+','') LIKE '%' || ? || '%' LIMIT 1`
+    ).get(digsNC);
+    if (nc) throw new Error(`enviar_wa: ${nc.nombre} pidió NO ser contactado — no le escribo. Avisale al usuario que tiene que contactarlo él mismo si es necesario.`);
+  } catch (e) { if (/pidió NO ser contactado/.test(e.message)) throw e; }
+
   // Validar destinatario contra libreta visible / usuarios activos.
   const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
   if (!_v.ok) throw new Error(`enviar_wa: ${_v.motivo}. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.`);
@@ -1019,6 +1030,7 @@ async function _upsertContacto(a, ctx) {
     visibilidad,
     cumple: a.cumple || null,
     telegram: a.telegram || null,   // Fase 3 identidad (2026-08-17)
+    no_contactar: typeof a.no_contactar === 'boolean' ? a.no_contactar : null,
   });
   // Réplica a Google Contacts → teléfono WA v2 (2026-08-03). Fire-and-forget.
   if (c && c.id) {

@@ -570,6 +570,18 @@ function _migrarContactos() {
 _migrarContactos();
 _migrarContactosTelegram();
 
+// Migración (2026-08-22): contactos.no_contactar — si alguien pide que no le
+// escriban más, se marca acá y Maria NO vuelve a iniciarle nada. Buena práctica
+// anti-spam y respeto básico.
+function _migrarContactosNoContactar() {
+  if (!_tablaExiste('contactos')) return false;
+  if (_tieneColumna('contactos', 'no_contactar')) return false;
+  db.exec(`ALTER TABLE contactos ADD COLUMN no_contactar INTEGER NOT NULL DEFAULT 0`);
+  console.log('[memory] migración: contactos.no_contactar agregado');
+  return true;
+}
+_migrarContactosNoContactar();
+
 // Perfil web del contacto (rol/empresa por búsqueda web, enriquecido al crearlo).
 // Separado de la nota curada (notas_contacto, que la regenera memoria-curada).
 function _migrarContactosPerfilWeb() {
@@ -1561,14 +1573,15 @@ try {
 // upsert distinto por visibilidad: el ON CONFLICT debe matchear el índice
 // parcial correcto, así que tenemos dos statements paralelos.
 const insertContactoPriv = db.prepare(`
-  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple, telegram)
-  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'privada', @cumple, @telegram)
+  INSERT INTO contactos (usuario_id, nombre, whatsapp, email, notas, visibilidad, cumple, telegram, no_contactar)
+  VALUES (@usuario_id, @nombre, @whatsapp, @email, @notas, 'privada', @cumple, @telegram, COALESCE(@no_contactar,0))
   ON CONFLICT(usuario_id, nombre) WHERE visibilidad = 'privada' DO UPDATE SET
     whatsapp = COALESCE(excluded.whatsapp, contactos.whatsapp),
     email    = COALESCE(excluded.email,    contactos.email),
     notas    = COALESCE(excluded.notas,    contactos.notas),
     cumple   = COALESCE(excluded.cumple,   contactos.cumple),
     telegram = COALESCE(excluded.telegram, contactos.telegram),
+    no_contactar = COALESCE(@no_contactar, contactos.no_contactar),
     actualizado = CURRENT_TIMESTAMP
 `);
 const insertContactoPub = db.prepare(`
@@ -1580,6 +1593,7 @@ const insertContactoPub = db.prepare(`
     notas    = COALESCE(excluded.notas,    contactos.notas),
     cumple   = COALESCE(excluded.cumple,   contactos.cumple),
     telegram = COALESCE(excluded.telegram, contactos.telegram),
+    no_contactar = COALESCE(@no_contactar, contactos.no_contactar),
     actualizado = CURRENT_TIMESTAMP
 `);
 
@@ -1596,7 +1610,7 @@ const qContactoPorId           = db.prepare(`SELECT * FROM contactos WHERE id = 
 const updVisibilidad           = db.prepare(`UPDATE contactos SET visibilidad = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
 const updCumple                = db.prepare(`UPDATE contactos SET cumple = ?,      actualizado = CURRENT_TIMESTAMP WHERE id = ?`);
 
-function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null, visibilidad = 'privada', cumple = null, telegram = null }) {
+function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, notas = null, visibilidad = 'privada', cumple = null, telegram = null, no_contactar = null }) {
   if (telegram) telegram = String(telegram).trim().replace(/^@/, '').toLowerCase() || null;
   if (!usuarioId) throw new Error('upsertContacto: usuarioId requerido');
   if (!nombre) throw new Error('upsertContacto: nombre requerido');
@@ -1608,7 +1622,7 @@ function upsertContacto({ usuarioId, nombre, whatsapp = null, email = null, nota
     console.warn(`[upsertContacto] descarto whatsapp=@lid para "${nombre}" (no es estable)`);
     whatsapp = null;
   }
-  const params = { usuario_id: usuarioId, nombre, whatsapp, email, notas, cumple, telegram };
+  const params = { usuario_id: usuarioId, nombre, whatsapp, email, notas, cumple, telegram, no_contactar: no_contactar === true ? 1 : (no_contactar === false ? 0 : null) };
   if (visibilidad === 'privada') {
     insertContactoPriv.run(params);
     return qContactoPorNombrePriv.get(usuarioId, nombre);

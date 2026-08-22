@@ -194,7 +194,13 @@ class WaSendService : AccessibilityService() {
         }
         val send = buscarPorId(root, "$pkg:id/send")
         if (send != null && send.isClickable) {
-            MbLog.i("frio", "botón send encontrado — tap")
+            // TYPING SIMULADO (v4.2): una persona tarda en escribir. Esperamos
+            // un tiempo proporcional al largo antes de tocar enviar (5-20s) en
+            // vez de disparar al instante (firma de bot).
+            val t = ColdSend.pendiente
+            val pausa = (3000L + (t?.texto?.length ?: 60) * 60L).coerceAtMost(20000L)
+            MbLog.i("frio", "botón send encontrado — 'escribiendo' ${pausa / 1000}s antes de enviar")
+            try { Thread.sleep(pausa) } catch (_: Exception) {}
             send.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             // verificar: tras enviar, el campo de texto queda vacío
             h.postDelayed({ verificarYConfirmar(t.id, pkg) }, 1200)
