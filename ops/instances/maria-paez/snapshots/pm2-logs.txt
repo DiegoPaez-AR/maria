@@ -1,22 +1,3 @@
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando loop de recordatorios (cada 30min)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando dispatcher de programados (cada 60s)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando morning-brief (por usuario, ventana 4h)
-3|maria-pa | 2026-08-22 00:02:21: [morning-brief] activo, ventana 4h, cada usuario en su tz
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando meeting-prep (cada 5min)
-3|maria-pa | 2026-08-22 00:02:21: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-08-22 00:02:21: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-08-22 00:02:21: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando memoria-curada (cada 24h)
-3|maria-pa | 2026-08-22 00:02:21: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-3|maria-pa | 2026-08-22 00:02:21: [cumple-avisos] activo, ventana 20-23h tz usuario
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando resumen-semanal (domingos, tz usuario)
-3|maria-pa | 2026-08-22 00:02:21: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando poda-eventos (diario)
 3|maria-pa | 2026-08-22 00:02:21: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
 3|maria-pa | 2026-08-22 00:02:21: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
 3|maria-pa | 2026-08-22 00:02:21: [wa-hook-watchdog] activo (cada 30min, umbral 12h)
@@ -197,4 +178,23 @@
 3|maria-pa | 2026-08-22 08:57:48: [MB v3.7] 08:57:46 W [frio] timeout #234 — no encontré el botón send
 3|maria-pa | 2026-08-22 08:57:48: [MB v3.7] 08:57:46 I [ctl] comando #auto-234: shot {}
 3|maria-pa | 2026-08-22 08:57:48: [MB v3.7] 08:57:46 I [outbox] cold-send #234 no verificado — queda en cola
+3|maria-pa | 2026-08-22 08:58:04: [MB-CTL] #3 → OK: [|Invite|167,942] [|SMS|560,942] 
+3|maria-pa | 2026-08-22 08:58:08: [MB v3.7] 08:58:00 I [frio] abriendo chat 5491163846461 (#234)
+3|maria-pa | 2026-08-22 08:58:08: [MB v3.7] 08:58:05 I [ctl] comando #3: nodos {}
+3|maria-pa | 2026-08-22 08:58:08: [MB v3.7] 08:58:05 I [ctl] #3 → OK [|Invite|167,942] [|SMS|560,942] 
+3|maria-pa | 2026-08-22 08:58:19: [MB-DIAG] buscaba nombre="Catalino restaurante|R" numero="5491163846461" pendiente=234 | chats_vivos=[diego paez]
+3|maria-pa | 2026-08-22 08:58:24: [wa-outbox] #235 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a 549116…)
+3|maria-pa | 2026-08-22 08:58:24: [MB-FALLO] #234 motivo=timeout_sin_boton → {"id":234,"cold_fallos":5,"definitivo":true}
+3|maria-pa | 2026-08-22 08:58:28: [MB v3.7] 08:58:25 W [frio] pantalla al timeout: [:Sat, Aug 22,:Add weather,:MariaBridge,:AutoInput,:Gmail,:WhatsApp,:AutoResponder W,:Tasker,:Folder: Google,,:Hello You,:Folder: Moto, 3,:Play Store,:Phone,:Messages,:Chrome,:Camera]
+3|maria-pa | 2026-08-22 08:58:28: [MB v3.7] 08:58:25 W [frio] timeout #234 — no encontré el botón send
+3|maria-pa | 2026-08-22 08:58:28: [MB v3.7] 08:58:25 I [ctl] comando #auto-234: shot {}
+3|maria-pa | 2026-08-22 08:58:28: [MB v3.7] 08:58:25 I [outbox] cold-send #234 no verificado — queda en cola
+3|maria-pa | 2026-08-22 08:58:30: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":1,"definitivo":false}
+3|maria-pa | 2026-08-22 08:58:38: [MB v3.7] 08:58:30 I [frio] abriendo chat 5491132317896 (#235)
+3|maria-pa | 2026-08-22 08:58:38: [MB v3.7] 08:58:31 E [frio] #235: chat ABIERTO ES OTRO ("diego paez" ≠ "Diego|R"/5491132317896) — ABORTO sin tocar
+3|maria-pa | 2026-08-22 08:58:38: [MB v3.7] 08:58:31 I [outbox] cold-send #235 no verificado — queda en cola
+3|maria-pa | 2026-08-22 08:58:49: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":2,"definitivo":false}
+3|maria-pa | 2026-08-22 08:58:58: [MB v3.7] 08:58:50 I [frio] abriendo chat 5491132317896 (#235)
+3|maria-pa | 2026-08-22 08:58:58: [MB v3.7] 08:58:51 E [frio] #235: chat ABIERTO ES OTRO ("diego paez" ≠ "Diego|R"/5491132317896) — ABORTO sin tocar
+3|maria-pa | 2026-08-22 08:58:58: [MB v3.7] 08:58:51 I [outbox] cold-send #235 no verificado — queda en cola
 
