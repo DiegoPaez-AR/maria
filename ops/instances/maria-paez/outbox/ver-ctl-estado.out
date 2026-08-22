@@ -1,0 +1,31 @@
+# ejecutado: 2026-08-22T09:13:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vce.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,300) r FROM mb_control ORDER BY id DESC LIMIT 6").all()
+#     .forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"] →",(x.r||"(sin resultado)").slice(0,220)));
+#   db.close();
+#   JS
+#   node /tmp/vce.cjs; rm -f /tmp/vce.cjs
+#   echo "── últimos ctl en log ──"; grep -E "\[ctl\]" ~/.pm2/logs/maria-paez-out.log | tail -5
+#   echo LISTO
+
+# ───── output ─────
+#6 nodos [pendiente] → (sin resultado)
+#5 tap [pendiente] → (sin resultado)
+#4 home [pendiente] → (sin resultado)
+#3 nodos [ok] → [|Invite|167,942] [|SMS|560,942] 
+#2 tap [enviado] → (sin resultado)
+#1 nodos [ok] → [|Fri, Aug 21|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] 
+── últimos ctl en log ──
+2026-08-22 08:57:08: [MB v3.7] 08:57:06 I [ctl] comando #auto-234: shot {}
+2026-08-22 08:57:48: [MB v3.7] 08:57:46 I [ctl] comando #auto-234: shot {}
+2026-08-22 08:58:08: [MB v3.7] 08:58:05 I [ctl] comando #3: nodos {}
+2026-08-22 08:58:08: [MB v3.7] 08:58:05 I [ctl] #3 → OK [|Invite|167,942] [|SMS|560,942] 
+2026-08-22 08:58:28: [MB v3.7] 08:58:25 I [ctl] comando #auto-234: shot {}
+LISTO
+
+# exit=0
