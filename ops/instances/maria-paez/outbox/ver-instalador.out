@@ -1,0 +1,27 @@
+# ejecutado: 2026-08-22T13:30:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/vi.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   db.prepare("SELECT id,cmd,estado,substr(resultado,1,420) r FROM mb_control WHERE id>=14 ORDER BY id").all()
+#     .forEach(x=>console.log("#"+x.id,x.cmd,"["+x.estado+"] →",(x.r||"(sin resultado)").slice(0,400)));
+#   db.close();
+#   JS
+#   node /tmp/vi.cjs; rm -f /tmp/vi.cjs
+#   echo "── upd/instalador ──"; grep -E "\[upd\]" ~/.pm2/logs/maria-paez-out.log | tail -5
+#   echo LISTO
+
+# ───── output ─────
+#14 tap [ok] → tap 360,883 ✓
+#15 nodos [ok] → [|https://intensa.io|360,302] [|cfS1IoCOSxNtVUwIzo|360,381] [|Guardar y arrancar|360,463] [|① Permiso: acceso |360,547] [|② Quitar restricci|360,631] [|③ Permiso: accesib|360,715] [|④ Permiso: todos l|360,799] [|Buscar actualizaci|360,883] 
+── upd/instalador ──
+2026-08-22 13:28:26: [MB v4.1] 13:28:26 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-08-22 13:28:26: [MB v4.1] 13:28:26 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-08-22 13:28:26: [MB v4.1] 13:28:26 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-08-22 13:28:49: [MB v4.2] 13:28:46 I [upd] al día (v4.2 code=27, mío=27)
+2026-08-22 13:29:20: [MB v4.2] 13:29:22 I [upd] al día (v4.2 code=27, mío=27)
+LISTO
+
+# exit=0
