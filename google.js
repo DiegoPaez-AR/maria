@@ -718,19 +718,6 @@ function _conFirmaTG(texto, to = null) {
   return texto;
 }
 
-function _firmaTGGenerica(texto) {
-  const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
-  if (!user) return texto;
-  const link = `https://t.me/${user}`;
-  const t = String(texto);
-  if (t.includes(link)) return t; // no duplicar
-  // Preferencia (pedido Diego 2026-07-07): pegada a la línea "Email: ..." de
-  // la firma que redacta el LLM — al final del mail Gmail la colapsa tras
-  // los "···" y nadie la ve. Fallback: al final.
-  const reEmailLinea = new RegExp(`^(.*Email:\\s*${FROM_EMAIL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}.*)$`, 'mi');
-  if (reEmailLinea.test(t)) return t.replace(reEmailLinea, `$1\n💬 Telegram: ${link}`);
-  return `${t}\n\n—\n💬 Telegram: ${link}`;
-}
 function _conFirmaTGHtml(html, to = null) {
   const uSinTG = _usuarioSinTG(to);
   if (uSinTG) {
@@ -745,14 +732,6 @@ function _conFirmaTGHtml(html, to = null) {
   return html;   // terceros y vinculados: sin firma de Telegram (Diego 20/8)
 }
 
-function _firmaTGGenericaHtml(html) {
-  const user = (process.env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
-  if (!user) return html;
-  const link = `https://t.me/${user}`;
-  if (String(html).includes(link)) return html;
-  const firma = `<p style="color:#777;font-size:13px">—<br>💬 Telegram: <a href="${link}">${link}</a></p>`;
-  return /<\/body>/i.test(html) ? html.replace(/<\/body>/i, firma + '</body>') : html + firma;
-}
 
 async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
   if (!to)                                      throw new Error('enviarEmail: falta "to"');

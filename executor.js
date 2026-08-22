@@ -598,60 +598,6 @@ async function _enviarEmail(a, ctx) {
 // documento, sticker, vCard, ubicación, hasta texto). El destino recibe el
 // mensaje marcado como "Reenviado". Si WA purgó el media del CDN (>30 días)
 // o el mensaje no existe, falla con error explícito.
-async function _reenviarWA(a, ctx) {
-  _requerir(a, ['messageId', 'a']);
-  if (!ctx.waClient) throw new Error('reenviar_wa: waClient no disponible');
-  const _v = seguridad.validarDestinatario({ usuario: ctx.usuario, canal: 'wa', destino: a.a });
-  if (!_v.ok) throw new Error(`reenviar_wa: ${_v.motivo}.`);
-  _gateTercero(ctx, 'reenviar_wa', [a.a], 'wa');
-  const destino = _resolverDestinoWA(a.a);
-  let original;
-  try {
-    original = await ctx.waClient.getMessageById(a.messageId);
-  } catch (err) {
-    throw new Error(`reenviar_wa: no encontré mensaje ${a.messageId}: ${err.message}`);
-  }
-  if (!original) throw new Error(`reenviar_wa: mensaje ${a.messageId} no existe (puede haber sido purgado)`);
-  // Best-effort: si el mensaje a reenviar tiene texto/caption, lo moderamos.
-  // (Media binaria sin texto no se clasifica acá.)
-  const _bodyFwd = (original && (original.body || original.caption)) ? String(original.body || original.caption) : '';
-  if (_bodyFwd.trim()) await _moderarSaliente(_bodyFwd, a, ctx, 'reenviar_wa', a.a);
-  await original.forward(destino);
-  mem.log({
-    usuarioId: ctx.usuario.id,
-    canal: 'whatsapp', direccion: 'saliente',
-    de: null,
-    cuerpo: `(forward de ${a.messageId} → ${destino})`,
-    tipo_original: 'forward',
-    metadata: { forwardOf: a.messageId, a: destino },
-  });
-  return { messageId: a.messageId, forwardedTo: destino };
-}
-
-/**
- * Resuelve un destino WA crudo (un string que puede ser @c.us o @lid) a
- * la mejor opción de entrega. Delega al helper común en wa-send.js para
- * mantener una sola implementación.
- */
-function _resolverDestinoWA(a) {
-  return waSend.resolverPorPersistencia(a);
-}
-
-// Textos basura que el LLM a veces emite como relleno mientras "piensa"
-// (22/8: le mandó literalmente "placeholder" a Catalino Restaurante). Un
-// mensaje a un tercero real no se puede recuperar → guard determinístico.
-const RE_TEXTO_BASURA = /^\s*(placeholder|lorem ipsum|todo|tbd|xxx+|test|texto|mensaje|\.{2,}|-{2,}|\[.*\]|<.*>)\s*$/i;
-
-function _validarTextoSaliente(texto, accion) {
-  const t = String(texto || '').trim();
-  if (t.length < 12 || RE_TEXTO_BASURA.test(t)) {
-    throw new Error(
-      `${accion}: el texto ("${t.slice(0, 40)}") no es un mensaje real — parece un placeholder o quedó incompleto. ` +
-      `NO lo envié. Escribí el mensaje COMPLETO y volvé a emitir la acción.`
-    );
-  }
-}
-
 async function _enviarWA(a, ctx) {
   _requerir(a, ['a', 'texto']);
   a.texto = _normNL(a.texto);

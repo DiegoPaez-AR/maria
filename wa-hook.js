@@ -122,47 +122,6 @@ function _stashSacar(digs) {
 const _enProceso = new Map(); // digs -> Promise
 
 // ── Turno de usuario ───────────────────────────────────────────────────────
-async function _turnoUsuario(u, cuerpo, attachmentPath = null) {
-  const startTs = Date.now();
-  const de = u.wa_cus || u.wa_lid || `agenda:${String(u.nombre).toLowerCase().replace(/\s+/g, '_')}`;
-  const chatKey = 'wahook:' + de;
-  turnState.setLastInbound(chatKey, startTs);
-
-  const rl = seguridad.verificarRateLimit({ usuarioId: u.id });
-  if (!rl.ok) return [`⏳ vas muy rápido — esperá ${Math.ceil(rl.retry_in_ms / 1000)}s`];
-  const inj = seguridad.detectarInjection(cuerpo);
-  if (inj) mem.logSecurityEvent({ usuarioId: u.id, canal: 'whatsapp', motivo: `injection_attempt: ${inj}`, body: cuerpo, extra: { via: 'autoresponder' } });
-
-  mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'entrante', de, nombre: u.nombre, cuerpo, metadata: { via: 'autoresponder' } });
-
-  const entrada = { de, nombre: u.nombre, cuerpo, ...(attachmentPath ? { attachmentPath } : {}) };
-  const prompt = await construirPrompt({ usuario: u, canal: 'whatsapp', entrada });
-  const { json } = await invocarClaudeJSONConConsultas(prompt, { usuario: u }, {
-    audit: { usuarioId: u.id, canal: 'whatsapp', chatKey, turnStartTs: startTs, turnoTercero: false },
-    sesion: 'off',
-  });
-
-  let respuesta = [json?.respuesta_a_usuario, json?.respuesta_a_remitente, (!json?.respuesta_a_usuario && !json?.respuesta_a_remitente) ? json?.respuesta : '']
-    .filter(s => s && String(s).trim()).join('\n\n');
-
-  const resTurno = turnState.takeTurnResults(chatKey, startTs);
-  // No avisar una falla si una acción del MISMO tipo salió OK después en el
-  // turno (caso saludo Santiago 17/8: enviar_wa falló con "PLACEHOLDER", el
-  // LLM se auto-corrigió y salió — pero el aviso confundía igual).
-  const _okTipos = new Set(resTurno.filter(r => r.ok).map(r => r.accion?.tipo));
-  const fallas = resTurno.filter(r => !r.ok && !r.stale && !_okTipos.has(r.accion?.tipo));
-  if (fallas.length) {
-    const detalle = fallas.map(r => r.accion?.tipo || '?').join(', ');
-    respuesta = (respuesta ? respuesta + '\n\n' : '') + `⚠️ Ojo: no pude completar ${fallas.length === 1 ? 'esta acción' : 'estas acciones'}: ${detalle}.`;
-  }
-
-  if (respuesta && respuesta.trim()) {
-    mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'saliente', de, nombre: u.nombre, cuerpo: respuesta, metadata: { via: 'autoresponder' } });
-    return [respuesta];
-  }
-  return [];
-}
-
 // ── Turno de tercero (match único en libreta) ──────────────────────────────
 async function _turnoTercero(u, contacto, de, cuerpo, attachmentPath = null) {
   const startTs = Date.now();
@@ -371,7 +330,10 @@ async function procesar(body) {
 
   // Serializar por remitente
   const prev = _enProceso.get(clave) || Promise.resolve();
-  const turno = prev.catch(() => {}).then(() => u ? _turnoUsuario(u, cuerpo, q.attachmentPath || null) : _turnoTercero(tercero.usuario, tercero.contacto, tercero.de, cuerpo, q.attachmentPath || null));
+  // Política v5: acá `u` es SIEMPRE null (un usuario por WA se deriva antes y
+  // retorna). Solo llegan terceros y gestiones ajenas. _turnoUsuario se
+  // eliminó por inalcanzable (auditoría 22/8).
+  const turno = prev.catch(() => {}).then(() => _turnoTercero(tercero.usuario, tercero.contacto, tercero.de, cuerpo, q.attachmentPath || null));
   _enProceso.set(clave, turno);
   turno.finally(() => { if (_enProceso.get(clave) === turno) _enProceso.delete(clave); });
 
