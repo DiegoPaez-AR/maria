@@ -1,0 +1,48 @@
+# ejecutado: 2026-08-23T10:47:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   grep -A 20 "canary FALLO" ops/.cron.log | tail -35
+#   echo LISTO
+
+# ───── output ─────
+Node.js v22.23.1
+canary FALLÓ (7e65e6f2d12f827b84ab45d9e970d00656779e37) — NO recargo pm2, prod sigue con la versión anterior en memoria
+push fase 1 OK
+tick done
+═══ 2026-08-22T16:56:01-03:00 ═══
+código cambió → restart pendiente
+canary OK (a36bbe409cb8957a647ac9b0a1096070499959bb) → reload
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 3 ])
+[PM2] [maria-paez](3) ✓
+[maria-paez exec] ops/instances/maria-paez/inbox/medir-prompt.sh → ops/instances/maria-paez/outbox/medir-prompt.out
+push fase 1 OK
+tick done
+═══ 2026-08-22T16:57:01-03:00 ═══
+--
+canary FALLO npm test:
+not ok 40 - sin client + número imposible → error instructivo
+canary: runtime revertido al último commit bueno (7cad4034062b8b4b325deec76b4aa2f8c21c309e) — ops/ queda al día
+canary FALLÓ (6e7998b8343fec72f15d3a94156d7529a73de722) — NO recargo pm2, prod sigue con la versión anterior en memoria
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:43:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:44:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/verif-telefonos.sh → ops/instances/maria-paez/outbox/verif-telefonos.out
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:45:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:46:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:47:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/porque-fallo.sh → ops/instances/maria-paez/outbox/porque-fallo.out
+LISTO
+
+# exit=0
