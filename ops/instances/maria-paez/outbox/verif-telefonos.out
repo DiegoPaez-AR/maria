@@ -1,0 +1,57 @@
+# ejecutado: 2026-08-23T10:44:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MALO" || echo "limpio ✓"
+#   git log --oneline -1 | cut -c1-55
+#   timeout 20 pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       if p['name']!='maria-paez': continue
+#       print('  pm2', p['pm2_env']['status'], 'up=%dmin'%((time.time()*1000-p['pm2_env']['pm_uptime'])/60000))"
+#   echo "── tests del módulo ──"
+#   timeout 60 env -u MARIA_DB -u MARIA_VAULT_KEY node --test test/telefonos.test.js 2>&1 | grep -E "^# (tests|pass|fail)"
+#   echo "── casos reales contra la DB viva ──"
+#   timeout 30 node -e "
+#   const tel=require('/root/secretaria/telefonos');
+#   const usuarios=require('/root/secretaria/usuarios'), mem=require('/root/secretaria/memory');
+#   const owner=usuarios.obtenerOwner();
+#   for (const n of ['5491155771290','541155771290','5491134897992','5491140402319']) {
+#     let nombre='';
+#     for (const v of tel.variantes(n)) {
+#       const u=usuarios.resolverPorWa(v+'@c.us'); if(u){nombre=u.nombre+' (usuario)';break;}
+#       const c=mem.buscarContacto({usuarioId:owner.id,whatsapp:v+'@c.us'}); if(c){nombre=c.nombre;break;}
+#     }
+#     console.log('  '+n.padEnd(15),'→', nombre||'(no encontrado)', '| envío:', tel.paraWa(n));
+#   }
+#   console.log('  mismoNumero(Manuel c/9, Manuel s/9):', tel.mismoNumero('5491155771290','541155771290'));
+#   "
+#   echo "── errores ──"; timeout 10 tail -4 /root/.pm2/logs/maria-paez-error.log
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+6e7998b8343fec72f15d3a94156d7529a73de722
+⚠️ MALO
+b6b3e08a69f inbox: verificar telefonos.js
+  pm2 online up=40min
+── tests del módulo ──
+# tests 7
+# pass 7
+# fail 0
+── casos reales contra la DB viva ──
+  5491155771290   → Manuel Carrasco | envío: 5491155771290
+  541155771290    → Manuel Carrasco | envío: 5491155771290
+  5491134897992   → Fico restaurante | envío: 5491134897992
+  5491140402319   → Gabriel Pacheco | envío: 5491140402319
+  mismoNumero(Manuel c/9, Manuel s/9): true
+── errores ──
+2026-08-23 02:22:40: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 04:47:40: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 06:31:18: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 08:17:15: [TG] poll error (reintento en 15s): fetch failed
+LISTO
+
+# exit=0
