@@ -95,10 +95,8 @@ function _wasapMatch(a, b) {
   // (igual criterio que resolverPorWa). Sin esto, un destino con "9" rebotaba
   // contra un wa_cus guardado sin "9" (o viceversa) aunque fuera la misma
   // persona.
-  // Forma canónica (telefonos.js): 54911xxxx y 5411xxxx son el MISMO número.
-  const _tel = require('./telefonos');
-  if (_tel.mismoNumero(da, db)) return true;
-  const _sin9 = (d) => _tel.clave(d) || d;
+  const _sin9 = (d) => (d.startsWith('549') ? '54' + d.slice(3) : d);
+  if (_sin9(da) === _sin9(db)) return true;
   const corto = Math.min(da.length, db.length);
   if (corto < 10) return false;
   if (Math.abs(da.length - db.length) > 3) return false;

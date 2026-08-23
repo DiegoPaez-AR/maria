@@ -16,8 +16,12 @@ const mem = require('./memory');
 const usuarios = require('./usuarios');
 const { invocarClaudeJSON } = require('./claude-client');
 
-const tel = require('./telefonos');
-function variantesAR(digs) { return tel.variantes(digs); }
+function variantesAR(digs) {
+  const v = new Set([digs]);
+  if (digs.startsWith('549')) v.add('54' + digs.slice(3));
+  else if (digs.startsWith('54')) v.add('549' + digs.slice(2));
+  return [...v];
+}
 
 // Identificadores conocidos de un usuario (para matchear esperando_de).
 function _clavesDe(u) {

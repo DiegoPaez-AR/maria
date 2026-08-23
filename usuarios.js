@@ -86,12 +86,13 @@ function esOwner(usuarioId) {
 // `54 11 XXXXXX@c.us` (sin 9), y el wa_cus guardado puede estar en
 // cualquiera de los dos formatos. Solo se aplica a números que empiezan
 // con `54` (Argentina); el resto pasa de largo.
-// Formas posibles de un mismo wa_cus (con y sin el "9" de celular argentino).
-// La regla vive en telefonos.js — ver ahí por qué el 9 no es parte del número.
 function _variantesArMobile(waCus) {
-  return require('./telefonos').variantes(waCus)
-    .map(v => `${v}@c.us`)
-    .filter(v => v !== waCus);
+  const m = waCus.match(/^54(9)?(\d+)@c\.us$/);
+  if (!m) return [];
+  if (m[1] === '9') {
+    return [`54${m[2]}@c.us`];   // tiene 9 → probar sin
+  }
+  return [`549${m[2]}@c.us`];     // no tiene 9 → probar con
 }
 
 function resolverPorWa(from) {
