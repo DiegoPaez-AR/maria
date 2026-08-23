@@ -1011,8 +1011,7 @@ const qEntrantesDeDesde = db.prepare(`
 // del email; WA → match exacto o flexible por dígitos (_matchNumeroFlex).
 // Limitación conocida: si `de` es un @lid cuyos dígitos no se relacionan con
 // el número, el match por dígitos no alcanza (igual que eventosConContactoDesde).
-function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
-  const desdeStr = desde instanceof Date ? desde.toISOString().replace('T',' ').slice(0,19) : String(desde);
+function _respondioEnCanal(usuarioId, esperandoDe, esperandoCanal, desdeStr) {
   const esperado = String(esperandoDe || '').trim();
   if (!esperado) return false;
   const rows = qEntrantesDeDesde.all(usuarioId, esperandoCanal, desdeStr);
@@ -1033,6 +1032,48 @@ function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
     const a = _ult10(r.de), b = _ult10(esperado);
     return !!(a && b && a === b);
   });
+}
+
+// La MISMA persona, en el OTRO canal. Principio del sistema: la conversación
+// sigue a la persona, no al canal. Si esperábamos por WhatsApp y contestó por
+// mail (o al revés), el follow-up tiene que darse por respondido igual.
+function _otroIdentificador(usuarioId, esperandoDe) {
+  const v = String(esperandoDe || '').trim().toLowerCase();
+  if (!v) return null;
+  try {
+    const esEmail = v.includes('@') && !/@c\.us$|@lid$/.test(v);
+    if (esEmail) {
+      const m = v.match(/<([^>]+)>/);
+      const email = (m ? m[1] : v).trim();
+      const c = db.prepare(
+        `SELECT whatsapp FROM contactos WHERE usuario_id = ? AND lower(trim(COALESCE(email,''))) = ? AND whatsapp IS NOT NULL LIMIT 1`
+      ).get(usuarioId, email);
+      return c && c.whatsapp ? { valor: c.whatsapp, canal: 'whatsapp' } : null;
+    }
+    const d = v.replace(/\D+/g, '');
+    if (d.length < 10) return null;
+    const c = db.prepare(
+      `SELECT email FROM contactos WHERE usuario_id = ?
+         AND replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+','') LIKE '%' || ?
+         AND email IS NOT NULL LIMIT 1`
+    ).get(usuarioId, d.slice(-10));
+    return c && c.email ? { valor: c.email, canal: 'gmail' } : null;
+  } catch { return null; }
+}
+
+function huboRespuesta({ usuarioId, esperandoDe, esperandoCanal, desde }) {
+  const desdeStr = desde instanceof Date ? desde.toISOString().replace('T',' ').slice(0,19) : String(desde);
+  if (_respondioEnCanal(usuarioId, esperandoDe, esperandoCanal, desdeStr)) return true;
+  // CRUCE DE CANALES (23/8, caso Manuel Carrasco): había dos follow-ups por la
+  // MISMA reunión, uno esperando por mail y otro por WhatsApp. Manuel contestó
+  // por mail: se cerró uno y el otro le re-pingueó igual por WhatsApp, después
+  // de que el tema ya estaba resuelto. Diego lo vio y tuvo razón en quejarse.
+  const otro = _otroIdentificador(usuarioId, esperandoDe);
+  if (otro && _respondioEnCanal(usuarioId, otro.valor, otro.canal, desdeStr)) {
+    console.log(`[memory] huboRespuesta: ${esperandoDe} no contestó por ${esperandoCanal} pero SÍ por ${otro.canal} (${otro.valor}) — cuenta como respondido`);
+    return true;
+  }
+  return false;
 }
 
 // ── Verificación dura de respuestas de terceros (anti-confabulación, 2026-07-03) ──

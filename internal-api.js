@@ -76,13 +76,23 @@ function start({ waClient } = {}) {
           let nombre = '';
           try {
             const dig = String(p.numero).replace(/\D/g, '');
-            const u = usuarios.resolverPorWa(dig + '@c.us');
-            if (u) nombre = u.nombre;
-            else {
-              const owner = usuarios.obtenerOwner();
-              const c = owner ? mem.buscarContacto({ usuarioId: owner.id, whatsapp: dig + '@c.us' }) : null;
-              if (c) nombre = c.nombre;
+            // ⚠️ 9-MÓVIL AR (bug real 23/8, envío a Manuel Carrasco): el número
+            // que servimos ya viene normalizado a 549…, pero la libreta puede
+            // tenerlo guardado como 54… (sin el 9). Al no matchear, el nombre
+            // salía VACÍO y la app abortaba con `chat_equivocado` — abría el
+            // chat correcto y se negaba a enviar porque no tenía contra qué
+            // comparar el título. Probamos las dos variantes SIEMPRE.
+            const cands = [dig];
+            if (/^549\d{10}$/.test(dig)) cands.push('54' + dig.slice(3));
+            else if (/^54\d{10}$/.test(dig)) cands.push('549' + dig.slice(2));
+            const owner = usuarios.obtenerOwner();
+            for (const cand of cands) {
+              const u = usuarios.resolverPorWa(cand + '@c.us');
+              if (u) { nombre = u.nombre; break; }
+              const c = owner ? mem.buscarContacto({ usuarioId: owner.id, whatsapp: cand + '@c.us' }) : null;
+              if (c) { nombre = c.nombre; break; }
             }
+            if (!nombre) console.warn(`[pendiente.txt] #${p.id}: sin nombre para ${dig} — la app sólo podrá verificar el chat por número`);
           } catch {}
           // 5º campo: modo del envío (2026-08-21, número NUEVO de Maria).
           // WA_WARMUP=1 → "R" = reply-only: la app responde si hay notif viva
