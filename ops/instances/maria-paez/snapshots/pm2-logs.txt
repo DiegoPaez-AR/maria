@@ -1,8 +1,3 @@
-3|maria-pa | 2026-08-22 19:39:21: ▸ arrancando calendar-watch (cada 8h)
-3|maria-pa | 2026-08-22 19:39:21: [calendar-watch] activo, cada 8.0h
-3|maria-pa | 2026-08-22 19:39:21: ▸ arrancando follow-ups (cada 5min)
-3|maria-pa | 2026-08-22 19:39:21: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-3|maria-pa | 2026-08-22 19:39:21: ▸ arrancando memoria-curada (cada 24h)
 3|maria-pa | 2026-08-22 19:39:21: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
 3|maria-pa | 2026-08-22 19:39:21: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
 3|maria-pa | 2026-08-22 19:39:21: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
@@ -197,4 +192,9 @@
 3|maria-pa | 2026-08-23 09:34:45: [MB v4.5] 09:34:41 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
 3|maria-pa | 2026-08-23 09:34:45: [MB v4.5] 09:34:41 I [outbox] cold-send #241 no verificado — queda en cola
 3|maria-pa | 2026-08-23 09:34:45: [MB v4.5] 09:34:42 I [notif] sin acción de reply — descarto no-chat: "Gabriel Pacheco"
+3|maria-pa | 2026-08-23 09:36:14: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":2,"definitivo":false}
+3|maria-pa | 2026-08-23 09:36:15: [MB v4.5] 09:36:12 I [frio] abriendo chat 5491155771290 (#241)
+3|maria-pa | 2026-08-23 09:36:15: [MB v4.5] 09:36:13 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+3|maria-pa | 2026-08-23 09:36:15: [MB v4.5] 09:36:13 I [outbox] cold-send #241 no verificado — queda en cola
+3|maria-pa | 2026-08-23 09:36:15: [MB v4.5] 09:36:13 I [notif] dup ignorado de "Gabriel Pacheco"
 
