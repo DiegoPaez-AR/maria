@@ -158,8 +158,17 @@ if [ "$CODE_CHANGED" = 1 ]; then
       # tienen lag de 1 tick, el canary volvía a correr con la lista de
       # require-smoke vieja, fallaba de nuevo, revertía de nuevo… loop eterno.
       # Revertimos SOLO el código de runtime; ops/ (y este script) quedan al día.
-      git checkout "$_ULT" -q -- . ':!ops' ':!config' \
-        && echo "canary: runtime revertido al último commit bueno ($_ULT) — ops/ queda al día"
+      if git checkout "$_ULT" -q -- . ':!ops' ':!config'; then
+        # ⚠️ CRÍTICO (bug real 23/8): `git checkout <commit> -- <paths>` deja la
+        # reversión ESTAGEADA. El commit de snapshot de más abajo no está
+        # limitado por path, así que se llevaba la reversión puesta y la
+        # PUSHEABA a origin/main — deshaciendo en el repo el trabajo que
+        # acababa de subir. Pasó con la migración a telefonos.js: 9 archivos
+        # volvieron atrás solos. Sacamos la reversión del índice: el DISCO
+        # queda con el código seguro, el REPO conserva el código nuevo.
+        git reset -q -- . ':!ops' ':!config' 2>/dev/null || true
+        echo "canary: runtime revertido EN DISCO al último commit bueno ($_ULT) — el repo NO se toca"
+      fi
     fi
     echo "canary FALLÓ ($HEAD_NOW) — NO recargo pm2, prod sigue con la versión anterior en memoria"
     echo "$HEAD_NOW" > "$CANARY_BAD_F"
@@ -312,7 +321,7 @@ done
 git add -A ops/
 PUSHED_OK=0
 if ! git diff --cached --quiet; then
-  git commit -q -m "ops: snapshot $STAMP" || true
+  git commit -q -m "ops: snapshot $STAMP" -- ops/ || true
   if git push -q origin main; then
     PUSHED_OK=1
     echo "push fase 1 OK"
@@ -381,7 +390,7 @@ for inst in "${INSTANCES[@]}"; do
 done
 git add -A ops/
 if ! git diff --cached --quiet; then
-  git commit -q -m "ops: consumed inbox $STAMP" || true
+  git commit -q -m "ops: consumed inbox $STAMP" -- ops/ || true
   git push -q origin main 2>/dev/null || {
     git pull --rebase --autostash -q origin main 2>/dev/null
     git push -q origin main 2>/dev/null || echo "push fase 2 FAIL"
