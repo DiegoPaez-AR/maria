@@ -1,0 +1,29 @@
+# ejecutado: 2026-08-23T19:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora del VPS ──"; date; date -u
+#   echo "── cron del daily-report ──"; crontab -l | grep -i daily
+#   echo "── envios del reporte (ultimos) ──"
+#   grep -iE "daily-report|enviado a diego" /root/secretaria/ops/.cron.log 2>/dev/null | tail -5
+#   grep -riE "daily" /root/.daily-report.log 2>/dev/null | tail -5
+#   ls -l --time-style=+%Y-%m-%d\ %H:%M /root/.daily-report.log 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+── hora del VPS ──
+Sun Aug 23 07:26:02 PM -03 2026
+Sun Aug 23 10:26:02 PM UTC 2026
+── cron del daily-report ──
+0 6 * * * cd /root/secretaria && /usr/bin/node daily-report.js >> /root/secretaria/ops/.daily-report.log 2>&1
+── envios del reporte (ultimos) ──
+[maria-paez exec] ops/instances/maria-paez/inbox/fix-daily-report-cron.sh → ops/instances/maria-paez/outbox/fix-daily-report-cron.out
+[maria-paez exec] ops/instances/maria-paez/inbox/verify-daily-report.sh → ops/instances/maria-paez/outbox/verify-daily-report.out
+[maria-paez exec] ops/instances/maria-paez/inbox/diag-daily-report.sh → ops/instances/maria-paez/outbox/diag-daily-report.out
+[maria-paez exec] ops/instances/maria-paez/inbox/TEST-DAILY-REPORT.sh → ops/instances/maria-paez/outbox/TEST-DAILY-REPORT.out
+[maria-paez exec] ops/instances/maria-paez/inbox/VERIF-DAILY-REPORT-0706.sh → ops/instances/maria-paez/outbox/VERIF-DAILY-REPORT-0706.out
+LISTO
+
+# exit=0
