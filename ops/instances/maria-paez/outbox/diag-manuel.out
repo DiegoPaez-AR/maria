@@ -1,0 +1,69 @@
+# ejecutado: 2026-08-23T10:00:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── qué vio el teléfono al intentar el envío a Manuel ──"
+#   timeout 20 grep -E "2026-08-23.*(MB-FALLO|chat_equivocado|frio|abriendo chat|chat abierto|541155771290)" /root/.pm2/logs/maria-paez-out.log | tail -25
+#   echo ""
+#   echo "── el registro #241 y el número que se sirvió ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os,json
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("SELECT * FROM wa_outbox WHERE id>=240 ORDER BY id"):
+#       d=dict(r); d['texto']=(d.get('texto') or '')[:70]
+#       print(' ',d)
+#   print("\n── Manuel en la libreta ──")
+#   for r in db.execute("SELECT id,usuario_id,nombre,whatsapp,email FROM contactos WHERE lower(nombre) LIKE '%manuel%' OR lower(nombre) LIKE '%carrasco%'"):
+#       print(' ',dict(r))
+#   print("\n── follow-ups de Manuel ──")
+#   for r in db.execute("""SELECT id,desc,dueno,disparador,estado,recordar_desde,metadata FROM pendientes
+#      WHERE lower(COALESCE(desc,'')) LIKE '%manuel%' ORDER BY id DESC LIMIT 8"""):
+#       d=dict(r); d['desc']=(d.get('desc') or '')[:80]; d['metadata']=(d.get('metadata') or '')[:150]
+#       print(' ',d)
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+── qué vio el teléfono al intentar el envío a Manuel ──
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [frio] accesibilidad conectada
+2026-08-23 01:49:13: [MB v4.5] 01:48:59 I [frio] accesibilidad conectada
+2026-08-23 09:32:46: [wa-outbox] #241 encolado → +541155771290 (Hola Manuel! Te escribo de nuevo por la …)
+2026-08-23 09:32:46: [follow-ups] #49 re-ping (whatsapp) → 541155771290@c.us (nuevo vencimiento 2026-08-25 12:32:46 UTC)
+2026-08-23 09:34:42: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":1,"definitivo":false}
+2026-08-23 09:34:45: [MB v4.5] 09:34:38 I [frio] abriendo chat 5491155771290 (#241)
+2026-08-23 09:34:45: [MB v4.5] 09:34:41 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+2026-08-23 09:36:14: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":2,"definitivo":false}
+2026-08-23 09:36:15: [MB v4.5] 09:36:12 I [frio] abriendo chat 5491155771290 (#241)
+2026-08-23 09:36:15: [MB v4.5] 09:36:13 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+2026-08-23 09:37:41: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":3,"definitivo":false}
+2026-08-23 09:37:45: [MB v4.5] 09:37:39 I [frio] abriendo chat 5491155771290 (#241)
+2026-08-23 09:37:45: [MB v4.5] 09:37:40 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+2026-08-23 09:39:13: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":4,"definitivo":false}
+2026-08-23 09:39:15: [MB v4.5] 09:39:10 I [frio] abriendo chat 5491155771290 (#241)
+2026-08-23 09:39:15: [MB v4.5] 09:39:12 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+2026-08-23 09:40:45: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":5,"definitivo":true}
+2026-08-23 09:40:45: [MB v4.5] 09:40:42 I [frio] abriendo chat 5491155771290 (#241)
+2026-08-23 09:40:45: [MB v4.5] 09:40:43 E [frio] #241: chat ABIERTO ES OTRO ("manuel carrasco" ≠ ""/5491155771290) — ABORTO sin tocar
+2026-08-23 09:44:35: [MB v4.5] 09:44:28 I [frio] abriendo chat 5491132317896 (#242)
+2026-08-23 09:44:35: [MB v4.5] 09:44:29 I [frio] botón send encontrado — 'escribiendo' 20s antes de enviar
+2026-08-23 09:44:55: [MB v4.5] 09:44:51 I [frio] verificación #242: ENVIADO
+
+── el registro #241 y el número que se sirvió ──
+  {'id': 240, 'creado': '2026-08-22 22:52:04', 'usuario_id': 1, 'numero': '5491140402319', 'texto': 'Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo para avisa', 'estado': 'entregado', 'intentos': 1, 'tomado_en': '2026-08-22 22:56:56', 'entregado': '2026-08-22 22:57:14', 'metadata_json': '{"destinoOriginal":"5491140402319@c.us","canalOrigen":"telegram"}', 'no_antes': '2026-08-22 22:56:27'}
+  {'id': 241, 'creado': '2026-08-23 12:32:46', 'usuario_id': 1, 'numero': '541155771290', 'texto': 'Hola Manuel! Te escribo de nuevo por la reunión con Diego y Hernán: qu', 'estado': 'vencido', 'intentos': 5, 'tomado_en': '2026-08-23 12:40:39', 'entregado': None, 'metadata_json': '{"tipo":"follow_up_reping","followUpId":49,"esperando_de":"541155771290@c.us","via":"outbox_bridge","tag":"follow-ups/re-ping","cold_fallos":5,"cold_motivo":"chat_equivocado"}', 'no_antes': '2026-08-23 12:34:15'}
+  {'id': 242, 'creado': '2026-08-23 12:40:45', 'usuario_id': 1, 'numero': '541132317896', 'texto': '⚠️ No pude entregar un WhatsApp a Manuel Carrasco: no pude entregarlo ', 'estado': 'entregado', 'intentos': 1, 'tomado_en': '2026-08-23 12:44:24', 'entregado': '2026-08-23 12:44:52', 'metadata_json': '{"tipo":"aviso_fallo_entrega","outboxId":241}', 'no_antes': '2026-08-23 12:41:46'}
+
+── Manuel en la libreta ──
+  {'id': 16, 'usuario_id': 1, 'nombre': 'Manuel Paez', 'whatsapp': '5491168295181@c.us', 'email': 'manuel@paez.is'}
+  {'id': 479, 'usuario_id': 1, 'nombre': 'Manuel Carrasco', 'whatsapp': '541155771290@c.us', 'email': 'manucarrasco80@gmail.com'}
+
+── follow-ups de Manuel ──
+Traceback (most recent call last):
+  File "<stdin>", line 10, in <module>
+sqlite3.OperationalError: no such column: metadata
+LISTO
+
+# exit=0
