@@ -1,0 +1,56 @@
+# ejecutado: 2026-08-23T12:11:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "════ EJECUCIÓN REAL de la revisión de dormidos (pedido de Diego) ════"
+#   timeout 200 node -e "
+#   const d=require('/root/secretaria/usuarios-dormidos');
+#   d.revisar({dryRun:false}).then(r=>{
+#     console.log('  pausados:', r.pausados.length);
+#     for (const x of r.pausados) console.log('   · '+x.nombre.padEnd(22)+x.dias+' días   mail→ '+(x.email||'(sin email)'));
+#   }).catch(e=>console.log('  ERR:', e.message));"
+#   echo ""
+#   echo "── estado después ──"
+#   timeout 20 node -e "
+#   const u=require('/root/secretaria/usuarios');
+#   console.log('  siguen con brief:', u.listarServidos().map(x=>x.nombre).join(', '));
+#   console.log('  pausados        :', u.listarPausados().map(x=>x.nombre).join(', ')||'(ninguno)');"
+#   echo "── mails que salieron ──"
+#   timeout 15 grep -E "2026-08-23.*(pausa|dormidos|enviarEmail|GMAIL →)" /root/.pm2/logs/maria-paez-out.log | tail -12
+#   echo LISTO
+
+# ───── output ─────
+════ EJECUCIÓN REAL de la revisión de dormidos (pedido de Diego) ════
+[dormidos] Santiago Bignone pausado (95 días sin escribir)
+[dormidos] Nicolas Kosinski pausado (95 días sin escribir)
+[dormidos] Walter Vera pausado (102 días sin escribir)
+[dormidos] Cristian Ruiz pausado (81 días sin escribir)
+[dormidos] Sebastian Ameijeira pausado (89 días sin escribir)
+[dormidos] Santiago Capurro pausado (83 días sin escribir)
+[dormidos] Andres Neumann pausado (82 días sin escribir)
+[dormidos] Jaime Cibils pausado (57 días sin escribir)
+[dormidos] Alfonso Amat pausado (53 días sin escribir)
+[wa-send] dormidos/resumen: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+  pausados: 9
+   · Santiago Bignone      95 días   mail→ santiagocbignone@gmail.com
+   · Nicolas Kosinski      95 días   mail→ nkosinski@froneus.com
+   · Walter Vera           102 días   mail→ wvera@froneus.com
+   · Cristian Ruiz         81 días   mail→ cruiz@froneus.com
+   · Sebastian Ameijeira   89 días   mail→ sameijeira@froneus.com
+   · Santiago Capurro      83 días   mail→ santiago@capurro.com.ar
+   · Andres Neumann        82 días   mail→ andres@nomada.com
+   · Jaime Cibils          57 días   mail→ jcibils@csml.com.ar
+   · Alfonso Amat          53 días   mail→ alfonso.amat@gmail.com
+
+── estado después ──
+  siguen con brief: Diego, Hernan Fulco, Natali Funez, Doris Capurro, Enrique Sosa, Gabriela Echaniz
+  pausados        : Santiago Bignone, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Santiago Capurro, Andres Neumann, Jaime Cibils, Alfonso Amat
+── mails que salieron ──
+2026-08-23 11:59:23: [memory] migración: usuarios.pausado + pausado_desde agregados
+2026-08-23 11:59:25: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
+2026-08-23 11:59:25: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
+LISTO
+
+# exit=0
