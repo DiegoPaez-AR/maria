@@ -81,10 +81,8 @@ function start({ waClient } = {}) {
             // tenerlo guardado como 54… (sin el 9). Al no matchear, el nombre
             // salía VACÍO y la app abortaba con `chat_equivocado` — abría el
             // chat correcto y se negaba a enviar porque no tenía contra qué
-            // comparar el título. Probamos las dos variantes SIEMPRE.
-            const cands = [dig];
-            if (/^549\d{10}$/.test(dig)) cands.push('54' + dig.slice(3));
-            else if (/^54\d{10}$/.test(dig)) cands.push('549' + dig.slice(2));
+            // comparar el título. Ahora las formas posibles las da telefonos.js.
+            const cands = require('./telefonos').variantes(dig);
             const owner = usuarios.obtenerOwner();
             for (const cand of cands) {
               const u = usuarios.resolverPorWa(cand + '@c.us');

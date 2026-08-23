@@ -142,9 +142,9 @@ function _numeroEnvio(n) {
       if (u && u.wa_cus) n = u.wa_cus;
     }
   } catch (_) {}
-  const d = String(n).replace(/\D/g, '');
-  if (/^54\d{10}$/.test(d)) return '549' + d.slice(2);
-  return d;
+  // Forma de envío canónica (telefonos.js): en Argentina WhatsApp necesita el
+  // "9" de celular después del 54; el resto del mundo va tal cual.
+  return require('./telefonos').paraWa(n);
 }
 
 function confirmar(id) {
@@ -210,10 +210,16 @@ function _avisarOwnerFalloEntrega(row, meta) {
   const usuarios = require('./usuarios');
   const owner = usuarios.obtenerOwner();
   if (!owner || !owner.wa_cus) return;
-  const digs = String(row.numero).replace(/\D/g, '').slice(-10);
-  const c = mem.db.prepare(
-    `SELECT nombre, email FROM contactos WHERE replace(replace(COALESCE(whatsapp,''),'+',''),' ','') LIKE '%' || ? || '%' AND email IS NOT NULL LIMIT 1`
-  ).get(digs);
+  // Buscamos por las dos formas posibles (con y sin el 9): la libreta puede
+  // tener guardada cualquiera de las dos.
+  const tel = require('./telefonos');
+  let c = null;
+  for (const v of tel.variantes(row.numero)) {
+    c = mem.db.prepare(
+      `SELECT nombre, email FROM contactos WHERE replace(replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+',''),' ','') = ? AND email IS NOT NULL LIMIT 1`
+    ).get(v);
+    if (c) break;
+  }
   const quien = c ? c.nombre : row.numero;
   const motivoTxt = meta.cold_motivo === 'numero_sin_whatsapp'
     ? 'el número NO está en WhatsApp' : `no pude entregarlo tras ${meta.cold_fallos} intentos`;

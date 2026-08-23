@@ -69,12 +69,9 @@ function usuarioMandó(que) { return `el usuario mandó ${que} por WhatsApp`; }
 // ── Identidad del remitente ────────────────────────────────────────────────
 function _digitos(s) { return String(s || '').replace(/\D/g, ''); }
 
-function _variantes(digs) {
-  const v = new Set([digs]);
-  if (digs.startsWith('549')) v.add('54' + digs.slice(3));
-  else if (digs.startsWith('54')) v.add('549' + digs.slice(2));
-  return [...v];
-}
+// Formas en que un mismo número puede estar guardado (con y sin el 9 de
+// celular argentino). La regla vive en telefonos.js — ver por qué ahí.
+function _variantes(digs) { return require('./telefonos').variantes(digs); }
 
 function _matchUsuario(digs) {
   if (!digs) return null;

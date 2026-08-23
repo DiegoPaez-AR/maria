@@ -110,7 +110,7 @@ _canary() {
           './claude-client','./gmail-handler','./internal-api',
           './morning-brief','./meeting-prep','./follow-ups','./recordatorios',
           './programados','./maria-worker','./turn-state','./action-schemas',
-          './moderacion','./loop-guard','./wa-validate','./vault','./i18n',
+          './moderacion','./loop-guard','./wa-validate','./vault','./i18n','./telefonos',
           './calendar-watch','./cumple-avisos','./diferidos-drainer','./poda-eventos',
           './memoria-curada','./clima','./providers','./google','./context-fetcher',
           './net-retry','./wa-send','./telegram-vinculos','./telegram-handler',
