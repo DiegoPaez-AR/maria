@@ -1,0 +1,54 @@
+# ejecutado: 2026-08-23T11:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── el poll de Gmail está vivo? ──"
+#   timeout 15 grep -E "\[gmail|GMAIL" /root/.pm2/logs/maria-paez-out.log | tail -6
+#   echo "── últimos entrantes de gmail (cualquier fecha) ──"
+#   timeout 20 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,de,substr(cuerpo,1,60) c FROM eventos
+#      WHERE canal='gmail' AND direccion='entrante' ORDER BY timestamp DESC LIMIT 5"""):
+#       print(' ',r['timestamp'],'|',(r['de'] or '')[:40],'|',(r['c'] or '').replace(chr(10),' '))
+#   print(" pendientes abiertos por dueno:")
+#   for r in db.execute("SELECT dueno, estado, COUNT(*) n FROM pendientes GROUP BY dueno, estado"):
+#       print('  ',dict(r))
+#   db.close()
+#   PY
+#   echo "── barrido v4.5 + sesión de Diego ──"
+#   timeout 15 grep -E "barrido|RECUPERO" /root/.pm2/logs/maria-paez-out.log | tail -4
+#   timeout 15 node -e "const mem=require('/root/secretaria/memory'); console.log('  sesión:', mem.getEstadoUsuario(1,'claude_sesion')||'(sin sesión)');"
+#   echo LISTO
+
+# ───── output ─────
+── el poll de Gmail está vivo? ──
+2026-08-21 17:46:06: [GMAIL ←] Manuel Carrasco <manucarrasco80@gmail.com> | "Re: Reunión con Diego y Hernán Fulco"
+2026-08-21 17:46:32: [GMAIL acciones-mcp/Diego] 3/3 ejecutadas en vivo
+2026-08-21 17:46:32: [GMAIL/Diego] responder_email ya salió por tool — no duplico desde respuesta_a_remitente
+2026-08-21 17:46:38: [GMAIL acciones/Diego] 0/1 ejecutadas
+2026-08-21 19:26:06: [GMAIL poll] 1 email(s) nuevo(s)
+2026-08-21 19:26:06: [GMAIL ←] WhatsApp <noreply@support.whatsapp.com> | "WhatsApp Verification Code: 815-823"
+── últimos entrantes de gmail (cualquier fecha) ──
+  2026-08-21 20:46:06 | Manuel Carrasco <manucarrasco80@gmail.co | Hola Maria, confirmado para el Jueves 27 de 15:00 a 18:00. 
+  2026-08-21 16:01:06 | Gabriel P <gap2612@gmail.com> | Perfecto, allí estaré.    Gabriel Pacheco Movil: +54114
+  2026-08-21 12:31:21 | "Rodrigo Páez Canosa" <rpc@sondeosglobal | Rodrigo Páez Canosa ha aceptado esta invitación.  Ir a ver
+  2026-08-21 12:26:14 | Hernan Fulco <hernan.fulco@sondeosglobal | El jueves de 15 a 18hs.  <hernan.fulco@sondeosglobal.com> 
+  2026-08-20 11:21:30 | gabriela echaniz <gabyechaniz@gmail.com> | gabriela echaniz ha aceptado esta invitación.  Ir a ver de
+ pendientes abiertos por dueno:
+   {'dueno': 'maria', 'estado': 'abierto', 'n': 2}
+   {'dueno': 'maria', 'estado': 'cancelado', 'n': 2}
+   {'dueno': 'maria', 'estado': 'cerrado', 'n': 115}
+   {'dueno': 'usuario', 'estado': 'abierto', 'n': 14}
+   {'dueno': 'usuario', 'estado': 'cancelado', 'n': 2}
+   {'dueno': 'usuario', 'estado': 'cerrado', 'n': 150}
+── barrido v4.5 + sesión de Diego ──
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+  sesión: {"id":"19af2846-de6a-405a-925c-344741979cd4","turnos":14,"creada":"2026-08-22T21:02:57.504Z","promptHash":"e0b506407bbf3302"}
+LISTO
+
+# exit=0
