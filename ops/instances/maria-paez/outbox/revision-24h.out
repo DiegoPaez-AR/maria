@@ -1,0 +1,102 @@
+# ejecutado: 2026-08-23T11:24:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo "── errores del runtime (24h, sin los fetch failed de TG) ──"
+#   timeout 20 grep -E "2026-08-2[23]" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -v "fetch failed" | tail -12
+#   echo "  fetch-failed de Telegram (transitorios): $(timeout 10 grep -c 'fetch failed' /root/.pm2/logs/maria-paez-error.log 2>/dev/null)"
+#   echo "── acciones fallidas / avisos honestos (24h) ──"
+#   timeout 20 grep -E "2026-08-2[23].*(acción #.*falló|FALLIDA|MB-FALLO|loop_guard)" /root/.pm2/logs/maria-paez-out.log | tail -10
+#   echo "── actividad y costo ──"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print("  canal      entrante  saliente")
+#   for r in db.execute("""SELECT canal, SUM(direccion='entrante') e, SUM(direccion='saliente') s
+#      FROM eventos WHERE timestamp >= datetime('now','-24 hours')
+#        AND canal IN ('whatsapp','telegram','gmail') GROUP BY canal"""):
+#       print(f"  {r['canal']:<10} {r['e'] or 0:>7}  {r['s'] or 0:>8}")
+#   print("  usuarios que escribieron (24h):")
+#   for r in db.execute("""SELECT u.nombre, COUNT(*) n FROM eventos e JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp >= datetime('now','-24 hours') AND e.direccion='entrante'
+#        AND e.canal IN ('whatsapp','telegram','gmail') GROUP BY u.nombre ORDER BY n DESC LIMIT 8"""):
+#       print(f"   {r['nombre']:<22} {r['n']}")
+#   print("  costo por canal (24h):")
+#   tot=0
+#   for r in db.execute("""SELECT json_extract(metadata_json,'$.canal') c, COUNT(*) n,
+#        SUM(json_extract(metadata_json,'$.cost_usd')) usd
+#      FROM eventos WHERE timestamp >= datetime('now','-24 hours')
+#        AND json_extract(metadata_json,'$.cost_usd') IS NOT NULL GROUP BY c ORDER BY usd DESC"""):
+#       print(f"   {str(r['c'] or '-'):<14} {r['n']:>3} turnos   US$ {r['usd'] or 0:.2f}")
+#       tot += r['usd'] or 0
+#   print(f"   {'TOTAL':<14}              US$ {tot:.2f}")
+#   print("  pendientes abiertos:")
+#   for r in db.execute("SELECT dueno, COUNT(*) n FROM pendientes WHERE estado='abierto' GROUP BY dueno"):
+#       print(f"   dueno={r['dueno']}: {r['n']}")
+#   db.close()
+#   PY
+#   echo "── barrido de notificaciones ──"
+#   timeout 15 grep -E "barrido|RECUPERO" /root/.pm2/logs/maria-paez-out.log | tail -4
+#   echo "── sesión de Diego ──"
+#   timeout 15 node -e "const mem=require('/root/secretaria/memory'); console.log('  ', mem.getEstadoUsuario(1,'claude_sesion')||'(sin sesión)');"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Sun Aug 23 11:24:02 AM -03 2026
+── errores del runtime (24h, sin los fetch failed de TG) ──
+2026-08-22 17:36:20: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:36:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:37:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:37:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:38:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 17:39:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+2026-08-22 18:20:31: [executor] acción #0 (enviar_wa) falló: _validarTextoSaliente is not defined
+2026-08-22 18:20:34: [executor] acción #0 (enviar_wa) falló: _validarTextoSaliente is not defined
+2026-08-22 19:23:58: [agregar_pendiente] no creo follow_up auto (Natali Funez): WA "Natali Funez" no está en libreta ni es usuario activo
+2026-08-22 19:41:36: [agregar_pendiente] no creo follow_up auto (Fico restaurante): WA "Fico restaurante" no está en libreta ni es usuario activo
+2026-08-22 22:12:43: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+  fetch-failed de Telegram (transitorios): 207
+── acciones fallidas / avisos honestos (24h) ──
+2026-08-22 08:58:49: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":2,"definitivo":false}
+2026-08-22 08:59:09: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":3,"definitivo":false}
+2026-08-22 08:59:30: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":4,"definitivo":false}
+2026-08-22 08:59:50: [MB-FALLO] #235 motivo=chat_equivocado → {"id":235,"cold_fallos":5,"definitivo":true}
+2026-08-22 17:00:43: [wa-send] loop_guard: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-08-23 09:34:42: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":1,"definitivo":false}
+2026-08-23 09:36:14: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":2,"definitivo":false}
+2026-08-23 09:37:41: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":3,"definitivo":false}
+2026-08-23 09:39:13: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":4,"definitivo":false}
+2026-08-23 09:40:45: [MB-FALLO] #241 motivo=chat_equivocado → {"id":241,"cold_fallos":5,"definitivo":true}
+── actividad y costo ──
+  canal      entrante  saliente
+  gmail            0        34
+  telegram        16        19
+  whatsapp         7         9
+  usuarios que escribieron (24h):
+   Diego                  22
+   Natali Funez           1
+  costo por canal (24h):
+   telegram        17 turnos   US$ 4.82
+   whatsapp         3 turnos   US$ 0.93
+   moderacion      24 turnos   US$ 0.37
+   memoria-curada   2 turnos   US$ 0.18
+   follow-ups       1 turnos   US$ 0.08
+   whatsapp-gestion-ajena   1 turnos   US$ 0.03
+   TOTAL                       US$ 6.42
+  pendientes abiertos:
+   dueno=maria: 2
+   dueno=usuario: 14
+── barrido de notificaciones ──
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+── sesión de Diego ──
+   {"id":"19af2846-de6a-405a-925c-344741979cd4","turnos":14,"creada":"2026-08-22T21:02:57.504Z","promptHash":"e0b506407bbf3302"}
+LISTO
+
+# exit=0
