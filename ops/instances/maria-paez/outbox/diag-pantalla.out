@@ -1,0 +1,39 @@
+# ejecutado: 2026-08-23T01:53:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   enc() { timeout 15 node -e "console.log(require('/root/secretaria/mb-control').encolar('$1'))" >/dev/null; }
+#   echo "── estado AHORA (Diego acaba de usar el teléfono) ──"
+#   enc ping; enc nodos; sleep 30
+#   timeout 15 node -e "const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});db.prepare('SELECT id,cmd,estado,substr(resultado,1,200) r FROM mb_control ORDER BY id DESC LIMIT 2').all().reverse().forEach(x=>console.log(' #'+x.id,x.cmd,'['+x.estado+']',x.r||''));db.close();"
+#   echo ""
+#   echo "── logs del barrido de notificaciones (v4.5) ──"
+#   timeout 15 grep -E "\[MB.*(barrido|listener conectado)" /root/.pm2/logs/maria-paez-out.log | tail -8
+#   echo ""
+#   echo "── versión ──"; timeout 15 grep "\[MB v" /root/.pm2/logs/maria-paez-out.log | tail -3
+#   echo LISTO
+
+# ───── output ─────
+── estado AHORA (Diego acaba de usar el teléfono) ──
+ #38 ping [ok] pong v4.5
+ #39 nodos [ok] [|Settings|100,1226] [|Games|273,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+
+── logs del barrido de notificaciones (v4.5) ──
+2026-08-22 09:18:39: [MB v3.9] 09:18:29 I [notif] listener conectado
+2026-08-22 09:34:56: [MB v4.1] 09:34:47 I [notif] listener conectado
+2026-08-22 13:28:49: [MB v4.2] 13:28:40 I [notif] listener conectado
+2026-08-22 16:49:01: [MB v4.3] 16:48:52 I [notif] listener conectado
+2026-08-22 18:00:32: [MB v4.4] 18:00:23 I [notif] listener conectado
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+
+── versión ──
+2026-08-23 01:53:20: [MB v4.5] 01:53:10 I [ctl] comando #39: nodos {}
+2026-08-23 01:53:20: [MB v4.5] 01:53:10 I [ctl] pantalla apagada — despertada antes de 'nodos'
+2026-08-23 01:53:20: [MB v4.5] 01:53:12 I [ctl] #39 → OK [|Settings|100,1226] [|Games|273,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+LISTO
+
+# exit=0
