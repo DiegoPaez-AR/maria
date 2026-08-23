@@ -1,6 +1,8 @@
 package io.intensa.mariabridge
 
 import android.app.Notification
+import android.os.Handler
+import android.os.Looper
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import org.json.JSONObject
@@ -14,12 +16,81 @@ import org.json.JSONObject
 class NotifListener : NotificationListenerService() {
 
     private val WA = setOf("com.whatsapp", "com.whatsapp.w4b")
+    private val h = Handler(Looper.getMainLooper())
 
-    override fun onCreate() { super.onCreate(); MbLog.init(this); MbLog.i("notif", "listener conectado") }
+    // ── RED DE SEGURIDAD (v4.5, pedido Diego tras el caso Fico) ──────────────
+    // El listener solo se entera de lo que pasa MIENTRAS está vivo: si el
+    // servicio estaba reiniciándose, actualizándose o el sistema lo mató, esa
+    // notificación no vuelve. `getActiveNotifications()` pregunta por las que
+    // siguen VIVAS en la barra (WhatsApp las deja hasta que se leen), así que
+    // un barrido periódico recupera cualquier cosa que se haya perdido.
+    // Anti-reproceso: marca de agua por `postTime` (Prefs.ultimoPost) — nada
+    // con postTime <= al último visto se vuelve a mandar. Sobrevive reinicios.
+    private val BARRIDO_MS = 3 * 60_000L
+    private val VENTANA_MS = 6 * 3600_000L   // no resucitar nada más viejo que esto
+    // Marca de agua CONGELADA al conectar. Si la fuéramos corriendo con cada
+    // notif nueva, un mensaje que llega justo después del reinicio taparía a
+    // los que se perdieron ANTES (postTime menor) — que son justo los que
+    // queremos recuperar.
+    @Volatile private var marcaArranque = 0L
+    private val vistas = java.util.concurrent.ConcurrentHashMap<String, Long>()
 
-    override fun onNotificationPosted(sbn: StatusBarNotification) {
+    override fun onListenerConnected() {
+        super.onListenerConnected()
+        marcaArranque = Prefs.ultimoPost(this)
+        MbLog.i("notif", "listener conectado — barrido cada ${BARRIDO_MS / 60000}min (marca=$marcaArranque)")
+        // Primer barrido con delay: al arrancar, dejamos que el sistema termine
+        // de entregar lo que tenga pendiente por la vía normal.
+        h.postDelayed({ barrer("arranque") }, 15_000)
+        _programarBarrido()
+    }
+
+    private fun _programarBarrido() {
+        h.postDelayed({ try { barrer("periodico") } catch (_: Exception) {}; _programarBarrido() }, BARRIDO_MS)
+    }
+
+    private fun barrer(origen: String) {
+        val vivas = try { activeNotifications } catch (e: Exception) {
+            MbLog.w("notif", "barrido: no pude leer las vivas (${e.message})"); return
+        } ?: return
+        val marca = marcaArranque
+        val ahora = System.currentTimeMillis()
+        // poda del set de vistas (12h)
+        for ((k, t) in vistas) if (ahora - t > 12 * 3600_000L) vistas.remove(k)
+        // Primera vez: solo fijamos la marca, no resucitamos historia entera.
+        if (marca == 0L) {
+            var max = 0L
+            for (sbn in vivas) if (sbn.packageName in WA && sbn.postTime > max) max = sbn.postTime
+            if (max > 0) { Prefs.setUltimoPost(this, max); marcaArranque = max }
+            MbLog.i("notif", "barrido ($origen): primera corrida, marca inicial fijada")
+            return
+        }
+        var recuperadas = 0
+        for (sbn in vivas) {
+            if (sbn.packageName !in WA) continue
+            val id = "${sbn.key}|${sbn.postTime}"
+            if (vistas.containsKey(id)) continue                 // ya pasó por acá en esta sesión
+            if (sbn.postTime <= marca) continue                  // anterior al último arranque
+            if (ahora - sbn.postTime > VENTANA_MS) continue      // demasiado viejo
+            recuperadas++
+            MbLog.w("notif", "barrido ($origen): RECUPERO una notif que el listener no vio (hace ${(ahora - sbn.postTime) / 1000}s)")
+            procesar(sbn)
+        }
+        if (recuperadas > 0) MbLog.w("notif", "barrido ($origen): $recuperadas notif(s) recuperadas")
+    }
+
+    override fun onCreate() { super.onCreate(); MbLog.init(this); MbLog.i("notif", "listener creado") }
+
+    override fun onNotificationPosted(sbn: StatusBarNotification) = procesar(sbn)
+
+    private fun procesar(sbn: StatusBarNotification) {
         if (sbn.packageName !in WA) return
         val extras = sbn.notification.extras ?: return
+        // Anotamos que esta notif ya pasó por acá (haya sido filtrada o no: si
+        // el filtro la descartó, el barrido tampoco debería resucitarla) y
+        // persistimos la marca para el próximo arranque del servicio.
+        vistas["${sbn.key}|${sbn.postTime}"] = System.currentTimeMillis()
+        Prefs.setUltimoPost(this, sbn.postTime)
 
         val titulo = extras.getCharSequence(Notification.EXTRA_TITLE)?.toString() ?: return
         if (titulo.isBlank()) return   // notifs redactadas llegan sin título

@@ -11,6 +11,13 @@ object Prefs {
     fun secret(c: Context): String = get(c).getString("secret", "") ?: ""         // el WA_HOOK_SECRET
     fun activo(c: Context): Boolean = get(c).getBoolean("activo", false)
 
+    // Marca de agua del barrido de notificaciones vivas (v4.5): postTime de la
+    // última notif procesada. Todo lo que sea <= a esto ya se vio.
+    fun ultimoPost(c: Context): Long = get(c).getLong("ultimo_post", 0L)
+    fun setUltimoPost(c: Context, ts: Long) {
+        if (ts > ultimoPost(c)) get(c).edit().putLong("ultimo_post", ts).apply()
+    }
+
     fun guardar(c: Context, base: String, secret: String) {
         get(c).edit()
             .putString("hook_base", base.trimEnd('/'))
