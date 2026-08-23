@@ -1,0 +1,51 @@
+# ejecutado: 2026-08-23T11:30:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   CF=$(ls config/instances/*.conf | head -1)
+#   grep -q '^MARIA_SESION_MAX_TURNOS=' "$CF" && sed -i 's/^MARIA_SESION_MAX_TURNOS=.*/MARIA_SESION_MAX_TURNOS=12/' "$CF" || echo 'MARIA_SESION_MAX_TURNOS=12' >> "$CF"
+#   grep -E '^MARIA_SESION' "$CF"
+#   timeout 60 pm2 reload ecosystem.config.js --only maria-paez --update-env >/dev/null 2>&1 && echo "reload OK"
+#   echo "── costo por turno de telegram, últimas 24h (para comparar mañana) ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,
+#        json_extract(metadata_json,'$.cache_read') cr,
+#        json_extract(metadata_json,'$.cache_creation') cc,
+#        json_extract(metadata_json,'$.cost_usd') usd
+#      FROM eventos WHERE json_extract(metadata_json,'$.canal')='telegram'
+#        AND timestamp >= datetime('now','-24 hours') ORDER BY timestamp"""):
+#       print(f"  {r['timestamp']}  cacheR={r['cr'] or 0:>7}  cacheW={r['cc'] or 0:>7}  US$ {r['usd'] or 0:.4f}")
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+MARIA_SESIONES=1
+MARIA_SESIONES_USUARIOS=Diego
+MARIA_SESION_MAX_TURNOS=12
+reload OK
+── costo por turno de telegram, últimas 24h (para comparar mañana) ──
+  2026-08-22 15:05:13  cacheR= 330368  cacheW= 116796  US$ 0.5808
+  2026-08-22 16:36:14  cacheR=      0  cacheW= 108741  US$ 0.4238
+  2026-08-22 21:02:57  cacheR=      0  cacheW=  52587  US$ 0.2218
+  2026-08-22 21:04:04  cacheR=  65977  cacheW=  66861  US$ 0.2839
+  2026-08-22 21:09:11  cacheR=  72520  cacheW=   5010  US$ 0.0536
+  2026-08-22 21:09:28  cacheR= 129223  cacheW=   7643  US$ 0.0795
+  2026-08-22 21:09:44  cacheR=  46495  cacheW=   4877  US$ 0.0370
+  2026-08-22 21:11:14  cacheR= 346341  cacheW=  10296  US$ 0.1917
+  2026-08-22 21:20:43  cacheR= 408385  cacheW=  69577  US$ 0.4145
+  2026-08-22 22:24:02  cacheR= 224907  cacheW=  76031  US$ 0.3648
+  2026-08-22 22:41:43  cacheR= 329271  cacheW=  84747  US$ 0.4596
+  2026-08-22 22:52:10  cacheR=  90412  cacheW=  91730  US$ 0.3915
+  2026-08-22 22:52:32  cacheR= 189268  cacheW=   6772  US$ 0.0947
+  2026-08-22 22:55:17  cacheR= 308147  cacheW=   7491  US$ 0.1334
+  2026-08-22 22:55:24  cacheR= 105993  cacheW=    576  US$ 0.0382
+  2026-08-23 10:52:11  cacheR= 112288  cacheW= 113081  US$ 0.4651
+  2026-08-23 12:54:38  cacheR= 358294  cacheW= 120489  US$ 0.5912
+LISTO
+
+# exit=0
