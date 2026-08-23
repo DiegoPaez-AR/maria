@@ -1,0 +1,25 @@
+# ejecutado: 2026-08-23T01:24:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   tail -6 /root/mariabridge-build.log 2>/dev/null
+#   echo "--- json ---"
+#   cat /var/www/intensa.io/_dl/mariabridge-latest.json 2>/dev/null
+#   echo ""
+#   echo LISTO
+
+# ───── output ─────
+w: Detected multiple Kotlin daemon sessions at kotlin/sessions
+
+BUILD SUCCESSFUL in 31s
+35 actionable tasks: 11 executed, 24 up-to-date
+APK_OK url=https://intensa.io/_dl/mb-94dff353090de555.apk size=3.1M latest.json=v4.5(30)
+=== FIN Sun Aug 23 01:20:34 AM -03 2026 ===
+--- json ---
+{"versionCode": 30, "versionName": "4.5", "url": "https://intensa.io/_dl/mb-94dff353090de555.apk"}
+
+LISTO
+
+# exit=0
