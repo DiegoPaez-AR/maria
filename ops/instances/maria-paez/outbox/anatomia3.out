@@ -1,0 +1,50 @@
+# ejecutado: 2026-08-23T12:20:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   timeout 90 node -e '
+#   (async () => {
+#     const usuarios=require("/root/secretaria/usuarios");
+#     const pb=require("/root/secretaria/prompt-builder");
+#     const u=usuarios.listarServidos().find(x=>x.nombre==="Diego");
+#     const p=await pb.construirPrompt({usuario:u,canal:"telegram",entrada:{de:"telegram:0",nombre:u.nombre,cuerpo:"hola"}});
+#     const sys=(typeof p==="object"&&p.system)?p.system:String(p);
+#     const ini=sys.indexOf("buscar_contacto_global");
+#     const cola=sys.slice(ini, ini+21000);
+#     console.log("=== QUÉ HAY EN LOS ~20k DESPUÉS DE buscar_contacto_global ===");
+#     console.log("(primera línea de cada bloque de 1200 chars)\n");
+#     for (let k=0;k<cola.length;k+=1200) {
+#       const trozo=cola.slice(k,k+1200);
+#       const prim=trozo.split("\n").find(l=>l.trim().length>25) || trozo.slice(0,80);
+#       console.log(String(k).padStart(6), "|", prim.trim().slice(0,110));
+#     }
+#   })().catch(e=>console.log("ERR",e.message));'
+#   echo LISTO
+
+# ───── output ─────
+=== QUÉ HAY EN LOS ~20k DESPUÉS DE buscar_contacto_global ===
+(primera línea de cada bloque de 1200 chars)
+
+     0 | buscar_contacto_global`. El aislamiento aplica a conversaciones/agenda/pendientes, NO a "¿quién es X?" o "¿ten
+  1200 | - Esto significa que en un mismo turno los dos slots pueden estar en idiomas distintos. Es esperable y correct
+  2400 | min tiene que corregir Y", "yo de mi lado no puedo solucionarlo", "es un desfase del sistema", "el dueño del s
+  3600 | a Ariel cargado en mi libreta — pasame su número o reenviame su mensaje para que pueda contestarle", "no logré
+  4800 | endiendo): nunca compartas información privada suya — agenda completa, otros contactos, otros emails, ubicació
+  6000 | - Tarjeta de contacto / firma de email con datos / foto de tarjeta personal → emití `upsert_contacto` con nomb
+  7200 | Regla práctica: si el user dijo explícitamente qué hacer con el adjunto ("guardá este contacto", "extraé las f
+  8400 | da que decirle a Diego en este turno.",
+  9600 | (case-insensitive, substring en cuerpo+nombre+de+asunto). Útil cuando el usuario pregunta cosas como "¿cuándo 
+ 10800 | e necesitás info histórica que NO ves en [HISTORIAL CROSS-CANAL], emití consultas en este turno y dejá las res
+ 12000 | ata, dejá `respuesta_a_remitente`: "". Si Diego no necesita aviso, dejá `respuesta_a_usuario`: "". Las dos vac
+ 13200 | ntermedios, "encontré X" → NO son motivo de aviso al usuario salvo que él lo haya pedido explícitamente.
+ 14400 | nca respondas sin llamarlo primero):
+ 15600 | : "opcional", "attendees": ["email@..."], "meet": true|false, "forzar": false, "para_usuario_id": 3 }
+ 16800 | creó él, te va a fallar con un error claro y le decís al usuario que tiene que cambiarlo él.
+ 18000 | : "<id del archivo guardado>", "texto": "mensaje opcional que acompaña" }
+ 19200 | { "tipo": "quitar_pendiente", "id": 42 }
+ 20400 | rear_follow_up", "descripcion": "frase corta", "esperando_de": "wid@c.us o email@dominio", "esperando_canal": 
+LISTO
+
+# exit=0
