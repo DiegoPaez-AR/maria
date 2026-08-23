@@ -1,0 +1,32 @@
+# ejecutado: 2026-08-23T02:20:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora del VPS ──"; date
+#   echo "── TODO lo que dijo el barrido ──"
+#   timeout 15 grep -E "barrido|RECUPERO" /root/.pm2/logs/maria-paez-out.log | tail -20
+#   echo ""
+#   echo "── ¿el listener sigue vivo? últimas notifs vistas ──"
+#   timeout 15 grep -E "\[MB.*\[notif\]" /root/.pm2/logs/maria-paez-out.log | tail -6
+#   echo LISTO
+
+# ───── output ─────
+── hora del VPS ──
+Sun Aug 23 02:20:02 AM -03 2026
+── TODO lo que dijo el barrido ──
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+
+── ¿el listener sigue vivo? últimas notifs vistas ──
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:01 I [notif] listener creado
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+2026-08-23 01:50:01: [MB v4.5] 01:49:59 I [notif] entrante de "Gabriel Pacheco": Ok.
+2026-08-23 01:50:01: [MB v4.5] 01:49:59 I [notif] dup ignorado de "Gabriel Pacheco"
+LISTO
+
+# exit=0
