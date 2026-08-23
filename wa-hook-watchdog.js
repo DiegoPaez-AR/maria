@@ -1,5 +1,8 @@
-// wa-hook-watchdog.js — avisa al owner si el teléfono (AutoResponder/Tasker)
-// deja de dar señales. 2026-08-14, tras 4 días de silencio ambiguo.
+// wa-hook-watchdog.js — avisa al owner si un canal de ENTRADA deja de dar
+// señales. Nació el 2026-08-14 para el teléfono, tras 4 días de silencio
+// ambiguo; desde el 2026-08-23 vigila también el poll de Gmail, que tenía
+// exactamente el mismo problema: sólo logueaba cuando había mail nuevo, así
+// que "no llegó nada" y "el poll murió" se veían idénticos.
 //
 // El canal WA v2 no tiene heartbeat: si nadie escribe, no hay requests. Este
 // loop mira el marker wa-hook-latido y, si supera el umbral, avisa UNA vez
@@ -12,8 +15,11 @@ const usuarios = require('./usuarios');
 const waHook = require('./wa-hook');
 
 const UMBRAL_MS = Number(process.env.WA_HOOK_SILENCIO_MS || 12 * 3600 * 1000); // 12h
+// Gmail se pollea cada 5 min: 2h de silencio del LOOP (no de mails) ya es raro.
+const UMBRAL_GMAIL_MS = Number(process.env.GMAIL_SILENCIO_MS || 2 * 3600 * 1000);
 const _stateDir = path.dirname(path.dirname(process.env.MARIA_DB || './db/x'));
 const AVISADO_F = path.join(_stateDir, 'wa-hook-avisado');
+const AVISADO_GMAIL_F = path.join(_stateDir, 'gmail-avisado');
 
 async function _avisarOwner(texto) {
   const owner = usuarios.obtenerOwner();
@@ -25,7 +31,32 @@ async function _avisarOwner(texto) {
   }
 }
 
+async function _tickGmail() {
+  let ultimo = 0;
+  try { ultimo = require('./gmail-handler').ultimoLatidoGmail(); } catch { return; }
+  if (!ultimo) return;   // todavía no latió nunca (recién arrancado)
+  const silencio = Date.now() - ultimo;
+  const yaAvisado = fs.existsSync(AVISADO_GMAIL_F);
+
+  if (silencio > UMBRAL_GMAIL_MS && !yaAvisado) {
+    const horas = (silencio / 3600e3).toFixed(1);
+    try { fs.writeFileSync(AVISADO_GMAIL_F, String(Date.now())); } catch {}
+    console.warn(`[wa-hook-watchdog] el poll de Gmail no completa una ronda hace ${horas}h`);
+    mem.log({ canal: 'sistema', direccion: 'interno',
+      cuerpo: `poll de Gmail sin completar rondas hace ${horas}h — aviso enviado`,
+      metadata: { tipo: 'gmail_poll_silencio' } });
+    await _avisarOwner(`⚠️ Mi lectura de mails no está completando rondas hace ${horas}h. Puede ser un problema de credenciales de Google o de red. Ojo que los mails que lleguen mientras tanto NO los estoy viendo.`);
+    return;
+  }
+  if (silencio <= UMBRAL_GMAIL_MS && yaAvisado) {
+    try { fs.unlinkSync(AVISADO_GMAIL_F); } catch {}
+    mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: 'poll de Gmail normalizado', metadata: { tipo: 'gmail_poll_recuperado' } });
+    await _avisarOwner('✅ La lectura de mails volvió a la normalidad.');
+  }
+}
+
 async function tick() {
+  await _tickGmail().catch(e => console.warn('[wa-hook-watchdog] gmail:', e.message));
   const ultimo = waHook.ultimoLatido();
   if (!ultimo) return; // nunca hubo latido (canal recién montado): no alarmar
   const silencio = Date.now() - ultimo;
@@ -50,7 +81,7 @@ async function tick() {
 }
 
 function iniciarWaHookWatchdog({ intervaloMs = 30 * 60 * 1000 } = {}) {
-  console.log(`[wa-hook-watchdog] activo (cada ${intervaloMs / 60000}min, umbral ${UMBRAL_MS / 3600e3}h)`);
+  console.log(`[wa-hook-watchdog] activo (cada ${intervaloMs / 60000}min — teléfono ${UMBRAL_MS / 3600e3}h, gmail ${UMBRAL_GMAIL_MS / 3600e3}h)`);
   tick().catch(e => console.error('[wa-hook-watchdog] tick inicial:', e.message));
   return setInterval(() => tick().catch(e => console.error('[wa-hook-watchdog] tick:', e.message)), intervaloMs);
 }

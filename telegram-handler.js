@@ -29,6 +29,8 @@ const sesiones = require('./session-manager');
 // Turnos en curso por chat (auditoría #11): serializa por conversación sin
 // bloquear el polling ni a los demás chats.
 const _enCursoTG = new Map();
+// Agrupador del ruido del long-poll (ver el catch del loop).
+const _ruidoTG = { causa: null, n: 0, desde: 0, ultimoLog: 0 };
 const loopGuard = require('./loop-guard');
 const { transcribirBuffer } = require('./transcribir');
 
@@ -572,9 +574,26 @@ async function _loop() {
         _enCursoTG.set(chatId, _tarea);
         _tarea.finally(() => { if (_enCursoTG.get(chatId) === _tarea) _enCursoTG.delete(chatId); });
       }
+      if (_ruidoTG.n > 1) console.log(`[TG] poll recuperado tras ${_ruidoTG.n} fallos (${_ruidoTG.causa})`);
+      _ruidoTG.causa = null; _ruidoTG.n = 0;
       loopGuard.reportar('telegram_polling', true);
     } catch (err) {
-      console.warn('[TG] poll error (reintento en 15s):', err.message);
+      // AGRUPADO (2026-08-23): el long-poll corta seguido por red y generaba
+      // una linea por corte — 207 en 24h, que TAPABAN los errores de verdad en
+      // el log. Ahora: primera vez se loguea, y despues solo un resumen cada
+      // 10 min mientras siga fallando por la misma causa.
+      const _causa = String(err.message || '').slice(0, 60);
+      const _ahora = Date.now();
+      if (_causa !== _ruidoTG.causa) {
+        _ruidoTG.causa = _causa; _ruidoTG.n = 1; _ruidoTG.desde = _ahora; _ruidoTG.ultimoLog = _ahora;
+        console.warn('[TG] poll error (reintento en 15s):', err.message);
+      } else {
+        _ruidoTG.n++;
+        if (_ahora - _ruidoTG.ultimoLog > 10 * 60_000) {
+          console.warn(`[TG] poll error x${_ruidoTG.n} en ${Math.round((_ahora - _ruidoTG.desde) / 60000)}min (misma causa: ${_causa})`);
+          _ruidoTG.ultimoLog = _ahora;
+        }
+      }
       // Canal de RESPALDO caído en silencio = el seguro no asegura (loop-guard
       // extendido 2026-08-16): tras N fallos seguidos avisa al owner por WA.
       loopGuard.reportar('telegram_polling', false, err);

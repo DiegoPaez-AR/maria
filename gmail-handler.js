@@ -580,11 +580,28 @@ async function pollOnce({ waClient, maxPorRonda = 5 } = {}) {
  * Arranca el poll cada `intervaloMs`. Dispara una vez inmediatamente.
  * Devuelve el handle del setInterval por si querés cancelarlo.
  */
+// LATIDO (2026-08-23): el poll solo logueaba cuando HABIA mail nuevo, asi que
+// un silencio de dias era ambiguo — "no llego nada" y "el poll se murio" se ven
+// exactamente igual. Es el mismo agujero que nos costo 4 dias de silencio con
+// el telefono en agosto y que alli resolvimos con wa-hook-watchdog. Cada ronda
+// que termina bien toca este marker; el watchdog de abajo lo vigila.
+const _LATIDO_GMAIL = require('path').join(
+  require('path').dirname(require('path').dirname(process.env.MARIA_DB || './db/x')), 'gmail-latido');
+function _latirGmail() {
+  try { require('fs').writeFileSync(_LATIDO_GMAIL, String(Date.now())); } catch { /* noop */ }
+}
+function ultimoLatidoGmail() {
+  try { return Number(require('fs').readFileSync(_LATIDO_GMAIL, 'utf8').trim()) || 0; } catch { return 0; }
+}
+
 function iniciarPoll({ waClient, intervaloMs = 300_000 } = {}) {
   const tick = () => {
-    pollOnce({ waClient }).catch(err =>
-      console.error('[GMAIL] tick error:', err.message)
-    );
+    pollOnce({ waClient })
+      .then(() => { _latirGmail(); loopGuard.reportar('gmail_poll', true); })
+      .catch(err => {
+        console.error('[GMAIL] tick error:', err.message);
+        loopGuard.reportar('gmail_poll', false, err);
+      });
   };
   tick(); // arranque inmediato
   return setInterval(tick, intervaloMs);
@@ -612,4 +629,5 @@ async function _avisoOwnerContenidoInboundMail({ categoria, severidad, motivo, d
   }
 }
 
-module.exports = { iniciarPoll, pollOnce, procesarUnEmail };
+module.exports = {
+  ultimoLatidoGmail, iniciarPoll, pollOnce, procesarUnEmail };

@@ -823,6 +823,32 @@ function _agregarPendiente(a, ctx) {
   // se acuerde de emitir crear_follow_up aparte (que es justo lo que falla).
   let followUp = null;
   if (a.dueno === 'maria' && a.disparador === 'trigger_externo' && a.meta && a.meta.esperando_de) {
+    // El modelo a veces pone el NOMBRE donde va el identificador ("Fico
+    // restaurante" en vez del wid). Antes eso hacia fallar la validacion y la
+    // gestion quedaba SIN red de seguridad, en silencio (casos Nati y Fico,
+    // 22/8). Si el valor no tiene forma de wid ni de email pero matchea UN
+    // solo contacto de la libreta, lo resolvemos nosotros.
+    const _crudo = String(a.meta.esperando_de).trim();
+    const _pareceId = _crudo.includes('@') || _crudo.replace(/\D/g, '').length >= 8;
+    if (!_pareceId) {
+      try {
+        const _cands = mem.buscarContactosVisibles(ctx.usuario.id, _crudo, { max: 3 });
+        if (_cands.length === 1) {
+          const c = _cands[0];
+          const resuelto = a.meta.esperando_canal === 'gmail'
+            ? (c.email || null)
+            : (c.whatsapp || c.email || null);
+          if (resuelto) {
+            console.log(`[agregar_pendiente] "${_crudo}" resuelto por libreta → ${resuelto} (${c.nombre})`);
+            a.meta.esperando_de = resuelto;
+            if (!a.meta.esperando_canal) a.meta.esperando_canal = String(resuelto).includes('@c.us') ? 'whatsapp' : 'gmail';
+            meta.esperando_de = resuelto;
+          }
+        } else if (_cands.length > 1) {
+          console.warn(`[agregar_pendiente] "${_crudo}" matchea ${_cands.length} contactos — no resuelvo (candado homonimos)`);
+        }
+      } catch (e) { console.warn('[agregar_pendiente] resolver por libreta:', e.message); }
+    }
     const canal = a.meta.esperando_canal === 'gmail' ? 'gmail' : 'whatsapp';
     const _v = seguridad.validarDestinatario({
       usuario: ctx.usuario,
@@ -849,7 +875,14 @@ function _agregarPendiente(a, ctx) {
         console.warn(`[agregar_pendiente] auto follow_up falló: ${err.message}`);
       }
     } else {
+      // Un pendiente sin follow-up es una gestion sin red: que quede
+      // registrado como evento, no solo en un console.warn que nadie lee.
       console.warn(`[agregar_pendiente] no creo follow_up auto (${a.meta.esperando_de}): ${_v.motivo}`);
+      try {
+        mem.log({ usuarioId: ctx.usuario.id, canal: 'sistema', direccion: 'interno',
+          cuerpo: `pendiente "${String(a.desc).slice(0, 80)}" quedo SIN follow-up automatico: no pude identificar a "${a.meta.esperando_de}" (${_v.motivo})`,
+          metadata: { tipo: 'followup_auto_omitido', esperando_de: a.meta.esperando_de } });
+      } catch { /* noop */ }
     }
   }
 
