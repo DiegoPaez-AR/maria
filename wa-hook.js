@@ -367,6 +367,18 @@ async function procesar(body) {
   // WhatsApp. Si escribe un usuario (y NO es respuesta a una gestión ajena, que
   // ya se resolvió arriba), respondemos una NEGATIVA FIJA y no corremos turno:
   // ni LLM ni acciones. Los terceros sí se atienden normal.
+  // Un usuario que escribe por WhatsApp igual está dando señal de vida: aunque
+  // le respondamos la negativa de política, si estaba pausado se despierta.
+  if (u) {
+    try {
+      if (usuarios.registrarActividad(u.id)) {
+        mem.log({ usuarioId: u.id, canal: 'sistema', direccion: 'interno',
+          cuerpo: `${u.nombre} volvió a escribir tras estar pausado — brief y avisos reactivados`,
+          metadata: { tipo: 'usuario_reactivado', canal_origen: 'whatsapp' } });
+      }
+    } catch { /* noop */ }
+  }
+
   if (u && !tercero) {
     const bot = process.env.TELEGRAM_BOT_USERNAME ? String(process.env.TELEGRAM_BOT_USERNAME).replace(/^@/, '') : 'MariaPaezAI_bot';
     const primer = String(u.nombre || '').trim().split(/\s+/)[0] || '';

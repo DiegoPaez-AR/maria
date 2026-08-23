@@ -180,10 +180,19 @@ async function _procesarTurno(usuario, chatId, texto, attachmentPath = null) {
   const chatKey = 'telegram:' + chatId;
   turnState.setLastInbound(chatKey, startTs);
 
+  // Si estaba pausado por inactividad, volver a escribir lo despierta.
+  const _volvio = usuarios.registrarActividad(usuario.id);
+
   const rl = seguridad.verificarRateLimit({ usuarioId: usuario.id });
   if (!rl.ok) {
     await enviarTG(chatId, `⏳ vas muy rápido — esperá ${Math.ceil(rl.retry_in_ms / 1000)}s`);
     return;
+  }
+  if (_volvio) {
+    mem.log({ usuarioId: usuario.id, canal: 'sistema', direccion: 'interno',
+      cuerpo: `${usuario.nombre} volvió a escribir tras estar pausado — brief y avisos reactivados`,
+      metadata: { tipo: 'usuario_reactivado', canal_origen: 'telegram' } });
+    await enviarTG(chatId, '¡Qué bueno leerte! Te reactivo el brief diario y los avisos. Seguimos donde estábamos.');
   }
   const motivoInj = seguridad.detectarInjection(texto);
   if (motivoInj) {

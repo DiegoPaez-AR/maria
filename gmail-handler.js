@@ -312,6 +312,18 @@ async function procesarUnEmail(id, { waClient } = {}) {
  * desde unknown-flow.
  */
 async function _procesarComoUsuario({ usuario, entrada, waClient, autoResponderEmail = true }) {
+  // Si el usuario estaba pausado por inactividad, escribir lo despierta.
+  // (Sólo cuenta si el mail es SUYO, no de un tercero de su gestión.)
+  try {
+    const _de = String(entrada.de || '').toLowerCase();
+    const _suyo = !!usuario.email && _de.includes(String(usuario.email).toLowerCase());
+    if (_suyo && require('./usuarios').registrarActividad(usuario.id)) {
+      mem.log({ usuarioId: usuario.id, canal: 'sistema', direccion: 'interno',
+        cuerpo: `${usuario.nombre} volvió a escribir tras estar pausado — brief y avisos reactivados`,
+        metadata: { tipo: 'usuario_reactivado', canal_origen: 'gmail' } });
+    }
+  } catch { /* noop */ }
+
   // Pre-filtro de injection sobre asunto + cuerpo del mail (entrante).
   const _payload = `${entrada.asunto || ''}\n${entrada.cuerpo || ''}`;
   const _motivo = seguridad.detectarInjection(_payload);

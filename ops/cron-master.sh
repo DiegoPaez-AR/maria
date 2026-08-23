@@ -112,7 +112,7 @@ _canary() {
           './programados','./maria-worker','./turn-state','./action-schemas',
           './moderacion','./loop-guard','./wa-validate','./vault','./i18n','./telefonos',
           './calendar-watch','./cumple-avisos','./diferidos-drainer','./poda-eventos',
-          './memoria-curada','./clima','./providers','./google','./context-fetcher',
+          './memoria-curada','./clima','./providers','./google','./context-fetcher','./usuarios-dormidos',
           './net-retry','./wa-send','./telegram-vinculos','./telegram-handler',
           './wa-hook','./wa-outbox','./gestion-ajena','./mb-control','./media-store',
           './unknown-flow','./silencio','./session-manager','./transcribir'].forEach(m => require(m));

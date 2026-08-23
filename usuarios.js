@@ -13,7 +13,10 @@ const db  = mem.db;
 // ─── Queries ─────────────────────────────────────────────────────────────
 
 const qTodos         = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 ORDER BY id ASC`);
-const qServidos      = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 AND servido = 1 ORDER BY id ASC`);
+// Los loops proactivos (brief, recordatorios, meeting-prep, cumples, resumen)
+// iteran esta lista: excluir a los PAUSADOS acá los apaga todos de una.
+const qServidos      = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 AND servido = 1 AND COALESCE(pausado,0) = 0 ORDER BY id ASC`);
+const qPausados      = db.prepare(`SELECT * FROM usuarios WHERE activo = 1 AND COALESCE(pausado,0) = 1 ORDER BY id ASC`);
 const qTodosIncl     = db.prepare(`SELECT * FROM usuarios ORDER BY id ASC`);
 const qPorId         = db.prepare(`SELECT * FROM usuarios WHERE id = ?`);
 const qPorNombre     = db.prepare(`SELECT * FROM usuarios WHERE nombre = ? COLLATE NOCASE AND activo = 1`);
@@ -64,6 +67,37 @@ function listarActivos() { return qTodos.all(); }
 // (brief, recordatorios, cumple, resumen, meeting-prep) para no proactivar a
 // un owner/operador que es solo admin (servido=0).
 function listarServidos() { return qServidos.all(); }
+function listarPausados() { return qPausados.all(); }
+
+/**
+ * Pausa los envíos proactivos de un usuario. NO lo desactiva: si escribe, se le
+ * responde normal (y `registrarActividad` lo despierta solo).
+ */
+function pausar(id) {
+  db.prepare(`UPDATE usuarios SET pausado = 1, pausado_desde = datetime('now') WHERE id = ?`).run(id);
+  return obtener(id);
+}
+
+function reactivar(id) {
+  db.prepare(`UPDATE usuarios SET pausado = 0, pausado_desde = NULL WHERE id = ?`).run(id);
+  return obtener(id);
+}
+
+/**
+ * Lo llaman los handlers al empezar un turno de usuario. Si estaba pausado, lo
+ * despierta y devuelve true (el handler avisa que volvió). Decisión de diseño:
+ * despierta con CUALQUIER mensaje suyo, no con una frase mágica — pedir un
+ * "quiero retomar" exacto agrega una forma de fallar sin ganar nada.
+ */
+function registrarActividad(id) {
+  try {
+    const u = obtener(id);
+    if (!u || !u.pausado) return false;
+    reactivar(id);
+    console.log(`[usuarios] ${u.nombre} estaba pausado y volvió a escribir — reactivado`);
+    return true;
+  } catch (e) { console.warn('[usuarios] registrarActividad:', e.message); return false; }
+}
 function listarTodos()   { return qTodosIncl.all(); }
 
 function obtener(id) { return qPorId.get(id) || null; }
@@ -492,6 +526,10 @@ function setTelegramChatId(usuarioId, chatId) {
 module.exports = {
   listarActivos,
   listarServidos,
+  listarPausados,
+  pausar,
+  reactivar,
+  registrarActividad,
   listarTodos,
   obtener,
   obtenerOwner,

@@ -250,6 +250,20 @@ function _migrarUsuariosServido() {
 }
 _migrarUsuariosServido();
 
+// Migración: usuarios.pausado (2026-08-23, decisión Diego). Un usuario pausado
+// sigue ACTIVO —se le responde si escribe— pero deja de recibir los envíos
+// proactivos (brief, recordatorios, cumples, resumen). Es para gente que no
+// interactúa hace 30+ días: seguirles mandando el brief diario quema
+// reputación de envío y no le sirve a nadie.
+function _migrarUsuariosPausado() {
+  if (_tieneColumna('usuarios', 'pausado')) return false;
+  db.exec(`ALTER TABLE usuarios ADD COLUMN pausado INTEGER NOT NULL DEFAULT 0`);
+  db.exec(`ALTER TABLE usuarios ADD COLUMN pausado_desde TEXT`);
+  console.log('[memory] migración: usuarios.pausado + pausado_desde agregados');
+  return true;
+}
+_migrarUsuariosPausado();
+
 // Migración: usuarios.idioma ('es'|'en', default 'es'). Idioma en que Maria le
 // responde al usuario y en que salen sus mensajes automáticos (brief, etc.).
 function _migrarUsuariosIdioma() {

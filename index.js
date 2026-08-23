@@ -181,6 +181,9 @@ async function main() {
       console.log('▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)');
       require('./wa-hook-watchdog').iniciarWaHookWatchdog({});
 
+      console.log('▸ arrancando revisión de usuarios dormidos (1º de cada mes)');
+      require('./usuarios-dormidos').iniciarDormidos({});
+
       console.log('▸ arrancando drainer de diferidos (horas de silencio)');
       diferidosInterval = iniciarDiferidosDrainer({
         waClient: client, intervaloMs: DIFERIDOS_MS,
