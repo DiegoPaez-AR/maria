@@ -1021,17 +1021,11 @@ function _respondioEnCanal(usuarioId, esperandoDe, esperandoCanal, desdeStr) {
     if (!emailEsp) return false;
     return rows.some(r => String(r.de || '').toLowerCase().includes(emailEsp));
   }
-  // 9-móvil AR: "54 9 11 XXXXXXXX" vs "54 11 XXXXXXXX" no matchean por
-  // sufijo (el 9 va en el medio) — comparar últimos 10 dígitos (área+número).
-  const _ult10 = (x) => {
-    const d = String(x || '').replace(/\D+/g, '');
-    return d.length >= 10 ? d.slice(-10) : null;
-  };
-  return rows.some(r => {
-    if (r.de === esperado || _matchNumeroFlex(r.de, esperado)) return true;
-    const a = _ult10(r.de), b = _ult10(esperado);
-    return !!(a && b && a === b);
-  });
+  // Comparacion por forma canonica (telefonos.js): "54 9 11 XXXX" y
+  // "54 11 XXXX" son el mismo numero, y un uruguayo ya no puede colisionar
+  // con un argentino por compartir los ultimos digitos.
+  const _tel = require('./telefonos');
+  return rows.some(r => r.de === esperado || _matchNumeroFlex(r.de, esperado) || _tel.mismoNumero(r.de, esperado));
 }
 
 // La MISMA persona, en el OTRO canal. Principio del sistema: la conversación
@@ -1050,14 +1044,16 @@ function _otroIdentificador(usuarioId, esperandoDe) {
       ).get(usuarioId, email);
       return c && c.whatsapp ? { valor: c.whatsapp, canal: 'whatsapp' } : null;
     }
-    const d = v.replace(/\D+/g, '');
-    if (d.length < 10) return null;
-    const c = db.prepare(
-      `SELECT email FROM contactos WHERE usuario_id = ?
-         AND replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+','') LIKE '%' || ?
-         AND email IS NOT NULL LIMIT 1`
-    ).get(usuarioId, d.slice(-10));
-    return c && c.email ? { valor: c.email, canal: 'gmail' } : null;
+    const _tel = require('./telefonos');
+    for (const variante of _tel.variantes(v)) {
+      const c = db.prepare(
+        `SELECT email FROM contactos WHERE usuario_id = ?
+           AND replace(replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+',''),' ','') = ?
+           AND email IS NOT NULL LIMIT 1`
+      ).get(usuarioId, variante);
+      if (c && c.email) return { valor: c.email, canal: 'gmail' };
+    }
+    return null;
   } catch { return null; }
 }
 
@@ -1090,10 +1086,7 @@ function listarEntrantesDe({ usuarioId, de, desde, max = 5 }) {
   if (!target || !usuarioId) return [];
   const rows = qEntrantesUsuarioDesde.all(usuarioId, String(desde));
   const esEmail = target.includes('@') && !/@c\.us$|@lid$/.test(target);
-  const _ult10 = (x) => {
-    const d = String(x || '').replace(/\D+/g, '');
-    return d.length >= 10 ? d.slice(-10) : null;
-  };
+  const _tel = require('./telefonos');
   const out = [];
   for (const r of rows) {
     const rde = String(r.de || '').toLowerCase();
@@ -1103,8 +1096,7 @@ function listarEntrantesDe({ usuarioId, de, desde, max = 5 }) {
       const emailEsp = (m ? m[1] : target).trim();
       match = !!emailEsp && rde.includes(emailEsp);
     } else {
-      const a = _ult10(r.de), b = _ult10(target);
-      match = rde === target || _matchNumeroFlex(r.de, de) || !!(a && b && a === b);
+      match = rde === target || _matchNumeroFlex(r.de, de) || _tel.mismoNumero(r.de, target);
     }
     if (match) { out.push(hidratar(r)); if (out.length >= max) break; }
   }

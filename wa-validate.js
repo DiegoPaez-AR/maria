@@ -68,19 +68,16 @@ async function normalizarWaCus(input, client) {
   // el sistema avisa al owner (fail-fast, sin reintentos). Acá normalizamos el
   // formato y devolvemos un wid marcado como NO verificado.
   if (!client) {
-    const d = trimmed.replace(/[^\d]/g, '');
-    if (!d) throw new Error(`validar_wa: "${input}" no contiene dígitos`);
-    if (d.length < 8 || d.length > 15) {
+    const c = require('./telefonos').canonico(trimmed);
+    if (!c.ok) {
       throw new Error(
-        `validar_wa: "${input}" tiene ${d.length} dígitos — un número internacional válido tiene entre 8 y 15. ` +
-        `Verificá el código de país con el owner (Argentina=+54, Uruguay=+598, Brasil=+55, España=+34, EEUU=+1).`
+        `validar_wa: ${c.motivo || `no pude interpretar "${input}"`}. ` +
+        `Verifica el numero con el owner (Argentina = +54 seguido de 10 digitos que empiezan con 1, 2 o 3; ` +
+        `el "9" de celular es opcional. Uruguay=+598, Brasil=+55, Espana=+34, EEUU=+1).`
       );
     }
-    // Argentina: WhatsApp usa el "9" móvil tras el 54. Si viene sin él, lo
-    // agregamos (es la forma que acepta el envío; ver formato-9, 15/8).
-    const norm = /^54\d{10}$/.test(d) ? '549' + d.slice(2) : d;
-    console.warn(`[wa-validate] sin cliente WA — normalizado offline "${input}" → ${norm}@c.us (SIN verificar en Meta)`);
-    return `${norm}@c.us`;
+    console.warn(`[wa-validate] sin cliente WA — normalizado offline "${input}" → ${c.wa}@c.us (SIN verificar en Meta)`);
+    return `${c.wa}@c.us`;
   }
 
   // Extraer solo dígitos. Acepta "+598 95 989 9643", "598959899643@c.us",

@@ -634,11 +634,14 @@ async function _enviarWA(a, ctx) {
   // OPT-OUT (2026-08-22): si el contacto pidió no ser contactado, no se le
   // escribe más. Nunca.
   try {
-    const digsNC = String(a.a).replace(/\D/g, '').slice(-10);
-    const nc = mem.db.prepare(
-      `SELECT nombre FROM contactos WHERE no_contactar = 1
-        AND replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+','') LIKE '%' || ? || '%' LIMIT 1`
-    ).get(digsNC);
+    let nc = null;
+    for (const v of require('./telefonos').variantes(a.a)) {
+      nc = mem.db.prepare(
+        `SELECT nombre FROM contactos WHERE no_contactar = 1
+          AND replace(replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+',''),' ','') = ? LIMIT 1`
+      ).get(v);
+      if (nc) break;
+    }
     if (nc) throw new Error(`enviar_wa: ${nc.nombre} pidió NO ser contactado — no le escribo. Avisale al usuario que tiene que contactarlo él mismo si es necesario.`);
   } catch (e) { if (/pidió NO ser contactado/.test(e.message)) throw e; }
 
@@ -683,11 +686,14 @@ async function _enviarWA(a, ctx) {
     const digsW = String(a.a).replace(/\D/g, '');
     let vivo = false;
     try {
-      vivo = !!mem.db.prepare(
-        `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='entrante'
-           AND replace(replace(COALESCE(de,''),'@c.us',''),'+','') LIKE '%' || ? || '%'
-           AND timestamp >= datetime('now','-24 hours') LIMIT 1`
-      ).get(digsW.slice(-10));
+      for (const v of require('./telefonos').variantes(digsW)) {
+        vivo = !!mem.db.prepare(
+          `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='entrante'
+             AND replace(replace(replace(COALESCE(de,''),'@c.us',''),'+',''),' ','') = ?
+             AND timestamp >= datetime('now','-24 hours') LIMIT 1`
+        ).get(v);
+        if (vivo) break;
+      }
     } catch { /* noop */ }
     if (!vivo) {
       throw new Error(
@@ -779,10 +785,14 @@ function _autoGestionTercero(a, ctx) {
     if (digs.length < 8) return null;
     if (usuarios.resolverPorWa(`${digs}@c.us`)) return null;          // es usuario → no es outreach
     // dedupe: ya hay gestión abierta esperando a este mismo número (del LLM o previa)
-    const abierto = mem.db.prepare(
-      `SELECT id FROM pendientes WHERE usuario_id = ? AND estado = 'abierto'
-        AND (meta_json LIKE ? OR destino_wa LIKE ?) LIMIT 1`
-    ).get(ctx.usuario.id, `%${digs.slice(-10)}%`, `%${digs.slice(-10)}%`);
+    let abierto = null;
+    for (const v of require('./telefonos').variantes(digs)) {
+      abierto = mem.db.prepare(
+        `SELECT id FROM pendientes WHERE usuario_id = ? AND estado = 'abierto'
+          AND (meta_json LIKE ? OR destino_wa LIKE ?) LIMIT 1`
+      ).get(ctx.usuario.id, `%${v}%`, `%${v}%`);
+      if (abierto) break;
+    }
     if (abierto) return null;
     const desc = `Esperando respuesta de ${a.a} (WA): "${String(a.texto).slice(0, 140)}${a.texto.length > 140 ? '…' : ''}"`;
     const id = mem.agregarPendiente(ctx.usuario.id, desc, {
@@ -896,18 +906,17 @@ function _quitarPendiente(a, ctx) {
 // canal=whatsapp explotaba con ReferenceError.
 function _resolverDestinoWA(destino) {
   const d = String(destino == null ? '' : destino).trim();
-  if (!d) throw new Error('programar_mensaje: destino de WhatsApp vacío');
-  if (/@(c\.us|lid)$/.test(d)) return d;
-  const dig = d.replace(/\D/g, '');
-  if (dig.length < 8 || dig.length > 15) {
+  if (!d) throw new Error('programar_mensaje: destino de WhatsApp vacio');
+  if (/@lid$/i.test(d)) return d;   // identidad oculta de WA: no son digitos telefonicos
+  const tel = require('./telefonos');
+  const c = tel.canonico(d);
+  if (!c.ok) {
     throw new Error(
-      `programar_mensaje: "${destino}" no parece un número de WhatsApp válido ` +
-      `(${dig.length} dígitos). Verificá el código de país con el usuario.`
+      `programar_mensaje: ${c.motivo || `"${destino}" no parece un numero valido`}. ` +
+      `Verifica el numero con el usuario.`
     );
   }
-  // Argentina: WhatsApp usa el "9" móvil tras el 54 (ver formato-9, 15/8).
-  const norm = /^54\d{10}$/.test(dig) ? '549' + dig.slice(2) : dig;
-  return `${norm}@c.us`;
+  return tel.wid(d);
 }
 
 async function _programarMensaje(a, ctx) {
@@ -1033,14 +1042,15 @@ async function _upsertContacto(a, ctx) {
     const _dig = s => String(s || '').replace(/\D/g, '');
     const nombreNorm = _norm(a.nombre);
     const emailNorm = a.email ? String(a.email).toLowerCase().trim() : null;
-    const telSuf = _dig(a.whatsapp).slice(-10) || null;
+    const _tel = require('./telefonos');
+    const telClave = a.whatsapp ? _tel.clave(a.whatsapp) : null;
     const sospechosos = [];
     for (const c of mem.todosLosContactos(ctx.usuario.id)) {
       const esExacto = String(c.nombre).toLowerCase() === String(a.nombre).toLowerCase();
       if (esExacto) continue; // update legítimo, lo maneja el upsert
       const motivos = [];
       if (emailNorm && c.email && String(c.email).toLowerCase().trim() === emailNorm) motivos.push('mismo email');
-      if (telSuf && telSuf.length >= 8 && _dig(c.whatsapp).slice(-10) === telSuf) motivos.push('mismo teléfono');
+      if (telClave && c.whatsapp && _tel.clave(c.whatsapp) === telClave) motivos.push('mismo telefono');
       if (_norm(c.nombre) === nombreNorm) motivos.push('mismo nombre (variante de tildes/espacios)');
       if (motivos.length) sospechosos.push({ c, motivos });
     }
