@@ -1,0 +1,51 @@
+# ejecutado: 2026-08-23T10:53:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "marker: $(cat state/.canary-bad-commit 2>/dev/null)"
+#   echo "HEAD  : $(git rev-parse HEAD)"
+#   echo "ultimo bueno: $(cat state/.ultimo-commit-bueno 2>/dev/null)"
+#   echo "--- ultimas fallas del canary ---"
+#   grep -B 3 -A 12 "canary FALLO" ops/.cron.log | tail -30
+#   echo LISTO
+
+# ───── output ─────
+marker: 8f0fd6bef83c1aee533f57ee9904df50f2db36dd
+HEAD  : fdf423622261b35a1669a322071f9e94441af5f8
+ultimo bueno: 7cad4034062b8b4b325deec76b4aa2f8c21c309e
+--- ultimas fallas del canary ---
+canary FALLO npm test:
+not ok 40 - sin client + número imposible → error instructivo
+canary: runtime revertido al último commit bueno (7cad4034062b8b4b325deec76b4aa2f8c21c309e) — ops/ queda al día
+canary FALLÓ (6e7998b8343fec72f15d3a94156d7529a73de722) — NO recargo pm2, prod sigue con la versión anterior en memoria
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:43:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:44:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/verif-telefonos.sh → ops/instances/maria-paez/outbox/verif-telefonos.out
+push fase 1 OK
+tick done
+--
+tick done
+═══ 2026-08-23T10:49:01-03:00 ═══
+código cambió → restart pendiente
+canary FALLO npm test:
+not ok 40 - sin client + número imposible → error instructivo
+canary: runtime revertido al último commit bueno (7cad4034062b8b4b325deec76b4aa2f8c21c309e) — ops/ queda al día
+canary FALLÓ (8f0fd6bef83c1aee533f57ee9904df50f2db36dd) — NO recargo pm2, prod sigue con la versión anterior en memoria
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:50:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:51:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/verif-telefonos2.sh → ops/instances/maria-paez/outbox/verif-telefonos2.out
+push fase 1 OK
+tick done
+LISTO
+
+# exit=0
