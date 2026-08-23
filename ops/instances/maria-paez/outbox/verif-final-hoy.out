@@ -1,0 +1,48 @@
+# ejecutado: 2026-08-23T18:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MALO" || echo "limpio ✓"
+#   git log --oneline -1 | cut -c1-55
+#   timeout 20 pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       if p['name']!='maria-paez': continue
+#       print('  pm2', p['pm2_env']['status'], 'up=%dmin'%((time.time()*1000-p['pm2_env']['pm_uptime'])/60000))"
+#   echo "── el daily-report arma bien el desglose? (dry) ──"
+#   timeout 60 node -e "
+#   const dr=require('/root/secretaria/daily-report');
+#   console.log('  módulo carga OK, exports:', Object.keys(dr).join(', '));" 2>&1 | tail -3
+#   echo "── pausados / servidos ──"
+#   timeout 20 node -e "
+#   const u=require('/root/secretaria/usuarios');
+#   console.log('  servidos:', u.listarServidos().length, '| pausados:', u.listarPausados().length);"
+#   echo "── sesión de Diego (rotación a 12) ──"
+#   timeout 15 node -e "const mem=require('/root/secretaria/memory'); console.log('  ', mem.getEstadoUsuario(1,'claude_sesion')||'(sin sesión)');"
+#   echo "── errores nuevos ──"; timeout 10 tail -5 /root/.pm2/logs/maria-paez-error.log
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+limpio ✓
+485e3d45b74 inbox: verificacion final
+  pm2 online up=1min
+── el daily-report arma bien el desglose? (dry) ──
+
+  módulo carga OK, exports: 
+✓ enviado a diego@paez.is
+── pausados / servidos ──
+  servidos: 6 | pausados: 9
+── sesión de Diego (rotación a 12) ──
+   {"id":"6f1a48db-74ed-471e-aa8e-976532277909","turnos":1,"creada":"2026-08-23T15:14:55.261Z","promptHash":"e0b506407bbf3302"}
+── errores nuevos ──
+2026-08-23 01:50:23: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 02:22:40: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 04:47:40: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 06:31:18: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 08:17:15: [TG] poll error (reintento en 15s): fetch failed
+LISTO
+
+# exit=0
