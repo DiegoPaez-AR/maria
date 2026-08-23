@@ -1,0 +1,106 @@
+# ejecutado: 2026-08-23T09:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo ""
+#   echo "── ERRORES del runtime (hoy) ──"
+#   timeout 20 grep "2026-08-23" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -25
+#   echo ""
+#   echo "── acciones que fallaron hoy ──"
+#   timeout 20 grep -E "2026-08-23.*(acción #|falló|FALLÓ|error)" /root/.pm2/logs/maria-paez-out.log | tail -20
+#   echo ""
+#   echo "── conversación de Diego hoy (todos los canales) ──"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,170) c FROM eventos
+#      WHERE usuario_id=1 AND canal IN ('whatsapp','telegram','gmail')
+#        AND timestamp >= datetime('now','-14 hours') ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp']} {r['canal'][:3]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── eventos de sistema (descartes, fallos, avisos) ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,150) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= datetime('now','-14 hours') ORDER BY timestamp"""):
+#       print(' ',r['timestamp'],'|',(r['c'] or '').replace(chr(10),' '))
+#   db.close()
+#   PY
+#   echo ""
+#   echo "── barrido de notificaciones ──"
+#   timeout 15 grep -E "barrido|RECUPERO" /root/.pm2/logs/maria-paez-out.log | tail -8
+#   echo ""
+#   echo "── sesiones (turnos / rotaciones) ──"
+#   timeout 15 grep -E "TG sesion|GMAIL sesion" /root/.pm2/logs/maria-paez-out.log | tail -6
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Sun Aug 23 09:57:02 AM -03 2026
+
+── ERRORES del runtime (hoy) ──
+2026-08-23 01:36:56: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 01:50:23: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 02:22:40: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 04:47:40: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 06:31:18: [TG] poll error (reintento en 15s): fetch failed
+2026-08-23 08:17:15: [TG] poll error (reintento en 15s): fetch failed
+
+── acciones que fallaron hoy ──
+
+── conversación de Diego hoy (todos los canales) ──
+ 2026-08-22 22:57:14 wha ← Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo para avisarte que la cena con Diego, Carolina y Natali va a ser el miércoles 2/9 a las 21hs en Fico. ¡Nos vemo
+ 2026-08-22 22:59:36 wha → Ok.
+ 2026-08-22 23:15:04 wha → (prueba interna, ignorar)
+ 2026-08-23 03:00:09 wha → Ok.
+ 2026-08-23 04:50:00 wha → Ok.
+ 2026-08-23 07:00:24 tel ← ☀️ *Buen día, Diego.* domingo, 23 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 5° / máx 12° |  | *📅 Agenda del día* | (sin eventos hoy) |  | *📝 Pendientes* | 1. iProt S
+ 2026-08-23 10:51:58 tel → Cancela tus 3 pendientes, están todos resueltos
+ 2026-08-23 10:52:11 tel ← Listo, cerré los 3 pendientes míos: lo de Nati, lo de Fico y la confirmación de la reserva. Cualquier cosa avisame.
+ 2026-08-23 12:44:52 wha ← ⚠️ No pude entregar un WhatsApp a Manuel Carrasco: no pude entregarlo tras 5 intentos. El mensaje decía: "Hola Manuel! Te escribo de nuevo por la reunión con Diego y Hern
+ 2026-08-23 12:52:46 wha ← Hola Diego! Por política ahora no puedo atender pedidos por WhatsApp 🙏 |  | Escribime por *Telegram* (t.me/MariaPaezAI_bot → tocá "compartir mi número") o por mail a maria.pa
+ 2026-08-23 12:52:46 wha → (audio de voz, transcripto) María, Manuel ya confirmó la reunión por email hace unos días, chequéalo, así que |  cancela la gestión. Ya está todo listo para esa reunión, es
+ 2026-08-23 12:54:03 tel → María Manuel, ya confirmó la reunión por email hace unos días chequéalo así que cancelar la gestión ya está todo listo para esa reuniónte agendada no falta hacer nada no 
+ 2026-08-23 12:54:38 tel ← Tenés razón, ya está cerrado. Te explico qué pasó: eso no era una gestión mía manual, era un follow-up automático que tenía programado para re-preguntarle a Manuel si no 
+
+── eventos de sistema (descartes, fallos, avisos) ──
+  2026-08-22 22:59:50 | acción ejecutada: quitar_pendiente
+  2026-08-22 22:59:53 | claude_call whatsapp: 17275ms prompt=85990c raw=10880c in=6t(cache_read=55583 new=110560) out=773t ttfb=1612ms api=16503ms turnos=3 $0.4538
+  2026-08-22 23:12:22 | shutdown por SIGINT
+  2026-08-22 23:12:23 | Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+  2026-08-22 23:13:10 | claude_call memoria-curada: 16214ms prompt=4124c raw=9421c in=2t(cache_read=0 new=16951) out=1027t ttfb=1542ms api=14448ms turnos=1 $0.0807
+  2026-08-22 23:17:23 | poda-eventos: 12 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+  2026-08-23 03:00:27 | claude_call whatsapp: 16802ms prompt=85729c raw=10777c in=4t(cache_read=54598 new=55487) out=1004t ttfb=1829ms api=16075ms turnos=2 $0.2502
+  2026-08-23 03:17:23 | follow-up #48 cerrado: hernan.fulco@sondeosglobal.com respondió antes del vencimiento (Esperando que Hernán Fulco elija entre martes 25/08 13-15hs o j
+  2026-08-23 03:17:23 | follow-up #47 cerrado: manucarrasco80@gmail.com respondió antes del vencimiento (Esperando que Manuel Carrasco elija entre martes 25/08 13-15hs o juev
+  2026-08-23 04:50:09 | claude_call whatsapp: 8769ms prompt=86896c raw=6383c in=2t(cache_read=0 new=55177) out=252t ttfb=3144ms api=6430ms turnos=1 $0.2219
+  2026-08-23 07:09:43 | gcontacts-reconcile semanal: 367 ok, 11 fallidos
+  2026-08-23 10:52:06 | acción ejecutada: quitar_pendiente
+  2026-08-23 10:52:06 | acción ejecutada: quitar_pendiente
+  2026-08-23 10:52:06 | acción ejecutada: quitar_pendiente
+  2026-08-23 10:52:11 | claude_call telegram: 11285ms prompt=9797c raw=11288c in=4t(cache_read=112288 new=113081) out=487t ttfb=1736ms api=8745ms turnos=4 $0.4651
+  2026-08-23 12:02:28 | meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+  2026-08-23 12:32:39 | claude_call follow-ups: 16042ms prompt=3916c raw=9368c in=2t(cache_read=0 new=17116) out=1080t ttfb=1683ms api=15037ms turnos=1 $0.0820
+  2026-08-23 12:32:46 | follow-up #50 cerrado: manucarrasco80@gmail.com respondió antes del vencimiento (Esperando que Manuel Carrasco confirme si le viene bien el jueves 27/
+  2026-08-23 12:32:46 | follow-up #49 re-ping automático a 541155771290@c.us — reprogramado a 2026-08-25 12:32:46 (Esperando que Manuel Carrasco confirme el jueves 27/08 de 1
+  2026-08-23 12:32:46 | claude_call moderacion: 6521ms prompt=1623c raw=6619c in=10t(cache_read=0 new=22498) out=396t ttfb=1292ms api=5717ms turnos=1 $0.0306
+  2026-08-23 12:40:45 | wa-outbox: entrega FALLIDA definitiva #241 a 541155771290 (chat_equivocado) — aviso al owner
+  2026-08-23 12:54:22 | acción ejecutada: cerrar_follow_up
+  2026-08-23 12:54:38 | claude_call telegram: 33783ms prompt=9646c raw=17431c in=8t(cache_read=358294 new=120489) out=2121t ttfb=1881ms api=31177ms turnos=4 $0.5912
+
+── barrido de notificaciones ──
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+
+── sesiones (turnos / rotaciones) ──
+2026-07-22 13:01:07: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=4, creada=2026-07-08T12:46:00.256Z)
+2026-07-24 15:46:07: [GMAIL sesion/Doris Capurro] rotando sesión (turnos=1, creada=2026-07-07T14:47:00.319Z)
+2026-08-02 08:36:08: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=12, creada=2026-07-22T16:02:07.636Z)
+2026-08-16 23:20:07: [GMAIL sesion/Diego] rotando sesión (turnos=3, creada=2026-07-08T01:49:45.687Z)
+2026-08-20 08:21:14: [GMAIL sesion/Gabriela Echaniz] rotando sesión (turnos=7, creada=2026-08-02T11:38:01.981Z)
+2026-08-22 18:02:41: [TG sesion/Diego] rotando sesión (turnos=1, creada=2026-08-17T02:20:41.763Z)
+LISTO
+
+# exit=0
