@@ -36,6 +36,31 @@ function _aplicarPlaceholdersInstancia(s) {
     .replace(/\{\{ASISTENTE_FROM_EMAIL\}\}/g, ASISTENTE_FROM_EMAIL);
 }
 
+// ⚠️ DEUDA TÉCNICA CONOCIDA — DOS FUENTES DE VERDAD SOBRE LAS ACCIONES
+// (medido el 2026-08-23; NO es un problema de costo, es de correctitud)
+//
+// El bloque [CÓMO EJECUTÁS ACCIONES] pesa ~37k chars y son DOS cosas pegadas:
+//   ~15k  reglas de comportamiento (aislamiento entre usuarios, idioma,
+//         honestidad, adjuntos, consultas, los dos slots de respuesta,
+//         turno de tercero). Esto es lo que hace que Maria sea Maria.
+//   ~20k  el catálogo de las 31 acciones con parámetros y notas.
+//
+// El modelo YA recibe además ~15k de schemas MCP (action-schemas.js) con esas
+// mismas 31 acciones. O sea: el catálogo está duplicado, y la SEMÁNTICA vive
+// sólo acá. Ejemplos que se perderían si alguien borra el catálogo a lo bruto:
+//   · "en tier 1 sólo podés modificar eventos cuyo organizer seas vos"
+//   · "con dueno=maria + trigger_externo + esperando_de, el follow_up sale
+//      solo — NO emitas crear_follow_up aparte"
+//
+// QUÉ HACER (cuando haya un rato con calma): mover esa semántica a las
+// `description` de action-schemas.js —que viajan igual— y dejar acá sólo las
+// reglas de comportamiento. Una sola fuente de verdad.
+//
+// QUÉ **NO** HACER: podarlo para ahorrar tokens. Los 57k del system son ~16.5k
+// tokens y con sesiones se escriben en cache UNA vez por sesión; un turno caro
+// escribe 120k tokens, de los cuales el 86% es conversación acumulada, no este
+// prompt. Podar acá ahorra ~1% y arriesga el comportamiento. El lever de costo
+// es MARIA_SESION_MAX_TURNOS, no este bloque.
 function seccionInstrucciones() {
   try {
     const t = fs.readFileSync(INSTRUCCIONES_PATH, 'utf8').trim();

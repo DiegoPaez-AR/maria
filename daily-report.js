@@ -85,7 +85,7 @@ function statsInstancia(env) {
                 wa_reconexiones: 0, anomalias: [] },
     latencia: null,     // { total, contextos:[{ctx,n,p50,p95,max}], lentas30, lentas60 }
     programados: null,  // { pendientes, atrasados }
-    gasto: null,        // { total_usd, calls, con_costo }
+    gasto: null,        // { total_usd, calls, con_costo, por_canal:[{canal,turnos,usd,usd_por_turno,cache_escrito,cache_leido}] }
     no_ruteado: null,   // { desconocidos:[{hhmm,canal,de,nombre,snippet}], avisos:[{hhmm,snippet}], rebotes:[{hhmm,de,asunto}], prospectos }
     seguridad: {
       // Cada item: { hhmm, jid, nombre, mensaje, is_owner } cuando aplica.
@@ -379,10 +379,35 @@ function statsInstancia(env) {
           _con++;
         } else if (r.cli != null) { _tot += Number(r.cli); _con++; }
       }
+      // Desglose por canal + costo POR TURNO (2026-08-23): con las sesiones
+      // persistentes prendidas, lo que hay que vigilar no es el total sino
+      // cuánto sale CADA turno de conversación — y sobre todo cuánto cache se
+      // ESCRIBE (se paga 1,25x; leer sale 0,1x). Si el costo por turno sube,
+      // es que la sesión se está haciendo larga y hay que bajar la rotación
+      // (MARIA_SESION_MAX_TURNOS).
+      const _porCanal = {};
+      for (const r of _rows) {
+        const c = r.canal || '(sin canal)';
+        const p = _precios(r.d)[c === 'moderacion' ? 'haiku' : 'main'];
+        const usd = (r.tin != null || r.tout != null)
+          ? ((r.tin || 0) * p.in + (r.tout || 0) * p.out + (r.cr || 0) * p.cr + (r.cw || 0) * p.cw) / 1e6
+          : Number(r.cli || 0);
+        const e = _porCanal[c] || (_porCanal[c] = { turnos: 0, usd: 0, cw: 0, cr: 0 });
+        e.turnos++; e.usd += usd; e.cw += (r.cw || 0); e.cr += (r.cr || 0);
+      }
+      const _canales = Object.entries(_porCanal)
+        .map(([canal, e]) => ({
+          canal, turnos: e.turnos, usd: e.usd,
+          usd_por_turno: e.turnos ? e.usd / e.turnos : 0,
+          cache_escrito: e.cw, cache_leido: e.cr,
+        }))
+        .sort((a, b) => b.usd - a.usd);
+
       stats.gasto = {
         total_usd: _tot,
         calls: _rows.length,
         con_costo: _con,
+        por_canal: _canales,
       };
 
       // ── No ruteado / rebotes (copia operador del catch-all, 24h) ──
@@ -574,6 +599,11 @@ function renderTexto(allStats, fechaStr, funnel) {
     if (s.gasto) {
       const sinCosto = s.gasto.calls - s.gasto.con_costo;
       lines.push(`💵 Gasto Claude 24h: $${s.gasto.total_usd.toFixed(2)} USD (${s.gasto.calls} llamadas${sinCosto > 0 ? `, ${sinCosto} sin costo informado` : ''})`);
+      // Costo POR TURNO: es el número que hay que vigilar con las sesiones
+      // prendidas. Si sube, la sesión se está alargando (bajar la rotación).
+      for (const c of (s.gasto.por_canal || []).filter(x => x.turnos > 0 && x.usd >= 0.01)) {
+        lines.push(`   · ${c.canal}: ${c.turnos} turno(s) · $${c.usd.toFixed(2)} · $${c.usd_por_turno.toFixed(3)}/turno · cache escrito ${Math.round(c.cache_escrito / 1000)}k, leído ${Math.round(c.cache_leido / 1000)}k`);
+      }
     }
     const NR = s.no_ruteado;
     if (NR && (NR.desconocidos.length || NR.avisos.length || NR.rebotes.length || NR.prospectos)) {
@@ -793,8 +823,13 @@ function renderHTML(allStats, fechaStr, funnel) {
       const reconLine = e.wa_reconexiones
         ? `<div style="margin-top:6px;font-size:12px;color:#64748b;">🔄 Reconexiones WA (change_state): <strong style="color:#1f2937;">${e.wa_reconexiones}</strong></div>`
         : '';
+      const _gastoCanales = s.gasto && s.gasto.por_canal
+        ? s.gasto.por_canal.filter(c => c.turnos > 0 && c.usd >= 0.01).map(c =>
+            `<div style="font-size:12px;color:#64748b;margin-left:18px;">· ${_esc(c.canal)}: ${c.turnos} turno${c.turnos === 1 ? '' : 's'} · $${c.usd.toFixed(2)} · <strong>$${c.usd_por_turno.toFixed(3)}/turno</strong> · cache escrito ${Math.round(c.cache_escrito / 1000)}k / leído ${Math.round(c.cache_leido / 1000)}k</div>`
+          ).join('')
+        : '';
       const gastoLine = s.gasto
-        ? `<div style="margin-top:10px;font-size:13px;color:#1f2937;">💵 Gasto Claude 24h: <strong>$${s.gasto.total_usd.toFixed(2)} USD</strong> <span style="color:#94a3b8;font-size:12px;">· ${s.gasto.calls} llamada${s.gasto.calls === 1 ? '' : 's'}${s.gasto.calls - s.gasto.con_costo > 0 ? ` · ${s.gasto.calls - s.gasto.con_costo} sin costo informado` : ''}</span></div>`
+        ? `<div style="margin-top:10px;font-size:13px;color:#1f2937;">💵 Gasto Claude 24h: <strong>$${s.gasto.total_usd.toFixed(2)} USD</strong> <span style="color:#94a3b8;font-size:12px;">· ${s.gasto.calls} llamada${s.gasto.calls === 1 ? '' : 's'}${s.gasto.calls - s.gasto.con_costo > 0 ? ` · ${s.gasto.calls - s.gasto.con_costo} sin costo informado` : ''}</span></div>${_gastoCanales}`
         : '';
       html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
   <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">Rendimiento — latencia Claude (24h)</div>
