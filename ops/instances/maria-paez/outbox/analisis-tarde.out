@@ -1,0 +1,97 @@
+# ejecutado: 2026-08-23T22:36:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo ""
+#   echo "════ 1. ERRORES desde las 12:00 local (15:00 UTC) ════"
+#   timeout 20 awk '$0 >= "2026-08-23 15:00" && $0 <= "2026-08-23 23:59"' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -v "fetch failed" | tail -20
+#   echo "  fetch-failed en el período: $(timeout 10 awk '$0 >= \"2026-08-23 15:00\"' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -c 'fetch failed')"
+#   echo ""
+#   echo "════ 2. WARNINGS / FALLOS del out.log ════"
+#   timeout 25 awk '$0 >= "2026-08-23 15:00"' /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "warn|fall|error|FALLO|no pude|abort|descart|huerfan|timeout" | grep -v "politica_v4" | tail -25
+#   echo ""
+#   echo "════ 3. CONVERSACIONES desde las 12:00 ════"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT e.timestamp,e.canal,e.direccion,COALESCE(u.nombre,e.nombre,e.de) q,substr(e.cuerpo,1,110) c
+#      FROM eventos e LEFT JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp >= '2026-08-23 15:00' AND e.canal IN ('whatsapp','telegram','gmail')
+#      ORDER BY e.timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][11:16]} {r['canal'][:3]} {f} {(r['q'] or '?')[:18]:<18} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n════ 4. EVENTOS DE SISTEMA (claude_calls, acciones, fallos) ════")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,130) c FROM eventos
+#      WHERE timestamp >= '2026-08-23 15:00' AND canal='sistema' ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][11:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   print("\n════ 5. OUTBOX WA desde las 12:00 ════")
+#   for r in db.execute("SELECT id,numero,estado,intentos,creado,entregado,substr(texto,1,50) t FROM wa_outbox WHERE creado >= '2026-08-23 15:00' ORDER BY id"):
+#       print(' ', dict(r))
+#   db.close()
+#   PY
+#   echo ""
+#   echo "════ 6. barrido / sesiones / latidos ════"
+#   timeout 15 grep -E "barrido|RECUPERO" /root/.pm2/logs/maria-paez-out.log | tail -3
+#   timeout 15 node -e "
+#   const gh=require('/root/secretaria/gmail-handler');
+#   const wh=require('/root/secretaria/wa-hook');
+#   const min=(t)=>t?Math.round((Date.now()-t)/60000)+' min':'nunca';
+#   console.log('  latido gmail:', min(gh.ultimoLatidoGmail()));
+#   console.log('  latido teléfono:', min(wh.ultimoLatido()));
+#   const mem=require('/root/secretaria/memory');
+#   console.log('  sesión Diego:', mem.getEstadoUsuario(1,'claude_sesion'));"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Sun Aug 23 10:36:01 PM -03 2026
+
+════ 1. ERRORES desde las 12:00 local (15:00 UTC) ════
+2026-08-23 22:12:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+2026-08-23 22:14:37: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+2026-08-23 22:34:43: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+  fetch-failed en el período: 0
+
+════ 2. WARNINGS / FALLOS del out.log ════
+
+════ 3. CONVERSACIONES desde las 12:00 ════
+ 15:11 tel ← Diego              🔕 Revisión mensual: puse en pausa a 9 usuario(s) que no interactúan hace 30+ días. |  | · Santiago Bignone — 95 dí
+ 15:14 tel → Diego              ok, gracias
+ 16:15 gma ← Doris Capurro      ⏰ *En 15min*: lo de facu (01:30 p. m.) @domingo savio 3039, entre uspallata y juan segundo fernandez
+ 22:03 gma ← Hernan Fulco       📊 *Tu semana* (al 23/08) | 💬 WhatsApp: 0 recibidos · 12 enviados | 📧 Emails: 0 recibidos · 39 enviados | 📝 Pendiente
+ 22:03 gma ← Natali Funez       📊 *Tu semana* (al 23/08) | 💬 WhatsApp: 1 recibidos · 9 enviados | 📧 Emails: 0 recibidos · 14 enviados | 📝 Pendientes
+ 22:03 tel ← Diego              📊 *Tu semana* (al 23/08) | 💬 WhatsApp: 27 recibidos · 83 enviados | 📧 Emails: 6 recibidos · 9 enviados | 📅 Eventos a
+ 22:03 gma ← Doris Capurro      📊 *Tu semana* (al 23/08) | 💬 WhatsApp: 0 recibidos · 12 enviados | 📧 Emails: 0 recibidos · 33 enviados | 📝 Pendiente
+ 22:03 gma ← Enrique Sosa       📊 *Tu semana* (al 23/08) | 💬 WhatsApp: 0 recibidos · 2 enviados | 📧 Emails: 0 recibidos · 9 enviados | 📝 Pendientes:
+ 22:03 gma ← Gabriela Echaniz   📊 *Tu semana* (al 23/08) | 💬 WhatsApp: 19 recibidos · 9 enviados | 📧 Emails: 2 recibidos · 16 enviados | 📅 Eventos a
+
+════ 4. EVENTOS DE SISTEMA (claude_calls, acciones, fallos) ════
+ 15:11 usuario PAUSADO por inactividad (95 días) — aviso enviado a santiagocbignone@gmail.com
+ 15:11 usuario PAUSADO por inactividad (95 días) — aviso enviado a nkosinski@froneus.com
+ 15:11 usuario PAUSADO por inactividad (102 días, nunca escribió) — aviso enviado a wvera@froneus.com
+ 15:11 usuario PAUSADO por inactividad (81 días) — aviso enviado a cruiz@froneus.com
+ 15:11 usuario PAUSADO por inactividad (89 días) — aviso enviado a sameijeira@froneus.com
+ 15:11 usuario PAUSADO por inactividad (83 días) — aviso enviado a santiago@capurro.com.ar
+ 15:11 usuario PAUSADO por inactividad (82 días) — aviso enviado a andres@nomada.com
+ 15:11 usuario PAUSADO por inactividad (57 días, nunca escribió) — aviso enviado a jcibils@csml.com.ar
+ 15:11 usuario PAUSADO por inactividad (53 días, nunca escribió) — aviso enviado a alfonso.amat@gmail.com
+ 15:14 claude_call telegram: 4617ms prompt=81964c raw=4659c in=2t(cache_read=0 new=52997) out=57t ttfb=1572ms api=3747ms turnos=1 $0.2091
+ 21:33 shutdown por SIGINT
+ 21:33 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 21:38 poda-eventos: 3 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+
+════ 5. OUTBOX WA desde las 12:00 ════
+
+════ 6. barrido / sesiones / latidos ════
+2026-08-23 01:46:43: [MB v4.5] 01:46:34 I [notif] listener conectado — barrido cada 3min (marca=0)
+2026-08-23 01:46:53: [MB v4.5] 01:46:49 I [notif] barrido (arranque): primera corrida, marca inicial fijada
+2026-08-23 01:49:13: [MB v4.5] 01:49:02 I [notif] listener conectado — barrido cada 3min (marca=1787454010050)
+  latido gmail: 3 min
+  latido teléfono: 0 min
+  sesión Diego: {"id":"6f1a48db-74ed-471e-aa8e-976532277909","turnos":1,"creada":"2026-08-23T15:14:55.261Z","promptHash":"e0b506407bbf3302"}
+LISTO
+
+# exit=0
