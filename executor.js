@@ -931,7 +931,24 @@ function _quitarPendiente(a, ctx) {
   if (!cerrado) {
     throw new Error(`quitar_pendiente: no encontré el pendiente (${a.id ?? a.desc ?? `indice=${a.indice}`})`);
   }
-  return { id: cerrado.id, desc: cerrado.desc, cerrado: true };
+  // CIERRE EN CASCADA (2026-08-24, caso Catalino): el pendiente puede tener un
+  // follow-up automático enganchado (meta.follow_up_id). Si se cierra el
+  // pendiente y el follow-up queda vivo, el loop re-pinguea igual a un tercero
+  // por una gestión que el usuario YA canceló — Catalino recibió un "les
+  // escribo de nuevo por la reserva" dos días después de decir que los
+  // miércoles no abren, con la cena ya resuelta en Fico. "Cancelá la gestión"
+  // tiene que matar TODO el árbol, no solo el pendiente.
+  let fuCerrado = null;
+  try {
+    const _meta = typeof cerrado.meta_json === 'string' ? JSON.parse(cerrado.meta_json) : (cerrado.meta || {});
+    const fuId = Number(_meta && _meta.follow_up_id);
+    if (Number.isFinite(fuId) && fuId > 0) {
+      mem.setFollowUpEstado(fuId, 'cancelado', ctx.usuario.id);
+      fuCerrado = fuId;
+      console.log(`[quitar_pendiente] follow-up #${fuId} cancelado en cascada (venía enganchado al pendiente #${cerrado.id})`);
+    }
+  } catch (e) { console.warn('[quitar_pendiente] cascada follow-up:', e.message); }
+  return { id: cerrado.id, desc: cerrado.desc, cerrado: true, ...(fuCerrado ? { follow_up_cancelado: fuCerrado } : {}) };
 }
 
 // Normaliza un destino de WhatsApp a wid canónico. Se perdió en la misma
