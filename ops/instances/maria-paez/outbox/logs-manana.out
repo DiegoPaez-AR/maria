@@ -1,0 +1,136 @@
+# ejecutado: 2026-08-24T16:03:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo ""
+#   echo "── señales del TELÉFONO desde anoche (¿se cortó en la mudanza?) ──"
+#   timeout 20 grep -E "\[MB" /root/.pm2/logs/maria-paez-out.log | tail -25
+#   echo ""
+#   echo "── latidos ──"
+#   timeout 15 node -e "
+#   const gh=require('/root/secretaria/gmail-handler'), wh=require('/root/secretaria/wa-hook');
+#   const min=(t)=>t?Math.round((Date.now()-t)/60000)+' min':'nunca';
+#   console.log('  teléfono:', min(wh.ultimoLatido()), '| gmail:', min(gh.ultimoLatidoGmail()));"
+#   echo ""
+#   echo "── errores desde medianoche ──"
+#   timeout 15 grep "2026-08-24" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -15
+#   echo ""
+#   echo "── actividad desde medianoche ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT e.timestamp,e.canal,e.direccion,COALESCE(u.nombre,e.nombre,e.de) q,substr(e.cuerpo,1,100) c
+#      FROM eventos e LEFT JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp >= '2026-08-24 03:00' AND e.canal IN ('whatsapp','telegram','gmail') ORDER BY e.timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:3]} {f} {(r['q'] or '?')[:16]:<16} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── sistema desde medianoche ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,120) c FROM eventos
+#      WHERE timestamp >= '2026-08-24 03:00' AND canal='sistema'
+#        AND cuerpo NOT LIKE 'claude_call%' ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   print("\n── wa_outbox pendiente ──")
+#   for r in db.execute("SELECT id,numero,estado,intentos FROM wa_outbox WHERE estado NOT IN ('entregado','vencido') ORDER BY id DESC LIMIT 5"):
+#       print('  ', dict(r))
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Mon Aug 24 04:03:01 PM -03 2026
+
+── señales del TELÉFONO desde anoche (¿se cortó en la mudanza?) ──
+2026-08-23 09:44:55: [MB v4.5] 09:44:51 I [outbox] enviado EN FRÍO (accesibilidad) → 5491132317896
+2026-08-23 09:52:36: [MB v4.5] 09:52:29 I [notif] dup ignorado de "Gabriel Pacheco"
+2026-08-23 09:52:36: [MB v4.5] 09:52:29 I [notif] entrante de "Diego Paez": 🎤 Voice message (0:23)
+2026-08-23 09:52:36: [MB v4.5] 09:52:30 I [media] audio de "Diego Paez" cazado: PTT-20260823-WA0000.opus (55KB) — subiendo
+2026-08-23 09:52:46: [MB-MEDIA] audio de "Diego Paez" (56KB) → "María, Manuel ya confirmó la reunión por email hace unos días, chequéalo, así qu"
+2026-08-23 09:52:55: [MB v4.5] 09:52:46 I [media] audio procesado OK
+2026-08-23 09:52:55: [MB v4.5] 09:52:46 I [humano] espero 14s antes de responder a "Diego Paez"
+2026-08-23 09:53:05: [MB v4.5] 09:53:01 I [media] reply a "Diego Paez": ENVIADA
+2026-08-23 14:37:40: [MB v4.5] 14:37:31 I [upd] al día (v4.5 code=30, mío=30)
+2026-08-23 20:37:36: [MB v4.5] 20:37:33 I [upd] al día (v4.5 code=30, mío=30)
+2026-08-24 03:39:29: [MB v4.5] 03:38:02 I [upd] al día (v4.5 code=30, mío=30)
+2026-08-24 08:06:44: [MB v4.5] 08:06:42 I [notif] sin acción de reply — descarto no-chat: "Gabriel Pacheco"
+2026-08-24 08:06:54: [MB v4.5] 08:06:52 I [notif] dup ignorado de "Gabriel Pacheco"
+2026-08-24 09:06:03: [MB v4.5] 09:05:56 I [frio] abriendo chat 5491163846461 (#243)
+2026-08-24 09:06:03: [MB v4.5] 09:05:58 I [frio] botón send encontrado — 'escribiendo' 11s antes de enviar
+2026-08-24 09:06:13: [MB v4.5] 09:06:10 I [notif] sin acción de reply — descarto no-chat: "Gabriel Pacheco"
+2026-08-24 09:06:13: [MB v4.5] 09:06:11 I [frio] verificación #243: ENVIADO
+2026-08-24 09:06:13: [MB v4.5] 09:06:11 I [outbox] enviado EN FRÍO (accesibilidad) → 5491163846461
+2026-08-24 09:38:29: [MB v4.5] 09:38:27 I [upd] al día (v4.5 code=30, mío=30)
+2026-08-24 13:22:53: [MB v4.5] 13:22:33 I [notif] entrante de "+54 9 11 6384-6461": Buen día. Te vuelvo a repetir que los miércoles no abrimos. 
+2026-08-24 13:23:45: [MB v4.5] 13:22:53 I [notif] entrante de "Gabriel Pacheco": Ok.
+2026-08-24 13:23:45: [MB v4.5] 13:22:53 I [notif] entrante de "+54 9 11 6384-6461": Buen día.  los miércoles no abrimos. 
+2026-08-24 13:23:45: [MB v4.5] 13:23:06 I [humano] espero 9s antes de responder a "+54 9 11 6384-6461"
+2026-08-24 13:23:55: [MB v4.5] 13:23:51 I [notif] reply inline a "+54 9 11 6384-6461": ENVIADA
+2026-08-24 16:02:14: [MB v4.5] 16:02:10 I [upd] al día (v4.5 code=30, mío=30)
+
+── latidos ──
+  teléfono: 0 min | gmail: 5 min
+
+── errores desde medianoche ──
+2026-08-24 02:08:54: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 11:53:28: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 12:00:54: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 13:24:23: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-24 13:24:23: No tengo registrado en mi historial que haya cerrado esa reserva en Fico — sí tengo a Fico como contacto guardado, pero no veo confirmación de que se haya hecho la reserva para el miércoles 2/9 a las 21hs para 4 personas.
+2026-08-24 13:24:23: 
+2026-08-24 13:24:23: ¿Querés que le escriba a Fico ahora para confirmar/asegurar el lugar, o vos ya lo arreglaste por tu cuenta directamente con ellos?
+
+── actividad desde medianoche ──
+ 08-24 07:00 tel ← Diego            ☀️ *Buen día, Diego.* lunes, 24 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 6° / máx 
+ 08-24 10:00 gma ← Hernan Fulco     ☀️ *Buen día, Hernan Fulco.* lunes, 24 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 6°
+ 08-24 10:00 gma ← Natali Funez     ☀️ *Buen día, Natali Funez.* lunes, 24 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 6°
+ 08-24 10:00 gma ← Doris Capurro    ☀️ *Buen día, Doris Capurro.* lunes, 24 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 6
+ 08-24 10:00 gma ← Enrique Sosa     ☀️ *Buen día, Enrique Sosa.* lunes, 24 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 6°
+ 08-24 10:00 gma ← Gabriela Echaniz ☀️ *Buen día, Gabriela Echaniz.* lunes, 24 de agosto. |  | *📅 Agenda del día* | (sin eventos hoy) |  | *📝 Pend
+ 08-24 11:45 gma ← Hernan Fulco     ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-24 11:45 gma ← Doris Capurro    ⏰ *En 15min*: Arceo (09:00 a. m.)
+ 08-24 12:00 gma ← Hernan Fulco     ⏰ *En 15min*: MC Daily (09:15 a. m.) | Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.c
+ 08-24 12:06 wha ← Diego            Hola, les escribo de nuevo por la reserva del miércoles 2/9 a las 21hs para 4 personas. ¿Nos podrían
+ 08-24 12:15 gma ← Hernan Fulco     ⏰ *En 15min*: Pagar Naturgy (09:30 a. m.)
+ 08-24 12:30 gma ← Hernan Fulco     ⏰ *En 15min*: Daily CMP (09:45 a. m.) | Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sond
+ 08-24 12:45 tel ← Diego            ⏰ *En 15min*: [Monaco] Fundraising (10:00 a. m.) | Con: carlos@monaco.gg, amaro@monaco.gg | 👤 Amaro — Co
+ 08-24 13:15 gma ← Doris Capurro    ⏰ *En 15min*: andreina (10:30 a. m.)
+ 08-24 13:45 gma ← Hernan Fulco     ⏰ *En 15min*: Planning MC (11:00 a. m.) | Con: grey.uzcategui@sondeos.com.ar, bogdan.bedyukh@sondeosgl
+ 08-24 15:45 gma ← Hernan Fulco     ⏰ *En 15min*: Overview Instalación OpenEye | Outbound (01:00 p. m.) @Reunión de Microsoft Teams | Con:
+ 08-24 16:15 gma ← Doris Capurro    ⏰ *En 15min*: Libi cumple (01:30 p. m.) @sucre 676
+ 08-24 16:22 wha → Diego            Buen día. Te vuelvo a repetir que los miércoles no abrimos.  |  |  | Abrimos jueves y viernes por la noche
+ 08-24 16:22 wha → Diego            Ok.
+ 08-24 16:23 tel ← Diego            Che, Catalino me confirmó que los miércoles no abren (ya te lo había avisado antes, insistieron de n
+ 08-24 16:23 wha ← Diego            Gracias por la aclaración! Le consulto a Diego qué día le queda mejor entre jueves/viernes de noche 
+ 08-24 16:23 wha → Diego            Buen día.  los miércoles no abrimos.  |  |  | Abrimos jueves y viernes por la noche.  | Domingos al mediodía
+ 08-24 16:23 tel → Diego            No, no hace falta porque ya reservamos en Fico, no? Reservaste vos también.
+ 08-24 17:45 gma ← Hernan Fulco     ⏰ *En 15min*: Reunión feedback 08/2026 | Gustavo Garcia  (03:00 p. m.) | Con: rrhh@sondeosglobal.com, 
+ 08-24 18:03 gma → Diego            Hola Maria, confirmado que es una reunión virtual? |  | > On 21 Aug 2026, at 17:46, Maria Paez <maria.
+ 08-24 18:03 gma ← Diego            Hola Manuel, |  | Sí, confirmado: es una reunión virtual, con link de Google Meet incluido en la invitac
+ 08-24 18:33 tel ← Diego            Te debo consulta sobre algo pendiente 👇 |  | 1. Decidir día/hora para la reserva en Catalino (miércoles 
+
+── sistema desde medianoche ──
+ 08-24 10:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-24 10:18 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 10:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 10:48 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 11:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 11:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 11:58 follow-up #51 re-ping automático a 5491163846461@c.us — reprogramado a 2026-08-26 11:58:34 (Confirmar reserva en Catalin
+ 08-24 12:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 14:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 14:58 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 16:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 16:22 acción ejecutada: cerrar_follow_up
+ 08-24 16:22 acción ejecutada: agregar_pendiente
+ 08-24 16:24 Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude: No tengo registrado en mi historial
+ 08-24 18:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-24 18:03 acción ejecutada: responder_email
+
+── wa_outbox pendiente ──
+   {'id': 42, 'numero': '5491150105262', 'estado': 'cancelado', 'intentos': 114}
+LISTO
+
+# exit=0
