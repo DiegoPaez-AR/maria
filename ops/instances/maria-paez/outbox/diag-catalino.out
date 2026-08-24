@@ -1,0 +1,74 @@
+# ejecutado: 2026-08-24T16:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── ¿qué disparó el envío #243 a Catalino? ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("SELECT * FROM wa_outbox WHERE id=243"):
+#       d=dict(r); d['texto']=(d.get('texto') or '')[:150]; print(' ',d)
+#   print("\n── follow-ups con Catalino (6384-6461) o de la reserva ──")
+#   for r in db.execute("""SELECT * FROM follow_ups WHERE esperando_de LIKE '%6384%' OR descripcion LIKE '%reserva%' OR descripcion LIKE '%atalino%' ORDER BY id DESC LIMIT 6"""):
+#       d=dict(r); print(' ',{k:str(v)[:70] for k,v in d.items() if v is not None})
+#   print("\n── pendientes que mencionan reserva/Catalino/Fico ──")
+#   for r in db.execute("""SELECT id,desc,dueno,estado,disparador FROM pendientes
+#      WHERE desc LIKE '%eserva%' OR desc LIKE '%atalino%' OR desc LIKE '%ico%' ORDER BY id DESC LIMIT 8"""):
+#       print(' ',dict(r))
+#   print("\n── ¿Diego recibió respuesta a su pregunta de las 10:24? turnos TG después de 13:24 UTC ──")
+#   for r in db.execute("""SELECT timestamp,direccion,substr(cuerpo,1,110) c FROM eventos
+#      WHERE canal='telegram' AND timestamp >= '2026-08-24 13:20' ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][11:16]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── hechos sobre la cena/reserva ──")
+#   for r in db.execute("SELECT clave,substr(valor,1,100) v FROM hechos WHERE clave LIKE '%cena%' OR clave LIKE '%reserva%' OR valor LIKE '%Fico%' OR valor LIKE '%atalino%' LIMIT 8"):
+#       print(' ',dict(r))
+#   db.close()
+#   PY
+#   echo "── qué le respondió Maria a Catalino a las 13:23 ──"
+#   timeout 15 grep -A 2 "reply inline a \"+54 9 11 6384" /root/.pm2/logs/maria-paez-out.log | tail -5
+#   timeout 20 python3 -c "
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute(\"SELECT timestamp,substr(cuerpo,1,200) c FROM eventos WHERE canal='whatsapp' AND direccion='saliente' AND timestamp >= '2026-08-24 13:20' ORDER BY timestamp\"):
+#       print(' ',r['timestamp'][11:16],(r['c'] or '').replace(chr(10),' | '))
+#   db.close()"
+#   echo LISTO
+
+# ───── output ─────
+── ¿qué disparó el envío #243 a Catalino? ──
+  {'id': 243, 'creado': '2026-08-24 11:58:34', 'usuario_id': 1, 'numero': '5491163846461', 'texto': 'Hola, les escribo de nuevo por la reserva del miércoles 2/9 a las 21hs para 4 personas. ¿Nos podrían confirmar si tienen disponibilidad? ¡Gracias!', 'estado': 'entregado', 'intentos': 1, 'tomado_en': '2026-08-24 12:05:56', 'entregado': '2026-08-24 12:06:12', 'metadata_json': '{"tipo":"follow_up_reping","followUpId":51,"esperando_de":"5491163846461@c.us","via":"outbox_bridge","tag":"follow-ups/re-ping"}', 'no_antes': '2026-08-24 12:00:37'}
+
+── follow-ups con Catalino (6384-6461) o de la reserva ──
+  {'id': '51', 'creado': '2026-08-22 11:53:29', 'usuario_id': '1', 'descripcion': 'Confirmar reserva en Catalino miércoles 2/9 21hs para 4 personas (espe', 'esperando_de': '5491163846461@c.us', 'esperando_canal': 'whatsapp', 'vence_en': '2026-08-26 11:58:34', 'estado': 'cerrado', 'cerrado_en': '2026-08-24 16:22:54', 'metadata_json': '{"origen":"auto_pendiente","re_pings":1,"re_ping_en":"2026-08-24T11:58'}
+  {'id': '46', 'creado': '2026-08-18 20:20:58', 'usuario_id': '1', 'descripcion': 'Esperando que Gabriel Pacheco confirme la cena del 2/9 en Catalino (co', 'esperando_de': '5491140402319@c.us', 'esperando_canal': 'whatsapp', 'vence_en': '2026-08-20 20:20:58', 'estado': 'disparado', 'disparado_en': '2026-08-20 20:21:13', 'metadata_json': '{"origen":"auto_pendiente"}'}
+  {'id': '14', 'creado': '2026-06-23 22:58:43', 'usuario_id': '1', 'descripcion': 'Cuando Gastón Girotti confirme el día para el almuerzo en Iñaki (marte', 'esperando_de': '5491156408326@c.us', 'esperando_canal': 'whatsapp', 'vence_en': '2026-06-26 22:58:43', 'estado': 'cerrado', 'cerrado_en': '2026-06-26 23:00:53', 'metadata_json': '{"origen":"auto_pendiente"}'}
+  {'id': '13', 'creado': '2026-06-17 21:45:48', 'usuario_id': '1', 'descripcion': 'Cuando Kōnā Corner confirme recepción de la seña y la reserva del sába', 'esperando_de': '5491130514423@c.us', 'esperando_canal': 'whatsapp', 'vence_en': '2026-06-19 21:45:48', 'estado': 'cancelado', 'cerrado_en': '2026-06-17 21:45:48', 'metadata_json': '{"origen":"auto_pendiente"}'}
+  {'id': '10', 'creado': '2026-06-17 15:58:26', 'usuario_id': '1', 'descripcion': 'Cuando Kōnā Corner confirme reserva opción 1 (a la carta + karaoke) pa', 'esperando_de': '5491130514423@c.us', 'esperando_canal': 'whatsapp', 'vence_en': '2026-06-19 15:58:26', 'estado': 'cerrado', 'cerrado_en': '2026-06-19 16:00:10', 'metadata_json': '{"origen":"auto_pendiente"}'}
+
+── pendientes que mencionan reserva/Catalino/Fico ──
+  {'id': 286, 'desc': 'Decidir día/hora para la reserva en Catalino (miércoles no abren; ofrecen jueves y viernes por la noche, o domingo al mediodía) para 4 personas', 'dueno': 'usuario', 'estado': 'abierto', 'disparador': 'respuesta_usuario'}
+  {'id': 284, 'desc': 'Confirmar reserva en Fico miércoles 2/9 21hs para 4 personas (esperando que confirmen disponibilidad)', 'dueno': 'maria', 'estado': 'cerrado', 'disparador': 'trigger_externo'}
+  {'id': 283, 'desc': 'Esperando respuesta de 5491134897992@c.us (WA): "Hola! Soy Maria, la secretaria de Diego Paez. Quería consultar disponibilidad para hacer una reserva: miércoles 2/9 a las 21hs para 4 person…"', 'dueno': 'maria', 'estado': 'cerrado', 'disparador': 'trigger_externo'}
+  {'id': 281, 'desc': 'Confirmar reserva en Catalino miércoles 2/9 21hs para 4 personas (esperando que confirmen disponibilidad)', 'dueno': 'maria', 'estado': 'cerrado', 'disparador': 'trigger_externo'}
+  {'id': 280, 'desc': 'Esperando respuesta de 5491163846461@c.us (WA): "Hola! Soy Maria, la secretaria de Diego Paez. Quería consultarles disponibilidad para hacer una reserva: miércoles 2/9 a las 21hs para 4 per…"', 'dueno': 'maria', 'estado': 'cerrado', 'disparador': 'trigger_externo'}
+  {'id': 279, 'desc': 'Reservar en Catalino miércoles 2/9 21hs para 4 personas (no pude mandar el WA, envíos por WhatsApp a terceros están caídos)', 'dueno': 'maria', 'estado': 'cerrado', 'disparador': 'manual'}
+  {'id': 278, 'desc': 'Confirmar horario para reservar la cena del 2/9 en Catalino (Gabriel confirmó asistencia, son 4 personas)', 'dueno': 'usuario', 'estado': 'cerrado', 'disparador': 'respuesta_usuario'}
+  {'id': 277, 'desc': 'Confirmar horario para reservar la cena del 2/9 en Catalino (Gabriel ya confirmó asistencia)', 'dueno': 'usuario', 'estado': 'cerrado', 'disparador': 'respuesta_usuario'}
+
+── ¿Diego recibió respuesta a su pregunta de las 10:24? turnos TG después de 13:24 UTC ──
+ 16:23 ← Che, Catalino me confirmó que los miércoles no abren (ya te lo había avisado antes, insistieron de nuevo). Ati
+ 16:23 → No, no hace falta porque ya reservamos en Fico, no? Reservaste vos también.
+ 18:33 ← Te debo consulta sobre algo pendiente 👇 |  | 1. Decidir día/hora para la reserva en Catalino (miércoles no abren; 
+
+── hechos sobre la cena/reserva ──
+── qué le respondió Maria a Catalino a las 13:23 ──
+2026-08-24 13:23:55: [MB v4.5] 13:23:51 I [notif] reply inline a "+54 9 11 6384-6461": ENVIADA
+2026-08-24 14:45:23: [programados] 1 mensaje(s) debidos, despachando…
+2026-08-24 14:45:23: [wa-send] programados/1508: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
+  16:23 Gracias por la aclaración! Le consulto a Diego qué día le queda mejor entre jueves/viernes de noche o domingo al mediodía, y te confirmo.
+LISTO
+
+# exit=0
