@@ -1,0 +1,50 @@
+# ejecutado: 2026-08-25T14:19:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo "── estado de Telegram AHORA ──"
+#   timeout 20 grep -E "\[TG\]" /root/.pm2/logs/maria-paez-out.log | tail -8
+#   timeout 15 grep -E "\[TG\]" /root/.pm2/logs/maria-paez-error.log | tail -6
+#   echo ""
+#   echo "── el aviso que salió (evento) ──"
+#   timeout 20 python3 -c "
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute(\"SELECT timestamp,canal,substr(cuerpo,1,300) c, metadata_json m FROM eventos WHERE timestamp >= '2026-08-24 21:00' AND (cuerpo LIKE '%telegram_polling%' OR cuerpo LIKE '%fetch failed%' OR json_extract(metadata_json,'\$.tipo') LIKE '%loop%') ORDER BY timestamp\"):
+#       print(' ',r['timestamp'],r['canal'],'|',(r['c'] or '').replace(chr(10),' ⏎ '))
+#   db.close()"
+#   echo ""
+#   echo "── último poll OK de TG (¿se recuperó?) ──"
+#   timeout 15 grep -E "poll recuperado|entrante" /root/.pm2/logs/maria-paez-out.log | grep -iE "TG|telegram" | tail -4
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Tue Aug 25 02:19:01 PM -03 2026
+── estado de Telegram AHORA ──
+2026-08-22 19:51:29: [TG] transcribiendo audio…
+2026-08-22 19:51:43: [TG] transcribiendo audio…
+2026-08-22 19:54:50: [TG] transcribiendo audio…
+2026-08-24 13:23:46: [TG] transcribiendo audio…
+2026-08-24 18:34:59: [TG] poll recuperado tras 3 fallos (fetch failed)
+2026-08-24 18:52:22: [TG] poll recuperado tras 2 fallos (fetch failed)
+2026-08-25 09:25:44: [TG] transcribiendo audio…
+2026-08-25 09:26:19: [TG] transcribiendo audio…
+2026-08-24 18:33:08: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 18:50:57: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 19:09:21: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 21:23:30: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 22:52:06: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 08:36:11: [TG] poll error (reintento en 15s): fetch failed
+
+── el aviso que salió (evento) ──
+
+── último poll OK de TG (¿se recuperó?) ──
+2026-08-24 18:34:59: [TG] poll recuperado tras 3 fallos (fetch failed)
+2026-08-24 18:52:22: [TG] poll recuperado tras 2 fallos (fetch failed)
+LISTO
+
+# exit=0
