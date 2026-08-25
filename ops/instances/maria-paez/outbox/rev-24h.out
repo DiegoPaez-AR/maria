@@ -1,0 +1,108 @@
+# ejecutado: 2026-08-25T14:40:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo "── errores 24h (agrupados) ──"
+#   timeout 20 awk -v d="$(date -u -d '24 hours ago' '+%Y-%m-%d %H:%M')" '$0 >= d' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -15
+#   echo "── fallos/avisos en out.log ──"
+#   timeout 20 awk -v d="$(date -d '24 hours ago' '+%Y-%m-%d %H:%M')" '$0 >= d' /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "FALLO|no pude|abort|descart|huérfan|error|warn" | grep -viE "politica_v4|poll error" | tail -15
+#   echo "── actividad por canal (24h) + costo ──"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT canal, SUM(direccion='entrante') e, SUM(direccion='saliente') s
+#      FROM eventos WHERE timestamp >= datetime('now','-24 hours') AND canal IN ('whatsapp','telegram','gmail') GROUP BY canal"""):
+#       print(f"  {r['canal']:<10} in={r['e'] or 0:<4} out={r['s'] or 0}")
+#   print("  costo por canal:")
+#   for r in db.execute("""SELECT json_extract(metadata_json,'$.canal') c, COUNT(*) n,
+#        SUM(json_extract(metadata_json,'$.cost_usd')) usd
+#      FROM eventos WHERE timestamp >= datetime('now','-24 hours')
+#        AND json_extract(metadata_json,'$.cost_usd') IS NOT NULL GROUP BY c ORDER BY usd DESC"""):
+#       print(f"   {str(r['c'] or '-'):<14} {r['n']:>3}t  US$ {r['usd'] or 0:.2f}  (${(r['usd'] or 0)/max(r['n'],1):.3f}/t)")
+#   print("  conversaciones (entrantes de usuarios):")
+#   for r in db.execute("""SELECT u.nombre, COUNT(*) n FROM eventos e JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp >= datetime('now','-24 hours') AND e.direccion='entrante'
+#        AND e.canal IN ('whatsapp','telegram','gmail') GROUP BY u.nombre ORDER BY n DESC"""):
+#       print(f"   {r['nombre']:<20} {r['n']}")
+#   print("  sistema (no claude_call):")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,110) c FROM eventos
+#      WHERE timestamp >= datetime('now','-24 hours') AND canal='sistema'
+#        AND cuerpo NOT LIKE 'claude_call%' ORDER BY timestamp DESC LIMIT 12"""):
+#       print(f"   {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo "── teléfono / barrido / latidos ──"
+#   timeout 15 grep -E "\[MB" /root/.pm2/logs/maria-paez-out.log | tail -5
+#   timeout 15 grep -cE "RECUPERO" /root/.pm2/logs/maria-paez-out.log
+#   timeout 15 node -e "
+#   const gh=require('/root/secretaria/gmail-handler'), wh=require('/root/secretaria/wa-hook');
+#   const min=(t)=>t?Math.round((Date.now()-t)/60000)+' min':'nunca';
+#   console.log('  teléfono:', min(wh.ultimoLatido()), '| gmail:', min(gh.ultimoLatidoGmail()));"
+#   echo "── ¿algún pausado volvió? ──"
+#   timeout 15 node -e "const u=require('/root/secretaria/usuarios'); console.log('  pausados:', u.listarPausados().map(x=>x.nombre).join(', ')||'ninguno');"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Tue Aug 25 02:40:02 PM -03 2026
+── errores 24h (agrupados) ──
+2026-08-24 18:33:08: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 18:33:59: [loop-guard] telegram_polling alertado al owner tras 3 fallos: fetch failed
+2026-08-24 18:34:10: [wa-send] loop_guard: telegram (politica_v4_usuarios_sin_wa) falló para Diego: fetch failed
+2026-08-24 18:50:57: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 19:09:21: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 21:23:30: [TG] poll error (reintento en 15s): fetch failed
+2026-08-24 22:52:06: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 08:36:11: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 09:26:22: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-25 09:26:22: Se lo mando ahora a Ignacio (queda en cola unos minutos, ya te aviso apenas responda).
+2026-08-25 09:26:49: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-25 09:26:49: Le mando ahora la aclaración de que los horarios son hora Argentina (GMT-3).
+── fallos/avisos en out.log ──
+2026-08-24 18:34:59: [TG] poll recuperado tras 3 fallos (fetch failed)
+2026-08-24 18:34:59: [loop-guard] telegram_polling recuperado tras 3 fallos
+2026-08-24 18:52:22: [TG] poll recuperado tras 2 fallos (fetch failed)
+2026-08-25 09:28:09: [MB v4.5] 09:28:08 I [notif] sin acción de reply — descarto no-chat: "Gabriel Pacheco"
+2026-08-25 12:19:26: [unknown-flow/gmail] remitente automático/sistema (mailer-daemon@googlemail.com) — descarto sin avisar
+── actividad por canal (24h) + costo ──
+  gmail      in=1    out=15
+  telegram   in=2    out=7
+  whatsapp   in=4    out=6
+  costo por canal:
+   whatsapp         4t  US$ 1.71  ($0.427/t)
+   enriquecer-contacto   4t  US$ 0.70  ($0.176/t)
+   gmail            1t  US$ 0.44  ($0.444/t)
+   memoria-curada   4t  US$ 0.28  ($0.071/t)
+   telegram         2t  US$ 0.26  ($0.130/t)
+   moderacion       7t  US$ 0.13  ($0.019/t)
+  conversaciones (entrantes de usuarios):
+   Diego                7
+  sistema (no claude_call):
+   08-25 17:28 poda-eventos: 2 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   08-25 17:23 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   08-25 17:23 shutdown por SIGINT
+   08-25 16:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 16:05 meeting-prep: 4 alerta(s) agendada(s) (6 usuarios)
+   08-25 15:19 [unknown-flow] descarté mail automático de mailer-daemon@googlemail.com (asunto: Re: Maria Paez — mensaje)
+   08-25 13:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 12:52 acción ejecutada: agregar_pendiente
+   08-25 12:52 acción ejecutada: quitar_pendiente
+   08-25 12:50 acción ejecutada: agregar_pendiente
+   08-25 12:50 acción ejecutada: quitar_pendiente
+   08-25 12:50 acción ejecutada: quitar_pendiente
+── teléfono / barrido / latidos ──
+2026-08-25 09:52:49: [MB v4.5] 09:52:44 I [notif] reply inline a "Ignacio Garcia": ENVIADA
+2026-08-25 09:53:09: [MB v4.5] 09:53:02 I [notif] entrante de "Ignacio Garcia": Puedes ver mi calendly?
+2026-08-25 09:53:49: [MB v4.5] 09:53:44 I [humano] espero 14s antes de responder a "Ignacio Garcia"
+2026-08-25 09:54:09: [MB v4.5] 09:53:59 I [notif] reply inline a "Ignacio Garcia": ENVIADA
+2026-08-25 10:02:49: [MB v4.5] 10:02:41 I [upd] al día (v4.5 code=30, mío=30)
+0
+  teléfono: 0 min | gmail: 2 min
+── ¿algún pausado volvió? ──
+  pausados: Santiago Bignone, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Santiago Capurro, Andres Neumann, Jaime Cibils, Alfonso Amat
+LISTO
+
+# exit=0
