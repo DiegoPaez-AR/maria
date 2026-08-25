@@ -1,0 +1,26 @@
+# ejecutado: 2026-08-25T14:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MALO" || echo "limpio ✓"
+#   grep -n "BUG HISTÓRICO" google.js >/dev/null && echo "fix en disco ✓" || echo "fix NO está"
+#   echo "── mail de prueba a Diego ──"
+#   timeout 60 node -e "
+#   const g=require('/root/secretaria/google');
+#   g.enviarEmail({to:'diego@paez.is', asunto:'Prueba del fix de mails (podés borrarlo)',
+#     texto:'PRIMERA LÍNEA — si leés esto, el fix funciona.\n\nSegunda línea: antes la primera se perdía como header inválido.\n\nMaria'})
+#    .then(r=>console.log('  enviado ✓ id', r.id))
+#    .catch(e=>console.log('  err:', e.message));"
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+limpio ✓
+fix en disco ✓
+── mail de prueba a Diego ──
+  enviado ✓ id 1a039faa86c95113
+LISTO
+
+# exit=0
