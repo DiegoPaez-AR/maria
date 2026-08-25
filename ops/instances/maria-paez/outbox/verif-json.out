@@ -1,0 +1,22 @@
+# ejecutado: 2026-08-25T14:46:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   cat state/.canary-bad-commit 2>/dev/null && echo "CANARY MALO" || echo "canary limpio"
+#   timeout 20 pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       if p['name']!='maria-paez': continue
+#       print(' pm2',p['pm2_env']['status'],'up=%dmin'%((time.time()*1000-p['pm2_env']['pm_uptime'])/60000))"
+#   grep -q "_sinJson" claude-client.js && echo " fallback prosa en disco OK"
+#   echo LISTO
+
+# ───── output ─────
+canary limpio
+ pm2 online up=2min
+ fallback prosa en disco OK
+LISTO
+
+# exit=0
