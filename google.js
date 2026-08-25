@@ -764,7 +764,8 @@ async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
     const boundary = '----maria_boundary_' + Math.random().toString(36).slice(2);
     headers.push(`Content-Type: multipart/alternative; boundary="${boundary}"`);
     body = [
-      '',
+      '',   // ← línea en blanco: separa headers de cuerpo (RFC 5322). Sin ella
+      '',   //   el receptor se come líneas del cuerpo como "headers" inválidos.
       `--${boundary}`,
       'Content-Type: text/plain; charset=UTF-8',
       'Content-Transfer-Encoding: 8bit',
@@ -785,7 +786,14 @@ async function enviarEmail({ to, asunto, texto, html, cc, bcc, replyTo }) {
       `Content-Type: text/plain; charset=UTF-8`,
       `Content-Transfer-Encoding: 8bit`,
     );
-    body = '\r\n' + texto;
+    // ⚠️ BUG HISTÓRICO (encontrado 25/8/2026 por un aviso del loop-guard que
+    // llegó mutilado): acá faltaba la LÍNEA EN BLANCO que separa headers de
+    // cuerpo. Gmail trataba la primera línea del texto como un header
+    // malformado y la descartaba — TODOS los mails de texto plano salían sin
+    // su primer párrafo (los briefs sin el "Buen día", los avisos de pausa sin
+    // el "Hola <nombre>"). responderEmail siempre lo hizo bien; solo este
+    // camino estaba roto.
+    body = '\r\n\r\n' + texto;
   }
 
   const raw = Buffer.from(headers.join('\r\n') + body).toString('base64')
