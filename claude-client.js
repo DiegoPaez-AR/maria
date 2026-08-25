@@ -529,6 +529,20 @@ function extraerJSON(texto) {
     } catch {}
   }
 
+  // ÚLTIMO RECURSO (2026-08-25, 3 casos en 2 días con sesiones prendidas): a
+  // veces el modelo responde PROSA en vez del JSON — y la prosa es una
+  // respuesta perfectamente buena ("Se lo mando ahora a Ignacio…"). Antes se
+  // tiraba el turno entero y el usuario recibía SILENCIO, con el agravante de
+  // que las acciones por tools YA habían corrido: pasaba de todo y nadie
+  // avisaba. Si el texto no parece un intento de JSON y tiene contenido, lo
+  // usamos como respuesta legacy (los handlers ya saben rutear `respuesta`).
+  const _plano = String(texto || '').trim();
+  const _pareceJson = _plano.startsWith('{') || _plano.startsWith('[') || /"respuesta/.test(_plano.slice(0, 200));
+  if (_plano.length >= 3 && !_pareceJson) {
+    console.warn(`[claude-client] respuesta en PROSA (sin JSON) — la uso como \`respuesta\` en vez de descartar el turno: "${_plano.slice(0, 80)}"`);
+    return { respuesta: _plano, _sinJson: true };
+  }
+
   throw new Error(`No se pudo extraer JSON de la respuesta de Claude:\n${texto.slice(0, 500)}`);
 }
 
