@@ -1,0 +1,60 @@
+# ejecutado: 2026-08-25T18:48:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo "── conversación de Diego por Telegram (últimas 3 horas) ──"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,direccion,substr(cuerpo,1,220) c FROM eventos
+#      WHERE usuario_id=1 AND canal='telegram' AND timestamp >= datetime('now','-3 hours') ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][11:16]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── acciones y fallos del período ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,180) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= datetime('now','-3 hours') ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][11:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo ""
+#   echo "── errores del runtime (3h) ──"
+#   timeout 15 awk -v d="$(date '+%Y-%m-%d') $(date -d '3 hours ago' '+%H:%M')" '$0 >= d' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -20
+#   echo "── out.log: fallos/turnos (3h) ──"
+#   timeout 15 awk -v d="$(date '+%Y-%m-%d') $(date -d '3 hours ago' '+%H:%M')" '$0 >= d' /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "TG|executor|fall|error|acción|prosa|sinJson" | tail -25
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Tue Aug 25 06:48:02 PM -03 2026
+── conversación de Diego por Telegram (últimas 3 horas) ──
+ 19:45 ← ⏰ *En 15min*: Froneus MGMT (05:00 p. m.) | Con: nkosinski@froneus.com, wvera@froneus.com | 👤 Nicolás Kosinski — Froneus (IA conversacional / voicebots): Nicolás Kosinski es un contacto de Froneus (email nkosinski@froneus.com
+ 21:37 → María, ¿me agendas una reunión con Pablo Luna? Pablo Luna, ya coordinamos el |  horario todo solamente para que la pongas en la agenda. Con Pablo Luna para el |  viernes, no este viernes, sino el viernes de la semana que vie
+ 21:37 ← Listo, agendé "Reunion PL - DP" para el viernes 4/9 de 10 a 11:30 en tu oficina de Pellegrini, con Meet incluido. |  | Me falta el mail de Pablo Luna para mandarle la invitación — pasámelo cuando puedas.
+ 21:42 → [CONTACTO COMPARTIDO] Pablo Luna — tel: +541154189426 | (vCard: BEGIN:VCARD VERSION:3.0 PRODID:-//Apple Inc.//iPhone OS 26.6//EN N:Luna;Pablo;;; FN:Pablo Luna EMAIL;type=INTERNET;type=WORK;type=pref:pluna@partnerexpansion.
+ 21:43 ← Ya le sumé el mail de Pablo a la invitación de "Reunion PL - DP" del viernes 4/9 (10 a 11:30hs) — le va a llegar la invitación de calendario. |  | ⚠️ Ojo: no pude completar esta acción: upsert_contacto.
+
+── acciones y fallos del período ──
+ 21:37 acción ejecutada: crear_evento
+ 21:37 claude_call telegram: 35879ms prompt=9262c raw=20287c in=10t(cache_read=221549 new=57755) out=2176t ttfb=1494ms api=32549ms turnos=5 $0.3157
+ 21:43 acción FALLÓ: upsert_contacto — upsert_contacto: posible DUPLICADO de un contacto existente: "Pluna" (pluna@partnerexpansion.com) — mismo email. NO lo creé. Preguntale al usuario q
+ 21:43 acción ejecutada: modificar_evento
+ 21:43 claude_call telegram: 23026ms prompt=9588c raw=15296c in=6t(cache_read=184684 new=6696) out=1262t ttfb=1590ms api=19099ms turnos=4 $0.0995
+
+── errores del runtime (3h) ──
+2026-08-25 16:50:51: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 17:50:11: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 18:26:58: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 18:31:54: [TG] poll error (reintento en 15s): fetch failed
+2026-08-25 18:37:56: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé "Reunion PL - DP" para el viernes 4/9 de 10 a 11:30 en tu oficina "
+2026-08-25 18:43:06: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Pluna" (pluna@partnerexpansion.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+2026-08-25 18:43:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le sumé el mail de Pablo a la invitación de "Reunion PL - DP" del viernes 4/9"
+── out.log: fallos/turnos (3h) ──
+2026-08-25 18:37:01: [TG] transcribiendo audio…
+2026-08-25 18:37:19: [TG audio→texto] María, ¿me agendas una reunión con Pablo Luna? Pablo Luna, ya coordinamos el
+2026-08-25 18:42:56: [TG] contacto compartido por Diego: Pablo Luna +541154189426
+LISTO
+
+# exit=0
