@@ -1,0 +1,136 @@
+# ejecutado: 2026-08-26T20:17:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print("── Poch en la libreta ──")
+#   poch=None
+#   for r in db.execute("SELECT id,usuario_id,nombre,whatsapp,email FROM contactos WHERE nombre LIKE '%och%'"):
+#       print(' ',dict(r)); poch=r
+#   print("\n── wa_outbox de hoy ──")
+#   for r in db.execute("SELECT id,numero,estado,intentos,creado,entregado,substr(texto,1,70) t FROM wa_outbox WHERE creado >= datetime('now','-12 hours') ORDER BY id"):
+#       print(' ',dict(r))
+#   print("\n── qué le pidió Diego a Maria hoy ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,150) c FROM eventos
+#      WHERE usuario_id=1 AND timestamp >= datetime('now','-6 hours')
+#        AND canal IN ('telegram','whatsapp','gmail') ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][11:16]} {r['canal'][:3]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── eventos que mencionan a Poch (24h, cualquier canal) ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,120) c FROM eventos
+#      WHERE timestamp >= datetime('now','-24 hours') AND (cuerpo LIKE '%och%' OR nombre LIKE '%och%') ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][11:16]} {r['canal'][:4]} {r['direccion'][:3]} {(r['c'] or '').replace(chr(10),' ')}")
+#   print("\n── acciones/fallos recientes ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,140) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= datetime('now','-6 hours')
+#        AND (cuerpo LIKE '%acción%' OR cuerpo LIKE '%FALL%' OR cuerpo LIKE '%no pude%') ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][11:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo "── teléfono: qué sirvió/envió hoy ──"
+#   timeout 15 grep -E "\[MB|wa-outbox" /root/.pm2/logs/maria-paez-out.log | tail -12
+#   echo LISTO
+
+# ───── output ─────
+── Poch en la libreta ──
+  {'id': 24, 'usuario_id': 1, 'nombre': 'Poch Burgers', 'whatsapp': '5491137646922@c.us', 'email': None}
+
+── wa_outbox de hoy ──
+  {'id': 248, 'numero': '5491159524645', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 13:51:41', 'entregado': '2026-08-26 13:56:26', 't': 'Hola Luciano! Te confirmo el horario final con Noelia: miércoles 2/9 d'}
+  {'id': 249, 'numero': '5491155947242', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 18:33:25', 'entregado': '2026-08-26 18:40:13', 't': 'Hola Noelia! Te escribo porque la reunión con Diego y Luciano en reali'}
+  {'id': 250, 'numero': '5491159524645', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 18:33:32', 'entregado': '2026-08-26 18:36:39', 't': 'Hola Luciano! Te escribo porque la reunión con Diego y Noelia en reali'}
+  {'id': 251, 'numero': '5491159524645', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 18:44:02', 'entregado': '2026-08-26 18:51:27', 't': 'Hola Luciano! Noelia me confirmó que el bloque de 14:30 a 15:30hs le q'}
+  {'id': 252, 'numero': '5491155947242', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 18:44:43', 'entregado': '2026-08-26 18:46:13', 't': 'Hola Noelia! Luciano propuso el horario de 13 a 14hs para la reunión d'}
+  {'id': 253, 'numero': '5491159524645', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 18:46:37', 'entregado': '2026-08-26 18:51:30', 't': 'Perfecto, entonces quedamos miércoles 2/9 de 14:30 a 15:30hs. ¡Gracias'}
+  {'id': 254, 'numero': '5491155947242', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 18:46:43', 'entregado': '2026-08-26 18:48:02', 't': 'Hola Noelia! Se resolvió: a Luciano también le queda cómodo el horario'}
+  {'id': 255, 'numero': '5491137646922', 'estado': 'entregado', 'intentos': 1, 'creado': '2026-08-26 23:12:17', 'entregado': '2026-08-26 23:16:22', 't': 'Hola! Les paso un pedido para retirar:\n\n1. Hamburguesa only cheese sim'}
+
+── qué le pidió Diego a Maria hoy ──
+ 18:15 tel ← ⏰ *En 15min*: Personal (03:30 p. m.)
+ 18:30 tel → como quedo la reu con luciano y con noe?
+ 18:30 tel ← Quedó confirmada para el miércoles 2/9 de 13:00 a 15:30hs, ya está agendada en tu calendario ("Reunión NB LP - DP") con Meet incluido.
+ 18:31 tel → la reunion es de una hora, la ventana que tengo es de 13 a 1530, habla con ellos y actualizala
+ 18:32 tel ← ¿Qué hora exacta dentro de esa ventana preferís proponerles? Por ejemplo 13:00-14:00, 13:30-14:30 o 14:30-15:30. Así les escribo a Noelia y Luciano co
+ 18:33 tel → a mi me da igual, preguntales a ellos
+ 18:33 tel ← Dale, ya les pregunto a los dos qué hora puntual dentro de esa ventana les queda mejor, y en cuanto respondan actualizo el evento.
+ 18:36 wha ← Hola Luciano! Te escribo porque la reunión con Diego y Noelia en realidad dura 1 hora, no las 2:30hs completas. Dentro de la ventana del miércoles 2/9
+ 18:40 wha ← Hola Noelia! Te escribo porque la reunión con Diego y Luciano en realidad dura 1 hora, no las 2:30hs completas. Dentro de la ventana del miércoles 2/9
+ 18:43 wha → 14:30 a 15:30
+ 18:43 wha → 13 a 14hs
+ 18:44 wha ← ¡Genial! Le confirmo la hora a Luciano y en cuanto me diga que le queda bien, actualizo la reunión.
+ 18:44 wha ← Gracias Luciano! Noelia había tirado un horario distinto (14:30 a 15:30), así que le estoy preguntando si le cierra el de 13 a 14 para que quede aline
+ 18:45 wha → De 14:30 a 15:30 tambien me quede comodo
+ 18:46 wha ← Hola Noelia! Luciano propuso el horario de 13 a 14hs para la reunión del miércoles 2/9 — ¿te queda bien ese en lugar del de 14:30 a 15:30 que me había
+ 18:46 tel ← Se resolvió lo de la reunión con Noelia y Luciano: a Luciano también le queda bien 14:30 a 15:30, así que quedó ese horario para el miércoles 2/9. Ya 
+ 18:46 wha → De 14:30 a 15:30 tambien me queda comodo
+ 18:46 wha ← Perfecto, entonces quedamos miércoles 2/9 de 14:30 a 15:30hs. ¡Gracias Luciano!
+ 18:47 wha → Gracias!
+ 18:48 wha ← Hola Noelia! Se resolvió: a Luciano también le queda cómodo el horario que vos propusiste. Quedamos entonces el miércoles 2/9 de 14:30 a 15:30hs. ¡Nos
+ 18:51 wha ← Hola Luciano! Noelia me confirmó que el bloque de 14:30 a 15:30hs le queda bien para el miércoles 2/9. ¿A vos también te funciona esa hora?
+ 18:51 wha ← Perfecto, entonces quedamos miércoles 2/9 de 14:30 a 15:30hs. ¡Gracias Luciano!
+ 20:14 tel → que pendientes tenemos?
+ 20:14 tel ← Tus pendientes personales: | 1. iProt Seguridad | 2. DDJJ 2025 | 3. Llamar a Poggetti | 4. Pasajes a Japón (fechas 1, 14, 17 de abril) | 5. tk iplan Wally | 6. tr
+ 20:14 tel → 5, 6 y 8 ya estan
+ 20:14 tel ← Cerré tk iplan Wally, transferencia honda x3 y dividendos.
+ 23:03 tel → María, me podés hacer un pedido de apocho, una hamburguesa only cheese simple con aros |  de cebolla, una hamburguesa only cheese doble carne con aros d
+ 23:03 tel ← Te paso el pedido que le mandaría a Poch Burgers, confirmame y lo tiro: |  | 1. Hamburguesa only cheese simple + aros de cebolla | 2. Hamburguesa only chees
+ 23:12 tel → Sale así
+ 23:12 tel → Avísame a qué hora paso
+ 23:12 tel ← Dale, se lo mando ahora a Poch Burgers. Apenas me digan la hora te aviso.
+ 23:12 tel ← Dale, apenas me digan la hora te aviso. Ya lo tengo anotado, estoy esperando que respondan.
+ 23:16 wha ← Hola! Les paso un pedido para retirar: |  | 1. Hamburguesa only cheese simple + aros de cebolla | 2. Hamburguesa only cheese doble carne + aros de cebolla | 3
+
+── eventos que mencionan a Poch (24h, cualquier canal) ──
+ 10:00 gmai sal ☀️ *Buen día, Doris Capurro.* miércoles, 26 de agosto.  *🌡️ Clima en Buenos Aires, AR* 🌦️ llovizna, mín 9° / máx 16° · 5
+ 17:15 gmai sal ⏰ *En 15min*: Roch Proyectos (02:30 p. m.) @Torre Banco Macro, Av. Eduardo Madero 1180, C1106 ACY, Cdad. Autónoma de Bue
+ 18:45 gmai sal ⏰ *En 15min*: Roch Proyectos - Board of Directors & Shareholders Meetings (04:00 p. m.) @Reunión de Microsoft Teams Con:
+ 23:03 tele ent María, me podés hacer un pedido de apocho, una hamburguesa only cheese simple con aros  de cebolla, una hamburguesa only
+ 23:03 tele sal Te paso el pedido que le mandaría a Poch Burgers, confirmame y lo tiro:  1. Hamburguesa only cheese simple + aros de ceb
+ 23:12 tele sal Dale, se lo mando ahora a Poch Burgers. Apenas me digan la hora te aviso.
+
+── acciones/fallos recientes ──
+ 18:33 acción ejecutada: enviar_wa
+ 18:33 acción ejecutada: enviar_wa
+ 18:33 acción ejecutada: agregar_pendiente
+ 18:33 pendiente "Esperando que Noelia y Luciano confirmen el horario exacto de 1 hora (dentro de " quedo SIN follow-up automatico: no pude identif
+ 18:35 acción ejecutada: quitar_pendiente
+ 18:35 acción ejecutada: quitar_pendiente
+ 18:35 acción ejecutada: agregar_pendiente
+ 18:35 acción ejecutada: responder_email
+ 18:44 acción ejecutada: quitar_pendiente
+ 18:44 acción ejecutada: enviar_wa
+ 18:44 acción ejecutada: agregar_pendiente
+ 18:44 acción FALLÓ: quitar_pendiente — quitar_pendiente: no encontré el pendiente (300)
+ 18:44 acción ejecutada: quitar_pendiente
+ 18:44 acción ejecutada: enviar_wa
+ 18:46 acción ejecutada: modificar_evento
+ 18:46 acción ejecutada: enviar_wa
+ 18:46 acción ejecutada: quitar_pendiente
+ 18:46 acción ejecutada: quitar_pendiente
+ 18:46 acción ejecutada: quitar_pendiente
+ 18:46 acción ejecutada: enviar_wa
+ 18:47 acción ejecutada: quitar_pendiente
+ 20:14 acción ejecutada: quitar_pendiente
+ 20:14 acción ejecutada: quitar_pendiente
+ 20:14 acción ejecutada: quitar_pendiente
+ 23:12 acción ejecutada: enviar_wa
+── teléfono: qué sirvió/envió hoy ──
+2026-08-26 15:51:30: [wa-outbox] #253 entregado por el teléfono
+2026-08-26 15:51:34: [MB v4.5] 15:51:26 I [outbox] respondido (silencioso) → Luciano Peroni
+2026-08-26 15:51:34: [MB v4.5] 15:51:29 I [outbox] respondido (silencioso) → Luciano Peroni
+2026-08-26 15:52:24: [MB v4.5] 15:52:22 I [notif] dup ignorado de "+54 9 11 5952-4645"
+2026-08-26 15:52:24: [MB v4.5] 15:52:22 I [notif] dup ignorado de "+54 9 11 5952-4645"
+2026-08-26 16:03:35: [MB v4.5] 16:03:27 I [upd] al día (v4.5 code=30, mío=30)
+2026-08-26 20:12:17: [wa-outbox] #255 encolado → +5491137646922 (Hola! Les paso un pedido para retirar:
+2026-08-26 20:16:08: [MB v4.5] 20:15:57 I [frio] abriendo chat 5491137646922 (#255)
+2026-08-26 20:16:08: [MB v4.5] 20:16:00 I [frio] botón send encontrado — 'escribiendo' 19s antes de enviar
+2026-08-26 20:16:22: [wa-outbox] #255 entregado por el teléfono
+2026-08-26 20:16:28: [MB v4.5] 20:16:21 I [frio] verificación #255: ENVIADO
+2026-08-26 20:16:28: [MB v4.5] 20:16:21 I [outbox] enviado EN FRÍO (accesibilidad) → 5491137646922
+LISTO
+
+# exit=0
