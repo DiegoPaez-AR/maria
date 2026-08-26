@@ -1,0 +1,117 @@
+# ejecutado: 2026-08-26T09:06:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   AYER=$(date -d yesterday '+%Y-%m-%d')
+#   echo "── errores de ayer ($AYER) ──"
+#   timeout 20 grep "^$AYER" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -vE "poll error" | tail -15
+#   echo "  cortes de TG (poll error): $(timeout 10 grep -c \"^$AYER.*poll error\" /root/.pm2/logs/maria-paez-error.log 2>/dev/null)"
+#   echo "── fallos/avisos out.log ──"
+#   timeout 20 grep "^$AYER" /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "FALLO|no pude|abort|descart|prosa|acción #" | tail -12
+#   echo "── actividad + costo de ayer (UTC aprox) ──"
+#   timeout 30 python3 - <<'PY'
+#   import sqlite3,os
+#   from datetime import datetime,timedelta
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   # "ayer" local ≈ ayer 03:00 UTC a hoy 03:00 UTC
+#   hoy=datetime.utcnow().strftime('%Y-%m-%d')
+#   ayer=(datetime.utcnow()-timedelta(days=1)).strftime('%Y-%m-%d')
+#   d0, d1 = f"{ayer} 03:00", f"{hoy} 03:00"
+#   for r in db.execute("""SELECT canal, SUM(direccion='entrante') e, SUM(direccion='saliente') s
+#      FROM eventos WHERE timestamp>=? AND timestamp<? AND canal IN ('whatsapp','telegram','gmail') GROUP BY canal""",(d0,d1)):
+#       print(f"  {r['canal']:<10} in={r['e'] or 0:<4} out={r['s'] or 0}")
+#   print("  costo:")
+#   tot=0
+#   for r in db.execute("""SELECT json_extract(metadata_json,'$.canal') c, COUNT(*) n,
+#        SUM(json_extract(metadata_json,'$.cost_usd')) usd FROM eventos
+#      WHERE timestamp>=? AND timestamp<? AND json_extract(metadata_json,'$.cost_usd') IS NOT NULL
+#      GROUP BY c ORDER BY usd DESC""",(d0,d1)):
+#       print(f"   {str(r['c'] or '-'):<16} {r['n']:>3}t  US$ {r['usd'] or 0:.2f} (${(r['usd'] or 0)/max(r['n'],1):.3f}/t)")
+#       tot+=r['usd'] or 0
+#   print(f"   TOTAL                 US$ {tot:.2f}")
+#   print("  quién escribió:")
+#   for r in db.execute("""SELECT COALESCE(u.nombre,e.nombre,e.de) q, COUNT(*) n FROM eventos e
+#      LEFT JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp>=? AND e.timestamp<? AND e.direccion='entrante'
+#        AND e.canal IN ('whatsapp','telegram','gmail') GROUP BY q ORDER BY n DESC""",(d0,d1)):
+#       print(f"   {(r['q'] or '?')[:24]:<24} {r['n']}")
+#   print("  sistema (hitos, no claude_call):")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,120) c FROM eventos
+#      WHERE timestamp>=? AND timestamp<? AND canal='sistema'
+#        AND cuerpo NOT LIKE 'claude_call%' AND cuerpo NOT LIKE 'acción ejecutada%' ORDER BY timestamp""",(d0,d1)):
+#       print(f"   {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo "── teléfono: RECUPEROs acumulados / latidos ──"
+#   timeout 10 grep -c "RECUPERO" /root/.pm2/logs/maria-paez-out.log 2>/dev/null
+#   timeout 15 node -e "
+#   const gh=require('/root/secretaria/gmail-handler'), wh=require('/root/secretaria/wa-hook');
+#   const min=(t)=>t?Math.round((Date.now()-t)/60000)+' min':'nunca';
+#   console.log('  teléfono:', min(wh.ultimoLatido()), '| gmail:', min(gh.ultimoLatidoGmail()));"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Wed Aug 26 09:06:02 AM -03 2026
+── errores de ayer (2026-08-25) ──
+2026-08-25 09:26:22: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-25 09:26:22: Se lo mando ahora a Ignacio (queda en cola unos minutos, ya te aviso apenas responda).
+2026-08-25 09:26:49: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+2026-08-25 09:26:49: Le mando ahora la aclaración de que los horarios son hora Argentina (GMT-3).
+2026-08-25 18:37:56: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé "Reunion PL - DP" para el viernes 4/9 de 10 a 11:30 en tu oficina "
+2026-08-25 18:43:06: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Pluna" (pluna@partnerexpansion.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+2026-08-25 18:43:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le sumé el mail de Pablo a la invitación de "Reunion PL - DP" del viernes 4/9"
+2026-08-25 19:56:31: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo a Noelia Bruscoli ni a Luciano Peroni en la libreta. Pasame sus WhatsAp"
+2026-08-25 19:57:22: [wa-validate] sin cliente WA — normalizado offline "5491159524645@c.us" → 5491159524645@c.us (SIN verificar en Meta)
+2026-08-25 19:57:32: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Luciano y ya le mando la propuesta de horarios. Todavía me falta el con"
+2026-08-25 19:57:43: [wa-validate] sin cliente WA — normalizado offline "541155947242@c.us" → 5491155947242@c.us (SIN verificar en Meta)
+2026-08-25 19:57:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Perfecto, guardé a Noelia y le mando la propuesta de horarios también. Ya quedar"
+  cortes de TG (poll error): /root/.pm2/logs/maria-paez-error.log:0
+── fallos/avisos out.log ──
+2026-08-25 09:28:09: [MB v4.5] 09:28:08 I [notif] sin acción de reply — descarto no-chat: "Gabriel Pacheco"
+2026-08-25 12:19:26: [unknown-flow/gmail] remitente automático/sistema (mailer-daemon@googlemail.com) — descarto sin avisar
+── actividad + costo de ayer (UTC aprox) ──
+<stdin>:5: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+<stdin>:6: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  gmail      in=0    out=15
+  telegram   in=7    out=14
+  whatsapp   in=4    out=8
+  costo:
+   whatsapp           4t  US$ 1.71 ($0.427/t)
+   telegram           7t  US$ 1.11 ($0.159/t)
+   enriquecer-contacto   3t  US$ 0.52 ($0.173/t)
+   moderacion         8t  US$ 0.14 ($0.018/t)
+   memoria-curada     1t  US$ 0.08 ($0.083/t)
+   TOTAL                 US$ 3.57
+  quién escribió:
+   Diego                    11
+  sistema (hitos, no claude_call):
+   08-25 09:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 10:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 10:19 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 10:49 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 11:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 12:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 12:26 Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude: Se lo mando ahora a Ignacio (queda 
+   08-25 12:26 Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude: Le mando ahora la aclaración de que
+   08-25 13:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 15:19 [unknown-flow] descarté mail automático de mailer-daemon@googlemail.com (asunto: Re: Maria Paez — mensaje)
+   08-25 16:05 meeting-prep: 4 alerta(s) agendada(s) (6 usuarios)
+   08-25 16:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+   08-25 17:23 shutdown por SIGINT
+   08-25 17:23 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   08-25 17:28 poda-eventos: 2 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   08-25 17:43 shutdown por SIGINT
+   08-25 17:43 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+   08-25 18:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+   08-25 21:43 acción FALLÓ: upsert_contacto — upsert_contacto: posible DUPLICADO de un contacto existente: "Pluna" (pluna@partnerexpan
+   08-25 21:50 Ficha unificada: "Pluna" → "Pablo Luna" (mismo email pluna@partnerexpansion.com) + teléfono de la vCard. El upsert de la
+── teléfono: RECUPEROs acumulados / latidos ──
+0
+  teléfono: 0 min | gmail: 3 min
+LISTO
+
+# exit=0
