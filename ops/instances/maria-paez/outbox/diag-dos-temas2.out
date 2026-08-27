@@ -1,0 +1,137 @@
+# ejecutado: 2026-08-27T19:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "════ 1a. ¿Qué le respondió Maria a Manuel el 24/8 cuando preguntó si era virtual? ════"
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print("── hilo de mail con Manuel (salientes incluidos, por metadata) ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,250) c FROM eventos
+#      WHERE timestamp >= '2026-08-21' AND canal='gmail'
+#        AND (de LIKE '%manucarrasco%' OR cuerpo LIKE '%Manuel%' OR metadata_json LIKE '%manucarrasco%')
+#      ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][5:16]} {f} {(r['c'] or '').replace(chr(10),' | ')[:240]}")
+#   print("\n── el evento en el calendario: ¿tiene Meet? ──")
+#   PY
+#   timeout 40 node -e "
+#   const g=require('/root/secretaria/google');
+#   (async()=>{
+#     const evs=await g.listarEventos({desde:new Date('2026-08-27T00:00:00-03:00'),hasta:new Date('2026-08-28T00:00:00-03:00')}).catch(e=>null);
+#     if(!evs){console.log('  (no pude listar)');return;}
+#     for(const e of evs){
+#       const s=e.summary||'';
+#       if(/manuel|fulco|hern/i.test(s+JSON.stringify(e.attendees||[]))){
+#         console.log('  ▸', s, '|', e.start?.dateTime||e.start?.date, '→', e.end?.dateTime||'');
+#         console.log('    ubicación:', e.location||'(sin ubicación)');
+#         console.log('    meet:', e.hangoutLink||e.conferenceData?'SÍ TIENE':'no');
+#         console.log('    attendees:', (e.attendees||[]).map(a=>a.email).join(', '));
+#         console.log('    descripción:', String(e.description||'').slice(0,150));
+#       }
+#     }
+#   })();" 2>&1 | grep -v Warning
+#   echo ""
+#   echo "════ 2. Fulco → reunión con Ruben Ward: TODO el intercambio ════"
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   uid=db.execute("SELECT id FROM usuarios WHERE nombre='Hernan Fulco'").fetchone()[0]
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,250) c FROM eventos
+#      WHERE usuario_id=? AND timestamp >= datetime('now','-3 days')
+#        AND canal IN ('whatsapp','telegram','gmail') ORDER BY timestamp""",(uid,)):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:4]} {f} {(r['c'] or '').replace(chr(10),' | ')[:240]}")
+#   print("\n── razonamientos de los turnos de Fulco (sistema) ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,250) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= datetime('now','-3 days')
+#        AND (cuerpo LIKE '%Fulco%' OR cuerpo LIKE '%Ward%') ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')[:240]}")
+#   print("\n── pendientes de Fulco ──")
+#   for r in db.execute("SELECT id,desc,dueno,estado,creado FROM pendientes WHERE usuario_id=? ORDER BY id DESC LIMIT 6",(uid,)):
+#       print(' ',dict(r))
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+════ 1a. ¿Qué le respondió Maria a Manuel el 24/8 cuando preguntó si era virtual? ════
+── hilo de mail con Manuel (salientes incluidos, por metadata) ──
+ 08-21 03:13 ← Hola Manuel, |  | Te escribo de parte de Diego por la reunión de ustedes con Hernán Fulco. Surgieron dos opciones nuevas: |  | - Martes 25/08 de 13 a 15hs | - Jueves 27/08 de 13 a 18hs (dentro de esa ventana armamos las 3hs) |  | ¿Cuál te q
+ 08-21 03:13 ← Hola Hernán, |  | Diego me pidió coordinar la reunión de ustedes dos con Manuel Carrasco. Dos opciones: |  | - Martes 25/08 de 13 a 15hs | - Jueves 27/08 de 13 a 18hs (armamos las 3hs dentro de esa ventana) |  | ¿Cuál te viene mejor? |  | S
+ 08-21 12:26 → El jueves de 15 a 18hs. |  | <hernan.fulco@sondeosglobal.com> <https://www.instagram.com/sondeosglobal> | <https://www.linkedin.com/company/sondeos> <https://www.sondeosglobal.com> |  |  | El vie, 21 ago 2026 a las 0:13, Maria Paez (<
+ 08-21 12:28 ← Perfecto, Hernán, gracias! Te confirmo el jueves 27/08 de 15 a 18hs. Ya le estoy consultando a Manuel Carrasco si le viene bien ese horario y en cuanto me diga te aviso para cerrar y mandar la invitación.
+ 08-21 12:31 ← Hola Manuel! |  | Soy Maria, la secretaria de Diego. Te escribo para coordinar la reunión de 3 horas con Diego y Hernán Fulco. |  | Hernán ya confirmó el jueves 27/08 de 15 a 18hs. ¿Te viene bien ese día y horario a vos? |  | Quedo atenta a
+ 08-21 20:46 → Hola Maria, confirmado para el Jueves 27 de 15:00 a 18:00. | Gracias |  | > On 21 Aug 2026, at 09:31, Maria Paez <maria.paez@intensa.io> wrote: | >  | > ﻿Soy Maria, la secretaria de Diego. Te escribo para coordinar la | > reunión de 3
+ 08-21 20:46 ← Hola Manuel, |  | Perfecto, queda confirmado el jueves 27/08 de 15:00 a 18:00 con Diego y Hernán. Ya te mando la invitación de calendario con el link de Meet. |  | Saludos,
+ 08-24 18:03 → Hola Maria, confirmado que es una reunión virtual? |  | > On 21 Aug 2026, at 17:46, Maria Paez <maria.paez@intensa.io> wrote: | >  | > ﻿Hola Manuel, | >  | > Perfecto, queda confirmado el jueves 27/08 de 15:00 a 18:00 con Diego | > y
+ 08-24 18:03 ← Hola Manuel, |  | Sí, confirmado: es una reunión virtual, con link de Google Meet incluido en la invitación de calendario que ya te llegó. |  | Saludos,
+ 08-27 10:00 ← ☀️ *Buen día, Hernan Fulco.* jueves, 27 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ chaparrones, mín 12° / máx 17° · 99% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — Cumple Ayelén | • 09:00 a. m. — Rox está de vacacione
+ 08-27 17:45 ← ⏰ *En 15min*: Reunión Diego, Hernán Fulco y Manuel Carrasco (03:00 p. m.) | Con: manucarrasco80@gmail.com | 👤 Manucarrasco — No hay coincidencia confiable entre estos resultados y la persona vinculada a ese email específico. sin datos
+
+── el evento en el calendario: ¿tiene Meet? ──
+[eval]:4
+  const evs=await g.listarEventos({desde:new Date('2026-08-27T00:00:00-03:00'),hasta:new Date('2026-08-28T00:00:00-03:00')}).catch(e=>null);
+                    ^
+
+TypeError: g.listarEventos is not a function
+    at [eval]:4:21
+    at [eval]:16:3
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3
+
+Node.js v22.23.1
+
+════ 2. Fulco → reunión con Ruben Ward: TODO el intercambio ════
+ 08-25 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* martes, 25 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 8° / máx 13° |  | *📅 Agenda del día* | • 09:00 a. m. — Rox está de vacaciones | • 09:15 a. m. — MC Daily | • 09:45 a. m. — Daily CMP | 
+ 08-25 11:45 gmai ← ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-25 12:00 gmai ← ⏰ *En 15min*: MC Daily (09:15 a. m.) | Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosglobal.com, lautaro.taretto@sondeos.com.ar 
+ 08-25 12:30 gmai ← ⏰ *En 15min*: Daily CMP (09:45 a. m.) | Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello@sondeosglobal.com, gustavo.garcia@son
+ 08-25 12:45 gmai ← ⏰ *En 15min*: Sondeos Sales Team Call (10:00 a. m.) | Con: abril.krzisnik@sondeosglobal.com, ibrahim.khan@sondeosglobal.com | 👤 Abril Krzisnik — Ejecutivo de Cuentas en Sondeos Global | 👤 Ibrahim Khan — Sales Manager - Europe, Middle East &
+ 08-25 17:45 gmai ← ⏰ *En 15min*: PREMEDIC// CAMBIO META  (03:00 p. m.) | Con: gimena.maldonado@sondeosglobal.com, mkalinscky@grupopremedic.com.ar, dpkalinscky@grupopremedic.com.ar | 👤 Gimena Maldonado — Channel Sales Manager en Sondeos Global | 👤 Mkalinscky —
+ 08-25 17:45 gmai ← ⏰ *En 15min*: Anillado (03:00 p. m.)
+ 08-26 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* miércoles, 26 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ llovizna, mín 9° / máx 16° · 57% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — Rox está de vacaciones | • 09:00 a. m. — SND - Present
+ 08-26 11:45 gmai ← ⏰ *En 15min*: SND - Presentacion de resultados del mes (09:00 a. m.) | Con: fabio.boschetto@vrainz.com, rpc@sondeos.com.ar, pablo.casal@areait.com.ar, diego@paez.is, ruben.ward@sondeos.com.ar | 👤 Fabio Boschetto — CFO en Vrainz Accelerator 
+ 08-26 11:45 gmai ← ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-26 13:45 gmai ← ⏰ *En 15min*: Seguimiento Infraestructura (11:00 a. m.) | Con: cristian.incarnato@sondeosglobal.com, martin.gagliano@sondeos.com.ar, cristian.villalba@sondeos.com.ar, lautaro.taretto@sondeosglobal.com, eduardo.ligocki@sondeosglobal.com | 👤 
+ 08-26 14:45 gmai ← ⏰ *En 15min*: Armar reunión Dimi con Diego semana proxima.  (12:00 p. m.)
+ 08-26 15:33 gmai → María, necesito que coordines con Diego y Rubén para una reunión de 1 hora | la próxima semana, entre las 9 y 16hs para que entrevisten a Dimitrije | Krunic. |  | Me avisas qué disponibilidad tienen? |  | <hernan.fulco@sondeosglobal.c
+ 08-26 15:34 gmai ← Hola Ruben, |  | Soy Maria, la secretaria de Hernán Fulco. Te escribo porque necesitamos coordinar una reunión de 1 hora la semana que viene para que entrevisten a Dimitrije Krunic, junto con Diego. |  | ¿Me podrías pasar tu disponibilidad 
+ 08-26 15:38 gmai → hacela tengo disponibilidad |  |  | El mié, 26 ago 2026 a la(s) 12:34 p.m., Maria Paez (maria.paez@intensa.io) | escribió: |  | > Hola Ruben, | > | > Soy Maria, la secretaria de Hernán Fulco. Te escribo porque | > necesitamos coord
+ 08-26 15:39 gmai ← Hola Ruben, |  | Genial, gracias por confirmar tu disponibilidad. |  | ¿Me podrías indicar un día y horario puntual dentro de la semana próxima (entre las 9 y las 16hs) para coordinar la reunión de 1 hora con Dimitrije Krunic y Diego? |  | 
+ 08-26 17:15 gmai ← ⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.) | Con: lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com | 👤 Lautaro Taretto — No pude confirmar con confianza el rol/cargo específico de Lautaro Taretto. sin
+ 08-26 17:43 gmai ← Te debo consulta sobre algo pendiente 👇 |  | 1. Pedirle a Hernán el contacto (email) de Diego para coordinar reunión con Dimitrije Krunic — de Hernan Fulco — 2h |  | Decime qué hago con cada uno.
+ 08-26 17:45 gmai ← ⏰ *En 15min*: Análisis negocios IA (03:00 p. m.) | Con: alejandro.furgeri@sondeosglobal.com, alex.valdiviezo@sondeosglobal.com, alicia.marite@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.t
+ 08-26 18:33 gmai → el mail es diego@paez.is |  | <hernan.fulco@sondeosglobal.com> <https://www.instagram.com/sondeosglobal> | <https://www.linkedin.com/company/sondeos> <https://www.sondeosglobal.com> |  |  | El mié, 26 ago 2026 a las 14:43, Maria Paez 
+ 08-26 18:35 gmai ← Hola Hernán, |  | Perfecto, ya tengo el mail de Diego (diego@paez.is). |  | Apenas Ruben Ward me pase el día y horario, coordino la reunión con Dimitrije Krunic y Diego y te confirmo. |  | Saludos, | Maria Paez | Email: maria.paez@intensa.i
+ 08-27 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* jueves, 27 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ chaparrones, mín 12° / máx 17° · 99% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — Cumple Ayelén | • 09:00 a. m. — Rox está de vacacione
+ 08-27 11:45 gmai ← ⏰ *En 15min*: Cumple Ayelén (09:00 a. m.)
+ 08-27 11:45 gmai ← ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-27 12:00 gmai ← ⏰ *En 15min*: MC Daily (09:15 a. m.) | Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo.garcia@sondeosglobal.com, lautaro.taretto@sondeos.com.ar 
+ 08-27 12:30 gmai ← ⏰ *En 15min*: Daily CMP (09:45 a. m.) | Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosglobal.com, elina.torello@sondeosglobal.com, gustavo.garcia@son
+ 08-27 13:45 gmai ← ⏰ *En 15min*: Seguimiento de Tickets/Ciberseguridad (11:00 a. m.) | Con: cristian.incarnato@sondeos.com.ar, martin.gagliano@sondeos.com.ar, lautaro.taretto@sondeos.com.ar, gustavo.garcia@sondeos.com.ar, agustin.escobar@sondeos.com.ar, willi
+ 08-27 14:45 gmai ← ⏰ *En 15min*: *Invitation for Resellers*: "How to Sell Slack: The AI Enterprise Tool for your customers" - English Session (12:00 p. m.) | <blockquote><br><table><tbody><tr><td><table><tbody><tr><td><table><tbody><tr><td><table><tbody><tr><
+ 08-27 17:45 gmai ← ⏰ *En 15min*: Reunión Diego, Hernán Fulco y Manuel Carrasco (03:00 p. m.) | Con: manucarrasco80@gmail.com | 👤 Manucarrasco — No hay coincidencia confiable entre estos resultados y la persona vinculada a ese email específico. sin datos
+ 08-27 20:15 gmai ← ⏰ *En 15min*: Reunión feedback 08/2026 | Martin Gagliano  (05:30 p. m.) | Con: rrhh@sondeosglobal.com, martin.gagliano@sondeosglobal.com | 👤 Martin Gagliano (sondeosglobal.com) — No hay datos confiables sobre su cargo exacto. sin datos
+
+── razonamientos de los turnos de Fulco (sistema) ──
+ 08-26 15:34 razonamiento Gmail 1a03eb12867d5650 (Hernan Fulco): Diego no está en libreta (0 matches); contacté a Ruben y pedí a Hernán el dato de Diego.
+ 08-26 15:38 unknown-flow/gmail LLM: tercero_de_usuario usuario_id=2 · El propio email de Maria a Ruben Ward dice explícitamente 'Soy Maria, la secretaria de Hernán Fulco' coordinando la entrevista a Dimitrije Krunic; Ruben responde confirmando disponib
+
+── pendientes de Fulco ──
+  {'id': 302, 'desc': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic. Ya tengo el mail de Diego para coordinar: diego@paez.is', 'dueno': 'maria', 'estado': 'abierto', 'creado': '2026-08-26 18:35:22'}
+  {'id': 299, 'desc': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 15:39:13'}
+  {'id': 298, 'desc': 'Pedirle a Hernán el contacto (email) de Diego para coordinar reunión con Dimitrije Krunic', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-08-26 15:34:36'}
+  {'id': 297, 'desc': 'Esperar disponibilidad de Ruben Ward para reunión con Dimitrije Krunic', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 15:34:36'}
+  {'id': 107, 'desc': 'Confirmar a María (137456250806423@lid) si se agenda la reunión Diego/Javier/Hernán el mié 03/06 a las 10 — hay conflicto con Sondeos Sales Team Call (10-11 hs). Si Hernán confirma igual, crear evento y responderle a María.', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-05-29 18:44:44'}
+  {'id': 30, 'desc': 'Confirmarle a Nicolás Kosinski si se suma Sebastian Meijeira (sameijeira@froneus.com) a la Capacitación de Multichannel del 5/5', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-04-30 23:15:10'}
+LISTO
+
+# exit=0
