@@ -1,0 +1,222 @@
+# ejecutado: 2026-08-27T19:25:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "════ TEMA 1: la reunión con Manuel Carrasco y Fulco — ¿quién dijo Meet? ════"
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print("── mensajes con Manuel Carrasco (5 días, cualquier canal) ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,160) c FROM eventos
+#      WHERE (de LIKE '%155771290%' OR nombre LIKE '%Carrasco%' OR de LIKE '%manucarrasco%')
+#        AND timestamp >= datetime('now','-5 days') ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:4]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── eventos de calendario que mencionan Manuel/Fulco (acciones) ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,200) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= datetime('now','-7 days')
+#        AND (cuerpo LIKE '%Carrasco%' OR cuerpo LIKE '%Manuel%' OR cuerpo LIKE '%meet%' OR cuerpo LIKE '%Meet%')
+#      ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   print("\n════ TEMA 2: Fulco pidió reunión con Ruben Ward y Diego ════")
+#   print("── TODO lo de Hernan Fulco (3 días) ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,180) c FROM eventos
+#      WHERE usuario_id=(SELECT id FROM usuarios WHERE nombre='Hernan Fulco')
+#        AND timestamp >= datetime('now','-3 days') AND canal IN ('whatsapp','telegram','gmail')
+#      ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:4]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── menciones de Ward/Ruben (7 días, todos los canales+sistema) ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,180) c FROM eventos
+#      WHERE timestamp >= datetime('now','-7 days') AND (cuerpo LIKE '%Ward%' OR cuerpo LIKE '%Ruben%' OR cuerpo LIKE '%Rubén%')
+#      ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:4]} {r['direccion'][:3]} {(r['c'] or '').replace(chr(10),' ')}")
+#   print("\n── pendientes/follow-ups de Fulco ──")
+#   for r in db.execute("""SELECT id,desc,dueno,estado,creado FROM pendientes
+#      WHERE usuario_id=(SELECT id FROM usuarios WHERE nombre='Hernan Fulco') ORDER BY id DESC LIMIT 8"""):
+#       print(' ',dict(r))
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+════ TEMA 1: la reunión con Manuel Carrasco y Fulco — ¿quién dijo Meet? ════
+── mensajes con Manuel Carrasco (5 días, cualquier canal) ──
+ 08-24 18:03 gmai → Hola Maria, confirmado que es una reunión virtual? |  | > On 21 Aug 2026, at 17:46, Maria Paez <maria.paez@intensa.io> wrote: | >  | > ﻿Hola Manuel, | >  | > Perfecto
+
+── eventos de calendario que mencionan Manuel/Fulco (acciones) ──
+ 08-21 02:42 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-21 02:43 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-21 02:59 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-21 03:01 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-21 08:01 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 09:01 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 10:01 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 10:16 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 10:31 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 10:46 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 11:01 meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)
+ 08-21 11:31 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 12:27 [SEGURIDAD] gate_tercero: enviar_email hacia "manucarrasco80@gmail.com" bloqueado en turno de tercero: 
+ 08-21 12:28 razonamiento Gmail 1a02448ccfefb2ea (Diego): Hernán eligió jueves 27/08 15-18hs; cerré sus pendientes, pero no pude escribirle a Manuel en este turno (restricción: turno iniciado por tercero no puede 
+ 08-21 12:31 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 13:06 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 14:01 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 14:31 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 15:31 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 16:01 meeting-prep: 3 alerta(s) agendada(s) (15 usuarios)
+ 08-21 16:31 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 17:01 meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)
+ 08-21 18:01 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-21 18:31 meeting-prep: 2 alerta(s) agendada(s) (15 usuarios)
+ 08-21 20:46 razonamiento Gmail 1a02611d5bf1b3e5 (Diego): Manuel confirmó horario libre en agenda; se creó el evento con ambos como attendees, se cerró el pendiente y se le respondió confirmando por mail.
+ 08-21 21:01 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-22 02:43 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 03:02 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 03:03 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 11:51 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 12:21 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 12:23 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 12:28 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 12:30 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 14:16 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 14:19 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 14:34 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-22 14:41 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 14:43 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 14:45 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 15:26 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 16:05 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 16:07 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 16:09 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 17:51 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 17:59 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 18:12 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 19:56 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 19:59 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 19:59 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 20:32 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 20:48 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 21:03 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-22 21:36 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 22:39 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-22 23:12 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-23 03:17 follow-up #48 cerrado: hernan.fulco@sondeosglobal.com respondió antes del vencimiento (Esperando que Hernán Fulco elija entre martes 25/08 13-15hs o jueves 27/08 13-18hs para la reunión de 3hs con Die
+ 08-23 03:17 follow-up #47 cerrado: manucarrasco80@gmail.com respondió antes del vencimiento (Esperando que Manuel Carrasco elija entre martes 25/08 13-15hs o jueves 27/08 13-18hs para la reunión de 3hs con Diego 
+ 08-23 12:02 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-23 12:32 follow-up #50 cerrado: manucarrasco80@gmail.com respondió antes del vencimiento (Esperando que Manuel Carrasco confirme si le viene bien el jueves 27/08 de 15 a 18hs para la reunión de 3hs con Diego y
+ 08-23 12:32 follow-up #49 re-ping automático a 541155771290@c.us — reprogramado a 2026-08-25 12:32:46 (Esperando que Manuel Carrasco confirme el jueves 27/08 de 15 a 18hs (Hernán Fulco ya eligió ese horario) para
+ 08-23 13:03 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-23 14:05 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-23 14:30 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-23 14:30 meeting-prep: 1 alerta(s) agendada(s) (15 usuarios)
+ 08-23 14:41 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-23 14:59 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-23 21:33 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-24 10:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-24 10:18 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 10:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 10:48 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 11:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 11:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 12:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 14:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 14:58 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 16:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-24 18:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-24 19:09 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-24 21:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 09:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 10:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 10:19 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 10:49 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 11:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 12:04 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 13:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 16:05 meeting-prep: 4 alerta(s) agendada(s) (6 usuarios)
+ 08-25 16:34 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-25 17:23 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-25 17:43 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-25 18:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-26 10:03 meeting-prep: 4 alerta(s) agendada(s) (6 usuarios)
+ 08-26 12:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-26 13:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-26 15:34 meeting-prep: 3 alerta(s) agendada(s) (6 usuarios)
+ 08-26 16:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-26 16:33 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-26 17:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-26 19:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-26 21:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-27 09:03 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-27 10:03 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-27 10:18 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-27 10:48 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-27 11:17 Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (16 usuarios)
+ 08-27 12:02 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+ 08-27 13:02 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-27 16:02 meeting-prep: 2 alerta(s) agendada(s) (6 usuarios)
+ 08-27 18:32 meeting-prep: 1 alerta(s) agendada(s) (6 usuarios)
+
+════ TEMA 2: Fulco pidió reunión con Ruben Ward y Diego ════
+── TODO lo de Hernan Fulco (3 días) ──
+ 08-25 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* martes, 25 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 8° / máx 13° |  | *📅 Agenda del día* | • 09:00 a. m. — Rox está de vacaciones | • 09:15 a
+ 08-25 11:45 gmai ← ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-25 12:00 gmai ← ⏰ *En 15min*: MC Daily (09:15 a. m.) | Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo
+ 08-25 12:30 gmai ← ⏰ *En 15min*: Daily CMP (09:45 a. m.) | Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosgloba
+ 08-25 12:45 gmai ← ⏰ *En 15min*: Sondeos Sales Team Call (10:00 a. m.) | Con: abril.krzisnik@sondeosglobal.com, ibrahim.khan@sondeosglobal.com | 👤 Abril Krzisnik — Ejecutivo de Cuentas en Sondeos Global | 
+ 08-25 17:45 gmai ← ⏰ *En 15min*: PREMEDIC// CAMBIO META  (03:00 p. m.) | Con: gimena.maldonado@sondeosglobal.com, mkalinscky@grupopremedic.com.ar, dpkalinscky@grupopremedic.com.ar | 👤 Gimena Maldonado — 
+ 08-25 17:45 gmai ← ⏰ *En 15min*: Anillado (03:00 p. m.)
+ 08-26 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* miércoles, 26 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ llovizna, mín 9° / máx 16° · 57% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — Rox es
+ 08-26 11:45 gmai ← ⏰ *En 15min*: SND - Presentacion de resultados del mes (09:00 a. m.) | Con: fabio.boschetto@vrainz.com, rpc@sondeos.com.ar, pablo.casal@areait.com.ar, diego@paez.is, ruben.ward@sonde
+ 08-26 11:45 gmai ← ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-26 13:45 gmai ← ⏰ *En 15min*: Seguimiento Infraestructura (11:00 a. m.) | Con: cristian.incarnato@sondeosglobal.com, martin.gagliano@sondeos.com.ar, cristian.villalba@sondeos.com.ar, lautaro.taretto
+ 08-26 14:45 gmai ← ⏰ *En 15min*: Armar reunión Dimi con Diego semana proxima.  (12:00 p. m.)
+ 08-26 15:33 gmai → María, necesito que coordines con Diego y Rubén para una reunión de 1 hora | la próxima semana, entre las 9 y 16hs para que entrevisten a Dimitrije | Krunic. |  | Me avisas qué disponi
+ 08-26 15:34 gmai ← Hola Ruben, |  | Soy Maria, la secretaria de Hernán Fulco. Te escribo porque necesitamos coordinar una reunión de 1 hora la semana que viene para que entrevisten a Dimitrije Krunic, ju
+ 08-26 15:38 gmai → hacela tengo disponibilidad |  |  | El mié, 26 ago 2026 a la(s) 12:34 p.m., Maria Paez (maria.paez@intensa.io) | escribió: |  | > Hola Ruben, | > | > Soy Maria, la secretaria de Hernán Ful
+ 08-26 15:39 gmai ← Hola Ruben, |  | Genial, gracias por confirmar tu disponibilidad. |  | ¿Me podrías indicar un día y horario puntual dentro de la semana próxima (entre las 9 y las 16hs) para coordinar la r
+ 08-26 17:15 gmai ← ⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.) | Con: lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com | 👤 Lautaro Taretto — No pude confirmar con c
+ 08-26 17:43 gmai ← Te debo consulta sobre algo pendiente 👇 |  | 1. Pedirle a Hernán el contacto (email) de Diego para coordinar reunión con Dimitrije Krunic — de Hernan Fulco — 2h |  | Decime qué hago con ca
+ 08-26 17:45 gmai ← ⏰ *En 15min*: Análisis negocios IA (03:00 p. m.) | Con: alejandro.furgeri@sondeosglobal.com, alex.valdiviezo@sondeosglobal.com, alicia.marite@sondeosglobal.com, carlos.benetti@sondeo
+ 08-26 18:33 gmai → el mail es diego@paez.is |  | <hernan.fulco@sondeosglobal.com> <https://www.instagram.com/sondeosglobal> | <https://www.linkedin.com/company/sondeos> <https://www.sondeosglobal.com> | 
+ 08-26 18:35 gmai ← Hola Hernán, |  | Perfecto, ya tengo el mail de Diego (diego@paez.is). |  | Apenas Ruben Ward me pase el día y horario, coordino la reunión con Dimitrije Krunic y Diego y te confirmo. |  | Sal
+ 08-27 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* jueves, 27 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ chaparrones, mín 12° / máx 17° · 99% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — Cumpl
+ 08-27 11:45 gmai ← ⏰ *En 15min*: Cumple Ayelén (09:00 a. m.)
+ 08-27 11:45 gmai ← ⏰ *En 15min*: Rox está de vacaciones (09:00 a. m.)
+ 08-27 12:00 gmai ← ⏰ *En 15min*: MC Daily (09:15 a. m.) | Con: cristian.incarnato@sondeos.com.ar, elina.torello@sondeos.com.ar, ezequiel.tejeda@sondeosglobal.com, grey.uzcategui@sondeos.com.ar, gustavo
+ 08-27 12:30 gmai ← ⏰ *En 15min*: Daily CMP (09:45 a. m.) | Con: agustin.escobar@sondeosglobal.com, alejandro.furgeri@sondeosglobal.com, carlos.benetti@sondeosglobal.com, cristian.incarnato@sondeosgloba
+ 08-27 13:45 gmai ← ⏰ *En 15min*: Seguimiento de Tickets/Ciberseguridad (11:00 a. m.) | Con: cristian.incarnato@sondeos.com.ar, martin.gagliano@sondeos.com.ar, lautaro.taretto@sondeos.com.ar, gustavo.ga
+ 08-27 14:45 gmai ← ⏰ *En 15min*: *Invitation for Resellers*: "How to Sell Slack: The AI Enterprise Tool for your customers" - English Session (12:00 p. m.) | <blockquote><br><table><tbody><tr><td><tabl
+ 08-27 17:45 gmai ← ⏰ *En 15min*: Reunión Diego, Hernán Fulco y Manuel Carrasco (03:00 p. m.) | Con: manucarrasco80@gmail.com | 👤 Manucarrasco — No hay coincidencia confiable entre estos resultados y la p
+ 08-27 20:15 gmai ← ⏰ *En 15min*: Reunión feedback 08/2026 | Martin Gagliano  (05:30 p. m.) | Con: rrhh@sondeosglobal.com, martin.gagliano@sondeosglobal.com | 👤 Martin Gagliano (sondeosglobal.com) — No ha
+
+── menciones de Ward/Ruben (7 días, todos los canales+sistema) ──
+ 08-21 12:31 gmai ent Rodrigo Páez Canosa ha aceptado esta invitación.  Ir a ver departamento para el papá viernes 21 de ago de 2026 ⋅ 3:30pm – 4:30pm Hora estándar de Argentina - Buenos Aires  Ub
+ 08-26 11:45 tele sal ⏰ *En 15min*: SND - Presentacion de resultados del mes (09:00 a. m.) Con: fabio.boschetto@vrainz.com, rpc@sondeos.com.ar, hernan.fulco@sondeos.com.ar, pablo.casal@areait.com.ar, ru
+ 08-26 11:45 gmai sal ⏰ *En 15min*: SND - Presentacion de resultados del mes (09:00 a. m.) Con: fabio.boschetto@vrainz.com, rpc@sondeos.com.ar, pablo.casal@areait.com.ar, diego@paez.is, ruben.ward@sonde
+ 08-26 15:33 gmai ent María, necesito que coordines con Diego y Rubén para una reunión de 1 hora la próxima semana, entre las 9 y 16hs para que entrevisten a Dimitrije Krunic.  Me avisas qué disponi
+ 08-26 15:34 gmai sal Hola Ruben,  Soy Maria, la secretaria de Hernán Fulco. Te escribo porque necesitamos coordinar una reunión de 1 hora la semana que viene para que entrevisten a Dimitrije Krunic, ju
+ 08-26 15:34 sist int razonamiento Gmail 1a03eb12867d5650 (Hernan Fulco): Diego no está en libreta (0 matches); contacté a Ruben y pedí a Hernán el dato de Diego.
+ 08-26 15:38 gmai ent hacela tengo disponibilidad   El mié, 26 ago 2026 a la(s) 12:34 p.m., Maria Paez (maria.paez@intensa.io) escribió:  > Hola Ruben, > > Soy Maria, la secretaria de Hernán Ful
+ 08-26 15:38 sist int unknown-flow/gmail LLM: tercero_de_usuario usuario_id=2 · El propio email de Maria a Ruben Ward dice explícitamente 'Soy Maria, la secretaria de Hernán Fulco' coordinando la entrev
+ 08-26 15:39 gmai sal Hola Ruben,  Genial, gracias por confirmar tu disponibilidad.  ¿Me podrías indicar un día y horario puntual dentro de la semana próxima (entre las 9 y las 16hs) para coordinar la r
+ 08-26 17:15 tele sal ⏰ *En 15min*: Revisión Científica Express (02:30 p. m.) Con: fabio.boschetto@vrainz.com, fboero@luminaconsultora.com, pilar.rojas@vrainz.com, ruben.ward@sondeosglobal.com, carlosdm
+ 08-26 18:35 gmai sal Hola Hernán,  Perfecto, ya tengo el mail de Diego (diego@paez.is).  Apenas Ruben Ward me pase el día y horario, coordino la reunión con Dimitrije Krunic y Diego y te confirmo.  Sal
+ 08-27 10:00 gmai sal ☀️ *Buen día, Hernan Fulco.* jueves, 27 de agosto.  *🌡️ Clima en Buenos Aires, AR* 🌦️ chaparrones, mín 12° / máx 17° · 99% prob. de lluvia  *📅 Agenda del día* • 09:00 a. m. — Cumpl
+ 08-27 20:09 tele ent María, vos de casualidad tenés una gestión con Hernán Fulco para armar una reunión con  mi y con Rubén. Justo lo tengo acá Hernán y me estaba comentando eso.
+ 08-27 20:10 tele sal Che, busqué y no tengo ninguna gestión abierta con Hernán Fulco sobre armar una reunión con vos y Rubén. No me llegó nada de eso. ¿Querés que la arranque yo ahora? Si me confirmás 
+
+── pendientes/follow-ups de Fulco ──
+  {'id': 302, 'desc': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic. Ya tengo el mail de Diego para coordinar: diego@paez.is', 'dueno': 'maria', 'estado': 'abierto', 'creado': '2026-08-26 18:35:22'}
+  {'id': 299, 'desc': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 15:39:13'}
+  {'id': 298, 'desc': 'Pedirle a Hernán el contacto (email) de Diego para coordinar reunión con Dimitrije Krunic', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-08-26 15:34:36'}
+  {'id': 297, 'desc': 'Esperar disponibilidad de Ruben Ward para reunión con Dimitrije Krunic', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 15:34:36'}
+  {'id': 107, 'desc': 'Confirmar a María (137456250806423@lid) si se agenda la reunión Diego/Javier/Hernán el mié 03/06 a las 10 — hay conflicto con Sondeos Sales Team Call (10-11 hs). Si Hernán confirma igual, crear evento y responderle a María.', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-05-29 18:44:44'}
+  {'id': 30, 'desc': 'Confirmarle a Nicolás Kosinski si se suma Sebastian Meijeira (sameijeira@froneus.com) a la Capacitación de Multichannel del 5/5', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-04-30 23:15:10'}
+  {'id': 29, 'desc': 'Confirmarle a Nicolás Kosinski si se suman cruiz@froneus.com y nyarema@froneus.com (y el contacto del lunes) a la Capacitación de Multichannel del martes 5/5.', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-04-29 19:57:00'}
+  {'id': 28, 'desc': 'Nicolás Kosinski pidió sumar a cruiz@froneus.com y nyarema@froneus.com a la Capacitación de Multichannel (mar 5/5 11hs). También avisó que el lunes enviará un contacto más. Confirmar con Hernan si procede agregar estos participantes al evento.', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-04-29 19:57:00'}
+LISTO
+
+# exit=0
