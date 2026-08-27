@@ -1,0 +1,62 @@
+# ejecutado: 2026-08-27T08:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   HOY=$(date '+%Y-%m-%d')
+#   echo "── errores de HOY ──"
+#   timeout 20 grep "^$HOY" /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -20
+#   echo ""
+#   echo "── conversación de Diego hoy a la mañana (TG) ──"
+#   timeout 25 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT timestamp,direccion,substr(cuerpo,1,160) c FROM eventos
+#      WHERE usuario_id=1 AND canal='telegram' AND timestamp >= datetime('now','-14 hours') ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][11:16]} {f} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── sistema hoy (fallos/acciones) ──")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,150) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= datetime('now','-14 hours')
+#        AND (cuerpo LIKE '%FALL%' OR cuerpo LIKE '%falló%' OR cuerpo LIKE '%no pude%' OR cuerpo LIKE '%error%') ORDER BY timestamp"""):
+#       print(f" {r['timestamp'][11:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo "── ¿Poch respondió? ──"
+#   timeout 15 grep -E "3764-6922|Poch" /root/.pm2/logs/maria-paez-out.log | tail -4
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Thu Aug 27 08:14:02 AM -03 2026
+── errores de HOY ──
+2026-08-27 04:13:24: [TG] poll error (reintento en 15s): fetch failed
+
+── conversación de Diego hoy a la mañana (TG) ──
+ 23:03 → María, me podés hacer un pedido de apocho, una hamburguesa only cheese simple con aros |  de cebolla, una hamburguesa only cheese doble carne con aros de cebolla 
+ 23:03 ← Te paso el pedido que le mandaría a Poch Burgers, confirmame y lo tiro: |  | 1. Hamburguesa only cheese simple + aros de cebolla | 2. Hamburguesa only cheese doble ca
+ 23:12 → Sale así
+ 23:12 → Avísame a qué hora paso
+ 23:12 ← Dale, se lo mando ahora a Poch Burgers. Apenas me digan la hora te aviso.
+ 23:12 ← Dale, apenas me digan la hora te aviso. Ya lo tengo anotado, estoy esperando que respondan.
+ 23:20 ← Te confirmaron el pedido en Poch Burgers: $58.100, va a estar listo en 25 minutos (o sea, andá pasando cerca de las 20:45).
+ 23:23 → gracias
+ 23:23 ← De nada! 🍔
+ 23:26 → Avisarles porfa que voy yo a retirar, o sea, yo Diego.
+ 23:26 ← Dale, se lo aviso ahora a Poch Burgers.
+ 07:00 ← ☀️ *Buen día, Diego.* jueves, 27 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ chaparrones, mín 11° / máx 18° · 99% prob. de lluvia |  | *📅 Agenda del día* | • 08:00 
+ 07:35 ← ALERTA healthcheck maria-paez: fallaron: healthcheck no devolvio JSON. Detalle en ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json
+ 07:40 ← healthcheck maria-paez: recuperado, todos los checks OK
+ 10:45 ← ⏰ *En 15min*: Yoga (08:00 a. m.)
+
+── sistema hoy (fallos/acciones) ──
+── ¿Poch respondió? ──
+2026-08-26 20:29:59: [MB v4.5] 20:29:52 I [notif] entrante de "Poch Burgers": Perfecto!
+2026-08-26 20:29:59: [MB v4.5] 20:29:52 I [notif] dup ignorado de "Poch Burgers"
+2026-08-26 20:30:08: [MB v4.5] 20:30:06 I [humano] espero 11s antes de responder a "Poch Burgers"
+2026-08-26 20:30:18: [MB v4.5] 20:30:17 I [notif] reply inline a "Poch Burgers": ENVIADA
+LISTO
+
+# exit=0
