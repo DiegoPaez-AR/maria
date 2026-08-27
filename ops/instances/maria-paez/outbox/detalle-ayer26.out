@@ -1,0 +1,58 @@
+# ejecutado: 2026-08-27T09:07:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── los 15 turnos más caros del 26/8 ──"
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   tot=0
+#   for r in db.execute("""SELECT timestamp, json_extract(metadata_json,'$.canal') c,
+#        json_extract(metadata_json,'$.cost_usd') usd,
+#        json_extract(metadata_json,'$.cache_creation') cw,
+#        json_extract(metadata_json,'$.cache_read') cr,
+#        json_extract(metadata_json,'$.turnos') t,
+#        json_extract(metadata_json,'$.sesion') s
+#      FROM eventos WHERE tipo='claude_call' AND date(timestamp)='2026-08-26' ORDER BY usd DESC LIMIT 15"""):
+#       print(f"   {r['timestamp'][11:16]} {str(r['c'] or '-'):<20} ${r['usd'] or 0:.3f}  cw={int((r['cw'] or 0)/1000):>4}k cr={int((r['cr'] or 0)/1000):>4}k ses={r['s'] or '-'} turnos={r['t']}")
+#   print("\n── resumen por canal del 26/8 ──")
+#   for r in db.execute("""SELECT json_extract(metadata_json,'$.canal') c, COUNT(*) n,
+#        SUM(json_extract(metadata_json,'$.cost_usd')) usd
+#      FROM eventos WHERE tipo='claude_call' AND date(timestamp)='2026-08-26' GROUP BY c ORDER BY usd DESC"""):
+#       print(f"   {str(r['c'] or '-'):<20} {r['n']:>3}t  ${r['usd'] or 0:.2f} (${(r['usd'] or 0)/max(r['n'],1):.3f}/t)")
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+── los 15 turnos más caros del 26/8 ──
+   13:51 whatsapp             $0.724  cw= 125k cr=  69k ses=off turnos=None
+   18:35 gmail                $0.593  cw= 102k cr= 169k ses=off turnos=None
+   12:03 whatsapp             $0.585  cw= 115k cr= 181k ses=off turnos=None
+   23:18 whatsapp             $0.493  cw= 111k cr=  57k ses=off turnos=None
+   23:20 whatsapp             $0.488  cw=  96k cr=  77k ses=off turnos=None
+   18:44 whatsapp             $0.473  cw=  96k cr= 135k ses=off turnos=None
+   18:44 whatsapp             $0.461  cw= 109k cr=  55k ses=off turnos=None
+   18:46 whatsapp             $0.458  cw=  96k cr=  75k ses=off turnos=None
+   18:47 whatsapp             $0.446  cw=  94k cr=  75k ses=off turnos=None
+   15:34 gmail                $0.444  cw=  94k cr= 189k ses=off turnos=None
+   23:30 whatsapp             $0.439  cw= 107k cr=  54k ses=off turnos=None
+   20:14 telegram             $0.424  cw= 112k cr=   0k ses=resume turnos=None
+   23:03 telegram             $0.418  cw= 105k cr=   0k ses=nueva turnos=None
+   15:49 telegram             $0.396  cw=  90k cr= 179k ses=resume turnos=None
+   23:20 whatsapp             $0.384  cw=  90k cr=  72k ses=off turnos=None
+
+── resumen por canal del 26/8 ──
+   whatsapp              14t  $5.71 ($0.408/t)
+   telegram              11t  $2.29 ($0.209/t)
+   gmail                  4t  $1.74 ($0.435/t)
+   enriquecer-contacto    4t  $0.73 ($0.183/t)
+   moderacion            20t  $0.36 ($0.018/t)
+   unknown-flow           1t  $0.13 ($0.129/t)
+   memoria-curada         1t  $0.08 ($0.076/t)
+   gmail-gestion-ajena    2t  $0.06 ($0.031/t)
+LISTO
+
+# exit=0
