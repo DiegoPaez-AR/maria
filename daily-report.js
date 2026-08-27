@@ -456,12 +456,22 @@ function statsInstancia(env) {
       `).get().n || 0;
       stats.no_ruteado = { desconocidos: _desconocidos, avisos: _avisos, rebotes: _rebotes, prospectos: _prosp };
 
-      const usuarios = db.prepare(`SELECT id, nombre, rol FROM usuarios WHERE activo=1 ORDER BY rol DESC, id`).all();
+      const usuarios = db.prepare(`SELECT id, nombre, rol, COALESCE(pausado,0) AS pausado FROM usuarios WHERE activo=1 ORDER BY rol DESC, id`).all();
+      // USO por usuario (pedido Diego 27/8): mensajes ENTRANTES en las últimas
+      // 24h y en las 24h anteriores, para ver la tendencia de un vistazo.
+      const _desdeAyer = new Date(Date.parse(desde.replace(' ', 'T') + 'Z') - 24 * 3600 * 1000)
+        .toISOString().replace('T', ' ').slice(0, 19);
+      const _qUso = db.prepare(`SELECT COUNT(*) AS n FROM eventos
+        WHERE usuario_id=? AND direccion='entrante' AND canal IN ('whatsapp','telegram','gmail')
+          AND timestamp >= ? AND timestamp < ?`);
+      const _ahoraStr = new Date().toISOString().replace('T', ' ').slice(0, 19);
       for (const u of usuarios) {
         const abiertos = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id=? AND estado='abierto'`).get(u.id).n;
         const nuevosHoy = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id=? AND creado >= ?`).get(u.id, desde).n;
         const cerradosHoy = db.prepare(`SELECT COUNT(*) AS n FROM pendientes WHERE usuario_id=? AND cerrado >= ?`).get(u.id, desde).n;
-        stats.pendientes_por_usuario.push({ nombre: u.nombre, rol: u.rol, abiertos, nuevosHoy, cerradosHoy });
+        const msgsHoy  = _qUso.get(u.id, desde, _ahoraStr).n;
+        const msgsAyer = _qUso.get(u.id, _desdeAyer, desde).n;
+        stats.pendientes_por_usuario.push({ nombre: u.nombre, rol: u.rol, pausado: u.pausado, abiertos, nuevosHoy, cerradosHoy, msgsHoy, msgsAyer });
       }
 
       // ── Enriquecer eventos de seguridad con flag is_owner ──
@@ -658,8 +668,10 @@ function renderTexto(allStats, fechaStr, funnel) {
     }
 
     for (const p of s.pendientes_por_usuario) {
-      const tag = p.rol === 'owner' ? ' [owner]' : '';
-      lines.push(`  ${p.nombre}${tag}: ${p.abiertos} abiertos (+${p.nuevosHoy} -${p.cerradosHoy})`);
+      const tag = p.rol === 'owner' ? ' [owner]' : (p.pausado ? ' [pausado]' : '');
+      const delta = (p.msgsHoy || 0) - (p.msgsAyer || 0);
+      const flecha = delta > 0 ? `↑${delta}` : delta < 0 ? `↓${-delta}` : '=';
+      lines.push(`  ${p.nombre}${tag}: ${p.abiertos} abiertos (+${p.nuevosHoy} -${p.cerradosHoy}) · uso ${p.msgsHoy || 0} msg (ayer ${p.msgsAyer || 0}, ${flecha})`);
     }
     lines.push('');
   }
@@ -914,17 +926,27 @@ function renderHTML(allStats, fechaStr, funnel) {
     <tr style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;">
       <td style="padding:4px 0;">Usuario</td>
       <td align="right" style="padding:4px 12px;">Abiertos</td>
-      <td align="right" style="padding:4px 0;">Hoy</td>
+      <td align="right" style="padding:4px 12px;">Hoy</td>
+      <td align="right" style="padding:4px 0;">Uso (vs ayer)</td>
     </tr>`);
       for (const p of s.pendientes_por_usuario) {
         const tag = p.rol === 'owner' ? ' <span style="background:#ddd6fe;color:#5b21b6;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;letter-spacing:0.3px;">OWNER</span>' : '';
         const mvto = p.nuevosHoy || p.cerradosHoy
           ? `<span style="color:#64748b;font-size:12px;">${p.nuevosHoy ? `<span style="color:#dc2626;">+${p.nuevosHoy}</span>` : ''} ${p.cerradosHoy ? `<span style="color:#16a34a;">−${p.cerradosHoy}</span>` : ''}</span>`
           : `<span style="color:#cbd5e1;">·</span>`;
+        const _d = (p.msgsHoy || 0) - (p.msgsAyer || 0);
+        const _flecha = _d > 0
+          ? `<span style="color:#16a34a;">▲${_d}</span>`
+          : _d < 0 ? `<span style="color:#dc2626;">▼${-_d}</span>` : `<span style="color:#cbd5e1;">=</span>`;
+        const uso = (p.msgsHoy || p.msgsAyer)
+          ? `<span style="font-variant-numeric:tabular-nums;">${p.msgsHoy || 0} msg</span> <span style="color:#94a3b8;font-size:11px;">(ayer ${p.msgsAyer || 0})</span> ${_flecha}`
+          : `<span style="color:#cbd5e1;">sin uso</span>`;
+        const tagPausa = p.pausado ? ' <span style="background:#f1f5f9;color:#94a3b8;padding:1px 6px;border-radius:8px;font-size:10px;">PAUSADO</span>' : '';
         html.push(`<tr style="border-top:1px solid #f8fafc;">
-      <td style="padding:8px 0;">${_esc(p.nombre)}${tag}</td>
+      <td style="padding:8px 0;">${_esc(p.nombre)}${tag}${tagPausa}</td>
       <td align="right" style="padding:8px 12px;font-variant-numeric:tabular-nums;font-weight:600;">${p.abiertos}</td>
-      <td align="right" style="padding:8px 0;">${mvto}</td>
+      <td align="right" style="padding:8px 12px;">${mvto}</td>
+      <td align="right" style="padding:8px 0;font-size:12px;white-space:nowrap;">${uso}</td>
     </tr>`);
       }
       html.push(`</table></td></tr>`);
