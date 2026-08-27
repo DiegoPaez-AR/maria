@@ -1,0 +1,37 @@
+# ejecutado: 2026-08-27T08:23:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MALO" || echo "limpio ✓"
+#   grep -q "msgsHoy" daily-report.js && echo "columna de uso en disco ✓"
+#   echo "── datos que va a mostrar mañana ──"
+#   timeout 40 node -e "
+#   const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
+#   const desde=new Date(Date.now()-24*3600e3).toISOString().replace('T',' ').slice(0,19);
+#   const desdeAyer=new Date(Date.now()-48*3600e3).toISOString().replace('T',' ').slice(0,19);
+#   const ahora=new Date().toISOString().replace('T',' ').slice(0,19);
+#   const q=db.prepare(\"SELECT COUNT(*) n FROM eventos WHERE usuario_id=? AND direccion='entrante' AND canal IN ('whatsapp','telegram','gmail') AND timestamp>=? AND timestamp<?\");
+#   for (const u of db.prepare('SELECT id,nombre,COALESCE(pausado,0) p FROM usuarios WHERE activo=1 ORDER BY rol DESC, id').all()) {
+#     const hoy=q.get(u.id,desde,ahora).n, ayer=q.get(u.id,desdeAyer,desde).n;
+#     if (hoy||ayer||!u.p) console.log(' ', u.nombre.padEnd(20), 'hoy='+hoy, 'ayer='+ayer, u.p?'[pausado]':'');
+#   }
+#   db.close();"
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+limpio ✓
+columna de uso en disco ✓
+── datos que va a mostrar mañana ──
+  Hernan Fulco         hoy=3 ayer=0 
+  Natali Funez         hoy=0 ayer=0 
+  Fernando Boero       hoy=0 ayer=0 
+  Doris Capurro        hoy=0 ayer=0 
+  Enrique Sosa         hoy=0 ayer=0 
+  Gabriela Echaniz     hoy=0 ayer=0 
+  Diego                hoy=25 ayer=11 
+LISTO
+
+# exit=0
