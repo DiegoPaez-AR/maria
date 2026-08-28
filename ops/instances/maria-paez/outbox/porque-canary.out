@@ -1,0 +1,38 @@
+# ejecutado: 2026-08-28T09:21:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   grep -B 3 -A 12 "canary FALLO" ops/.cron.log | tail -25
+#   echo LISTO
+
+# ───── output ─────
+tick done
+═══ 2026-08-23T10:50:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-23T10:51:01-03:00 ═══
+[maria-paez exec] ops/instances/maria-paez/inbox/verif-telefonos2.sh → ops/instances/maria-paez/outbox/verif-telefonos2.out
+push fase 1 OK
+tick done
+--
+tick done
+═══ 2026-08-28T09:16:01-03:00 ═══
+código cambió → restart pendiente
+canary FALLO npm test:
+not ok 2 - test/prompt-tercero.test.js
+canary: runtime revertido EN DISCO al último commit bueno (8c665873086312fe6e5f77cdb7cc95f33fc40b9f) — el repo NO se toca
+canary FALLÓ (7039232038ec70943e525a13ca9593573fb1ce09) — NO recargo pm2, prod sigue con la versión anterior en memoria
+[maria-paez exec] ops/instances/maria-paez/inbox/sesiones-todos.sh → ops/instances/maria-paez/outbox/sesiones-todos.out
+push fase 1 OK
+tick done
+═══ 2026-08-28T09:17:01-03:00 ═══
+push fase 1 OK
+tick done
+═══ 2026-08-28T09:18:01-03:00 ═══
+push fase 1 OK
+tick done
+LISTO
+
+# exit=0
