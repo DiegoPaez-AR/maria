@@ -1,0 +1,46 @@
+# ejecutado: 2026-08-28T09:19:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── canary ──"; cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ MALO" || echo "limpio ✓"
+#   echo "── prompt de tercero REAL: antes vs después ──"
+#   timeout 90 node -e "
+#   (async()=>{
+#     const usuarios=require('/root/secretaria/usuarios');
+#     const pb=require('/root/secretaria/prompt-builder');
+#     const u=usuarios.obtenerOwner();
+#     const entrada={de:'5491134897992@c.us', nombre:'Fico restaurante', cuerpo:'sí, tenemos lugar para el jueves',
+#       contextoRemitente:{esTercero:true, via:'libreta', razon:'Fico está en la libreta de Diego'}};
+#     process.env.MARIA_PROMPT_TERCERO_SLIM='0';
+#     const antes=await pb.construirPrompt({usuario:u, canal:'whatsapp', entrada});
+#     process.env.MARIA_PROMPT_TERCERO_SLIM='1';
+#     const despues=await pb.construirPrompt({usuario:u, canal:'whatsapp', entrada});
+#     const t=(p)=>(p.system.length+p.user.length);
+#     console.log('  ANTES  : system', antes.system.length, '+ user', antes.user.length, '=', t(antes), 'chars');
+#     console.log('  DESPUÉS: system', despues.system.length, '+ user', despues.user.length, '=', t(despues), 'chars');
+#     console.log('  ahorro :', t(antes)-t(despues), 'chars ('+Math.round((1-t(despues)/t(antes))*100)+'%)');
+#     const todo=despues.system+despues.user;
+#     let ok=true;
+#     for (const clave of ['TERCERO','crear_evento','upsert_contacto','TAREAS PROPIAS DE MARIA','FORMATO DE RESPUESTA','SEGURIDAD'])
+#       if(!todo.includes(clave)) { console.log('  ✗ FALTA:', clave); ok=false; }
+#     for (const fuera of ['configurar_caldav','\"crear_usuario\"','ONBOARDING DE USER NUEVO','CUMPLEAÑOS PRÓXIMOS'])
+#       if(todo.includes(fuera)) { console.log('  ✗ SOBRA:', fuera); ok=false; }
+#     console.log(ok ? '  sanidad OK ✓' : '  ⚠️ revisar');
+#   })().catch(e=>console.log('ERR',e.message));"
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+7039232038ec70943e525a13ca9593573fb1ce09
+⚠️ MALO
+── prompt de tercero REAL: antes vs después ──
+[prompt-builder] tercero slim: system 59361→49972c, user 25939→18279c
+  ANTES  : system 59361 + user 25939 = 85300 chars
+  DESPUÉS: system 49972 + user 18279 = 68251 chars
+  ahorro : 17049 chars (20%)
+  sanidad OK ✓
+LISTO
+
+# exit=0
