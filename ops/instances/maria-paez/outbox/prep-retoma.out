@@ -1,0 +1,52 @@
+# ejecutado: 2026-08-28T17:06:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── ¿tenemos el WA de Ruben Ward? ──"
+#   timeout 20 node -e "
+#   const mem=require('/root/secretaria/memory');
+#   mem.db.prepare(\"SELECT id,usuario_id,nombre,whatsapp,email,visibilidad FROM contactos WHERE nombre LIKE '%Ward%' OR email LIKE '%ward%'\").all().forEach(c=>console.log(' ',JSON.stringify(c)));"
+#   echo ""
+#   echo "── agenda de Diego, semana próxima (mañanas) ──"
+#   timeout 60 node -e "
+#   (async()=>{
+#     const g=require('/root/secretaria/google');
+#     const u=require('/root/secretaria/usuarios').obtenerOwner();
+#     const desde=new Date('2026-08-31T00:00:00-03:00'), hasta=new Date('2026-09-05T00:00:00-03:00');
+#     const fn=g.listarEventosCalendario||g.eventosEntre||g.listarEventos||null;
+#     if(!fn){ console.log('  API distinta — pruebo agenda del prompt-builder'); 
+#       const pb=require('/root/secretaria/prompt-builder');
+#       const a=await pb.seccionAgenda(u,{dias:8});
+#       console.log(a.split('\n').filter(l=>/lun|mar|mié|jue|vie|31\/|01\/|02\/|03\/|04\/|09-0/i.test(l)).slice(0,30).join('\n'));
+#       return; }
+#     const evs=await fn.call(g,{usuario:u,desde,hasta});
+#     for(const e of evs||[]) console.log(' ',e.start?.dateTime||e.start?.date, (e.summary||'').slice(0,50));
+#   })().catch(e=>console.log('ERR',e.message));" 2>&1 | grep -v Warning
+#   echo LISTO
+
+# ───── output ─────
+── ¿tenemos el WA de Ruben Ward? ──
+  {"id":73,"usuario_id":1,"nombre":"Rubén Ward","whatsapp":"184052384567499@lid","email":"ruben.ward@sondeos.com.ar","visibilidad":"privada"}
+  {"id":459,"usuario_id":2,"nombre":"Ruben Ward","whatsapp":null,"email":"ruben.ward@sondeosglobal.com","visibilidad":"privada"}
+  {"id":472,"usuario_id":1,"nombre":"Ruben Ward","whatsapp":null,"email":"ruben.ward@sondeosglobal.com","visibilidad":"privada"}
+
+── agenda de Diego, semana próxima (mañanas) ──
+  API distinta — pruebo agenda del prompt-builder
+- [ol68lq88sltckb4j3dv9bh9bge_20260831T200000Z] lun 31/08 05:00 p. m.-06:00 p. m.  Seguimiento Diego / Nico [meet]
+- [2g3bldk466u8up7fjmgrb2r7s2_20260901T110000Z] mar 01/09 08:00 a. m.-12:00 p. m.  Yoga
+- [5kj14gn9sfevdo7k4qcu4sgsrg] mar 01/09 01:00 p. m.-02:30 p. m.  Almuerzo [meet]
+- [9dvf024udjjcdsu2ul7cqe3aoj_20260901T183000Z] mar 01/09 03:30 p. m.-05:00 p. m.  Personal
+- [0rq8ibvfdu0v1fc599t5htave8_20260901T200000Z] mar 01/09 05:00 p. m.-06:00 p. m.  Froneus MGMT [meet]
+- [8ddgp01vt73121laatuajkrn8o_20260902] mié 02/09 (todo el día)  Pagar a Ani
+- [0k9iqs1affra8aat5u08qobrh3] mié 02/09 10:00 a. m.-11:00 a. m.  Meet Dimitrije / Diego / Ruben [meet]
+- [r48nq09tncjgf0g683obs2feo0] mié 02/09 02:30 p. m.-03:30 p. m.  Reunión NB LP - DP [meet]
+- [0288bf309fj562uqa2in670igq_20260902T183000Z] mié 02/09 03:30 p. m.-07:00 p. m.  Personal
+- [2g3bldk466u8up7fjmgrb2r7s2_20260903T110000Z] jue 03/09 08:00 a. m.-12:00 p. m.  Yoga
+- [eclncjav5ls9lp0s7tmbrevkhr_20260903T150000Z] jue 03/09 12:00 p. m.-01:00 p. m.  GN + VR Weekly [meet]
+- [o73nmt89k0v2shq0cr280iqb78] vie 04/09 10:00 a. m.-11:30 a. m.  Reunion PL - DP — @Carlos Pellegrini 1521, piso 8, CABA [meet]
+- [afc6mgt6fugsrmvdiit7ruqq3v_20260904T190000Z] vie 04/09 04:00 p. m.-04:30 p. m.  Avance Semanal con DP [meet]
+LISTO
+
+# exit=0
