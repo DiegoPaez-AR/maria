@@ -938,17 +938,45 @@ function _quitarPendiente(a, ctx) {
   // escribo de nuevo por la reserva" dos días después de decir que los
   // miércoles no abren, con la cena ya resuelta en Fico. "Cancelá la gestión"
   // tiene que matar TODO el árbol, no solo el pendiente.
-  let fuCerrado = null;
+  // CASCADA CON MATIZ (2026-08-28, caso Ward — aprobado Diego): la versión del
+  // 24/8 cancelaba SIEMPRE el follow-up enganchado. Eso mató la vigilancia
+  // sobre Ruben Ward cuando Maria reescribió sus propios pendientes: Ward
+  // quedó 2 días sin contestar y nadie lo persiguió. Ahora:
+  //  - si el tercero YA respondió (o el FU ya disparó) → cancelar, no vigila nada.
+  //  - si el tercero NO respondió aún → el FU QUEDA ARMADO y se le dice al
+  //    modelo qué hacer: si la gestión sigue viva, re-crear el pendiente CON
+  //    esperando_de; si el usuario canceló la gestión, emitir cerrar_follow_up.
+  let fuCerrado = null, fuVivo = null;
   try {
     const _meta = typeof cerrado.meta_json === 'string' ? JSON.parse(cerrado.meta_json) : (cerrado.meta || {});
     const fuId = Number(_meta && _meta.follow_up_id);
     if (Number.isFinite(fuId) && fuId > 0) {
-      mem.setFollowUpEstado(fuId, 'cancelado', ctx.usuario.id);
-      fuCerrado = fuId;
-      console.log(`[quitar_pendiente] follow-up #${fuId} cancelado en cascada (venía enganchado al pendiente #${cerrado.id})`);
+      const fu = mem.db.prepare('SELECT * FROM follow_ups WHERE id = ?').get(fuId);
+      if (fu && fu.estado === 'abierto') {
+        const respondio = mem.huboRespuesta({
+          usuarioId: ctx.usuario.id, esperandoDe: fu.esperando_de,
+          esperandoCanal: fu.esperando_canal, desde: fu.creado,
+        });
+        if (respondio) {
+          mem.setFollowUpEstado(fuId, 'cancelado', ctx.usuario.id);
+          fuCerrado = fuId;
+          console.log(`[quitar_pendiente] follow-up #${fuId} cancelado en cascada (${fu.esperando_de} ya había respondido)`);
+        } else {
+          fuVivo = { id: fuId, esperando_de: fu.esperando_de };
+          console.log(`[quitar_pendiente] follow-up #${fuId} sigue ARMADO: ${fu.esperando_de} no respondió aún`);
+        }
+      } else if (fu) {
+        mem.setFollowUpEstado(fuId, 'cancelado', ctx.usuario.id);
+        fuCerrado = fuId;
+      }
     }
   } catch (e) { console.warn('[quitar_pendiente] cascada follow-up:', e.message); }
-  return { id: cerrado.id, desc: cerrado.desc, cerrado: true, ...(fuCerrado ? { follow_up_cancelado: fuCerrado } : {}) };
+  return {
+    id: cerrado.id, desc: cerrado.desc, cerrado: true,
+    ...(fuCerrado ? { follow_up_cancelado: fuCerrado } : {}),
+    ...(fuVivo ? { follow_up_sigue_vigilando: fuVivo.id,
+      nota: `OJO: el follow-up #${fuVivo.id} sigue vigilando a ${fuVivo.esperando_de} (todavía no respondió). Si la gestión SIGUE VIVA con otro pendiente, perfecto — la vigilancia se mantiene. Si el usuario CANCELÓ la gestión de fondo, emití cerrar_follow_up { "id": ${fuVivo.id} } para que no le insistamos a esa persona.` } : {}),
+  };
 }
 
 // Normaliza un destino de WhatsApp a wid canónico. Se perdió en la misma
