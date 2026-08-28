@@ -1,0 +1,55 @@
+# ejecutado: 2026-08-28T16:48:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print("── TODO lo de Ward/Dimitrije desde el 26/8 ──")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,200) c FROM eventos
+#      WHERE timestamp >= '2026-08-26' AND (cuerpo LIKE '%Ward%' OR cuerpo LIKE '%Dimitri%' OR cuerpo LIKE '%ruben.ward%')
+#      ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else ('←' if r['direccion']=='saliente' else '·')
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:4]} {f} {(r['c'] or '').replace(chr(10),' | ')[:190]}")
+#   print("\n── follow-ups y pendientes de esa gestión ──")
+#   uid=db.execute("SELECT id FROM usuarios WHERE nombre='Hernan Fulco'").fetchone()[0]
+#   for r in db.execute("SELECT id,descripcion,esperando_de,estado,vence_en,cerrado_en FROM follow_ups WHERE usuario_id=? ORDER BY id DESC LIMIT 5",(uid,)):
+#       print('  FU',dict(r))
+#   for r in db.execute("SELECT id,desc,dueno,estado,creado FROM pendientes WHERE usuario_id=? ORDER BY id DESC LIMIT 6",(uid,)):
+#       print('  P ',dict(r))
+#   db.close()
+#   PY
+#   echo LISTO
+
+# ───── output ─────
+── TODO lo de Ward/Dimitrije desde el 26/8 ──
+ 08-26 11:45 tele ← ⏰ *En 15min*: SND - Presentacion de resultados del mes (09:00 a. m.) | Con: fabio.boschetto@vrainz.com, rpc@sondeos.com.ar, hernan.fulco@sondeos.com.ar, pablo.casal@areait.com.ar, ruben.ward
+ 08-26 11:45 gmai ← ⏰ *En 15min*: SND - Presentacion de resultados del mes (09:00 a. m.) | Con: fabio.boschetto@vrainz.com, rpc@sondeos.com.ar, pablo.casal@areait.com.ar, diego@paez.is, ruben.ward@sondeos.com.a
+ 08-26 15:33 gmai → María, necesito que coordines con Diego y Rubén para una reunión de 1 hora | la próxima semana, entre las 9 y 16hs para que entrevisten a Dimitrije | Krunic. |  | Me avisas qué disponibi
+ 08-26 15:34 gmai ← Hola Ruben, |  | Soy Maria, la secretaria de Hernán Fulco. Te escribo porque necesitamos coordinar una reunión de 1 hora la semana que viene para que entrevisten a Dimitrije Krunic, junto co
+ 08-26 15:38 gmai → hacela tengo disponibilidad |  |  | El mié, 26 ago 2026 a la(s) 12:34 p.m., Maria Paez (maria.paez@intensa.io) | escribió: |  | > Hola Ruben, | > | > Soy Maria, la secretaria de Hern
+ 08-26 15:38 sist · unknown-flow/gmail LLM: tercero_de_usuario usuario_id=2 · El propio email de Maria a Ruben Ward dice explícitamente 'Soy Maria, la secretaria de Hernán Fulco' coordinando la entrevista a Dim
+ 08-26 15:39 gmai ← Hola Ruben, |  | Genial, gracias por confirmar tu disponibilidad. |  | ¿Me podrías indicar un día y horario puntual dentro de la semana próxima (entre las 9 y las 16hs) para coordinar la reu
+ 08-26 17:15 tele ← ⏰ *En 15min*: Revisión Científica Express (02:30 p. m.) | Con: fabio.boschetto@vrainz.com, fboero@luminaconsultora.com, pilar.rojas@vrainz.com, ruben.ward@sondeosglobal.com, carlosdmino@gmai
+ 08-26 17:43 gmai ← Te debo consulta sobre algo pendiente 👇 |  | 1. Pedirle a Hernán el contacto (email) de Diego para coordinar reunión con Dimitrije Krunic — de Hernan Fulco — 2h |  | Decime qué hago con cada
+ 08-26 18:33 gmai → el mail es diego@paez.is |  | <hernan.fulco@sondeosglobal.com> <https://www.instagram.com/sondeosglobal> | <https://www.linkedin.com/company/sondeos> <https://www.sondeosglobal.com> |  
+ 08-26 18:35 gmai ← Hola Hernán, |  | Perfecto, ya tengo el mail de Diego (diego@paez.is). |  | Apenas Ruben Ward me pase el día y horario, coordino la reunión con Dimitrije Krunic y Diego y te confirmo. |  | S
+ 08-27 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* jueves, 27 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ chaparrones, mín 12° / máx 17° · 99% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — Cum
+ 08-28 10:00 gmai ← ☀️ *Buen día, Hernan Fulco.* viernes, 28 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 9° / máx 17° |  | *📅 Agenda del día* | • 09:00 a. m. — Rox está de vacaciones | • 09
+ 08-28 12:05 gmai → Buen día María, pudiste coordinar con Rubén y Diego los horarios | disponibles para la reunión con Dimitrije? |  | Gracias, |  | <hernan.fulco@sondeosglobal.com> <https://www.instagram.
+ 08-28 14:23 gmai ← Te debo consulta sobre algo pendiente 👇 |  | 1. Definir cómo avanzar con la entrevista de Dimitrije Krunic: Ruben Ward respondió que tiene disponibilidad y que lo coordinemos nosotros (no di
+
+── follow-ups y pendientes de esa gestión ──
+  FU {'id': 57, 'descripcion': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic', 'esperando_de': 'ruben.ward@sondeosglobal.com', 'estado': 'cancelado', 'vence_en': '2026-08-28 15:39:13', 'cerrado_en': '2026-08-26 18:35:20'}
+  FU {'id': 56, 'descripcion': 'Esperar disponibilidad de Ruben Ward para reunión con Dimitrije Krunic', 'esperando_de': 'ruben.ward@sondeosglobal.com', 'estado': 'cancelado', 'vence_en': '2026-08-28 15:34:36', 'cerrado_en': '2026-08-26 15:39:13'}
+  P  {'id': 309, 'desc': 'Definir cómo avanzar con la entrevista de Dimitrije Krunic: Ruben Ward respondió que tiene disponibilidad y que lo coordinemos nosotros (no dio día/horario puntual). Falta que Hernan diga si él propone el día o si Maria le pide directamente a Dimitrije sus horarios.', 'dueno': 'usuario', 'estado': 'abierto', 'creado': '2026-08-28 12:08:25'}
+  P  {'id': 302, 'desc': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic. Ya tengo el mail de Diego para coordinar: diego@paez.is', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 18:35:22'}
+  P  {'id': 299, 'desc': 'Esperar día y horario puntual de Ruben Ward para la reunión con Dimitrije Krunic', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 15:39:13'}
+  P  {'id': 298, 'desc': 'Pedirle a Hernán el contacto (email) de Diego para coordinar reunión con Dimitrije Krunic', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-08-26 15:34:36'}
+  P  {'id': 297, 'desc': 'Esperar disponibilidad de Ruben Ward para reunión con Dimitrije Krunic', 'dueno': 'maria', 'estado': 'cerrado', 'creado': '2026-08-26 15:34:36'}
+  P  {'id': 107, 'desc': 'Confirmar a María (137456250806423@lid) si se agenda la reunión Diego/Javier/Hernán el mié 03/06 a las 10 — hay conflicto con Sondeos Sales Team Call (10-11 hs). Si Hernán confirma igual, crear evento y responderle a María.', 'dueno': 'usuario', 'estado': 'cerrado', 'creado': '2026-05-29 18:44:44'}
+LISTO
+
+# exit=0
