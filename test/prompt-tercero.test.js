@@ -1,7 +1,7 @@
 // node --test — la poda del prompt de terceros: saca lo administrativo, deja lo vivo.
 const { test } = require('node:test');
 const assert = require('node:assert');
-const { _podarPromptTercero } = require('../prompt-builder.js');
+const { podarPromptTercero: _podarPromptTercero } = require('../prompt-tercero.js');
 
 const SYSTEM_FIXTURE = `[CÓMO EJECUTÁS ACCIONES]
 Tipos de acción disponibles:

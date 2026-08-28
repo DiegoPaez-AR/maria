@@ -511,39 +511,6 @@ function seccionFormatoCanal(canal) {
 
 // ─── Prompt completo ──────────────────────────────────────────────────────
 
-// Acciones que un turno de TERCERO no puede usar (gestión de usuarios,
-// onboarding de calendario, administración). Sacarlas del catálogo no las
-// deshabilita — el executor y sus gates siguen intactos — solo deja de
-// pagarse su descripción en cada mensajito de un tercero.
-const _ACCIONES_SOLO_USUARIO = [
-  'crear_usuario', 'actualizar_usuario', 'borrar_usuario',
-  'set_calendar_acceso', 'configurar_brief', 'configurar_ubicacion',
-  'configurar_caldav', 'iniciar_microsoft_auth', 'configurar_microsoft',
-  'vincular_telegram', 'confirmar_prospecto_pendiente', 'rechazar_prospecto_pendiente',
-  'buscar_slots_comunes', 'cambiar_visibilidad_contacto', 'set_cumple_contacto',
-];
-
-function _podarPromptTercero(system, user) {
-  let s = system, u = user;
-  // 1) catálogo: fuera las acciones de administración/onboarding
-  for (const tipo of _ACCIONES_SOLO_USUARIO) {
-    const re = new RegExp('\\n  \\{ "tipo": "' + tipo + '"[\\s\\S]*?(?=\\n  \\{ "tipo": "|\\n\\n)');
-    s = s.replace(re, '');
-  }
-  // 2) user: el bloque de prospectos + onboarding (solo aparece si el usuario
-  //    del flow es el owner; un tercero no confirma prospectos ni se onboardea)
-  u = u.replace(/\n━+\n\[PROSPECTOS PENDIENTES DE CONFIRMACIÓN[\s\S]*?(?=\n━+\n\[FORMATO DE RESPUESTA)/, '\n');
-  // 3) user: las tareas PERSONALES del usuario y sus consultas abiertas — un
-  //    tercero no tiene por qué "ver" la lista de to-dos de Diego. Las
-  //    gestiones de Maria ([TAREAS PROPIAS DE MARIA]) SÍ quedan: ahí vive la
-  //    gestión en curso con este tercero.
-  u = u.replace(/\[CONSULTAS ABIERTAS DE[\s\S]*?(?=\[TAREAS PROPIAS DE MARIA)/, '');
-  // 4) user: programados y cumpleaños — irrelevantes para un tercero
-  u = u.replace(/\n━+\n\[MENSAJES PROGRAMADOS[\s\S]*?(?=\n━+\n\[)/, '\n');
-  u = u.replace(/\[CUMPLEAÑOS PRÓXIMOS\]\n[\s\S]*?(?=\n\n\[|\n━)/, '');
-  return { system: s, user: u };
-}
-
 async function construirPrompt({ usuario, canal, entrada, horasHistorial = 48, diasAgenda = 7 }) {
   if (!usuario || !usuario.id) throw new Error('construirPrompt: usuario requerido');
   const tz = usuario.tz || 'America/Argentina/Buenos_Aires';
@@ -1018,7 +985,7 @@ Antes de emitir respuesta_a_usuario o cualquier acción, chequeá: ¿el pedido i
   // sus programados, los cumpleaños). Killswitch: MARIA_PROMPT_TERCERO_SLIM=0.
   if (esTercero && process.env.MARIA_PROMPT_TERCERO_SLIM !== '0') {
     const s0 = system.length, u0 = user.length;
-    ({ system, user } = _podarPromptTercero(system, user));
+    ({ system, user } = require('./prompt-tercero').podarPromptTercero(system, user));
     console.log(`[prompt-builder] tercero slim: system ${s0}→${system.length}c, user ${u0}→${user.length}c`);
   }
   if (process.env.MARIA_SYSTEM_SPLIT === '0') {
@@ -1176,7 +1143,6 @@ Devolvé SOLO el JSON.`;
 
 module.exports = {
   construirPrompt,
-  _podarPromptTercero,
   construirTurnoSesion,
   construirPromptDesconocido,
   // exportados para test
