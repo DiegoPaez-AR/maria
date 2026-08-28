@@ -1,0 +1,50 @@
+# ejecutado: 2026-08-28T17:54:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── últimos turnos de Diego (TG) ──"
+#   timeout 25 python3 -c "
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute(\"SELECT timestamp,direccion,substr(cuerpo,1,150) c FROM eventos WHERE usuario_id=1 AND canal='telegram' AND timestamp >= datetime('now','-2 hours') ORDER BY timestamp\"):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f\" {r['timestamp'][11:16]} {f} {(r['c'] or '').replace(chr(10),' | ')}\")
+#   db.close()"
+#   echo "── ¿llegó la tarjeta de Ward? contacto actualizado? ──"
+#   timeout 20 node -e "
+#   const mem=require('/root/secretaria/memory');
+#   mem.db.prepare(\"SELECT id,usuario_id,nombre,whatsapp,email FROM contactos WHERE nombre LIKE '%Ward%'\").all().forEach(c=>console.log(' ',JSON.stringify(c)));"
+#   echo "── wa_outbox reciente ──"
+#   timeout 20 node -e "
+#   const mem=require('/root/secretaria/memory');
+#   mem.db.prepare(\"SELECT id,numero,estado,creado,substr(texto,1,60) t FROM wa_outbox ORDER BY id DESC LIMIT 4\").all().forEach(r=>console.log(' ',JSON.stringify(r)));"
+#   echo "── logs TG del último rato ──"
+#   timeout 15 grep -E "TG|vCard|CONTACTO" /root/.pm2/logs/maria-paez-out.log | tail -8
+#   echo LISTO
+
+# ───── output ─────
+── últimos turnos de Diego (TG) ──
+ 20:09 ← Retomé la gestión de la entrevista a Dimitrije: le avisé a Hernán que me hago cargo y voy a confirmar con Rubén por WhatsApp el miércoles 2/9 a las 10
+── ¿llegó la tarjeta de Ward? contacto actualizado? ──
+  {"id":73,"usuario_id":1,"nombre":"Rubén Ward","whatsapp":"184052384567499@lid","email":"ruben.ward@sondeos.com.ar"}
+  {"id":459,"usuario_id":2,"nombre":"Ruben Ward","whatsapp":null,"email":"ruben.ward@sondeosglobal.com"}
+  {"id":472,"usuario_id":1,"nombre":"Ruben Ward","whatsapp":null,"email":"ruben.ward@sondeosglobal.com"}
+── wa_outbox reciente ──
+  {"id":258,"numero":"5491137646922","estado":"entregado","creado":"2026-08-26 23:26:20","t":"Aviso: quien va a pasar a retirar el pedido es Diego. Gracia"}
+  {"id":257,"numero":"5491137646922","estado":"entregado","creado":"2026-08-26 23:20:14","t":"Dale, gracias!"}
+  {"id":256,"numero":"5491137646922","estado":"entregado","creado":"2026-08-26 23:18:55","t":"Todo bien por acá! Te consulto por el pedido que te pasé ant"}
+  {"id":255,"numero":"5491137646922","estado":"entregado","creado":"2026-08-26 23:12:17","t":"Hola! Les paso un pedido para retirar:\n\n1. Hamburguesa only "}
+── logs TG del último rato ──
+2026-08-26 20:03:43: [TG audio→texto] María, me podés hacer un pedido de apocho, una hamburguesa only cheese simple con aros
+2026-08-26 20:03:44: [TG sesion/Diego] rotando sesión (turnos=12, creada=2026-08-23T15:14:55.261Z)
+2026-08-26 20:25:59: [TG] transcribiendo audio…
+2026-08-26 20:26:10: [TG audio→texto] Avisarles porfa que voy yo a retirar, o sea, yo Diego.
+2026-08-27 14:57:34: [TG] transcribiendo audio…
+2026-08-27 14:57:43: [TG audio→texto] agregame un pendiente de llamar a tono por drogaría
+2026-08-27 17:09:01: [TG] transcribiendo audio…
+2026-08-27 17:09:15: [TG audio→texto] María, vos de casualidad tenés una gestión con Hernán Fulco para armar una reunión con
+LISTO
+
+# exit=0
