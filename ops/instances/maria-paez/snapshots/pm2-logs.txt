@@ -1,10 +1,3 @@
-3|maria-pa | 2026-08-27 19:35:32: ▸ arrancando poda-eventos (diario)
-3|maria-pa | 2026-08-27 19:35:32: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-3|maria-pa | 2026-08-27 19:35:32: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-3|maria-pa | 2026-08-27 19:35:32: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-3|maria-pa | 2026-08-27 19:35:32: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-3|maria-pa | 2026-08-27 19:35:32: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-3|maria-pa | 2026-08-27 19:35:32: ▸ arrancando drainer de diferidos (horas de silencio)
 3|maria-pa | 2026-08-27 19:35:32: [diferidos] drainer activo (cada 5min)
 3|maria-pa | 2026-08-27 19:35:32: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
 3|maria-pa | 2026-08-27 19:40:32: [poda-eventos] telemetría borrada: 7 · archivados: 0
@@ -197,4 +190,11 @@
 3|maria-pa | 2026-08-28 18:48:37:  No sé cómo tenés en la 
 3|maria-pa | 2026-08-28 18:48:37: [TG sesion/Diego] rotando sesión (turnos=7, creada=2026-08-26T23:03:59.529Z)
 3|maria-pa | 2026-08-28 18:50:31: [wa-send] enviar_wa/usuario:Hernan Fulco: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
+3|maria-pa | 2026-08-28 22:00:06: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-08-28 22:00:06: [GMAIL ←] Hernan Fulco <hernan.fulco@sondeosglobal.com> | "Re: Maria Paez — mensaje"
+3|maria-pa | 2026-08-28 22:00:12: [prompt-builder] tercero slim: system 60123→50734c, user 25392→17732c
+3|maria-pa | 2026-08-28 22:00:28: [quitar_pendiente] follow-up #59 cancelado en cascada (hernan.fulco@sondeosglobal.com ya había respondido)
+3|maria-pa | 2026-08-28 22:00:32: [GMAIL acciones-mcp/Diego] 1/1 ejecutadas en vivo
+3|maria-pa | 2026-08-28 22:00:44: [wa-send] enviar_wa/usuario:Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+3|maria-pa | 2026-08-28 22:00:44: [GMAIL acciones/Diego] 2/2 ejecutadas
 
