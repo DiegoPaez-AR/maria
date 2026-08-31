@@ -1,0 +1,116 @@
+# ejecutado: 2026-08-30T22:30:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo ""
+#   echo "════ ERRORES desde el viernes 28/8 18:00 ════"
+#   timeout 20 awk '$0 >= "2026-08-28 18:00"' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -vE "fetch failed" | tail -20
+#   echo "  fetch-failed TG en el período: $(timeout 10 awk '$0 >= \"2026-08-28 18:00\"' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | grep -c 'fetch failed')"
+#   echo ""
+#   echo "════ FALLOS/AVISOS del out.log ════"
+#   timeout 25 awk '$0 >= "2026-08-28 18:00"' /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "FALLO|no pude|abort|descart|prosa|RECUPERO|CANARY|huérfan" | tail -15
+#   echo ""
+#   echo "════ ACTIVIDAD + COSTO por día ════"
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for d in ('2026-08-28','2026-08-29','2026-08-30'):
+#       r=db.execute("""SELECT COUNT(*) n, SUM(json_extract(metadata_json,'$.cost_usd')) usd
+#          FROM eventos WHERE tipo='claude_call' AND date(timestamp)=?""",(d,)).fetchone()
+#       e=db.execute("""SELECT SUM(direccion='entrante') i, SUM(direccion='saliente') o FROM eventos
+#          WHERE date(timestamp)=? AND canal IN ('whatsapp','telegram','gmail')""",(d,)).fetchone()
+#       print(f"  {d}: {r['n'] or 0} turnos  US$ {(r['usd'] or 0):.2f}  | in={e['i'] or 0} out={e['o'] or 0}")
+#   print("\n════ CONVERSACIONES del finde (in/out por persona) ════")
+#   for r in db.execute("""SELECT COALESCE(u.nombre,e.nombre,e.de) q, SUM(e.direccion='entrante') i, SUM(e.direccion='saliente') o
+#      FROM eventos e LEFT JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp >= '2026-08-28 21:00' AND e.canal IN ('whatsapp','telegram','gmail')
+#      GROUP BY q ORDER BY i+o DESC LIMIT 10"""):
+#       print(f"   {(r['q'] or '?')[:26]:<26} in={r['i'] or 0:<3} out={r['o'] or 0}")
+#   print("\n════ LA GESTIÓN WARD: ¿Diego pasó la tarjeta? ¿salió el WA? ════")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,substr(cuerpo,1,140) c FROM eventos
+#      WHERE timestamp >= '2026-08-28 21:00' AND (cuerpo LIKE '%Ward%' OR cuerpo LIKE '%Dimitri%' OR nombre LIKE '%Ward%')
+#      ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else ('←' if r['direccion']=='saliente' else '·')
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:4]} {f} {(r['c'] or '').replace(chr(10),' | ')[:135]}")
+#   print("\n── contacto Ward ahora ──")
+#   for c in db.execute("SELECT id,usuario_id,nombre,whatsapp FROM contactos WHERE nombre LIKE '%Ward%'"):
+#       print('  ',dict(c))
+#   print("\n── wa_outbox desde el viernes ──")
+#   for r in db.execute("SELECT id,numero,estado,intentos,creado,substr(texto,1,60) t FROM wa_outbox WHERE creado >= '2026-08-28 21:00' ORDER BY id"):
+#       print('  ',dict(r))
+#   print("\n════ eventos de sistema notables ════")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,130) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= '2026-08-28 21:00'
+#        AND cuerpo NOT LIKE 'claude_call%' AND cuerpo NOT LIKE 'acción ejecutada%'
+#        AND cuerpo NOT LIKE '%meeting-prep%' ORDER BY timestamp DESC LIMIT 15"""):
+#       print(f" {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo ""
+#   echo "════ latidos / barrido ════"
+#   timeout 10 grep -c "RECUPERO" /root/.pm2/logs/maria-paez-out.log
+#   timeout 15 node -e "
+#   const gh=require('/root/secretaria/gmail-handler'), wh=require('/root/secretaria/wa-hook');
+#   const min=(t)=>t?Math.round((Date.now()-t)/60000)+' min':'nunca';
+#   console.log('  teléfono:', min(wh.ultimoLatido()), '| gmail:', min(gh.ultimoLatidoGmail()));"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Sun Aug 30 10:30:01 PM -03 2026
+
+════ ERRORES desde el viernes 28/8 18:00 ════
+2026-08-28 22:11:30: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+2026-08-29 22:11:43: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+2026-08-29 22:13:58: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+2026-08-30 22:11:52: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+  fetch-failed TG en el período: 0
+
+════ FALLOS/AVISOS del out.log ════
+2026-08-28 22:13:40: [TG] poll recuperado tras 2 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti)
+2026-08-30 22:14:07: [TG] poll recuperado tras 2 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti)
+
+════ ACTIVIDAD + COSTO por día ════
+  2026-08-28: 9 turnos  US$ 2.97  | in=2 out=25
+  2026-08-29: 5 turnos  US$ 0.68  | in=2 out=9
+  2026-08-30: 0 turnos  US$ 0.00  | in=1 out=14
+
+════ CONVERSACIONES del finde (in/out por persona) ════
+   Diego                      in=4   out=8
+   Hernan Fulco               in=0   out=4
+   Doris Capurro              in=0   out=4
+   Natali Funez               in=0   out=3
+   Gabriela Echaniz           in=0   out=3
+   Enrique Sosa               in=0   out=3
+
+════ LA GESTIÓN WARD: ¿Diego pasó la tarjeta? ¿salió el WA? ════
+ 08-28 21:50 gmai ← Hola Hernán! Soy Maria, la secretaria de Diego. Te escribo por la reunión con Dimitrije y Rubén Ward del miércoles 2/9: Diego me contó 
+ 08-28 21:50 tele ← Reviso la reunión con Dimitrije/Rubén: en tu calendario ya figura el miércoles 2/9 de 9 a 10am, así que el horario que hablaron con Her
+ 08-29 01:00 gmai → Si, la armé yo la reunión. |  |  | <hernan.fulco@sondeosglobal.com> <https://www.instagram.com/sondeosglobal> | <https://www.linked
+ 08-29 01:00 sist · gestion-ajena: mensaje de Hernan Fulco (usuario, via gmail) ruteado como TERCERO a gestión de Diego (#311: Confirmar con Hernán si armó
+ 08-29 01:00 tele ← Se confirmó: Hernán armó la reunión con Dimitrije y Rubén a las 9hs, coincide con lo que tenés en tu calendario. Quedó parejo de los do
+ 08-29 07:00 tele ← ☀️ *Buen día, Diego.* sábado, 29 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | ☁️ nublado, mín 9° / máx 17° |  | *📅 Agenda del día* 
+
+── contacto Ward ahora ──
+   {'id': 73, 'usuario_id': 1, 'nombre': 'Rubén Ward', 'whatsapp': '184052384567499@lid'}
+   {'id': 459, 'usuario_id': 2, 'nombre': 'Ruben Ward', 'whatsapp': None}
+   {'id': 472, 'usuario_id': 1, 'nombre': 'Ruben Ward', 'whatsapp': None}
+
+── wa_outbox desde el viernes ──
+
+════ eventos de sistema notables ════
+ 08-30 20:00 poda-eventos: 150 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+ 08-30 07:09 gcontacts-reconcile semanal: 377 ok, 16 fallidos
+ 08-29 20:00 poda-eventos: 22 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+ 08-29 01:00 razonamiento Gmail 1a04b046d409e0f0 (Diego): Hernán confirmó que armó la reunión a las 9, coincide con la agenda de Diego; cierro 
+ 08-29 01:00 gestion-ajena: mensaje de Hernan Fulco (usuario, via gmail) ruteado como TERCERO a gestión de Diego (#311: Confirmar con Hernán si
+
+════ latidos / barrido ════
+0
+  teléfono: 0 min | gmail: 5 min
+LISTO
+
+# exit=0
