@@ -1,0 +1,81 @@
+# ejecutado: 2026-09-01T18:34:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   echo "── errores desde el domingo 22:30 ──"
+#   timeout 20 awk '$0 >= "2026-08-30 22:30"' /root/.pm2/logs/maria-paez-error.log 2>/dev/null | tail -15
+#   echo "── fallos/avisos ──"
+#   timeout 20 awk '$0 >= "2026-08-30 22:30"' /root/.pm2/logs/maria-paez-out.log 2>/dev/null | grep -iE "FALLO|no pude|abort|descart|RECUPERO|prosa|dormidos|pausado" | tail -12
+#   echo "── actividad desde el domingo ──"
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   for r in db.execute("""SELECT date(timestamp) d, COUNT(*) n, SUM(json_extract(metadata_json,'$.cost_usd')) usd
+#      FROM eventos WHERE tipo='claude_call' AND timestamp >= '2026-08-31' GROUP BY d"""):
+#       print(f"  {r['d']}: {r['n']} turnos  US$ {(r['usd'] or 0):.2f}")
+#   print("  conversaciones:")
+#   for r in db.execute("""SELECT COALESCE(u.nombre,e.nombre,e.de) q, SUM(e.direccion='entrante') i, SUM(e.direccion='saliente') o
+#      FROM eventos e LEFT JOIN usuarios u ON u.id=e.usuario_id
+#      WHERE e.timestamp >= '2026-08-31 03:00' AND e.canal IN ('whatsapp','telegram','gmail')
+#      GROUP BY q ORDER BY i+o DESC LIMIT 8"""):
+#       print(f"   {(r['q'] or '?')[:24]:<24} in={r['i'] or 0:<3} out={r['o'] or 0}")
+#   print("  hitos de sistema:")
+#   for r in db.execute("""SELECT timestamp,substr(cuerpo,1,130) c FROM eventos
+#      WHERE canal='sistema' AND timestamp >= '2026-08-31 03:00'
+#        AND cuerpo NOT LIKE 'claude_call%' AND cuerpo NOT LIKE 'acción ejecutada%' AND cuerpo NOT LIKE '%meeting-prep%'
+#      ORDER BY timestamp DESC LIMIT 12"""):
+#       print(f"   {r['timestamp'][5:16]} {(r['c'] or '').replace(chr(10),' ')}")
+#   db.close()
+#   PY
+#   echo "── latidos / barrido / canary ──"
+#   timeout 10 grep -c "RECUPERO" /root/.pm2/logs/maria-paez-out.log
+#   timeout 15 node -e "
+#   const gh=require('/root/secretaria/gmail-handler'), wh=require('/root/secretaria/wa-hook');
+#   const min=(t)=>t?Math.round((Date.now()-t)/60000)+' min':'nunca';
+#   console.log('  teléfono:', min(wh.ultimoLatido()), '| gmail:', min(gh.ultimoLatidoGmail()));"
+#   cat state/.canary-bad-commit 2>/dev/null && echo "⚠️ CANARY MALO" || echo "  canary limpio"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Tue Sep  1 06:34:02 PM -03 2026
+── errores desde el domingo 22:30 ──
+2026-08-31 02:30:03: [TG] poll error (reintento en 15s): fetch failed
+2026-08-31 03:06:46: [TG] poll error (reintento en 15s): fetch failed
+2026-08-31 03:52:55: [TG] poll error (reintento en 15s): fetch failed
+2026-08-31 06:26:52: [TG] poll error (reintento en 15s): fetch failed
+2026-08-31 09:09:04: [TG] poll error (reintento en 15s): fetch failed
+2026-08-31 22:12:08: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+2026-08-31 22:14:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+2026-09-01 04:22:01: [TG] poll error (reintento en 15s): fetch failed
+2026-09-01 09:41:22: [TG] poll error (reintento en 15s): fetch failed
+2026-09-01 17:55:13: [TG] poll error (reintento en 15s): fetch failed
+── fallos/avisos ──
+2026-08-31 23:00:05: [dormidos] revisión mensual — buscando usuarios sin interacción
+2026-08-31 23:00:06: [dormidos] Doris Capurro pausado (38 días sin escribir)
+2026-08-31 23:00:10: [wa-send] dormidos/resumen: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+── actividad desde el domingo ──
+  2026-08-31: 3 turnos  US$ 0.76
+  2026-09-01: 2 turnos  US$ 0.43
+  conversaciones:
+   Diego                    in=3   out=9
+   Hernan Fulco             in=0   out=9
+   Gabriela Echaniz         in=0   out=4
+   Doris Capurro            in=0   out=4
+   Natali Funez             in=0   out=2
+   Enrique Sosa             in=0   out=2
+  hitos de sistema:
+   09-01 20:00 poda-eventos: 74 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+   09-01 14:10 unknown-flow/gmail LLM: desconocido · Es una factura automática de Google Workspace para el dominio intensa.io, sin relación con n
+   09-01 02:00 usuario PAUSADO por inactividad (38 días) — aviso enviado a doris@capurro.com.ar
+   08-31 20:00 poda-eventos: 182 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+── latidos / barrido / canary ──
+0
+  teléfono: 0 min | gmail: 4 min
+  canary limpio
+LISTO
+
+# exit=0
