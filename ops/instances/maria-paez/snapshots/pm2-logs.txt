@@ -1,8 +1,3 @@
-3|maria-pa | 2026-08-28 17:00:04: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-3|maria-pa | 2026-08-28 17:00:04: ✓ whisper OK
-3|maria-pa | 2026-08-28 17:00:04: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-3|maria-pa | 2026-08-28 17:00:04: ▸ arrancando poll de Gmail (cada 300s)
-3|maria-pa | 2026-08-28 17:00:04: ▸ arrancando loop de recordatorios (cada 30min)
 3|maria-pa | 2026-08-28 17:00:04: ▸ arrancando dispatcher de programados (cada 60s)
 3|maria-pa | 2026-08-28 17:00:04: ▸ arrancando morning-brief (por usuario, ventana 4h)
 3|maria-pa | 2026-08-28 17:00:04: [morning-brief] activo, ventana 4h, cada usuario en su tz
@@ -197,4 +192,9 @@
 3|maria-pa | 2026-09-01 09:31:07: [TG audio→texto] me conseguís por favor el número de teléfono de la compañía de seguros la caja
 3|maria-pa | 2026-09-01 09:31:27: [gcontacts] "La Caja Seguros" creado en Google Contacts
 3|maria-pa | 2026-09-01 10:45:07: [meeting-prep/Hernan Fulco] + id=1578 PASO A PRODUCCIÓN DE RAG IA PREMEDIC  @ 2026-09-01T15:15:00.000Z
+3|maria-pa | 2026-09-01 11:10:08: [GMAIL poll] 1 email(s) nuevo(s)
+3|maria-pa | 2026-09-01 11:10:08: [GMAIL ←] Google Payments <payments-noreply@google.com> | "Google Workspace: tu factura de intensa.io está disponible"
+3|maria-pa | 2026-09-01 11:10:09: [unknown-flow/gmail] LLM pre-pass inputs: hist_wa=0 hist_mail=1 hist_usuarios={Diego=60, Hernan Fulco=0, Natali Funez=2, Fernando Boero=0, Santiago Bignone=0, Doris Capurro=0, Nicolas Kosinski=0, Walter Vera=0, Cristian Ruiz=0, Sebastian Ameijeira=0, Enrique Sosa=0, Santiago Capurro=0, Andres Neumann=0, Gabriela Echaniz=0, Jaime Cibils=0, Alfonso Amat=0} remitente=Google Payments <payments-noreply@google.com> contactos_ambiguos=0
+3|maria-pa | 2026-09-01 11:10:14: [unknown-flow/gmail] LLM resolucion: desconocido · Es una factura automática de Google Workspace para el dominio intensa.io, sin relación con ningún usuario activo ni gestión previa identificable.
+3|maria-pa | 2026-09-01 11:10:37: [unknown-flow/gmail] primer contacto de Google Payments <payments-noreply@google.com> (FSM)
 
