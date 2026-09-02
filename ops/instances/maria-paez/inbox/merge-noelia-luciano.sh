@@ -1,0 +1,12 @@
+#!/bin/bash
+cd /root/secretaria
+timeout 30 node -e "
+const mem=require('/root/secretaria/memory');
+// fichas reales (con WA) ← emails de los stubs; stubs afuera
+mem.db.prepare(\"UPDATE contactos SET email='nbruscoli@froneus.com' WHERE id=533 AND usuario_id=1\").run();
+mem.db.prepare(\"UPDATE contactos SET email='lperoni@froneus.com' WHERE id=532 AND usuario_id=1\").run();
+mem.db.prepare('DELETE FROM contactos WHERE id IN (544,545) AND usuario_id=1').run();
+mem.db.prepare(\"SELECT id,nombre,whatsapp,email FROM contactos WHERE usuario_id=1 AND (nombre LIKE '%Bruscoli%' OR nombre LIKE '%Peroni%')\").all().forEach(c=>console.log(' ',JSON.stringify(c)));
+mem.log({usuarioId:1,canal:'sistema',direccion:'interno',cuerpo:'Fichas unificadas: Noelia Bruscoli y Luciano Peroni ahora tienen WA + email (los stubs Nbruscoli/Lperoni absorbidos). Los upsert del 2/9 habian fallado por el guard anti-duplicados.',metadata:{tipo:'merge_contacto'}});
+"
+echo LISTO
