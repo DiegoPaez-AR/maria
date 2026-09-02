@@ -1151,6 +1151,30 @@ async function _upsertContacto(a, ctx) {
       if (_norm(c.nombre) === nombreNorm) motivos.push('mismo nombre (variante de tildes/espacios)');
       if (motivos.length) sospechosos.push({ c, motivos });
     }
+    // AUTO-MERGE DE FICHAS "STUB" (2026-09-02, casos Pluna / Nbruscoli /
+    // Lperoni): el meeting-prep y las invitaciones de calendario crean fichas
+    // sin nombre real — el nombre es el local-part del email ("Nbruscoli"),
+    // sin teléfono. Cuando después llega la persona con su nombre de verdad
+    // (vCard por WhatsApp), el guard veía "mismo email bajo OTRO nombre" y se
+    // negaba a actualizar: la ficha real quedaba SIN email para siempre y el
+    // modelo reportaba "guardado" sin haber guardado nada. Un stub no es un
+    // homónimo: se absorbe.
+    const _esStub = (c) => {
+      const em = String(c.email || '').toLowerCase();
+      const local = em.split('@')[0];
+      const n = String(c.nombre || '').toLowerCase().replace(/[\s._-]/g, '');
+      return !!em && !c.whatsapp && local.length >= 3 && n === local.replace(/[._-]/g, '');
+    };
+    const _stubs = sospechosos.filter(({ c, motivos }) => motivos.length === 1 && motivos[0] === 'mismo email' && _esStub(c));
+    if (_stubs.length && _stubs.length === sospechosos.length) {
+      for (const { c } of _stubs) {
+        try {
+          mem.db.prepare('DELETE FROM contactos WHERE id = ?').run(c.id);
+          console.log(`[upsert_contacto] stub "${c.nombre}" (#${c.id}, solo email) absorbido por "${a.nombre}"`);
+        } catch (e) { console.warn('[upsert_contacto] absorber stub:', e.message); }
+      }
+      sospechosos.length = 0;
+    }
     if (sospechosos.length) {
       const detalle = sospechosos.slice(0, 3).map(({ c, motivos }) =>
         `"${c.nombre}" (${[c.whatsapp, c.email, c.cumple ? `cumple ${c.cumple}` : null].filter(Boolean).join(', ') || 'sin datos'}) — ${motivos.join(' + ')}`
