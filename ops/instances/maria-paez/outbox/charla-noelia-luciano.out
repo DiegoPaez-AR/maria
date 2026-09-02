@@ -1,0 +1,98 @@
+# ejecutado: 2026-09-02T17:13:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── hora ──"; date
+#   timeout 40 python3 - <<'PY'
+#   import sqlite3,os
+#   db=sqlite3.connect(os.environ['MARIA_DB']); db.row_factory=sqlite3.Row
+#   print("════ TODO lo que menciona a Noelia / Luciano (Diego + terceros), desde el 25/8 ════")
+#   for r in db.execute("""SELECT timestamp,canal,direccion,COALESCE(nombre,de) q,substr(cuerpo,1,260) c FROM eventos
+#      WHERE timestamp >= '2026-08-25' AND canal IN ('whatsapp','telegram','gmail')
+#        AND (cuerpo LIKE '%Noelia%' OR cuerpo LIKE '%Luciano%' OR cuerpo LIKE '%NB LP%'
+#             OR nombre LIKE '%Noelia%' OR nombre LIKE '%Luciano%' OR de LIKE '%59524645%' OR de LIKE '%55947242%')
+#      ORDER BY timestamp"""):
+#       f='→' if r['direccion']=='entrante' else '←'
+#       print(f" {r['timestamp'][5:16]} {r['canal'][:3]} {f} {(r['q'] or '?')[:16]:<16} {(r['c'] or '').replace(chr(10),' | ')}")
+#   print("\n── el evento en calendario ──")
+#   PY
+#   timeout 60 node -e "
+#   (async()=>{
+#     const pb=require('/root/secretaria/prompt-builder');
+#     const u=require('/root/secretaria/usuarios').obtenerOwner();
+#     const a=await pb.seccionAgenda(u,{dias:2});
+#     console.log(a.split('\n').filter(l=>/NB LP|Noelia|Luciano|02\/09/.test(l)).join('\n'));
+#   })().catch(e=>console.log('ERR',e.message));" 2>&1 | grep -v Warning
+#   echo "── pendientes/follow-ups relacionados ──"
+#   timeout 20 node -e "
+#   const mem=require('/root/secretaria/memory');
+#   mem.db.prepare(\"SELECT id,desc,dueno,estado FROM pendientes WHERE desc LIKE '%Noelia%' OR desc LIKE '%Luciano%' ORDER BY id DESC LIMIT 6\").all().forEach(p=>console.log(' P',JSON.stringify(p)));
+#   mem.db.prepare(\"SELECT id,descripcion,estado FROM follow_ups WHERE descripcion LIKE '%Noelia%' OR descripcion LIKE '%Luciano%' ORDER BY id DESC LIMIT 4\").all().forEach(p=>console.log(' FU',JSON.stringify(p)));"
+#   echo LISTO
+
+# ───── output ─────
+── hora ──
+Wed Sep  2 05:13:02 PM -03 2026
+════ TODO lo que menciona a Noelia / Luciano (Diego + terceros), desde el 25/8 ════
+ 08-25 22:56 tel → Diego            Podrás coordinar una reunión con Noelia Bruscoli y Luciano Peroni, avisarme si no |  tenés los contactos y te los paso para que les escribas por WhatsApp. Pasale |  como opciones para reunirnos, podría ser o el miércoles 3, miércoles 2 de |  septiembre de 13 a 15.30
+ 08-25 22:56 tel ← Diego            No tengo a Noelia Bruscoli ni a Luciano Peroni en la libreta. Pasame sus WhatsApp y les escribo ofreciéndoles miércoles 2/9 de 13 a 15:30 o jueves 3/9 de 17 a 19.
+ 08-25 22:57 tel → Diego            [CONTACTO COMPARTIDO] Luciano Peroni — tel: +5491159524645 | (El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contacto salvo que el contexto diga otra cosa.)
+ 08-25 22:57 tel ← Diego            Guardé a Luciano y ya le mando la propuesta de horarios. Todavía me falta el contacto de Noelia Bruscoli para escribirle a ella también.
+ 08-25 22:57 tel → Diego            [CONTACTO COMPARTIDO] Noelia Bruscoli — tel: 541155947242 | (El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contacto salvo que el contexto diga otra cosa.)
+ 08-25 22:57 tel ← Diego            Perfecto, guardé a Noelia y le mando la propuesta de horarios también. Ya quedaron ambos consultados.
+ 08-25 23:00 wha ← 5491159524645@c. Hola Luciano! Soy María, la asistente de Diego Paez. Te escribo para coordinar una reunión con él: ¿te queda bien el miércoles 2/9 de 13:00 a 15:30 o el jueves 3/9 de 17:00 a 19:00? Quedo atenta a qué opción te conviene más.
+ 08-25 23:03 wha ← 541155947242@c.u Hola Noelia! Soy María, la asistente de Diego Paez. Te escribo para coordinar una reunión con él: ¿te queda bien el miércoles 2/9 de 13:00 a 15:30 o el jueves 3/9 de 17:00 a 19:00? Quedo atenta a qué opción te conviene más.
+ 08-26 07:00 tel ← Diego            ☀️ *Buen día, Diego.* miércoles, 26 de agosto. |  | *🌡️ Clima en Buenos Aires, AR* | 🌦️ llovizna, mín 9° / máx 16° · 57% prob. de lluvia |  | *📅 Agenda del día* | • 09:00 a. m. — SND - Presentacion de resultados del mes | • 11:00 a. m. — Reu Lank - Dragones / VALIDA | • 03:00
+ 08-26 12:02 wha → Luciano Peroni   Buen dia, miércoles 2/9 a 15:30 hs. Muchas gracias
+ 08-26 12:04 wha ← Luciano Peroni   Perfecto Luciano, anoto miércoles 2/9 a las 15:30. Estoy terminando de coordinar el mismo horario con Noelia para que quedemos los tres — en cuanto confirme te aviso por aquí.
+ 08-26 12:04 wha → Luciano Peroni   Excelente, gracias
+ 08-26 13:49 wha → Noelia Bruscoli  Confirmo Miercoles 2/09 de 13 a 15.30
+ 08-26 13:51 tel ← Diego            Cerrado: quedó la reunión con Noelia Bruscoli y Luciano Peroni para el miércoles 2/9 de 13:00 a 15:30hs. Ya te la agendé con Meet. Le aviso a Luciano el horario final (le había quedado anotado solo 15:30, ahora sabe que es el bloque completo).
+ 08-26 13:51 wha ← Noelia Bruscoli  Perfecto Noelia, quedamos entonces el miércoles 2/9 de 13:00 a 15:30hs con Diego y Luciano. ¡Nos vemos!
+ 08-26 13:56 wha ← 5491159524645@c. Hola Luciano! Te confirmo el horario final con Noelia: miércoles 2/9 de 13:00 a 15:30hs. Nos vemos entonces.
+ 08-26 18:30 tel → Diego            como quedo la reu con luciano y con noe?
+ 08-26 18:30 tel ← Diego            Quedó confirmada para el miércoles 2/9 de 13:00 a 15:30hs, ya está agendada en tu calendario ("Reunión NB LP - DP") con Meet incluido.
+ 08-26 18:32 tel ← Diego            ¿Qué hora exacta dentro de esa ventana preferís proponerles? Por ejemplo 13:00-14:00, 13:30-14:30 o 14:30-15:30. Así les escribo a Noelia y Luciano con el horario puntual.
+ 08-26 18:36 wha ← 5491159524645@c. Hola Luciano! Te escribo porque la reunión con Diego y Noelia en realidad dura 1 hora, no las 2:30hs completas. Dentro de la ventana del miércoles 2/9 de 13:00 a 15:30, ¿qué hora te queda mejor para ese bloque de 1 hora? (13-14, 13:30-14:30 o 14:30-15:30, por 
+ 08-26 18:40 wha ← 5491155947242@c. Hola Noelia! Te escribo porque la reunión con Diego y Luciano en realidad dura 1 hora, no las 2:30hs completas. Dentro de la ventana del miércoles 2/9 de 13:00 a 15:30, ¿qué hora te queda mejor para ese bloque de 1 hora? (13-14, 13:30-14:30 o 14:30-15:30, por 
+ 08-26 18:43 wha → Noelia Bruscoli  14:30 a 15:30
+ 08-26 18:43 wha → Luciano Peroni   13 a 14hs
+ 08-26 18:44 wha ← Noelia Bruscoli  ¡Genial! Le confirmo la hora a Luciano y en cuanto me diga que le queda bien, actualizo la reunión.
+ 08-26 18:44 wha ← Luciano Peroni   Gracias Luciano! Noelia había tirado un horario distinto (14:30 a 15:30), así que le estoy preguntando si le cierra el de 13 a 14 para que quede alineado con vos. Apenas me confirme te aviso.
+ 08-26 18:45 wha → Luciano Peroni   De 14:30 a 15:30 tambien me quede comodo
+ 08-26 18:46 wha ← 5491155947242@c. Hola Noelia! Luciano propuso el horario de 13 a 14hs para la reunión del miércoles 2/9 — ¿te queda bien ese en lugar del de 14:30 a 15:30 que me habías dicho?
+ 08-26 18:46 tel ← Diego            Se resolvió lo de la reunión con Noelia y Luciano: a Luciano también le queda bien 14:30 a 15:30, así que quedó ese horario para el miércoles 2/9. Ya actualicé el evento en tu calendario y les aviso a ambos.
+ 08-26 18:46 wha → Luciano Peroni   De 14:30 a 15:30 tambien me queda comodo
+ 08-26 18:46 wha ← Luciano Peroni   Perfecto, entonces quedamos miércoles 2/9 de 14:30 a 15:30hs. ¡Gracias Luciano!
+ 08-26 18:47 wha → Luciano Peroni   Gracias!
+ 08-26 18:48 wha ← 5491155947242@c. Hola Noelia! Se resolvió: a Luciano también le queda cómodo el horario que vos propusiste. Quedamos entonces el miércoles 2/9 de 14:30 a 15:30hs. ¡Nos vemos!
+ 08-26 18:51 wha ← 5491159524645@c. Hola Luciano! Noelia me confirmó que el bloque de 14:30 a 15:30hs le queda bien para el miércoles 2/9. ¿A vos también te funciona esa hora?
+ 08-26 18:51 wha ← 5491159524645@c. Perfecto, entonces quedamos miércoles 2/9 de 14:30 a 15:30hs. ¡Gracias Luciano!
+ 08-26 20:14 tel ← Diego            Tus pendientes personales: | 1. iProt Seguridad | 2. DDJJ 2025 | 3. Llamar a Poggetti | 4. Pasajes a Japón (fechas 1, 14, 17 de abril) | 5. tk iplan Wally | 6. transferencia honda x3 | 7. choque y Julián | 8. dividendos |  | No tenés consultas abiertas ni gestiones mías en curso 
+ 09-02 07:00 tel ← Diego            ☀️ *Buen día, Diego.* miércoles, 2 de septiembre. |  | *🌡️ Clima en Buenos Aires, AR* | ⛈️ tormenta, mín 10° / máx 22° · 63% prob. de lluvia |  | *📅 Agenda del día* | • todo el día — Pagar a Ani | • 09:00 a. m. — Meet Dimitrije / Diego / Ruben | • 02:30 p. m. — Reunión NB LP 
+ 09-02 17:15 tel ← 590589920        ⏰ *En 15min*: Reunión NB LP - DP (02:30 p. m.) | Reunión de Diego con Noelia Bruscoli y Luciano Peroni.
+ 09-02 17:32 tel → Diego            María, ¿no le mandaste la invitación de la reunión ahora de las dos y media a Noelia y a Luciano?
+ 09-02 17:32 tel ← Diego            Reviso: en tu agenda de las 2:30pm hoy tenés DOS eventos, no uno solo: | 1. "Reunión DP" — ya tiene invitados a lperoni@froneus.com y nbruscoli@froneus.com (parece que esa invitación sí salió). | 2. "Reunión NB LP - DP" — la que armé yo con el nombre por default, 
+ 09-02 17:37 tel → Diego            No, no. El que tiene los e-mails lo mandó Noelia porque vos no había creado ninguno, |  o sea, me lo creaste a mí, pero no invitaste a nadie. El que no tiene invitado a nadie |  es el que creaste vos. Entonces, cabe que armes una reunión y coordines si no tenés |  l
+ 09-02 17:38 tel ← Diego            No, no los tenía guardados antes — en la libreta solo tenía sus WhatsApp, sin email. Ya quedaron guardados los emails (nbruscoli@froneus.com y lperoni@froneus.com), aunque el sistema los detectó como posible duplicado de sus fichas existentes y quedaron en reg
+
+── el evento en calendario ──
+- [8ddgp01vt73121laatuajkrn8o_20260902] mié 02/09 (todo el día)  Pagar a Ani
+- [0288bf309fj562uqa2in670igq_20260902T183000Z] mié 02/09 03:30 p. m.-07:00 p. m.  Personal
+- [67bm985l28vo3n1o5nd2f857je] mié 02/09 05:00 p. m.-06:00 p. m.  CIGI y Europa [meet]
+── pendientes/follow-ups relacionados ──
+ P {"id":305,"desc":"Esperando respuesta de 5491159524645@c.us (WA): \"Perfecto, entonces quedamos miércoles 2/9 de 14:30 a 15:30hs. ¡Gracias Luciano!\"","dueno":"maria","estado":"cerrado"}
+ P {"id":304,"desc":"Esperando que Noelia confirme si le sirve 13 a 14hs (horario que propuso Luciano) en lugar de 14:30-15:30","dueno":"maria","estado":"cerrado"}
+ P {"id":303,"desc":"Esperando respuesta de 5491155947242@c.us (WA): \"Hola Noelia! Luciano propuso el horario de 13 a 14hs para la reunión del miércoles 2/9 — ¿te queda bien ese en lugar del de 14:30 a 15:30 qu…\"","dueno":"maria","estado":"cerrado"}
+ P {"id":301,"desc":"Esperando que Noelia y Luciano confirmen el horario exacto de 1 hora (dentro de 13-15:30) del miércoles 2/9 para actualizar el evento \"Reunión NB LP - DP\"","dueno":"maria","estado":"cerrado"}
+ P {"id":300,"desc":"Esperando respuesta de 5491155947242@c.us (WA): \"Hola Noelia! Te escribo porque la reunión con Diego y Luciano en realidad dura 1 hora, no las 2:30hs completas. Dentro de la ventana del mié…\"","dueno":"maria","estado":"cerrado"}
+ P {"id":296,"desc":"Esperando respuesta de 5491159524645@c.us (WA): \"Hola Luciano! Te confirmo el horario final con Noelia: miércoles 2/9 de 13:00 a 15:30hs. Nos vemos entonces.\"","dueno":"maria","estado":"cerrado"}
+ FU {"id":58,"descripcion":"Esperando que Noelia confirme si le sirve 13 a 14hs (horario que propuso Luciano) en lugar de 14:30-15:30","estado":"cancelado"}
+ FU {"id":55,"descripcion":"Luciano Peroni confirmó miércoles 2/9 15:30hs para la reunión con Diego y Noelia Bruscoli. Falta que Noelia confirme el mismo horario (u otro) para crear el evento.","estado":"cancelado"}
+ FU {"id":54,"descripcion":"Esperando que Noelia Bruscoli confirme si le queda mejor miércoles 2/9 13-15:30 o jueves 3/9 17-19 para reunirse con Diego (y Luciano Peroni)","estado":"cancelado"}
+ FU {"id":53,"descripcion":"Esperando que Luciano Peroni confirme si le queda mejor miércoles 2/9 13-15:30 o jueves 3/9 17-19 para reunirse con Diego (y Noelia Bruscoli)","estado":"cancelado"}
+LISTO
+
+# exit=0
