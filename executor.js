@@ -420,7 +420,26 @@ async function _crearEvento(a, ctx) {
     cuerpo: `creado: ${ev.summary} (${ev.start} → ${ev.end})${ev.meetLink ? ' · Meet: ' + ev.meetLink : ''}${enCalDelUsuario ? '' : ' [en calendar de Maria]'}`,
     metadata: { eventoId: ev.id, link: ev.link, meetLink: ev.meetLink, calendarId, tier },
   });
-  return { id: ev.id, summary: ev.summary, link: ev.link, meetLink: ev.meetLink, calendarId, tier };
+  // GUARD "EVENTO SIN INVITADOS" (2026-09-02, caso Noelia/Luciano — aprobado
+  // Diego): Maria coordinó por WhatsApp, creó el evento con Meet pero SIN
+  // invitados (solo tenía sus números), y reportó "agendada con Meet" — nadie
+  // recibió el link y Noelia terminó armando su propio evento. Un evento con
+  // otras personas y cero invitados (más allá del propio usuario) es un
+  // resultado INCOMPLETO y el modelo tiene que enterarse en la cara.
+  const _otros = attendeesFinal.filter(em => !u.email || String(em).toLowerCase() !== u.email.toLowerCase());
+  const _sinInvitados = _otros.length === 0;
+  return {
+    id: ev.id, summary: ev.summary, link: ev.link, meetLink: ev.meetLink, calendarId, tier,
+    invitados: _otros.length,
+    ...(_sinInvitados ? {
+      sin_invitados: true,
+      nota: `⚠️ El evento quedó creado SIN INVITADOS: nadie más que ${u.nombre} lo ve y ${ev.meetLink ? 'NADIE recibió el link de Meet' : 'no le llegó invitación a nadie'}. ` +
+            `Antes de dar por cerrada la coordinación: (1) preguntale a ${u.nombre} si hay que invitar a alguien; ` +
+            `(2) si hay que invitar y NO tenés el email de esa persona, pedíselo por el canal por donde la venís coordinando (WhatsApp) ` +
+            `y emití modificar_evento con attendees; mientras tanto podés mandarle el link del Meet por WhatsApp. ` +
+            `(3) NUNCA le digas a ${u.nombre} "quedó agendada con Meet" como si la invitación hubiera salido — decile explícito que falta invitar.`,
+    } : {}),
+  };
 }
 
 async function _modificarEvento(a, ctx) {
