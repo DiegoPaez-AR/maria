@@ -1,0 +1,55 @@
+# ejecutado: 2026-09-03T12:20:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "═══ DRY-RUN alta sofia-bruscoli ═══"
+#   timeout 120 bash ops/provision/nueva-instancia.sh sofia-bruscoli "Sofia Bruscoli" sofia@luminaconsultora.com --dry-run 2>&1 | tail -60
+#   echo LISTO
+
+# ───── output ─────
+═══ DRY-RUN alta sofia-bruscoli ═══
+═══ Alta de instancia: sofia-bruscoli (Sofia Bruscoli) ═══
+  gmail:    sofia@luminaconsultora.com
+  puerto:   4502
+  max_usu:  10
+  hook:     https://intensa.io/hooks/wa-sofia-bruscoli/<secret>
+  (DRY-RUN: no toco nada)
+── [dry] escribiría config/instances/sofia-bruscoli.conf
+── [dry] crearía state/sofia-bruscoli/db + copiaría credentials.json
+── [dry] insertaría en nginx:
+    location /hooks/wa-sofia-bruscoli/ {
+        proxy_pass http://127.0.0.1:4502/wa-hook/;
+        proxy_read_timeout 90s;
+        proxy_http_version 1.1;
+    }
+── [dry] INSERT en instances (signup_bot=0)
+── pm2 NO recargado (correr tras el OAuth: pm2 reload ecosystem.config.js --update-env)
+
+═══ CHECKLIST MANUAL (ver ops/provision/README.md) ═══
+ 1. GMAIL: crear/usar sofia@luminaconsultora.com (Workspace del cliente o Gmail dedicado)
+ 2. OAUTH: correr el flow de Google en el VPS →
+      cd /root/secretaria && set -a && . config/instances/sofia-bruscoli.conf && set +a && node auth-gmail.js url
+      → abrir la URL logueado como sofia@luminaconsultora.com, copiar el code, y: node auth-gmail.js exchange <code>
+    → genera state/sofia-bruscoli/token.json (cifrar con la vault key si aplica)
+ 3. TELÉFONO dedicado: chip + WhatsApp con el número de la Maria nueva
+    ⚠️  WARM-UP: usar el número A MANO 2-3 días antes de conectar nada (lección Meta)
+ 4. MARIABRIDGE en ese teléfono:
+      APK:    https://intensa.io/_dl/ (ver mariabridge-latest.json para el último)
+      CONFIG 1-TAP (v2.6+): abrí este link EN EL TELÉFONO (mandalo por el canal que sea):
+        mariabridge://config?url=https%3A%2F%2Fintensa.io%2Fhooks%2Fwa-sofia-bruscoli&secret=c27dd6f5499a9fb1d878c76cdf2101ab
+      (o a mano: URL https://intensa.io/hooks/wa-sofia-bruscoli + secret c27dd6f5499a9fb1d878c76cdf2101ab)
+      Permisos: ①notificaciones ②batería ③accesibilidad (+ permitir instalar apps para el auto-update)
+ 5. TELEGRAM (opcional pero recomendado): crear bot en @BotFather →
+      TELEGRAM_BOT_TOKEN/USERNAME en config/instances/sofia-bruscoli.conf (NO en secrets.conf global)
+ 6. OWNER/CLIENTE: OWNER_* en config/instances/sofia-bruscoli.conf ya apunta a Diego (admin). Cargar al
+    cliente como USUARIO: desde el chat del owner → "sumá a <nombre> como usuario"
+ 7. pm2 reload ecosystem.config.js --update-env  (si no usaste --start)
+ 8. SMOKE: curl -X POST "https://intensa.io/hooks/wa-sofia-bruscoli/c27dd6f5499a9fb1d878c76cdf2101ab" \
+      -H 'Content-Type: application/json' -d '{"query":{"sender":"000","message":"ping","isTestMessage":true}}'
+    → debe devolver "✅ Webhook de Maria conectado."
+═══════════════════════════════════════════════════════
+LISTO
+
+# exit=0
