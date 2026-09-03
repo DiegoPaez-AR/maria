@@ -1,0 +1,30 @@
+# ejecutado: 2026-09-03T18:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   grep -h "hc-notify.*sofia" /var/log/maria-healthcheck*.log /root/secretaria/ops/instances/*/snapshots/*.log /var/log/syslog 2>/dev/null | tail -5
+#   grep -rn "hc-notify" /etc/cron.d/ /var/spool/cron/crontabs/root 2>/dev/null | head -3
+#   ls -la /root/secretaria/ops/instances/sofia-bruscoli/snapshots/ 2>/dev/null | head
+#   grep -E "18:2[89]|18:30" /root/.pm2/logs/sofia-bruscoli-out.log | grep -iE "wa-send|email|healthcheck" | head -5
+#   echo LISTO
+
+# ───── output ─────
+[hc-notify] sofia-bruscoli FALLO: pm2_online, db_writable, google_oauth
+[hc-notify] sofia-bruscoli sin owner WA en DB
+[hc-notify] sofia-bruscoli FALLO: google_oauth
+[hc-notify] sofia-bruscoli aviso WA al owner: HTTP 200
+total 44
+drwxr-xr-x 2 root root  4096 Sep  3 18:35 .
+drwxr-xr-x 5 root root  4096 Sep  3 12:23 ..
+-rw-r--r-- 1 root root  1668 Sep  3 18:35 eventos-ultimos.txt
+-rw-r--r-- 1 root root   546 Sep  3 18:30 HEALTHCHECK-ALERT.json
+-rw-r--r-- 1 root root     0 Sep  3 18:35 hechos.txt
+-rw-r--r-- 1 root root     0 Sep  3 18:35 pendientes-abiertos.txt
+-rw-r--r-- 1 root root 18138 Sep  3 18:35 pm2-logs.txt
+-rw-r--r-- 1 root root    76 Sep  3 18:35 pm2-status.tsv
+-rw-r--r-- 1 root root     0 Sep  3 18:35 programados.txt
+2026-09-03 18:30:05: [wa-send] internal-api/send-wa: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
+LISTO
+
+# exit=0
