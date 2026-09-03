@@ -1,0 +1,89 @@
+# ejecutado: 2026-09-03T09:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── ticks del cron 04:15 → 05:05 local (solo lo anómalo) ──"
+#   timeout 20 awk '/═══ 2026-09-03T04:1[5-9]/,/═══ 2026-09-03T05:0[5-9]/' ops/.cron.log | grep -vE "^push fase 1 OK$|^tick done$" | head -60
+#   echo ""
+#   echo "── ¿hubo ticks que NO terminaron (═══ sin tick done)? ──"
+#   timeout 20 awk '/═══ 2026-09-03T04:1/,/═══ 2026-09-03T05:1/' ops/.cron.log | grep -cE "^═══"
+#   timeout 20 awk '/═══ 2026-09-03T04:1/,/═══ 2026-09-03T05:1/' ops/.cron.log | grep -cE "^tick done"
+#   echo "── healthcheck log (si existe) ──"
+#   ls /root/secretaria/ops/*.log 2>/dev/null; tail -20 /root/secretaria/ops/.healthcheck.log 2>/dev/null
+#   echo "── syslog: cron / oom / kill a esa hora ──"
+#   timeout 10 grep -E "Sep  3 04:[2-5]|Sep  3 05:0" /var/log/syslog 2>/dev/null | grep -iE "oom|kill|cron.*maria|error" | head -10
+#   echo LISTO
+
+# ───── output ─────
+── ticks del cron 04:15 → 05:05 local (solo lo anómalo) ──
+═══ 2026-09-03T04:15:01-03:00 ═══
+═══ 2026-09-03T04:16:01-03:00 ═══
+═══ 2026-09-03T04:17:01-03:00 ═══
+═══ 2026-09-03T04:18:01-03:00 ═══
+═══ 2026-09-03T04:19:01-03:00 ═══
+═══ 2026-09-03T04:20:01-03:00 ═══
+═══ 2026-09-03T04:21:01-03:00 ═══
+═══ 2026-09-03T04:22:01-03:00 ═══
+═══ 2026-09-03T04:23:01-03:00 ═══
+═══ 2026-09-03T04:24:01-03:00 ═══
+═══ 2026-09-03T04:25:02-03:00 ═══
+═══ 2026-09-03T04:26:01-03:00 ═══
+═══ 2026-09-03T04:27:01-03:00 ═══
+═══ 2026-09-03T04:28:01-03:00 ═══
+═══ 2026-09-03T04:29:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:30:01-03:00 ═══
+═══ 2026-09-03T04:31:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:32:01-03:00 ═══
+═══ 2026-09-03T04:33:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:34:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:35:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:36:01-03:00 ═══
+═══ 2026-09-03T04:37:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:38:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:39:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:40:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:41:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:42:01-03:00 ═══
+═══ 2026-09-03T04:43:01-03:00 ═══
+═══ 2026-09-03T04:44:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:45:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:46:01-03:00 ═══
+fatal: remote error: GitHub is temporarily limiting some unauthenticated downloads to protect the stability of the platform. Please retry later or authenticate.
+fetch failed
+═══ 2026-09-03T04:47:01-03:00 ═══
+═══ 2026-09-03T04:48:01-03:00 ═══
+
+── ¿hubo ticks que NO terminaron (═══ sin tick done)? ──
+61
+34
+── healthcheck log (si existe) ──
+── syslog: cron / oom / kill a esa hora ──
+LISTO
+
+# exit=0
