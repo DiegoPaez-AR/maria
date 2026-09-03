@@ -1,12 +1,12 @@
 {
-  "ts": "2026-09-03T15:25:05Z",
+  "ts": "2026-09-03T21:30:04Z",
   "instance": "sofia-bruscoli",
   "overall_ok": false,
   "checks": {
-    "pm2_online": { "ok": false, "detail": {"status":"not_found"} }
-    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":1} }
-    ,"db_writable": { "ok": false, "detail": {"path":"/root/secretaria/state/sofia-bruscoli/db/maria.sqlite","error":"no existe o no writable"} }
-    ,"google_oauth": { "ok": false, "detail": {"ok":false,"error":"google.autenticar: no encontré token en /root/secretaria/state/sofia-bruscoli/token.json ni /root/secretaria/state/sofia-bruscoli/token.json.enc. Corré auth-gmail.js para autorizar."} }
+    "pm2_online": { "ok": true, "detail": {"pid":4147469,"restarts":5} }
+    ,"snapshot_recent": { "ok": true, "detail": {"age_seconds":58} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/sofia-bruscoli/db/maria.sqlite","size_kb":4} }
+    ,"google_oauth": { "ok": false, "detail": {"ok":false,"error":"Unsupported state or unable to authenticate data"} }
     ,"vault": { "ok": true, "detail": {"ok":true} }
   }
 }
