@@ -1,0 +1,39 @@
+# ejecutado: 2026-09-03T18:09:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   TOK='8468695892:AAGgHTP9zAcSqbOztBJ4hzVU7fwjKpBlfik'
+#   echo "── ¿el token es válido? (getMe) ──"
+#   ME=$(curl -s -m 15 "https://api.telegram.org/bot$TOK/getMe")
+#   echo "$ME" | python3 -c "import json,sys; d=json.load(sys.stdin); print('  ok:', d.get('ok'), '| bot:', d.get('result',{}).get('first_name'), '| username: @'+str(d.get('result',{}).get('username')))"
+#   USR=$(echo "$ME" | python3 -c "import json,sys; print(json.load(sys.stdin).get('result',{}).get('username',''))")
+#   if [ -z "$USR" ]; then echo "  token inválido — no toco nada"; echo LISTO; exit 0; fi
+#   echo "── al .conf de SOFIA (per-instance) ──"
+#   CF=config/instances/sofia-bruscoli.conf
+#   sed -i '/^TELEGRAM_BOT_TOKEN=<REDACTED>' "$CF"
+#   echo "TELEGRAM_BOT_TOKEN=<REDACTED>" >> "$CF"
+#   echo "TELEGRAM_BOT_USERNAME=$USR" >> "$CF"
+#   grep -c '^TELEGRAM_' "$CF"
+#   echo "── reload sofia ──"
+#   timeout 90 pm2 reload ecosystem.config.js --only sofia-bruscoli --update-env >/dev/null 2>&1 && echo "  reload OK"
+#   sleep 20
+#   timeout 10 grep -E "telegram|TG\]" /root/.pm2/logs/sofia-bruscoli-out.log | tail -3
+#   timeout 10 tail -3 /root/.pm2/logs/sofia-bruscoli-error.log
+#   echo LISTO
+
+# ───── output ─────
+── ¿el token es válido? (getMe) ──
+  ok: True | bot: SofIA Bruscoli | username: @SofiaBruscoliAI_bot
+── al .conf de SOFIA (per-instance) ──
+2
+── reload sofia ──
+  reload OK
+2026-09-03 17:44:03: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+2026-09-03 17:46:03: [TG] TELEGRAM_BOT_TOKEN no seteado — canal de respaldo APAGADO
+2026-09-03 18:09:05: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+LISTO
+
+# exit=0
