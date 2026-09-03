@@ -1,4 +1,7 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
+4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+
 /root/.pm2/logs/sofia-bruscoli-out.log last 200 lines:
 4|sofia-br | 2026-09-03 17:44:02: [memory] owner creado: Diego (id=1, servido=0)
 4|sofia-br | 2026-09-03 17:44:02: [memory] migración: usuarios.pausado + pausado_desde agregados
@@ -51,7 +54,41 @@
 4|sofia-br | 2026-09-03 17:44:03: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
 4|sofia-br | 2026-09-03 17:44:03: [calendar-watch/Diego] calendar_acceso write → none
 4|sofia-br | 2026-09-03 17:44:03: [calendar-watch] tick: 1 cambio(s) detectado(s)
-
-/root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
-4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+4|sofia-br | 2026-09-03 17:46:02: 
+4|sofia-br | 2026-09-03 17:46:02: ▸ SIGINT recibido, cerrando…
+4|sofia-br | 2026-09-03 17:46:03: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4|sofia-br | 2026-09-03 17:46:03: ▸ Sofia Bruscoli [sofia-bruscoli] iniciando…
+4|sofia-br | 2026-09-03 17:46:03:   Owner:      Diego (id=1)
+4|sofia-br | 2026-09-03 17:46:03:   Usuarios:   1 activo(s) → Diego
+4|sofia-br | 2026-09-03 17:46:03:   Gmail poll: cada 300s
+4|sofia-br | 2026-09-03 17:46:03: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4|sofia-br | 2026-09-03 17:46:03: ✓ whisper OK
+4|sofia-br | 2026-09-03 17:46:03: [TG] TELEGRAM_BOT_TOKEN no seteado — canal de respaldo APAGADO
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando poll de Gmail (cada 300s)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando loop de recordatorios (cada 30min)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando dispatcher de programados (cada 60s)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando morning-brief (por usuario, ventana 4h)
+4|sofia-br | 2026-09-03 17:46:03: [morning-brief] activo, ventana 4h, cada usuario en su tz
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando meeting-prep (cada 5min)
+4|sofia-br | 2026-09-03 17:46:03: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando calendar-watch (cada 8h)
+4|sofia-br | 2026-09-03 17:46:03: [calendar-watch] activo, cada 8.0h
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando follow-ups (cada 5min)
+4|sofia-br | 2026-09-03 17:46:03: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando memoria-curada (cada 24h)
+4|sofia-br | 2026-09-03 17:46:03: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+4|sofia-br | 2026-09-03 17:46:03: [cumple-avisos] activo, ventana 20-23h tz usuario
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando resumen-semanal (domingos, tz usuario)
+4|sofia-br | 2026-09-03 17:46:03: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando poda-eventos (diario)
+4|sofia-br | 2026-09-03 17:46:03: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+4|sofia-br | 2026-09-03 17:46:03: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
+4|sofia-br | 2026-09-03 17:46:03: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
+4|sofia-br | 2026-09-03 17:46:03: ▸ arrancando drainer de diferidos (horas de silencio)
+4|sofia-br | 2026-09-03 17:46:03: [diferidos] drainer activo (cada 5min)
+4|sofia-br | 2026-09-03 17:46:03: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
 
