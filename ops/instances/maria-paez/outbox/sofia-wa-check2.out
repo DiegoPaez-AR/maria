@@ -1,0 +1,35 @@
+# ejecutado: 2026-09-03T18:34:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB=/root/secretaria/state/sofia-bruscoli/db/maria.sqlite
+#   date
+#   sqlite3 -header "$DB" "select * from wa_outbox" 2>&1 | head -5
+#   echo "── últimas 12 líneas del log ──"
+#   tail -12 /root/.pm2/logs/sofia-bruscoli-out.log
+#   echo "── polls del teléfono (nginx) ──"
+#   grep "wa-sofia-bruscoli" /var/log/nginx/access.log 2>/dev/null | tail -5 | cut -c1-160
+#   echo LISTO
+
+# ───── output ─────
+Thu Sep  3 06:34:01 PM -03 2026
+id|creado|usuario_id|numero|texto|estado|intentos|tomado_en|entregado|metadata_json|no_antes
+1|2026-09-03 21:30:10|2|5491155947242|Hola Noelia, soy Sofia. Solo para que lo tengas: este es mi WhatsApp, lo uso para coordinar con terceros (reuniones, confirmaciones, etc.). A mí escribime por Telegram: https://t.me/SofiaBruscoliAI_bot — o por mail si preferís. ¡Nos hablamos!|entregado|1|2026-09-03 21:31:54|2026-09-03 21:32:19|{"origen":"bienvenida_wa","excepcion_politica":true}|2026-09-03 21:31:45
+── últimas 12 líneas del log ──
+2026-09-03 18:30:03: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
+2026-09-03 18:30:03: ▸ arrancando drainer de diferidos (horas de silencio)
+2026-09-03 18:30:03: [diferidos] drainer activo (cada 5min)
+2026-09-03 18:30:03: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
+2026-09-03 18:30:05: [wa-send] internal-api/send-wa: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
+2026-09-03 18:30:53: [MB v4.5] 18:30:52 I [notif] barrido (periodico): primera corrida, marca inicial fijada
+2026-09-03 18:32:03: [MB v4.5] 18:31:57 I [frio] abriendo chat 5491155947242 (#1)
+2026-09-03 18:32:03: [MB v4.5] 18:32:00 I [frio] botón send encontrado — 'escribiendo' 17s antes de enviar
+2026-09-03 18:32:19: [wa-outbox] #1 entregado por el teléfono
+2026-09-03 18:32:23: [MB v4.5] 18:32:19 I [frio] verificación #1: ENVIADO
+2026-09-03 18:32:23: [MB v4.5] 18:32:19 I [outbox] enviado EN FRÍO (accesibilidad) → 5491155947242
+2026-09-03 18:33:53: [MB v4.5] 18:33:52 I [notif] barrido (periodico): primera corrida, marca inicial fijada
+── polls del teléfono (nginx) ──
+LISTO
+
+# exit=0
