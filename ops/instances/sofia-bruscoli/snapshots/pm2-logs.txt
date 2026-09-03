@@ -1,4 +1,8 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
+4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+4|sofia-br | 2026-09-03 18:10:16: [TG] poll error (reintento en 15s): fetch failed
+
 /root/.pm2/logs/sofia-bruscoli-out.log last 200 lines:
 4|sofia-br | 2026-09-03 17:44:02: [memory] owner creado: Diego (id=1, servido=0)
 4|sofia-br | 2026-09-03 17:44:02: [memory] migración: usuarios.pausado + pausado_desde agregados
@@ -137,8 +141,5 @@
 4|sofia-br | 2026-09-03 18:09:05: [diferidos] drainer activo (cada 5min)
 4|sofia-br | 2026-09-03 18:09:05: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
 4|sofia-br | 2026-09-03 18:09:53: [MB v4.5] 18:09:52 I [notif] barrido (periodico): primera corrida, marca inicial fijada
-
-/root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
-4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
-4|sofia-br | 2026-09-03 18:10:16: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-03 18:12:53: [MB v4.5] 18:12:52 I [notif] barrido (periodico): primera corrida, marca inicial fijada
 
