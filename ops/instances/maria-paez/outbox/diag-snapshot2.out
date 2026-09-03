@@ -1,0 +1,88 @@
+# ejecutado: 2026-09-03T09:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── ticks 07:24 → 08:05 (sin los OK rutinarios) ──"
+#   timeout 20 awk '/═══ 2026-09-03T07:2[4-9]/,/═══ 2026-09-03T08:0[5-9]/' ops/.cron.log | grep -vE "^push fase 1 OK$|^tick done$" | head -40
+#   echo ""
+#   echo "── alerta completa ──"
+#   cat ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json 2>/dev/null | grep -A 3 "snapshot_recent"
+#   echo "── el check snapshot_recent: qué mide ──"
+#   grep -n "snapshot_recent" -A 8 ops/healthcheck.sh | head -14
+#   echo "── snapshots: última escritura ──"
+#   ls -lt --time-style=+%H:%M ops/instances/maria-paez/snapshots/ | head -4
+#   echo LISTO
+
+# ───── output ─────
+── ticks 07:24 → 08:05 (sin los OK rutinarios) ──
+═══ 2026-09-03T07:24:01-03:00 ═══
+═══ 2026-09-03T07:25:01-03:00 ═══
+═══ 2026-09-03T07:26:01-03:00 ═══
+═══ 2026-09-03T07:27:01-03:00 ═══
+═══ 2026-09-03T07:28:01-03:00 ═══
+═══ 2026-09-03T07:29:01-03:00 ═══
+═══ 2026-09-03T07:30:01-03:00 ═══
+═══ 2026-09-03T07:31:01-03:00 ═══
+═══ 2026-09-03T07:32:01-03:00 ═══
+═══ 2026-09-03T07:33:01-03:00 ═══
+═══ 2026-09-03T07:34:01-03:00 ═══
+═══ 2026-09-03T07:35:01-03:00 ═══
+═══ 2026-09-03T07:36:01-03:00 ═══
+═══ 2026-09-03T07:37:01-03:00 ═══
+═══ 2026-09-03T07:38:01-03:00 ═══
+═══ 2026-09-03T07:39:01-03:00 ═══
+═══ 2026-09-03T07:40:01-03:00 ═══
+═══ 2026-09-03T07:41:01-03:00 ═══
+═══ 2026-09-03T07:42:01-03:00 ═══
+═══ 2026-09-03T07:43:01-03:00 ═══
+═══ 2026-09-03T07:44:01-03:00 ═══
+═══ 2026-09-03T07:45:01-03:00 ═══
+═══ 2026-09-03T07:46:01-03:00 ═══
+═══ 2026-09-03T07:47:01-03:00 ═══
+═══ 2026-09-03T07:48:01-03:00 ═══
+═══ 2026-09-03T07:49:01-03:00 ═══
+═══ 2026-09-03T07:50:01-03:00 ═══
+═══ 2026-09-03T07:51:01-03:00 ═══
+═══ 2026-09-03T07:52:01-03:00 ═══
+═══ 2026-09-03T07:53:01-03:00 ═══
+═══ 2026-09-03T07:54:01-03:00 ═══
+═══ 2026-09-03T07:55:01-03:00 ═══
+═══ 2026-09-03T07:56:01-03:00 ═══
+═══ 2026-09-03T07:57:01-03:00 ═══
+═══ 2026-09-03T07:58:01-03:00 ═══
+═══ 2026-09-03T07:59:01-03:00 ═══
+═══ 2026-09-03T08:00:01-03:00 ═══
+═══ 2026-09-03T08:01:01-03:00 ═══
+═══ 2026-09-03T08:02:01-03:00 ═══
+═══ 2026-09-03T08:03:01-03:00 ═══
+
+── alerta completa ──
+    ,"snapshot_recent": { "ok": false, "detail": {"age_seconds":419,"hint":"cron-master.sh no está corriendo o falla"} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":20160} }
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":7} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+── el check snapshot_recent: qué mide ──
+11:#   2. snapshot_recent  — el último snapshot del cron es < 3 min atrás
+12-#   3. db_writable      — la DB sqlite es writable y SELECT 1 anda
+13-#   4. google_oauth     — el token de Google sigue válido (lista calendars)
+14-#   5. vault            — si MARIA_VAULT_KEY está seteada, autoTest pasa
+15-#
+16-# Output: JSON a stdout. Exit code 0 si todos los checks pasaron, 1 si alguno
+17-# falló. Cada check tiene su propio { "ok": bool, ...detalles } así podés
+18-# diagnosticar qué falló sin parsear logs.
+19-#
+--
+85:    _check snapshot_recent true "{\"age_seconds\":${AGE}}"
+86-  else
+87:    _check snapshot_recent false "{\"age_seconds\":${AGE},\"hint\":\"cron-master.sh no está corriendo o falla\"}"
+88-  fi
+── snapshots: última escritura ──
+total 52
+-rw-r--r-- 1 root root    74 09:08 pm2-status.tsv
+-rw-r--r-- 1 root root   603 09:08 programados.txt
+-rw-r--r-- 1 root root 21405 09:08 pm2-logs.txt
+LISTO
+
+# exit=0
