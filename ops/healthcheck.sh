@@ -29,6 +29,10 @@ CONF="/root/secretaria/config/instances/${INSTANCE}.conf"
 if [ -f "$CONF" ]; then
   set -a
   . "$CONF"
+  # secrets.conf pisa al .conf, igual que en runtime (MARIA_VAULT_KEY vive ahí:
+  # sin esto el check google_oauth no podía descifrar token.json.enc de las
+  # instancias nuevas — falso "FALLO google_oauth" en sofia-bruscoli 3/9).
+  [ -f /root/secretaria/config/secrets.conf ] && . /root/secretaria/config/secrets.conf
   set +a
 fi
 

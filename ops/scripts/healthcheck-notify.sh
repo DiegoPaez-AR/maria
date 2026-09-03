@@ -15,6 +15,14 @@ cd /root/secretaria || exit 1
 
 DEDUP_S=21600  # 6h
 
+# ── A QUIÉN SE AVISA (decisión Diego 2026-09-03) ───────────────────────────
+# Los avisos de salud son de OPERACIÓN: van SIEMPRE al operador (owner de la
+# PRIMERA instancia, la "admin"), nunca al owner del cliente. Antes iban al
+# owner de la DB de cada instancia: cuando Noelia pasó a owner de
+# sofia-bruscoli, le llegó un "ALERTA healthcheck ... google_oauth" por mail.
+OP_CF=$(ls config/instances/*.conf 2>/dev/null | head -1)
+OP_OWNER=$(grep -E '^OWNER_WA=' "$OP_CF" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"')
+
 # ── AUTO-RESCATE DEL CANAL DE DEPLOY (incidente 2026-08-22) ────────────────
 # cron-master toma un flock global y, si un script del inbox se cuelga, retiene
 # el lock para siempre: cero snapshots, cero inbox, cero outbox, en SILENCIO.
@@ -54,18 +62,9 @@ for cf in config/instances/*.conf; do
     if [ -f "$STAMP" ]; then
       rm -f "$STAMP"
       (
-        set -a; . "$cf"; set +a
+        set -a; . "$OP_CF"; . config/secrets.conf 2>/dev/null; set +a
         [ -z "${ASISTENTE_INTERNAL_PORT:-}" ] && exit 0
-        OWNER=$(python3 - "${MARIA_DB:-/root/secretaria/state/$slug/db/maria.sqlite}" <<'PYEOF'
-import sqlite3, sys
-try:
-    db = sqlite3.connect(sys.argv[1])
-    r = db.execute("SELECT COALESCE(wa_cus, wa_lid) FROM usuarios WHERE rol='owner' AND activo=1 LIMIT 1").fetchone()
-    print(r[0] if r and r[0] else "")
-except Exception:
-    print("")
-PYEOF
-)
+        OWNER="$OP_OWNER"
         [ -z "$OWNER" ] && exit 0
         BODY="healthcheck $slug: recuperado, todos los checks OK"
         curl -s -m 10 -X POST "http://127.0.0.1:${ASISTENTE_INTERNAL_PORT}/send-wa" \
@@ -116,26 +115,17 @@ except Exception:
   mkdir -p "ops/instances/$slug/snapshots"
   echo "$OUT" > "ops/instances/$slug/snapshots/HEALTHCHECK-ALERT.json"
 
-  # Aviso por WA al owner de la instancia.
+  # Aviso al OPERADOR (primera instancia → TG/email de Diego).
   (
-    set -a; . "$cf"; set +a
+    set -a; . "$OP_CF"; . config/secrets.conf 2>/dev/null; set +a
     [ -z "${ASISTENTE_INTERNAL_PORT:-}" ] && { echo "[hc-notify] $slug sin internal-api, solo alerta en snapshots"; exit 0; }
-    OWNER=$(python3 - "${MARIA_DB:-/root/secretaria/state/$slug/db/maria.sqlite}" <<'PYEOF'
-import sqlite3, sys
-try:
-    db = sqlite3.connect(sys.argv[1])
-    r = db.execute("SELECT COALESCE(wa_cus, wa_lid) FROM usuarios WHERE rol='owner' AND activo=1 LIMIT 1").fetchone()
-    print(r[0] if r and r[0] else "")
-except Exception:
-    print("")
-PYEOF
-)
-    [ -z "$OWNER" ] && { echo "[hc-notify] $slug sin owner WA en DB"; exit 0; }
+    OWNER="$OP_OWNER"
+    [ -z "$OWNER" ] && { echo "[hc-notify] $slug sin OWNER_WA en el .conf del operador"; exit 0; }
     BODY="ALERTA healthcheck $slug: fallaron: $FAILS. Detalle en ops/instances/$slug/snapshots/HEALTHCHECK-ALERT.json"
     HTTP=$(curl -s -m 10 -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:${ASISTENTE_INTERNAL_PORT}/send-wa" \
       -H "x-intensa-secret: ${ASISTENTE_INTERNAL_SECRET:-}" \
       -H 'Content-Type: application/json' \
       -d "{\"to\":\"$OWNER\",\"body\":\"$BODY\"}")
-    echo "[hc-notify] $slug aviso WA al owner: HTTP $HTTP"
+    echo "[hc-notify] $slug aviso al operador: HTTP $HTTP"
   )
 done
