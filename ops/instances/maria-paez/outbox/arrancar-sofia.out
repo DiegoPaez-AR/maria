@@ -1,0 +1,49 @@
+# ejecutado: 2026-09-03T17:44:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── arranco la instancia sofia-bruscoli ──"
+#   timeout 90 pm2 reload ecosystem.config.js --update-env 2>&1 | grep -E "sofia|maria-paez|✓|error" | head -6
+#   sleep 12
+#   timeout 20 pm2 jlist 2>/dev/null | python3 -c "
+#   import json,sys,time
+#   for p in json.load(sys.stdin):
+#       if 'sofia' in p['name'] or 'maria' in p['name']:
+#           e=p['pm2_env']; print('  '+p['name'], e['status'], 'restarts='+str(e['restart_time']), 'up=%ds'%((time.time()*1000-e['pm_uptime'])/1000))"
+#   echo "── arranque en el log ──"
+#   timeout 10 tail -25 /root/.pm2/logs/sofia-bruscoli-out.log 2>/dev/null | grep -E "iniciando|Owner|Usuarios|✓|▸|⚠|error|Error" | head -14
+#   timeout 10 tail -5 /root/.pm2/logs/sofia-bruscoli-error.log 2>/dev/null
+#   echo "── smoke del webhook ──"
+#   SEC=$(grep -E '^WA_HOOK_SECRET=' config/instances/sofia-bruscoli.conf | cut -d= -f2)
+#   curl -s -m 15 -X POST "https://intensa.io/hooks/wa-sofia-bruscoli/$SEC" -H 'Content-Type: application/json' -d '{"query":{"sender":"000","message":"ping","isTestMessage":true}}'; echo
+#   echo LISTO
+
+# ───── output ─────
+── arranco la instancia sofia-bruscoli ──
+[PM2] Applying action reloadProcessId on app [maria-paez](ids: [ 3 ])
+[PM2] [intensa-api](2) ✓
+[PM2] [maria-paez](3) ✓
+[PM2][WARN] Applications sofia-bruscoli not running, starting...
+[PM2] App [sofia-bruscoli] launched (1 instances)
+  maria-paez online restarts=354 up=12s
+  sofia-bruscoli online restarts=0 up=12s
+── arranque en el log ──
+2026-09-03 17:44:03: ▸ arrancando meeting-prep (cada 5min)
+2026-09-03 17:44:03: ▸ arrancando calendar-watch (cada 8h)
+2026-09-03 17:44:03: ▸ arrancando follow-ups (cada 5min)
+2026-09-03 17:44:03: ▸ arrancando memoria-curada (cada 24h)
+2026-09-03 17:44:03: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+2026-09-03 17:44:03: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+2026-09-03 17:44:03: ▸ arrancando resumen-semanal (domingos, tz usuario)
+2026-09-03 17:44:03: ▸ arrancando poda-eventos (diario)
+2026-09-03 17:44:03: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+2026-09-03 17:44:03: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
+2026-09-03 17:44:03: ▸ arrancando drainer de diferidos (horas de silencio)
+2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+── smoke del webhook ──
+{"replies":[{"message":"✅ Webhook de Maria conectado. Todo listo."}]}
+LISTO
+
+# exit=0
