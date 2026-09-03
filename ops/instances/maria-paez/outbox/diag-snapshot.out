@@ -1,0 +1,93 @@
+# ejecutado: 2026-09-03T09:07:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── ticks del cron entre 07:00 y 08:10 de hoy ──"
+#   timeout 20 awk '/═══ 2026-09-03T07:[0-5]/,/═══ 2026-09-03T08:1/' ops/.cron.log | grep -E "═══|push fase|FAIL|fail|rejected|canary|timeout|TIMEOUT|error" | head -50
+#   echo ""
+#   echo "── alerta del healthcheck (json) ──"
+#   cat ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json 2>/dev/null | head -20
+#   echo ""
+#   echo "── ¿el healthcheck mató algún tick colgado? ──"
+#   timeout 10 grep -h "cron-master colgado\|lo mato" /var/log/syslog /root/secretaria/ops/.healthcheck.log 2>/dev/null | tail -5
+#   echo "── carga del VPS ahora ──"; uptime; free -m | head -2; df -h / | tail -1
+#   echo LISTO
+
+# ───── output ─────
+── ticks del cron entre 07:00 y 08:10 de hoy ──
+═══ 2026-09-03T07:00:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:01:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:02:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:03:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:04:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:05:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:06:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:07:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:08:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:09:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:10:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:11:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:12:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:13:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:14:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:15:02-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:16:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:17:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:18:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:19:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:20:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:21:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:22:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:23:01-03:00 ═══
+push fase 1 OK
+═══ 2026-09-03T07:24:01-03:00 ═══
+push fase 1 OK
+
+── alerta del healthcheck (json) ──
+{
+  "ts": "2026-09-03T07:55:03Z",
+  "instance": "maria-paez",
+  "overall_ok": false,
+  "checks": {
+    "pm2_online": { "ok": true, "detail": {"pid":2418157,"restarts":352} }
+    ,"snapshot_recent": { "ok": false, "detail": {"age_seconds":419,"hint":"cron-master.sh no está corriendo o falla"} }
+    ,"db_writable": { "ok": true, "detail": {"path":"/root/secretaria/state/maria-paez/db/maria.sqlite","size_kb":20160} }
+    ,"google_oauth": { "ok": true, "detail": {"ok":true,"calendars":7} }
+    ,"vault": { "ok": true, "detail": {"ok":true} }
+  }
+}
+
+── ¿el healthcheck mató algún tick colgado? ──
+── carga del VPS ahora ──
+ 09:07:02 up 84 days, 19:41,  0 user,  load average: 0.08, 0.02, 0.01
+               total        used        free      shared  buff/cache   available
+Mem:            3819         808         437           5        2873        3011
+/dev/sda1        38G   17G   20G  47% /
+LISTO
+
+# exit=0
