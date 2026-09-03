@@ -133,7 +133,8 @@ cat <<CHECKLIST
 ═══ CHECKLIST MANUAL (ver ops/provision/README.md) ═══
  1. GMAIL: crear/usar ${GMAIL} (Workspace del cliente o Gmail dedicado)
  2. OAUTH: correr el flow de Google en el VPS →
-      cd /root/secretaria && ASISTENTE_SLUG=${SLUG} node ops/oauth-setup.js  (o el procedimiento del runbook)
+      cd /root/secretaria && set -a && . config/instances/${SLUG}.conf && set +a && node auth-gmail.js url
+      → abrir la URL logueado como ${GMAIL}, copiar el code, y: node auth-gmail.js exchange <code>
     → genera state/${SLUG}/token.json (cifrar con la vault key si aplica)
  3. TELÉFONO dedicado: chip + WhatsApp con el número de la Maria nueva
     ⚠️  WARM-UP: usar el número A MANO 2-3 días antes de conectar nada (lección Meta)
