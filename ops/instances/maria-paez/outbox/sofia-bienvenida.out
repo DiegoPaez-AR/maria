@@ -1,0 +1,42 @@
+# ejecutado: 2026-09-03T18:17:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   set -a; . config/instances/sofia-bruscoli.conf; . config/secrets.conf 2>/dev/null; set +a
+#   DB=/root/secretaria/state/sofia-bruscoli/db/maria.sqlite
+#   echo "── usuarios ──"; sqlite3 "$DB" "select id,nombre,email,whatsapp,telegram_chat_id,idioma,created_at from usuarios" 2>&1 | head
+#   echo "── eventos (todo lo que hubo con Noelia / salidas) ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),tipo,de,substr(cuerpo,1,140) from eventos order by timestamp desc limit 15" 2>&1
+#   echo "── mails salidos según log ──"
+#   grep -iE "enviarEmail|mail enviado|bienvenid|nbruscoli" /root/.pm2/logs/sofia-bruscoli-out.log | tail -8
+#   echo "── ¿existe bienvenida en el código? ──"
+#   grep -rn "bienvenid" --include=*.js -il . 2>/dev/null | grep -v node_modules | head
+#   echo LISTO
+
+# ───── output ─────
+── usuarios ──
+Error: in prepare, no such column: whatsapp
+  select id,nombre,email,whatsapp,telegram_chat_id,idioma,created_at from usuari
+                         ^--- error here
+── eventos (todo lo que hubo con Noelia / salidas) ──
+2026-09-03 18:09:05|||Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (2 usuarios)
+2026-09-03 18:09:03|||shutdown por SIGINT
+2026-09-03 17:46:03|||Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (1 usuarios)
+2026-09-03 17:46:02|||shutdown por SIGINT
+2026-09-03 17:44:03|||Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (1 usuarios)
+2026-09-03 17:44:03|||calendar_acceso autodetectado: write → none
+── mails salidos según log ──
+2026-09-03 17:44:02: [memory] migración: usuarios.bienvenida_enviada agregado, backfilled a 1 para usuarios existentes
+2026-09-03 17:44:02: [memory] migración: usuarios.bienvenida_enviada/cliente_id agregados
+── ¿existe bienvenida en el código? ──
+./ops/backend/intensa-api/routes/webhook.js
+./wa-validate.js
+./executor.js
+./test/prompt-tercero.test.js
+./memory.js
+./prompt-builder.js
+LISTO
+
+# exit=0
