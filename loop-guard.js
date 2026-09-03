@@ -52,22 +52,44 @@ async function _avisarOwner(texto) {
  * `ok` resetea el contador → un fallo puntual aislado no dispara alarma; solo
  * una RACHA sostenida de fallos sin ningún éxito intercalado llega al umbral.
  */
+// ── DOS CLASES DE FALLA (decisión Diego 2026-09-03) ────────────────────────
+// PLATAFORMA: Telegram, GitHub, red — fallan solas y se curan solas (en dos
+// semanas ninguna duró más de 17 min). Para estas NO se cuenta fallos: se mide
+// DURACIÓN. Aviso único recién si lleva PLATAFORMA_MIN minutos fallando de
+// corrido, con la causa acumulada; y otro al recuperarse. Si se cura antes, el
+// owner nunca se entera — que es lo correcto.
+// PROPIAS (acceso_google, follow_ups, morning_brief…): aviso a los N fallos,
+// como siempre — ahí Maria está realmente comprometida.
+const PLATAFORMA = new Set(['telegram_polling', 'gmail_poll']);
+const PLATAFORMA_MIN = Number(process.env.MARIA_LOOP_PLATAFORMA_MIN || 60);
+
 function reportar(clave, ok, err) {
   const st = _estado.get(clave);
   if (ok) {
     if (st && st.alertado) {
-      _avisarOwner(`✅ *${clave}* se recuperó (venía fallando con: ${st.errorKey}). Vuelvo a la normalidad.`);
+      const dur = st.desde ? ` durante ${Math.round((Date.now() - st.desde) / 60000)} min` : '';
+      _avisarOwner(`✅ *${clave}* se recuperó${dur} (venía fallando con: ${st.errorKey}). Vuelvo a la normalidad.`);
       console.log(`[loop-guard] ${clave} recuperado tras ${st.count} fallos`);
     }
     _estado.delete(clave);
     return;
   }
   const k = _key(err);
-  const cur = (st && st.errorKey === k) ? st : { count: 0, errorKey: k, alertado: false };
+  const cur = (st && st.errorKey === k) ? st : { count: 0, errorKey: k, alertado: false, desde: Date.now() };
   cur.count += 1;
   cur.errorKey = k;
   _estado.set(clave, cur);
-  if (cur.count >= UMBRAL && !cur.alertado) {
+  if (cur.alertado) return;
+  if (PLATAFORMA.has(clave)) {
+    const min = Math.round((Date.now() - cur.desde) / 60000);
+    if (min >= PLATAFORMA_MIN) {
+      cur.alertado = true;
+      _avisarOwner(`⚠️ *${clave}* viene fallando hace ${min} min (${cur.count} fallos seguidos). Parece un problema de la plataforma, no de Maria — los loops siguen reintentando solos. Te aviso cuando vuelva.\n\nCausa: ${k}`);
+      console.warn(`[loop-guard] ${clave} (plataforma) alertado tras ${min} min / ${cur.count} fallos: ${k}`);
+    }
+    return;
+  }
+  if (cur.count >= UMBRAL) {
     cur.alertado = true;
     _avisarOwner(`⚠️ *${clave}* falló ${cur.count} veces seguidas con la misma causa. Silencio este aviso hasta que se recupere.\n\nCausa: ${k}\n\n(Los loops siguen corriendo y se autocuran cuando se resuelva.)`);
     console.warn(`[loop-guard] ${clave} alertado al owner tras ${cur.count} fallos: ${k}`);

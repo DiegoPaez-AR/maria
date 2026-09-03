@@ -40,7 +40,16 @@ for cf in config/instances/*.conf; do
   OUT=$(ASISTENTE_SLUG=$slug bash ops/healthcheck.sh 2>/dev/null)
   RC=$?
 
+  SOFTSTAMP=/tmp/maria-hc-soft-$slug          # 1ª falla de plataforma (silenciosa)
+  SOFTALERT=/tmp/maria-hc-soft-alerted-$slug  # ya avisamos que lleva 1h
+
   if [ $RC -eq 0 ]; then
+    # Recuperado. Plataforma: si nunca llegó a la hora, se limpia en silencio.
+    if [ -f "$SOFTSTAMP" ] && [ ! -f "$SOFTALERT" ]; then
+      rm -f "$SOFTSTAMP"; rm -f "ops/instances/$slug/snapshots/HEALTHCHECK-ALERT.json" 2>/dev/null
+      echo "[hc-notify] $slug falla de plataforma se curó sola antes de la hora — sin aviso"
+    fi
+    if [ -f "$SOFTALERT" ]; then rm -f "$SOFTSTAMP" "$SOFTALERT"; touch "$STAMP"; fi   # → cae al aviso de recuperación de abajo
     # Recuperado: si veniamos alertando, avisar y limpiar.
     if [ -f "$STAMP" ]; then
       rm -f "$STAMP"
@@ -69,13 +78,6 @@ PYEOF
     continue
   fi
 
-  # Fallo. Dedup por edad del stamp.
-  if [ -f "$STAMP" ]; then
-    AGE=$(( $(date +%s) - $(stat -c %Y "$STAMP") ))
-    [ "$AGE" -lt "$DEDUP_S" ] && continue
-  fi
-  touch "$STAMP"
-
   FAILS=$(echo "$OUT" | python3 -c '
 import json, sys
 try:
@@ -85,6 +87,29 @@ try:
 except Exception:
     print("healthcheck no devolvio JSON")
 ' 2>/dev/null)
+
+  # ── DOS CLASES DE FALLA (decisión Diego 2026-09-03) ──────────────────────
+  # PLATAFORMA (snapshot_recent = cron/GitHub; healthcheck que devuelve basura
+  # una vez): fallan solas y se curan solas — NO se avisa hasta que lleve
+  # SOFT_MIN minutos de corrido. PROPIAS (pm2, DB, OAuth, vault): aviso YA.
+  SOFT_MIN=${MARIA_HC_PLATAFORMA_MIN:-60}
+  HARD=$(echo "$FAILS" | tr ',' '\n' | sed 's/^ *//' | grep -vE '^(snapshot_recent|healthcheck no devolvio JSON|desconocido)$' | paste -sd, -)
+  if [ -z "$HARD" ]; then
+    # Solo plataforma. Marcar 1ª falla y esperar en silencio.
+    [ -f "$SOFTSTAMP" ] || { touch "$SOFTSTAMP"; echo "[hc-notify] $slug falla de plataforma ($FAILS) — espero $SOFT_MIN min antes de avisar"; continue; }
+    SOFTAGE=$(( ($(date +%s) - $(stat -c %Y "$SOFTSTAMP")) / 60 ))
+    [ "$SOFTAGE" -lt "$SOFT_MIN" ] && continue
+    [ -f "$SOFTALERT" ] && continue          # ya avisado, silencio hasta recuperar
+    touch "$SOFTALERT"
+    FAILS="$FAILS (viene fallando hace ${SOFTAGE} min — probablemente plataforma: GitHub/red; Maria puede estar perfectamente viva, pm2 está online)"
+  else
+    # Falla propia. Dedup por edad del stamp.
+    if [ -f "$STAMP" ]; then
+      AGE=$(( $(date +%s) - $(stat -c %Y "$STAMP") ))
+      [ "$AGE" -lt "$DEDUP_S" ] && continue
+    fi
+    touch "$STAMP"
+  fi
   echo "[hc-notify] $slug FALLO: $FAILS"
 
   # Persistir alerta donde el cron-master la pushea (visible desde el repo).
