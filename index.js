@@ -184,6 +184,13 @@ async function main() {
       console.log('▸ arrancando revisión de usuarios dormidos (1º de cada mes)');
       require('./usuarios-dormidos').iniciarDormidos({});
 
+      // Usuarios → Google Contacts → teléfono (2026-09-03). Best-effort, en
+      // background, un rato después del arranque para no competir con el boot.
+      setTimeout(() => {
+        require('./google-contacts').sincronizarUsuariosActivos()
+          .catch(err => console.warn('[gcontacts] arranque falló:', err.message));
+      }, 20_000);
+
       console.log('▸ arrancando drainer de diferidos (horas de silencio)');
       diferidosInterval = iniciarDiferidosDrainer({
         waClient: client, intervaloMs: DIFERIDOS_MS,

@@ -85,4 +85,28 @@ async function sincronizarUsuario(u) {
   });
 }
 
-module.exports = { sincronizarContacto, sincronizarUsuario };
+// Fire-and-forget: nunca bloquea ni tira. Cableado 2026-09-03 (pedido Diego:
+// "los usuarios deberían vivir en la lista de contactos propia" — Noelia
+// aparecía como número pelado en el WhatsApp de Sofia). Antes
+// sincronizarUsuario existía pero NADIE la llamaba.
+function sincronizarUsuarioBg(u, motivo = '') {
+  if (!u || !u.id || !u.nombre) return;
+  sincronizarUsuario(u)
+    .then(r => console.log(`[gcontacts] usuario "${u.nombre}" ${r.creado ? 'creado' : 'actualizado'} en Google Contacts${motivo ? ` (${motivo})` : ''}`))
+    .catch(err => console.warn(`[gcontacts] sync de usuario "${u.nombre}" falló: ${err.message}`));
+}
+
+// Al arrancar: todos los usuarios activos, uno por vez (People API tiene
+// cuota por minuto; con <20 usuarios es un segundo).
+async function sincronizarUsuariosActivos() {
+  const usuarios = require('./usuarios');
+  let ok = 0, fail = 0;
+  for (const u of usuarios.listarActivos()) {
+    try { await sincronizarUsuario(u); ok++; }
+    catch (err) { fail++; console.warn(`[gcontacts] arranque: usuario "${u.nombre}" falló: ${err.message}`); }
+  }
+  console.log(`[gcontacts] arranque: ${ok} usuarios sincronizados a Google Contacts${fail ? `, ${fail} fallaron` : ''}`);
+  return { ok, fail };
+}
+
+module.exports = { sincronizarContacto, sincronizarUsuario, sincronizarUsuarioBg, sincronizarUsuariosActivos };

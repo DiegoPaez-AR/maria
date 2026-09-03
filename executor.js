@@ -1365,6 +1365,7 @@ async function _crearUsuario(a, ctx) {
     console.warn(`[executor] no pude pre-marcar morning_brief para id=${u.id}: ${err.message}`);
   }
   console.log(`[executor] usuario creado: id=${u.id} nombre=${u.nombre}${u.calendar_id ? '' : ' (sin calendar_id todavía)'}`);
+  require('./google-contacts').sincronizarUsuarioBg(u, 'crear_usuario');
   const _sinWa = !waCusNorm && !a.wa_lid;
   if (_sinWa) console.warn(`[crear_usuario] ${u.nombre} (id=${u.id}) quedó SIN WhatsApp: no recibirá brief/recordatorios ni se reconocerán sus mensajes hasta cargar su número`);
   return { id: u.id, nombre: u.nombre, creado: true, calendar_id: u.calendar_id || null, sin_whatsapp: _sinWa };
@@ -1421,6 +1422,7 @@ async function _actualizarUsuario(a, ctx) {
     if (_geoU && _geoU.tz && patch.tz === undefined) patch.tz = _geoU.tz;
   }
   const u = usuarios.actualizar(a.id, patch);
+  if (patch.nombre || patch.wa_cus || patch.email) require('./google-contacts').sincronizarUsuarioBg(u, 'actualizar_usuario');
   if (_geoU) usuarios.setUbicacionCoords(a.id, _geoU.lat, _geoU.lon);
   console.log(`[executor] usuario actualizado: id=${u.id} nombre=${u.nombre} campos=${Object.keys(patch).join(',')}`);
   return { id: u.id, nombre: u.nombre, actualizado: true, campos: Object.keys(patch) };
