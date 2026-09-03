@@ -33,14 +33,21 @@ STAMP=$(date -Iseconds)
 echo "═══ $STAMP ═══"
 
 # ───── 1. Pull código ─────
-git fetch -q origin main || { echo "fetch failed"; exit 1; }
+# Si GitHub no responde (rate limit, incidente — pasó el 3/9 a las 04:30, 17
+# minutos), NO abortamos el tick: sin fetch no hay deploy, pero los snapshots
+# y el inbox local siguen. Abortar acá hacía que el healthcheck gritara
+# "snapshot_recent" y el owner creyera que Maria estaba caída, cuando lo
+# único caído era GitHub.
+FETCH_OK=1
+git fetch -q origin main || { echo "fetch failed (GitHub no responde) — sigo sin deploy"; FETCH_OK=0; }
 
 CODE_CHANGED=0
-if ! git diff --quiet HEAD origin/main -- . ':!ops' ':!config' ':!docs' ':!*.md' ':!.gitignore' ':!LICENSE' ':!.github'; then
+if [ "$FETCH_OK" = 1 ] && ! git diff --quiet HEAD origin/main -- . ':!ops' ':!config' ':!docs' ':!*.md' ':!.gitignore' ':!LICENSE' ':!.github'; then
   CODE_CHANGED=1
   echo "código cambió → restart pendiente"
 fi
-git reset --hard origin/main -q
+# Sin fetch exitoso, origin/main es el de antes: el reset es un no-op seguro.
+[ "$FETCH_OK" = 1 ] && git reset --hard origin/main -q
 
 # Lista de instancias activas (slug por archivo .conf).
 INSTANCES=()
