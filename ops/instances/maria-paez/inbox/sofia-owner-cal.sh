@@ -1,0 +1,34 @@
+#!/bin/bash
+cd /root/secretaria
+set -a; . config/instances/sofia-bruscoli.conf; . config/secrets.conf 2>/dev/null; set +a
+DB=/root/secretaria/state/sofia-bruscoli/db/maria.sqlite
+echo "── 1. ¿Sofia ve el calendario de Noelia? ──"
+timeout 60 node -e '
+const g = require("./google");
+(async () => {
+  const cal = "nbruscoli@luminaconsultora.com";
+  console.log("  antes (calendarList.get):", await g.chequearAccesoCalendar(cal));
+  const r = await g.aceptarCalendarShare(cal);
+  console.log("  calendarList.insert:", JSON.stringify(r));
+  console.log("  después:", await g.chequearAccesoCalendar(cal));
+  const ls = await g.listarCalendarios();
+  console.log("  calendarios de Sofia:"); ls.forEach(c => console.log("   -", c.id, "|", c.accessRole, c.primary ? "(primary)" : ""));
+  try {
+    const ev = await g.listarEventosProximos(cal, 7);
+    console.log("  eventos 7 días:", (ev||[]).length, (ev||[]).slice(0,3).map(e => e.summary||e.titulo||"(sin título)").join(" · "));
+  } catch (e) { console.log("  listar eventos:", e.message.slice(0,120)); }
+})().catch(e => console.log("  ERROR:", e.message));
+'
+echo "── 2. Noelia pasa a OWNER ──"
+sqlite3 "$DB" "select id,nombre,rol,activo,servido,calendar_id,calendar_acceso from usuarios"
+sqlite3 "$DB" "update usuarios set rol='owner', servido=1 where id=2; update usuarios set rol='usuario', servido=0, activo=0 where id=1;"
+sqlite3 "$DB" "select id,nombre,rol,activo,servido,calendar_id,calendar_acceso from usuarios"
+CF=config/instances/sofia-bruscoli.conf
+sed -i 's|^OWNER_NOMBRE=.*|OWNER_NOMBRE=Noelia|; s|^OWNER_EMAIL=.*|OWNER_EMAIL=nbruscoli@luminaconsultora.com|; s|^OWNER_WA=.*|OWNER_WA=5491155947242@c.us|; s|^OWNER_CALENDAR_ID=.*|OWNER_CALENDAR_ID=nbruscoli@luminaconsultora.com|; s|^OWNER_SERVIDO=.*|OWNER_SERVIDO=1|' "$CF"
+grep '^OWNER_' "$CF"
+echo "── 3. reload ──"
+timeout 90 pm2 reload ecosystem.config.js --only sofia-bruscoli --update-env >/dev/null 2>&1 && echo "  reload OK"
+sleep 15
+sqlite3 "$DB" "select id,nombre,rol,activo,servido,calendar_acceso from usuarios"
+tail -4 /root/.pm2/logs/sofia-bruscoli-out.log
+echo LISTO
