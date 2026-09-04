@@ -1,0 +1,25 @@
+# ejecutado: 2026-09-04T12:45:22-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria; sleep 40
+#   echo "── canary ──"; grep -E "canary|OK|FALL" /tmp/canary-tick.log 2>/dev/null | tail -3
+#   git log --oneline -1 -- wa-outbox.js
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys;[print(' ',p['name'],p['pm2_env']['status'],'uptime_s',int((__import__('time').time()*1000-p['pm2_env']['pm_uptime'])//1000)) for p in json.load(sys.stdin) if p['name']!='intensa-api']"
+#   tail -2 /root/.pm2/logs/sofia-bruscoli-error.log | cut -c1-140
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+ok 11 - validarDestinatario: self OK, desconocido NO
+# Subtest: validarDestinatario: otro usuario activo OK
+ok 12 - validarDestinatario: otro usuario activo OK
+9610a458af1 3 fixes del primer día de Noelia: crear_evento anti-duplicado (10 min), negativa WA a usuarios 1×/h, wa-outbox descarta mensajes viejos ya respondidos
+  maria-paez online uptime_s 40
+  sofia-bruscoli online uptime_s 40
+2026-09-04 12:20:56: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta
+2026-09-04 12:20:56: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (6)
+LISTO
+
+# exit=0
