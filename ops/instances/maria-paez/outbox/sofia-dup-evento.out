@@ -1,0 +1,29 @@
+# ejecutado: 2026-09-04T12:38:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   set -a; . config/instances/sofia-bruscoli.conf; . config/secrets.conf 2>/dev/null; set +a
+#   timeout 60 node -e '
+#   const g = require("./google");
+#   (async () => {
+#     const cal = await g.getMariaCalendarId();
+#     const ev = await g.listarEventosProximos({ dias: 1, max: 20, calendarId: cal });
+#     for (const e of ev) console.log(" -", e.id, "|", e.inicio || e.start, "|", e.titulo || e.summary, "|", (e.attendees||[]).join(","), "|", e.meetLink || e.meet || "");
+#   })().catch(e => console.log("ERROR", e.message));
+#   '
+#   sqlite3 /root/secretaria/state/sofia-bruscoli/db/maria.sqlite "select datetime(timestamp,'-3 hours'), substr(cuerpo,1,220) from eventos where canal='calendar' and date(timestamp,'-3 hours')='2026-09-04'"
+#   echo LISTO
+
+# ───── output ─────
+ - 5c2i6ki153rog49pndcg5ptb9g | 2026-09-04T15:30:00Z | Reunión Noelia Bruscoli - Luciano Peroni | nbruscoli@luminaconsultora.com,lperoni@froneus.com | https://meet.google.com/gys-zfdn-gmp
+ - gd2napqjli494n0kdjo1phk9f4 | 2026-09-04T19:00:00Z | Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora | stortora@luminaconsultora.com,fboero@luminaconsultora.com,nbruscoli@luminaconsultora.com | https://meet.google.com/hsz-qncu-xdc
+ - oh4aem1qbrja4hlb15ohe3gu58 | 2026-09-04T19:00:00Z | Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora | fboero@luminaconsultora.com,nbruscoli@luminaconsultora.com | https://meet.google.com/beq-zmhw-wqb
+2026-09-04 12:20:58|creado: Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora (2026-09-04T19:00:00Z → 2026-09-04T20:00:00Z) · Meet: https://meet.google.com/beq-zmhw-wqb [en calendar de Maria]
+2026-09-04 12:20:53|creado: Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora (2026-09-04T19:00:00Z → 2026-09-04T20:00:00Z) · Meet: https://meet.google.com/hsz-qncu-xdc [en calendar de Maria]
+2026-09-04 12:07:12|modificado: Reunión Noelia Bruscoli - Luciano Peroni (2026-09-04T15:30:00Z → 2026-09-04T16:30:00Z)
+2026-09-04 12:06:45|creado: Reunión Noelia Bruscoli - Luciano Peroni (2026-09-04T15:30:00Z → 2026-09-04T16:30:00Z) · Meet: https://meet.google.com/gys-zfdn-gmp [en calendar de Maria]
+LISTO
+
+# exit=0
