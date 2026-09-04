@@ -355,6 +355,36 @@ async function _buscarSlotsComunes(a, ctx) {
   };
 }
 
+// ¿Este usuario creó un evento con el mismo título y el mismo inicio en los
+// últimos 10 min? Devuelve { eventoId, link, meetLink, haceSeg } o null.
+function _eventoRecienCreado(usuarioId, summary, start) {
+  try {
+    const t0 = Date.parse(String(start || ''));
+    if (!Number.isFinite(t0) || !summary) return null;
+    const rows = mem.db.prepare(
+      `SELECT timestamp, cuerpo, metadata_json FROM eventos
+        WHERE usuario_id = ? AND canal = 'calendar' AND direccion = 'saliente'
+          AND cuerpo LIKE 'creado: %' AND timestamp >= datetime('now', '-10 minutes')
+        ORDER BY id DESC LIMIT 10`
+    ).all(usuarioId);
+    for (const r of rows) {
+      const m = String(r.cuerpo).match(/^creado: (.*) \((\S+) → /);
+      if (!m) continue;
+      if (m[1].trim().toLowerCase() !== String(summary).trim().toLowerCase()) continue;
+      const t1 = Date.parse(m[2]);
+      if (!Number.isFinite(t1) || Math.abs(t1 - t0) > 60_000) continue;
+      let meta = {};
+      try { meta = JSON.parse(r.metadata_json || '{}'); } catch { /* noop */ }
+      if (!meta.eventoId) continue;
+      const haceSeg = Math.max(0, Math.round((Date.now() - Date.parse(String(r.timestamp).replace(' ', 'T') + 'Z')) / 1000));
+      return { eventoId: meta.eventoId, link: meta.link, meetLink: meta.meetLink, haceSeg };
+    }
+  } catch (err) {
+    console.warn(`[crear_evento] chequeo de duplicado falló (sigo): ${err.message}`);
+  }
+  return null;
+}
+
 async function _crearEvento(a, ctx) {
   _requerir(a, ['summary', 'start', 'end']);
 
@@ -401,6 +431,28 @@ async function _crearEvento(a, ctx) {
   if (!enCalDelUsuario && u.email) {
     const yaInvitado = attendeesFinal.some(em => String(em).toLowerCase() === u.email.toLowerCase());
     if (!yaInvitado) attendeesFinal.push(u.email);
+  }
+
+  // GUARD ANTI-DUPLICADO (2026-09-04, caso Fernando/Sol — aprobado Diego): dos
+  // terceros contestaron con 1 s de diferencia → dos turnos en paralelo, cada
+  // uno creó "la" reunión de las 16 (dos Meets, dos invitaciones a cada uno).
+  // Si ESTE usuario ya creó un evento con el mismo título y el mismo inicio en
+  // los últimos 10 min, devolvemos ese en vez de crear otro. Si hace falta
+  // sumar invitados, el modelo emite modificar_evento sobre el id devuelto.
+  const _dup = _eventoRecienCreado(u.id, a.summary, a.start);
+  if (_dup) {
+    console.warn(`[crear_evento] duplicado evitado para ${u.nombre}: "${a.summary}" ${a.start} ya existe (${_dup.eventoId})`);
+    mem.log({ usuarioId: u.id, canal: 'sistema', direccion: 'interno',
+      cuerpo: `crear_evento: duplicado evitado — "${a.summary}" ${a.start} ya fue creado hace ${_dup.haceSeg}s (${_dup.eventoId})`,
+      metadata: { tipo: 'evento_duplicado_evitado', eventoId: _dup.eventoId } });
+    const faltan = attendeesFinal.filter(em => !u.email || String(em).toLowerCase() !== u.email.toLowerCase());
+    return {
+      id: _dup.eventoId, summary: a.summary, link: _dup.link || null, meetLink: _dup.meetLink || null, calendarId, tier,
+      ya_existia: true,
+      nota: `⚠️ NO creé un evento nuevo: "${a.summary}" a esa hora ya fue creado hace ${_dup.haceSeg} segundos (otro turno en paralelo). ` +
+            `Usá ESTE id (${_dup.eventoId}) y ese Meet. Si querés asegurarte de que ${faltan.length ? faltan.join(', ') : 'los invitados'} estén invitados, ` +
+            `emití modificar_evento con id=${_dup.eventoId} y attendees (se mergean, no se pisan). No digas "creé la reunión": ya existía.`,
+    };
   }
 
   const ev = await provider.crearEvento({

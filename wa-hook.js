@@ -398,6 +398,20 @@ async function procesar(body) {
     const texto = `Hola ${primer}! Por política ahora no puedo atender pedidos por WhatsApp 🙏\n\nEscribime por *Telegram* (t.me/${bot} → tocá "compartir mi número") o por mail a ${process.env.ASISTENTE_FROM_EMAIL || 'maria.paez@intensa.io'} y sigo con lo tuyo al toque.`;
     mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'entrante', de: u.wa_cus || `${digs}@c.us`, nombre: u.nombre, cuerpo,
       metadata: { via: 'mariabridge', tipo: 'usuario_por_wa_derivado' } });
+    // Una sola negativa por hora por usuario (2026-09-04, caso Noelia: mandó
+    // 2 contactos + 2 audios seguidos y recibió la misma negativa 4 veces).
+    const _yaDerivado = (() => {
+      try {
+        return !!mem.db.prepare(
+          `SELECT 1 FROM eventos WHERE usuario_id = ? AND canal='whatsapp' AND direccion='saliente'
+             AND metadata_json LIKE '%derivacion_a_telegram%' AND timestamp >= datetime('now', '-60 minutes') LIMIT 1`
+        ).get(u.id);
+      } catch { return false; }
+    })();
+    if (_yaDerivado) {
+      console.log(`[wa-hook] ${u.nombre} escribió por WA otra vez — negativa ya enviada hace <1h, silencio`);
+      return { replies: [] };
+    }
     mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'saliente', de: u.wa_cus || `${digs}@c.us`, nombre: u.nombre, cuerpo: texto,
       metadata: { via: 'mariabridge', tipo: 'derivacion_a_telegram' } });
     console.log(`[wa-hook] ${u.nombre} escribió por WA → derivado a Telegram/email (sin turno)`);

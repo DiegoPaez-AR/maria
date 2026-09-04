@@ -106,6 +106,22 @@ function siguiente() {
      ORDER BY id ASC LIMIT 1`
   ).get(`-${LEASE_S} seconds`);
   if (!row) return null;
+  // MENSAJE VIEJO (2026-09-04, caso Fernando — aprobado Diego): "Pasame el
+  // mail" encolado a las 12:20 salió a las 12:24, cuando Fernando ya lo había
+  // pasado y Sofia ya le había confirmado por reply directo. Si desde que se
+  // encoló este mensaje el destinatario ESCRIBIÓ y además ya le SALIÓ otra
+  // respuesta (reply de notificación, que no pasa por la cola), este quedó
+  // desactualizado: lo descartamos con rastro y servimos el siguiente.
+  if (_quedoViejo(row)) {
+    mem.db.prepare(`UPDATE wa_outbox SET estado='descartado' WHERE id = ?`).run(row.id);
+    console.warn(`[wa-outbox] #${row.id} DESCARTADO por viejo → ${row.numero}: el destinatario escribió después y ya se le respondió: "${String(row.texto).slice(0, 60).replace(/\n/g, ' ')}"`);
+    try {
+      mem.log({ usuarioId: row.usuario_id || null, canal: 'sistema', direccion: 'interno',
+        cuerpo: `wa-outbox: mensaje #${row.id} a ${row.numero} descartado por viejo (el destinatario escribió después de encolarlo y ya se le respondió): "${String(row.texto).slice(0, 80).replace(/\n/g, ' ')}"`,
+        metadata: { tipo: 'wa_outbox_descartado_viejo', outboxId: row.id, numero: row.numero } });
+    } catch { /* noop */ }
+    return siguiente();
+  }
   // Cadencia entre CHATS DISTINTOS: si el último servido fue a otro número hace
   // menos de 3-8 min (aleatorio), esperamos. Al MISMO chat no aplica
   // (conversación natural).
@@ -121,6 +137,27 @@ function siguiente() {
   } catch { /* noop */ }
   mem.db.prepare(`UPDATE wa_outbox SET intentos = intentos + 1, tomado_en = CURRENT_TIMESTAMP WHERE id = ?`).run(row.id);
   return { id: row.id, numero: _numeroEnvio(row.numero), texto: row.texto };
+}
+
+function _quedoViejo(row) {
+  try {
+    const tel = require('./telefonos');
+    const vars = tel.variantes(row.numero);
+    if (!vars.length) return false;
+    const like = vars.map(() => `de LIKE '%' || ? || '%'`).join(' OR ');
+    // ¿Escribió después de que encolamos?
+    const entro = mem.db.prepare(
+      `SELECT timestamp FROM eventos WHERE canal='whatsapp' AND direccion='entrante' AND (${like})
+         AND timestamp > ? ORDER BY timestamp ASC LIMIT 1`
+    ).get(...vars, row.creado);
+    if (!entro) return false;
+    // ¿Y ya le salió una respuesta después de ESE entrante, que no sea esta misma cola?
+    const salio = mem.db.prepare(
+      `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='saliente' AND (${like})
+         AND timestamp > ? AND COALESCE(metadata_json,'') NOT LIKE '%"outboxId":' || ? || '%' LIMIT 1`
+    ).get(...vars, entro.timestamp, String(row.id));
+    return !!salio;
+  } catch { return false; }
 }
 
 // Formato de ENVÍO para el teléfono (2026-08-15): los deep-links de WhatsApp
