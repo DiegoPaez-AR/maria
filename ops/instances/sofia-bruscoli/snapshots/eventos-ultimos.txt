@@ -1,5 +1,15 @@
 id   timestamp            canal     direccion  de              cuerpo                                  
 ---  -------------------  --------  ---------  --------------  ----------------------------------------
+133  2026-09-04 18:18:00  sistema   interno                    acción ejecutada: upsert_contacto       
+132  2026-09-04 18:17:54  telegram  entrante   telegram:69273  Debora lescano +54 9 11 3586-8891       
+131  2026-09-04 18:17:32  telegram  saliente   telegram:69273  Guardé a Juan Manuel Ward. Me falta el c
+130  2026-09-04 18:17:32  sistema   interno                    claude_call telegram: 8932ms prompt=6332
+129  2026-09-04 18:17:28  sistema   interno                    acción ejecutada: upsert_contacto       
+128  2026-09-04 18:17:22  telegram  entrante   telegram:69273  [CONTACTO COMPARTIDO] Juanma Ward — tel:
+127  2026-09-04 18:17:22  telegram  saliente   telegram:69273  Dale, mandame los contactos de Juan Manu
+126  2026-09-04 18:17:22  sistema   interno                    claude_call telegram: 11946ms prompt=625
+125  2026-09-04 18:17:18  sistema   interno                    acción ejecutada: agregar_pendiente     
+124  2026-09-04 18:17:10  telegram  entrante   telegram:69273  Sofía, armame una reunión con Juan Manue
 123  2026-09-04 17:00:24  sistema   interno                    meeting-prep: 1 alerta(s) agendada(s) (1
 122  2026-09-04 15:50:24  whatsapp  saliente   5491159524645@  De nada Luciano, nos vemos a las 12:30! 
 121  2026-09-04 15:50:24  sistema   interno                    claude_call moderacion: 5845ms prompt=14
@@ -50,13 +60,3 @@ id   timestamp            canal     direccion  de              cuerpo
 76   2026-09-04 15:11:17  telegram  saliente   telegram:69273  Genial, ya guardé a Fernando también y l
 75   2026-09-04 15:11:17  sistema   interno                    claude_call telegram: 22396ms prompt=671
 74   2026-09-04 15:11:12  sistema   interno                    acción ejecutada: enviar_wa             
-73   2026-09-04 15:11:12  sistema   interno                    claude_call moderacion: 9052ms prompt=16
-72   2026-09-04 15:11:00  sistema   interno                    acción ejecutada: quitar_pendiente      
-71   2026-09-04 15:11:00  sistema   interno                    acción ejecutada: upsert_contacto       
-70   2026-09-04 15:10:54  telegram  entrante   telegram:69273  [CONTACTO COMPARTIDO] Fernando Boero Lum
-69   2026-09-04 15:10:54  telegram  saliente   telegram:69273  Ya guardé a Sol Tortora y le mando un Wh
-68   2026-09-04 15:10:53  sistema   interno                    claude_call telegram: 27403ms prompt=574
-67   2026-09-04 15:10:52  sistema   interno                    claude_call gmail: 24321ms prompt=62389c
-66   2026-09-04 15:10:48  sistema   interno                    acción ejecutada: enviar_wa             
-65   2026-09-04 15:10:48  sistema   interno                    claude_call moderacion: 5885ms prompt=16
-64   2026-09-04 15:10:48  sistema   interno                    acción ejecutada: cerrar_follow_up      
