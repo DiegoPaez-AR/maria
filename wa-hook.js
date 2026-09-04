@@ -358,6 +358,19 @@ async function procesar(body) {
     cuerpo = _hintMedia(q.message, rol) || cuerpo;
   }
 
+  // Desconocido con número visible que SE PRESENTA para un usuario (2026-09-04,
+  // diseño Diego): alta automática en la libreta de ese usuario (→ Contacts →
+  // teléfono) y sigue como tercero. Si no se presenta o no nombra a nadie,
+  // queda como antes. Caso disparador: Maria escribiéndole a Sofia por Noelia.
+  if (!u && !tercero && esNumero && !hint) {
+    try {
+      const alta = await require('./presentacion').altaAutomatica({ canal: 'whatsapp', digs, cuerpo });
+      if (alta) tercero = { usuario: alta.usuario, contacto: alta.contacto, de: `${digs}@c.us` };
+    } catch (err) {
+      console.warn(`[wa-hook] alta automática falló (sigo como desconocido): ${err.message}`);
+    }
+  }
+
   if (!u && !tercero) {
     mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: desconocido ${esNumero ? '+' + digs : `"${String(q.sender).slice(0, 40)}"`}: "${String(q.message).slice(0, 80)}"`, metadata: { tipo: 'wa_hook_desconocido' } });
     return { replies: [] };

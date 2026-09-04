@@ -718,6 +718,44 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
     });
   }
 
+  // Desconocido que SE PRESENTA para un usuario (2026-09-04, diseño Diego):
+  // alta automática en la libreta de ese usuario (→ Contacts → teléfono) y
+  // sigue como tercero, sin la vuelta de "¿para quién es?".
+  if (!(lookupContactos && lookupContactos.ambiguo)) {
+    try {
+      const alta = await require('./presentacion').altaAutomatica({
+        canal: 'gmail', email: senderEmail, nombreVisible: email.de, cuerpo, asunto: email.asunto,
+      });
+      if (alta) {
+        mem.log({
+          usuarioId: alta.usuario.id,
+          canal: 'gmail', direccion: 'entrante',
+          de: email.de, asunto: email.asunto, cuerpo,
+          metadata: { tipo: 'unknown_llm_tercero', messageId: email.id, via: 'presentacion', contacto_id: alta.contacto.id },
+        });
+        try {
+          await reprocesarComoUsuario(alta.usuario, {
+            de: email.de, email: email.de,
+            asunto: email.asunto, cuerpo,
+            messageId: email.id,
+            contextoRemitente: {
+              esTercero: true,
+              razon: `se presentó como "${alta.nombre}" y pidió por ${alta.usuario.nombre}; ya está en su libreta (alta automática)`,
+              via: 'presentacion',
+              identificadoComo: 'tercero_de_usuario',
+            },
+          });
+        } catch (err) {
+          console.error('[unknown-flow/gmail] reprocesar tercero (presentacion) falló:', err.message);
+        }
+        console.log(`[unknown-flow/gmail] presentacion: ${email.de} → contexto de ${alta.usuario.nombre}`);
+        return true;
+      }
+    } catch (err) {
+      console.warn(`[unknown-flow/gmail] alta automática falló (sigo con FSM): ${err.message}`);
+    }
+  }
+
   // desconocido → FSM primera vez. Si la libreta dio ambiguo, arrastramos
   // los candidatos para que la segunda vuelta desempate solo entre ellos.
   return await _handleEmail_FSM_primera({
@@ -731,10 +769,10 @@ async function _handleEmail_FSM_primera({ waClient, email, responderEmailFn, can
   const remitenteId = email.de;
   const preguntaTxt = `Hola,
 
-Soy María, asistente personal. No te tengo registrado en mi libreta. ¿Para quién de las personas que asisto es este mensaje?
+Soy ${ASISTENTE_NOMBRE.split(' ')[0]}, asistente personal. No te tengo registrado en mi libreta. ¿Para quién de las personas que asisto es este mensaje?
 
 Saludos,
-María`;
+${ASISTENTE_NOMBRE.split(' ')[0]}`;
   try {
     await responderEmailFn(email.id, preguntaTxt);
   } catch (err) {
