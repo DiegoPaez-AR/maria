@@ -61,8 +61,13 @@ class NotifListener : NotificationListenerService() {
         if (marca == 0L) {
             var max = 0L
             for (sbn in vivas) if (sbn.packageName in WA && sbn.postTime > max) max = sbn.postTime
-            if (max > 0) { Prefs.setUltimoPost(this, max); marcaArranque = max }
-            MbLog.i("notif", "barrido ($origen): primera corrida, marca inicial fijada")
+            // v4.6: si NO hay ninguna notif de WA viva, la marca es "ahora". Antes
+            // quedaba en 0 y CADA barrido volvía a esta rama → el barrido nunca
+            // corría (teléfono de Sofia 3/9: "primera corrida" cada 3 min, para
+            // siempre). No hay nada que recuperar de antes de este instante.
+            if (max == 0L) max = ahora
+            Prefs.setUltimoPost(this, max); marcaArranque = max
+            MbLog.i("notif", "barrido ($origen): primera corrida, marca inicial fijada (marca=$max)")
             return
         }
         var recuperadas = 0
