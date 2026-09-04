@@ -1,0 +1,39 @@
+# ejecutado: 2026-09-04T12:34:21-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   sleep 45
+#   echo "── canary ──"; tail -3 /tmp/canary-tick.log 2>/dev/null
+#   echo "── commit en disco ──"; git log --oneline -1 -- presentacion.js
+#   echo "── pm2 ──"; pm2 jlist 2>/dev/null | python3 -c "import json,sys;[print(' ',p['name'],p['pm2_env']['status'],'restarts',p['pm2_env']['restart_time'], 'uptime_s', (__import__('time').time()*1000-p['pm2_env']['pm_uptime'])//1000) for p in json.load(sys.stdin)]"
+#   for S in maria-paez sofia-bruscoli; do echo "── $S últimas ──"; tail -3 /root/.pm2/logs/$S-out.log | cut -c1-140; tail -2 /root/.pm2/logs/$S-error.log | cut -c1-140; done
+#   echo LISTO
+
+# ───── output ─────
+── canary ──
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+npm notice To update run: npm install -g npm@12.0.2
+npm notice
+── commit en disco ──
+0bf2f0ad0e6 presentacion.js: alta automática de terceros que se presentan para un usuario (WA + mail) → libreta + Contacts; unknown-flow firma con el nombre de la instancia
+── pm2 ──
+  intensa-api online restarts 6 uptime_s 67744.0
+  maria-paez online restarts 357 uptime_s 45.0
+  sofia-bruscoli online restarts 7 uptime_s 45.0
+── maria-paez últimas ──
+2026-09-04 12:34:22: [diferidos] drainer activo (cada 5min)
+2026-09-04 12:34:22: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+2026-09-04 12:34:51: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
+2026-09-04 12:29:46: [TG] poll error (reintento en 15s): fetch failed
+2026-09-04 12:32:42: [TG] poll error (reintento en 15s): fetch failed
+── sofia-bruscoli últimas ──
+2026-09-04 12:34:23: [diferidos] drainer activo (cada 5min)
+2026-09-04 12:34:23: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
+2026-09-04 12:34:44: [gcontacts] arranque: 1 usuarios sincronizados a Google Contacts
+2026-09-04 12:20:56: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta
+2026-09-04 12:20:56: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (6)
+LISTO
+
+# exit=0
