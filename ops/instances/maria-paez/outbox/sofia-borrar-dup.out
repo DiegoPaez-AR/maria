@@ -1,0 +1,25 @@
+# ejecutado: 2026-09-04T12:40:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   set -a; . config/instances/sofia-bruscoli.conf; . config/secrets.conf 2>/dev/null; set +a
+#   timeout 60 node -e '
+#   const g = require("./google"); const mem = require("./memory");
+#   (async () => {
+#     const cal = await g.getMariaCalendarId();
+#     await g.borrarEvento({ id: "oh4aem1qbrja4hlb15ohe3gu58", calendarId: cal });
+#     mem.log({ usuarioId: 2, canal: "calendar", direccion: "saliente", cuerpo: "borrado (duplicado por carrera de dos turnos WA simultáneos, limpieza operador): Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora 16:00 · Meet beq-zmhw-wqb. Queda el hsz-qncu-xdc con los tres invitados", metadata: { tipo: "evento_duplicado_borrado", id: "oh4aem1qbrja4hlb15ohe3gu58" } });
+#     const ev = await g.listarEventosProximos({ dias: 1, max: 20, calendarId: cal });
+#     for (const e of ev) console.log(" -", e.inicio || e.start, "|", e.titulo || e.summary, "|", (e.attendees||[]).length, "invitados");
+#   })().catch(e => console.log("ERROR", e.message));
+#   '
+#   echo LISTO
+
+# ───── output ─────
+ - 2026-09-04T15:30:00Z | Reunión Noelia Bruscoli - Luciano Peroni | 2 invitados
+ - 2026-09-04T19:00:00Z | Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora | 3 invitados
+LISTO
+
+# exit=0
