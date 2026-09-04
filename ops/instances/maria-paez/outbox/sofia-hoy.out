@@ -1,0 +1,128 @@
+# ejecutado: 2026-09-04T12:36:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB=/root/secretaria/state/sofia-bruscoli/db/maria.sqlite
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),canal,direccion,coalesce(nombre,de),substr(replace(cuerpo,char(10),' '),1,150) from eventos where date(timestamp,'-3 hours')='2026-09-04' and canal!='sistema' order by timestamp" 2>&1
+#   echo "── sistema hoy ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),substr(replace(cuerpo,char(10),' '),1,150) from eventos where date(timestamp,'-3 hours')='2026-09-04' and canal='sistema' and cuerpo not like '%arrancó%' and cuerpo not like '%shutdown%' order by timestamp" 2>&1
+#   echo "── usuarios ──"; sqlite3 "$DB" "select id,nombre,telegram_chat_id from usuarios"
+#   echo "── pendientes ──"; sqlite3 "$DB" "select id,estado,substr(\"desc\",1,100) from pendientes" 2>&1 | tail -5
+#   echo "── v4.6 barrido ──"
+#   grep -h "MB v4.6" /root/.pm2/logs/maria-paez-out.log /root/.pm2/logs/sofia-bruscoli-out.log | grep -E "barrido|conectado" | tail -6 | cut -c1-150
+#   echo LISTO
+
+# ───── output ─────
+2026-09-04 07:30:27|gmail|saliente|Noelia Bruscoli|☀️ *Buen día, Noelia Bruscoli.* viernes, 4 de septiembre.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, mín 8° / máx 17°  *📅 Agenda del día* (sin evento
+2026-09-04 12:04:18|telegram|entrante|Noelia Bruscoli|Hola Sofia, ¿Cómo estás?  Necesito que me coordines una reunión con Luciano Peroni a las 12.30.
+2026-09-04 12:05:07|telegram|saliente|Noelia Bruscoli|Hola Noelia! Para coordinar con Luciano Peroni me faltan dos datos:  1) ¿Para qué día es? Decís 12:30 pero no tengo la fecha (¿hoy mismo, 04/09?). 2) 
+2026-09-04 12:05:59|telegram|entrante|Noelia Bruscoli|Hoy mismo. Hoy 4 de septiembre a las 12.30 horas. Ahí te mando mail y celular.
+2026-09-04 12:06:18|telegram|entrante|Noelia Bruscoli|1159524645
+2026-09-04 12:06:18|telegram|saliente|Noelia Bruscoli|Dale, quedo esperando el mail o celular de Luciano. Ojo que ya son 12:06 y la reunión sería en 24 min (12:30) — apenas me pases el dato le escribo par
+2026-09-04 12:06:45|calendar|saliente||creado: Reunión Noelia Bruscoli - Luciano Peroni (2026-09-04T15:30:00Z → 2026-09-04T16:30:00Z) · Meet: https://meet.google.com/gys-zfdn-gmp [en calend
+2026-09-04 12:07:02|telegram|entrante|Noelia Bruscoli|Lperoni@froneus.com
+2026-09-04 12:07:02|telegram|saliente|Noelia Bruscoli|Perfecto, ya quedó todo encaminado:  1. Agendé la reunión de hoy 12:30 a 13:30hs en tu calendar, con Meet: https://meet.google.com/gys-zfdn-gmp 2. Le 
+2026-09-04 12:07:12|calendar|saliente||modificado: Reunión Noelia Bruscoli - Luciano Peroni (2026-09-04T15:30:00Z → 2026-09-04T16:30:00Z)
+2026-09-04 12:07:17|telegram|saliente|Noelia Bruscoli|Listo, guardé el mail y ya lo invité al evento de las 12:30 — le va a llegar la invitación de calendar con el Meet. Además el WhatsApp que le mandé re
+2026-09-04 12:08:13|telegram|entrante|Noelia Bruscoli|Sofía, ahora necesito que me coordines una reunión a las 16 horas con Fernando Boero y Sol Tortora, para el día de hoy 4 de septiembre.
+2026-09-04 12:08:26|telegram|saliente|Noelia Bruscoli|Dale! No tengo a Fernando Boero ni a Sol Tortora en la libreta — pasame el mail o whatsapp de cada uno y armo la reunión de hoy 16 a 17hs con Meet.
+2026-09-04 12:09:02|whatsapp|saliente|Noelia Bruscoli|Hola Noelia! Por política ahora no puedo atender pedidos por WhatsApp 🙏  Escribime por *Telegram* (t.me/SofiaBruscoliAI_bot → tocá "compartir mi númer
+2026-09-04 12:09:02|whatsapp|entrante|Noelia Bruscoli|👤 Fernando Boero Lumina
+2026-09-04 12:09:02|whatsapp|saliente|Noelia Bruscoli|Hola Noelia! Por política ahora no puedo atender pedidos por WhatsApp 🙏  Escribime por *Telegram* (t.me/SofiaBruscoliAI_bot → tocá "compartir mi númer
+2026-09-04 12:09:02|whatsapp|entrante|Noelia Bruscoli|(audio de voz, transcripto) Hola, Sofía. Quiero que me coordines una reunión a las 16 horas con Fernando Buero y Sol Tórtora. Te paso los contactos.
+2026-09-04 12:09:13|whatsapp|saliente|Noelia Bruscoli|Hola Noelia! Por política ahora no puedo atender pedidos por WhatsApp 🙏  Escribime por *Telegram* (t.me/SofiaBruscoliAI_bot → tocá "compartir mi númer
+2026-09-04 12:09:13|whatsapp|entrante|Noelia Bruscoli|👤 Sol Tortora
+2026-09-04 12:09:32|whatsapp|saliente|Noelia Bruscoli|Hola Noelia! Por política ahora no puedo atender pedidos por WhatsApp 🙏  Escribime por *Telegram* (t.me/SofiaBruscoliAI_bot → tocá "compartir mi númer
+2026-09-04 12:09:32|whatsapp|entrante|Noelia Bruscoli|(audio de voz, transcripto) cuando les escribas para coordinar la reunión pediles su mail
+2026-09-04 12:10:25|telegram|entrante|Noelia Bruscoli|[CONTACTO COMPARTIDO] Sol Tortora — tel: +5491150242779 (El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contac
+2026-09-04 12:10:27|gmail|entrante|Luciano Peroni <lperoni@froneus.com>|Luciano Peroni has accepted this invitation.  Reunión Noelia Bruscoli - Luciano Peroni Friday Sep 4, 2026 ⋅ 12:30pm – 1:30pm Argentina Standard Ti
+2026-09-04 12:10:54|telegram|entrante|Noelia Bruscoli|[CONTACTO COMPARTIDO] Fernando Boero Lumina — tel: +5491121756400 (El usuario te compartió este contacto por Telegram — guardalo en su libreta con ups
+2026-09-04 12:10:54|telegram|saliente|Noelia Bruscoli|Ya guardé a Sol Tortora y le mando un WhatsApp pidiéndole el mail para la reunión de las 16hs (sale en unos minutos, todavía no confirmó). Me falta el
+2026-09-04 12:11:17|telegram|entrante|Noelia Bruscoli|Cuando les escribas para coordinar la reunión, peguen los mails.
+2026-09-04 12:11:17|telegram|saliente|Noelia Bruscoli|Genial, ya guardé a Fernando también y le mando WhatsApp pidiéndole el mail para la reunión de las 16hs (sale en unos minutos). Apenas Fernando y Sol 
+2026-09-04 12:11:23|whatsapp|saliente|5491159524645@c.us|Hola Luciano! Soy Sofia, asistente de Noelia Bruscoli. Te escribo para confirmar la reunión de hoy a las 12:30hs. Te paso el link de Meet: https://mee
+2026-09-04 12:11:29|telegram|saliente|Noelia Bruscoli|Ya les pedí el mail a los dos por WhatsApp (a Fernando y a Sol), quedo esperando que respondan para armar el evento e invitarlos.
+2026-09-04 12:14:51|whatsapp|saliente|5491121756400@c.us|Hola Fernando! Soy Sofia, asistente de Noelia Bruscoli. Te escribo para coordinar una reunión hoy a las 16hs. ¿Me pasás tu mail para enviarte la invit
+2026-09-04 12:15:26|telegram|saliente|6927380975|⏰ *En 15min*: Reunión Noelia Bruscoli - Luciano Peroni (12:30 p. m.) Con: lperoni@froneus.com 👤 Luciano Peroni — Analista de RR.HH. en Froneus: Reunió
+2026-09-04 12:18:24|whatsapp|saliente|5491150242779@c.us|Hola Sol! Soy Sofia, asistente de Noelia Bruscoli. Te escribo para coordinar una reunión hoy a las 16hs. ¿Me pasás tu mail para enviarte la invitación
+2026-09-04 12:20:12|whatsapp|entrante|Fernando Boero|Hola Sofía, dale
+2026-09-04 12:20:32|whatsapp|entrante|Fernando Boero|fboero@luminaconsultora.com
+2026-09-04 12:20:33|whatsapp|entrante|Sol Tortora|stortora@luminaconsultora.com
+2026-09-04 12:20:53|calendar|saliente||creado: Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora (2026-09-04T19:00:00Z → 2026-09-04T20:00:00Z) · Meet: https://meet.google.com/hsz-qncu-
+2026-09-04 12:20:58|calendar|saliente||creado: Reunión Noelia Bruscoli - Fernando Boero y Sol Tortora (2026-09-04T19:00:00Z → 2026-09-04T20:00:00Z) · Meet: https://meet.google.com/beq-zmhw-
+2026-09-04 12:21:00|telegram|saliente|Noelia Bruscoli|Listo, ya tengo los mails de Fernando y Sol — les armo la reunión de hoy a las 16hs con Meet y les llegó la invitación a los dos.
+2026-09-04 12:21:05|whatsapp|saliente|Sol Tortora|Gracias Sol! Ya te agendé la reunión de hoy a las 16hs, te va a llegar la invitación con el link de Meet a tu mail. Nos vemos ahí!
+2026-09-04 12:21:19|whatsapp|saliente|Fernando Boero|Genial, gracias! Ya te armé la invitación para hoy a las 16hs con el link de Meet, en un momento te debería llegar por mail. Apenas tenga el de Sol la
+2026-09-04 12:24:16|whatsapp|saliente|5491121756400@c.us|Genial! Pasame el mail así te mando la invitación con el link de Meet 🙂
+── sistema hoy ──
+2026-09-04 07:33:19|claude_call tg-prepass: 4242ms prompt=997c raw=3097c in=2t(cache_read=0 new=14955) out=17t ttfb=1265ms api=3773ms turnos=1 $0.0571
+2026-09-04 12:03:45|telegram vinculado por teléfono compartido (chat 6927380975)
+2026-09-04 12:04:56|acción ejecutada: buscar_contacto_global
+2026-09-04 12:05:07|claude_call telegram: 47972ms prompt=74520c raw=27917c in=14t(cache_read=260022 new=104213) out=2789t ttfb=1517ms api=47068ms turnos=7 $0.5160
+2026-09-04 12:06:13|acción ejecutada: agregar_pendiente
+2026-09-04 12:06:18|claude_call telegram: 18056ms prompt=4396c raw=12580c in=6t(cache_read=59822 new=30819) out=976t ttfb=1521ms api=15833ms turnos=3 $0.1482
+2026-09-04 12:06:43|acción ejecutada: upsert_contacto
+2026-09-04 12:06:44|acción ejecutada: quitar_pendiente
+2026-09-04 12:06:45|acción ejecutada: crear_evento
+2026-09-04 12:06:55|acción ejecutada: enviar_wa
+2026-09-04 12:06:55|claude_call moderacion: 5231ms prompt=1639c raw=6345c in=10t(cache_read=0 new=22510) out=344t ttfb=1123ms api=4614ms turnos=1 $0.0304
+2026-09-04 12:07:02|claude_call telegram: 42889ms prompt=4201c raw=26223c in=8t(cache_read=136383 new=6664) out=2791t ttfb=1355ms api=34441ms turnos=6 $0.1078
+2026-09-04 12:07:09|acción ejecutada: upsert_contacto
+2026-09-04 12:07:12|acción ejecutada: modificar_evento
+2026-09-04 12:07:17|claude_call telegram: 13862ms prompt=4664c raw=10938c in=6t(cache_read=119048 new=4063) out=544t ttfb=1498ms api=10011ms turnos=4 $0.0591
+2026-09-04 12:07:24|claude_call enriquecer-contacto: 14528ms prompt=672c raw=16904c in=6t(cache_read=25156 new=25058) out=217t ttfb=1415ms api=18339ms turnos=4 $0.1546
+2026-09-04 12:08:19|acción ejecutada: buscar_contacto_global
+2026-09-04 12:08:19|acción ejecutada: buscar_contacto_global
+2026-09-04 12:08:22|acción ejecutada: agregar_pendiente
+2026-09-04 12:08:26|claude_call telegram: 12425ms prompt=4756c raw=12594c in=6t(cache_read=131163 new=3951) out=649t ttfb=1405ms api=10311ms turnos=4 $0.0639
+2026-09-04 12:10:26|meeting-prep: 1 alerta(s) agendada(s) (1 usuarios)
+2026-09-04 12:10:39|acción ejecutada: quitar_pendiente
+2026-09-04 12:10:39|acción ejecutada: upsert_contacto
+2026-09-04 12:10:40|acción ejecutada: agregar_pendiente
+2026-09-04 12:10:48|acción ejecutada: enviar_wa
+2026-09-04 12:10:48|claude_call moderacion: 5885ms prompt=1619c raw=6374c in=10t(cache_read=17396 new=5096) out=337t ttfb=1381ms api=4726ms turnos=1 $0.0103
+2026-09-04 12:10:48|acción ejecutada: cerrar_follow_up
+2026-09-04 12:10:52|claude_call gmail: 24321ms prompt=62389c raw=13138c in=6t(cache_read=45648 new=89889) out=1484t ttfb=1640ms api=23587ms turnos=3 $0.3776
+2026-09-04 12:10:53|claude_call telegram: 27403ms prompt=5747c raw=17043c in=6t(cache_read=144626 new=5254) out=1142t ttfb=1693ms api=19114ms turnos=5 $0.0802
+2026-09-04 12:11:00|acción ejecutada: quitar_pendiente
+2026-09-04 12:11:00|acción ejecutada: upsert_contacto
+2026-09-04 12:11:12|acción ejecutada: enviar_wa
+2026-09-04 12:11:12|claude_call moderacion: 9052ms prompt=1624c raw=7462c in=10t(cache_read=17396 new=5096) out=491t ttfb=3277ms api=6197ms turnos=1 $0.0111
+2026-09-04 12:11:17|claude_call telegram: 22396ms prompt=6717c raw=12181c in=6t(cache_read=160995 new=5265) out=667t ttfb=1553ms api=11009ms turnos=4 $0.0781
+2026-09-04 12:11:29|claude_call telegram: 11040ms prompt=6645c raw=8245c in=4t(cache_read=115979 new=4296) out=511t ttfb=1549ms api=8812ms turnos=2 $0.0586
+2026-09-04 12:20:29|acción ejecutada: enviar_wa
+2026-09-04 12:20:29|claude_call moderacion: 6254ms prompt=1520c raw=6610c in=10t(cache_read=0 new=22457) out=364t ttfb=1083ms api=5905ms turnos=1 $0.0303
+2026-09-04 12:20:32|claude_call whatsapp: 19743ms prompt=61470c raw=11741c in=6t(cache_read=44243 new=88420) out=578t ttfb=1463ms api=13101ms turnos=3 $0.3578
+2026-09-04 12:20:50|acción ejecutada: upsert_contacto
+2026-09-04 12:20:50|acción ejecutada: upsert_contacto
+2026-09-04 12:20:53|acción ejecutada: crear_evento
+2026-09-04 12:20:55|acción ejecutada: quitar_pendiente
+2026-09-04 12:20:55|acción ejecutada: quitar_pendiente
+2026-09-04 12:20:56|acción FALLÓ: quitar_pendiente — quitar_pendiente: no encontré el pendiente (6)
+2026-09-04 12:20:56|acción ejecutada: upsert_contacto
+2026-09-04 12:20:58|acción ejecutada: crear_evento
+2026-09-04 12:21:00|claude_call whatsapp: 26534ms prompt=61094c raw=22345c in=8t(cache_read=109560 new=72978) out=1789t ttfb=1552ms api=24354ms turnos=7 $0.3375
+2026-09-04 12:21:03|claude_call enriquecer-contacto: 13314ms prompt=688c raw=15203c in=6t(cache_read=16293 new=33411) out=224t ttfb=1944ms api=15843ms turnos=4 $0.1785
+2026-09-04 12:21:04|claude_call enriquecer-contacto: 13822ms prompt=689c raw=17764c in=6t(cache_read=16319 new=33767) out=249t ttfb=1981ms api=16469ms turnos=4 $0.1813
+2026-09-04 12:21:05|claude_call moderacion: 5165ms prompt=1578c raw=5869c in=10t(cache_read=17396 new=5083) out=268t ttfb=1445ms api=4204ms turnos=1 $0.0099
+2026-09-04 12:21:13|claude_call whatsapp: 40789ms prompt=61279c raw=24635c in=10t(cache_read=158674 new=74122) out=2794t ttfb=1526ms api=39062ms turnos=7 $0.3717
+2026-09-04 12:21:19|claude_call moderacion: 6099ms prompt=1612c raw=6721c in=10t(cache_read=17396 new=5088) out=386t ttfb=1167ms api=5211ms turnos=1 $0.0105
+2026-09-04 12:21:21|claude_call enriquecer-contacto: 24822ms prompt=689c raw=19230c in=6t(cache_read=40610 new=9467) out=305t ttfb=1592ms api=27612ms turnos=4 $0.0894
+2026-09-04 12:35:11|claude_call memoria-curada: 18757ms prompt=1874c raw=11091c in=2t(cache_read=0 new=16025) out=1117t ttfb=1577ms api=17664ms turnos=1 $0.0779
+2026-09-04 12:35:24|claude_call memoria-curada: 13009ms prompt=1677c raw=8318c in=2t(cache_read=8775 new=7157) out=773t ttfb=1552ms api=11934ms turnos=1 $0.0421
+── usuarios ──
+1|Diego|
+2|Noelia Bruscoli|6927380975
+── pendientes ──
+2|abierto|Esperando respuesta de 5491159524645@c.us (WA): "Hola Luciano! Soy Sofia, asistente de Noelia Brusco
+3|cerrado|Pasarme el mail y/o whatsapp de Fernando Boero y de Sol Tortora para coordinar la reunión de hoy 04/
+4|cerrado|Pasarme el mail y/o whatsapp de Fernando Boero para coordinar la reunión de hoy 04/09 a las 16hs.
+5|cerrado|Esperando respuesta de 5491150242779@c.us (WA): "Hola Sol! Soy Sofia, asistente de Noelia Bruscoli. 
+6|cerrado|Esperando respuesta de 5491121756400@c.us (WA): "Hola Fernando! Soy Sofia, asistente de Noelia Brusc
+── v4.6 barrido ──
+2026-09-04 12:29:20: [MB v4.6] 12:29:08 I [notif] listener conectado — barrido cada 3min (marca=1788356413900)
+2026-09-04 12:28:56: [MB v4.6] 12:28:44 I [notif] listener conectado — barrido cada 3min (marca=1788535456720)
+LISTO
+
+# exit=0
