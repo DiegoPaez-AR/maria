@@ -1,0 +1,40 @@
+# ejecutado: 2026-09-04T09:56:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   ls -la /root/mb-build-worker.sh && head -30 /root/mb-build-worker.sh
+#   nohup bash /root/mb-build-worker.sh > /tmp/mb-build-46.log 2>&1 &
+#   echo "build lanzado en background (pid $!)"
+#   echo LISTO
+
+# ───── output ─────
+-rwxr-xr-x 1 root root 1422 Aug 17 00:50 /root/mb-build-worker.sh
+#!/bin/bash
+exec > /root/mariabridge-build.log 2>&1
+SDK=/root/android-sdk; SRC=/root/secretaria/ops/mariabridge
+export ANDROID_SDK_ROOT="$SDK"
+export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+export PATH="/opt/gradle-8.7/bin:$SDK/cmdline-tools/latest/bin:$PATH"
+cd "$SRC"; rm -rf "$SRC/app/build/outputs"  # nunca servir un APK stale de un build fallido
+echo "sdk.dir=$SDK" > local.properties
+export GRADLE_OPTS="-Xmx1536m -Dorg.gradle.daemon=false"
+echo "=== rebuild $(date) ==="
+gradle assembleDebug --no-daemon 2>&1   # log COMPLETO, sin tail
+APK=$(find "$SRC/app/build/outputs/apk/debug" -name '*.apk' 2>/dev/null | head -1)
+if [ -n "$APK" ]; then
+  DEST=/var/www/intensa.io/_dl; mkdir -p "$DEST"; TK=$(openssl rand -hex 8)
+  cp "$APK" "$DEST/mb-$TK.apk"; chown www-data:www-data "$DEST/mb-$TK.apk" 2>/dev/null; chmod 644 "$DEST/mb-$TK.apk"
+  VC=$(grep -oP 'versionCode \d+' /root/secretaria/ops/mariabridge/app/build.gradle | grep -oP '\d+')
+  VN=$(grep -oP "versionName '[^']+'" /root/secretaria/ops/mariabridge/app/build.gradle | grep -oP "'[^']+'" | tr -d "'")
+  cat > "$DEST/mariabridge-latest.json" <<J
+{"versionCode": $VC, "versionName": "$VN", "url": "https://intensa.io/_dl/mb-$TK.apk"}
+J
+  chmod 644 "$DEST/mariabridge-latest.json"
+  echo "APK_OK url=https://intensa.io/_dl/mb-$TK.apk size=$(du -h "$APK"|cut -f1) latest.json=v$VN($VC)"
+else echo "APK_FAIL"; fi
+echo "=== FIN $(date) ==="
+build lanzado en background (pid 1128504)
+LISTO
+
+# exit=0
