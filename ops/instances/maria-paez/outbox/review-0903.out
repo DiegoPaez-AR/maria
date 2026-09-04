@@ -1,0 +1,89 @@
+# ejecutado: 2026-09-04T09:07:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   for S in maria-paez sofia-bruscoli; do
+#     DB=/root/secretaria/state/$S/db/maria.sqlite
+#     echo "════════ $S ════════"
+#     echo "── eventos de ayer por canal/dirección ──"
+#     sqlite3 "$DB" "select canal,direccion,count(*) from eventos where date(timestamp,'-3 hours')='2026-09-03' group by 1,2" 2>&1
+#     echo "── quién habló (inbound) ──"
+#     sqlite3 "$DB" "select coalesce(u.nombre,e.de) quien, e.canal, count(*) from eventos e left join usuarios u on u.id=e.usuario_id where date(e.timestamp,'-3 hours')='2026-09-03' and e.direccion='in' group by 1,2 order by 3 desc" 2>&1 | head -15
+#     echo "── pm2 error.log ayer (agrupado) ──"
+#     grep -h "^2026-09-03" /root/.pm2/logs/$S-error.log 2>/dev/null | sed 's/^[0-9-]* [0-9:]*: //' | cut -c1-90 | sort | uniq -c | sort -rn | head -12
+#     echo "── out.log: warn/error/fallo ──"
+#     grep -h "^2026-09-03" /root/.pm2/logs/$S-out.log | grep -iE "warn|error|fall[oó]|descart|abort|timeout|409|429|reintento" | sed 's/^[0-9-]* [0-9:]*: //' | cut -c1-100 | sort | uniq -c | sort -rn | head -15
+#     echo "── wa_outbox ayer ──"
+#     sqlite3 "$DB" "select estado,count(*) from wa_outbox where date(creado,'-3 hours')='2026-09-03' group by 1" 2>&1
+#   done
+#   echo "════════ Noelia / Telegram ════════"
+#   sqlite3 /root/secretaria/state/sofia-bruscoli/db/maria.sqlite "select id,nombre,telegram_chat_id,email,wa_cus from usuarios" 2>&1
+#   sqlite3 /root/secretaria/state/sofia-bruscoli/db/maria.sqlite "select datetime(timestamp,'-3 hours'),canal,direccion,de,substr(cuerpo,1,120) from eventos where canal!='sistema' order by timestamp desc limit 12" 2>&1
+#   grep -h "^2026-09-0[34]" /root/.pm2/logs/sofia-bruscoli-out.log | grep -iE "gmail|TG\]|wa-hook|vincul" | tail -10 | cut -c1-160
+#   echo "── anti-loop bot↔bot ──"
+#   grep -rn -iE "bucle|ping-pong|Auto-Submitted|autoresponder|otra asistente|otro asistente" --include=*.js . | grep -v node_modules | cut -c1-140 | head -8
+#   echo LISTO
+
+# ───── output ─────
+════════ maria-paez ════════
+── eventos de ayer por canal/dirección ──
+gmail|saliente|12
+sistema|interno|22
+telegram|entrante|3
+telegram|saliente|11
+── quién habló (inbound) ──
+── pm2 error.log ayer (agrupado) ──
+      8 [TG] poll error (reintento en 15s): fetch failed
+      3 [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descar
+      1 [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"des
+      1 [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"des
+── out.log: warn/error/fallo ──
+── wa_outbox ayer ──
+════════ sofia-bruscoli ════════
+── eventos de ayer por canal/dirección ──
+gmail|saliente|1
+sistema|interno|14
+whatsapp|saliente|1
+── quién habló (inbound) ──
+── pm2 error.log ayer (agrupado) ──
+      2 [TG] poll error (reintento en 15s): fetch failed
+      1 [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"des
+── out.log: warn/error/fallo ──
+      1 [MB v4.5] 18:03:13 I [notif] sin acción de reply — descarto no-chat: "+54 9 11 3231-7896"
+── wa_outbox ayer ──
+entregado|1
+════════ Noelia / Telegram ════════
+1|Diego||diego@paez.is|541132317896@c.us
+2|Noelia Bruscoli||nbruscoli@luminaconsultora.com|5491155947242@c.us
+2026-09-04 07:30:27|gmail|saliente|nbruscoli@luminaconsultora.com|☀️ *Buen día, Noelia Bruscoli.* viernes, 4 de septiembre.
+
+*🌡️ Clima en Buenos Aires, AR*
+☁️ nublado, mín 8° / máx 17°
+
+
+2026-09-03 18:32:19|whatsapp|saliente|5491155947242@c.us|Hola Noelia, soy Sofia. Solo para que lo tengas: este es mi WhatsApp, lo uso para coordinar con terceros (reuniones, con
+2026-09-03 18:30:05|gmail|saliente|nbruscoli@luminaconsultora.com|ALERTA healthcheck sofia-bruscoli: fallaron: google_oauth. Detalle en ops/instances/sofia-bruscoli/snapshots/HEALTHCHECK
+2026-09-03 18:22:05: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+2026-09-03 18:25:07:   Gmail poll: cada 300s
+2026-09-03 18:25:07: ▸ arrancando poll de Gmail (cada 300s)
+2026-09-03 18:25:07: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+2026-09-03 18:30:03:   Gmail poll: cada 300s
+2026-09-03 18:30:03: ▸ arrancando poll de Gmail (cada 300s)
+2026-09-03 18:30:03: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+2026-09-03 18:50:26:   Gmail poll: cada 300s
+2026-09-03 18:50:26: ▸ arrancando poll de Gmail (cada 300s)
+2026-09-03 18:50:26: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+── anti-loop bot↔bot ──
+./index.js:181:      console.log('▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)');
+./wa-hook.js:1:// wa-hook.js — Canal WhatsApp v2 vía AutoResponder (2026-08-02, plan post-bloqueos)
+./wa-hook.js:3:// El teléfono dedicado corre WhatsApp oficial + AutoResponder PRO. Cada
+./wa-hook.js:150:  mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'entrante', de, nombre: contacto.nombre, cuerpo, metadata: { via
+./wa-hook.js:176:    mem.log({ usuarioId: u.id, canal: 'whatsapp', direccion: 'saliente', de, nombre: contacto.nombre, cuerpo: alTercero, me
+./wa-hook.js:186:// "AutoResponder muerto" (ambiguo, incidente 9-14/08).
+./wa-hook.js:211:  // Medición del timeout real de AutoResponder (2026-08-04): "!lentoN"
+./internal-api.js:44:      // ── Webhook AutoResponder (2026-08-02): ruta PÚBLICA via nginx, con su
+LISTO
+
+# exit=0
