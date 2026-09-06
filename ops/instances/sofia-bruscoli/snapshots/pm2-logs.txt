@@ -1,3 +1,32 @@
+4|sofia-br | 2026-09-04 12:09:41: [MB v4.5] 12:09:33 I [media] audio procesado OK
+4|sofia-br | 2026-09-04 12:09:41: [MB v4.5] 12:09:33 I [humano] espero 18s antes de responder a "+54 9 11 5594-7242"
+4|sofia-br | 2026-09-04 12:10:01: [MB v4.5] 12:09:51 I [media] reply a "+54 9 11 5594-7242": ENVIADA
+4|sofia-br | 2026-09-04 12:10:01: [MB v4.5] 12:09:58 I [notif] barrido (periodico): primera corrida, marca inicial fijada
+4|sofia-br | 2026-09-04 12:10:25: [TG] contacto compartido por Noelia Bruscoli: Sol Tortora +5491150242779
+4|sofia-br | 2026-09-04 12:10:26: [meeting-prep/Noelia Bruscoli] + id=1 Reunión Noelia Bruscoli - Luciano Peroni @ 2026-09-04T15:15:00.000Z
+4|sofia-br | 2026-09-04 12:10:27: [GMAIL poll] 1 email(s) nuevo(s)
+4|sofia-br | 2026-09-04 12:10:27: [GMAIL ←] Luciano Peroni <lperoni@froneus.com> | "Accepted: Reunión Noelia Bruscoli - Luciano Peroni @ Fri Sep 4, 2026 12:30pm - 1:30pm (GMT-3) (sofia@luminaconsultora.com)"
+4|sofia-br | 2026-09-04 12:10:27: [unknown-flow/gmail] match en contactos: lperoni@froneus.com = "Luciano Peroni" de Noelia Bruscoli (id=2)
+4|sofia-br | 2026-09-04 12:10:27: [prompt-builder] tercero slim: system 61737→52293c, user 17793→10096c
+4|sofia-br | 2026-09-04 12:10:41: [gcontacts] "Sol Tortora" creado en Google Contacts
+4|sofia-br | 2026-09-04 12:10:41: [TG] contacto compartido por Noelia Bruscoli: Fernando Boero Lumina +5491121756400
+4|sofia-br | 2026-09-04 12:10:48: [wa-outbox] #3 encolado → +5491150242779 (Hola Sol! Soy Sofia, asistente de Noelia…)
+4|sofia-br | 2026-09-04 12:10:52: [GMAIL acciones-mcp/Noelia Bruscoli] 1/1 ejecutadas en vivo
+4|sofia-br | 2026-09-04 12:10:52: [GMAIL/Noelia Bruscoli] 1a06cf6c3fe84b3a — sin acciones ni respuesta, queda no-leído
+4|sofia-br | 2026-09-04 12:10:59: [TG] transcribiendo audio…
+4|sofia-br | 2026-09-04 12:11:02: [gcontacts] "Fernando Boero" creado en Google Contacts
+4|sofia-br | 2026-09-04 12:11:10: [TG audio→texto] Cuando les escribas para coordinar la reunión, peguen los mails.
+4|sofia-br | 2026-09-04 12:11:11: [MB v4.5] 12:11:05 I [frio] abriendo chat 5491159524645 (#2)
+4|sofia-br | 2026-09-04 12:11:11: [MB v4.5] 12:11:07 I [frio] botón send encontrado — 'escribiendo' 14s antes de enviar
+4|sofia-br | 2026-09-04 12:11:12: [wa-outbox] #4 encolado → +5491121756400 (Hola Fernando! Soy Sofia, asistente de N…)
+4|sofia-br | 2026-09-04 12:11:23: [wa-outbox] #2 entregado por el teléfono
+4|sofia-br | 2026-09-04 12:11:31: [MB v4.5] 12:11:23 I [frio] verificación #2: ENVIADO
+4|sofia-br | 2026-09-04 12:11:31: [MB v4.5] 12:11:23 I [outbox] enviado EN FRÍO (accesibilidad) → 5491159524645
+4|sofia-br | 2026-09-04 12:14:41: [MB v4.5] 12:14:34 I [frio] abriendo chat 5491121756400 (#4)
+4|sofia-br | 2026-09-04 12:14:41: [MB v4.5] 12:14:36 I [frio] botón send encontrado — 'escribiendo' 13s antes de enviar
+4|sofia-br | 2026-09-04 12:14:51: [wa-outbox] #4 entregado por el teléfono
+4|sofia-br | 2026-09-04 12:15:01: [MB v4.5] 12:14:51 I [frio] verificación #4: ENVIADO
+4|sofia-br | 2026-09-04 12:15:01: [MB v4.5] 12:14:51 I [outbox] enviado EN FRÍO (accesibilidad) → 5491121756400
 4|sofia-br | 2026-09-04 12:15:26: [programados] 1 mensaje(s) debidos, despachando…
 4|sofia-br | 2026-09-04 12:15:26: [wa-send] programados/1: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
 4|sofia-br | 2026-09-04 12:15:26: [programados] ✓ id=1 (telegram/6927380975) [meeting_prep:2:5c2i6ki153rog49pndcg5ptb9g]
@@ -167,34 +196,5 @@
 4|sofia-br | 2026-09-05 12:46:11: [memoria-curada] tick: 3/6 contactos curados
 4|sofia-br | 2026-09-05 18:29:47: [MB v4.6] 18:29:45 I [upd] al día (v4.6 code=31, mío=31)
 4|sofia-br | 2026-09-06 00:29:50: [MB v4.6] 00:29:46 I [upd] al día (v4.6 code=31, mío=31)
-
-/root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
-4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
-4|sofia-br | 2026-09-03 18:10:16: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-03 20:23:19: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 01:34:16: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 03:38:10: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 04:44:15: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 06:59:25: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 12:06:43: [wa-validate] sin cliente WA — normalizado offline "5491159524645@c.us" → 5491159524645@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 12:10:39: [wa-validate] sin cliente WA — normalizado offline "5491150242779@c.us" → 5491150242779@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 12:11:00: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 12:20:50: [wa-validate] sin cliente WA — normalizado offline "5491150242779@c.us" → 5491150242779@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 12:20:50: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 12:20:56: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 12:20:56: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (6)
-4|sofia-br | 2026-09-04 12:56:23: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 14:06:14: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 15:17:28: [wa-validate] sin cliente WA — normalizado offline "5491121762149@c.us" → 5491121762149@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 15:18:00: [wa-validate] sin cliente WA — normalizado offline "5491135868891@c.us" → 5491135868891@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 15:30:08: [wa-validate] sin cliente WA — normalizado offline "5491121762149@c.us" → 5491121762149@c.us (SIN verificar en Meta)
-4|sofia-br | 2026-09-04 16:34:01: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 16:41:28: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 17:33:17: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 17:40:43: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-04 21:53:06: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-05 05:27:33: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-05 07:26:16: [TG] poll error (reintento en 15s): fetch failed
-4|sofia-br | 2026-09-05 22:11:54: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-4|sofia-br | 2026-09-06 04:01:33: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 06:29:52: [MB v4.6] 06:29:47 I [upd] al día (v4.6 code=31, mío=31)
 
