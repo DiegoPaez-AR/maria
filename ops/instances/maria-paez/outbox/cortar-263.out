@@ -1,0 +1,18 @@
+# ejecutado: 2026-09-07T16:57:26-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   node -e "
+#   const mem=require('./memory');
+#   const r=mem.db.prepare(\"UPDATE wa_outbox SET estado='entregado', entregado=CURRENT_TIMESTAMP WHERE id=263 AND estado='pendiente'\").run();
+#   console.log('263 cerrado:', r.changes);
+#   console.log(JSON.stringify(mem.db.prepare('SELECT id,estado,intentos,metadata_json FROM wa_outbox WHERE id>=262').all()));
+#   "
+
+# ───── output ─────
+263 cerrado: 1
+[{"id":262,"estado":"entregado","intentos":2,"metadata_json":"{\"destinoOriginal\":\"5491159481767@c.us\",\"canalOrigen\":\"telegram\",\"cold_fallos\":1,\"cold_motivo\":\"verificacion_inconclusa\"}"},{"id":263,"estado":"entregado","intentos":3,"metadata_json":"{\"tipo\":\"test_v47\",\"origen\":\"ops\",\"cold_fallos\":3,\"cold_motivo\":\"verificacion_inconclusa\"}"}]
+
+# exit=0
