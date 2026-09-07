@@ -12,8 +12,8 @@
 // lo re-sirve UNA vez y toca send sobre el borrador); otro → mbfallo normal.
 //
 // FAIL-CLOSED: si el modelo falla o el JSON no viene, devolvemos 'otro' — un
-// juez que no ve NO confirma. La foto se publica en /_dl (como los shots de
-// manos remotas) y la URL queda en metadata del outbox para el aviso al owner.
+// juez que no ve NO confirma. La foto se publica en intensa.io/_dl igual que los shots de
+// manos remotas, y la URL queda en metadata del outbox para el aviso al owner.
 
 const fs = require('fs');
 const crypto = require('crypto');
