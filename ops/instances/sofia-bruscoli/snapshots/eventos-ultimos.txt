@@ -1,5 +1,17 @@
 id   timestamp            canal     direccion  de              cuerpo                                  
 ---  -------------------  --------  ---------  --------------  ----------------------------------------
+254  2026-09-07 18:53:59  telegram  saliente   telegram:69273  Listo, guardé a Gastón en tu libreta, ag
+253  2026-09-07 18:53:58  sistema   interno                    claude_call telegram: 22719ms prompt=716
+252  2026-09-07 18:53:57  sistema   interno                    claude_call enriquecer-contacto: 14483ms
+251  2026-09-07 18:53:56  sistema   interno                    acción ejecutada: enviar_wa             
+250  2026-09-07 18:53:56  sistema   interno                    claude_call moderacion: 7013ms prompt=17
+249  2026-09-07 18:53:45  sistema   interno                    acción ejecutada: crear_evento          
+248  2026-09-07 18:53:45  calendar  saliente                   creado: Turno Otorrinolaringología infan
+247  2026-09-07 18:53:42  sistema   interno                    acción ejecutada: upsert_contacto       
+246  2026-09-07 18:53:35  telegram  entrante   telegram:69273  [CONTACTO COMPARTIDO] Gaston Girotti — t
+245  2026-09-07 18:53:28  telegram  saliente   telegram:69273  No tengo a Gastón Girotti en tu libreta.
+244  2026-09-07 18:53:28  sistema   interno                    claude_call telegram: 9328ms prompt=6937
+243  2026-09-07 18:53:18  telegram  entrante   telegram:69273  Sofia necesito que contactes a Gaston Gi
 242  2026-09-07 15:14:10  sistema   interno                    claude_call memoria-curada: 14668ms prom
 241  2026-09-07 15:13:26  sistema   interno                    Maria arrancó — WA, Gmail, recordatorios
 240  2026-09-07 15:13:24  sistema   interno                    shutdown por SIGINT                     
@@ -48,15 +60,3 @@ id   timestamp            canal     direccion  de              cuerpo
 197  2026-09-06 22:50:47  whatsapp  saliente   5492215968555@  Buenísimo Saka, quedamos entonces el mar
 196  2026-09-06 22:50:47  sistema   interno                    claude_call moderacion: 6057ms prompt=15
 195  2026-09-06 22:50:41  telegram  saliente   telegram:69273  Saka confirmó la cena del martes 8/9 a l
-194  2026-09-06 22:50:41  sistema   interno                    claude_call whatsapp: 28588ms prompt=608
-193  2026-09-06 22:50:36  sistema   interno                    acción ejecutada: quitar_pendiente      
-192  2026-09-06 22:50:36  sistema   interno                    acción ejecutada: crear_evento          
-191  2026-09-06 22:50:36  calendar  saliente                   creado: Cena con Saka (2026-09-08T23:00:
-190  2026-09-06 22:50:34  sistema   interno                    acción ejecutada: upsert_contacto       
-189  2026-09-06 22:50:12  whatsapp  entrante   5492215968555@  Hola Sofía te confirmo para esa fecha y 
-188  2026-09-06 22:49:04  whatsapp  saliente   542215968555@c  Che, aprovecho: ¿me pasás tu mail? Así l
-187  2026-09-06 22:48:38  whatsapp  saliente   542215968555@c  Hola! Soy Sofia, asistente de Noelia. Te
-186  2026-09-06 22:45:40  telegram  saliente   telegram:69273  Dale, ya le mando también el pedido del 
-185  2026-09-06 22:45:40  sistema   interno                    claude_call telegram: 12915ms prompt=585
-184  2026-09-06 22:45:37  sistema   interno                    acción ejecutada: enviar_wa             
-183  2026-09-06 22:45:37  sistema   interno                    claude_call moderacion: 5809ms prompt=15

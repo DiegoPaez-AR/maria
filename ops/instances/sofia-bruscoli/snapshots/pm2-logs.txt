@@ -1,9 +1,3 @@
-4|sofia-br | 2026-09-04 15:29:56: [prompt-builder] tercero slim: system 61737→52293c, user 17251→9391c
-4|sofia-br | 2026-09-04 15:29:56: [MB v4.6] 15:29:54 I [notif] entrante de "+54 9 11 2176-2149": Buenas ! Qué tal 
-4|sofia-br | 2026-09-04 15:29:56: juan.ward@areait.com.ar
-4|sofia-br | 2026-09-04 15:30:10: [gcontacts] "Juan Manuel Ward" actualizado en Google Contacts
-4|sofia-br | 2026-09-04 15:30:13: [wa-send] wa-hook/3ro→Noelia Bruscoli: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
-4|sofia-br | 2026-09-04 15:30:26: [MB v4.6] 15:30:19 I [humano] espero 9s antes de responder a "+54 9 11 2176-2149"
 4|sofia-br | 2026-09-04 15:30:36: [MB v4.6] 15:30:28 I [notif] reply inline a "+54 9 11 2176-2149": ENVIADA
 4|sofia-br | 2026-09-04 15:45:24: [programados] 1 mensaje(s) debidos, despachando…
 4|sofia-br | 2026-09-04 15:45:24: [wa-send] programados/2: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
@@ -142,6 +136,9 @@
 4|sofia-br | 2026-09-07 12:34:22: [MB v4.7] 12:34:21 I [upd] al día (v4.7 code=32, mío=32)
 4|sofia-br | 2026-09-07 12:34:32: [MB v4.7] 12:34:29 I [svc] OutboxService arrancó (loop nuevo)
 4|sofia-br | 2026-09-07 12:35:02: [MB v4.7] 12:35:00 I [upd] al día (v4.7 code=32, mío=32)
+4|sofia-br | 2026-09-07 15:53:35: [TG] contacto compartido por Noelia Bruscoli: Gaston Girotti 1156408326
+4|sofia-br | 2026-09-07 15:53:47: [gcontacts] "Gaston Girotti" creado en Google Contacts
+4|sofia-br | 2026-09-07 15:53:56: [wa-outbox] #11 encolado → +5491156408326 (Hola Gastón! Soy Sofía, asistente de Noe…)
 
 /root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
 4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
@@ -197,4 +194,7 @@
 4|sofia-br | 2026-09-07 09:35:33: [GMAIL/Noelia Bruscoli] Claude falló en 1a07bdd7ca20d5ec: extraerJSON: texto vacío
 4|sofia-br | 2026-09-07 12:07:21: [TG] poll error (reintento en 15s): fetch failed
 4|sofia-br | 2026-09-07 12:36:26: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-07 15:53:28: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo a Gastón Girotti en tu libreta. ¿El teléfono (15)2154-3571 que aparece "
+4|sofia-br | 2026-09-07 15:53:42: [wa-validate] sin cliente WA — normalizado offline "5491156408326@c.us" → 5491156408326@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-07 15:53:58: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Gastón en tu libreta, agendé el turno de Lola (23/09 a las 15:45"
 
