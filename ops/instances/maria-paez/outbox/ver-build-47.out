@@ -1,0 +1,31 @@
+# ejecutado: 2026-09-07T12:17:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   for i in $(seq 1 50); do pgrep -f mb-build-worker >/dev/null || break; sleep 10; done
+#   echo "build worker corriendo: $(pgrep -f mb-build-worker >/dev/null && echo si || echo no)"
+#   tail -15 /root/mariabridge-build.log
+#   echo "--- latest.json"; cat /var/www/intensa.io/_dl/mariabridge-latest.json
+
+# ───── output ─────
+build worker corriendo: no
+> Task :app:compileDebugJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderDebug
+> Task :app:mergeDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processDebugJavaRes UP-TO-DATE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:mergeProjectDexDebug
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+w: Detected multiple Kotlin daemon sessions at kotlin/sessions
+
+BUILD SUCCESSFUL in 42s
+35 actionable tasks: 11 executed, 24 up-to-date
+APK_OK url=https://intensa.io/_dl/mb-44d280e8f79e9546.apk size=3.1M latest.json=v4.7(32)
+=== FIN Mon Sep  7 12:15:46 PM -03 2026 ===
+--- latest.json
+{"versionCode": 32, "versionName": "4.7", "url": "https://intensa.io/_dl/mb-44d280e8f79e9546.apk"}
+
+# exit=0
