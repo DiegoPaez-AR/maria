@@ -228,6 +228,21 @@ function registrarFalloCold(id, motivo) {
   // sin enviar. El re-servido normal (lease 90s) reabre el chat con el borrador
   // y vuelve a tocar send: UN reintento y basta — no martillar (lección 5).
   if (/^trabado/.test(meta.cold_motivo)) meta.trabados = (meta.trabados || 0) + 1;
+  // INCONCLUSO (7/9, #263 llegó 2 veces a Diego): "no pude verificar" NO es
+  // "no salió". Re-servirlo a ciegas duplica el mensaje — peor que el falso
+  // positivo que queríamos arreglar. Lo damos por entregado SIN verificar,
+  // con rastro, y no se reintenta. Solo 'trabado' (visto en pantalla) reintenta.
+  if (meta.cold_motivo === 'verificacion_inconclusa') {
+    meta.no_verificado = true;
+    mem.db.prepare(`UPDATE wa_outbox SET metadata_json = ?, estado='entregado', entregado=CURRENT_TIMESTAMP WHERE id = ?`)
+      .run(JSON.stringify(meta), id);
+    try {
+      mem.log({ usuarioId: row.usuario_id, canal: 'whatsapp', direccion: 'saliente', de: `${row.numero}@c.us`, cuerpo: row.texto,
+        metadata: { via: 'mariabridge_cold', outboxId: row.id, no_verificado: true } });
+    } catch {}
+    console.warn(`[wa-outbox] #${id} cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)`);
+    return { id, cold_fallos: meta.cold_fallos, definitivo: false, no_verificado: true };
+  }
   const definitivo = motivo === 'numero_sin_whatsapp' || meta.cold_fallos >= MAXF || (meta.trabados || 0) >= 2;
   mem.db.prepare(`UPDATE wa_outbox SET metadata_json = ?, estado = CASE WHEN ? THEN 'vencido' ELSE estado END WHERE id = ?`)
     .run(JSON.stringify(meta), definitivo ? 1 : 0, id);
