@@ -1,0 +1,18 @@
+# ejecutado: 2026-09-07T16:59:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   [ -f state/.canary-bad-commit ] && { echo "CANARY BLOQUEÓ"; exit 0; }
+#   if pgrep -f mb-build-worker >/dev/null; then echo "build corriendo"; else nohup bash /root/mb-build-worker.sh >/dev/null 2>&1 & echo "build v4.8 lanzado"; fi
+#   sleep 120; tail -3 /root/mariabridge-build.log; cat /var/www/intensa.io/_dl/mariabridge-latest.json
+
+# ───── output ─────
+build v4.8 lanzado
+35 actionable tasks: 16 executed, 19 up-to-date
+APK_OK url=https://intensa.io/_dl/mb-95cecf647f31c1c6.apk size=3.1M latest.json=v4.8(33)
+=== FIN Mon Sep  7 04:59:41 PM -03 2026 ===
+{"versionCode": 33, "versionName": "4.8", "url": "https://intensa.io/_dl/mb-95cecf647f31c1c6.apk"}
+
+# exit=0
