@@ -10,6 +10,9 @@ object ColdSend {
 
     @Volatile var pendiente: Target? = null
     @Volatile var lanzado: Boolean = false
+    // v4.7: id del target al que ya se le tocó "send" — desde ahí el cierre lo
+    // decide la verificación (3 lecturas + foto), no el deadline de apertura.
+    @Volatile var tapHecho: String? = null
     // callback(id, ok): ok=true si se verificó el envío real
     @Volatile var onDone: ((String, Boolean) -> Unit)? = null
 
@@ -19,18 +22,20 @@ object ColdSend {
             // Guard anti-colgado (v2.5): si el que está "en curso" tiene >90s,
             // la accesibilidad murió o algo se trabó — lo damos por fallido y
             // tomamos el lugar (antes: ocupado para siempre + spam de mbdiag).
-            if (System.currentTimeMillis() - p.ts > 90_000) {
+            // v4.7: 150s — la verificación positiva puede tardar hasta ~85s
+            // (pausa humana 20s + 3 lecturas + foto al VPS 60s).
+            if (System.currentTimeMillis() - p.ts > 150_000) {
                 MbLog.w("frio", "ColdSend colgado con #${p.id} (${(System.currentTimeMillis() - p.ts) / 1000}s) — lo suelto")
                 terminar(p.id, false)
             } else return false
         }
-        pendiente = t; lanzado = false; onDone = cb
+        pendiente = t; lanzado = false; tapHecho = null; onDone = cb
         return true
     }
 
     @Synchronized fun terminar(id: String, ok: Boolean) {
         val cb = onDone
-        pendiente = null; lanzado = false; onDone = null
+        pendiente = null; lanzado = false; tapHecho = null; onDone = null
         cb?.invoke(id, ok)
     }
 }

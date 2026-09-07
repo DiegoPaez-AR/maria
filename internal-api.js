@@ -45,7 +45,7 @@ function start({ waClient } = {}) {
       // propio secret en el path (el teléfono no conoce el internal secret).
       // Cola de salientes para Tasker (2026-08-04): el teléfono pregunta si
       // hay algo para iniciar y confirma cuando lo mandó.
-      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo|mbmedia|mbctl)(?:\/(\d+))?$/);
+      const _out = req.url.match(/^\/wa-hook\/([A-Za-z0-9_-]{16,})\/(pendiente|pendiente\.txt|confirmar|confirmar-ultimo|mbdiag|mblog|mbfallo|mbmedia|mbctl|mbverif)(?:\/(\d+))?$/);
       if (_out) {
         const HOOK_SECRET = process.env.WA_HOOK_SECRET || '';
         if (!HOOK_SECRET || _out[1] !== HOOK_SECRET) return send(401, { error: 'unauthorized' });
@@ -114,6 +114,15 @@ function start({ waClient } = {}) {
           const b = await readJsonGrande(req).catch(() => null);
           if (!b || !b.id) return send(400, { error: 'payload' });
           return send(200, require('./mb-control').resolver(b));
+        }
+        if (_out[2] === 'mbverif') {
+          // Veredicto por FOTO de un cold-send (v4.7, caso Walby 5/9): la app
+          // no pudo decidir por accesibilidad y manda la captura; un modelo con
+          // visión dice enviado|trabado|otro. Fail-closed (ver mb-verif.js).
+          const b = await readJsonGrande(req).catch(() => null);
+          if (!b || !b.id || !b.data) return send(400, { error: 'payload' });
+          const r = await require('./mb-verif').verificar(b);
+          return send(200, r);
         }
         if (_out[2] === 'mbmedia') {
           // Audio REAL desde MariaBridge (2026-08-17, 7a): la app caza el .opus

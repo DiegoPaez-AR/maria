@@ -224,7 +224,11 @@ function registrarFalloCold(id, motivo) {
   const MAXF = Number(process.env.WA_OUTBOX_COLD_FALLOS_MAX || 5);
   meta.cold_fallos = (meta.cold_fallos || 0) + 1;
   meta.cold_motivo = String(motivo || 'desconocido').slice(0, 60);
-  const definitivo = motivo === 'numero_sin_whatsapp' || meta.cold_fallos >= MAXF;
+  // TRABADO verificado por foto (v4.7, caso Walby): el texto quedó en el cuadro
+  // sin enviar. El re-servido normal (lease 90s) reabre el chat con el borrador
+  // y vuelve a tocar send: UN reintento y basta — no martillar (lección 5).
+  if (/^trabado/.test(meta.cold_motivo)) meta.trabados = (meta.trabados || 0) + 1;
+  const definitivo = motivo === 'numero_sin_whatsapp' || meta.cold_fallos >= MAXF || (meta.trabados || 0) >= 2;
   mem.db.prepare(`UPDATE wa_outbox SET metadata_json = ?, estado = CASE WHEN ? THEN 'vencido' ELSE estado END WHERE id = ?`)
     .run(JSON.stringify(meta), definitivo ? 1 : 0, id);
   if (definitivo) {
@@ -257,7 +261,10 @@ function _avisarOwnerFalloEntrega(row, meta) {
   }
   const quien = c ? c.nombre : row.numero;
   const motivoTxt = meta.cold_motivo === 'numero_sin_whatsapp'
-    ? 'el número NO está en WhatsApp' : `no pude entregarlo tras ${meta.cold_fallos} intentos`;
+    ? 'el número NO está en WhatsApp'
+    : /^trabado/.test(meta.cold_motivo || '')
+      ? `el mensaje quedó escrito pero sin enviar en el teléfono (${meta.trabados || meta.cold_fallos} intentos)${meta.verif_foto && meta.verif_foto.url ? ` — captura: ${meta.verif_foto.url}` : ''}`
+      : `no pude entregarlo tras ${meta.cold_fallos} intentos`;
   const sugerencia = c && c.email
     ? `Tiene email en la libreta (${c.email}) — decime si querés que se lo mande por mail.`
     : 'No tiene email en la libreta.';
