@@ -1,50 +1,3 @@
-4|sofia-br | 2026-09-04 12:24:21: [MB v4.5] 12:24:16 I [outbox] respondido (silencioso) → Fernando Boero
-4|sofia-br | 2026-09-04 12:28:22: [MB v4.5] 12:28:21 I [upd] versión nueva v4.6 (code 31 > 30) — descargando
-4|sofia-br | 2026-09-04 12:28:31: [MB v4.5] 12:28:25 I [upd] descargado 3148KB — ofreciendo instalar
-4|sofia-br | 2026-09-04 12:28:31: [MB v4.5] 12:28:25 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
-4|sofia-br | 2026-09-04 12:28:31: [MB v4.5] 12:28:26 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 1/3)
-4|sofia-br | 2026-09-04 12:28:31: [MB v4.5] 12:28:27 I [upd] versión nueva v4.6 (code 31 > 30) — descargando
-4|sofia-br | 2026-09-04 12:28:31: [MB v4.5] 12:28:30 I [upd] descargado 3148KB — ofreciendo instalar
-4|sofia-br | 2026-09-04 12:28:56: [MB v4.6] 12:28:44 I [notif] listener creado
-4|sofia-br | 2026-09-04 12:28:56: [MB v4.6] 12:28:44 I [notif] listener conectado — barrido cada 3min (marca=1788535456720)
-4|sofia-br | 2026-09-04 12:28:56: [MB v4.6] 12:28:45 I [frio] accesibilidad conectada
-4|sofia-br | 2026-09-04 12:29:05: [MB v4.6] 12:28:59 I [svc] OutboxService arrancó (loop nuevo)
-4|sofia-br | 2026-09-04 12:29:35: [MB v4.6] 12:29:30 I [upd] al día (v4.6 code=31, mío=31)
-4|sofia-br | 2026-09-04 12:34:21: 
-4|sofia-br | 2026-09-04 12:34:21: ▸ SIGINT recibido, cerrando…
-4|sofia-br | 2026-09-04 12:34:23: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-4|sofia-br | 2026-09-04 12:34:23: ▸ Sofia Bruscoli [sofia-bruscoli] iniciando…
-4|sofia-br | 2026-09-04 12:34:23:   Owner:      Noelia Bruscoli (id=2)
-4|sofia-br | 2026-09-04 12:34:23:   Usuarios:   1 activo(s) → Noelia Bruscoli
-4|sofia-br | 2026-09-04 12:34:23:   Gmail poll: cada 300s
-4|sofia-br | 2026-09-04 12:34:23: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-4|sofia-br | 2026-09-04 12:34:23: ✓ whisper OK
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando poll de Gmail (cada 300s)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando loop de recordatorios (cada 30min)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando dispatcher de programados (cada 60s)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando morning-brief (por usuario, ventana 4h)
-4|sofia-br | 2026-09-04 12:34:23: [morning-brief] activo, ventana 4h, cada usuario en su tz
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando meeting-prep (cada 5min)
-4|sofia-br | 2026-09-04 12:34:23: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando calendar-watch (cada 8h)
-4|sofia-br | 2026-09-04 12:34:23: [calendar-watch] activo, cada 8.0h
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando follow-ups (cada 5min)
-4|sofia-br | 2026-09-04 12:34:23: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando memoria-curada (cada 24h)
-4|sofia-br | 2026-09-04 12:34:23: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-4|sofia-br | 2026-09-04 12:34:23: [cumple-avisos] activo, ventana 20-23h tz usuario
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando resumen-semanal (domingos, tz usuario)
-4|sofia-br | 2026-09-04 12:34:23: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando poda-eventos (diario)
-4|sofia-br | 2026-09-04 12:34:23: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-4|sofia-br | 2026-09-04 12:34:23: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-4|sofia-br | 2026-09-04 12:34:23: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-4|sofia-br | 2026-09-04 12:34:23: ▸ arrancando drainer de diferidos (horas de silencio)
 4|sofia-br | 2026-09-04 12:34:23: [diferidos] drainer activo (cada 5min)
 4|sofia-br | 2026-09-04 12:34:23: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
 4|sofia-br | 2026-09-04 12:34:44: [gcontacts] arranque: 1 usuarios sincronizados a Google Contacts
@@ -197,4 +150,51 @@
 4|sofia-br | 2026-09-06 20:07:38: [MB v4.6] 20:07:28 I [humano] espero 11s antes de responder a "+54 9 221 596-8555"
 4|sofia-br | 2026-09-06 20:07:48: [MB v4.6] 20:07:39 I [media] reply a "+54 9 221 596-8555": ENVIADA
 4|sofia-br | 2026-09-07 00:30:10: [MB v4.6] 00:30:00 I [upd] al día (v4.6 code=31, mío=31)
+
+/root/.pm2/logs/sofia-bruscoli-error.log last 200 lines:
+4|sofia-br | 2026-09-03 17:44:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+4|sofia-br | 2026-09-03 18:10:16: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-03 20:23:19: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 01:34:16: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 03:38:10: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 04:44:15: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 06:59:25: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 12:06:43: [wa-validate] sin cliente WA — normalizado offline "5491159524645@c.us" → 5491159524645@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 12:10:39: [wa-validate] sin cliente WA — normalizado offline "5491150242779@c.us" → 5491150242779@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 12:11:00: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 12:20:50: [wa-validate] sin cliente WA — normalizado offline "5491150242779@c.us" → 5491150242779@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 12:20:50: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 12:20:56: [wa-validate] sin cliente WA — normalizado offline "5491121756400@c.us" → 5491121756400@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 12:20:56: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (6)
+4|sofia-br | 2026-09-04 12:56:23: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 14:06:14: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 15:17:28: [wa-validate] sin cliente WA — normalizado offline "5491121762149@c.us" → 5491121762149@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 15:18:00: [wa-validate] sin cliente WA — normalizado offline "5491135868891@c.us" → 5491135868891@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 15:30:08: [wa-validate] sin cliente WA — normalizado offline "5491121762149@c.us" → 5491121762149@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-04 16:34:01: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 16:41:28: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 17:33:17: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 17:40:43: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-04 21:53:06: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-05 05:27:33: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-05 07:26:16: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-05 22:11:54: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+4|sofia-br | 2026-09-06 04:01:33: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 06:40:04: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 11:57:06: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 13:11:27: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 13:18:53: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 13:39:05: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 16:16:02: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 19:29:06: [TG] poll error (reintento en 15s): fetch failed
+4|sofia-br | 2026-09-06 19:45:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo el contacto de Saka en tu libreta. Necesito su número de WhatsApp (o em"
+4|sofia-br | 2026-09-06 19:45:16: [wa-validate] sin cliente WA — normalizado offline "542215968555@c.us" → 5492215968555@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-06 19:45:26: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Saka en tu libreta y le estoy mandando el mensaje ahora para coo"
+4|sofia-br | 2026-09-06 19:45:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya le mando también el pedido del mail. En unos minutos le llegan los dos "
+4|sofia-br | 2026-09-06 19:50:34: [wa-validate] sin cliente WA — normalizado offline "5492215968555@c.us" → 5492215968555@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-06 19:57:26: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Saka" (5492215968555@c.us, zacariazfroia@gmail.com) — mismo email + mismo telefono. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+4|sofia-br | 2026-09-06 19:57:40: [wa-validate] sin cliente WA — normalizado offline "5492215968555@c.us" → 5492215968555@c.us (SIN verificar en Meta)
+4|sofia-br | 2026-09-06 19:59:15: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, en unos minutos le llega a Zaca el mensaje pidiéndole que no llegue tarde "
+4|sofia-br | 2026-09-06 20:04:31: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Anotado, de ahora en más le hablo con un tono más formal."
+4|sofia-br | 2026-09-07 01:10:38: [TG] poll error (reintento en 15s): fetch failed
 
