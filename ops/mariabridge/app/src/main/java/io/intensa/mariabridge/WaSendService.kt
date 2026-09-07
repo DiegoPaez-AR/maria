@@ -290,33 +290,48 @@ class WaSendService : AccessibilityService() {
     // ── Verificación positiva (v4.7) ────────────────────────────────────────
     // Devuelve "enviado" | "trabado" | "inconcluso" mirando la pantalla UNA vez.
     private fun _leerEstadoEnvio(pkg: String, texto: String): String {
-        val root = rootInActiveWindow ?: return "inconcluso"
-        val entry = buscarPorId(root, "$pkg:id/entry") ?: return "inconcluso"
+        val root = rootInActiveWindow ?: return "inconcluso:root_null"
+        val entry = buscarPorId(root, "$pkg:id/entry") ?: return "inconcluso:sin_entry"
         val textoEntry = entry.text?.toString() ?: ""
         val firma = texto.trim().lineSequence().firstOrNull()?.trim()?.take(40) ?: ""
         if (textoEntry.isNotBlank()) {
             // el texto sigue en el cuadro → no salió (si es OTRO texto, raro: inconcluso)
-            return if (firma.isNotBlank() && textoEntry.trim().startsWith(firma.take(20))) "trabado" else "inconcluso"
+            return if (firma.isNotBlank() && textoEntry.trim().startsWith(firma.take(20))) "trabado" else "inconcluso:entry_otro_texto"
         }
-        // entry vacío: exigimos ver el mensaje como burbuja (nodo con el texto,
-        // distinto del entry). WhatsApp usa message_text; buscamos por texto
-        // porque el id varía entre versiones.
-        if (firma.isBlank()) return "inconcluso"
-        val nodos = root.findAccessibilityNodeInfosByText(firma) ?: emptyList()
-        val burbuja = nodos.any { n ->
-            val idv = n.viewIdResourceName ?: ""
-            !idv.endsWith("/entry") && (n.text?.toString() ?: "").contains(firma.take(20))
-        }
-        return if (burbuja) "enviado" else "inconcluso"
+        // entry vacío: buscamos el mensaje como burbuja (nodo con el texto,
+        // distinto del entry). v4.8: la búsqueda por texto de Android no
+        // encontraba la burbuja en el #263 aunque salió → si no aparece, es
+        // "probable" (entry existe y se vació), y decide la foto.
+        if (firma.isBlank()) return "probable:sin_firma"
+        val clave = firma.take(20)
+        var burbuja = false
+        try {
+            val nodos = root.findAccessibilityNodeInfosByText(clave) ?: emptyList()
+            burbuja = nodos.any { n ->
+                val idv = n.viewIdResourceName ?: ""
+                !idv.endsWith("/entry") && ((n.text?.toString() ?: "") + " " + (n.contentDescription?.toString() ?: "")).contains(clave)
+            }
+            if (!burbuja) {
+                // plan B: recorrer el árbol (message_text / cualquier nodo con el texto)
+                burbuja = _todosLosNodos(root).any { n ->
+                    val idv = n.viewIdResourceName ?: ""
+                    !idv.endsWith("/entry") && (n.text?.toString() ?: "").contains(clave)
+                }
+            }
+        } catch (_: Exception) {}
+        return if (burbuja) "enviado" else "probable:entry_vacio_sin_burbuja"
     }
 
     @Volatile private var _reTapHecho: String? = null
+    @Volatile private var _ultimoProbable: String? = null   // v4.8: alguna lectura vio entry vacío
 
     private fun verificarYConfirmar(id: String, pkg: String, intento: Int) {
         val t = ColdSend.pendiente ?: return
         if (t.id != id) return
-        val estado = try { _leerEstadoEnvio(pkg, t.texto) } catch (e: Exception) { MbLog.w("frio", "lectura #$id: ${e.message}"); "inconcluso" }
-        MbLog.i("frio", "verificación #$id lectura $intento/3: $estado")
+        val lectura = try { _leerEstadoEnvio(pkg, t.texto) } catch (e: Exception) { MbLog.w("frio", "lectura #$id: ${e.message}"); "inconcluso:excepcion" }
+        val estado = lectura.substringBefore(':')
+        MbLog.i("frio", "verificación #$id lectura $intento/3: $lectura")
+        if (estado == "probable") _ultimoProbable = id
         if (estado == "enviado") {
             MbLog.i("frio", "verificación #$id: ENVIADO (burbuja visible)")
             goHome(); ColdSend.terminar(id, true); return
@@ -346,6 +361,7 @@ class WaSendService : AccessibilityService() {
         val base = Prefs.hookBase(this); val secret = Prefs.secret(this)
         val t = ColdSend.pendiente
         if (base.isBlank() || t == null || t.id != id) { _cerrarSinVeredicto(id, estadoArbol); return }
+        MbLog.i("frio", "#$id: foto → VPS (estado árbol: $estadoArbol)")
         if (android.os.Build.VERSION.SDK_INT < 30) { _cerrarSinVeredicto(id, estadoArbol); return }
         // deadline propio: si la foto o el VPS no responden en 60s, cerramos igual
         val cerrado = java.util.concurrent.atomic.AtomicBoolean(false)
@@ -392,12 +408,22 @@ class WaSendService : AccessibilityService() {
         when (veredicto) {
             "enviado" -> { MbLog.i("frio", "verificación #$id: ENVIADO (por foto)"); goHome(); ColdSend.terminar(id, true) }
             "trabado" -> { MbLog.w("frio", "verificación #$id: TRABADO (por foto) — el server lo re-sirve 1 vez"); _reportarFallo(id, "trabado_foto"); goHome(); ColdSend.terminar(id, false) }
-            else -> { MbLog.w("frio", "verificación #$id: sin veredicto por foto — NO confirmo"); _reportarFallo(id, "verificacion_inconclusa"); goHome(); ColdSend.terminar(id, false) }
+            else -> {
+                if (_ultimoProbable == id) { MbLog.i("frio", "verificación #$id: ENVIADO (probable + foto sin veredicto)"); goHome(); ColdSend.terminar(id, true) }
+                else { MbLog.w("frio", "verificación #$id: sin veredicto por foto — NO confirmo"); _reportarFallo(id, "verificacion_inconclusa"); goHome(); ColdSend.terminar(id, false) }
+            }
         }
     }
 
     private fun _cerrarSinVeredicto(id: String, estadoArbol: String) {
         if (ColdSend.pendiente?.id != id) return
+        if (estadoArbol == "probable" || _ultimoProbable == id) {
+            // v4.8: el cuadro existía y se vació (la señal vieja), sin foto que lo
+            // desmienta → enviado. Antes lo devolvíamos "inconcluso" y el server
+            // lo re-servía: #263 llegó 3 veces. Duplicar es peor que no verificar.
+            MbLog.i("frio", "verificación #$id: ENVIADO (probable: entry vacío, sin foto)")
+            goHome(); ColdSend.terminar(id, true); return
+        }
         MbLog.w("frio", "verificación #$id: NO confirmo ($estadoArbol, sin foto)")
         _reportarFallo(id, if (estadoArbol == "trabado") "trabado_foto" else "verificacion_inconclusa")
         goHome(); ColdSend.terminar(id, false)
