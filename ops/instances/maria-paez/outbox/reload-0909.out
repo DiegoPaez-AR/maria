@@ -1,0 +1,43 @@
+# ejecutado: 2026-09-09T09:35:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   tail -5 /tmp/canary-tick.log 2>/dev/null | cut -c1-120
+#   timeout 120 pm2 reload ecosystem.config.js --update-env >/dev/null 2>&1 && echo "reload OK"
+#   sleep 100
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys,time;[print(' ',p['name'],p['pm2_env']['status'],'uptime_s',int((time.time()*1000-p['pm2_env']['pm_uptime'])//1000)) for p in json.load(sys.stdin) if p['name']!='intensa-api']"
+#   grep -h "expirado" /root/.pm2/logs/maria-paez-out.log | tail -12 | cut -c1-140
+#   sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "select estado,count(*) from follow_ups group by 1"
+#   tail -2 /root/.pm2/logs/maria-paez-error.log /root/.pm2/logs/sofia-bruscoli-error.log | cut -c1-140
+#   echo LISTO
+
+# ───── output ─────
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18950.944549
+reload OK
+  maria-paez online uptime_s 100
+  sofia-bruscoli online uptime_s 100
+2026-09-09 09:35:05: [follow-ups] #24 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #30 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #32 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #33 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #35 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #37 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #39 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #41 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #42 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #44 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #45 expirado (14+ días disparado sin resolución)
+2026-09-09 09:35:05: [follow-ups] #46 expirado (14+ días disparado sin resolución)
+abierto|1
+cancelado|29
+cerrado|31
+tail: option used in invalid context -- 2
+LISTO
+
+# exit=0
