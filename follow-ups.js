@@ -178,8 +178,31 @@ async function _intentarReping(waClient, f, usuario) {
   return true;
 }
 
+// Follow-ups en 'disparado' (ya se le avisó al dueño) que nadie resolvió en
+// 14 días: se cancelan con rastro (2026-09-09, review: #37-#46 de agosto
+// seguían vivos y gestion-ajena los usaba para rutear mensajes de esos
+// terceros como "respuesta a una gestión" que ya no existía).
+const EXPIRA_DISPARADO_DIAS = Number(process.env.MARIA_FOLLOWUP_EXPIRA_DIAS || 14);
+function _expirarDisparados() {
+  try {
+    const rows = mem.db.prepare(
+      `SELECT id, usuario_id, descripcion, disparado_en FROM follow_ups
+        WHERE estado = 'disparado' AND disparado_en IS NOT NULL
+          AND disparado_en <= datetime('now', ?)`
+    ).all(`-${EXPIRA_DISPARADO_DIAS} days`);
+    for (const f of rows) {
+      mem.setFollowUpEstado(f.id, 'cancelado');
+      mem.log({ usuarioId: f.usuario_id, canal: 'sistema', direccion: 'interno',
+        cuerpo: `follow-up #${f.id} expirado: llevaba ${EXPIRA_DISPARADO_DIAS}+ días en 'disparado' sin resolución (${String(f.descripcion).slice(0, 80)})`,
+        metadata: { tipo: 'follow_up_expirado', followUpId: f.id } });
+      console.log(`[follow-ups] #${f.id} expirado (${EXPIRA_DISPARADO_DIAS}+ días disparado sin resolución)`);
+    }
+  } catch (err) { console.warn('[follow-ups] expirar disparados falló:', err.message); }
+}
+
 async function tick(waClient) {
   // guard !waClient eliminado 2026-07-06 — fallback TG→email en wa-send
+  _expirarDisparados();
   const vencidos = mem.followUpsVencidos();
   if (!vencidos.length) return;
 

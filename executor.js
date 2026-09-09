@@ -1227,6 +1227,25 @@ async function _upsertContacto(a, ctx) {
       }
       sospechosos.length = 0;
     }
+    // RENAME LEGÍTIMO (2026-09-09, caso Saka→Zaca en Sofia): si hay UN solo
+    // candidato y coincide el TELÉFONO, y el email no contradice (mismo email,
+    // o alguno de los dos no tiene), no es un homónimo: es la misma persona
+    // con el nombre corregido. Renombramos la ficha y seguimos como update.
+    if (sospechosos.length === 1 && telClave) {
+      const { c, motivos } = sospechosos[0];
+      const mismoTel = motivos.includes('mismo telefono');
+      const emailOk = !emailNorm || !c.email || String(c.email).toLowerCase().trim() === emailNorm;
+      if (mismoTel && emailOk) {
+        try {
+          mem.db.prepare('UPDATE contactos SET nombre = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?').run(a.nombre, c.id);
+          mem.log({ usuarioId: ctx.usuario.id, canal: 'sistema', direccion: 'interno',
+            cuerpo: `upsert_contacto: ficha "${c.nombre}" (#${c.id}) renombrada a "${a.nombre}" (mismo teléfono${motivos.includes('mismo email') ? ' y email' : ''})`,
+            metadata: { tipo: 'contacto_renombrado', contacto_id: c.id, antes: c.nombre, despues: a.nombre } });
+          console.log(`[upsert_contacto] rename: "${c.nombre}" → "${a.nombre}" (#${c.id}, mismo teléfono)`);
+          sospechosos.length = 0;
+        } catch (e) { console.warn('[upsert_contacto] rename falló:', e.message); }
+      }
+    }
     if (sospechosos.length) {
       const detalle = sospechosos.slice(0, 3).map(({ c, motivos }) =>
         `"${c.nombre}" (${[c.whatsapp, c.email, c.cumple ? `cumple ${c.cumple}` : null].filter(Boolean).join(', ') || 'sin datos'}) — ${motivos.join(' + ')}`

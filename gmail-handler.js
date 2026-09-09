@@ -59,6 +59,15 @@ function _marcarProcesado(id) {
 // de calendar y, si lo es, intenta auto-aceptarlo y aplicar el accessRole al
 // usuario correspondiente. Devuelve true si lo procesó (el caller no debe
 // seguir con el pipeline normal); false si no aplica.
+function _esAceptacionDeInvitacion(email) {
+  const asunto = String(email.asunto || '');
+  const cuerpo = String(email.cuerpo || email.snippet || '').slice(0, 600);
+  const porAsunto = /^(Accepted|Aceptad[ao]|Tentatively accepted|Aceptad[ao] provisionalmente)\s*:/i.test(asunto);
+  const porCuerpo = /has (tentatively )?accepted this invitation|ha aceptado (provisionalmente )?esta invitaci[oó]n/i.test(cuerpo);
+  const rechazo = /^(Declined|Rechazad[ao])\s*:/i.test(asunto) || /has declined|ha rechazado/i.test(cuerpo);
+  return !rechazo && (porAsunto || porCuerpo);
+}
+
 async function _intentarAceptarShareCalendar(email, messageId) {
   const asunto = email.asunto || '';
   const cuerpo = email.cuerpo || email.snippet || '';
@@ -169,6 +178,27 @@ async function procesarUnEmail(id, { waClient } = {}) {
   // hacemos calendarList.insert() programático contra la API.
   if (await _intentarAceptarShareCalendar(email, id)) {
     return; // share aceptado y procesado — no pasamos al pipeline normal
+  }
+
+  // ─── Pre-handler: ACEPTACIONES de invitación (2026-09-09, review 4-9/9) ──
+  // "X has accepted this invitation" es una notificación de calendar, no un
+  // mensaje: entraba al LLM como tercero (~US$0.35 c/u, 6 en una semana de
+  // Sofia, uno devolvió texto vacío). Queda en el historial como evento
+  // liviano y se marca leído. Los RECHAZOS ("declined") sí siguen al
+  // pipeline: ahí hay algo que el usuario tiene que saber.
+  if (_esAceptacionDeInvitacion(email)) {
+    const quien = String(email.de || '').replace(/<.*>/, '').trim() || email.de;
+    const evento = String(email.asunto || '').replace(/^(Accepted|Aceptad[ao]|Tentatively accepted|Aceptad[ao] provisionalmente)\s*:\s*/i, '').split(' @ ')[0].trim();
+    const usuarioDe = usuarios.resolverPorEmailFrom(email.de);
+    mem.log({
+      usuarioId: usuarioDe ? usuarioDe.id : null,
+      canal: 'gmail', direccion: 'entrante', de: email.de, asunto: email.asunto,
+      cuerpo: `${quien} aceptó la invitación: ${evento}`,
+      metadata: { tipo: 'invitacion_aceptada', messageId: id, sinLLM: true },
+    });
+    console.log(`[GMAIL] aceptación de invitación de ${quien} ("${evento}") — sin LLM`);
+    try { await g.marcarLeido(id); } catch { /* best-effort */ }
+    return;
   }
 
   // ─── Resolver usuario por From ────────────────────────────────────────
