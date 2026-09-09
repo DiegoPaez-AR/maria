@@ -1,200 +1,200 @@
-0|maria-pa | 2026-09-09 09:35:05: [follow-ups] #45 expirado (14+ días disparado sin resolución)
-0|maria-pa | 2026-09-09 09:35:05: [follow-ups] #46 expirado (14+ días disparado sin resolución)
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-09-09 09:35:05: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-09-09 09:35:05: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-09-09 09:35:05: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-09-09 09:35:05: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-0|maria-pa | 2026-09-09 09:35:05: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-0|maria-pa | 2026-09-09 09:35:05: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-0|maria-pa | 2026-09-09 09:35:05: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-09-09 09:35:05: [diferidos] drainer activo (cada 5min)
-0|maria-pa | 2026-09-09 09:35:05: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-09-09 09:35:31: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
-0|maria-pa | 2026-09-09 09:41:27: 
-0|maria-pa | 2026-09-09 09:41:27: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-09-09 09:41:28: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 09:41:28: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-09-09 09:41:28:   Owner:      Diego (id=1)
-0|maria-pa | 2026-09-09 09:41:28:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-0|maria-pa | 2026-09-09 09:41:28:   Gmail poll: cada 300s
-0|maria-pa | 2026-09-09 09:41:28: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 09:41:28: ✓ whisper OK
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-09-09 09:41:28: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-09-09 09:41:28: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-09-09 09:41:28: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-09-09 09:41:28: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-09-09 09:41:28: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-09-09 09:41:28: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-09-09 09:41:28: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-09-09 09:41:28: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-0|maria-pa | 2026-09-09 09:41:28: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-0|maria-pa | 2026-09-09 09:41:28: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-0|maria-pa | 2026-09-09 09:41:28: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-09-09 09:41:28: [diferidos] drainer activo (cada 5min)
-0|maria-pa | 2026-09-09 09:41:28: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-09-09 09:41:55: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
-0|maria-pa | 2026-09-09 09:45:28: [programados] 1 mensaje(s) debidos, despachando…
-0|maria-pa | 2026-09-09 09:45:29: [wa-send] programados/1642: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-09-09 09:45:29: [programados] ✓ id=1642 (telegram/590589920) [meeting_prep:1:4q9658rcp1uifcv39a18sk87g1]
-0|maria-pa | 2026-09-09 09:48:32: 
-0|maria-pa | 2026-09-09 09:48:32: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-09-09 09:48:34: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 09:48:34: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-09-09 09:48:34:   Owner:      Diego (id=1)
-0|maria-pa | 2026-09-09 09:48:34:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-0|maria-pa | 2026-09-09 09:48:34:   Gmail poll: cada 300s
-0|maria-pa | 2026-09-09 09:48:34: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 09:48:34: ✓ whisper OK
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-09-09 09:48:34: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-09-09 09:48:34: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-09-09 09:48:34: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-09-09 09:48:34: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-09-09 09:48:34: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-09-09 09:48:34: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-09-09 09:48:34: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-09-09 09:48:34: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-0|maria-pa | 2026-09-09 09:48:34: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-0|maria-pa | 2026-09-09 09:48:34: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-0|maria-pa | 2026-09-09 09:48:34: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-09-09 09:48:34: [diferidos] drainer activo (cada 5min)
-0|maria-pa | 2026-09-09 09:48:34: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-09-09 09:49:00: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
-0|maria-pa | 2026-09-09 10:03:35: [meeting-prep/Hernan Fulco] + id=1647 Reunión Hernán/Celeste @ 2026-09-09T14:45:00.000Z
-0|maria-pa | 2026-09-09 10:28:58: [prompt-builder] tercero slim: system 60868→51479c, user 25452→16953c
-0|maria-pa | 2026-09-09 10:29:06: [MB v4.8] 10:28:56 I [notif] entrante de "+54 9 11 3949-9903": Hola buen dia
-0|maria-pa | 2026-09-09 10:29:06: [MB v4.8] 10:28:56 I [notif] dup ignorado de "+54 9 11 3949-9903"
-0|maria-pa | 2026-09-09 10:29:06: [MB v4.8] 10:29:03 I [notif] entrante de "+54 9 11 3949-9903": Q vehiculo eS?
-0|maria-pa | 2026-09-09 10:29:06: [MB v4.8] 10:29:03 I [notif] sin acción de reply — descarto no-chat: "+54 9 11 3949-9903"
-0|maria-pa | 2026-09-09 10:29:12: [prompt-builder] tercero slim: system 60868→51479c, user 25110→16611c
-0|maria-pa | 2026-09-09 10:29:16: [MB v4.8] 10:29:11 I [humano] espero 8s antes de responder a "+54 9 11 3949-9903"
-0|maria-pa | 2026-09-09 10:29:26: [MB v4.8] 10:29:20 I [notif] reply inline a "+54 9 11 3949-9903": ENVIADA
-0|maria-pa | 2026-09-09 10:29:28: [quitar_pendiente] follow-up #61 cancelado en cascada (5491139499903@c.us ya había respondido)
-0|maria-pa | 2026-09-09 10:29:35: [wa-send] wa-hook/3ro→Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-09-09 10:29:46: [MB v4.8] 10:29:40 I [humano] espero 11s antes de responder a "+54 9 11 3949-9903"
-0|maria-pa | 2026-09-09 10:29:56: [MB v4.8] 10:29:51 I [notif] reply inline a "+54 9 11 3949-9903": ENVIADA
-0|maria-pa | 2026-09-09 10:38:35: [meeting-prep/Hernan Fulco] + id=1648 Seguridad en desarrollo @ 2026-09-09T14:45:00.000Z
-0|maria-pa | 2026-09-09 10:45:34: [programados] 4 mensaje(s) debidos, despachando…
-0|maria-pa | 2026-09-09 10:45:34: [wa-send] programados/1643: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-09-09 10:45:34: [programados] ✓ id=1643 (telegram/590589920) [meeting_prep:1:4g457a0mt8lqtt35ma0mjaid9n]
-0|maria-pa | 2026-09-09 10:45:34: [wa-send] programados/1644: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-09-09 10:45:34: [programados] ✓ id=1644 (telegram/590589920) [meeting_prep:1:4ounseu8rcdml5mc2nt9gcu2fb_20260909T140000Z]
-0|maria-pa | 2026-09-09 10:45:35: [wa-send] programados/1645: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
-0|maria-pa | 2026-09-09 10:45:35: [programados] ✓ id=1645 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:3r0jlpct674vg8slchv6ap6np7_20260909T140000Z]
-0|maria-pa | 2026-09-09 10:45:35: [wa-send] programados/1646: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Gabriela Echaniz
-0|maria-pa | 2026-09-09 10:45:35: [programados] ✓ id=1646 (gmail/gabyechaniz@gmail.com) [meeting_prep:18:n8ipm33qfv5jjj4btgktn9hanc]
-0|maria-pa | 2026-09-09 10:47:29: 
-0|maria-pa | 2026-09-09 10:47:29: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-09-09 10:47:30: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 10:47:30: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-09-09 10:47:30:   Owner:      Diego (id=1)
-0|maria-pa | 2026-09-09 10:47:30:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-0|maria-pa | 2026-09-09 10:47:30:   Gmail poll: cada 300s
-0|maria-pa | 2026-09-09 10:47:30: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 10:47:30: ✓ whisper OK
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-09-09 10:47:30: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-09-09 10:47:30: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-09-09 10:47:30: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-09-09 10:47:30: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-09-09 10:47:30: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-09-09 10:47:30: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-09-09 10:47:30: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-09-09 10:47:30: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-0|maria-pa | 2026-09-09 10:47:30: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-0|maria-pa | 2026-09-09 10:47:30: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-0|maria-pa | 2026-09-09 10:47:30: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-09-09 10:47:30: [diferidos] drainer activo (cada 5min)
-0|maria-pa | 2026-09-09 10:47:30: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-09-09 10:47:58: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
-0|maria-pa | 2026-09-09 10:47:59: 
-0|maria-pa | 2026-09-09 10:47:59: ▸ SIGINT recibido, cerrando…
-0|maria-pa | 2026-09-09 10:48:01: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 10:48:01: ▸ Maria Paez [maria-paez] iniciando…
-0|maria-pa | 2026-09-09 10:48:01:   Owner:      Diego (id=1)
-0|maria-pa | 2026-09-09 10:48:01:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
-0|maria-pa | 2026-09-09 10:48:01:   Gmail poll: cada 300s
-0|maria-pa | 2026-09-09 10:48:01: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0|maria-pa | 2026-09-09 10:48:01: ✓ whisper OK
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando telegram-handler (canal de respaldo, long polling)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando poll de Gmail (cada 300s)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando loop de recordatorios (cada 30min)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando dispatcher de programados (cada 60s)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando morning-brief (por usuario, ventana 4h)
-0|maria-pa | 2026-09-09 10:48:01: [morning-brief] activo, ventana 4h, cada usuario en su tz
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando meeting-prep (cada 5min)
-0|maria-pa | 2026-09-09 10:48:01: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando calendar-watch (cada 8h)
-0|maria-pa | 2026-09-09 10:48:01: [calendar-watch] activo, cada 8.0h
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando follow-ups (cada 5min)
-0|maria-pa | 2026-09-09 10:48:01: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando memoria-curada (cada 24h)
-0|maria-pa | 2026-09-09 10:48:01: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
-0|maria-pa | 2026-09-09 10:48:01: [cumple-avisos] activo, ventana 20-23h tz usuario
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando resumen-semanal (domingos, tz usuario)
-0|maria-pa | 2026-09-09 10:48:01: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando poda-eventos (diario)
-0|maria-pa | 2026-09-09 10:48:01: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
-0|maria-pa | 2026-09-09 10:48:01: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
-0|maria-pa | 2026-09-09 10:48:01: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
-0|maria-pa | 2026-09-09 10:48:01: ▸ arrancando drainer de diferidos (horas de silencio)
-0|maria-pa | 2026-09-09 10:48:01: [diferidos] drainer activo (cada 5min)
-0|maria-pa | 2026-09-09 10:48:01: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
-0|maria-pa | 2026-09-09 10:48:34: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
-0|maria-pa | 2026-09-09 10:48:43: [memoria-curada] Diego × Lavadero Shine: nota actualizada (4 eventos nuevos, 1340 chars)
-0|maria-pa | 2026-09-09 10:48:44: [memoria-curada] tick: 1/390 contactos curados
+0|maria-pa | 2026-08-23 02:22:40: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-23 04:47:40: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-23 06:31:18: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-23 08:17:15: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-23 21:43:08: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-23 22:12:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-23 22:14:37: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-08-23 22:34:43: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-23 22:36:58: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-08-23 22:44:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 02:08:54: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 11:53:28: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 12:00:54: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 13:24:23: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+0|maria-pa | 2026-08-24 13:24:23: No tengo registrado en mi historial que haya cerrado esa reserva en Fico — sí tengo a Fico como contacto guardado, pero no veo confirmación de que se haya hecho la reserva para el miércoles 2/9 a las 21hs para 4 personas.
+0|maria-pa | 2026-08-24 13:24:23: 
+0|maria-pa | 2026-08-24 13:24:23: ¿Querés que le escriba a Fico ahora para confirmar/asegurar el lugar, o vos ya lo arreglaste por tu cuenta directamente con ellos?
+0|maria-pa | 2026-08-24 16:58:04: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-24 17:00:19: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-08-24 18:33:08: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 18:33:59: [loop-guard] telegram_polling alertado al owner tras 3 fallos: fetch failed
+0|maria-pa | 2026-08-24 18:34:10: [wa-send] loop_guard: telegram (politica_v4_usuarios_sin_wa) falló para Diego: fetch failed
+0|maria-pa | 2026-08-24 18:50:57: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 19:09:21: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 21:23:30: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-24 22:52:06: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-25 08:36:11: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-25 09:26:22: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+0|maria-pa | 2026-08-25 09:26:22: Se lo mando ahora a Ignacio (queda en cola unos minutos, ya te aviso apenas responda).
+0|maria-pa | 2026-08-25 09:26:49: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
+0|maria-pa | 2026-08-25 09:26:49: Le mando ahora la aclaración de que los horarios son hora Argentina (GMT-3).
+0|maria-pa | 2026-08-25 16:50:51: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-25 17:50:11: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-25 18:26:58: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-25 18:31:54: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-25 18:37:56: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé "Reunion PL - DP" para el viernes 4/9 de 10 a 11:30 en tu oficina "
+0|maria-pa | 2026-08-25 18:43:06: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Pluna" (pluna@partnerexpansion.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-08-25 18:43:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le sumé el mail de Pablo a la invitación de "Reunion PL - DP" del viernes 4/9"
+0|maria-pa | 2026-08-25 19:56:31: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo a Noelia Bruscoli ni a Luciano Peroni en la libreta. Pasame sus WhatsAp"
+0|maria-pa | 2026-08-25 19:57:22: [wa-validate] sin cliente WA — normalizado offline "5491159524645@c.us" → 5491159524645@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-08-25 19:57:32: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Luciano y ya le mando la propuesta de horarios. Todavía me falta el con"
+0|maria-pa | 2026-08-25 19:57:43: [wa-validate] sin cliente WA — normalizado offline "541155947242@c.us" → 5491155947242@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-08-25 19:57:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Perfecto, guardé a Noelia y le mando la propuesta de horarios también. Ya quedar"
+0|maria-pa | 2026-08-25 22:11:53: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-25 23:15:26: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-26 01:35:04: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 02:53:10: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 04:18:01: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 07:04:03: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 08:13:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 11:11:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 12:49:03: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, cerrado."
+0|maria-pa | 2026-08-26 13:48:15: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 15:30:54: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Quedó confirmada para el miércoles 2/9 de 13:00 a 15:30hs, ya está agendada en t"
+0|maria-pa | 2026-08-26 15:32:15: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "¿Qué hora exacta dentro de esa ventana preferís proponerles? Por ejemplo 13:00-1"
+0|maria-pa | 2026-08-26 15:33:35: [agregar_pendiente] no creo follow_up auto (Noelia Bruscoli y Luciano Peroni): WA "Noelia Bruscoli y Luciano Peroni" no está en libreta ni es usuario activo
+0|maria-pa | 2026-08-26 15:33:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya les pregunto a los dos qué hora puntual dentro de esa ventana les queda"
+0|maria-pa | 2026-08-26 15:44:43: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (300)
+0|maria-pa | 2026-08-26 17:14:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tus pendientes personales:
+0|maria-pa | 2026-08-26 17:14:13: 1. iProt Seguridad
+0|maria-pa | 2026-08-26 17:14:13: 2. DDJJ 2025
+0|maria-pa | 2026-08-26 17:14:13: 3. Llamar a Poggetti
+0|maria-pa | 2026-08-26 17:14:13: "
+0|maria-pa | 2026-08-26 17:14:52: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Cerré tk iplan Wally, transferencia honda x3 y dividendos."
+0|maria-pa | 2026-08-26 18:22:41: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 20:51:26: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-26 22:12:05: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":429,"description":"Too Many Requests: retry after 5","parameters":{"retry_after":5}}
+0|maria-pa | 2026-08-27 04:13:24: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-27 13:50:40: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-27 15:50:00: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-27 19:21:13: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-27 22:11:40: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-28 03:43:23: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-28 13:21:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-28 16:32:45: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-28 17:30:47: [executor] acción #0 (buscar_contacto_global) falló: buscar_contacto_global: solo el owner
+0|maria-pa | 2026-08-28 22:11:30: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-28 23:07:28: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-28 23:12:39: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 02:33:13: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 03:52:04: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 14:36:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 16:42:19: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 17:49:09: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 20:16:20: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-29 22:11:43: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-29 22:13:58: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-08-29 22:40:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-30 03:43:41: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-30 04:01:38: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-30 09:35:11: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-30 14:02:31: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-30 22:11:52: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-31 02:30:03: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-31 03:06:46: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-31 03:52:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-31 06:26:52: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-31 09:09:04: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-08-31 22:12:08: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-08-31 22:14:38: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-09-01 04:22:01: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-01 09:41:22: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-01 17:55:13: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-01 22:11:58: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-01 23:19:29: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 03:44:37: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 03:52:04: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 04:49:08: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 06:04:30: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 10:15:23: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 10:20:47: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé "Almuerzo con Pablo Bisotti" el viernes 4/9 de 13 a 15hs, solo "
+0|maria-pa | 2026-09-02 10:31:04: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Corregido y actualizado: el almuerzo del viernes 4/9 de 13 a 15hs ahora es "Almu"
+0|maria-pa | 2026-09-02 10:32:31: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo: cambié la ubicación a Iñaki Restaurante y ya estoy gestionando la reserva"
+0|maria-pa | 2026-09-02 14:32:50: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Reviso: en tu agenda de las 2:30pm hoy tenés DOS eventos, no uno solo:
+0|maria-pa | 2026-09-02 14:32:50: 1. "Reuni"
+0|maria-pa | 2026-09-02 14:37:24: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Nbruscoli" (nbruscoli@froneus.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-09-02 14:37:25: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Lperoni" (lperoni@froneus.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-09-02 14:37:35: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Noelia Bruscoli" (5491155947242@c.us) — mismo telefono. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-09-02 14:37:35: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Luciano Peroni" (5491159524645@c.us) — mismo telefono. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-09-02 14:37:42: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Nbruscoli" (nbruscoli@froneus.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-09-02 14:37:42: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Lperoni" (lperoni@froneus.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
+0|maria-pa | 2026-09-02 14:38:04: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, no los tenía guardados antes — en la libreta solo tenía sus WhatsApp, sin em"
+0|maria-pa | 2026-09-02 16:24:22: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 19:29:43: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-02 22:11:55: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-02 23:33:46: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 02:53:35: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 03:20:37: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 06:21:35: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 09:25:38: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 13:36:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 14:58:01: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 17:44:21: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":409,"description":"Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"}
+0|maria-pa | 2026-09-03 17:48:00: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 18:17:34: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-03 18:50:59: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Diego Teubal ya está guardado en tu libreta con ese número (+54 9 11 4449-1280)."
+0|maria-pa | 2026-09-03 18:52:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Che, el contacto que me compartiste recién de Diego Teubal solo trajo el teléfon"
+0|maria-pa | 2026-09-03 18:54:16: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé el cumpleaños de Diego Teubal: 3 de septiembre de 1960. Dato curio"
+0|maria-pa | 2026-09-03 22:11:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-04 07:23:19: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 10:09:20: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 12:29:46: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 12:32:42: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 12:56:23: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 14:06:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 14:50:28: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 17:25:59: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 17:29:47: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, le agregué el cumpleaños (24 de noviembre) a Jaime Cibils — asumo que es "
+0|maria-pa | 2026-09-04 17:31:26: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, perfecto. Ya quedó con nombre y apellido completos (Jaime Cibils) y el cum"
+0|maria-pa | 2026-09-04 18:02:59: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 18:10:25: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 18:53:13: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-04 20:02:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, tomo nota. Antes de coordinar con Jaime y Pablo necesito que me confirmes "
+0|maria-pa | 2026-09-04 22:11:45: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-05 03:08:30: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 03:48:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 05:39:22: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 09:20:57: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 09:54:45: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 10:05:12: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 12:05:43: [wa-validate] sin cliente WA — normalizado offline "5491159481767@c.us" → 5491159481767@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-09-05 12:05:46: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Walby Cibils en tu libreta. Sigo esperando que me confirmes los datos d"
+0|maria-pa | 2026-09-05 12:08:07: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le voy a mandar el mensaje a Walby Cibils (en unos minutos, quedó en cola) of"
+0|maria-pa | 2026-09-05 15:01:04: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 15:58:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 20:40:33: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-05 22:11:48: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-05 22:14:03: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-09-06 06:17:49: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-06 07:17:08: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-06 11:09:15: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-06 12:04:49: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-06 12:29:37: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, todavía no me contestó nada Walby Cibils. Le mandé el mensaje ayer sábado al"
+0|maria-pa | 2026-09-06 19:06:38: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-06 22:11:51: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-06 22:14:06: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-09-06 22:41:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-07 08:08:13: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-07 12:14:40: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-07 12:32:07: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, le mando la dirección a Walby en unos minutos (Carlos Pellegrini 1521, pi"
+0|maria-pa | 2026-09-07 18:39:21: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-07 22:11:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-07 22:40:36: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 00:56:15: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 03:02:24: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 06:11:38: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 06:51:26: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 11:12:09: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 13:48:20: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 15:11:42: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 18:31:31: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 21:41:34: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-08 22:11:54: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-09-09 01:23:46: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-09 04:39:05: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-09 08:31:46: [wa-validate] sin cliente WA — normalizado offline "541139499903@c.us" → 5491139499903@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-09-09 08:31:58: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé el contacto de Lavadero Shine y le mando en unos minutos la consulta sobr"
+0|maria-pa | 2026-09-09 09:32:09: [TG] poll error (reintento en 15s): fetch failed
 
+/root/secretaria/logs/maria-paez/out.log last 200 lines:
