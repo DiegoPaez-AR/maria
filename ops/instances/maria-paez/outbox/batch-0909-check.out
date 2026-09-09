@@ -1,0 +1,33 @@
+# ejecutado: 2026-09-09T09:32:24-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   rm -f ops/instances/maria-paez/snapshots/HEALTHCHECK-ALERT.json && echo "alert stale borrada"
+#   sleep 45
+#   git log --oneline -1 -- follow-ups.js
+#   pm2 jlist 2>/dev/null | python3 -c "import json,sys,time;[print(' ',p['name'],p['pm2_env']['status'],'uptime_s',int((time.time()*1000-p['pm2_env']['pm_uptime'])//1000)) for p in json.load(sys.stdin) if p['name']!='intensa-api']"
+#   sleep 60
+#   echo "── follow-ups expirados ──"
+#   grep -h "expirado" /root/.pm2/logs/maria-paez-out.log | tail -12 | cut -c1-140
+#   sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "select estado,count(*) from follow_ups group by 1"
+#   tail -3 /root/.pm2/logs/maria-paez-error.log | cut -c1-140
+#   echo LISTO
+
+# ───── output ─────
+alert stale borrada
+95a28239f30 review 4-9/9: aceptaciones de invitación sin LLM; rename legítimo en upsert_contacto; follow-ups 'disparado' expiran a los 14 días; reconcile loguea motivos
+  maria-paez online uptime_s 146143
+  sofia-bruscoli online uptime_s 146143
+── follow-ups expirados ──
+abierto|1
+cancelado|10
+cerrado|31
+disparado|19
+2026-09-09 08:31:46: [wa-validate] sin cliente WA — normalizado offline "541139499903@c.us" → 5491139499903@c.us (SIN verificar en Meta)
+2026-09-09 08:31:58: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé el con
+2026-09-09 09:32:09: [TG] poll error (reintento en 15s): fetch failed
+LISTO
+
+# exit=0
