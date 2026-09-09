@@ -1,0 +1,30 @@
+# ejecutado: 2026-09-09T10:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   pgrep -f gcontacts-reconcile >/dev/null && echo "todavía corriendo" || echo "terminó"
+#   for S in maria-paez sofia-bruscoli; do echo "[$S]"; grep -E "reconcile semanal|FALLÓ" /root/secretaria/state/$S/gcontacts-reconcile.log | tail -25 | cut -c1-180; done
+#   sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "select count(*) contactos, sum(g.resource_name is null) sin_sync from contactos c left join gcontacts_sync g on g.contacto_id=c.id"
+#   echo LISTO
+
+# ───── output ─────
+terminó
+[maria-paez]
+2026-08-04T23:48:30.518Z gcontacts-reconcile semanal: 317 ok, 2 fallidos
+2026-08-09T07:07:47.298Z gcontacts-reconcile semanal: 315 ok, 10 fallidos
+2026-08-16T07:09:09.916Z gcontacts-reconcile semanal: 351 ok, 2 fallidos
+2026-08-23T07:09:43.380Z gcontacts-reconcile semanal: 367 ok, 11 fallidos
+2026-08-30T07:09:43.014Z gcontacts-reconcile semanal: 377 ok, 16 fallidos
+2026-09-06T07:08:58.162Z gcontacts-reconcile semanal: 380 ok, 20 fallidos
+2026-09-09T13:13:01.685Z gcontacts-reconcile semanal (maria-paez): 403 ok, 3 fallidos
+   FALLÓ usuario "Nicolas Kosinski": <!DOCTYPE html>
+   FALLÓ "Lautaro Taretto" (#368, de Hernan Fulco): Quota exceeded for quota metric 'Critical read requests (Contact and Profile Rea
+   FALLÓ "Asanchez" (#369, de Hernan Fulco): Quota exceeded for quota metric 'Critical read requests (Contact and Profile Rea
+[sofia-bruscoli]
+2026-09-09T13:13:15.747Z gcontacts-reconcile semanal (sofia-bruscoli): 10 ok, 0 fallidos
+390|1
+LISTO
+
+# exit=0
