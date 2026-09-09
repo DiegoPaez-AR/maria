@@ -17,13 +17,23 @@ node - <<'NODE' 2>&1 | tail -30 >> /root/secretaria/state/$slug/gcontacts-reconc
   const gc = require('/root/secretaria/google-contacts');
   const dormir = (ms) => new Promise(r => setTimeout(r, ms));
   let ok = 0, fail = 0; const fallos = [];
+  // People API tiene cuota por minuto: ante "Quota exceeded" esperamos y
+  // reintentamos una vez (antes: 10-20 "fallidos" por semana eran todos cuota).
+  const conReintento = async (fn) => {
+    try { return await fn(); }
+    catch (e) {
+      if (!/quota|rate ?limit|429|<!DOCTYPE/i.test(String(e.message))) throw e;
+      await dormir(30000);
+      return await fn();
+    }
+  };
   for (const u of usuarios.listarActivos()) {
-    try { await gc.sincronizarUsuario(u); ok++; } catch (e) { fail++; fallos.push(`usuario "${u.nombre}": ${e.message.slice(0, 80)}`); }
+    try { await conReintento(() => gc.sincronizarUsuario(u)); ok++; } catch (e) { fail++; fallos.push(`usuario "${u.nombre}": ${e.message.slice(0, 80)}`); }
     await dormir(800);
   }
   const rows = mem.db.prepare(`SELECT c.*, u.nombre AS dueno_nombre FROM contactos c JOIN usuarios u ON u.id = c.usuario_id ORDER BY c.id`).all();
   for (const c of rows) {
-    try { await gc.sincronizarContacto(c, { dueno: c.dueno_nombre }); ok++; } catch (e) { fail++; fallos.push(`"${c.nombre}" (#${c.id}, de ${c.dueno_nombre}): ${e.message.slice(0, 80)}`); }
+    try { await conReintento(() => gc.sincronizarContacto(c, { dueno: c.dueno_nombre })); ok++; } catch (e) { fail++; fallos.push(`"${c.nombre}" (#${c.id}, de ${c.dueno_nombre}): ${e.message.slice(0, 80)}`); }
     await dormir(800);
   }
   const msg = `gcontacts-reconcile semanal (${process.env.ASISTENTE_SLUG || 'instancia'}): ${ok} ok, ${fail} fallidos`;
