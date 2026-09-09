@@ -18,6 +18,8 @@ const path = require('path');
 
 const ROOT          = __dirname;
 const INSTANCES_DIR = path.join(ROOT, 'config', 'instances');
+const LOGS_DIR      = process.env.MARIA_LOGS_DIR || path.join(ROOT, 'logs');
+try { fs.mkdirSync(LOGS_DIR, { recursive: true }); } catch { /* noop */ }
 
 function _parseConf(file) {
   const env = {};
@@ -84,6 +86,10 @@ if (!confs.length) {
         max_memory_restart: '1G',
         log_date_format: 'YYYY-MM-DD HH:mm:ss',
         merge_logs: true,
+        // Logs unificados (2026-09-09, decisión Diego): todo bajo
+        // /root/secretaria/logs/<slug>/ — rotados por pm2-logrotate.
+        out_file: path.join(LOGS_DIR, slug, 'out.log'),
+        error_file: path.join(LOGS_DIR, slug, 'error.log'),
         env: {
           NODE_ENV: 'production',
           TZ: env.ASISTENTE_TZ || 'America/Argentina/Buenos_Aires',
@@ -125,6 +131,8 @@ const _intensaApi = {
   max_memory_restart: '512M',
   log_date_format: 'YYYY-MM-DD HH:mm:ss',
   merge_logs: true,
+  out_file: path.join(LOGS_DIR, 'intensa-api', 'out.log'),
+  error_file: path.join(LOGS_DIR, 'intensa-api', 'error.log'),
   env: _intensaApiEnv(),
 };
 

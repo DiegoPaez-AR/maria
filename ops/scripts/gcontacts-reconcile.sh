@@ -9,8 +9,8 @@ for cf in config/instances/*.conf; do
 slug=$(basename "$cf" .conf)
 (
 set -a; . "$cf" 2>/dev/null; . config/secrets.conf 2>/dev/null; set +a
-mkdir -p "/root/secretaria/state/$slug"
-node - <<'NODE' 2>&1 | tail -30 >> /root/secretaria/state/$slug/gcontacts-reconcile.log
+mkdir -p "/root/secretaria/logs/ops"
+node - <<'NODE' 2>&1 | tail -30 >> "/root/secretaria/logs/ops/gcontacts-reconcile-$slug.log"
 (async () => {
   const mem = require('/root/secretaria/memory');
   const usuarios = require('/root/secretaria/usuarios');

@@ -527,7 +527,7 @@ function statsFunnel() {
 
   // 2) Signups iniciados (intensa-api log; POST .../start es inequívoco)
   try {
-    const apilog = '/root/.pm2/logs/intensa-api-out.log';
+    const apilog = fs.existsSync('/root/secretaria/logs/intensa-api/out.log') ? '/root/secretaria/logs/intensa-api/out.log' : '/root/.pm2/logs/intensa-api-out.log';
     if (fs.existsSync(apilog)) {
       let n = 0;
       for (const line of fs.readFileSync(apilog, 'utf8').split('\n')) {
