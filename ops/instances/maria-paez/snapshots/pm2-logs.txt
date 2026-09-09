@@ -1,9 +1,3 @@
-0|maria-pa | 2026-08-23 02:22:40: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-23 04:47:40: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-23 06:31:18: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-23 08:17:15: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-23 21:43:08: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-23 22:12:22: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
 0|maria-pa | 2026-08-23 22:14:37: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
 0|maria-pa | 2026-08-23 22:34:43: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
 0|maria-pa | 2026-08-23 22:36:58: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
@@ -197,4 +191,10 @@
 0|maria-pa | 2026-09-09 08:31:58: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé el contacto de Lavadero Shine y le mando en unos minutos la consulta sobr"
 0|maria-pa | 2026-09-09 09:32:09: [TG] poll error (reintento en 15s): fetch failed
 0|maria-pa | 2026-09-09 11:08:36: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando en unos minutos al lavadero que es un Subaru Legacy y le pregunto para "
+
+/root/secretaria/logs/maria-paez/out.log last 200 lines:
+0|maria-pa | 2026-09-09 11:08:32: [wa-outbox] #266 encolado → +5491139499903 (Es un Subaru Legacy. Si lo lleva ahora, …)
+0|maria-pa | 2026-09-09 11:12:36: [MB v4.8] 11:12:33 I [humano] espero 11s antes de responder a "5491139499903"
+0|maria-pa | 2026-09-09 11:12:45: [wa-outbox] #266 entregado por el teléfono
+0|maria-pa | 2026-09-09 11:12:46: [MB v4.8] 11:12:44 I [outbox] respondido (silencioso) → Lavadero Shine
 
