@@ -1228,14 +1228,15 @@ async function _upsertContacto(a, ctx) {
       sospechosos.length = 0;
     }
     // RENAME LEGÍTIMO (2026-09-09, caso Saka→Zaca en Sofia): si hay UN solo
-    // candidato y coincide el TELÉFONO, y el email no contradice (mismo email,
-    // o alguno de los dos no tiene), no es un homónimo: es la misma persona
-    // con el nombre corregido. Renombramos la ficha y seguimos como update.
-    if (sospechosos.length === 1 && telClave) {
+    // candidato y coinciden TELÉFONO Y EMAIL (identidad fuerte, las dos
+    // claves), no es un homónimo: es la misma persona con el nombre corregido.
+    // Renombramos la ficha y seguimos como update. Con una sola clave (solo
+    // teléfono, solo email) se sigue preguntando, como pidió Diego el 3/7.
+    if (sospechosos.length === 1 && telClave && emailNorm) {
       const { c, motivos } = sospechosos[0];
       const mismoTel = motivos.includes('mismo telefono');
-      const emailOk = !emailNorm || !c.email || String(c.email).toLowerCase().trim() === emailNorm;
-      if (mismoTel && emailOk) {
+      const mismoEmail = motivos.includes('mismo email');
+      if (mismoTel && mismoEmail) {
         try {
           mem.db.prepare('UPDATE contactos SET nombre = ?, actualizado = CURRENT_TIMESTAMP WHERE id = ?').run(a.nombre, c.id);
           mem.log({ usuarioId: ctx.usuario.id, canal: 'sistema', direccion: 'interno',

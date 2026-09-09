@@ -75,6 +75,11 @@ test('upsert_contacto: variante de tilde / mismo tel bajo otro nombre → pregun
   // nombre EXACTO → update legítimo sin frenar
   const [r4] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Rubén Prueba', notas: 'nota nueva' }], { usuario: owner, canalOrigen: 'whatsapp' });
   assert.equal(r4.ok, true, `update exacto falló: ${r4.error}`);
+  // mismo teléfono Y mismo email bajo otro nombre → RENAME (caso Saka→Zaca 6/9), no pregunta
+  const [r5] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Rubén Prueba Corregido', whatsapp: '5491144445555', email: 'ruben@prueba.com' }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r5.ok, true, `rename falló: ${r5.error}`);
+  const [r6] = await ejecutarAcciones([{ tipo: 'upsert_contacto', nombre: 'Rubén Prueba Corregido', notas: 'x' }], { usuario: owner, canalOrigen: 'whatsapp' });
+  assert.equal(r6.ok, true);
 });
 
 test('tipo inexistente → error "Acción desconocida" (sin alias ni levenshtein)', async () => {
