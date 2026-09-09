@@ -87,6 +87,12 @@ async function _componerTexto(e, usuario) {
             notas: `asistente de "${e.summary}" (agregado automáticamente por meeting-prep)`,
           });
           creados++;
+          // Réplica a Google Contacts → teléfono (2026-09-09: las fichas que
+          // creaba meeting-prep nunca se sincronizaban — caso "Ebarrios" en Sofia).
+          try {
+            require('./google-contacts').sincronizarContacto(c, { dueno: usuario.nombre })
+              .catch(err => console.warn(`[meeting-prep] gcontacts sync "${c.nombre}" falló: ${err.message}`));
+          } catch { /* noop */ }
           const perfil = await enriquecerContacto(usuario.id, c); // best-effort, persiste perfil_web
           if (perfil) c = { ...c, perfil_web: perfil };
           console.log(`[meeting-prep/${usuario.nombre}] contacto nuevo: ${nombreNuevo} <${emailNorm}>${perfil ? ` — ${perfil}` : ''}`);
