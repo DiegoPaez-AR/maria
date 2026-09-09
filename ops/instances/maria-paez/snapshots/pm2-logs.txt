@@ -1,50 +1,3 @@
-0|maria-pa | 2026-08-24 11:53:28: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-24 12:00:54: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-24 13:24:23: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-0|maria-pa | 2026-08-24 13:24:23: No tengo registrado en mi historial que haya cerrado esa reserva en Fico — sí tengo a Fico como contacto guardado, pero no veo confirmación de que se haya hecho la reserva para el miércoles 2/9 a las 21hs para 4 personas.
-0|maria-pa | 2026-08-24 13:24:23: 
-0|maria-pa | 2026-08-24 13:24:23: ¿Querés que le escriba a Fico ahora para confirmar/asegurar el lugar, o vos ya lo arreglaste por tu cuenta directamente con ellos?
-0|maria-pa | 2026-08-24 16:58:04: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-0|maria-pa | 2026-08-24 17:00:19: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
-0|maria-pa | 2026-08-24 18:33:08: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-24 18:33:59: [loop-guard] telegram_polling alertado al owner tras 3 fallos: fetch failed
-0|maria-pa | 2026-08-24 18:34:10: [wa-send] loop_guard: telegram (politica_v4_usuarios_sin_wa) falló para Diego: fetch failed
-0|maria-pa | 2026-08-24 18:50:57: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-24 19:09:21: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-24 21:23:30: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-24 22:52:06: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-25 08:36:11: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-25 09:26:22: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-0|maria-pa | 2026-08-25 09:26:22: Se lo mando ahora a Ignacio (queda en cola unos minutos, ya te aviso apenas responda).
-0|maria-pa | 2026-08-25 09:26:49: [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude:
-0|maria-pa | 2026-08-25 09:26:49: Le mando ahora la aclaración de que los horarios son hora Argentina (GMT-3).
-0|maria-pa | 2026-08-25 16:50:51: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-25 17:50:11: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-25 18:26:58: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-25 18:31:54: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-25 18:37:56: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé "Reunion PL - DP" para el viernes 4/9 de 10 a 11:30 en tu oficina "
-0|maria-pa | 2026-08-25 18:43:06: [executor] acción #0 (upsert_contacto) falló: upsert_contacto: posible DUPLICADO de un contacto existente: "Pluna" (pluna@partnerexpansion.com) — mismo email. NO lo creé. Preguntale al usuario qué hacer: (1) si es la MISMA persona, ¿actualizo la ficha existente con los datos nuevos, dejo la vieja como está, o piso todo? — para actualizar, reemití upsert_contacto usando el nombre EXACTO existente; (2) si es OTRA persona, reemití con forzar_nuevo: true y un nombre que la distinga (apellido/empresa).
-0|maria-pa | 2026-08-25 18:43:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le sumé el mail de Pablo a la invitación de "Reunion PL - DP" del viernes 4/9"
-0|maria-pa | 2026-08-25 19:56:31: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo a Noelia Bruscoli ni a Luciano Peroni en la libreta. Pasame sus WhatsAp"
-0|maria-pa | 2026-08-25 19:57:22: [wa-validate] sin cliente WA — normalizado offline "5491159524645@c.us" → 5491159524645@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-08-25 19:57:32: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Luciano y ya le mando la propuesta de horarios. Todavía me falta el con"
-0|maria-pa | 2026-08-25 19:57:43: [wa-validate] sin cliente WA — normalizado offline "541155947242@c.us" → 5491155947242@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-08-25 19:57:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Perfecto, guardé a Noelia y le mando la propuesta de horarios también. Ya quedar"
-0|maria-pa | 2026-08-25 22:11:53: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-0|maria-pa | 2026-08-25 23:15:26: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-0|maria-pa | 2026-08-26 01:35:04: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 02:53:10: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 04:18:01: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 07:04:03: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 08:13:53: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 11:11:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 12:49:03: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, cerrado."
-0|maria-pa | 2026-08-26 13:48:15: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-08-26 15:30:54: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Quedó confirmada para el miércoles 2/9 de 13:00 a 15:30hs, ya está agendada en t"
-0|maria-pa | 2026-08-26 15:32:15: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "¿Qué hora exacta dentro de esa ventana preferís proponerles? Por ejemplo 13:00-1"
-0|maria-pa | 2026-08-26 15:33:35: [agregar_pendiente] no creo follow_up auto (Noelia Bruscoli y Luciano Peroni): WA "Noelia Bruscoli y Luciano Peroni" no está en libreta ni es usuario activo
-0|maria-pa | 2026-08-26 15:33:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya les pregunto a los dos qué hora puntual dentro de esa ventana les queda"
-0|maria-pa | 2026-08-26 15:44:43: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (300)
 0|maria-pa | 2026-08-26 17:14:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tus pendientes personales:
 0|maria-pa | 2026-08-26 17:14:13: 1. iProt Seguridad
 0|maria-pa | 2026-08-26 17:14:13: 2. DDJJ 2025
@@ -197,4 +150,51 @@
 0|maria-pa | 2026-09-09 13:02:53: 2. DDJJ 2025
 0|maria-pa | 2026-09-09 13:02:53: 3. Llamar a Poggetti
 0|maria-pa | 2026-09-09 13:02:53: 4. Pasajes"
+
+/root/secretaria/logs/maria-paez/out.log last 200 lines:
+0|maria-pa | 2026-09-09 11:08:32: [wa-outbox] #266 encolado → +5491139499903 (Es un Subaru Legacy. Si lo lleva ahora, …)
+0|maria-pa | 2026-09-09 11:12:36: [MB v4.8] 11:12:33 I [humano] espero 11s antes de responder a "5491139499903"
+0|maria-pa | 2026-09-09 11:12:45: [wa-outbox] #266 entregado por el teléfono
+0|maria-pa | 2026-09-09 11:12:46: [MB v4.8] 11:12:44 I [outbox] respondido (silencioso) → Lavadero Shine
+0|maria-pa | 2026-09-09 11:22:37: [MB v4.8] 11:22:28 I [notif] entrante de "+54 9 11 3949-9903": 🎤 Voice message (0:46)
+0|maria-pa | 2026-09-09 11:22:37: [MB v4.8] 11:22:28 I [notif] dup ignorado de "+54 9 11 3949-9903"
+0|maria-pa | 2026-09-09 11:22:37: [MB v4.8] 11:22:29 I [media] audio de "+54 9 11 3949-9903" cazado: PTT-20260909-WA0000.opus (100KB) — subiendo
+0|maria-pa | 2026-09-09 11:22:56: [MB-MEDIA] audio de "+54 9 11 3949-9903" (101KB) → "Y mira, podría, por cabra estoy haciendo un auto, o sea somos dos trabajando acá"
+0|maria-pa | 2026-09-09 11:22:57: [prompt-builder] tercero slim: system 60868→51479c, user 25647→17991c
+0|maria-pa | 2026-09-09 11:23:28: [wa-send] wa-hook/3ro→Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+0|maria-pa | 2026-09-09 11:23:37: [MB v4.8] 11:23:34 I [media] audio procesado OK
+0|maria-pa | 2026-09-09 11:23:37: [MB v4.8] 11:23:34 I [humano] espero 13s antes de responder a "+54 9 11 3949-9903"
+0|maria-pa | 2026-09-09 11:23:57: [MB v4.8] 11:23:47 I [media] reply a "+54 9 11 3949-9903": ENVIADA
+0|maria-pa | 2026-09-09 11:24:11: [TG sesion/Diego] rotando sesión (turnos=12, creada=2026-09-03T21:50:59.539Z)
+0|maria-pa | 2026-09-09 11:25:41: [wa-outbox] #267 encolado → +5491139499903 (Hola! Diego me confirma que el auto va l…)
+0|maria-pa | 2026-09-09 11:27:17: [MB v4.8] 11:27:08 I [humano] espero 12s antes de responder a "5491139499903"
+0|maria-pa | 2026-09-09 11:27:21: [wa-outbox] #267 entregado por el teléfono
+0|maria-pa | 2026-09-09 11:27:27: [MB v4.8] 11:27:20 I [outbox] respondido (silencioso) → Lavadero Shine
+0|maria-pa | 2026-09-09 11:30:01: [programados] 1 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-09-09 11:30:02: [wa-send] programados/1649: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
+0|maria-pa | 2026-09-09 11:30:02: [programados] ✓ id=1649 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:3r0jlpct674vg8slchv6ap6np7_20260909T140000Z]
+0|maria-pa | 2026-09-09 11:45:01: [programados] 2 mensaje(s) debidos, despachando…
+0|maria-pa | 2026-09-09 11:45:02: [wa-send] programados/1647: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
+0|maria-pa | 2026-09-09 11:45:02: [programados] ✓ id=1647 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:5ao8g5om0darhl8rjal2411o44]
+0|maria-pa | 2026-09-09 11:45:02: [wa-send] programados/1648: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
+0|maria-pa | 2026-09-09 11:45:02: [programados] ✓ id=1648 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:5f9rtgn1c5981325dgif22o87u]
+0|maria-pa | 2026-09-09 12:33:02: [meeting-prep/Hernan Fulco] + id=1650 CHEKPOINT SEMANAL ENRUTAMIENTOS  @ 2026-09-09T17:15:00.000Z
+0|maria-pa | 2026-09-09 12:39:48: [MB v4.8] 12:39:42 I [notif] entrante de "+54 9 11 3949-9903": 🎤 Voice message (0:27)
+0|maria-pa | 2026-09-09 12:39:48: [MB v4.8] 12:39:42 I [notif] dup ignorado de "+54 9 11 3949-9903"
+0|maria-pa | 2026-09-09 12:39:48: [MB v4.8] 12:39:43 I [media] audio de "+54 9 11 3949-9903" cazado: PTT-20260909-WA0001.opus (59KB) — subiendo
+0|maria-pa | 2026-09-09 12:39:59: [MB-MEDIA] audio de "+54 9 11 3949-9903" (60KB) → "¿Qué tal cómo va? ¿Le podrías avisar si puede pasar tipo una y cuarta y veinte m"
+0|maria-pa | 2026-09-09 12:40:00: [prompt-builder] tercero slim: system 60868→51479c, user 24918→17262c
+0|maria-pa | 2026-09-09 12:40:25: [wa-send] wa-hook/3ro→Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+0|maria-pa | 2026-09-09 12:40:38: [MB v4.8] 12:40:31 I [media] audio procesado OK
+0|maria-pa | 2026-09-09 12:40:38: [MB v4.8] 12:40:31 I [humano] espero 9s antes de responder a "+54 9 11 3949-9903"
+0|maria-pa | 2026-09-09 12:40:48: [MB v4.8] 12:40:40 I [media] reply a "+54 9 11 3949-9903": ENVIADA
+0|maria-pa | 2026-09-09 12:41:09: [wa-outbox] #268 encolado → +5491139499903 (Diego confirma que pasa a buscarlo alred…)
+0|maria-pa | 2026-09-09 12:42:48: [MB v4.8] 12:42:43 I [humano] espero 8s antes de responder a "5491139499903"
+0|maria-pa | 2026-09-09 12:42:52: [wa-outbox] #268 entregado por el teléfono
+0|maria-pa | 2026-09-09 12:42:58: [MB v4.8] 12:42:52 I [outbox] respondido (silencioso) → Lavadero Shine
+0|maria-pa | 2026-09-09 13:01:36: [TG] transcribiendo audio…
+0|maria-pa | 2026-09-09 13:01:47: [TG audio→texto] ¿Me puedes transcribir el audio acá?
+0|maria-pa | 2026-09-09 13:02:37: [TG] transcribiendo audio…
+0|maria-pa | 2026-09-09 13:02:46: [TG audio→texto] y pasame la lista de pendientes que tenés vos, míos
+0|maria-pa | 2026-09-09 13:03:02: [meeting-prep/Hernan Fulco] + id=1651 Análisis negocios IA @ 2026-09-09T17:45:00.000Z
 
