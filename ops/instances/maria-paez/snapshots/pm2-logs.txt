@@ -1,4 +1,17 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-12 02:43:50: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-12 02:51:16: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-12 03:57:21: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-12 05:08:42: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-12 10:27:42: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Encontré esto:
+0|maria-pa | 2026-09-12 10:27:42: 
+0|maria-pa | 2026-09-12 10:27:42: Lobito de Mar (Madrid, Barrio Salamanca) — probablemente sea el "
+0|maria-pa | 2026-09-12 10:28:55: [wa-validate] sin cliente WA — normalizado offline "34910889440@c.us" → 34910889440@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-09-12 10:29:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo. Ya guardé los dos contactos en la libreta.
+0|maria-pa | 2026-09-12 10:29:13: 
+0|maria-pa | 2026-09-12 10:29:13: Al Lobito de Mar le mando el "
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-12 03:27:50: [MB v4.8] 03:27:39 I [upd] al día (v4.8 code=33, mío=33)
 0|maria-pa | 2026-09-12 04:00:05: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -21,17 +34,9 @@
 0|maria-pa | 2026-09-12 10:28:58: [gcontacts] "El Pimiento Verde Lagasca Madrid" creado en Google Contacts
 0|maria-pa | 2026-09-12 10:28:58: [gcontacts] "Lobito de Mar Madrid" creado en Google Contacts
 0|maria-pa | 2026-09-12 10:29:03: [wa-outbox] #269 encolado → +34910889440 (Hola! Soy María, asistente de Diego Paez…)
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-12 02:43:50: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-12 02:51:16: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-12 03:57:21: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-12 05:08:42: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-12 10:27:42: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Encontré esto:
-0|maria-pa | 2026-09-12 10:27:42: 
-0|maria-pa | 2026-09-12 10:27:42: Lobito de Mar (Madrid, Barrio Salamanca) — probablemente sea el "
-0|maria-pa | 2026-09-12 10:28:55: [wa-validate] sin cliente WA — normalizado offline "34910889440@c.us" → 34910889440@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-09-12 10:29:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo. Ya guardé los dos contactos en la libreta.
-0|maria-pa | 2026-09-12 10:29:13: 
-0|maria-pa | 2026-09-12 10:29:13: Al Lobito de Mar le mando el "
+0|maria-pa | 2026-09-12 10:30:15: [MB v4.8] 10:30:13 I [frio] abriendo chat 34910889440 (#269)
+0|maria-pa | 2026-09-12 10:30:16: [wa-outbox] #270 encolado → +541132317896 (⚠️ No pude entregar un WhatsApp a 349108…)
+0|maria-pa | 2026-09-12 10:30:16: [MB-FALLO] #269 motivo=numero_sin_whatsapp → {"id":269,"cold_fallos":1,"definitivo":true}
+0|maria-pa | 2026-09-12 10:30:25: [MB v4.8] 10:30:15 W [frio] #269: número 34910889440 NO está en WhatsApp — reporto y abandono
+0|maria-pa | 2026-09-12 10:30:25: [MB v4.8] 10:30:15 I [outbox] cold-send #269 no verificado — queda en cola
 
