@@ -11,6 +11,7 @@
 0|maria-pa | 2026-09-12 10:29:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo. Ya guardé los dos contactos en la libreta.
 0|maria-pa | 2026-09-12 10:29:13: 
 0|maria-pa | 2026-09-12 10:29:13: Al Lobito de Mar le mando el "
+0|maria-pa | 2026-09-12 10:35:42: [wa-outbox] aviso #270 tampoco se entregó — NO re-aviso (anti-recursión)
 
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-12 03:27:50: [MB v4.8] 03:27:39 I [upd] al día (v4.8 code=33, mío=33)
@@ -47,4 +48,8 @@
 0|maria-pa | 2026-09-12 10:34:45: [MB v4.8] 10:34:40 I [ctl] comando #auto-270: shot {}
 0|maria-pa | 2026-09-12 10:34:45: [MB v4.8] 10:34:40 I [outbox] cold-send #270 no verificado — queda en cola
 0|maria-pa | 2026-09-12 10:34:45: [MB v4.8] 10:34:40 I [ctl] #auto-270 → OK shot 360x806
+0|maria-pa | 2026-09-12 10:35:42: [MB-FALLO] #270 motivo=numero_sin_whatsapp → {"id":270,"cold_fallos":2,"definitivo":true}
+0|maria-pa | 2026-09-12 10:35:45: [MB v4.8] 10:35:41 I [frio] abriendo chat 5491132317896 (#270)
+0|maria-pa | 2026-09-12 10:35:45: [MB v4.8] 10:35:42 W [frio] #270: número 5491132317896 NO está en WhatsApp — reporto y abandono
+0|maria-pa | 2026-09-12 10:35:45: [MB v4.8] 10:35:42 I [outbox] cold-send #270 no verificado — queda en cola
 
