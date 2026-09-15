@@ -111,4 +111,42 @@
 0|maria-pa | 2026-09-15 13:36:29: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
 0|maria-pa | 2026-09-15 13:36:55: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
 0|maria-pa | 2026-09-15 13:41:29: [media-store] poda: 3 archivo(s) de +30d borrados
+0|maria-pa | 2026-09-15 14:40:02: 
+0|maria-pa | 2026-09-15 14:40:02: ▸ SIGINT recibido, cerrando…
+0|maria-pa | 2026-09-15 14:40:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-09-15 14:40:05: ▸ Maria Paez [maria-paez] iniciando…
+0|maria-pa | 2026-09-15 14:40:05:   Owner:      Diego (id=1)
+0|maria-pa | 2026-09-15 14:40:05:   Usuarios:   16 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat
+0|maria-pa | 2026-09-15 14:40:05:   Gmail poll: cada 300s
+0|maria-pa | 2026-09-15 14:40:05: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0|maria-pa | 2026-09-15 14:40:05: ✓ whisper OK
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando poll de Gmail (cada 300s)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando loop de recordatorios (cada 30min)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando dispatcher de programados (cada 60s)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando morning-brief (por usuario, ventana 4h)
+0|maria-pa | 2026-09-15 14:40:05: [morning-brief] activo, ventana 4h, cada usuario en su tz
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando meeting-prep (cada 5min)
+0|maria-pa | 2026-09-15 14:40:05: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando calendar-watch (cada 8h)
+0|maria-pa | 2026-09-15 14:40:05: [calendar-watch] activo, cada 8.0h
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando follow-ups (cada 5min)
+0|maria-pa | 2026-09-15 14:40:05: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando memoria-curada (cada 24h)
+0|maria-pa | 2026-09-15 14:40:05: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+0|maria-pa | 2026-09-15 14:40:05: [cumple-avisos] activo, ventana 20-23h tz usuario
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando resumen-semanal (domingos, tz usuario)
+0|maria-pa | 2026-09-15 14:40:05: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando poda-eventos (diario)
+0|maria-pa | 2026-09-15 14:40:05: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+0|maria-pa | 2026-09-15 14:40:05: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
+0|maria-pa | 2026-09-15 14:40:05: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
+0|maria-pa | 2026-09-15 14:40:05: ▸ arrancando drainer de diferidos (horas de silencio)
+0|maria-pa | 2026-09-15 14:40:05: [diferidos] drainer activo (cada 5min)
+0|maria-pa | 2026-09-15 14:40:05: [internal-api] escuchando en 127.0.0.1:4501 (slug=maria-paez)
+0|maria-pa | 2026-09-15 14:40:32: [gcontacts] arranque: 16 usuarios sincronizados a Google Contacts
 
