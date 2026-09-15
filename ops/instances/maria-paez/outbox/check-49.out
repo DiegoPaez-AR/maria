@@ -1,0 +1,34 @@
+# ejecutado: 2026-09-15T14:22:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── build ──"; tail -3 /root/mariabridge-build.log | cut -c1-160
+#   cat /var/www/intensa.io/_dl/mariabridge-latest.json 2>/dev/null; echo
+#   echo "── canary/pm2 ──"; grep -E "^# (pass|fail)" /tmp/canary-tick.log | tr '\n' ' '; echo
+#   pm2 jlist | python3 -c "import json,sys,time;[print(' ',p['name'],p['pm2_env']['status'],'up',int((time.time()*1000-p['pm2_env']['pm_uptime'])//60000),'min') for p in json.load(sys.stdin) if p['name']!='intensa-api']"
+#   git log --oneline -1 -- wa-outbox.js | cat
+#   echo "── teléfono: ¿ya bajó v4.9? ──"
+#   grep -hE "\[MB v4\.[89]\].*\[upd\]|auto-tap|instal" logs/maria-paez/out.log | tail -4 | cut -c1-150
+#   echo LISTO
+
+# ───── output ─────
+── build ──
+35 actionable tasks: 11 executed, 24 up-to-date
+APK_OK url=https://intensa.io/_dl/mb-a91b91717b915cb0.apk size=3.1M latest.json=v4.9(34)
+=== FIN Tue Sep 15 01:37:13 PM -03 2026 ===
+{"versionCode": 34, "versionName": "4.9", "url": "https://intensa.io/_dl/mb-a91b91717b915cb0.apk"}
+
+── canary/pm2 ──
+# pass 44 # fail 0 
+  maria-paez online up 45 min
+  sofia-bruscoli online up 45 min
+  pm2-logrotate online up 8853 min
+c0fdb4c9fce MariaBridge v4.9: cierra popups ajenos (operadora/backup) que tapan el chat durante un cold-send; mb-verif: diálogo + texto en cuadro = trabado; wa-outbox: avisos de fallo/no verificado al dueño por TG/email (no por la cola WA)
+── teléfono: ¿ya bajó v4.9? ──
+2026-09-15 03:28:15: [MB v4.8] 03:28:06 I [upd] al día (v4.8 code=33, mío=33)
+2026-09-15 09:28:10: [MB v4.8] 09:28:08 I [upd] al día (v4.8 code=33, mío=33)
+LISTO
+
+# exit=0
