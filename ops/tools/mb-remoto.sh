@@ -13,7 +13,7 @@ set -e
 cd /root/secretaria
 SLUG="${ASISTENTE_SLUG:-maria-paez}"
 SHOTS="ops/instances/$SLUG/shots"
-ACCION="${1:?uso: mb-remoto.sh {shot|tap X Y|nodos|home|ping|despertar|estado}}"
+ACCION="${1:?uso: mb-remoto.sh shot / tap X Y / nodos / home / ping / despertar / estado}"
 
 _esperar_resultado() {  # $1 = id, espera hasta 90s
   for i in $(seq 1 18); do
