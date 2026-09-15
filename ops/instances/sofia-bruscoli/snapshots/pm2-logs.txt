@@ -10,4 +10,40 @@
 1|sofia-br | 2026-09-15 10:48:01: [media-store] poda: 5 archivo(s) de +30d borrados
 1|sofia-br | 2026-09-15 13:36:26: 
 1|sofia-br | 2026-09-15 13:36:26: ▸ SIGINT recibido, cerrando…
+1|sofia-br | 2026-09-15 13:36:29: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|sofia-br | 2026-09-15 13:36:29: ▸ Sofia Bruscoli [sofia-bruscoli] iniciando…
+1|sofia-br | 2026-09-15 13:36:29:   Owner:      Noelia Bruscoli (id=2)
+1|sofia-br | 2026-09-15 13:36:29:   Usuarios:   1 activo(s) → Noelia Bruscoli
+1|sofia-br | 2026-09-15 13:36:29:   Gmail poll: cada 300s
+1|sofia-br | 2026-09-15 13:36:29: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|sofia-br | 2026-09-15 13:36:29: ✓ whisper OK
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando poll de Gmail (cada 300s)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando loop de recordatorios (cada 30min)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando dispatcher de programados (cada 60s)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando morning-brief (por usuario, ventana 4h)
+1|sofia-br | 2026-09-15 13:36:29: [morning-brief] activo, ventana 4h, cada usuario en su tz
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando meeting-prep (cada 5min)
+1|sofia-br | 2026-09-15 13:36:29: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando calendar-watch (cada 8h)
+1|sofia-br | 2026-09-15 13:36:29: [calendar-watch] activo, cada 8.0h
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando follow-ups (cada 5min)
+1|sofia-br | 2026-09-15 13:36:29: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando memoria-curada (cada 24h)
+1|sofia-br | 2026-09-15 13:36:29: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+1|sofia-br | 2026-09-15 13:36:29: [cumple-avisos] activo, ventana 20-23h tz usuario
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando resumen-semanal (domingos, tz usuario)
+1|sofia-br | 2026-09-15 13:36:29: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando poda-eventos (diario)
+1|sofia-br | 2026-09-15 13:36:29: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+1|sofia-br | 2026-09-15 13:36:29: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
+1|sofia-br | 2026-09-15 13:36:29: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
+1|sofia-br | 2026-09-15 13:36:29: ▸ arrancando drainer de diferidos (horas de silencio)
+1|sofia-br | 2026-09-15 13:36:29: [diferidos] drainer activo (cada 5min)
+1|sofia-br | 2026-09-15 13:36:29: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
+1|sofia-br | 2026-09-15 13:36:50: [gcontacts] arranque: 1 usuarios sincronizados a Google Contacts
 
