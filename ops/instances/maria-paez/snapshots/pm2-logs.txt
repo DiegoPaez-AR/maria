@@ -1,4 +1,13 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
+0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
+0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
+0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
+0|maria-pa | 2026-09-15 11:51:48: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-15 03:28:15: [MB v4.8] 03:28:06 I [upd] al día (v4.8 code=33, mío=33)
 0|maria-pa | 2026-09-15 04:00:06: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -53,13 +62,10 @@
 0|maria-pa | 2026-09-15 11:45:05: [programados] 1 mensaje(s) debidos, despachando…
 0|maria-pa | 2026-09-15 11:45:06: [wa-send] programados/1681: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
 0|maria-pa | 2026-09-15 11:45:06: [programados] ✓ id=1681 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:7ul0bjgjm96f2rkjj8jpm9c0km]
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
-0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
-0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
-0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
-0|maria-pa | 2026-09-15 11:51:48: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-15 13:05:13: [MB-CTL] #40 → OK: [|Tue, Sep 15|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: G
+0|maria-pa | 2026-09-15 13:05:23: [MB v4.8] 13:05:13 I [ctl] comando #40: nodos {}
+0|maria-pa | 2026-09-15 13:05:23: [MB v4.8] 13:05:13 I [ctl] #40 → OK [|Tue, Sep 15|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play Store|619,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+0|maria-pa | 2026-09-15 13:05:45: [MB-CTL] #41 → OK: https://intensa.io/_dl/shot-41-b25532f7.png (417KB) | shot 360x806
+0|maria-pa | 2026-09-15 13:05:53: [MB v4.8] 13:05:43 I [ctl] comando #41: shot {}
+0|maria-pa | 2026-09-15 13:05:53: [MB v4.8] 13:05:43 I [ctl] #41 → OK shot 360x806
 

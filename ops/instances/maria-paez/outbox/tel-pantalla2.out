@@ -1,0 +1,37 @@
+# ejecutado: 2026-09-15T13:05:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   set -a; . config/instances/maria-paez.conf; . config/secrets.conf 2>/dev/null; set +a
+#   echo "── nodos ──"
+#   timeout 100 bash ops/tools/mb-remoto.sh nodos 2>&1 | tail -30 | cut -c1-600
+#   echo "── shot ──"
+#   timeout 100 bash ops/tools/mb-remoto.sh shot 2>&1 | tail -3
+#   ls -la ops/instances/maria-paez/shots/ultima.png 2>/dev/null
+#   echo LISTO
+
+# ───── output ─────
+── nodos ──
+comando #[mb-control] #40 encolado: nodos 
+40 (nodos) encolado — esperando…
+[eval]:3
+      const r=db.prepare('SELECT estado,resultado FROM mb_control WHERE id=?').get([mb-control] #40 encolado: nodos 
+                                                                                              ^
+Expected ',', got '#'
+
+SyntaxError: missing ) after argument list
+    at makeContextifyScript (node:internal/vm:185:14)
+    at compileScript (node:internal/process/execution:383:10)
+    at evalTypeScript (node:internal/process/execution:256:22)
+    at node:internal/main/eval_string:74:3
+
+Node.js v22.23.1
+── shot ──
+
+Node.js v22.23.1
+timeout|sin respuesta en 90s
+LISTO
+
+# exit=0
