@@ -1,0 +1,36 @@
+# ejecutado: 2026-09-15T13:09:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   set -a; . config/instances/maria-paez.conf; . config/secrets.conf 2>/dev/null; set +a
+#   echo "── estado de los comandos anteriores ──"
+#   timeout 30 bash ops/tools/mb-remoto.sh estado 2>&1 | tail -6 | cut -c1-500
+#   echo "── ¿el teléfono pollea la cola? últimas líneas MB / poll ──"
+#   grep -hE "\[MB|MB-CTL|/outbox" logs/maria-paez/out.log | tail -5 | cut -c1-160
+#   grep -h "wa-maria" /var/log/nginx/access.log 2>/dev/null | grep -v "hooks/wa-maria/.*/mbdiag" | tail -3 | cut -c1-140
+#   echo "── nodos de nuevo (hasta 180s) ──"
+#   timeout 200 bash ops/tools/mb-remoto.sh nodos 2>&1 | tail -20 | cut -c1-700
+#   echo LISTO
+
+# ───── output ─────
+── estado de los comandos anteriores ──
+#36 shot [fallo] sin respuesta tras 3 reintentos
+#37 nodos [ok] root null
+#38 ping [ok] pong v4.5
+#39 nodos [ok] [|Settings|100,1226] [|Games|273,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+#40 nodos [ok] [|Tue, Sep 15|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play 
+#41 shot [ok] https://intensa.io/_dl/shot-41-b25532f7.png (417KB) | shot 360x806
+── ¿el teléfono pollea la cola? últimas líneas MB / poll ──
+2026-09-15 13:05:23: [MB v4.8] 13:05:13 I [ctl] comando #40: nodos {}
+2026-09-15 13:05:23: [MB v4.8] 13:05:13 I [ctl] #40 → OK [|Tue, Sep 15|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816]
+2026-09-15 13:05:45: [MB-CTL] #41 → OK: https://intensa.io/_dl/shot-41-b25532f7.png (417KB) | shot 360x806
+2026-09-15 13:05:53: [MB v4.8] 13:05:43 I [ctl] comando #41: shot {}
+2026-09-15 13:05:53: [MB v4.8] 13:05:43 I [ctl] #41 → OK shot 360x806
+── nodos de nuevo (hasta 180s) ──
+comando #42 (nodos) encolado — esperando…
+ok|[|Tue, Sep 15|360,206] [|Add weather|360,402] [||360,307] [|MariaBridge|446,816] [|AutoInput|619,816] [|Gmail|100,1021] [|WhatsApp|273,1021] [|AutoResponder WA|446,1021] [|Tasker|619,1021] [|Folder: Google, 4 |100,1226] [|Hello You|273,1226] [|Folder: Moto, 3 it|446,1226] [|Play Store|619,1226] [|Phone|100,1425] [|Messages|273,1425] [|Chrome|446,1425] [|Camera|619,1425] 
+LISTO
+
+# exit=0
