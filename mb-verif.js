@@ -31,7 +31,8 @@ Respondé SOLO JSON válido, sin markdown:
 Reglas:
 - "enviado": el texto del mensaje (o su comienzo) aparece como BURBUJA en la conversación, alineada a la derecha (color de saliente), con hora y tilde(s) o reloj. El cuadro de escritura de abajo está vacío o con placeholder ("Mensaje", "Message").
 - "trabado": el texto del mensaje está DENTRO del cuadro de escritura de abajo (todavía sin enviar), aunque el botón de enviar esté visible.
-- "otro": la pantalla no es ese chat (es otra conversación, la lista de chats, un diálogo, la pantalla de inicio, un teclado tapando todo), o no podés distinguir.
+- "otro": la pantalla no es ese chat (es otra conversación, la lista de chats, la pantalla de inicio, un teclado tapando todo), o no podés distinguir.
+- Si hay un DIÁLOGO o popup encima (de la operadora, de Google, de backup, etc.) pero por debajo se ve el chat correcto y el texto del mensaje sigue en el cuadro de escritura: "trabado" (no salió). Si el diálogo tapa todo y no se ve ni cuadro ni burbuja: "otro".
 - Si el texto aparece a la vez como burbuja Y en el cuadro (envío duplicado en curso), respondé "enviado".
 - Ante la duda entre enviado y otra cosa, NO digas "enviado".`;
 

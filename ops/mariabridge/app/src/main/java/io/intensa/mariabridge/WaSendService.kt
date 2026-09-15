@@ -147,6 +147,42 @@ class WaSendService : AccessibilityService() {
     @Volatile private var _ultimoEspejo = 0L
     @Volatile private var _ultimoLogInstalador = 0L
 
+    // v4.9 (caso Daniel Castro 15/9): un popup AJENO a WhatsApp (USSD de la
+    // operadora "Tu Pack de 3GB… ACEPTAR", backup de Google, etc.) se planta
+    // sobre el chat: el tap al send no prende, el árbol no ve el entry
+    // ("sin_entry") y la foto muestra el texto todavía en el cuadro. Cerramos
+    // el diálogo con su botón NEGATIVO (nunca OK/Aceptar: puede ser un pack
+    // pago) o con BACK, y la verificación sigue. Devuelve true si tocó algo.
+    private val BOTONES_NEGATIVOS = listOf("cancel", "cancelar", "not now", "ahora no", "later", "más tarde", "mas tarde",
+        "no thanks", "no, gracias", "no gracias", "dismiss", "descartar", "close", "cerrar", "skip", "omitir", "no")
+    @Volatile private var _ultimoCierreAjeno = 0L
+    private fun _cerrarDialogoAjeno(): Boolean {
+        if (System.currentTimeMillis() - _ultimoCierreAjeno < 1500) return false
+        try {
+            for (w in windows) {
+                val r = try { w.root } catch (_: Exception) { null } ?: continue
+                val pkg = r.packageName?.toString() ?: continue
+                if (pkg == "com.whatsapp" || pkg == "com.whatsapp.w4b" || pkg == packageName) continue
+                if (pkg.contains("inputmethod") || pkg.contains("launcher") || pkg == "com.android.systemui") continue
+                val nodos = _todosLosNodos(r)
+                val botones = nodos.filter { it.isClickable && !(it.text?.toString().isNullOrBlank()) }
+                if (botones.isEmpty()) continue
+                val texto = nodos.mapNotNull { it.text?.toString() }.joinToString(" | ").take(160)
+                val negativo = botones.firstOrNull { b -> BOTONES_NEGATIVOS.contains(b.text.toString().trim().lowercase()) }
+                _ultimoCierreAjeno = System.currentTimeMillis()
+                if (negativo != null) {
+                    MbLog.w("frio", "diálogo ajeno ($pkg): \"$texto\" — toco '${negativo.text}'")
+                    negativo.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                } else {
+                    MbLog.w("frio", "diálogo ajeno ($pkg) sin botón negativo: \"$texto\" — BACK")
+                    performGlobalAction(GLOBAL_ACTION_BACK)
+                }
+                return true
+            }
+        } catch (e: Exception) { MbLog.w("frio", "cerrarDialogoAjeno: ${e.message}") }
+        return false
+    }
+
     private fun _rootsVisibles(): List<AccessibilityNodeInfo> {
         val out = mutableListOf<AccessibilityNodeInfo>()
         try { rootInActiveWindow?.let { out.add(it) } } catch (_: Exception) {}
@@ -255,7 +291,11 @@ class WaSendService : AccessibilityService() {
         val t = ColdSend.pendiente ?: return
         if (!ColdSend.lanzado) return
         val pkg = pkg0
-        if (pkg != "com.whatsapp" && pkg != "com.whatsapp.w4b") return
+        if (pkg != "com.whatsapp" && pkg != "com.whatsapp.w4b") {
+            // v4.9: algo se plantó encima del chat durante el envío → cerrarlo
+            if (pkg != packageName && !pkg.contains("inputmethod") && !pkg.contains("launcher") && pkg != "com.android.systemui") _cerrarDialogoAjeno()
+            return
+        }
 
         val root = rootInActiveWindow ?: return
         // VERIFICACIÓN DE CHAT (v3.0, caso campaña desviada 17/8): antes de
@@ -271,6 +311,7 @@ class WaSendService : AccessibilityService() {
             ColdSend.terminar(t.id, false)
             return
         }
+        if (_cerrarDialogoAjeno()) return   // v4.9: primero limpiar la pantalla; el próximo evento retoma
         val send = buscarPorId(root, "$pkg:id/send")
         if (send != null && send.isClickable) {
             // TYPING SIMULADO (v4.2): una persona tarda en escribir. Esperamos
@@ -328,6 +369,8 @@ class WaSendService : AccessibilityService() {
     private fun verificarYConfirmar(id: String, pkg: String, intento: Int) {
         val t = ColdSend.pendiente ?: return
         if (t.id != id) return
+        // v4.9: si un diálogo ajeno tapa el chat, cerrarlo y volver a mirar (una vez por lectura)
+        if (_cerrarDialogoAjeno()) { h.postDelayed({ verificarYConfirmar(id, pkg, intento) }, 1500); return }
         val lectura = try { _leerEstadoEnvio(pkg, t.texto) } catch (e: Exception) { MbLog.w("frio", "lectura #$id: ${e.message}"); "inconcluso:excepcion" }
         val estado = lectura.substringBefore(':')
         MbLog.i("frio", "verificación #$id lectura $intento/3: $lectura")

@@ -241,6 +241,10 @@ function registrarFalloCold(id, motivo) {
         metadata: { via: 'mariabridge_cold', outboxId: row.id, no_verificado: true } });
     } catch {}
     console.warn(`[wa-outbox] #${id} cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)`);
+    // 15/9 (caso Daniel Castro): "sin verificar" tiene que llegarle a alguien.
+    // El #271 quedó escrito en el cuadro detrás de un popup de la operadora y
+    // nadie se enteró. Aviso al dueño de la gestión (TG/email) con la foto.
+    try { _avisarNoVerificado(row, meta); } catch (e) { console.warn('[wa-outbox] aviso no verificado:', e.message); }
     return { id, cold_fallos: meta.cold_fallos, definitivo: false, no_verificado: true };
   }
   const definitivo = motivo === 'numero_sin_whatsapp' || meta.cold_fallos >= MAXF || (meta.trabados || 0) >= 2;
@@ -284,10 +288,43 @@ function _avisarOwnerFalloEntrega(row, meta) {
     ? `Tiene email en la libreta (${c.email}) — decime si querés que se lo mande por mail.`
     : 'No tiene email en la libreta.';
   const texto = `⚠️ No pude entregar un WhatsApp a ${quien}: ${motivoTxt}. El mensaje decía: "${String(row.texto).slice(0, 80)}…". ${sugerencia}`;
-  encolar({ usuarioId: owner.id, numero: String(owner.wa_cus).replace('@c.us', ''), texto, metadata: { tipo: 'aviso_fallo_entrega', outboxId: row.id } });
+  // 15/9: el aviso iba por la MISMA cola de WhatsApp que acaba de fallar (#270
+  // venció detrás de un popup y Diego nunca se enteró del #269). Ahora va por
+  // Telegram/email al dueño de la gestión (política v5: usuarios nunca por WA).
+  _avisarDueno(row, texto, { tipo: 'aviso_fallo_entrega', outboxId: row.id });
   mem.log({ usuarioId: row.usuario_id || null, canal: 'sistema', direccion: 'interno',
-    cuerpo: `wa-outbox: entrega FALLIDA definitiva #${row.id} a ${row.numero} (${meta.cold_motivo}) — aviso al owner`,
+    cuerpo: `wa-outbox: entrega FALLIDA definitiva #${row.id} a ${row.numero} (${meta.cold_motivo}) — aviso al dueño`,
     metadata: { tipo: 'fallo_entrega_wa', outboxId: row.id, motivo: meta.cold_motivo } });
+}
+
+function _quienEs(row) {
+  const tel = require('./telefonos');
+  for (const v of tel.variantes(row.numero)) {
+    const c = mem.db.prepare(
+      `SELECT nombre FROM contactos WHERE replace(replace(replace(COALESCE(whatsapp,''),'@c.us',''),'+',''),' ','') = ? LIMIT 1`
+    ).get(v);
+    if (c) return c.nombre;
+  }
+  return `+${row.numero}`;
+}
+
+function _avisarNoVerificado(row, meta) {
+  const foto = meta.verif_foto && meta.verif_foto.url ? ` Captura: ${meta.verif_foto.url}` : '';
+  const motivo = meta.verif_foto && meta.verif_foto.motivo ? ` (${meta.verif_foto.motivo})` : '';
+  const texto = `⚠️ Mandé un WhatsApp a ${_quienEs(row)} pero NO pude confirmar que haya salido${motivo}. Lo doy por enviado para no duplicarlo; si no llega respuesta, fijate en el teléfono.${foto}
+Decía: "${String(row.texto).slice(0, 80)}…"`;
+  _avisarDueno(row, texto, { tipo: 'aviso_no_verificado', outboxId: row.id });
+}
+
+// Aviso al dueño de la gestión (usuario_id de la fila) por su canal (TG → email);
+// si no hay dueño, al owner. Nunca por la cola de WhatsApp.
+function _avisarDueno(row, texto, metadata) {
+  const usuarios = require('./usuarios');
+  const dest = (row.usuario_id && usuarios.obtener(row.usuario_id)) || usuarios.obtenerOwner();
+  if (!dest) return;
+  require('./wa-send').enviarWAUsuario(null, dest, texto, { tag: 'wa-outbox/aviso', metadata })
+    .then(r => console.log(`[wa-outbox] aviso #${row.id} → ${dest.nombre} por ${r && r.canal ? r.canal : 'TG/email'}`))
+    .catch(e => console.warn(`[wa-outbox] aviso #${row.id} a ${dest.nombre} falló: ${e.message}`));
 }
 
 module.exports = { encolar, siguiente, confirmar, confirmarUltimo, registrarFalloCold };
