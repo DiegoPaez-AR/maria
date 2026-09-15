@@ -1,0 +1,70 @@
+# ejecutado: 2026-09-15T12:57:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "── wa_outbox desde el 12/9 ──"
+#   sqlite3 "$DB" "select id, datetime(creado,'-3 hours'), numero, estado, intentos, datetime(tomado_en,'-3 hours'), substr(replace(texto,char(10),' '),1,90) from wa_outbox where creado >= '2026-09-12' order by id"
+#   echo "── eventos hoy y 12/9 (no sistema) ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),canal,direccion,coalesce(nombre,de),substr(replace(cuerpo,char(10),' '),1,150) from eventos where date(timestamp,'-3 hours') in ('2026-09-12','2026-09-14','2026-09-15') and canal!='sistema' and cuerpo not like '☀️%' and cuerpo not like '⏰%' order by timestamp" | tail -30
+#   echo "── sistema hoy ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),substr(replace(cuerpo,char(10),' '),1,160) from eventos where date(timestamp,'-3 hours') in ('2026-09-12','2026-09-15') and canal='sistema' and cuerpo not like 'claude_call%' and cuerpo not like '%arrancó%' and cuerpo not like 'poda%' and cuerpo not like '%memoria-curada%' and cuerpo not like 'meeting-prep%' order by timestamp" | tail -25
+#   echo "── MB log 12/9 y hoy ──"
+#   grep -hE "^2026-09-(12|14|15)" logs/maria-paez/out.log | grep -E "\[MB|outbox|MB-" | grep -vE "barrido|latido|\[notif\] entrante" | tail -40 | cut -c1-200
+#   echo "── último latido del teléfono ──"
+#   grep -h "\[MB" logs/maria-paez/out.log | tail -1 | cut -c1-120
+#   echo LISTO
+
+# ───── output ─────
+── wa_outbox desde el 12/9 ──
+269|2026-09-12 10:29:03|34910889440|vencido|1|2026-09-12 10:30:11|Hola! Soy María, asistente de Diego Paez. Quería consultar si tienen lugar disponible para
+270|2026-09-12 10:30:16|541132317896|vencido|2|2026-09-12 10:35:41|⚠️ No pude entregar un WhatsApp a 34910889440: el número NO está en WhatsApp. El mensaje d
+271|2026-09-15 10:14:04|5491136944357|entregado|1|2026-09-15 10:15:07|Hola Daniel! Soy María, asistente de Diego Paez. Diego quiere coordinar una reunión con vo
+── eventos hoy y 12/9 (no sistema) ──
+2026-09-12 10:27:16|telegram|entrante|Diego|María te pica si conseguís el número de whatsapp de un restaurante que se llama "Lo Vito de Mar",  en Madrid, y de otro restaurante que se llama "Pimi
+2026-09-12 10:27:42|telegram|saliente|Diego|Encontré esto:  Lobito de Mar (Madrid, Barrio Salamanca) — probablemente sea el que buscás, se llama "Lobito de Mar" no "Lo Vito de Mar". Teléfono: +3
+2026-09-12 10:28:39|telegram|entrante|Diego|bueno escribíle a los dos al abito de mar por whatsapp y a pimiento dorde por mail  y preguntarle si tienen lugar para hoy a las 10 de la noche para s
+2026-09-12 10:29:10|gmail|saliente||Hola, buenos días.  Soy María, asistente de Diego Paez. Quería consultar si tienen lugar disponible para hoy a las 22hs para 6 personas.  Quedo atenta
+2026-09-12 10:29:13|telegram|saliente|Diego|Listo. Ya guardé los dos contactos en la libreta.  Al Lobito de Mar le mando el WhatsApp en unos minutos preguntando por lugar hoy 22hs para 6 persona
+2026-09-12 13:41:43|telegram|entrante|Diego|- ¿Maria, te contestaron los restaurantes? - No, él no está volando.
+2026-09-12 13:41:54|telegram|saliente|Diego|El WhatsApp al Lobito de Mar no salió: el número +34 910 88 94 40 no tiene WhatsApp activo, rebotó. Voy a buscar si tienen otro número o instagram par
+2026-09-15 10:12:15|telegram|entrante|Diego|Daniel Castro
+2026-09-15 10:12:25|telegram|saliente|Diego|No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agendar algo, etc.). ¿Me das un poco más de detalle?
+2026-09-15 10:12:28|telegram|entrante|Diego|+54 9 11 3694-4357
+2026-09-15 10:12:38|telegram|saliente|Diego|Listo, guardé a Daniel Castro con ese número en la libreta.
+2026-09-15 10:13:42|telegram|entrante|Diego|Quiero armar una reunión con él para jueves o, digan, para el jueves, te diría, específicamente.  Jueves a la mañana. Tengo toda la mañana libre, no v
+2026-09-15 10:14:11|telegram|saliente|Diego|Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre 8:30 y 13hs en tu oficina. Apenas confirme horario te aviso.
+2026-09-15 10:16:10|whatsapp|saliente|5491136944357@c.us|Hola Daniel! Soy María, asistente de Diego Paez. Diego quiere coordinar una reunión con vos para este jueves 17/09 a la mañana — tiene libre desde las
+── sistema hoy ──
+2026-09-12 10:28:55|acción ejecutada: upsert_contacto
+2026-09-12 10:28:56|acción ejecutada: upsert_contacto
+2026-09-12 10:29:03|acción ejecutada: enviar_wa
+2026-09-12 10:29:10|acción ejecutada: enviar_email
+2026-09-12 10:30:16|wa-outbox: entrega FALLIDA definitiva #269 a 34910889440 (numero_sin_whatsapp) — aviso al owner
+2026-09-15 10:12:36|acción ejecutada: upsert_contacto
+2026-09-15 10:14:04|acción ejecutada: agregar_pendiente
+2026-09-15 10:14:04|acción ejecutada: enviar_wa
+2026-09-15 10:16:10|mb-verif: cold-send #271 a Daniel Castro / 5491136944357 — veredicto por foto: otro (Diálogo modal abierto obstaculiza verificación completa)
+── MB log 12/9 y hoy ──
+2026-09-15 03:28:15: [MB v4.8] 03:28:06 I [upd] al día (v4.8 code=33, mío=33)
+2026-09-15 09:28:10: [MB v4.8] 09:28:08 I [upd] al día (v4.8 code=33, mío=33)
+2026-09-15 10:14:04: [wa-outbox] #271 encolado → +5491136944357 (Hola Daniel! Soy María, asistente de Die…)
+2026-09-15 10:15:10: [MB v4.8] 10:15:09 I [frio] abriendo chat 5491136944357 (#271)
+2026-09-15 10:15:20: [MB v4.8] 10:15:11 I [frio] botón send encontrado — 'escribiendo' 20s antes de enviar
+2026-09-15 10:15:41: [MB v4.8] 10:15:32 I [frio] verificación #271 lectura 1/3: inconcluso:sin_entry
+2026-09-15 10:15:41: [MB v4.8] 10:15:34 I [frio] verificación #271 lectura 2/3: inconcluso:sin_entry
+2026-09-15 10:15:41: [MB v4.8] 10:15:37 I [frio] verificación #271 lectura 3/3: inconcluso:sin_entry
+2026-09-15 10:15:41: [MB v4.8] 10:15:37 W [frio] #271: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+2026-09-15 10:15:41: [MB v4.8] 10:15:37 I [frio] #271: foto → VPS (estado árbol: inconcluso)
+2026-09-15 10:16:10: [MB-VERIF] #271 árbol=inconcluso → otro (Diálogo modal abierto obstaculiza verificación completa) https://intensa.io/_dl/verif-271-147bd361.png
+2026-09-15 10:16:10: [MB-FALLO] #271 motivo=verificacion_inconclusa → {"id":271,"cold_fallos":1,"definitivo":false,"no_verificado":true}
+2026-09-15 10:16:10: [MB v4.8] 10:16:10 I [frio] #271: veredicto por foto = otro (http 200)
+2026-09-15 10:16:10: [MB v4.8] 10:16:10 W [frio] verificación #271: sin veredicto por foto — NO confirmo
+2026-09-15 10:16:10: [MB v4.8] 10:16:10 I [outbox] cold-send #271 no verificado — queda en cola
+── último latido del teléfono ──
+2026-09-15 10:16:10: [MB v4.8] 10:16:10 I [outbox] cold-send #271 no verificado — queda en cola
+LISTO
+
+# exit=0
