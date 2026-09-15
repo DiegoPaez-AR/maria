@@ -1,4 +1,14 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
+0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
+0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
+0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
+0|maria-pa | 2026-09-15 11:51:48: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-15 17:26:46: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, ya bloqueé el jueves 17/09 de 8:30 a 9:30 en tu agenda (piso el Yoga, com"
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-15 03:28:15: [MB v4.8] 03:28:06 I [upd] al día (v4.8 code=33, mío=33)
 0|maria-pa | 2026-09-15 04:00:06: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -181,14 +191,5 @@
 0|maria-pa | 2026-09-15 17:14:26: [MB v4.9] 17:14:19 I [notif] reply inline a "+54 9 11 3694-4357": ENVIADA
 0|maria-pa | 2026-09-15 17:26:07: [TG sesion/Diego] rotando sesión (turnos=12, creada=2026-09-09T14:24:34.043Z)
 0|maria-pa | 2026-09-15 17:26:42: [wa-outbox] #272 encolado → +5491136944357 (Hola Daniel! Diego confirma el jueves 17…)
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
-0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
-0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
-0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
-0|maria-pa | 2026-09-15 11:51:48: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-15 17:26:46: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, ya bloqueé el jueves 17/09 de 8:30 a 9:30 en tu agenda (piso el Yoga, com"
+0|maria-pa | 2026-09-15 17:28:46: [MB v4.9] 17:28:43 I [humano] espero 19s antes de responder a "5491136944357"
 
