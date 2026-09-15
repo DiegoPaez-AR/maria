@@ -5,6 +5,7 @@
 0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
 0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
 0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
+0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
 
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-15 03:28:15: [MB v4.8] 03:28:06 I [upd] al día (v4.8 code=33, mío=33)
@@ -51,4 +52,9 @@
 0|maria-pa | 2026-09-15 10:15:41: [MB v4.8] 10:15:37 I [frio] verificación #271 lectura 3/3: inconcluso:sin_entry
 0|maria-pa | 2026-09-15 10:15:41: [MB v4.8] 10:15:37 W [frio] #271: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
 0|maria-pa | 2026-09-15 10:15:41: [MB v4.8] 10:15:37 I [frio] #271: foto → VPS (estado árbol: inconcluso)
+0|maria-pa | 2026-09-15 10:16:10: [MB-VERIF] #271 árbol=inconcluso → otro (Diálogo modal abierto obstaculiza verificación completa) https://intensa.io/_dl/verif-271-147bd361.png
+0|maria-pa | 2026-09-15 10:16:10: [MB-FALLO] #271 motivo=verificacion_inconclusa → {"id":271,"cold_fallos":1,"definitivo":false,"no_verificado":true}
+0|maria-pa | 2026-09-15 10:16:10: [MB v4.8] 10:16:10 I [frio] #271: veredicto por foto = otro (http 200)
+0|maria-pa | 2026-09-15 10:16:10: [MB v4.8] 10:16:10 W [frio] verificación #271: sin veredicto por foto — NO confirmo
+0|maria-pa | 2026-09-15 10:16:10: [MB v4.8] 10:16:10 I [outbox] cold-send #271 no verificado — queda en cola
 
