@@ -16,7 +16,7 @@ SHOTS="ops/instances/$SLUG/shots"
 ACCION="${1:?uso: mb-remoto.sh shot / tap X Y / nodos / home / ping / despertar / estado}"
 
 _esperar_resultado() {  # $1 = id, espera hasta 90s
-  for i in $(seq 1 18); do
+  for i in $(seq 1 36); do
     sleep 5
     R=$(node -e "
       const db=require('/root/secretaria/node_modules/better-sqlite3')(process.env.MARIA_DB,{readonly:true});
@@ -36,7 +36,7 @@ case "$ACCION" in
         .reverse().forEach(x=>console.log('#'+x.id,x.cmd,'['+x.estado+']',(x.r||'').slice(0,280))); db.close();"
     ;;
   shot)
-    ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('shot'))")
+    ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('shot'))" 2>/dev/null | grep -oE '^[0-9]+$' | tail -1)
     echo "comando #$ID (shot) encolado — esperando…"
     RES=$(_esperar_resultado "$ID")
     echo "$RES"
@@ -49,12 +49,12 @@ case "$ACCION" in
     ;;
   tap)
     X="${2:?falta X}"; Y="${3:?falta Y}"
-    ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('tap',{x:$X,y:$Y}))")
+    ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('tap',{x:$X,y:$Y}))" 2>/dev/null | grep -oE '^[0-9]+$' | tail -1)
     echo "comando #$ID (tap $X,$Y) encolado — esperando…"
     _esperar_resultado "$ID"
     ;;
   nodos|home|ping|despertar)
-    ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('$ACCION'))")
+    ID=$(node -e "console.log(require('/root/secretaria/mb-control').encolar('$ACCION'))" 2>/dev/null | grep -oE '^[0-9]+$' | tail -1)
     echo "comando #$ID ($ACCION) encolado — esperando…"
     _esperar_resultado "$ID"
     ;;
