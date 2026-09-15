@@ -1,0 +1,23 @@
+# ejecutado: 2026-09-15T13:14:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   mkdir -p ops/instances/maria-paez/shots
+#   cp /var/www/intensa.io/_dl/verif-271-147bd361.png ops/instances/maria-paez/shots/verif-271.png && ls -la ops/instances/maria-paez/shots/
+#   ls -t /var/www/intensa.io/_dl/verif-*.png | head -5
+#   echo LISTO
+
+# ───── output ─────
+total 80
+drwxr-xr-x  2 root root  4096 Sep 15 13:14 .
+drwxr-xr-x+ 7 root root  4096 Sep  9 10:48 ..
+-rw-r--r--  1 root root     0 Aug 22 13:45 .gitkeep
+-rw-r--r--  1 root root 71802 Sep 15 13:14 verif-271.png
+/var/www/intensa.io/_dl/verif-271-147bd361.png
+/var/www/intensa.io/_dl/verif-265-8f53968f.png
+/var/www/intensa.io/_dl/verif-264-3ea40fa7.png
+LISTO
+
+# exit=0
