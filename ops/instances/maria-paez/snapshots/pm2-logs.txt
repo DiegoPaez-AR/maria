@@ -1,12 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
-0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
-0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
-0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-15 03:28:15: [MB v4.8] 03:28:06 I [upd] al día (v4.8 code=33, mío=33)
 0|maria-pa | 2026-09-15 04:00:06: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -61,4 +53,13 @@
 0|maria-pa | 2026-09-15 11:45:05: [programados] 1 mensaje(s) debidos, despachando…
 0|maria-pa | 2026-09-15 11:45:06: [wa-send] programados/1681: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Hernan Fulco
 0|maria-pa | 2026-09-15 11:45:06: [programados] ✓ id=1681 (gmail/hernan.fulco@sondeosglobal.com) [meeting_prep:2:7ul0bjgjm96f2rkjj8jpm9c0km]
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
+0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
+0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
+0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
+0|maria-pa | 2026-09-15 11:51:48: [TG] poll error (reintento en 15s): fetch failed
 
