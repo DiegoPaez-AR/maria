@@ -1,8 +1,3 @@
-[TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-15 07:40:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-15 10:12:24: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No tengo contexto de qué necesitás sobre Daniel Castro (buscar su contacto, agen"
-0|maria-pa | 2026-09-15 10:12:36: [wa-validate] sin cliente WA — normalizado offline "5491136944357@c.us" → 5491136944357@c.us (SIN verificar en Meta)
 0|maria-pa | 2026-09-15 10:12:38: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé a Daniel Castro con ese número en la libreta."
 0|maria-pa | 2026-09-15 10:14:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando ahora a Daniel Castro para coordinar la reunión del jueves 17/09 entre "
 0|maria-pa | 2026-09-15 10:16:10: [wa-outbox] #271 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
@@ -194,4 +189,12 @@
 0|maria-pa | 2026-09-15 17:28:46: [MB v4.9] 17:28:43 I [humano] espero 19s antes de responder a "5491136944357"
 0|maria-pa | 2026-09-15 17:29:03: [wa-outbox] #272 entregado por el teléfono
 0|maria-pa | 2026-09-15 17:29:06: [MB v4.9] 17:29:03 I [outbox] respondido (silencioso) → Daniel Castro
+0|maria-pa | 2026-09-15 17:41:05: [prompt-builder] tercero slim: system 60868→51479c, user 25491→17817c
+0|maria-pa | 2026-09-15 17:41:07: [MB v4.9] 17:41:05 I [notif] entrante de "+54 9 11 3694-4357": dale, llego a esa hora (8:20)
+0|maria-pa | 2026-09-15 17:41:07: [MB v4.9] 17:41:05 I [notif] dup ignorado de "+54 9 11 3694-4357"
+0|maria-pa | 2026-09-15 17:41:25: [wa-outbox] #273 encolado → +5491136944357 (Genial, quedamos así entonces! Cuando pu…)
+0|maria-pa | 2026-09-15 17:41:48: [prompt-builder] tercero slim: system 60868→51479c, user 24849→17175c
+0|maria-pa | 2026-09-15 17:41:56: [MB v4.9] 17:41:48 I [notif] entrante de "+54 9 11 3694-4357": dcastro.ar@gmail.com
+0|maria-pa | 2026-09-15 17:41:56: [MB v4.9] 17:41:48 I [notif] sin acción de reply — descarto no-chat: "+54 9 11 3694-4357"
+0|maria-pa | 2026-09-15 17:42:02: [quitar_pendiente] follow-up #63 cancelado en cascada (5491136944357@c.us ya había respondido)
 
