@@ -1,0 +1,42 @@
+# ejecutado: 2026-09-15T14:46:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   set -a; . config/instances/maria-paez.conf; . config/secrets.conf 2>/dev/null; set +a
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   sqlite3 "$DB" "select id,estado,intentos,datetime(tomado_en,'-3 hours'),datetime(entregado,'-3 hours') from wa_outbox where id=271"
+#   echo "── polls del teléfono (nginx, últimos) ──"
+#   grep -h "wa-maria" /var/log/nginx/access.log 2>/dev/null | grep -E "outbox|poll" | tail -3 | cut -c1-160
+#   grep -hE "outbox|frio|#271" logs/maria-paez/out.log | grep "^2026-09-15 1[45]" | tail -12 | cut -c1-200
+#   echo "── siguiente() a mano (dry: ¿qué devuelve?) ──"
+#   timeout 30 node -e '
+#   const ob = require("./wa-outbox");
+#   const orig = require("./memory").db.prepare;
+#   console.log(JSON.stringify(ob.siguiente()));
+#   ' 2>&1 | tail -3
+#   sqlite3 "$DB" "select id,estado,intentos,datetime(tomado_en,'-3 hours') from wa_outbox where id=271"
+#   echo LISTO
+
+# ───── output ─────
+271|entregado|1|2026-09-15 14:41:09|2026-09-15 14:41:49
+── polls del teléfono (nginx, últimos) ──
+2026-09-15 14:41:14: [MB v4.8] 14:41:12 I [frio] abriendo chat 5491136944357 (#271)
+2026-09-15 14:41:24: [MB v4.8] 14:41:14 I [frio] botón send encontrado — 'escribiendo' 20s antes de enviar
+2026-09-15 14:41:45: [MB v4.8] 14:41:35 I [frio] verificación #271 lectura 1/3: inconcluso:entry_otro_texto
+2026-09-15 14:41:45: [MB v4.8] 14:41:37 I [frio] verificación #271 lectura 2/3: inconcluso:entry_otro_texto
+2026-09-15 14:41:45: [MB v4.8] 14:41:40 I [frio] verificación #271 lectura 3/3: inconcluso:entry_otro_texto
+2026-09-15 14:41:45: [MB v4.8] 14:41:40 W [frio] #271: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+2026-09-15 14:41:45: [MB v4.8] 14:41:40 I [frio] #271: foto → VPS (estado árbol: inconcluso)
+2026-09-15 14:41:49: [MB-VERIF] #271 árbol=inconcluso → enviado (Burbuja derecha, 2:41 PM, doble tilde, cuadro vacío) https://intensa.io/_dl/verif-271-1f7beec4.png
+2026-09-15 14:41:49: [wa-outbox] #271 entregado por el teléfono
+2026-09-15 14:41:54: [MB v4.8] 14:41:49 I [frio] #271: veredicto por foto = enviado (http 200)
+2026-09-15 14:41:54: [MB v4.8] 14:41:49 I [frio] verificación #271: ENVIADO (por foto)
+2026-09-15 14:41:54: [MB v4.8] 14:41:49 I [outbox] enviado EN FRÍO (accesibilidad) → 5491136944357
+── siguiente() a mano (dry: ¿qué devuelve?) ──
+null
+271|entregado|1|2026-09-15 14:41:09
+LISTO
+
+# exit=0
