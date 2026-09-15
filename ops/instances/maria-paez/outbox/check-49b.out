@@ -1,0 +1,27 @@
+# ejecutado: 2026-09-15T15:34:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   for S in maria-paez sofia-bruscoli; do
+#     echo "[$S]"; grep -hoE "\[MB v[0-9.]+\]" logs/$S/out.log | tail -1
+#     grep -hE "\[MB v4\.9\]" logs/$S/out.log | grep -E "upd|listener conectado|svc\]|diálogo ajeno" | tail -4 | cut -c1-150
+#   done
+#   echo LISTO
+
+# ───── output ─────
+[maria-paez]
+[MB v4.9]
+2026-09-15 15:30:14: [MB v4.9] 15:30:04 I [notif] listener conectado — barrido cada 3min (marca=1788968572251)
+2026-09-15 15:30:14: [MB v4.9] 15:30:04 I [upd] instalador visible — ventana=false clickables=Done[Button],Open[Button]
+2026-09-15 15:30:14: [MB v4.9] 15:30:12 I [svc] OutboxService arrancó (loop nuevo)
+2026-09-15 15:30:44: [MB v4.9] 15:30:43 I [upd] al día (v4.9 code=34, mío=34)
+[sofia-bruscoli]
+[MB v4.9]
+2026-09-15 15:27:55: [MB v4.9] 15:27:45 I [notif] listener conectado — barrido cada 3min (marca=1788902554716)
+2026-09-15 15:27:55: [MB v4.9] 15:27:52 I [svc] OutboxService arrancó (loop nuevo)
+2026-09-15 15:28:25: [MB v4.9] 15:28:23 I [upd] al día (v4.9 code=34, mío=34)
+LISTO
+
+# exit=0
