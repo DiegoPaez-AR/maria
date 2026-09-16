@@ -1,4 +1,13 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-16 05:24:07: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-16 07:05:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Anuladas: "Pasajes a Japón", "choque y Julián" y la mía (esperando la respuesta "
+0|maria-pa | 2026-09-16 08:21:41: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-16 12:42:20: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-16 18:37:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-16 19:16:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya te lo puse en la agenda: mañana jueves 17/09 de 13:00 a 14:30, almuerzo en Iñ"
+0|maria-pa | 2026-09-16 19:17:03: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-16 03:00:26: [meeting-prep/Hernan Fulco] contacto nuevo: Lgomez <lgomez@sparktelecomm.com> — No pude confirmar con certeza a "lgomez" en Spark Telecomm. sin datos
 0|maria-pa | 2026-09-16 03:00:26: [meeting-prep/Hernan Fulco] + id=1684 Spark - Sondeos Hall Tapices - Table 176 @ 2026-09-16T07:45:00.000Z
@@ -119,13 +128,5 @@
 0|maria-pa | 2026-09-16 19:15:37: [TG] transcribiendo audio…
 0|maria-pa | 2026-09-16 19:15:49: [TG audio→texto] Sería reservado para mañana a las 13 horas en Iñaki para cuatro personas y ponérmelo en la agenda por favor.
 0|maria-pa | 2026-09-16 19:16:15: [wa-outbox] #274 encolado → +5491134838324 (Hola! Soy María, asistente de Diego Paez…)
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-16 05:24:07: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-16 07:05:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Anuladas: "Pasajes a Japón", "choque y Julián" y la mía (esperando la respuesta "
-0|maria-pa | 2026-09-16 08:21:41: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-16 12:42:20: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-16 18:37:56: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-16 19:16:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya te lo puse en la agenda: mañana jueves 17/09 de 13:00 a 14:30, almuerzo en Iñ"
-0|maria-pa | 2026-09-16 19:17:03: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-16 19:18:58: [MB v4.9] 19:18:57 I [frio] abriendo chat 5491134838324 (#274)
 
