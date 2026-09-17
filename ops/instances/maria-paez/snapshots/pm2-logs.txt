@@ -1,4 +1,22 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-17 03:43:02: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-17 09:13:46: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agregué "Reunión con el Pino" a tus pendientes."
+0|maria-pa | 2026-09-17 09:14:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Corregido: era "Reunión Alpine", no "el Pino" (autocorrect). Ya lo actualicé."
+0|maria-pa | 2026-09-17 09:14:25: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Agregada también "Reunión Telefónica Gobierno"."
+0|maria-pa | 2026-09-17 09:14:41: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Agregada "Reunión Software elecciones"."
+0|maria-pa | 2026-09-17 09:15:28: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tus pendientes:
+0|maria-pa | 2026-09-17 09:15:28: 
+0|maria-pa | 2026-09-17 09:15:28: 1. iProt Seguridad
+0|maria-pa | 2026-09-17 09:15:28: 2. DDJJ 2025
+0|maria-pa | 2026-09-17 09:15:28: 3. Llamar a Poggetti
+0|maria-pa | 2026-09-17 09:15:28: 4. Llamar "
+0|maria-pa | 2026-09-17 09:45:07: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-17 10:58:43: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-17 15:14:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-17 17:35:21: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-17 17:42:47: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-17 03:30:21: [meeting-prep/Hernan Fulco] contacto nuevo: Lucy Gutierrez <lucy.gutierrez@messagetrade.com> — No hay una vinculación confiable entre esta Lucy Gutierrez y MessageTrade. sin datos
 0|maria-pa | 2026-09-17 03:30:21: [meeting-prep/Hernan Fulco] + id=1707 MessageTrade - Sondeos    #77 Room Comendador @ 2026-09-17T08:15:00.000Z
@@ -125,22 +143,5 @@
 0|maria-pa | 2026-09-17 16:45:07: [programados] 1 mensaje(s) debidos, despachando…
 0|maria-pa | 2026-09-17 16:45:07: [wa-send] programados/1729: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-09-17 16:45:07: [programados] ✓ id=1729 (telegram/590589920) [meeting_prep:1:jkanbtrlrnog4ebl30kcm4ofid_20260917T200000Z]
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-17 03:43:02: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-17 09:13:46: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agregué "Reunión con el Pino" a tus pendientes."
-0|maria-pa | 2026-09-17 09:14:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Corregido: era "Reunión Alpine", no "el Pino" (autocorrect). Ya lo actualicé."
-0|maria-pa | 2026-09-17 09:14:25: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Agregada también "Reunión Telefónica Gobierno"."
-0|maria-pa | 2026-09-17 09:14:41: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Agregada "Reunión Software elecciones"."
-0|maria-pa | 2026-09-17 09:15:28: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tus pendientes:
-0|maria-pa | 2026-09-17 09:15:28: 
-0|maria-pa | 2026-09-17 09:15:28: 1. iProt Seguridad
-0|maria-pa | 2026-09-17 09:15:28: 2. DDJJ 2025
-0|maria-pa | 2026-09-17 09:15:28: 3. Llamar a Poggetti
-0|maria-pa | 2026-09-17 09:15:28: 4. Llamar "
-0|maria-pa | 2026-09-17 09:45:07: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-17 10:58:43: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-17 15:14:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-17 17:35:21: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-17 17:42:47: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-17 18:05:58: [MB v4.9] 18:05:49 I [notif] sin acción de reply — descarto no-chat: "+54 9 11 3694-4357"
 
