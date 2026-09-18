@@ -1,4 +1,14 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
+1|sofia-br | 2026-09-18 05:30:26: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 06:14:45: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 17:27:34: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé la reunión Consolidado para el lunes 21/09 de 14:00 a 15:00, co"
+1|sofia-br | 2026-09-18 17:27:41: [wa-validate] sin cliente WA — normalizado offline "541160592111@c.us" → 5491160592111@c.us (SIN verificar en Meta)
+1|sofia-br | 2026-09-18 17:27:43: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Soledad Goitia en tu libreta de contactos."
+1|sofia-br | 2026-09-18 17:28:14: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando el mensaje a Soledad en unos minutos pidiéndole su mail para poder agen"
+1|sofia-br | 2026-09-18 17:38:08: [wa-validate] sin cliente WA — normalizado offline "5491168613446@c.us" → 5491168613446@c.us (SIN verificar en Meta)
+1|sofia-br | 2026-09-18 17:38:17: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, corregí el número de Soledad y le mando el mensaje pidiéndole el mail en "
+
 /root/secretaria/logs/sofia-bruscoli/out.log last 200 lines:
 1|sofia-br | 2026-09-18 03:28:39: [MB v4.9] 03:28:37 I [upd] al día (v4.9 code=34, mío=34)
 1|sofia-br | 2026-09-18 07:30:08: [wa-send] morning-brief/Noelia Bruscoli: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
@@ -35,14 +45,6 @@
 1|sofia-br | 2026-09-18 17:37:37: [MB v4.9] 17:37:30 I [notif] reply inline a "+54 9 11 6059-2111": ENVIADA
 1|sofia-br | 2026-09-18 17:38:10: [gcontacts] "Soledad Goitia" actualizado en Google Contacts
 1|sofia-br | 2026-09-18 17:38:15: [wa-outbox] #17 encolado → +5491168613446 (Hola Soledad! Soy Sofia, asistente de No…)
-
-/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
-1|sofia-br | 2026-09-18 05:30:26: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-09-18 06:14:45: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-09-18 17:27:34: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé la reunión Consolidado para el lunes 21/09 de 14:00 a 15:00, co"
-1|sofia-br | 2026-09-18 17:27:41: [wa-validate] sin cliente WA — normalizado offline "541160592111@c.us" → 5491160592111@c.us (SIN verificar en Meta)
-1|sofia-br | 2026-09-18 17:27:43: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Soledad Goitia en tu libreta de contactos."
-1|sofia-br | 2026-09-18 17:28:14: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando el mensaje a Soledad en unos minutos pidiéndole su mail para poder agen"
-1|sofia-br | 2026-09-18 17:38:08: [wa-validate] sin cliente WA — normalizado offline "5491168613446@c.us" → 5491168613446@c.us (SIN verificar en Meta)
-1|sofia-br | 2026-09-18 17:38:17: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, corregí el número de Soledad y le mando el mensaje pidiéndole el mail en "
+1|sofia-br | 2026-09-18 17:39:57: [MB v4.9] 17:39:48 I [frio] abriendo chat 5491168613446 (#17)
+1|sofia-br | 2026-09-18 17:39:57: [MB v4.9] 17:39:50 I [frio] botón send encontrado — 'escribiendo' 13s antes de enviar
 
