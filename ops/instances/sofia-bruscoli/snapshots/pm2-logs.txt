@@ -1,4 +1,12 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
+1|sofia-br | 2026-09-18 05:30:26: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 06:14:45: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 17:27:34: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé la reunión Consolidado para el lunes 21/09 de 14:00 a 15:00, co"
+1|sofia-br | 2026-09-18 17:27:41: [wa-validate] sin cliente WA — normalizado offline "541160592111@c.us" → 5491160592111@c.us (SIN verificar en Meta)
+1|sofia-br | 2026-09-18 17:27:43: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Soledad Goitia en tu libreta de contactos."
+1|sofia-br | 2026-09-18 17:28:14: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando el mensaje a Soledad en unos minutos pidiéndole su mail para poder agen"
+
 /root/secretaria/logs/sofia-bruscoli/out.log last 200 lines:
 1|sofia-br | 2026-09-18 03:28:39: [MB v4.9] 03:28:37 I [upd] al día (v4.9 code=34, mío=34)
 1|sofia-br | 2026-09-18 07:30:08: [wa-send] morning-brief/Noelia Bruscoli: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
@@ -14,12 +22,17 @@
 1|sofia-br | 2026-09-18 17:27:44: [TG] transcribiendo audio…
 1|sofia-br | 2026-09-18 17:27:55: [TG audio→texto] Ahí te pasé su contacto, para que la contactes, y por favor pedíles que te envíe su mail para poder agender la reunión.
 1|sofia-br | 2026-09-18 17:28:11: [wa-outbox] #16 encolado → +541160592111 (Hola Soledad! Soy Sofia, asistente de No…)
-
-/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
-1|sofia-br | 2026-09-18 05:30:26: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-09-18 06:14:45: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-09-18 17:27:34: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé la reunión Consolidado para el lunes 21/09 de 14:00 a 15:00, co"
-1|sofia-br | 2026-09-18 17:27:41: [wa-validate] sin cliente WA — normalizado offline "541160592111@c.us" → 5491160592111@c.us (SIN verificar en Meta)
-1|sofia-br | 2026-09-18 17:27:43: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Soledad Goitia en tu libreta de contactos."
-1|sofia-br | 2026-09-18 17:28:14: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando el mensaje a Soledad en unos minutos pidiéndole su mail para poder agen"
+1|sofia-br | 2026-09-18 17:29:18: [MB v4.9] 17:29:10 I [frio] abriendo chat 5491160592111 (#16)
+1|sofia-br | 2026-09-18 17:29:18: [MB v4.9] 17:29:14 I [frio] botón send encontrado — 'escribiendo' 13s antes de enviar
+1|sofia-br | 2026-09-18 17:29:38: [MB v4.9] 17:29:27 I [notif] sin acción de reply — descarto no-chat: "+54 9 221 596-8555"
+1|sofia-br | 2026-09-18 17:29:38: [MB v4.9] 17:29:28 I [frio] verificación #16 lectura 1/3: inconcluso:entry_otro_texto
+1|sofia-br | 2026-09-18 17:29:38: [MB v4.9] 17:29:30 I [frio] verificación #16 lectura 2/3: inconcluso:entry_otro_texto
+1|sofia-br | 2026-09-18 17:29:38: [MB v4.9] 17:29:33 I [frio] verificación #16 lectura 3/3: inconcluso:entry_otro_texto
+1|sofia-br | 2026-09-18 17:29:38: [MB v4.9] 17:29:33 W [frio] #16: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+1|sofia-br | 2026-09-18 17:29:38: [MB v4.9] 17:29:33 I [frio] #16: foto → VPS (estado árbol: inconcluso)
+1|sofia-br | 2026-09-18 17:29:47: [MB-VERIF] #16 árbol=inconcluso → enviado (Burbuja verde derecha con hora 11:29 y tildes visibles) https://intensa.io/_dl/verif-16-a019fdd0.png
+1|sofia-br | 2026-09-18 17:29:47: [wa-outbox] #16 entregado por el teléfono
+1|sofia-br | 2026-09-18 17:29:47: [MB v4.9] 17:29:47 I [frio] #16: veredicto por foto = enviado (http 200)
+1|sofia-br | 2026-09-18 17:29:47: [MB v4.9] 17:29:47 I [frio] verificación #16: ENVIADO (por foto)
+1|sofia-br | 2026-09-18 17:29:47: [MB v4.9] 17:29:47 I [outbox] enviado EN FRÍO (accesibilidad) → 5491160592111
 
