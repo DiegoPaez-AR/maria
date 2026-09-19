@@ -1,19 +1,4 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
-/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
-1|sofia-br | 2026-09-18 05:30:26: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-09-18 06:14:45: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-09-18 17:27:34: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé la reunión Consolidado para el lunes 21/09 de 14:00 a 15:00, co"
-1|sofia-br | 2026-09-18 17:27:41: [wa-validate] sin cliente WA — normalizado offline "541160592111@c.us" → 5491160592111@c.us (SIN verificar en Meta)
-1|sofia-br | 2026-09-18 17:27:43: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Soledad Goitia en tu libreta de contactos."
-1|sofia-br | 2026-09-18 17:28:14: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando el mensaje a Soledad en unos minutos pidiéndole su mail para poder agen"
-1|sofia-br | 2026-09-18 17:38:08: [wa-validate] sin cliente WA — normalizado offline "5491168613446@c.us" → 5491168613446@c.us (SIN verificar en Meta)
-1|sofia-br | 2026-09-18 17:38:17: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, corregí el número de Soledad y le mando el mensaje pidiéndole el mail en "
-1|sofia-br | 2026-09-18 18:04:10: [wa-validate] sin cliente WA — normalizado offline "5491168613446@c.us" → 5491168613446@c.us (SIN verificar en Meta)
-1|sofia-br | 2026-09-18 18:06:00: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé la reunión con Soledad para el lunes 21/09 de 15:00 a 16:00 con Me"
-1|sofia-br | 2026-09-18 18:06:20: [wa-outbox] #18 DESCARTADO por viejo → 5491168613446: el destinatario escribió después y ya se le respondió: "Todo bien, gracias Soledad! Para poder mandarte la invitació"
-1|sofia-br | 2026-09-18 18:09:50: [wa-outbox] #20 DESCARTADO por viejo → 5491168613446: el destinatario escribió después y ya se le respondió: "Hola Soledad! Ya quedó agendada la reunión con Noelia para e"
-1|sofia-br | 2026-09-18 20:02:29: [TG] poll error (reintento en 15s): fetch failed
-
 /root/secretaria/logs/sofia-bruscoli/out.log last 200 lines:
 1|sofia-br | 2026-09-18 03:28:39: [MB v4.9] 03:28:37 I [upd] al día (v4.9 code=34, mío=34)
 1|sofia-br | 2026-09-18 07:30:08: [wa-send] morning-brief/Noelia Bruscoli: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
@@ -105,4 +90,20 @@
 1|sofia-br | 2026-09-18 18:10:07: [GMAIL ←] Soledad Goitia <soledad.goitia@equila.com.ar> | "Accepted: Reunión con Soledad Goitia @ Mon Sep 21, 2026 3pm - 4pm (GMT-3) (sofia@luminaconsultora.com)"
 1|sofia-br | 2026-09-18 18:10:07: [GMAIL] aceptación de invitación de Soledad Goitia ("Reunión con Soledad Goitia") — sin LLM
 1|sofia-br | 2026-09-18 21:28:59: [MB v4.9] 21:28:51 I [upd] al día (v4.9 code=34, mío=34)
+
+/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
+1|sofia-br | 2026-09-18 05:30:26: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 06:14:45: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 17:27:34: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, te agendé la reunión Consolidado para el lunes 21/09 de 14:00 a 15:00, co"
+1|sofia-br | 2026-09-18 17:27:41: [wa-validate] sin cliente WA — normalizado offline "541160592111@c.us" → 5491160592111@c.us (SIN verificar en Meta)
+1|sofia-br | 2026-09-18 17:27:43: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Guardé a Soledad Goitia en tu libreta de contactos."
+1|sofia-br | 2026-09-18 17:28:14: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando el mensaje a Soledad en unos minutos pidiéndole su mail para poder agen"
+1|sofia-br | 2026-09-18 17:38:08: [wa-validate] sin cliente WA — normalizado offline "5491168613446@c.us" → 5491168613446@c.us (SIN verificar en Meta)
+1|sofia-br | 2026-09-18 17:38:17: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, corregí el número de Soledad y le mando el mensaje pidiéndole el mail en "
+1|sofia-br | 2026-09-18 18:04:10: [wa-validate] sin cliente WA — normalizado offline "5491168613446@c.us" → 5491168613446@c.us (SIN verificar en Meta)
+1|sofia-br | 2026-09-18 18:06:00: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé la reunión con Soledad para el lunes 21/09 de 15:00 a 16:00 con Me"
+1|sofia-br | 2026-09-18 18:06:20: [wa-outbox] #18 DESCARTADO por viejo → 5491168613446: el destinatario escribió después y ya se le respondió: "Todo bien, gracias Soledad! Para poder mandarte la invitació"
+1|sofia-br | 2026-09-18 18:09:50: [wa-outbox] #20 DESCARTADO por viejo → 5491168613446: el destinatario escribió después y ya se le respondió: "Hola Soledad! Ya quedó agendada la reunión con Noelia para e"
+1|sofia-br | 2026-09-18 20:02:29: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-09-18 22:11:39: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
 
