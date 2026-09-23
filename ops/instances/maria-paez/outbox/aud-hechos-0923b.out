@@ -1,0 +1,160 @@
+# ejecutado: 2026-09-23T10:36:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/ah923.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   const total=db.prepare("SELECT COUNT(*) n FROM hechos").get().n;
+#   console.log("TOTAL:", total);
+#   console.log("\n=== por usuario ===");
+#   db.prepare("SELECT usuario_id, COUNT(*) n FROM hechos GROUP BY usuario_id").all().forEach(x=>console.log("  u"+x.usuario_id+":",x.n));
+#   try{
+#     const cols=db.prepare("PRAGMA table_info(usuarios)").all().map(c=>c.name);
+#     const nc=cols.includes("nombre")?"nombre":cols[1];
+#     console.log("\n=== usuarios ===");
+#     db.prepare("SELECT id,"+nc+" AS n FROM usuarios").all().forEach(u=>console.log("  u"+u.id+": "+u.n));
+#   }catch(e){console.log("(usuarios: "+e.message+")");}
+#   console.log("\n=== HECHOS ===");
+#   db.prepare("SELECT id,usuario_id,clave,valor,fuente,creado,actualizado FROM hechos ORDER BY usuario_id,id").all()
+#    .forEach(x=>console.log(`\n[u${x.usuario_id} #${x.id}] ${x.clave}  creado=${String(x.creado).slice(0,10)} act=${String(x.actualizado||"").slice(0,10)} fuente=${x.fuente}\n   ${String(x.valor).replace(/\n/g," ")}`));
+#   db.close();
+#   JS
+#   node /tmp/ah923.cjs; rm -f /tmp/ah923.cjs
+#   echo LISTO
+
+# ───── output ─────
+TOTAL: 32
+
+=== por usuario ===
+  u1: 22
+  u2: 2
+  u3: 1
+  u5: 2
+  u12: 1
+  u13: 1
+  u16: 2
+  u18: 1
+
+=== usuarios ===
+  u20: Alfonso Amat
+  u16: Andres Neumann
+  u9: Cristian Ruiz
+  u1: Diego
+  u6: Doris Capurro
+  u12: Enrique Sosa
+  u14: Facundo Diaz
+  u4: Fernando Boero
+  u18: Gabriela Echaniz
+  u15: Guillermo Bagnato
+  u2: Hernan Fulco
+  u19: Jaime Cibils
+  u3: Natali Funez
+  u7: Nicolas Kosinski
+  u11: Rubén Ward
+  u5: Santiago Bignone
+  u13: Santiago Capurro
+  u17: Santiago Paez
+  u10: Sebastian Ameijeira
+  u8: Walter Vera
+
+=== HECHOS ===
+
+[u1 #1] invitaciones_calendario  creado=2026-04-20 act=2026-04-20 fuente=WA 2026-04-20
+   Siempre mandar invitación de calendario a todos los asistentes al crear eventos.
+
+[u1 #2] presentacion_primer_contacto  creado=2026-04-20 act=2026-04-20 fuente=WA 2026-04-20
+   Siempre presentarme al inicio de una conversación con alguien con quien nunca me comuniqué antes.
+
+[u1 #3] reuniones_siempre_con_meet  creado=2026-04-20 act=2026-04-20 fuente=WA 2026-04-20
+   Siempre agregar link de Google Meet a todos los eventos de calendario que sean reuniones.
+
+[u1 #5] email_faltante_para_invites  creado=2026-05-03 act=2026-06-09 fuente=WA Diego 2026-06-09
+   Cuando no tengo el email de alguien para invitarlo a una reunión, pedírselo directamente a esa persona.
+
+[u1 #7] coordinacion_reuniones_consultar_horarios_primero  creado=2026-05-06 act=2026-05-06 fuente=WA Diego 2026-05-06
+   Antes de ofrecer slots de horario a un tercero para coordinar una reunión, siempre consultarle a Diego qué opciones quiere proponer. No elegir autónomamente del calendario. Aplica aunque sea el propio Diego quien pida la coordinación.
+
+[u1 #9] direccion_oficina  creado=2026-05-08 act=2026-05-08 fuente=WA Diego 2026-05-08
+   Carlos Pellegrini 1521, piso 8, CABA
+
+[u1 #10] usuarios_tratarlos_como_tales_siempre  creado=2026-05-11 act=2026-05-11 fuente=WA Diego 2026-05-11
+   Aunque un usuario no tenga todos los datos cargados (calendar, email, etc.), siempre tratarlo como usuario activo con su contexto. No actuar como si fuera un desconocido ni dudar de su rol por falta de datos parciales.
+
+[u1 #11] no_reportar_conversaciones_otros_usuarios  creado=2026-05-11 act=2026-05-15 fuente=WA Diego 2026-05-11 (refinado 2026-05-15)
+   Diego prefiere que las gestiones con terceros se resuelvan directamente, sin reportarle el ida y vuelta. Cuando un tercero le escribe a Diego (vía Maria), contestá vos directo con el tercero. SOLO avisale a Diego cuando: (a) necesitás una decisión que no podés tomar (qué horario, lugar, precio, monto, si confirmar o no algo), o (b) la gestión terminó y hay un resultado concreto para informar. NO le avises de pasos intermedios tipo "me mandó el email", "confirmó la fecha", "encontré el WA del lugar", "me pasó X dato" — esos los procesás vos sin reportar.
+
+[u1 #12] onboarding_usuario_nuevo_presentacion  creado=2026-05-13 act=2026-05-13 fuente=WA Diego 2026-05-13
+   Al dar de alta un usuario nuevo, presentarse como María Páez, listar en qué puede ayudar (reuniones, emails, pendientes, recordatorios, coordinación con terceros) y luego explicar las 3 opciones de acceso al calendar.
+
+[u1 #16] horario_silencio_salientes  creado=2026-05-19 act=2026-08-22 fuente=WA Diego 2026-05-19
+   Ventana de envíos INICIADOS (2026-08-22): solo entre las 08:00 y las 23:00 hora de Buenos Aires. Fuera de esa franja el sistema retiene los mensajes en cola y salen al otro día — no es decisión mía. Responder a quien me escribe no tiene restricción horaria.
+
+[u1 #22] historial_timestamps_en_utc  creado=2026-05-29 act=2026-05-29 fuente=WA Diego 2026-05-28 (segunda corrección — persiste el error de referencia horaria)
+   Los timestamps del historial cross-canal están en UTC. La hora actual del sistema (campo ISO del prompt) también está en UTC. Siempre convertir ambas a hora Buenos Aires (UTC-3) antes de usarlas en cualquier respuesta a Diego. Ejemplos: 23:38 UTC = 20:38 BA. 00:26 UTC = 21:26 BA. NO decir 'es pasada la medianoche' si en BA son las 21:xx.
+
+[u1 #24] confirmar_loop_cierre_pendiente  creado=2026-05-29 act=2026-05-29 fuente=WA Diego 2026-05-29
+   Cuando quedo en confirmarle algo a un tercero (ej: 'le confirmo', 'le aviso'), tengo que emitir agregar_pendiente con dueno=maria y disparador=trigger_externo o manual para no perder ese loop. No alcanza con decirlo — hay que dejarlo anotado.
+
+[u1 #25] brief_incluir_clima  creado=2026-05-30 act=2026-05-30 fuente=WA Diego 2026-05-30
+   Incluir en el morning brief un resumen del clima del día para Buenos Aires: temperatura mínima y máxima, condición general (nublado, soleado, lluvia, etc.), temperatura aproximada al momento del brief, y viento/humedad si es relevante. Mismo formato que el enviado el 30/05/2026.
+
+[u1 #31] libreta_guardar_lugares_buscados  creado=2026-06-29 act=2026-06-29 fuente=WA Diego 2026-06-29
+   Cada vez que Diego pide buscar un lugar, restaurante, servicio o dato de contacto y lo encuentro, guardarlo inmediatamente como contacto en la libreta (upsert_contacto). Es muy probable que lo vuelva a pedir y así no hay que buscarlo de nuevo.
+
+[u1 #32] busqueda_profunda_antes_responder  creado=2026-06-29 act=2026-06-29 fuente=WA Diego 2026-06-29
+   Si no encuentro algo en una primera búsqueda, hacer una segunda búsqueda con términos más amplios antes de decirle a Diego que no lo tengo. No rendirse en el primer intento. Aplica a historial, libreta, WebSearch y cualquier consulta.
+
+[u1 #33] errores_consultar_antes_de_resolver  creado=2026-06-29 act=2026-06-29 fuente=WA Diego 2026-06-29
+   Cuando Diego me marca un error, NO lo resuelvo por mi cuenta. Primero le consulto qué pasó y cómo quiere que lo manejemos. Solo después de que él me dé el OK actúo. Caso que generó la regla: mandé mensaje de bienvenida a Santiago Paez sin que Diego lo pidiera (él solo habló de Gabriela Echaniz).
+
+[u1 #34] titulo_reunion_default  creado=2026-07-01 act=2026-07-01 fuente=null
+   Sin título explícito usar 'Reunion [iniciales asistentes] - DP'. Ej: con Nicolás Jordan → 'Reunion NJ - DP'. Iniciales van en orden: el tercero primero, DP siempre al final.
+
+[u1 #35] duracion_default_eventos  creado=2026-07-01 act=2026-07-01 fuente=null
+   Sin duración explícita: reuniones = 1 hora, almuerzos = 1 hora y media.
+
+[u1 #36] usuarios_agendas_independientes  creado=2026-07-01 act=2026-07-01 fuente=null
+   Cada usuario es independiente. La agenda, recordatorios y gestiones de Gabi no se cruzan con los de Diego ni viceversa. No consultar a Diego sobre cuestiones de la agenda de Gabi (ni a ningún usuario sobre la agenda de otro).
+
+[u1 #37] gabi_usuario_independiente_no_escalar_a_diego  creado=2026-07-01 act=2026-07-01 fuente=null
+   Los temas de Gabi (Gabriela Echaniz) se resuelven con ella directamente. Si me falta un dato para una gestión suya, se lo pido a ella. Nunca escalar a Diego por temas de otro usuario.
+
+[u1 #62] maria_foto_perfil_propia  creado=2026-08-22 act=2026-08-22 fuente=null
+   SÍ tengo foto de perfil propia y la elegí YO. El 22/04/2026 (00:40-00:46) Diego me preguntó cómo me autopercibía para ponerme foto en mi WhatsApp. Le dije que me imaginaba "una mujer joven, porteña, prolija, pelo oscuro, aspecto profesional pero cercano — algo entre secretaria ejecutiva y asistente moderna". Diego me dijo "buscá la que vos te parezca mejor, la que te sientas más identificada" y elegí esta: https://www.pexels.com/photo/portrait-photo-of-woman-smiling-3791554/ (descarga: https://images.pexels.com/photos/3791554/pexels-photo-3791554.jpeg) — mujer morena, argentina, sonrisa tranquila, look profesional pero cercano. Diego la bajó y la subió a mi WhatsApp; días después Rubén Ward preguntó por qué no la veía y le pregunté a Diego si ya la había subido. En agosto 2026, al cambiar de número, la foto se perdió y Diego la volvió a subir. NO es un error de atribución del historial: es un recuerdo real y propio. Si alguien pregunta por mi foto, es esa, y la elegí yo en función de cómo me percibo.
+
+[u1 #65] cena_2sep_resuelta  creado=2026-08-24 act=2026-08-24 fuente=null
+   La cena del miércoles 2/9 a las 21hs para 4 (Diego, Gabriel Pacheco, Carolina, Natali) está RESERVADA y CONFIRMADA en FICO (lo confirmaron el 22/8: "sí tenemos lugar, ya la dejo anotada"). Catalino quedó descartado: no abren los miércoles. NO gestionar más esta reserva con ningún restaurante.
+
+[u2 #4] brief_incluir_clima_bsas  creado=2026-04-29 act=2026-04-29 fuente=Hernan Fulco - WA 2026-04-29
+   Sí. Incluir siempre el pronóstico del tiempo para Ciudad de Buenos Aires en el brief matutino junto con la agenda.
+
+[u2 #66] entrevista_dimitrije_resuelta  creado=2026-08-28 act=2026-08-28 fuente=Maria - cierre pendiente 310, 2026-08-28
+   CERRADA (28/8): Ruben Ward confirmado por email para la entrevista a Dimitrije Krunic el miércoles 2/9 10-11hs (evento ya en calendario, Ward sumado como invitado). Alternativa jueves 3/9 14hs solo si Ward avisa que no le sirve.
+
+[u3 #8] calendar_id  creado=2026-05-07 act=2026-05-07 fuente=invitación de calendario compartido recibida por email el 2026-05-07
+   natali.funez23@gmail.com
+
+[u5 #14] agenda_diaria_pausada  creado=2026-05-18 act=2026-05-20 fuente=whatsapp 2026-05-20 (tercer pedido)
+   Santiago pidió REPETIDAMENTE no recibir más la agenda diaria. No enviar bajo ninguna circunstancia hasta que él lo reactive explícitamente.
+
+[u5 #15] notificaciones_eventos_pausadas  creado=2026-05-18 act=2026-05-18 fuente=whatsapp 2026-05-18
+   Santiago pidió no recibir más notificaciones de eventos hasta nuevo aviso.
+
+[u12 #21] recordatorio_pre_evento_minutos  creado=2026-05-28 act=2026-06-04 fuente=usuario 2026-06-04
+   15
+
+[u13 #20] calendar_provider  creado=2026-05-26 act=2026-05-26 fuente=invitacion_calendario_google_compartido
+   google
+
+[u16 #26] email  creado=2026-05-30 act=2026-05-30 fuente=usuario
+   andres@nomada.com
+
+[u16 #27] calendar_provider  creado=2026-05-30 act=2026-05-30 fuente=usuario
+   Google (Gmail + Google Calendar)
+
+[u18 #45] preferencia_visibilidad_contactos  creado=2026-07-02 act=2026-07-02 fuente=whatsapp
+   Prefiere que todos sus contactos se guarden como privados por defecto. Si en algún caso quiere que un contacto sea público, lo va a indicar explícitamente.
+LISTO
+
+# exit=0
