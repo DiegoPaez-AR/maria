@@ -1,0 +1,102 @@
+# ejecutado: 2026-09-23T10:39:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cat > /tmp/av923.cjs <<'JS'
+#   const db=require("/root/secretaria/node_modules/better-sqlite3")(process.env.MARIA_DB,{readonly:true});
+#   const q=(s,...p)=>{try{return db.prepare(s).all(...p)}catch(e){return [{err:e.message}]}};
+#   console.log("=== u5 Santiago Bignone: ultimos 10 eventos ===");
+#   q("SELECT timestamp,canal,direccion,substr(cuerpo,1,160) c FROM eventos WHERE usuario_id=5 ORDER BY timestamp DESC LIMIT 10").forEach(r=>console.log(JSON.stringify(r)));
+#   console.log("\n=== u5: menciones agenda/brief/reactivar ===");
+#   q("SELECT timestamp,direccion,substr(cuerpo,1,200) c FROM eventos WHERE usuario_id=5 AND (cuerpo LIKE '%agenda%' OR cuerpo LIKE '%brief%' OR cuerpo LIKE '%notific%') ORDER BY timestamp DESC LIMIT 8").forEach(r=>console.log(JSON.stringify(r)));
+#   console.log("\n=== FICO / cena 2/9 ===");
+#   q("SELECT timestamp,usuario_id,canal,substr(cuerpo,1,180) c FROM eventos WHERE cuerpo LIKE '%FICO%' ORDER BY timestamp DESC LIMIT 6").forEach(r=>console.log(JSON.stringify(r)));
+#   console.log("\n=== Dimitrije ===");
+#   q("SELECT timestamp,usuario_id,canal,substr(cuerpo,1,180) c FROM eventos WHERE cuerpo LIKE '%Dimitrije%' OR cuerpo LIKE '%Krunic%' ORDER BY timestamp DESC LIMIT 6").forEach(r=>console.log(JSON.stringify(r)));
+#   console.log("\n=== ultima actividad por usuario ===");
+#   q("SELECT usuario_id, MAX(timestamp) ult, COUNT(*) n FROM eventos GROUP BY usuario_id ORDER BY ult DESC").forEach(r=>console.log(JSON.stringify(r)));
+#   console.log("\n=== eventos que mencionan UTC (u1, desde jun) ===");
+#   q("SELECT timestamp,direccion,substr(cuerpo,1,200) c FROM eventos WHERE usuario_id=1 AND cuerpo LIKE '%UTC%' AND timestamp>'2026-06-01' ORDER BY timestamp DESC LIMIT 6").forEach(r=>console.log(JSON.stringify(r)));
+#   console.log("\n=== menciones de horario/medianoche/silencio u1 desde ago ===");
+#   q("SELECT timestamp,direccion,substr(cuerpo,1,200) c FROM eventos WHERE usuario_id=1 AND timestamp>'2026-08-01' AND (cuerpo LIKE '%23hs%' OR cuerpo LIKE '%madrugada%' OR cuerpo LIKE '%hora de mandar%' OR cuerpo LIKE '%silencio%') ORDER BY timestamp DESC LIMIT 8").forEach(r=>console.log(JSON.stringify(r)));
+#   db.close();
+#   JS
+#   node /tmp/av923.cjs; rm -f /tmp/av923.cjs
+#   echo LISTO
+
+# ───── output ─────
+=== u5 Santiago Bignone: ultimos 10 eventos ===
+{"timestamp":"2026-08-23 15:11:03","canal":"sistema","direccion":"interno","c":"usuario PAUSADO por inactividad (95 días) — aviso enviado a santiagocbignone@gmail.com"}
+{"timestamp":"2026-08-22 16:42:06","canal":"gmail","direccion":"saliente","c":"Hola Santiago!\n\nTe aviso dos cosas cortas:\n\n1) Cambié mi número de WhatsApp. El nuevo es +54 9 11 6644-6137 — agendalo así me reconocés cuando te escriba.\n\n2) I"}
+{"timestamp":"2026-08-22 16:42:06","canal":"sistema","direccion":"interno","c":"acción ejecutada: enviar_email"}
+{"timestamp":"2026-08-19 06:00:54","canal":"gmail","direccion":"saliente","c":"Hola Santiago!\n\nTe escribo para contarte que ahora también podés hablarme por Telegram — misma Maria, con la misma memoria de todo lo que venimos haciendo.\n\nPor"}
+{"timestamp":"2026-08-19 06:00:54","canal":"sistema","direccion":"interno","c":"acción ejecutada: enviar_email"}
+{"timestamp":"2026-08-09 22:05:32","canal":"gmail","direccion":"saliente","c":"📊 *Tu semana* (al 09/08)\n📧 Emails: 0 recibidos · 1 enviados\n📝 Pendientes: 0 cerrados · 0 nuevos · 0 abiertos ahora"}
+{"timestamp":"2026-08-04 14:20:43","canal":"gmail","direccion":"saliente","c":"¡Hola Santiago! Buenas noticias: mi WhatsApp volvió a funcionar 🎉 Ya podés escribirme ahí como siempre, al mismo número.\n\nUn solo detalle: por ahora no puedo es"}
+{"timestamp":"2026-07-19 22:11:05","canal":"gmail","direccion":"saliente","c":"📊 *Tu semana* (al 19/07)\n📧 Emails: 0 recibidos · 1 enviados\n📝 Pendientes: 0 cerrados · 0 nuevos · 0 abiertos ahora"}
+{"timestamp":"2026-07-12 22:12:22","canal":"gmail","direccion":"saliente","c":"📊 *Tu semana* (al 12/07)\n📧 Emails: 0 recibidos · 2 enviados\n📝 Pendientes: 0 cerrados · 0 nuevos · 0 abiertos ahora"}
+{"timestamp":"2026-07-07 12:00:08","canal":"gmail","direccion":"saliente","c":"¡Hola Santiago! Te escribo por acá porque mi WhatsApp está temporalmente en mantenimiento.\n\nMientras tanto, seguí contando conmigo:\n\n📧 Por este mismo email — es"}
+
+=== u5: menciones agenda/brief/reactivar ===
+{"timestamp":"2026-08-22 16:42:06","direccion":"saliente","c":"Hola Santiago!\n\nTe aviso dos cosas cortas:\n\n1) Cambié mi número de WhatsApp. El nuevo es +54 9 11 6644-6137 — agendalo así me reconocés cuando te escriba.\n\n2) Importante: ese número lo uso SOLO para l"}
+{"timestamp":"2026-07-07 12:00:08","direccion":"saliente","c":"¡Hola Santiago! Te escribo por acá porque mi WhatsApp está temporalmente en mantenimiento.\n\nMientras tanto, seguí contando conmigo:\n\n📧 Por este mismo email — escribime para lo que necesites (agenda, r"}
+{"timestamp":"2026-07-06 00:03:06","direccion":"saliente","c":"¡Hola Santiago! Te escribo por acá porque mi WhatsApp está temporalmente en mantenimiento.\n\nMientras tanto, seguí contando conmigo:\n\n📧 Por este mismo email — escribime para lo que necesites (agenda, r"}
+{"timestamp":"2026-05-20 10:00:15","direccion":"saliente","c":"☀️ *Buen día, Santiago Bignone.* miércoles 20 de mayo.\n\n*📅 Agenda del día*\n(sin eventos hoy)"}
+{"timestamp":"2026-05-19 10:09:57","direccion":"entrante","c":"No quiero que me notifiques más la agenda diaria"}
+{"timestamp":"2026-05-19 10:00:11","direccion":"saliente","c":"☀️ *Buen día, Santiago Bignone.* martes 19 de mayo.\n\n*📅 Agenda del día*\n(sin eventos hoy)"}
+{"timestamp":"2026-05-18 13:45:57","direccion":"saliente","c":"Anotado, no te mando más notificaciones de eventos."}
+{"timestamp":"2026-05-18 13:45:47","direccion":"entrante","c":"no quiero más notificaciones de eventos"}
+
+=== FICO / cena 2/9 ===
+{"timestamp":"2026-09-21 21:15:09","usuario_id":1,"canal":"telegram","c":"⏰ *En 15min*: Sencinet-Sondeos (06:30 p. m.)\nCon: mmiccelli@gmail.com, diego.paez@sondeos.com.ar, julian.volberg@sencinet.com\n👤 Mmiccelli — No hay ninguna coincidencia confiable qu"}
+{"timestamp":"2026-09-17 19:45:07","usuario_id":1,"canal":"telegram","c":"⏰ *En 15min*: Froneus Financiero (05:00 p. m.) @https://meet.google.com/vmp-gudj-eqz\nCon: mariela.nigro@areait.com.ar, rsaune@froneus.com, dwinograd@froneus.com\n👤 Mariela Nigro — N"}
+{"timestamp":"2026-09-16 17:15:06","usuario_id":2,"canal":"gmail","c":"⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.)\nCon: lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com\n👤 Lautaro Taretto — No pude confirmar con c"}
+{"timestamp":"2026-09-16 13:45:07","usuario_id":2,"canal":"gmail","c":"⏰ *En 15min*: Sondeos & Alaris – Reunión en Madrid (11:00 a. m.)\nCon: abril.krzisnik@sondeosglobal.com, ignacio.sanchez@alarislabs.com, miguel.calvo@alarislabs.com\n👤 Abril Krzisnik"}
+{"timestamp":"2026-09-16 10:45:06","usuario_id":2,"canal":"gmail","c":"⏰ *En 15min*: Infobip - Sondeos Almuerzo (08:00 a. m.)\nCon: abril.krzisnik@sondeosglobal.com, alvaro.luque@infobip.com\n👤 Abril Krzisnik — Ejecutivo de Cuentas en Sondeos Global\n👤 A"}
+{"timestamp":"2026-09-09 17:15:02","usuario_id":2,"canal":"gmail","c":"⏰ *En 15min*: CHEKPOINT SEMANAL ENRUTAMIENTOS  (02:30 p. m.)\nCon: lautaro.taretto@sondeosglobal.com, agustin.rodriguez@sondeosglobal.com\n👤 Lautaro Taretto — No pude confirmar con c"}
+
+=== Dimitrije ===
+{"timestamp":"2026-09-08 19:45:28","usuario_id":1,"canal":"telegram","c":"⏰ *En 15min*: Modelo de negocio Bet (05:00 p. m.)\nCon: hernan.fulco@sondeosglobal.com, krunicdimitrije@gmail.com, ruben.ward@sondeosglobal.com\n👤 Hernan Fulco — CEO en Sondeos Globa"}
+{"timestamp":"2026-09-08 19:45:28","usuario_id":2,"canal":"gmail","c":"⏰ *En 15min*: Modelo de negocio Bet (05:00 p. m.)\nCon: krunicdimitrije@gmail.com, diego@paez.is, ruben.ward@sondeosglobal.com\n👤 Krunicdimitrije — Head of Wholesale and Global Accou"}
+{"timestamp":"2026-09-02 11:45:08","usuario_id":2,"canal":"gmail","c":"⏰ *En 15min*: Meet Dimitrije / Diego / Ruben (09:00 a. m.)\nCon: krunicdimitrije@gmail.com, diego@paez.is, ruben.ward@sondeosglobal.com\n👤 Krunicdimitrije — Head of Wholesale and Glo"}
+{"timestamp":"2026-09-02 11:45:07","usuario_id":1,"canal":"telegram","c":"⏰ *En 15min*: Meet Dimitrije / Diego / Ruben (09:00 a. m.)\nCon: hernan.fulco@sondeosglobal.com, krunicdimitrije@gmail.com, ruben.ward@sondeosglobal.com\n👤 Hernan Fulco — CEO en Sond"}
+{"timestamp":"2026-09-02 10:00:08","usuario_id":2,"canal":"gmail","c":"☀️ *Buen día, Hernan Fulco.* miércoles, 2 de septiembre.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌦️ llovizna leve, mín 11° / máx 22° · 63% prob. de lluvia\n\n*📅 Agenda del día*\n• 09:00 a. m."}
+{"timestamp":"2026-09-02 07:00:08","usuario_id":1,"canal":"telegram","c":"☀️ *Buen día, Diego.* miércoles, 2 de septiembre.\n\n*🌡️ Clima en Buenos Aires, AR*\n⛈️ tormenta, mín 10° / máx 22° · 63% prob. de lluvia\n\n*📅 Agenda del día*\n• todo el día — Pagar a A"}
+
+=== ultima actividad por usuario ===
+{"usuario_id":null,"ult":"2026-09-23 12:00:10","n":6660}
+{"usuario_id":2,"ult":"2026-09-23 11:15:11","n":3831}
+{"usuario_id":18,"ult":"2026-09-23 10:00:15","n":1357}
+{"usuario_id":12,"ult":"2026-09-23 10:00:14","n":240}
+{"usuario_id":3,"ult":"2026-09-23 10:00:13","n":543}
+{"usuario_id":1,"ult":"2026-09-23 07:00:12","n":9929}
+{"usuario_id":13,"ult":"2026-09-10 21:48:03","n":2144}
+{"usuario_id":6,"ult":"2026-09-01 02:00:06","n":1811}
+{"usuario_id":20,"ult":"2026-08-23 15:11:38","n":70}
+{"usuario_id":19,"ult":"2026-08-23 15:11:34","n":74}
+{"usuario_id":16,"ult":"2026-08-23 15:11:30","n":143}
+{"usuario_id":10,"ult":"2026-08-23 15:11:21","n":128}
+{"usuario_id":9,"ult":"2026-08-23 15:11:17","n":141}
+{"usuario_id":8,"ult":"2026-08-23 15:11:12","n":120}
+{"usuario_id":7,"ult":"2026-08-23 15:11:08","n":261}
+{"usuario_id":5,"ult":"2026-08-23 15:11:03","n":64}
+{"usuario_id":4,"ult":"2026-07-16 13:59:24","n":2290}
+{"usuario_id":17,"ult":"2026-06-29 23:51:34","n":1441}
+{"usuario_id":15,"ult":"2026-06-29 10:01:08","n":42}
+{"usuario_id":14,"ult":"2026-06-29 10:01:07","n":42}
+{"usuario_id":11,"ult":"2026-05-28 10:00:14","n":15}
+
+=== eventos que mencionan UTC (u1, desde jun) ===
+{"timestamp":"2026-06-13 03:23:32","direccion":"saliente","c":"❌ Cerré el thread de email con Google Workspace Alerts <google-workspace-alerts-noreply@google.com> — no pude identificar para quién.\n\nAsunto: \"Alerta: Cambio de contraseña de superadministrador maria"}
+
+=== menciones de horario/medianoche/silencio u1 desde ago ===
+{"timestamp":"2026-08-17 07:00:05","direccion":"saliente","c":"☀️ *Buen día, Diego.* lunes, 17 de agosto.\n\n*🌡️ Clima en Buenos Aires, AR*\n🌦️ llovizna, mín 11° / máx 14° · 31% prob. de lluvia\n\n*📅 Agenda del día*\n(sin eventos hoy)\n\n*📝 Pendientes*\n1. iProt Seguridad"}
+{"timestamp":"2026-08-17 00:46:28","direccion":"saliente","c":"Listo, les escribo ahora a Gabriel Pacheco y a Carolina Brunatti para coordinar la cena en FICO, este miércoles 19/08 o el que viene 26/08, de 21 a 23hs. Apenas confirmen el mismo día te aviso y hago "}
+{"timestamp":"2026-08-17 00:46:21","direccion":"saliente","c":"Hola Gabriel! Soy Maria, la secretaria de Diego. Te escribo para coordinar una cena con vos, Carolina Brunatti y Diego en FICO, este miércoles 19/08 o el miércoles que viene 26/08, de 21 a 23hs. ¿Qué "}
+{"timestamp":"2026-08-16 03:25:13","direccion":"saliente","c":"🌉✅ Confirmación final — MariaBridge andando. Este también salió por la cola, silencioso, sin Tasker. Buenas noches Diego, gran laburo hoy. 🌙"}
+{"timestamp":"2026-08-15 20:33:39","direccion":"saliente","c":"Sí, fue por los mensajes duplicados de la madrugada (el error técnico que ya se resolvió). Manuel se quejó un poco pero le pedí disculpas y quedó tranquilo. Sigo esperando que Hernán confirme jueves 2"}
+{"timestamp":"2026-08-15 20:32:05","direccion":"saliente","c":"¡Hola Manuel! ¿Cómo estás? Antes que nada, disculpas por los mensajes repetidos que te llegaron de madrugada — fue un error técnico de mi lado, ya está resuelto.\n\nAnoté tu preferencia por el *jueves 2"}
+LISTO
+
+# exit=0
