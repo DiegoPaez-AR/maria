@@ -260,11 +260,31 @@ async function procesar(body) {
     // habilita nada: el turno corre con permisos de tercero.
     const _matcheaUsuario = usuarios.listarActivos()
       .some(x => String(x.nombre || '').trim().toLowerCase() === n);
-    const _enLibreta = (() => {
+    // NOMBRE DE NEGOCIO VERIFICADO (28/9, caso Telecentro): para las cuentas
+    // business con tilde verde WhatsApp muestra SU nombre verificado
+    // ("Telecentro"), no el de la agenda ("Telecentro Atención al Cliente").
+    // Maria le escribió, el operador respondió 9 veces y el guard tiró todo
+    // ("no está en ninguna libreta"). Match por nombre = exacto, o el nombre
+    // de la libreta EMPIEZA con el nombre visible (≥4 letras) + espacio/signo.
+    // Solo se usa contra CONTACTOS ya cargados (no contra usuarios): a un
+    // tercero suplantado se le da, como mucho, permisos de tercero.
+    const _matchNombreLibreta = (nombreLibreta) => {
+      const c = String(nombreLibreta || '').trim().toLowerCase();
+      if (!c || !n) return false;
+      if (c === n) return true;
+      if (n.length < 4) return false;
+      return c.startsWith(n) && /[\s\-–—(|,:]/.test(c.charAt(n.length));
+    };
+    const _contactosPorNombre = (() => {
       try {
-        return !!mem.db.prepare(`SELECT 1 FROM contactos WHERE lower(trim(nombre)) = ? LIMIT 1`).get(n);
-      } catch { return false; }
+        const exactos = mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) = ?`).all(n);
+        if (exactos.length) return exactos;
+        if (n.length < 4) return [];
+        return mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) LIKE ? || '%'`).all(n)
+          .filter(r => _matchNombreLibreta(r.nombre));
+      } catch { return []; }
     })();
+    const _enLibreta = _contactosPorNombre.length > 0;
     // ¿Maria le escribió a un chat con ese nombre hace poco? Entonces esta
     // respuesta es de una gestión que ella misma abrió — legítima por
     // construcción. (REGRESIÓN 22/8: el guard sólo miraba historial ENTRANTE,
@@ -277,11 +297,9 @@ async function procesar(body) {
           `SELECT 1 FROM eventos WHERE canal='whatsapp' AND direccion='saliente'
              AND lower(trim(COALESCE(nombre,''))) = ? AND timestamp >= datetime('now','-30 days') LIMIT 1`
         ).get(n)
-        || !!mem.db.prepare(
-          `SELECT 1 FROM wa_outbox o JOIN contactos c
-              ON replace(replace(COALESCE(c.whatsapp,''),'@c.us',''),'+','') LIKE '%' || substr(o.numero, -10)
-             WHERE lower(trim(c.nombre)) = ? AND o.creado >= datetime('now','-30 days') LIMIT 1`
-        ).get(n);
+        || _contactosPorNombre.some(c => c.whatsapp && !!mem.db.prepare(
+          `SELECT 1 FROM wa_outbox o WHERE ? LIKE '%' || substr(o.numero, -10) AND o.creado >= datetime('now','-30 days') LIMIT 1`
+        ).get(String(c.whatsapp).replace(/@c\.us$/, '').replace(/\D/g, '')));
       } catch { return false; }
     })();
     const _yaHabloAntes = (() => {
@@ -312,7 +330,7 @@ async function procesar(body) {
       mem.log({ canal: 'sistema', direccion: 'interno', cuerpo: `wa-hook: nombre "${q.sender}" matchea ${us.length} usuarios — no ruteo`, metadata: { tipo: 'wa_hook_ambiguo' } });
       return { replies: [] };
     } else {
-      const rows = mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) = ?`).all(n);
+      const rows = _contactosPorNombre;
       const porU = new Map();
       for (const r of rows) if (!porU.has(r.usuario_id)) porU.set(r.usuario_id, r);
       if (porU.size === 1) {
