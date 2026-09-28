@@ -1,0 +1,20 @@
+# ejecutado: 2026-09-28T15:09:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   sqlite3 "$DB" "update pendientes set estado='cerrado', cerrado=CURRENT_TIMESTAMP where id=345 and estado='abierto'"
+#   sqlite3 "$DB" "select id,estado,datetime(cerrado,'-3 hours') from pendientes where id=345"
+#   sqlite3 "$DB" "select id,estado from follow_ups where id in (68,70)"
+#   pm2 jlist | python3 -c "import json,sys,time;[print(' ',p['name'],'up',int((time.time()*1000-p['pm2_env']['pm_uptime'])//60000),'min') for p in json.load(sys.stdin) if p['name']=='maria-paez']"
+#   echo LISTO
+
+# ───── output ─────
+345|cerrado|2026-09-28 15:09:01
+68|abierto
+70|abierto
+  maria-paez up 2 min
+LISTO
+
+# exit=0
