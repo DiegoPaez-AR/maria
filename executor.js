@@ -964,7 +964,7 @@ function _agregarPendiente(a, ctx) {
 function _posponerPendiente(a, ctx) {
   _requerir(a, ['id', 'hasta']);
   const hastaISO = _resolverHasta(a.hasta, ctx);
-  const r = mem.posponerPendiente(ctx.usuario.id, a.id, hastaISO);
+  const r = mem.posponerPendiente(ctx.usuario.id, Number(a.id), hastaISO);
   if (!r) throw new Error(`posponer_pendiente: no encontré el pendiente id=${a.id} (o no es tuyo)`);
   return { id: r.id, recordar_desde: r.recordar_desde, pospuesto: true };
 }
@@ -994,9 +994,12 @@ function _quitarPendiente(a, ctx) {
     throw new Error('quitar_pendiente: pasá `id`, `desc` o `indice`');
   }
   let arg;
-  if (typeof a.id === 'number') arg = a.id;
+  // 28/9: el modelo a veces manda id como string ("345") → caía a {indice:
+  // undefined} → "no encontré el pendiente (345)" con el pendiente abierto.
+  const _idNum = (a.id != null && a.id !== '' && Number.isFinite(Number(a.id))) ? Number(a.id) : null;
+  if (_idNum != null) arg = _idNum;
   else if (typeof a.desc === 'string') arg = a.desc;
-  else arg = { indice: a.indice };
+  else arg = { indice: Number(a.indice) };
 
   const cerrado = mem.quitarPendiente(ctx.usuario.id, arg);
   if (!cerrado) {
