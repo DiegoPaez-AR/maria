@@ -1,13 +1,3 @@
-0|maria-pa | 2026-09-28 09:24:24: [MB v4.9] 09:24:17 I [outbox] cold-send #277 no verificado — queda en cola
-0|maria-pa | 2026-09-28 09:25:49: [MB-FALLO] #277 motivo=chat_equivocado → {"id":277,"cold_fallos":3,"definitivo":false}
-0|maria-pa | 2026-09-28 09:25:54: [MB v4.9] 09:25:48 I [frio] abriendo chat 5491171950001 (#277)
-0|maria-pa | 2026-09-28 09:25:54: [MB v4.9] 09:25:49 E [frio] #277: chat ABIERTO ES OTRO ("pia - clientes personal" ≠ "Personal Flow Atención al Cliente"/5491171950001) — ABORTO sin tocar
-0|maria-pa | 2026-09-28 09:25:54: [MB v4.9] 09:25:49 I [outbox] cold-send #277 no verificado — queda en cola
-0|maria-pa | 2026-09-28 09:27:16: [MB-FALLO] #277 motivo=chat_equivocado → {"id":277,"cold_fallos":4,"definitivo":false}
-0|maria-pa | 2026-09-28 09:27:24: [MB v4.9] 09:27:15 I [frio] abriendo chat 5491171950001 (#277)
-0|maria-pa | 2026-09-28 09:27:24: [MB v4.9] 09:27:16 E [frio] #277: chat ABIERTO ES OTRO ("pia - clientes personal" ≠ "Personal Flow Atención al Cliente"/5491171950001) — ABORTO sin tocar
-0|maria-pa | 2026-09-28 09:27:24: [MB v4.9] 09:27:16 I [outbox] cold-send #277 no verificado — queda en cola
-0|maria-pa | 2026-09-28 09:28:48: [MB-FALLO] #277 motivo=chat_equivocado → {"id":277,"cold_fallos":5,"definitivo":true}
 0|maria-pa | 2026-09-28 09:28:48: [wa-send] wa-outbox/aviso: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-09-28 09:28:48: [wa-outbox] aviso #277 → Diego por telegram
 0|maria-pa | 2026-09-28 09:28:54: [MB v4.9] 09:28:47 I [frio] abriendo chat 5491171950001 (#277)
@@ -197,4 +187,14 @@
 0|maria-pa | 2026-09-28 14:48:48: [MB v4.9] 14:48:43 I [outbox] enviado EN FRÍO (accesibilidad) → 5491163809500
 0|maria-pa | 2026-09-28 14:51:58: [MB v4.9] 14:51:49 I [frio] abriendo chat 5491163809500 (#281)
 0|maria-pa | 2026-09-28 14:51:58: [MB v4.9] 14:51:50 I [frio] botón send encontrado — 'escribiendo' 17s antes de enviar
+0|maria-pa | 2026-09-28 14:52:18: [MB v4.9] 14:52:09 I [frio] verificación #281 lectura 1/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-09-28 14:52:18: [MB v4.9] 14:52:11 I [frio] verificación #281 lectura 2/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-09-28 14:52:18: [MB v4.9] 14:52:14 I [frio] verificación #281 lectura 3/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-09-28 14:52:18: [MB v4.9] 14:52:14 W [frio] #281: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+0|maria-pa | 2026-09-28 14:52:18: [MB v4.9] 14:52:14 I [frio] #281: foto → VPS (estado árbol: inconcluso)
+0|maria-pa | 2026-09-28 14:52:22: [MB-VERIF] #281 árbol=inconcluso → enviado (Burbuja derecha con hora 2:52 PM y doble tilde (entregado)) https://intensa.io/_dl/verif-281-d356e02a.png
+0|maria-pa | 2026-09-28 14:52:22: [wa-outbox] #281 entregado por el teléfono
+0|maria-pa | 2026-09-28 14:52:28: [MB v4.9] 14:52:23 I [frio] #281: veredicto por foto = enviado (http 200)
+0|maria-pa | 2026-09-28 14:52:28: [MB v4.9] 14:52:23 I [frio] verificación #281: ENVIADO (por foto)
+0|maria-pa | 2026-09-28 14:52:28: [MB v4.9] 14:52:23 I [outbox] enviado EN FRÍO (accesibilidad) → 5491163809500
 
