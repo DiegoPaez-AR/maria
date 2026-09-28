@@ -1,0 +1,54 @@
+# ejecutado: 2026-09-28T15:04:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "── el fallo ──"
+#   grep -h "quitar_pendiente" logs/maria-paez/out.log logs/maria-paez/error.log | grep "^2026-09-28" | tail -5 | cut -c1-250
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),substr(replace(cuerpo,char(10),' '),1,220) from eventos where canal='sistema' and cuerpo like '%quitar_pendiente%' and date(timestamp,'-3 hours')='2026-09-28' order by timestamp desc limit 5"
+#   echo "── pendientes abiertos de Diego hoy ──"
+#   sqlite3 "$DB" "select id,estado,dueno,disparador,substr(\"desc\",1,110),substr(coalesce(meta_json,''),1,80) from pendientes where usuario_id=1 and (estado='abierto' or date(creado,'-3 hours')='2026-09-28') order by id desc limit 12"
+#   echo "── follow-ups vivos ──"
+#   sqlite3 "$DB" "select id,estado,esperando_de,substr(descripcion,1,90) from follow_ups where estado in ('abierto','disparado') order by id desc limit 6"
+#   echo "── último turno TG ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),direccion,substr(replace(cuerpo,char(10),' '),1,200) from eventos where canal='telegram' and usuario_id=1 order by timestamp desc limit 4"
+#   echo LISTO
+
+# ───── output ─────
+── el fallo ──
+2026-09-28 14:38:00: [quitar_pendiente] follow-up #71 cancelado en cascada (5491163809500@c.us ya había respondido)
+2026-09-28 14:39:24: [quitar_pendiente] follow-up #72 cancelado en cascada (5491163809500@c.us ya había respondido)
+2026-09-28 14:39:57: [quitar_pendiente] follow-up #73 cancelado en cascada (5491163809500@c.us ya había respondido)
+2026-09-28 14:48:42: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (345)
+2026-09-28 14:56:04: [executor] acción #0 (quitar_pendiente) falló: quitar_pendiente: no encontré el pendiente (345)
+2026-09-28 14:56:04|acción FALLÓ: quitar_pendiente — quitar_pendiente: no encontré el pendiente (345)
+2026-09-28 14:48:42|acción FALLÓ: quitar_pendiente — quitar_pendiente: no encontré el pendiente (345)
+2026-09-28 14:39:57|acción ejecutada: quitar_pendiente
+2026-09-28 14:39:24|acción ejecutada: quitar_pendiente
+2026-09-28 14:38:00|acción ejecutada: quitar_pendiente
+── pendientes abiertos de Diego hoy ──
+346|abierto|usuario|manual|Recordar: nota de crédito de Telecentro (baja Nº 13132707) disponible en cuenta virtual a partir del día 20 de|
+345|abierto|usuario|respuesta_usuario|Darme el domicilio donde Telecentro debe retirar los equipos en comodato (y confirmar si el mail de contacto e|
+344|cerrado|maria|trigger_externo|Insistí ante Telecentro con la baja/cancelación del servicio de Diego (no aceptaron bajar a ~$14.000/mes, solo|{"esperando_de":"5491163809500@c.us","esperando_canal":"whatsapp","follow_up_id"
+343|cerrado|maria|trigger_externo|Telecentro ofreció 50% off ($32.054,61/mes) y lo rechacé insistiendo en el plan de ~$14.000/mes o la baja/canc|{"esperando_de":"5491163809500@c.us","esperando_canal":"whatsapp","follow_up_id"
+342|cerrado|maria|trigger_externo|Telecentro: Diego ya pidió la baja en el chat (tras rechazar el 25% off / $48.081,91). Cuando Micaela responda|{"esperando_de":"5491163809500@c.us","esperando_canal":"whatsapp","follow_up_id"
+341|cerrado|maria|trigger_externo|Telecentro ofreció 25% off ($61.348,53 → $48.081,91/mes, nov-abr) — Diego lo rechazó y pidió el plan de $14mil|{"esperando_de":"5491163809500@c.us","esperando_canal":"whatsapp","follow_up_id"
+340|abierto|maria|trigger_externo|Retomar gestión Personal/Flow (baja de precio) apenas Diego abra el chat de WhatsApp al 7195-0001 esta tarde|{"esperando_de":"Diego","esperando_canal":"whatsapp","detalle":"Diego va a manda
+339|cerrado|maria|trigger_externo|Esperando respuesta de 5491126222222@c.us (WA): "Hola, buenas. Escribo en representación de Diego Páez (DNI 92|{"esperando_de":"5491126222222@c.us","origen":"auto_enviar_wa","sin_follow_up":t
+338|cerrado|maria|trigger_externo|Esperando respuesta de 5491163809500@c.us (WA): "Hola, buenas. Escribo en representación de Diego Páez (DNI 92|{"esperando_de":"5491163809500@c.us","origen":"auto_enviar_wa","sin_follow_up":t
+337|cerrado|maria|trigger_externo|Esperando respuesta de 5491171950001@c.us (WA): "Hola, buenas. Escribo en representación de Diego Páez (DNI 92|{"esperando_de":"5491171950001@c.us","origen":"auto_enviar_wa","sin_follow_up":t
+336|abierto|usuario|manual|Verificar los permisos de sacar de arena|
+335|abierto|usuario|manual|Reunión Software elecciones|
+── follow-ups vivos ──
+70|abierto|5491163809500@c.us|Telecentro ofreció 25% off ($61.348,53 → $48.081,91/mes, nov-abr) — Diego lo rechazó y pid
+68|abierto|5491163809500@c.us|Negociación de baja de precio Telecentro (internet+telefonía hogar de Diego, cliente Nº 10
+── último turno TG ──
+2026-09-28 14:56:10|saliente|De nada! Cualquier cosa con Telecentro o algo mas, avisame.  ⚠️ Ojo: no pude completar esta acción: quitar_pendiente.
+2026-09-28 14:55:54|entrante|ok, gracias
+2026-09-28 14:54:15|saliente|Che, se cerró la gestión con Telecentro: la baja quedó registrada con el número *13132707*.  📅 El servicio sigue activo hasta fin de este mes. 📦 El retiro de los equipos en Triunvirato 3176 6A lo coor
+2026-09-28 14:48:48|saliente|Gracias! Le paso a Telecentro el mail (diego@paez.is) y la direccion (Triunvirato 3176, piso 6A) para que coordinen el retiro de los equipos. Ya se lo mando (sale en unos minutos, no es instantaneo). 
+LISTO
+
+# exit=0
