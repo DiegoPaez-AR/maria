@@ -1,0 +1,109 @@
+# ejecutado: 2026-09-28T14:29:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   echo "── libreta: telecentro ──"
+#   sqlite3 "$DB" "select id,usuario_id,nombre,whatsapp,email,substr(notas,1,80) from contactos where lower(nombre) like '%telecentro%' or lower(notas) like '%telecentro%'"
+#   echo "── eventos con telecentro (30 días) ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),canal,direccion,coalesce(nombre,de),substr(replace(cuerpo,char(10),' '),1,170) from eventos where (lower(cuerpo) like '%telecentro%' or lower(nombre) like '%telecentro%' or lower(de) like '%telecentro%') and timestamp >= datetime('now','-30 days') order by timestamp" | tail -30
+#   echo "── wa-hook: descartes / desconocidos recientes ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),substr(replace(cuerpo,char(10),' '),1,200) from eventos where canal='sistema' and (cuerpo like 'wa-hook:%' ) and timestamp >= datetime('now','-14 days') order by timestamp desc" | head -25
+#   echo "── MB: notifs entrantes de telecentro / descartes del listener (logs) ──"
+#   grep -hiE "telecentro" logs/maria-paez/out.log logs/maria-paez/out__*.log 2>/dev/null | tail -20 | cut -c1-220
+#   echo "── MB: todo lo que el listener descartó últimos 3 días ──"
+#   grep -hE "\[MB" logs/maria-paez/out.log | grep -iE "descart|redact|hidden|sin acción|ignor|filtr|grupo|group" | tail -15 | cut -c1-200
+#   echo "── últimas entrantes por WA (3 días) ──"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),coalesce(nombre,de),substr(replace(cuerpo,char(10),' '),1,80) from eventos where canal='whatsapp' and direccion='entrante' and timestamp >= datetime('now','-3 days') order by timestamp desc" | head -15
+#   grep -hE "\[MB.*\[notif\] entrante" logs/maria-paez/out.log | tail -10 | cut -c1-160
+#   echo LISTO
+
+# ───── output ─────
+── libreta: telecentro ──
+518|1|Corellana||corellana@movilgate.com|asistente de "The Quantum Alliance (TQA) y Telecentro" (agregado automáticamente
+519|1|Fherrera||fherrera@telecentro.net.ar|asistente de "The Quantum Alliance (TQA) y Telecentro" (agregado automáticamente
+595|1|Telecentro Atención al Cliente|5491163809500@c.us||WhatsApp oficial de Telecentro. Usado para gestionar baja de precio de la cuenta
+── eventos con telecentro (30 días) ──
+2026-09-28 09:15:49|telegram|entrante|Diego|Hola María,  Te pido que me gestiones una baja de precio en los dos servicios de internet de casa. Estoy pagando alrededor de $60.000 en cada uno, y en la web los mismos 
+2026-09-28 09:19:21|telegram|saliente|Diego|Dale, arranco con las dos gestiones por WhatsApp (los canales oficiales de retenciones de Personal y Telecentro soportan cambios de plan y bajas, no hace falta llamar):  
+2026-09-28 09:23:11|telegram|saliente|Diego|Anotado. Ajusto el criterio: en ambas gestiones vamos directo por la opción más barata que tengan, sin importar si cambia la velocidad, el equipo o si se cae algún servic
+2026-09-28 09:32:28|telegram|saliente|Diego|El que falló fue el de Personal (7195-0001), no el de Telecentro. El de Telecentro (6380-9500) sigue en pie sin problemas reportados.  Ya reintenté con el número alternat
+2026-09-28 09:33:15|sistema|interno||mb-verif: cold-send #278 a Telecentro Atención al Cliente / 5491163809500 — veredicto por foto: enviado (El mensaje aparece como burbuja en la conversación, cuadro vacío)
+2026-09-28 10:45:51|telegram|saliente|Diego|Va así:  Telecentro: el mensaje salió bien a su WhatsApp oficial (6380-9500) pidiendo revisión de precio. Todavía no respondieron, estoy esperando.  Personal/Flow: acá tu
+2026-09-28 10:47:52|telegram|saliente|Diego|Buenísimo, dale. Quedo atenta: en cuanto le mandes ese primer mensaje al 7195-0001 y se abra el chat, sigo yo la negociación con Personal (mismo objetivo: precio más bajo
+2026-09-28 14:03:04|telegram|saliente|Diego|⚠️ Descarté un WhatsApp de *Telecentro* porque no pude verificar quién es.  Decía: "¡Buen día Diego! 😀 ¡Que bueno leerte!  👉 Estás gestionando la cuenta XX37143 , de la c
+2026-09-28 14:03:04|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:19|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:30|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:50|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:04:20|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:04:37|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:05:19|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:11:45|telegram|entrante|Diego|y en telecentro estamos esperando a un representante
+2026-09-28 14:12:03|telegram|saliente|Diego|Perfecto, gracias por la actualización. Sigo así:  - Telecentro: en cola esperando que los atienda un representante. Ya tengo el pendiente abierto, lo sigo monitoreando. 
+2026-09-28 14:22:55|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:23:02|sistema|interno||wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:23:30|telegram|entrante|Diego|ahi te respondio un iperador de telecentro, lo ves?
+2026-09-28 14:23:45|telegram|saliente|Diego|No, no me llegó nada nuevo de Telecentro todavía — mi pendiente con ellos sigue abierto sin respuesta. Si te contestó un operador, puede que haya sido en tu WhatsApp pers
+── wa-hook: descartes / desconocidos recientes ──
+2026-09-28 14:23:02|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:22:55|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:05:19|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:04:37|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:04:20|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:50|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:30|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:19|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+2026-09-28 14:03:04|wa-hook: "Telecentro" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+── MB: notifs entrantes de telecentro / descartes del listener (logs) ──
+2026-09-28 14:03:27: [MB v4.9] 14:03:20 I [notif] entrante de "Telecentro": Podés gestionar tu cuenta indicando el número de DNI 🪪 o si
+2026-09-28 14:03:27: [MB v4.9] 14:03:20 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:03:37: [MB v4.9] 14:03:31 I [notif] entrante de "Telecentro": Por favor, compartinos tu número de DNI sin puntos ni espaci
+2026-09-28 14:03:37: [MB v4.9] 14:03:31 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:03:47: [MB v4.9] 14:03:43 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:03:47: [MB v4.9] 14:03:43 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:03:57: [MB v4.9] 14:03:51 I [notif] entrante de "Telecentro": El número de cliente 7937143 por el que estás consultando aú
+2026-09-28 14:03:57: [MB v4.9] 14:03:51 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:07: [MB v4.9] 14:04:06 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:07: [MB v4.9] 14:04:06 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:27: [MB v4.9] 14:04:19 I [notif] entrante de "Telecentro": El documento que ingresaste tiene asociado las siguientes cu
+2026-09-28 14:04:27: [MB v4.9] 14:04:19 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:37: [MB v4.9] 14:04:37 I [notif] entrante de "Telecentro": Tu cuenta debe ser verificada por un analista.
+2026-09-28 14:04:37: [MB v4.9] 14:04:37 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:05:27: [MB v4.9] 14:05:19 I [notif] entrante de "Telecentro": Estamos derivando tu consulta con un representante, a la bre
+2026-09-28 14:05:27: [MB v4.9] 14:05:19 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:22:58: [MB v4.9] 14:22:56 I [notif] entrante de "Telecentro": Buenas tardes, María, mi nombre es Micaela 🙋🏻‍♀️ y voy a e
+2026-09-28 14:22:58: [MB v4.9] 14:22:56 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:23:08: [MB v4.9] 14:23:02 I [notif] entrante de "Telecentro": Revisando tu cuenta, encontré una excelente oportunidad para
+2026-09-28 14:23:08: [MB v4.9] 14:23:02 I [notif] sin acción de reply — descarto no-chat: "Telecentro"
+── MB: todo lo que el listener descartó últimos 3 días ──
+2026-09-28 14:03:47: [MB v4.9] 14:03:43 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:03:57: [MB v4.9] 14:03:51 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:07: [MB v4.9] 14:04:06 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:07: [MB v4.9] 14:04:06 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:27: [MB v4.9] 14:04:19 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:04:37: [MB v4.9] 14:04:37 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:05:27: [MB v4.9] 14:05:19 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:08:07: [MB v4.9] 14:07:59 I [notif] sin acción de reply — descarto no-chat: "PiA - Clientes Personal"
+2026-09-28 14:08:07: [MB v4.9] 14:07:59 I [notif] dup ignorado de "PiA - Clientes Personal"
+2026-09-28 14:08:37: [MB v4.9] 14:08:33 I [notif] sin acción de reply — descarto no-chat: "PiA - Clientes Personal"
+2026-09-28 14:08:37: [MB v4.9] 14:08:33 I [notif] dup ignorado de "PiA - Clientes Personal"
+2026-09-28 14:08:37: [MB v4.9] 14:08:35 I [notif] dup ignorado de "PiA - Clientes Personal"
+2026-09-28 14:08:37: [MB v4.9] 14:08:35 I [notif] dup ignorado de "PiA - Clientes Personal"
+2026-09-28 14:22:58: [MB v4.9] 14:22:56 I [notif] dup ignorado de "Telecentro"
+2026-09-28 14:23:08: [MB v4.9] 14:23:02 I [notif] sin acción de reply — descarto no-chat: "Telecentro"
+── últimas entrantes por WA (3 días) ──
+2026-09-28 14:03:07: [MB v4.9] 14:03:04 I [notif] entrante de "Telecentro": ¡Buen día Diego! 😀
+2026-09-28 14:03:27: [MB v4.9] 14:03:20 I [notif] entrante de "Telecentro": Podés gestionar tu cuenta indicando el número de DNI 🪪 o si
+2026-09-28 14:03:37: [MB v4.9] 14:03:31 I [notif] entrante de "Telecentro": Por favor, compartinos tu número de DNI sin puntos ni espaci
+2026-09-28 14:03:57: [MB v4.9] 14:03:51 I [notif] entrante de "Telecentro": El número de cliente 7937143 por el que estás consultando aú
+2026-09-28 14:04:27: [MB v4.9] 14:04:19 I [notif] entrante de "Telecentro": El documento que ingresaste tiene asociado las siguientes cu
+2026-09-28 14:04:37: [MB v4.9] 14:04:37 I [notif] entrante de "Telecentro": Tu cuenta debe ser verificada por un analista.
+2026-09-28 14:05:27: [MB v4.9] 14:05:19 I [notif] entrante de "Telecentro": Estamos derivando tu consulta con un representante, a la bre
+2026-09-28 14:22:58: [MB v4.9] 14:22:56 I [notif] entrante de "Telecentro": Buenas tardes, María, mi nombre es Micaela 🙋🏻‍♀️ y voy a e
+2026-09-28 14:23:08: [MB v4.9] 14:23:02 I [notif] entrante de "Telecentro": Revisando tu cuenta, encontré una excelente oportunidad para
+LISTO
+
+# exit=0
