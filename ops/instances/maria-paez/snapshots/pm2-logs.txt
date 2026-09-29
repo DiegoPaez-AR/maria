@@ -1,4 +1,17 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-29 01:26:59: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-29 01:30:40: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-29 03:07:49: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-29 04:42:26: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-29 06:02:38: [claude-client] tipo de consulta desconocido: undefined
+0|maria-pa | 2026-09-29 08:46:37: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-29 09:45:57: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-29 13:12:02: [wa-outbox] #284 DESCARTADO por viejo → 5491163809500: el destinatario escribió después y ya se le respondió: "Ninguna de esas dos opciones es la cuenta que quiero consult"
+0|maria-pa | 2026-09-29 13:13:02: [wa-outbox] #283 DESCARTADO por viejo → 5491163809500: el destinatario escribió después y ya se le respondió: "Hola! Creo que hubo un cruce: mi consulta no es sobre la dir"
+0|maria-pa | 2026-09-29 13:13:02: [executor] acción #0 (enviar_wa) falló: enviar_wa: el texto es demasiado corto (2 caracteres). Escribí el mensaje completo antes de emitir la acción — no se envía texto de relleno.
+0|maria-pa | 2026-09-29 13:14:02: [wa-outbox] #285 DESCARTADO por viejo → 5491163809500: el destinatario escribió después y ya se le respondió: "Hola, esa no es la cuenta que estoy gestionando. La cuenta c"
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-29 03:32:58: [MB v4.9] 03:32:55 I [upd] al día (v4.9 code=34, mío=34)
 0|maria-pa | 2026-09-29 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -129,17 +142,7 @@
 0|maria-pa | 2026-09-29 13:13:22: [prompt-builder] tercero slim: system 60868→51479c, user 28040→19964c
 0|maria-pa | 2026-09-29 13:13:25: [MB v4.9] 13:13:16 I [notif] reply inline a "Telecentro": ENVIADA
 0|maria-pa | 2026-09-29 13:13:54: [wa-outbox] #288 encolado → +5491163809500 (Sí, soy el titular de la cuenta.…)
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-29 01:26:59: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-29 01:30:40: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-29 03:07:49: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-29 04:42:26: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-29 06:02:38: [claude-client] tipo de consulta desconocido: undefined
-0|maria-pa | 2026-09-29 08:46:37: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-29 09:45:57: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-29 13:12:02: [wa-outbox] #284 DESCARTADO por viejo → 5491163809500: el destinatario escribió después y ya se le respondió: "Ninguna de esas dos opciones es la cuenta que quiero consult"
-0|maria-pa | 2026-09-29 13:13:02: [wa-outbox] #283 DESCARTADO por viejo → 5491163809500: el destinatario escribió después y ya se le respondió: "Hola! Creo que hubo un cruce: mi consulta no es sobre la dir"
-0|maria-pa | 2026-09-29 13:13:02: [executor] acción #0 (enviar_wa) falló: enviar_wa: el texto es demasiado corto (2 caracteres). Escribí el mensaje completo antes de emitir la acción — no se envía texto de relleno.
-0|maria-pa | 2026-09-29 13:14:02: [wa-outbox] #285 DESCARTADO por viejo → 5491163809500: el destinatario escribió después y ya se le respondió: "Hola, esa no es la cuenta que estoy gestionando. La cuenta c"
+0|maria-pa | 2026-09-29 13:14:03: [wa-hook] deadline: respuesta a n:telecentro stasheada para su próximo mensaje
+0|maria-pa | 2026-09-29 13:14:03: [prompt-builder] tercero slim: system 60868→51479c, user 27799→19723c
+0|maria-pa | 2026-09-29 13:14:21: [wa-outbox] #289 encolado → +5491163809500 (Sí, gracias. Es sobre la baja Nº 1313270…)
 
