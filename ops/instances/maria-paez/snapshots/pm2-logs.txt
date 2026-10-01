@@ -1,10 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-09-30 01:22:05: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-30 14:09:53: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-30 14:13:34: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-09-30 19:38:51: [TG] poll error (reintento en 15s): fetch failed
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-09-30 03:33:36: [MB v4.9] 03:33:28 I [upd] al día (v4.9 code=34, mío=34)
 0|maria-pa | 2026-09-30 04:00:28: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -61,4 +55,11 @@
 0|maria-pa | 2026-09-30 21:06:35: [dormidos] Gabriela Echaniz pausado (41 días sin escribir)
 0|maria-pa | 2026-09-30 21:06:39: [wa-send] dormidos/resumen: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-09-30 21:33:40: [MB v4.9] 21:33:33 I [upd] al día (v4.9 code=34, mío=34)
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-09-30 01:22:05: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-30 14:09:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-30 14:13:34: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-30 19:38:51: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-09-30 22:11:26: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
 
