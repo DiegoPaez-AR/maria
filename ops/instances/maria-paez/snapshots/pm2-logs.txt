@@ -1,12 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-01 05:43:09: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-01 05:48:41: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-01 07:19:33: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-01 11:23:56: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-01 12:03:44: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-01 13:28:36: [TG] poll error (reintento en 15s): fetch failed
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-01 03:33:44: [MB v4.9] 03:33:35 I [upd] al día (v4.9 code=34, mío=34)
 0|maria-pa | 2026-10-01 04:00:28: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -41,4 +33,13 @@
 0|maria-pa | 2026-10-01 21:06:33: [unknown-flow/gmail] LLM resolucion: desconocido · Es un correo automático de phishing/spam de Google Workspace sin relación a ningún usuario o gestión activa
 0|maria-pa | 2026-10-01 21:06:45: [unknown-flow/gmail] primer contacto de El equipo de Google Workspace <workspace-noreply@google.com> (FSM)
 0|maria-pa | 2026-10-01 21:33:48: [MB v4.9] 21:33:40 I [upd] al día (v4.9 code=34, mío=34)
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-01 05:43:09: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-01 05:48:41: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-01 07:19:33: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-01 11:23:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-01 12:03:44: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-01 13:28:36: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-01 22:11:32: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
 
