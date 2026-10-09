@@ -3,6 +3,7 @@
 0|maria-pa | 2026-10-09 01:46:53: [TG] poll error (reintento en 15s): fetch failed
 0|maria-pa | 2026-10-09 04:19:19: [TG] poll error (reintento en 15s): fetch failed
 0|maria-pa | 2026-10-09 05:14:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-09 08:12:29: [wa-outbox] #291 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
 
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-09 03:34:42: [MB v4.9] 03:34:33 I [upd] al día (v4.9 code=34, mío=34)
@@ -19,4 +20,14 @@
 0|maria-pa | 2026-10-09 08:11:45: [MB v4.9] 08:11:39 I [frio] botón send encontrado — 'escribiendo' 13s antes de enviar
 0|maria-pa | 2026-10-09 08:11:55: [MB v4.9] 08:11:54 I [frio] verificación #291 lectura 1/3: inconcluso:entry_otro_texto
 0|maria-pa | 2026-10-09 08:11:55: [MB v4.9] 08:11:56 I [frio] verificación #291 lectura 2/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-10-09 08:12:05: [MB v4.9] 08:11:59 I [frio] verificación #291 lectura 3/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-10-09 08:12:05: [MB v4.9] 08:11:59 W [frio] #291: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+0|maria-pa | 2026-10-09 08:12:05: [MB v4.9] 08:11:59 I [frio] #291: foto → VPS (estado árbol: inconcluso)
+0|maria-pa | 2026-10-09 08:12:29: [MB-VERIF] #291 árbol=inconcluso → otro (Burbuja alineada izquierda, no derecha como mensaje enviado) https://intensa.io/_dl/verif-291-5b36d334.png
+0|maria-pa | 2026-10-09 08:12:29: [MB-FALLO] #291 motivo=verificacion_inconclusa → {"id":291,"cold_fallos":1,"definitivo":false,"no_verificado":true}
+0|maria-pa | 2026-10-09 08:12:29: [wa-send] wa-outbox/aviso: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+0|maria-pa | 2026-10-09 08:12:29: [wa-outbox] aviso #291 → Diego por telegram
+0|maria-pa | 2026-10-09 08:12:35: [MB v4.9] 08:12:30 I [frio] #291: veredicto por foto = otro (http 200)
+0|maria-pa | 2026-10-09 08:12:35: [MB v4.9] 08:12:30 W [frio] verificación #291: sin veredicto por foto — NO confirmo
+0|maria-pa | 2026-10-09 08:12:35: [MB v4.9] 08:12:30 I [outbox] cold-send #291 no verificado — queda en cola
 
