@@ -1,10 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-09 01:46:53: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-09 04:19:19: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-09 05:14:53: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-09 08:12:29: [wa-outbox] #291 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-09 03:34:42: [MB v4.9] 03:34:33 I [upd] al día (v4.9 code=34, mío=34)
 0|maria-pa | 2026-10-09 04:00:33: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -34,4 +28,11 @@
 0|maria-pa | 2026-10-09 08:15:32: [wa-send] programados/1814: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-09 08:15:32: [programados] ✓ id=1814 (telegram/590589920) [meeting_prep:1:frro04cm32iqlo0rmcnp6dk8i8]
 0|maria-pa | 2026-10-09 09:34:46: [MB v4.9] 09:34:40 I [upd] al día (v4.9 code=34, mío=34)
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-09 01:46:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-09 04:19:19: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-09 05:14:53: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-09 08:12:29: [wa-outbox] #291 cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar)
+0|maria-pa | 2026-10-09 11:08:39: [TG] poll error (reintento en 15s): fetch failed
 
