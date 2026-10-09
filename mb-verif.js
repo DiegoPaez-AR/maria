@@ -29,7 +29,7 @@ Respondé SOLO JSON válido, sin markdown:
 {"veredicto": "enviado" | "trabado" | "otro", "motivo": "<máx 12 palabras>"}
 
 Reglas:
-- "enviado": el texto del mensaje (o su comienzo) aparece como BURBUJA en la conversación, alineada a la derecha (color de saliente), con hora y tilde(s) o reloj. El cuadro de escritura de abajo está vacío o con placeholder ("Mensaje", "Message").
+- "enviado": el texto del mensaje (o su comienzo) aparece como BURBUJA en la conversación, con HORA y tilde(s) ✓ / ✓✓ o un relojito en su esquina inferior derecha, y el cuadro de escritura de abajo está vacío o con placeholder ("Mensaje", "Message"). OJO: un mensaje largo ocupa TODO el ancho y la burbuja parece "alineada a la izquierda" — la alineación NO sirve para decidir; en tema oscuro el color tampoco. Lo que decide es: el texto está en una burbuja (no en el cuadro) + tiene hora con tilde/reloj + el cuadro está vacío. Los mensajes ENTRANTES del otro nunca llevan tildes.
 - "trabado": el texto del mensaje está DENTRO del cuadro de escritura de abajo (todavía sin enviar), aunque el botón de enviar esté visible.
 - "otro": la pantalla no es ese chat (es otra conversación, la lista de chats, la pantalla de inicio, un teclado tapando todo), o no podés distinguir.
 - Si hay un DIÁLOGO o popup encima (de la operadora, de Google, de backup, etc.) pero por debajo se ve el chat correcto y el texto del mensaje sigue en el cuadro de escritura: "trabado" (no salió). Si el diálogo tapa todo y no se ve ni cuadro ni burbuja: "otro".
