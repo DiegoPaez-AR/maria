@@ -1,0 +1,182 @@
+# ejecutado: 2026-10-09T17:33:23-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   M=/root/secretaria/state/maria-paez/db/maria.sqlite; S=/root/secretaria/state/sofia-bruscoli/db/maria.sqlite
+#   echo "══ 1. Telecentro 29/9: los 6 descartados por viejo ══"
+#   sqlite3 "$M" "select datetime(timestamp,'-3 hours'),direccion,substr(replace(cuerpo,char(10),' '),1,150) from eventos where canal='whatsapp' and (de like '%1163809500%' or nombre like 'Telecentro%') and date(timestamp,'-3 hours')='2026-09-29' order by timestamp" | head -40
+#   echo "══ 2. Personal 28/9: chat_equivocado ══"
+#   grep -hE "^2026-09-28" logs/maria-paez/out.log | grep -E "chat ABIERTO ES OTRO|#277|#279" | head -6 | cut -c1-230
+#   sqlite3 "$M" "select id,nombre,whatsapp from contactos where lower(nombre) like '%personal%'"
+#   sqlite3 "$M" "select datetime(timestamp,'-3 hours'),canal,direccion,substr(replace(cuerpo,char(10),' '),1,160) from eventos where (lower(cuerpo) like '%personal%' or lower(cuerpo) like '%flow%') and canal in ('telegram','whatsapp') and timestamp>='2026-09-28' order by timestamp" | tail -12
+#   echo "══ 3. Sofia: Telegram 409 (W39) ══"
+#   grep -hE "409|recuperado tras|loop-guard" logs/sofia-bruscoli/out.log logs/sofia-bruscoli/error.log logs/sofia-bruscoli/*__*.log 2>/dev/null | grep -E "^2026-09-2|^2026-10" | sort | sed -E 's/\{.*//' | uniq -c | sort -k2 | head -20 | cut -c1-150
+#   echo "-- ¿quién más usa el token de Sofia? procesos node:"; ps -eo pid,etimes,cmd | grep -E "node|index.js" | grep -v grep | cut -c1-120
+#   echo "══ 4. Sofia: última actividad de Noelia ══"
+#   sqlite3 "$S" "select datetime(max(timestamp),'-3 hours') from eventos where direccion='entrante' and canal in ('telegram','gmail') and usuario_id=2"
+#   sqlite3 "$S" "select date(timestamp,'-3 hours') d, count(*) from eventos where direccion='entrante' and timestamp>='2026-09-09' group by 1"
+#   sqlite3 "$S" "select datetime(timestamp,'-3 hours'),canal,direccion,substr(replace(cuerpo,char(10),' '),1,160) from eventos where canal in ('telegram','gmail','whatsapp') and timestamp>='2026-09-20' and cuerpo not like '☀️%' order by timestamp" | tail -15
+#   echo "══ 5. tipo de consulta desconocido ══"
+#   grep -h "tipo de consulta desconocido" -B2 logs/maria-paez/*.log 2>/dev/null | head -8 | cut -c1-200
+#   echo "══ 6. 6/10 JSON fail: ¿Diego recibió respuesta? ══"
+#   sqlite3 "$M" "select datetime(timestamp,'-3 hours'),direccion,substr(replace(cuerpo,char(10),' '),1,200) from eventos where canal='telegram' and usuario_id=1 and timestamp between '2026-10-06 22:40' and '2026-10-06 23:10' order by timestamp"
+#   echo "══ 7. gasto 30 días por instancia y tipo ══"
+#   for DB in $M $S; do sqlite3 "$DB" "select substr(cuerpo, 13, instr(substr(cuerpo,13),':')-1) tipo, count(*) n, round(sum(cast(substr(cuerpo, instr(cuerpo,'\$')+1) as real)),2) usd from eventos where canal='sistema' and cuerpo like 'claude_call%' and timestamp >= datetime('now','-30 days') group by 1 order by 3 desc" | head -8; echo "   total: $(sqlite3 "$DB" "select round(sum(cast(substr(cuerpo, instr(cuerpo,'\$')+1) as real)),2) from eventos where canal='sistema' and cuerpo like 'claude_call%' and timestamp >= datetime('now','-30 days')")"; echo ---; done
+#   echo "══ 8. usuarios pausados / dormidos 1/10 ══"
+#   sqlite3 "$M" "select nombre, pausado, date(pausado_desde) from usuarios where activo=1 and coalesce(pausado,0)=1"
+#   sqlite3 "$M" "select datetime(timestamp,'-3 hours'),substr(cuerpo,1,160) from eventos where cuerpo like '%dormid%' and timestamp>='2026-10-01' limit 3"
+#   echo "══ 9. outbox 30 días (ambas) ══"
+#   for DB in $M $S; do sqlite3 "$DB" "select estado,count(*) from wa_outbox where creado>=datetime('now','-30 days') group by 1"; echo ---; done
+#   echo "══ 10. healthcheck/alertas/disco ══"
+#   ls ops/instances/*/snapshots/HEALTHCHECK-ALERT.json 2>/dev/null; df -h / | tail -1; du -sh logs; ls logs/maria-paez | wc -l
+#   pm2 jlist | python3 -c "import json,sys,time;[print(' ',p['name'],p['pm2_env']['status'],'restarts',p['pm2_env']['restart_time'],'up_h',int((time.time()*1000-p['pm2_env']['pm_uptime'])//3600000)) for p in json.load(sys.stdin)]"
+#   echo "══ 11. follow-ups / pendientes abiertos Maria ══"
+#   sqlite3 "$M" "select id,estado,substr(descripcion,1,80) from follow_ups where estado in ('abierto','disparado')"
+#   sqlite3 "$M" "select id,dueno,substr(\"desc\",1,90) from pendientes where estado='abierto' and usuario_id=1 order by id desc" | head -12
+#   echo LISTO
+
+# ───── output ─────
+══ 1. Telecentro 29/9: los 6 descartados por viejo ══
+2026-09-29 08:01:04|saliente|Hola, con respecto a la nota de crédito por la baja Nº 13132707: Diego paga el servicio con débito automático (tarjeta). ¿El reintegro se puede acredi
+2026-09-29 13:08:01|entrante|Podés gestionar tu cuenta indicando el número de DNI 🪪 o si querés un nuevo servicio 🧑‍💻 podemos guiarte para que elijas el mejor plan para vos.
+2026-09-29 13:08:16|entrante|El documento que ingresaste tiene asociado las siguientes cuentas 👇  1 - Doctor Enrique Finochietto XX23 - Cliente XXX7143 2 - Doctor Enrique Finochie
+2026-09-29 13:09:05|entrante|Por favor, compartinos tu número de DNI sin puntos ni espacios 📝.  Gracias por tu colaboración. ¡Estamos aquí para ayudarte! 😃
+2026-09-29 13:09:05|saliente|Hola! Creo que hubo un cruce: mi consulta no es sobre la dirección Doctor Enrique Finochietto XX23, sino sobre la nota de crédito de la baja Nº 131327
+2026-09-29 13:09:29|entrante|La respuesta debe ser el número por la cuenta que querés consultar.
+2026-09-29 13:09:29|saliente|¡Gracias! Ya le consulto el DNI a Diego y te lo paso en cuanto lo tenga.
+2026-09-29 13:10:19|entrante|¡Buenas tardes Diego! 😀 ¡Que bueno leerte!  👉 Estás gestionando la cuenta XX37143 , de la calle Doctor Enrique Finochietto XX23   ▪️ Podés seguir con 
+2026-09-29 13:10:19|saliente|Ninguna de esas dos opciones es la cuenta que quiero consultar. La cuenta es la Nº 10357397, a nombre de Diego Paez, domicilio Triunvirato 3176 piso 6
+2026-09-29 13:11:22|entrante|Por favor usa los botones para seguir
+2026-09-29 13:11:22|saliente|Hola, esa no es la cuenta que estoy gestionando. La cuenta correcta es la Nº 10357397, a nombre de Diego Paez, domicilio Triunvirato 3176 piso 6A. Es 
+2026-09-29 13:11:42|entrante|Tu cuenta debe ser verificada por un analista.  ¿Querés continuar?
+2026-09-29 13:12:03|entrante|Para dar respuesta a tu consulta es necesario que un representante te ayude
+2026-09-29 13:12:03|saliente|Sí, dale, continuamos.
+2026-09-29 13:12:51|entrante|¿Sos el titular de la cuenta?  ▪ Si ▪ No
+2026-09-29 13:13:21|entrante|Por favor escribí solo las opciones, SI , si sos el titular de la cuenta, o No, si no lo sos. Necesitamos que nos respondas para derivarte con una per
+2026-09-29 13:14:03|entrante|Estamos derivando tu consulta con un representante, a la brevedad te responderemos.  Si deseás mientras podés adelantarnos más detalles sobre tu consu
+2026-09-29 13:14:03|saliente|Sí, soy el titular de la cuenta.
+2026-09-29 13:18:01|saliente|Sí, soy el titular de la cuenta.
+2026-09-29 13:18:55|saliente|Sí, gracias. Es sobre la baja Nº 13132707 (cuenta 10357397, titular Diego Paez, DNI 92297127). Estoy reclamando el reintegro de la nota de crédito cor
+2026-09-29 13:21:37|entrante|¡Hola, Diego! ¿Cómo estás? ¡Muy buenas tardes! 🌅 Mi nombre es Daiana y seré tu asesora el día de hoy.😊
+2026-09-29 13:22:19|entrante|La factura del próximo mes ya fue generada, pero se va a emitir una nota de crédito que estará disponible en tu cuenta virtual a partir del día 20 del
+2026-09-29 13:22:40|saliente|Perfecto, gracias por la info! Quedo atenta entonces a que esté disponible la nota de crédito el día 20. 🙏
+2026-09-29 13:25:52|entrante|De nada. Te agradezco a vos por comunicarte conmigo por este medio.😊   Dejé registro de tu reclamo con el número 363025485.😊    Espero haberte ayudado
+2026-09-29 13:26:52|entrante|Gracias por tu contacto! Queremos conocer tu experiencia con nuestra atención a través de una encuesta. Tus respuestas son confidenciales y serán util
+══ 2. Personal 28/9: chat_equivocado ══
+594|Personal Flow Atención al Cliente|5491126222222@c.us
+2026-10-02 04:00:29|telegram|saliente|☀️ *Buen día, Diego.* viernes, 2 de octubre.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, mín 8° / máx 16°  *📅 Agenda del día* • todo el día — Pagar a Ani  *Cump
+2026-10-03 04:00:29|telegram|saliente|☀️ *Buen día, Diego.* sábado, 3 de octubre.  *🌡️ Clima en Buenos Aires, AR* ⛈️ tormenta, mín 13° / máx 16° · 100% prob. de lluvia  *📅 Agenda del día* (sin event
+2026-10-04 04:00:29|telegram|saliente|☀️ *Buen día, Diego.* domingo, 4 de octubre.  *🌡️ Clima en Buenos Aires, AR* ⛅ parcialmente nublado, mín 11° / máx 23°  *📅 Agenda del día* (sin eventos hoy)  *📝
+2026-10-05 04:00:31|telegram|saliente|☀️ *Buen día, Diego.* lunes, 5 de octubre.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, mín 13° / máx 20°  *📅 Agenda del día* • 09:30 a. m. — Reunion PL - DP @Ca
+2026-10-06 04:00:31|telegram|saliente|☀️ *Buen día, Diego.* martes, 6 de octubre.  *🌡️ Clima en Buenos Aires, AR* ☁️ nublado, mín 14° / máx 20°  *📅 Agenda del día* • 08:00 a. m. — Yoga • 01:00 p. m.
+2026-10-06 15:15:30|telegram|saliente|⏰ *En 15min*: Personal (03:30 p. m.)
+2026-10-07 04:00:31|telegram|saliente|☀️ *Buen día, Diego.* miércoles, 7 de octubre.  *🌡️ Clima en Buenos Aires, AR* ⛈️ tormenta, mín 16° / máx 18° · 100% prob. de lluvia  *📅 Agenda del día* • 11:00
+2026-10-07 15:15:31|telegram|saliente|⏰ *En 15min*: Personal (03:30 p. m.)
+2026-10-08 04:00:35|telegram|saliente|☀️ *Buen día, Diego.* jueves, 8 de octubre.  *🌡️ Clima en Buenos Aires, AR* 🌦️ llovizna leve, mín 13° / máx 18° · 45% prob. de lluvia  *📅 Agenda del día* • 08:0
+2026-10-08 16:25:33|telegram|saliente|Ojo: esa reunión (miércoles 14/10, 13:45 a 15:45 en la casa de Cielo) se pisa 15 minutos con tu bloque "Personal" que arranca a las 15:30. ¿La agendo igual pisa
+2026-10-08 16:34:40|telegram|saliente|Listo, quedó agendada: miércoles 14/10 de 13:45 a 15:45 en la casa de Cielo (Monroe 932), con invitación a Cielo y a Matías (moovingargentina), pisando el bloqu
+2026-10-09 04:00:33|telegram|saliente|☀️ *Buen día, Diego.* viernes, 9 de octubre.  *🌡️ Clima en Buenos Aires, AR* 🌦️ llovizna leve, mín 12° / máx 16°  *📅 Agenda del día* • 08:30 a. m. — Reunion DC 
+══ 3. Sofia: Telegram 409 (W39) ══
+-- ¿quién más usa el token de Sofia? procesos node:
+ 639185       0 node /root/secretaria/index.js
+ 639206       0 node /usr/local/lib/node_modules/pm2/lib/ProcessContainerFork.js
+ 978367 2084000 node /root/secretaria/ops/backend/intensa-api/index.js
+1988072 2616303 node /root/.pm2/modules/pm2-logrotate/node_modules/pm2-logrotate
+══ 4. Sofia: última actividad de Noelia ══
+2026-09-21 07:45:08
+2026-09-18|14
+2026-09-21|1
+2026-09-27 19:10:06|telegram|saliente|📊 *Tu semana* (al 27/09) 📧 Emails: 1 recibidos · 1 enviados 📝 Pendientes: 0 cerrados · 0 nuevos · 0 abiertos ahora
+2026-09-28 08:15:13|telegram|saliente|⏰ *En 15min*: Reunión Aletehia - Campamento (08:30 a. m.)
+2026-09-28 10:15:13|telegram|saliente|⏰ *En 15min*: Reunión Semanal Lumina HR Comercial & Selección (10:30 a. m.) Con: fboero@luminaconsultora.com, ebarrios@luminaconsultora.com, sjalfin@luminaconsu
+2026-09-29 16:45:26|telegram|saliente|⏰ *En 15min*: Reunion Roxana (05:00 p. m.) @Florida 165 Rooftop Bar, Florida 165, B1602 Cdad. Autónoma de Buenos Aires, Argentina
+2026-09-30 10:45:26|telegram|saliente|⏰ *En 15min*: Reunión Comercial |  (11:00 a. m.) Con: stortora@luminaconsultora.com, fboero@luminaconsultora.com 👤 Sol Tortora — Ejecutivo de Cuentas en Lumina 
+2026-09-30 14:45:26|telegram|saliente|⏰ *En 15min*: Reunión Comercial Noe, Sol y Fer (03:00 p. m.) Con: stortora@luminaconsultora.com, fboero@luminaconsultora.com 👤 Sol Tortora — Ejecutivo de Cuenta
+2026-10-01 14:45:27|telegram|saliente|⏰ *En 15min*: Demostración de producto de Manatal (III) - Eliana Barrios y Sodsikan (Sandy) Klinsopon (03:00 p. m.) Con: ebarrios@luminaconsultora.com, sodsikan
+2026-10-01 16:45:27|telegram|saliente|⏰ *En 15min*: Turno Otorrinolaringología - Lola Girotti (Dra. Carlinni) (05:00 p. m.) @Larrea 1177, Recoleta, CABA Con: gaston.girotti@gmail.com 👤 Gaston Girott
+2026-10-02 10:45:27|telegram|saliente|⏰ *En 15min*: Reunión Lio (11:00 a. m.)
+2026-10-02 14:45:27|telegram|saliente|⏰ *En 15min*: Reunión Fer (03:00 p. m.) Con: fboero@luminaconsultora.com 👤 Fernando Boero — Gerente Comercial en Lumina Consultora: Fernando Boero es un contact
+2026-10-02 15:45:27|telegram|saliente|⏰ *En 15min*: Reunión Cele (04:00 p. m.) Con: celeste.ramos@sondeosglobal.com 👤 Celeste Ramos — Referente de RR.HH. en Sondeos Global
+2026-10-03 11:15:19|telegram|saliente|⚠️ Descarté un WhatsApp de *Claro Argentina* porque no pude verificar quién es.  Decía: "🔴 Aviso sobre tu línea Claro Para conservar tu número y mantener tu lín
+2026-10-05 10:15:29|telegram|saliente|⏰ *En 15min*: Reunión Semanal Lumina HR Comercial & Selección (10:30 a. m.) Con: fboero@luminaconsultora.com, ebarrios@luminaconsultora.com, sjalfin@luminaconsu
+2026-10-07 10:45:30|telegram|saliente|⏰ *En 15min*: Reunión Comercial |  (11:00 a. m.) Con: stortora@luminaconsultora.com, fboero@luminaconsultora.com 👤 Sol Tortora — Ejecutivo de Cuentas en Lumina 
+2026-10-08 13:45:31|telegram|saliente|⏰ *En 15min*: Reunión con Noe (02:00 p. m.) Con: fboero@luminaconsultora.com 👤 Fernando Boero — Gerente Comercial en Lumina Consultora: Fernando Boero es un con
+══ 5. tipo de consulta desconocido ══
+2026-09-28 11:05:19: [TG] poll error (reintento en 15s): fetch failed
+2026-09-28 12:48:57: [TG] poll error (reintento en 15s): fetch failed
+2026-09-28 14:11:26: [claude-client] tipo de consulta desconocido: undefined
+2026-09-28 14:11:26: [claude-client] tipo de consulta desconocido: undefined
+--
+2026-09-29 03:07:49: [TG] poll error (reintento en 15s): fetch failed
+2026-09-29 04:42:26: [TG] poll error (reintento en 15s): fetch failed
+2026-09-29 06:02:38: [claude-client] tipo de consulta desconocido: undefined
+══ 6. 6/10 JSON fail: ¿Diego recibió respuesta? ══
+2026-10-06 19:47:04|entrante|Agendame una reunión mañana a las 11 con Santiago Rodríguez, no sin invitar a nadie, solo para mi agenda.
+2026-10-06 19:47:20|entrante|de 11 a 12
+2026-10-06 19:47:34|saliente|Ya quedó: mañana miércoles 07/10 de 11 a 12 tenés "Reunion SR - DP" en tu agenda, sin invitados.
+══ 7. gasto 30 días por instancia y tipo ══
+telegram|59|14.16
+whatsapp|35|11.04
+enriquecer-contacto|47|8.15
+moderacion|43|0.78
+memoria-curada|8|0.68
+gmail|3|0.65
+mb-verif|13|0.24
+unknown-flow|1|0.09
+   total: 35.82
+---
+enriquecer-contacto|17|2.87
+whatsapp|8|2.58
+telegram|5|0.94
+gmail|1|0.21
+moderacion|10|0.18
+memoria-curada|1|0.08
+mb-verif|2|0.02
+   total: 6.88
+---
+══ 8. usuarios pausados / dormidos 1/10 ══
+Hernan Fulco|1|2026-10-01
+Santiago Bignone|1|2026-08-23
+Doris Capurro|1|2026-09-01
+Nicolas Kosinski|1|2026-08-23
+Walter Vera|1|2026-08-23
+Cristian Ruiz|1|2026-08-23
+Sebastian Ameijeira|1|2026-08-23
+Enrique Sosa|1|2026-10-01
+Santiago Capurro|1|2026-08-23
+Andres Neumann|1|2026-08-23
+Gabriela Echaniz|1|2026-10-01
+Jaime Cibils|1|2026-08-23
+Alfonso Amat|1|2026-08-23
+══ 9. outbox 30 días (ambas) ══
+descartado|7
+entregado|12
+vencido|4
+---
+descartado|2
+entregado|4
+---
+══ 10. healthcheck/alertas/disco ══
+/dev/sda1        38G   17G   20G  47% /
+864K	logs
+30
+  maria-paez online restarts 5 up_h 0
+  sofia-bruscoli online restarts 5 up_h 0
+  intensa-api online restarts 1 up_h 578
+  pm2-logrotate online restarts 6 up_h 726
+══ 11. follow-ups / pendientes abiertos Maria ══
+346|usuario|Recordar: nota de crédito de Telecentro (baja Nº 13132707) disponible en cuenta virtual a 
+340|maria|Retomar gestión Personal/Flow (baja de precio) apenas Diego abra el chat de WhatsApp al 71
+336|usuario|Verificar los permisos de sacar de arena
+335|usuario|Reunión Software elecciones
+334|usuario|Reunión Telefónica Gobierno
+333|usuario|Reunión Alpine
+308|usuario|Llamar a Tono por droguería
+189|usuario|Llamar a Poggetti
+37|usuario|DDJJ 2025
+5|usuario|iProt Seguridad
+LISTO
+
+# exit=0
