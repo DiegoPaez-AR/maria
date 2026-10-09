@@ -1,0 +1,92 @@
+# ejecutado: 2026-10-09T17:28:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "══ semana en curso: review parcial de las dos (5-9/10) ══"
+#   timeout 100 node ops/scripts/weekly-review.js --dias 5 --no-mail 2>&1 | grep -vE "^\s*$" | head -5
+#   for S in maria-paez sofia-bruscoli; do echo "### $S"; f=ops/instances/$S/reviews/$(ls ops/instances/$S/reviews | tail -1); grep -E "^\*\*(Usuarios|Gasto)" $f; sed -n '/### Quién escribió/,/### Acciones ejecutadas/p' $f | grep "^|" | grep -vE "^\| ---|quién" | head -6; sed -n '/### Acciones FALLIDAS/,/### Follow-ups/p' $f | grep "^|" | grep -vE "^\| ---|cuándo|estado \|" | cut -c1-230; sed -n '/### error.log/,$p' $f | grep "^|" | grep -vE "^\| ---|^\| n " | cut -c1-160 | head -14; done
+#   echo "══ HOY: el mensaje al restaurante ══"
+#   DB=/root/secretaria/state/maria-paez/db/maria.sqlite
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),canal,direccion,coalesce(nombre,de),substr(replace(cuerpo,char(10),' '),1,230) from eventos where date(timestamp,'-3 hours')='2026-10-09' and canal!='sistema' and cuerpo not like '☀️%' order by timestamp"
+#   echo "-- sistema hoy --"
+#   sqlite3 "$DB" "select datetime(timestamp,'-3 hours'),substr(replace(cuerpo,char(10),' '),1,230) from eventos where date(timestamp,'-3 hours')='2026-10-09' and canal='sistema' and cuerpo not like 'claude_call%' and cuerpo not like '%memoria-curada%' order by timestamp"
+#   sqlite3 "$DB" "select id,datetime(creado,'-3 hours'),numero,estado,intentos,substr(metadata_json,1,300) from wa_outbox where date(creado,'-3 hours')='2026-10-09'"
+#   echo "-- MB log hoy --"
+#   grep -hE "^2026-10-09" logs/maria-paez/out.log | grep -E "\[MB|MB-|outbox" | grep -vE "barrido|al día|latido" | cut -c1-220
+#   echo LISTO
+
+# ───── output ─────
+══ semana en curso: review parcial de las dos (5-9/10) ══
+✓ maria-paez: US$3.56, 18 llamadas
+✓ sofia-bruscoli: US$0.00, 0 llamadas
+# Revisión semanal 2026-W41
+_Últimos 5 días (desde 2026-10-04) · generada 9/10/2026, 05:28:01_
+**Resumen**: Maria Paez US$3.56 / 18 llamadas, 1 fallidas, MB v4.9 · Sofia Bruscoli US$0.00 / 0 llamadas, 0 fallidas, MB v4.9
+### maria-paez
+**Usuarios**: 16 activos (15 atendidos, 13 pausados, 1 con Telegram) · **contactos nuevos**: 1 · **MariaBridge**: v4.9
+**Gasto**: US$3.56 en 18 llamadas (US$0.20 por llamada) · modo prosa: 0 · cortes Telegram: 43 · acciones fallidas: 1
+| Diego | telegram | 11 |
+| Nika Club Omakase | whatsapp | 2 |
+| 2026-10-08 16:25:26 | acción FALLÓ: crear_evento — conflicto con evento(s) ya agendado(s): "Personal" 2026-10-14T15:30:00-03:00 → 2026-10-14T19:00:00-03:00. Si el usuario confirma pi |
+| 2026-10-06 19:47:20 | Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude: {"respuesta_a_usuario":"Te agendo mañana miércoles 07/10 de 11 a 12 "Reunion SR - DP" |
+| 2026-10-09 08:12:29 | mb-verif: cold-send #291 a Nika Club Omakase / 5491130215648 — veredicto por foto: otro (Burbuja alineada izquierda, no derecha como mensaje enviado) |
+| entregado | 1 |
+| 1 | [TG/Diego] Claude falló: No se pudo extraer JSON de la respuesta de Claude: |
+| 1 | {"respuesta_a_usuario":"Te agendo mañana miércoles 07/10 de 11 a 12 "Reunion SR - DP", solo en tu calendario, |
+| 1 | [wa-validate] sin cliente WA — normalizado offline "<num>@c.us" → <num>@c.us (SIN verificar en Meta) |
+| 1 | [executor] acción #N (crear_evento) falló: conflicto con evento(s) ya agendado(s): "Personal" 2026-10-14T-03:0 |
+| 1 | [wa-outbox] #N cold-send INCONCLUSO → lo doy por entregado SIN verificar (no reintento para no duplicar) |
+| 1 | [TG] poll recuperado tras 2 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti) |
+| 1 | [MB v4.9]  W [frio] #N: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS |
+| 1 | [MB v4.9]  W [frio] verificación #N: sin veredicto por foto — NO confirmo |
+### sofia-bruscoli
+**Usuarios**: 1 activos (1 atendidos, 0 pausados, 1 con Telegram) · **contactos nuevos**: 0 · **MariaBridge**: v4.9
+**Gasto**: US$0.00 en 0 llamadas (- por llamada) · modo prosa: 0 · cortes Telegram: 31 · acciones fallidas: 0
+══ HOY: el mensaje al restaurante ══
+2026-10-09 08:08:46|telegram|entrante|Diego|María, buen día. Resolvame, Nika, por favor, hoy de la noche a las 9 para 4 personas y ponerme...  para 5 personas, perdón, y ponemelo en la agenda.
+2026-10-09 08:09:12|calendar|saliente||creado: Cena Nika (2026-10-09T21:00:00-03:00 → 2026-10-09T22:30:00-03:00) · Meet: https://meet.google.com/yqr-vhoj-gyg
+2026-10-09 08:09:21|telegram|saliente|Diego|Dale, ya le mando el mensaje a Nika pidiendo mesa para 5 esta noche a las 21hs (en unos minutos sale, no instantáneo). Y ya te dejé la cena en tu agenda de hoy, 21:00 a 22:30. En cuanto Nika confirme te aviso.
+2026-10-09 08:12:29|telegram|saliente|Diego|⚠️ Mandé un WhatsApp a Nika Club Omakase pero NO pude confirmar que haya salido (Burbuja alineada izquierda, no derecha como mensaje enviado). Lo doy por enviado para no duplicarlo; si no llega respuesta, fijate en el teléfono. Ca
+2026-10-09 08:12:29|whatsapp|saliente|5491130215648@c.us|Hola! Soy María, asistente de Diego Páez. Quería consultar disponibilidad para una reserva esta noche (viernes 09/10) a las 21hs, para 5 personas. ¿Tienen lugar? Muchas gracias!
+2026-10-09 08:15:32|telegram|saliente|590589920|⏰ *En 15min*: Reunion DC - DP (08:30 a. m.) @Racket Club, Av. Valentín Alsina 1450, CABA Con: doris@capurro.com.ar 👤 Doris Capurro — Founder, Presidente & CEO, LUFT Energía: Doris Capurro es alguien con quien trabajo de manera cer
+2026-10-09 08:19:26|telegram|entrante|Diego|por lo que veo en la foto, el mensaje salio bien
+2026-10-09 08:19:34|telegram|saliente|Diego|Perfecto, gracias por confirmarlo. Quedo esperando que Nika responda y te aviso apenas confirmen la mesa para 5.
+2026-10-09 11:31:01|whatsapp|entrante|Nika Club Omakase|hola maria, claro que contamos con disponibilidad, ya dejo registrada la reserva de diego paez entonces
+2026-10-09 11:31:15|telegram|saliente|Diego|Nika confirmó: quedó la mesa para 5 personas a nombre tuyo, hoy viernes 09/10 a las 21hs. Todo listo.
+2026-10-09 11:31:21|whatsapp|saliente|Nika Club Omakase|Perfecto, muchas gracias! Nos vemos a las 21hs 🙏
+2026-10-09 11:35:02|whatsapp|entrante|Nika Club Omakase|perfecto, lindo dia
+-- sistema hoy --
+2026-10-09 06:31:28|meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+2026-10-09 08:09:10|acción ejecutada: enviar_wa
+2026-10-09 08:09:12|acción ejecutada: crear_evento
+2026-10-09 08:12:29|mb-verif: cold-send #291 a Nika Club Omakase / 5491130215648 — veredicto por foto: otro (Burbuja alineada izquierda, no derecha como mensaje enviado)
+2026-10-09 11:31:11|acción ejecutada: quitar_pendiente
+2026-10-09 15:06:26|poda-eventos: 4 telemetría borrada (>60d), 0 archivados (>540d), 0 purgados del archivo (>1095d)
+291|2026-10-09 08:09:10|5491130215648|entregado|1|{"destinoOriginal":"5491130215648@c.us","canalOrigen":"telegram","verif_foto":{"veredicto":"otro","motivo":"Burbuja alineada izquierda, no derecha como mensaje enviado","url":"https://intensa.io/_dl/verif-291-5b36d334.png","arbol":"inconcluso","ts":"2026-10-09T11:12:29.229Z"},"cold_fallos":1,"cold_m
+-- MB log hoy --
+2026-10-09 08:09:10: [wa-outbox] #291 encolado → +5491130215648 (Hola! Soy María, asistente de Diego Páez…)
+2026-10-09 08:11:45: [MB v4.9] 08:11:37 I [frio] abriendo chat 5491130215648 (#291)
+2026-10-09 08:11:45: [MB v4.9] 08:11:39 I [frio] botón send encontrado — 'escribiendo' 13s antes de enviar
+2026-10-09 08:11:55: [MB v4.9] 08:11:54 I [frio] verificación #291 lectura 1/3: inconcluso:entry_otro_texto
+2026-10-09 08:11:55: [MB v4.9] 08:11:56 I [frio] verificación #291 lectura 2/3: inconcluso:entry_otro_texto
+2026-10-09 08:12:05: [MB v4.9] 08:11:59 I [frio] verificación #291 lectura 3/3: inconcluso:entry_otro_texto
+2026-10-09 08:12:05: [MB v4.9] 08:11:59 W [frio] #291: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+2026-10-09 08:12:05: [MB v4.9] 08:11:59 I [frio] #291: foto → VPS (estado árbol: inconcluso)
+2026-10-09 08:12:29: [MB-VERIF] #291 árbol=inconcluso → otro (Burbuja alineada izquierda, no derecha como mensaje enviado) https://intensa.io/_dl/verif-291-5b36d334.png
+2026-10-09 08:12:29: [MB-FALLO] #291 motivo=verificacion_inconclusa → {"id":291,"cold_fallos":1,"definitivo":false,"no_verificado":true}
+2026-10-09 08:12:29: [wa-send] wa-outbox/aviso: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-09 08:12:29: [wa-outbox] aviso #291 → Diego por telegram
+2026-10-09 08:12:35: [MB v4.9] 08:12:30 I [frio] #291: veredicto por foto = otro (http 200)
+2026-10-09 08:12:35: [MB v4.9] 08:12:30 W [frio] verificación #291: sin veredicto por foto — NO confirmo
+2026-10-09 08:12:35: [MB v4.9] 08:12:30 I [outbox] cold-send #291 no verificado — queda en cola
+2026-10-09 11:31:09: [MB v4.9] 11:31:02 I [notif] entrante de "Nika Club Omakase": hola maria, claro que contamos con disponibilidad, ya dejo r
+2026-10-09 11:31:09: [MB v4.9] 11:31:02 I [notif] dup ignorado de "Nika Club Omakase"
+2026-10-09 11:31:28: [MB v4.9] 11:31:22 I [humano] espero 7s antes de responder a "Nika Club Omakase"
+2026-10-09 11:31:38: [MB v4.9] 11:31:30 I [notif] reply inline a "Nika Club Omakase": ENVIADA
+2026-10-09 11:35:09: [MB v4.9] 11:35:03 I [notif] entrante de "Nika Club Omakase": perfecto, lindo dia
+2026-10-09 11:35:09: [MB v4.9] 11:35:03 I [notif] dup ignorado de "Nika Club Omakase"
+LISTO
+
+# exit=0
