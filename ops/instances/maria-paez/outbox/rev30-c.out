@@ -1,0 +1,47 @@
+# ejecutado: 2026-10-09T17:37:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   cd /root/secretaria
+#   echo "── Sofia 409: cuándo ──"
+#   ls logs/sofia-bruscoli/ | head; for f in logs/sofia-bruscoli/error*.log logs/sofia-bruscoli/error*.gz; do [ -f "$f" ] || continue; (zcat -f "$f" 2>/dev/null) | grep -E "409" | sed -E 's/: \[TG\].*//' | cut -c1-13 | sort | uniq -c | head -12; done
+#   for f in logs/sofia-bruscoli/out*.log logs/sofia-bruscoli/out*.gz; do [ -f "$f" ] || continue; (zcat -f "$f" 2>/dev/null) | grep -E "recuperado tras|alertado tras" | cut -c1-150; done | head -6
+#   echo "── Maria 409 también? ──"
+#   for f in logs/maria-paez/error*.log logs/maria-paez/error*.gz; do [ -f "$f" ] || continue; (zcat -f "$f" 2>/dev/null) | grep -c 409; done | paste -sd+ | bc
+#   echo "── Personal 28/9: qué vio la app ──"
+#   for f in logs/maria-paez/out*.log logs/maria-paez/out*.gz; do [ -f "$f" ] || continue; (zcat -f "$f" 2>/dev/null) | grep -E "2026-09-28 09:(1|2|3|4)" | grep -E "#277|#279" | head -8 | cut -c1-200; done
+#   echo "── enriquecer: cuántos sobre stubs (nombre == local-part) ──"
+#   sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "select count(*), sum(perfil_web is not null) from contactos where lower(replace(nombre,' ','')) = lower(substr(email,1,instr(email,'@')-1))"
+#   sqlite3 /root/secretaria/state/maria-paez/db/maria.sqlite "select count(*) from eventos where canal='sistema' and cuerpo like 'claude_call enriquecer%' and timestamp>=datetime('now','-30 days')"
+#   echo LISTO
+
+# ───── output ─────
+── Sofia 409: cuándo ──
+error__2026-09-26_00-00-00.log
+error__2026-09-27_00-00-00.log
+error__2026-09-28_00-00-00.log
+error__2026-09-29_00-00-00.log
+error__2026-09-30_00-00-00.log
+error__2026-10-01_00-00-00.log
+error__2026-10-02_00-00-00.log
+error__2026-10-03_00-00-00.log
+error__2026-10-04_00-00-00.log
+error__2026-10-05_00-00-00.log
+── Maria 409 también? ──
+0
+── Personal 28/9: qué vio la app ──
+2026-09-28 09:18:44: [wa-outbox] #277 encolado → +5491171950001 (Hola, buenas. Escribo en representación …)
+2026-09-28 09:22:49: [MB-FALLO] #277 motivo=chat_equivocado → {"id":277,"cold_fallos":1,"definitivo":false}
+2026-09-28 09:22:54: [MB v4.9] 09:22:48 I [frio] abriendo chat 5491171950001 (#277)
+2026-09-28 09:22:54: [MB v4.9] 09:22:50 E [frio] #277: chat ABIERTO ES OTRO ("pia - clientes personal" ≠ "Personal Flow Atención al Cliente"/5491171950001) — ABORTO sin tocar
+2026-09-28 09:22:54: [MB v4.9] 09:22:50 I [outbox] cold-send #277 no verificado — queda en cola
+2026-09-28 09:24:17: [MB-FALLO] #277 motivo=chat_equivocado → {"id":277,"cold_fallos":2,"definitivo":false}
+2026-09-28 09:24:24: [MB v4.9] 09:24:15 I [frio] abriendo chat 5491171950001 (#277)
+2026-09-28 09:24:24: [MB v4.9] 09:24:17 E [frio] #277: chat ABIERTO ES OTRO ("pia - clientes personal" ≠ "Personal Flow Atención al Cliente"/5491171950001) — ABORTO sin tocar
+── enriquecer: cuántos sobre stubs (nombre == local-part) ──
+130|104
+47
+LISTO
+
+# exit=0
