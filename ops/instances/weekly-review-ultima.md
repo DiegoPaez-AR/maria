@@ -1,14 +1,17 @@
 # Revisión semanal 2026-W41
 
-_Últimos 5 días (desde 2026-10-04) · generada 9/10/2026, 05:28:01_
+_Últimos 7 días (desde 2026-10-04) · generada 11/10/2026, 05:00:01_
 
 **Resumen**: Maria Paez US$3.56 / 18 llamadas, 1 fallidas, MB v4.9 · Sofia Bruscoli US$0.00 / 0 llamadas, 0 fallidas, MB v4.9
 
-**VPS**: disco 47% usado (20G libres) · RAM 1013/3819 MB · logs: 860K · pm2: maria-paez: online, 4 restarts, up 266h · sofia-bruscoli: online, 4 restarts, up 266h · intensa-api: online, 1 restarts, up 579h · pm2-logrotate: online, 6 restarts, up 727h
+**VPS**: disco 47% usado (20G libres) · RAM 1003/3819 MB · logs: 872K · pm2: maria-paez: online, 7 restarts, up 5h · sofia-bruscoli: online, 7 restarts, up 5h · intensa-api: online, 2 restarts, up 5h · pm2-logrotate: online, 6 restarts, up 762h
 
 ### Cambios deployados en la semana
 
-_(ninguno)_
+```
+10/10 23:31 revisión 30d: enviar_wa al remitente del turno = respuesta inline (sin duplicado); enriquecer-contacto solo si conviene (no stubs, no repetir) + haiku; MariaBridge v4.10 acepta el subtítulo del header (negocios verificados, caso Personal)
+09/10 17:32 mb-verif: la alineación no decide (mensajes largos ocupan todo el ancho → 'burbuja a la izquierda' falso: Nika 9/10, Poch 16/9); decide tilde+hora+cuadro vacío
+```
 
 ---
 
@@ -16,17 +19,19 @@ _(ninguno)_
 
 **Usuarios**: 16 activos (15 atendidos, 13 pausados, 1 con Telegram) · **contactos nuevos**: 1 · **MariaBridge**: v4.9
 
-**Gasto**: US$3.56 en 18 llamadas (US$0.20 por llamada) · modo prosa: 0 · cortes Telegram: 43 · acciones fallidas: 1
+**Gasto**: US$3.56 en 18 llamadas (US$0.20 por llamada) · modo prosa: 0 · cortes Telegram: 60 · acciones fallidas: 1
 
 ### Actividad por día
 | día | TG in | TG out | WA in | WA out | mail in | mail out | cal |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-04 | 1 | 2 | 0 | 0 | 0 | 1 | 0 |
+| 2026-10-04 | 1 | 2 | 0 | 0 | 0 | 2 | 0 |
 | 2026-10-05 | 0 | 5 | 0 | 0 | 0 | 1 | 0 |
 | 2026-10-06 | 4 | 8 | 0 | 0 | 0 | 1 | 2 |
 | 2026-10-07 | 0 | 4 | 0 | 0 | 0 | 1 | 0 |
 | 2026-10-08 | 4 | 8 | 0 | 0 | 0 | 1 | 1 |
-| 2026-10-09 | 2 | 6 | 2 | 2 | 0 | 1 | 1 |
+| 2026-10-09 | 2 | 7 | 2 | 2 | 0 | 1 | 1 |
+| 2026-10-10 | 0 | 1 | 0 | 0 | 0 | 1 | 0 |
+| 2026-10-11 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 
 ### Gasto por día
 | día | llamadas | USD |
@@ -70,6 +75,7 @@ _(ninguno)_
 | --- | --- |
 | 2026-10-06 19:47:20 | Claude falló en telegram (Diego): No se pudo extraer JSON de la respuesta de Claude: {"respuesta_a_usuario":"Te agendo mañana miércoles 07/10 de 11 a 12 "Reunion SR - DP" |
 | 2026-10-09 08:12:29 | mb-verif: cold-send #291 a Nika Club Omakase / 5491130215648 — veredicto por foto: otro (Burbuja alineada izquierda, no derecha como mensaje enviado) |
+| 2026-10-11 04:14:32 | gcontacts-reconcile semanal (maria-paez): 457 ok, 0 fallidos |
 
 ### WhatsApp saliente (wa_outbox)
 | estado | n |
@@ -122,16 +128,19 @@ _(nada)_
 
 **Usuarios**: 1 activos (1 atendidos, 0 pausados, 1 con Telegram) · **contactos nuevos**: 0 · **MariaBridge**: v4.9
 
-**Gasto**: US$0.00 en 0 llamadas (- por llamada) · modo prosa: 0 · cortes Telegram: 31 · acciones fallidas: 0
+**Gasto**: US$0.00 en 0 llamadas (- por llamada) · modo prosa: 0 · cortes Telegram: 41 · acciones fallidas: 0
 
 ### Actividad por día
 | día | TG in | TG out | WA in | WA out | mail in | mail out | cal |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-04 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 | 2026-10-05 | 0 | 2 | 0 | 0 | 0 | 0 | 0 |
 | 2026-10-06 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
 | 2026-10-07 | 0 | 2 | 0 | 0 | 0 | 0 | 0 |
 | 2026-10-08 | 0 | 2 | 0 | 0 | 0 | 0 | 0 |
 | 2026-10-09 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-10 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-11 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ### Gasto por día
 _(nada)_
@@ -149,7 +158,9 @@ _(nada)_
 _(nada)_
 
 ### Avisos de sistema (no rutinarios)
-_(nada)_
+| cuándo | qué |
+| --- | --- |
+| 2026-10-11 04:15:34 | gcontacts-reconcile semanal (sofia-bruscoli): 27 ok, 0 fallidos |
 
 ### WhatsApp saliente (wa_outbox)
 _(nada)_
