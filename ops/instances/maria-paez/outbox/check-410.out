@@ -1,0 +1,16 @@
+# ejecutado: 2026-10-10T23:38:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   tail -2 /root/mariabridge-build.log | cut -c1-140; cat /var/www/intensa.io/_dl/mariabridge-latest.json; echo
+#   grep -h "diego\|Diego" /dev/null; echo LISTO
+
+# ───── output ─────
+APK_OK url=https://intensa.io/_dl/mb-e7883a74b2fccf1e.apk size=3.1M latest.json=v4.10(35)
+=== FIN Sat Oct 10 11:33:08 PM -03 2026 ===
+{"versionCode": 35, "versionName": "4.10", "url": "https://intensa.io/_dl/mb-e7883a74b2fccf1e.apk"}
+
+LISTO
+
+# exit=0
