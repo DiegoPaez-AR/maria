@@ -157,8 +157,14 @@ async function _turnoTercero(u, contacto, de, cuerpo, attachmentPath = null) {
     sesion: 'off',
   });
 
-  const alTercero = (json?.respuesta_a_remitente || '').trim();
+  let alTercero = (json?.respuesta_a_remitente || '').trim();
   const alUsuario = (json?.respuesta_a_usuario || '').trim();
+  // enviar_wa al propio remitente del turno → el executor NO lo encoló y lo
+  // dejó acá (10/10/2026). Si el modelo además escribió respuesta_a_remitente,
+  // esa gana (era el duplicado); si no, sale este texto.
+  const _inline = turnState.takeInlinePendientes(chatKey);
+  if (!alTercero && _inline.length) alTercero = _inline.join('\n\n');
+  else if (alTercero && _inline.length) console.log(`[wa-hook] descarto ${_inline.length} enviar_wa duplicado(s) al remitente (ya hay respuesta inline)`);
 
   if (alUsuario) {
     try { await waSend.enviarWAUsuario(null, u, alUsuario, { tag: `wa-hook/3ro→${u.nombre}` }); }

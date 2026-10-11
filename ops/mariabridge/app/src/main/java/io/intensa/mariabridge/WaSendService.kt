@@ -476,19 +476,29 @@ class WaSendService : AccessibilityService() {
         val nodos = root.findAccessibilityNodeInfosByViewId("com.whatsapp:id/conversation_contact_name")
         if (nodos == null || nodos.isEmpty()) return true   // pantalla intermedia (aún sin chat) — seguir esperando
         val visto = nodos[0].text?.toString()?.trim()?.lowercase() ?: return true
+        // v4.10 (caso Personal 28/9): un NEGOCIO VERIFICADO muestra como título
+        // su nombre oficial ("PiA - Clientes Personal") y, debajo, el nombre
+        // con que está agendado. Miramos también el subtítulo del header; si
+        // alguno de los dos matchea, es el chat correcto. Un chat ajeno no
+        // matchea en ninguno.
+        val subt = (root.findAccessibilityNodeInfosByViewId("com.whatsapp:id/conversation_contact_status")
+            ?.firstOrNull()?.text?.toString()?.trim()?.lowercase() ?: "")
         val esperadoNombre = t.nombre.trim().lowercase()
         val dEsperado = _dig9(t.numero)
-        val dVisto = _dig9(visto)
         // v3.1: match por PALABRAS (subset de tokens en cualquier dirección):
         // "diego" ✓ "diego paez"; DB "Natali Funez" ✓ agenda "Natali Funez";
         // un chat ajeno no comparte tokens → jamás pasa. O match por número.
         fun toks(x: String) = x.split(Regex("\\s+")).filter { it.length >= 2 }.toSet()
-        val tv = toks(visto); val te = toks(esperadoNombre)
-        val nombreOk = esperadoNombre.isNotBlank() && te.isNotEmpty() && tv.isNotEmpty() &&
-                       (tv.containsAll(te) || te.containsAll(tv))
-        val ok = nombreOk || (dVisto.length >= 10 && dVisto.takeLast(10) == dEsperado.takeLast(10))
+        val te = toks(esperadoNombre)
+        fun nombreOkEn(x: String): Boolean {
+            val tv = toks(x)
+            return esperadoNombre.isNotBlank() && te.isNotEmpty() && tv.isNotEmpty() && (tv.containsAll(te) || te.containsAll(tv))
+        }
+        fun numeroOkEn(x: String): Boolean { val d = _dig9(x); return d.length >= 10 && d.takeLast(10) == dEsperado.takeLast(10) }
+        val ok = nombreOkEn(visto) || numeroOkEn(visto) || (subt.isNotBlank() && (nombreOkEn(subt) || numeroOkEn(subt)))
+        if (ok && !nombreOkEn(visto) && !numeroOkEn(visto)) MbLog.i("frio", "#${t.id}: título \"$visto\" no matchea pero el subtítulo \"$subt\" sí (negocio verificado) — sigo")
         if (!ok) {
-            MbLog.e("frio", "#${t.id}: chat ABIERTO ES OTRO (\"$visto\" ≠ \"${t.nombre}\"/${t.numero}) — ABORTO sin tocar")
+            MbLog.e("frio", "#${t.id}: chat ABIERTO ES OTRO (\"$visto\" / subtítulo \"$subt\" ≠ \"${t.nombre}\"/${t.numero}) — ABORTO sin tocar")
             _reportarFallo(t.id, "chat_equivocado")
             goHome()
             ColdSend.terminar(t.id, false)

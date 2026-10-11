@@ -722,6 +722,25 @@ async function _enviarWA(a, ctx) {
 
   await _moderarSaliente(a.texto, a, ctx, 'enviar_wa', a.a);
 
+  // RESPUESTA AL REMITENTE DEL TURNO (10/10/2026, revisión 30d): en un turno
+  // de tercero por WhatsApp el modelo contestaba con respuesta_a_remitente Y
+  // además encolaba el mismo texto con enviar_wa al mismo número → el segundo
+  // salía minutos después (o lo descartaba el filtro "viejo"). Si el destino
+  // es el remitente de ESTE turno, no se encola: va como respuesta inline.
+  if (ctx.turnoDeTercero && ctx.canalOrigen === 'whatsapp' && typeof ctx.chatKey === 'string' && ctx.chatKey.startsWith('wahook:')) {
+    const _tel = require('./telefonos');
+    const remitente = _tel.digitos(ctx.chatKey.slice(7));
+    if (remitente.length >= 8 && _tel.mismoNumero(remitente, a.a)) {
+      require('./turn-state').addInlinePendiente(ctx.chatKey, a.texto);
+      console.log(`[enviar_wa] destino = remitente del turno (${remitente}) → va como respuesta inline, no se encola`);
+      return {
+        encolado: false, inline: true,
+        nota: 'Este texto se le entrega al remitente como respuesta directa de este turno (NO se encoló otro WhatsApp). ' +
+              'No repitas el mismo contenido en respuesta_a_remitente: si ya lo pusiste ahí, dejá respuesta_a_remitente vacía; si no, podés dejarla vacía igual, el texto de esta acción sale.',
+      };
+    }
+  }
+
   // POLÍTICA v5 — CORTAR DE RAÍZ (decisión Diego 2026-08-22): si el destino es
   // un USUARIO activo, el mensaje NO sale por WhatsApp. Va por Telegram y, si
   // no tiene, por email. El razonamiento de Diego: si Maria le escribe por WA
@@ -1306,7 +1325,8 @@ async function _upsertContacto(a, ctx) {
   // Enriquecimiento web (rol/empresa) en background: NO bloquea el turno. Si el
   // contacto tiene email, buscamos su perfil y lo guardamos en perfil_web para
   // que el meeting-prep y el prompt lo tengan listo. Fire-and-forget.
-  if (c && c.id && a.email) {
+  // 10/10: solo si no tiene perfil reciente (el módulo filtra stubs y repeticiones).
+  if (c && c.id && a.email && require('./enriquecer-contacto').conviene(c)) {
     require('./enriquecer-contacto')
       .enriquecerContacto(ctx.usuario.id, { id: c.id, nombre: c.nombre, email: a.email })
       .catch(err => console.warn('[upsert_contacto] enriquecer falló:', err.message));

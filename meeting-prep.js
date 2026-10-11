@@ -93,7 +93,7 @@ async function _componerTexto(e, usuario) {
             require('./google-contacts').sincronizarContacto(c, { dueno: usuario.nombre })
               .catch(err => console.warn(`[meeting-prep] gcontacts sync "${c.nombre}" falló: ${err.message}`));
           } catch { /* noop */ }
-          const perfil = await enriquecerContacto(usuario.id, c); // best-effort, persiste perfil_web
+          const perfil = require('./enriquecer-contacto').conviene(c) ? await enriquecerContacto(usuario.id, c) : null; // best-effort; stubs no se buscan (10/10)
           if (perfil) c = { ...c, perfil_web: perfil };
           console.log(`[meeting-prep/${usuario.nombre}] contacto nuevo: ${nombreNuevo} <${emailNorm}>${perfil ? ` — ${perfil}` : ''}`);
         } catch (err) {

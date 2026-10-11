@@ -68,5 +68,17 @@ function takeTurnResults(chatKey, turnStartTs) {
   return e.results;
 }
 
-module.exports = { setLastInbound, getLastInbound, addTurnResult, takeTurnResults };
+// Texto que el executor convirtió de enviar_wa → respuesta inline (10/10/2026):
+// el modelo, en un turno de tercero por WhatsApp, respondía inline Y encolaba
+// el mismo texto con enviar_wa (7 descartes "por viejo" en 30 días). Se
+// guarda acá y wa-hook lo usa SOLO si respuesta_a_remitente vino vacía.
+const _inline = new Map(); // chatKey -> [texto]
+function addInlinePendiente(chatKey, texto) {
+  if (!chatKey || !texto) return;
+  const l = _inline.get(chatKey) || []; l.push(String(texto)); _inline.set(chatKey, l);
+}
+function takeInlinePendientes(chatKey) {
+  const l = _inline.get(chatKey) || []; _inline.delete(chatKey); return l;
+}
+module.exports = { setLastInbound, getLastInbound, addTurnResult, takeTurnResults, addInlinePendiente, takeInlinePendientes };
 
