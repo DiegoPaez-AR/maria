@@ -1,0 +1,97 @@
+# ejecutado: 2026-10-15T14:43:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: salud de MariaBridge tras el update a 4.10 (15/10)
+#   echo "hora VPS: $(date '+%F %H:%M %Z')"
+#   L=/var/log/nginx/intensa.io.access.log
+#   echo "── polls a pendiente.txt por bridge (últimos 15 min) ──"
+#   desde=$(date -d '-15 min' '+%d/%b/%Y:%H:%M')
+#   awk -v d="$desde" '/pendiente.txt/ { match($0,/\[[^]]+\]/); t=substr($0,RSTART+1,17); if (t>=d) { match($0,/wa-hook\/[^\/]+/); k=substr($0,RSTART+8,6); n[k]++; last[k]=t } } END { for (k in n) print "  secret " k "…: " n[k] " polls, último " last[k] }' $L
+#   echo "── códigos HTTP de rutas wa-hook desde 12:30 ──"
+#   grep "wa-hook" $L | awk '$4 >= "[15/Oct/2026:12:30"' | awk '{split($7,p,"/"); print "  " p[4] " " $9}' | sort | uniq -c | sort -rn | head -20
+#   for s in maria-paez sofia-bruscoli; do
+#     echo "════ $s ════"
+#     echo "── MB desde 12:00 (sin 'al día') ──"
+#     grep "\[MB " /root/secretaria/logs/$s/out.log | awk '$3>="2026-10-15" && $4>="12:00"' | grep -v "al día" | tail -40
+#     echo "── MB error.log hoy ──"
+#     grep "2026-10-15" /root/secretaria/logs/$s/error.log | grep -iv "TG\] poll" | tail -15
+#     cf=/root/secretaria/config/instances/$s.conf
+#     ( set -a; . "$cf"; set +a
+#       echo "── wa_outbox últimos 8 ──"
+#       sqlite3 -header "$MARIA_DB" "select id, estado, intentos, substr(numero,1,14) num, creado, entregado, substr(texto,1,40) txt from wa_outbox order by id desc limit 8;" 2>&1
+#       echo "── eventos WA entrantes hoy ──"
+#       sqlite3 "$MARIA_DB" "select count(*), max(timestamp) from eventos where canal='whatsapp' and direccion='entrante' and timestamp>='2026-10-15';" 2>&1
+#       echo "── pendientes abiertos que mencionan Personal/chat ──"
+#       sqlite3 "$MARIA_DB" "select * from pendientes where id=340;" 2>&1
+#     )
+#   done
+
+# ───── output ─────
+hora VPS: 2026-10-15 14:43 -03
+── polls a pendiente.txt por bridge (últimos 15 min) ──
+  secret .162.1…: 60 polls, último 15/Oct/2026:14:42
+── códigos HTTP de rutas wa-hook desde 12:30 ──
+════ maria-paez ════
+── MB desde 12:00 (sin 'al día') ──
+2026-10-15 03:35:22: [MB v4.9] 03:35:21 I [upd] versión nueva v4.10 (code 35 > 34) — descargando
+2026-10-15 03:35:32: [MB v4.9] 03:35:29 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-15 09:35:26: [MB v4.9] 09:35:23 I [upd] versión nueva v4.10 (code 35 > 34) — descargando
+2026-10-15 09:35:36: [MB v4.9] 09:35:31 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-15 12:29:59: [MB v4.9] 12:29:54 I [upd] versión nueva v4.10 (code 35 > 34) — descargando
+2026-10-15 12:30:08: [MB v4.9] 12:30:03 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-15 12:30:08: [MB v4.9] 12:30:03 I [upd] instalador visible — ventana=true clickables=Back[ImageView],Overview[ImageView],Home[ImageView]
+2026-10-15 12:30:08: [MB v4.9] 12:30:03 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 469,411 (intento 1/3)
+2026-10-15 12:30:26: [MB v4.10] 12:30:16 I [notif] listener creado
+2026-10-15 12:30:26: [MB v4.10] 12:30:16 I [frio] accesibilidad conectada
+2026-10-15 12:30:26: [MB v4.10] 12:30:16 I [notif] listener conectado — barrido cada 3min (marca=1791930101652)
+2026-10-15 12:30:35: [MB v4.10] 12:30:26 I [svc] OutboxService arrancó (loop nuevo)
+── MB error.log hoy ──
+2026-10-15 07:00:17: [morning-brief/Natali Funez] clima fallo: HTTP 503
+── wa_outbox últimos 8 ──
+id|estado|intentos|num|creado|entregado|txt
+291|entregado|1|5491130215648|2026-10-09 11:09:10|2026-10-09 11:12:29|Hola! Soy María, asistente de Diego Páez
+290|descartado|0|5491163809500|2026-09-29 16:21:55||¡Hola Daiana! Todo bien, gracias. Te com
+289|entregado|1|5491163809500|2026-09-29 16:14:21|2026-09-29 16:18:55|Sí, gracias. Es sobre la baja Nº 1313270
+288|entregado|1|5491163809500|2026-09-29 16:13:54|2026-09-29 16:18:01|Sí, soy el titular de la cuenta.
+287|descartado|0|5491163809500|2026-09-29 16:13:10||Sí, soy el titular de la cuenta.
+286|descartado|0|5491163809500|2026-09-29 16:12:16||Sí, quiero continuar. El DNI de Diego Pa
+285|descartado|0|5491163809500|2026-09-29 16:11:10||Hola, esa no es la cuenta que estoy gest
+284|descartado|0|5491163809500|2026-09-29 16:10:04||Ninguna de esas dos opciones es la cuent
+── eventos WA entrantes hoy ──
+0|
+── pendientes abiertos que mencionan Personal/chat ──
+340|2026-09-28 13:47:46|Retomar gestión Personal/Flow (baja de precio) apenas Diego abra el chat de WhatsApp al 7195-0001 esta tarde|cerrado|2026-10-13 12:01:29|||||||{"esperando_de":"Diego","esperando_canal":"whatsapp","detalle":"Diego va a mandar un mensaje al 5491171950001 (7195-0001) para abrir el chat; una vez abierto, seguir la negociación con los mismos datos de cuenta (DNI 92.297.127, ref pago 1003271562710001, objetivo: precio más bajo posible sin importar velocidad/equipo/servicios)"}|1|maria|trigger_externo|
+════ sofia-bruscoli ════
+── MB desde 12:00 (sin 'al día') ──
+2026-10-15 03:31:14: [MB v4.9] 03:31:05 I [upd] versión nueva v4.10 (code 35 > 34) — descargando
+2026-10-15 03:31:14: [MB v4.9] 03:31:07 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-15 09:31:07: [MB v4.9] 09:31:06 I [upd] versión nueva v4.10 (code 35 > 34) — descargando
+2026-10-15 09:31:17: [MB v4.9] 09:31:10 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-15 12:30:20: [MB v4.9] 12:30:16 I [upd] versión nueva v4.10 (code 35 > 34) — descargando
+2026-10-15 12:30:28: [MB v4.9] 12:30:19 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-15 12:30:28: [MB v4.9] 12:30:20 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
+2026-10-15 12:30:28: [MB v4.9] 12:30:20 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 1/3)
+2026-10-15 12:30:28: [MB v4.9] 12:30:20 I [upd] auto-tap 'actualizar' (ancestro clickable a 0 salto(s))
+2026-10-15 12:30:28: [MB v4.9] 12:30:20 I [upd] auto-tap 'actualizar' (ancestro clickable a 0 salto(s))
+2026-10-15 12:30:46: [MB v4.10] 12:30:36 I [notif] listener creado
+2026-10-15 12:30:46: [MB v4.10] 12:30:36 I [notif] listener conectado — barrido cada 3min (marca=1791036918893)
+2026-10-15 12:30:46: [MB v4.10] 12:30:36 I [frio] accesibilidad conectada
+2026-10-15 12:30:56: [MB v4.10] 12:30:54 I [svc] OutboxService arrancó (loop nuevo)
+── MB error.log hoy ──
+── wa_outbox últimos 8 ──
+id|estado|intentos|num|creado|entregado|txt
+21|entregado|1|5491168613446|2026-09-18 21:06:50|2026-09-18 21:09:32|Hola Soledad! Sí, confirmado: la reunión
+20|descartado|0|5491168613446|2026-09-18 21:05:55||Hola Soledad! Ya quedó agendada la reuni
+19|entregado|1|5491168613446|2026-09-18 21:05:24|2026-09-18 21:07:29|No, hoy no! Todavía estoy esperando que 
+18|descartado|0|5491168613446|2026-09-18 21:03:48||Todo bien, gracias Soledad! Para poder m
+17|entregado|1|5491168613446|2026-09-18 20:38:15|2026-09-18 20:40:24|Hola Soledad! Soy Sofia, asistente de No
+16|entregado|1|541160592111|2026-09-18 20:28:11|2026-09-18 20:29:47|Hola Soledad! Soy Sofia, asistente de No
+15|entregado|1|5492215968555|2026-09-08 21:20:05|2026-09-08 21:20:52|Hola Zaca, te escribe Sofía. Noelia me p
+14|entregado|1|5491155947242|2026-09-07 19:19:27|2026-09-07 19:23:30|⚠️ No pude entregar un WhatsApp a Gaston
+── eventos WA entrantes hoy ──
+0|
+── pendientes abiertos que mencionan Personal/chat ──
+
+# exit=0
