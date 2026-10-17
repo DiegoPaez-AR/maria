@@ -1,0 +1,40 @@
+# ejecutado: 2026-10-17T11:03:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: líneas de MariaBridge / wa-hook en las ventanas de los envíos 16-17/10
+#   cd /root/secretaria
+#   L=logs/maria-paez/out.log
+#   for w in "2026-10-15 15:4" "2026-10-16 13:2" "2026-10-16 13:3" "2026-10-16 13:4" "2026-10-16 14:0" "2026-10-17 07:5" "2026-10-17 08:0"; do
+#     echo "════ $w ════"; grep "^$w" $L | grep -v "al día" | cut -c1-350
+#   done
+#   echo "════ upd/instalador 72h ════"
+#   awk '($1" "substr($2,1,5))>="2026-10-14 11:00"' $L | grep -E "\[upd\]|instalador|0-tap" | grep -v "al día" | cut -c1-250 | tail -20
+#   echo "════ sofia MB 72h (sin al día) ════"
+#   awk '($1" "substr($2,1,5))>="2026-10-14 11:00"' logs/sofia-bruscoli/out.log | grep "\[MB" | grep -v "al día" | cut -c1-250 | tail -20
+
+# ───── output ─────
+════ 2026-10-15 15:4 ════
+════ 2026-10-16 13:2 ════
+════ 2026-10-16 13:3 ════
+════ 2026-10-16 13:4 ════
+════ 2026-10-16 14:0 ════
+════ 2026-10-17 07:5 ════
+════ 2026-10-17 08:0 ════
+2026-10-17 08:00:25: [MB v4.10] 08:00:25 I [frio] abriendo chat 5491141604674 (#294)
+2026-10-17 08:00:35: [MB v4.10] 08:00:27 I [frio] botón send encontrado — 'escribiendo' 20s antes de enviar
+2026-10-17 08:00:56: [MB v4.10] 08:00:49 I [frio] verificación #294 lectura 1/3: inconcluso:entry_otro_texto
+2026-10-17 08:00:56: [MB v4.10] 08:00:51 I [frio] verificación #294 lectura 2/3: inconcluso:entry_otro_texto
+2026-10-17 08:00:56: [MB v4.10] 08:00:54 I [frio] verificación #294 lectura 3/3: inconcluso:entry_otro_texto
+2026-10-17 08:00:56: [MB v4.10] 08:00:54 W [frio] #294: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+2026-10-17 08:00:56: [MB v4.10] 08:00:54 I [frio] #294: foto → VPS (estado árbol: inconcluso)
+2026-10-17 08:01:09: [MB-VERIF] #294 árbol=inconcluso → enviado (burbuja + hora 8:00 AM ✓✓ + cuadro vacío) https://intensa.io/_dl/verif-294-82727fb9.png
+2026-10-17 08:01:10: [wa-outbox] #294 entregado por el teléfono
+2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [frio] #294: veredicto por foto = enviado (http 200)
+2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [frio] verificación #294: ENVIADO (por foto)
+2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [outbox] enviado EN FRÍO (accesibilidad) → 5491141604674
+════ upd/instalador 72h ════
+════ sofia MB 72h (sin al día) ════
+
+# exit=0
