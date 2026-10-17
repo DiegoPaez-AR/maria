@@ -1,0 +1,433 @@
+# ejecutado: 2026-10-17T11:01:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: revisión profunda 72h (14/10 11:00 → 17/10 11:00 ART) de maria-paez y sofia-bruscoli
+#   cd /root/secretaria
+#   DESDE_UTC='2026-10-14 14:00:00'; DESDE_LOG='2026-10-14 11:00'
+#   W42=ops/instances/maria-paez/reviews/2026-W42.md; W42S=ops/instances/sofia-bruscoli/reviews/2026-W42.md
+#   had=0; [ -f $W42 ] && had=1
+#   echo "████ weekly-review --dias 3 ████"
+#   timeout 120 node ops/scripts/weekly-review.js --dias 3 --no-mail >/dev/null 2>&1; echo "exit=$?"
+#   cat ops/instances/weekly-review-ultima.md
+#   git checkout -q -- ops/instances/weekly-review-ultima.md 2>/dev/null
+#   [ $had = 0 ] && rm -f $W42 $W42S || git checkout -q -- $W42 $W42S 2>/dev/null
+#   for s in maria-paez sofia-bruscoli; do
+#     echo; echo "████████ $s ████████"
+#     ( set -a; . config/instances/$s.conf; [ -f config/secrets.conf ] && . config/secrets.conf; set +a
+#       echo "── conversación completa (sin telemetría) ──"
+#       sqlite3 -separator ' │ ' "$MARIA_DB" "select e.id, datetime(e.timestamp,'-3 hours'), e.canal, e.direccion, coalesce(u.nombre, e.nombre, e.de, ''), replace(substr(e.cuerpo,1,1500),char(10),' ⏎ ') from eventos e left join usuarios u on u.id=e.usuario_id where e.timestamp>='$DESDE_UTC' and e.cuerpo not like 'claude_call%' and e.cuerpo not like 'poda-eventos%' order by e.id;"
+#       echo "── acciones fallidas / errores con metadata ──"
+#       sqlite3 -separator ' │ ' "$MARIA_DB" "select id, datetime(timestamp,'-3 hours'), substr(cuerpo,1,200), substr(coalesce(metadata_json,''),1,600) from eventos where timestamp>='$DESDE_UTC' and canal='sistema' and (cuerpo like '%fall%' or cuerpo like '%error%' or cuerpo like '%abort%' or cuerpo like '%descart%' or cuerpo like '%⚠%') order by id;"
+#       echo "── claude_call: tipo, n, ms prom, max ──"
+#       sqlite3 "$MARIA_DB" "select substr(cuerpo,13,instr(substr(cuerpo,13),':')-1) t, count(*), cast(avg(cast(substr(cuerpo, instr(cuerpo,': ')+2, instr(cuerpo,'ms')-instr(cuerpo,': ')-2) as int)) as int) from eventos where timestamp>='$DESDE_UTC' and cuerpo like 'claude_call%' group by 1 order by 2 desc;"
+#       echo "── wa_outbox 72h ──"
+#       sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, intentos, numero, datetime(creado,'-3 hours'), datetime(entregado,'-3 hours'), replace(substr(texto,1,300),char(10),' '), substr(coalesce(metadata_json,''),1,400) from wa_outbox where creado>='$DESDE_UTC' order by id;"
+#       echo "── pendientes creados/cerrados 72h ──"
+#       sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, dueno, disparador, datetime(creado,'-3 hours'), datetime(cerrado,'-3 hours'), substr(\"desc\",1,200) from pendientes where creado>='$DESDE_UTC' or cerrado>='$DESDE_UTC' order by id;"
+#       echo "── follow_ups 72h ──"
+#       sqlite3 -separator ' │ ' "$MARIA_DB" "select * from follow_ups where creado>='$DESDE_UTC' or estado in ('abierto','disparado') order by id desc limit 20;" 2>&1 | cut -c1-500
+#       echo "── programados 72h ──"
+#       sqlite3 -separator ' │ ' "$MARIA_DB" "select * from programados where creado>='$DESDE_UTC' order by id;" 2>&1 | cut -c1-400
+#     )
+#     echo "── out.log 72h (sin 'al día', sin MB upd) ──"
+#     awk -v d="$DESDE_LOG" '($3" "substr($4,1,5))>=d' logs/$s/out.log | grep -v -E "al día|\[upd\]" | cut -c1-500 | tail -400
+#     echo "── error.log 72h agrupado ──"
+#     awk -v d="$DESDE_LOG" '($3" "substr($4,1,5))>=d' logs/$s/error.log | cut -d' ' -f5- | sed -E 's/[0-9]{3,}/N/g' | sort | uniq -c | sort -rn | head -30
+#     echo "── error.log 72h últimas 40 crudas (sin TG poll) ──"
+#     awk -v d="$DESDE_LOG" '($3" "substr($4,1,5))>=d' logs/$s/error.log | grep -v "TG\] poll" | tail -40 | cut -c1-500
+#   done
+#   echo; echo "── pm2 ──"; pm2 jlist 2>/dev/null | python3 -c "import json,sys,time;[print(p['name'],p['pm2_env']['status'],'restarts',p['pm2_env']['restart_time'],'up_h',round((time.time()*1000-p['pm2_env']['pm_uptime'])/3.6e6,1),'mem_MB',round(p['monit']['memory']/1e6)) for p in json.load(sys.stdin)]"
+#   echo "── disco/mem ──"; df -h / | tail -1; free -m | head -2
+
+# ───── output ─────
+████ weekly-review --dias 3 ████
+exit=0
+# Revisión semanal 2026-W42
+
+_Últimos 3 días (desde 2026-10-14) · generada 17/10/2026, 11:01:02_
+
+**Resumen**: Maria Paez US$3.74 / 29 llamadas, 0 fallidas, MB v4.10 · Sofia Bruscoli US$0.00 / 0 llamadas, 0 fallidas, MB v4.10
+
+**VPS**: disco 47% usado (20G libres) · RAM 1019/3819 MB · logs: 864K · pm2: maria-paez: online, 7 restarts, up 155h · sofia-bruscoli: online, 7 restarts, up 155h · intensa-api: online, 2 restarts, up 155h · pm2-logrotate: online, 6 restarts, up 912h
+
+### Cambios deployados en la semana
+
+```
+17/10 13:59 cron-master: alerta autocontenida
+17/10 13:59 cron-master: alerta de push nombra la redirección de GitHub y el diagnóstico real
+```
+
+---
+
+## Maria Paez (maria-paez)
+
+**Usuarios**: 16 activos (15 atendidos, 13 pausados, 1 con Telegram) · **contactos nuevos**: 1 · **MariaBridge**: v4.10
+
+**Gasto**: US$3.74 en 29 llamadas (US$0.13 por llamada) · modo prosa: 9 · cortes Telegram: 26 · acciones fallidas: 0
+
+### Actividad por día
+| día | TG in | TG out | WA in | WA out | mail in | mail out | cal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-14 | 0 | 3 | 0 | 0 | 1 | 0 | 0 |
+| 2026-10-15 | 0 | 9 | 2 | 1 | 0 | 1 | 0 |
+| 2026-10-16 | 9 | 16 | 4 | 6 | 0 | 1 | 0 |
+| 2026-10-17 | 1 | 3 | 0 | 1 | 0 | 1 | 0 |
+
+### Gasto por día
+| día | llamadas | USD |
+| --- | --- | --- |
+| 2026-10-14 | 2 | 0.11 |
+| 2026-10-15 | 1 | 0.19 |
+| 2026-10-16 | 23 | 3.04 |
+| 2026-10-17 | 3 | 0.4 |
+
+### Gasto por tipo de llamada
+| tipo | n | USD |
+| --- | --- | --- |
+| whatsapp | 5 | 1.74 |
+| telegram | 10 | 1.58 |
+| moderacion | 9 | 0.16 |
+| memoria-curada | 1 | 0.08 |
+| unknown-flow | 1 | 0.07 |
+| mb-verif | 2 | 0.05 |
+| gmail-presentacion | 1 | 0.03 |
+
+### Quién escribió
+| quién | canal | n |
+| --- | --- | --- |
+| Diego | telegram | 10 |
+| Farinelli Arroyo | whatsapp | 4 |
+| Diego | whatsapp | 1 |
+| Nika Club Omakase | whatsapp | 1 |
+| The Google Workspace Team <workspace-noreply@google.com> | gmail | 1 |
+
+### Acciones ejecutadas
+| acción | n |
+| --- | --- |
+|  quitar_pendiente | 4 |
+|  enviar_wa | 4 |
+|  agregar_pendiente | 3 |
+|  upsert_contacto | 1 |
+|  enviar_archivo_wa | 1 |
+
+### Acciones FALLIDAS
+_(nada)_
+
+### Avisos de sistema (no rutinarios)
+| cuándo | qué |
+| --- | --- |
+| 2026-10-14 19:48:24 | unknown-flow/gmail LLM: desconocido · Es un mensaje automático de Google Workspace sin relación identificable con ningún usuario activo ni gestión previa |
+| 2026-10-16 13:32:12 | mb-verif: cold-send #292 a Farinelli Arroyo / 5491156920073 — veredicto por foto: enviado (Burbuja con hora 1:31 PM, tildes ✓✓, cuadro vacío) |
+| 2026-10-17 08:01:09 | mb-verif: cold-send #294 a Manu Der / 5491141604674 — veredicto por foto: enviado (burbuja + hora 8:00 AM ✓✓ + cuadro vacío) |
+
+### WhatsApp saliente (wa_outbox)
+| estado | n |
+| --- | --- |
+| entregado | 3 |
+
+### Follow-ups vivos
+| id | estado | creado | qué |
+| --- | --- | --- | --- |
+| 76 | abierto | 2026-10-17 06:39:58 | Esperar que Manu Der confirme día/horario y modalidad (oficina o Meet) para la reunión con |
+
+### Pendientes abiertos
+| id | dueño | qué |
+| --- | --- | --- |
+| 356 | maria | Esperar que Manu Der confirme día/horario y modalidad (oficina o Meet) para la reunión con |
+| 355 | maria | Esperando respuesta de 5491141604674@c.us (WA): "Hola Manu! Soy Maria, asistente de Diego  |
+| 335 | usuario | Reunión Software elecciones |
+| 334 | usuario | Reunión Telefónica Gobierno |
+| 308 | usuario | Llamar a Tono por droguería |
+| 239 | maria | Esperar que Caterina (Paraná Muebles Logística) confirme la fecha correcta de entrega de l |
+| 237 | maria | confirmarle a Doris la reserva en Coronado (MALBA) para 2 personas el martes 28/07 13:30,  |
+| 236 | usuario | Agregar al calendar las fechas posibles de colación y de revistas de arte, cuando estén |
+| 235 | usuario | Pedir los certificados de Ley Micaela |
+| 234 | usuario | Agregar la visita a Art Haus |
+| 233 | usuario | Chequear la perfo de Tosorarti con Eva |
+| 232 | usuario | Llamar a Todorati por su mesa en las jornadas y por si alguien quiere sumarse con material |
+
+### error.log agrupado (sin cortes de Telegram)
+| n | línea |
+| --- | --- |
+| 2 | [morning-brief/Natali Funez] clima fallo: HTTP 503 |
+| 2 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, tod |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, q |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, con |
+| 1 | [wa-validate] sin cliente WA — normalizado offline "<num>@c.us" → <num>@c.us (SIN verificar en Meta) |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya lo t |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Se cort |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Antes d |
+| 1 | [morning-brief/Diego] clima fallo: HTTP 503 |
+| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, l |
+
+### out.log: warnings / fallos agrupados
+_(nada)_
+
+### MariaBridge: warnings / errores
+| n | línea |
+| --- | --- |
+| 2 | [MB v4.10]  W [frio] #N: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS |
+| 1 | [MB v4.10]  W [frio] pantalla al timeout: [:Cancel,:Update] |
+| 1 | [MB v4.10]  W [frio] timeout #N — no encontré el botón send |
+
+
+---
+
+## Sofia Bruscoli (sofia-bruscoli)
+
+**Usuarios**: 1 activos (1 atendidos, 0 pausados, 1 con Telegram) · **contactos nuevos**: 0 · **MariaBridge**: v4.10
+
+**Gasto**: US$0.00 en 0 llamadas (- por llamada) · modo prosa: 0 · cortes Telegram: 29 · acciones fallidas: 0
+
+### Actividad por día
+| día | TG in | TG out | WA in | WA out | mail in | mail out | cal |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-10-15 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-16 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-17 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+
+### Gasto por día
+_(nada)_
+
+### Gasto por tipo de llamada
+_(nada)_
+
+### Quién escribió
+_(nada)_
+
+### Acciones ejecutadas
+_(nada)_
+
+### Acciones FALLIDAS
+_(nada)_
+
+### Avisos de sistema (no rutinarios)
+_(nada)_
+
+### WhatsApp saliente (wa_outbox)
+_(nada)_
+
+### Follow-ups vivos
+_(nada)_
+
+### Pendientes abiertos
+_(nada)_
+
+### error.log agrupado (sin cortes de Telegram)
+_(nada)_
+
+### out.log: warnings / fallos agrupados
+_(nada)_
+
+### MariaBridge: warnings / errores
+_(nada)_
+
+████████ maria-paez ████████
+── conversación completa (sin telemetría) ──
+34057 │ 2026-10-14 11:48:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34058 │ 2026-10-14 12:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34059 │ 2026-10-14 13:30:17 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Reunion CP MI - DP (01:45 p. m.) @Monroe 932, CABA (casa de Cielo) ⏎ Con: hola@cielopipkinarq.com, matias.israel@moovingargentina.com.ar ⏎ 👤 Cielo Pipkin — Arquitecta, profesional independiente — Cielo Pipkin Arquitectura (Buenos Aires): Dirección: Monroe 932, CABA ⏎ 👤 Matias Israel (moovingargentina.com.ar) — Socio-Gerente General / CEO en Mooving
+34060 │ 2026-10-14 13:33:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34061 │ 2026-10-14 13:45:17 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Revisión Cientifica Express  (02:00 p. m.) ⏎ Con: fabio.boschetto@vrainz.com, carlosdmino@gmail.com, fboero@luminaconsultora.com, pilar.rojas@vrainz.com, ruben.ward@sondeosglobal.com ⏎ 👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a… ⏎ 👤 Carlosdmino — No hay coincidencia confiable con esta persona específica. sin datos
+34062 │ 2026-10-14 15:15:17 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Personal (03:30 p. m.)
+34064 │ 2026-10-14 19:48:24 │ sistema │ interno │ Diego │ unknown-flow/gmail LLM: desconocido · Es un mensaje automático de Google Workspace sin relación identificable con ningún usuario activo ni gestión previa
+34066 │ 2026-10-14 19:48:37 │ gmail │ entrante │ Diego │ Google Workspace logo ⏎  ⏎  ⏎  ⏎ Review new Workspace Intelligence data sources and admin settings. ⏎  ⏎  ⏎  ⏎ Enviaremos una copia de este mensaje en el idioma principal de tu cuenta en   ⏎ cuanto estén disponibles las traducciones. Prevemos que este proceso   ⏎ llevará de una a dos semanas. ⏎  ⏎ Dear administrator, ⏎  ⏎ You are receiving this communication because you are a Google Workspace   ⏎ administrator. ⏎  ⏎ In April 2026, we introduced Workspace Intelligence to provide Gemini with   ⏎ real-time contextual understanding across core Workspace applications.   ⏎ Starting November 14, 2026, Workspace Intelligence will expand to include   ⏎ data from Google Tasks. ⏎  ⏎ With Workspace Intelligence, all of your generative AI tasks within   ⏎ Workspace are grounded in your Workspace data, eliminating the need for   ⏎ users to manually provide context to Gemini on every query. This already   ⏎ includes Gmail, Google Chat, Google Calendar and Google Drive. ⏎  ⏎ As an administrator, you have control over which data sources Workspace   ⏎ Intelligence can use for your organization. We understand this change may   ⏎ require some adjustments and have provided additional information below to   ⏎ guide you through these new controls. ⏎  ⏎ What this means for your organization ⏎  ⏎ Starting October 14, 2026, the following administrative controls and system   ⏎ behaviors will take effect: ⏎  ⏎  ⏎ New admin controls: Google Tasks will appear as a configurable data source   ⏎ option in your Google Admin console starting Octobe
+34068 │ 2026-10-15 04:00:19 │ telegram │ saliente │ Diego │ ☀️ *Buen día, Diego.* jueves, 15 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌧️ chaparrones, mín 14° / máx 19° · 92% prob. de lluvia ⏎  ⏎ *📅 Agenda del día* ⏎ • 08:00 a. m. — Yoga ⏎ • 12:00 p. m. — GN + VR Weekly ⏎ • 04:00 p. m. — Intro  Javier Fiasche /Diego ⏎ • 05:00 p. m. — Froneus Financiero @https://meet.google.com/vmp-gudj-eqz ⏎ • 07:00 p. m. — Galería de Arte Gallego @Posadas 1487, CABA ⏎  ⏎ *📝 Pendientes* ⏎ 1. iProt Seguridad ⏎ 2. Llamar a Poggetti ⏎ 3. Llamar a Tono por droguería ⏎ 4. Reunión Telefónica Gobierno ⏎ 5. Reunión Software elecciones
+34069 │ 2026-10-15 06:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34070 │ 2026-10-15 07:00:18 │ gmail │ saliente │ Natali Funez │ ☀️ *Buen día, Natali Funez.* jueves, 15 de octubre. ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy)
+34071 │ 2026-10-15 07:45:17 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Yoga (08:00 a. m.)
+34072 │ 2026-10-15 10:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34073 │ 2026-10-15 11:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: GN + VR Weekly (12:00 p. m.) ⏎ Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com ⏎ 👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un contacto de trabajo al que le escribimos vía WhatsApp para coordinar reuniones. Está asociado a Vra… ⏎ 👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a…
+34074 │ 2026-10-15 12:58:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34075 │ 2026-10-15 13:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: GN + VR Weekly (02:00 p. m.) ⏎ Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com ⏎ 👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un contacto de trabajo al que le escribimos vía WhatsApp para coordinar reuniones. Está asociado a Vra… ⏎ 👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a…
+34076 │ 2026-10-15 14:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34077 │ 2026-10-15 15:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34078 │ 2026-10-15 15:44:50 │ whatsapp │ entrante │ Diego │ perfecto, lindo dia
+34079 │ 2026-10-15 15:44:51 │ whatsapp │ entrante │ Diego │ hola, como estas?
+34080 │ 2026-10-15 15:44:51 │ whatsapp │ saliente │ Diego │ Hola Diego! Por política ahora no puedo atender pedidos por WhatsApp 🙏 ⏎  ⏎ Escribime por *Telegram* (t.me/MariaPaezAI_bot → tocá "compartir mi número") o por mail a maria.paez@intensa.io y sigo con lo tuyo al toque.
+34082 │ 2026-10-15 15:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Intro  Javier Fiasche /Diego (04:00 p. m.) ⏎ Con: jfiasche@gmail.com ⏎ Hola Diego, gracias por tu tiempo y un placer que nos podamos poner en contacto. Saludos Javier.
+34083 │ 2026-10-15 15:53:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34084 │ 2026-10-15 16:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34085 │ 2026-10-15 16:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Froneus Financiero (05:00 p. m.) @https://meet.google.com/vmp-gudj-eqz ⏎ Con: mariela.nigro@areait.com.ar, rsaune@froneus.com, dwinograd@froneus.com ⏎ 👤 Mariela Nigro — No encontré su rol/cargo específico con confianza razonable, solo que su email está asociado a AreaIT (proveedor registrado ante el estado argentino). sin datos ⏎ 👤 Rsaune — No hay información confiable sobre esta persona específica. sin datos
+34086 │ 2026-10-15 17:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34087 │ 2026-10-15 17:15:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: DL (05:30 p. m.)
+34088 │ 2026-10-15 17:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Dario (06:00 p. m.)
+34089 │ 2026-10-15 18:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Galería de Arte Gallego (07:00 p. m.) @Posadas 1487, CABA ⏎ Con: nfunez@iplan.com.ar ⏎ 👤 Natali Funez — Líder de Fidelización & Retención B2B / Corporate en IPLAN: Natali es mi esposa. Trabajamos en mundos bastante distintos: ella es Líder de Fidelización y Retención en iPlan Telecom…
+34091 │ 2026-10-16 04:00:19 │ telegram │ saliente │ Diego │ ☀️ *Buen día, Diego.* viernes, 16 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ llovizna leve, mín 11° / máx 17° ⏎  ⏎ *📅 Agenda del día* ⏎ • 11:00 a. m. — Reunión en CrediMundo @CrediMundo (dirección a confirmar - cerca de calle Moreno, CABA) ⏎ • 01:00 p. m. — PV ⏎ • 04:00 p. m. — Facu ⏎  ⏎ *📝 Pendientes* ⏎ 1. iProt Seguridad ⏎ 2. Llamar a Poggetti ⏎ 3. Llamar a Tono por droguería ⏎ 4. Reunión Telefónica Gobierno ⏎ 5. Reunión Software elecciones
+34092 │ 2026-10-16 07:00:19 │ gmail │ saliente │ Natali Funez │ ☀️ *Buen día, Natali Funez.* viernes, 16 de octubre. ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy)
+34093 │ 2026-10-16 09:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34094 │ 2026-10-16 10:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Reunión en CrediMundo (11:00 a. m.) @CrediMundo (dirección a confirmar - cerca de calle Moreno, CABA) ⏎ Reunión presencial en las oficinas de CrediMundo. Dirección exacta pendiente de confirmar.
+34095 │ 2026-10-16 11:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34096 │ 2026-10-16 12:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: PV (01:00 p. m.)
+34097 │ 2026-10-16 13:28:21 │ telegram │ entrante │ Diego │ María, mandas un whatsapp a Farinelli y me averiguas si hay sándwiches de milanesa hoy o que te pasen la carta si no y mandamela.
+34099 │ 2026-10-16 13:28:41 │ sistema │ interno │ Diego │ acción ejecutada: enviar_wa
+34100 │ 2026-10-16 13:28:41 │ sistema │ interno │ Diego │ acción ejecutada: agregar_pendiente
+34102 │ 2026-10-16 13:28:44 │ telegram │ saliente │ Diego │ Dale, le mando ahora a Farinelli por WhatsApp a preguntar por los sándwiches de milanesa y que pasen la carta. Apenas me contesten te la reenvío.
+34104 │ 2026-10-16 13:32:12 │ sistema │ interno │  │ mb-verif: cold-send #292 a Farinelli Arroyo / 5491156920073 — veredicto por foto: enviado (Burbuja con hora 1:31 PM, tildes ✓✓, cuadro vacío)
+34105 │ 2026-10-16 13:32:12 │ whatsapp │ saliente │ Diego │ Hola! Soy Maria, la secretaria de Diego. Quería consultarles si hoy tienen sándwiches de milanesa, o si no, si me podrían pasar la carta. Muchas gracias!
+34106 │ 2026-10-16 13:34:32 │ whatsapp │ entrante │ Diego │ (te mandé una imagen — mirala) ⏎ (sistema: adjunto guardado con id "2026-10-16-bf2f139e.jpg" — si piden reenviarlo/compartirlo usá enviar_archivo_wa con ese id)
+34108 │ 2026-10-16 13:35:03 │ telegram │ saliente │ Diego │ Te paso la carta de Farinelli. Sí tienen un sándwich de milanesa: "Clásico de mila de peceto" con tomates horneados, rúcula y mostaza dijón en focaccia de hierbas, viene con papas — $31.300. ⏎ https://intensa.io/_dl/m-82200ad497b0c286.jpg
+34109 │ 2026-10-16 13:35:03 │ sistema │ interno │ Diego │ acción ejecutada: enviar_archivo_wa
+34110 │ 2026-10-16 13:35:03 │ sistema │ interno │ Diego │ acción ejecutada: quitar_pendiente
+34111 │ 2026-10-16 13:35:03 │ sistema │ interno │ Diego │ acción ejecutada: quitar_pendiente
+34114 │ 2026-10-16 13:35:11 │ whatsapp │ saliente │ Diego │ ¡Buenísimo, muchas gracias! 🙏
+34115 │ 2026-10-16 13:37:07 │ telegram │ entrante │ Diego │ Escúchame, pedíle cuatro sándwiches milanesas, más cuatro hallfajores de esos de Núez y aví que te avisen y avisame cuando estén y los voy a buscar. ⏎  Gracias.
+34117 │ 2026-10-16 13:37:19 │ sistema │ interno │ Diego │ acción ejecutada: enviar_wa
+34118 │ 2026-10-16 13:37:19 │ sistema │ interno │ Diego │ acción ejecutada: agregar_pendiente
+34120 │ 2026-10-16 13:37:22 │ telegram │ saliente │ Diego │ Listo, les mando ahora el pedido por WhatsApp a Farinelli: 4 sándwiches de milanesa (el clásico de peceto) y 4 alfajores de nuez, pidiéndoles que avisen cuando esté listo. Apenas confirmen te aviso para que lo pases a buscar.
+34121 │ 2026-10-16 13:41:13 │ telegram │ entrante │ Diego │ Dale, ya te tomaron el pedido?
+34123 │ 2026-10-16 13:41:21 │ whatsapp │ saliente │ Diego │ Hola! Les hago un pedido de Diego: 4 sándwiches "Clásico de mila de peceto" y 4 alfajores de nuez. ¿Me avisan cuando estén listos para retirar? Gracias!
+34124 │ 2026-10-16 13:41:22 │ telegram │ saliente │ Diego │ No, todavía no contestaron. El mensaje con el pedido salió en cola (el sistema lo manda con una pequeña demora), pero Farinelli todavía no respondió. Apenas confirmen te aviso.
+34125 │ 2026-10-16 13:42:11 │ telegram │ entrante │ Diego │ Dale
+34127 │ 2026-10-16 13:42:16 │ telegram │ saliente │ Diego │ Dale, quedo atenta y te aviso apenas Farinelli confirme.
+34128 │ 2026-10-16 13:44:22 │ whatsapp │ entrante │ Diego │ listoo, ya te encargue
+34129 │ 2026-10-16 13:44:31 │ sistema │ interno │ Diego │ acción ejecutada: quitar_pendiente
+34132 │ 2026-10-16 13:44:39 │ whatsapp │ saliente │ Diego │ Genial, muchas gracias! Quedo esperando que me avisen cuando esté listo 🙏
+34133 │ 2026-10-16 13:44:39 │ whatsapp │ entrante │ Diego │ abonas al retirar?
+34135 │ 2026-10-16 13:44:55 │ sistema │ interno │ Diego │ acción ejecutada: enviar_wa
+34138 │ 2026-10-16 13:45:04 │ whatsapp │ saliente │ Diego │ Sí, abona al retirar. Gracias!
+34139 │ 2026-10-16 13:50:51 │ telegram │ entrante │ Diego │ Confirmo?
+34141 │ 2026-10-16 13:50:58 │ telegram │ saliente │ Diego │ Sí, confirmado: Farinelli ya tomó el pedido (4 sándwiches de milanesa + 4 alfajores de nuez) y se abona al retirar. Ahora quedo esperando que avisen cuando esté listo para que lo pases a buscar.
+34142 │ 2026-10-16 14:01:34 │ whatsapp │ entrante │ Diego │ ya esta tu pedido!!
+34143 │ 2026-10-16 14:01:39 │ sistema │ interno │ Diego │ acción ejecutada: quitar_pendiente
+34145 │ 2026-10-16 14:01:43 │ telegram │ saliente │ Diego │ Ya está listo tu pedido en Farinelli (4 sándwiches de milanesa + 4 alfajores de nuez) — podés pasar a buscarlo cuando quieras, se abona al retirar.
+34147 │ 2026-10-16 14:01:48 │ whatsapp │ saliente │ Diego │ Buenísimo, muchas gracias! Ya le aviso a Diego para que pase a buscarlo 🙏
+34148 │ 2026-10-16 14:03:17 │ sistema │ interno │  │ meeting-prep: 1 alerta(s) agendada(s) (2 usuarios)
+34149 │ 2026-10-16 15:45:18 │ telegram │ saliente │ Diego │ ⏰ *En 15min*: Facu (04:00 p. m.)
+34150 │ 2026-10-16 20:03:16 │ telegram │ saliente │ Diego │ 🎂 *Mañana cumple años:* ⏎ • Veronica Ciccarelli ⏎  ⏎ ¿Le mando un saludo de tu parte? Decime el tono o pasame el texto y lo mando mañana a primera hora. Si no, ignorá este mensaje.
+34151 │ 2026-10-16 22:23:44 │ telegram │ entrante │ Diego │ [CONTACTO COMPARTIDO] Manuel Der — tel: 541141604674 ⏎ (El usuario te compartió este contacto por Telegram — guardalo en su libreta con upsert_contacto salvo que el contexto diga otra cosa.)
+34152 │ 2026-10-16 22:23:53 │ sistema │ interno │ Diego │ acción ejecutada: upsert_contacto
+34154 │ 2026-10-16 22:23:55 │ telegram │ saliente │ Diego │ Listo, guardé el teléfono de Manu Der en su contacto (ya lo tenía con el mail de PlusZero, ahora le sumé el WhatsApp).
+34155 │ 2026-10-16 22:26:24 │ telegram │ entrante │ Diego │ Manu.der@pluszero.app
+34157 │ 2026-10-16 22:26:30 │ telegram │ saliente │ Diego │ Ya lo tengo guardado, ese es el mail que ya tenía cargado (manu.der@pluszero.app). Todo en orden con el contacto de Manu Der.
+34158 │ 2026-10-16 22:29:07 │ telegram │ entrante │ Diego │ Escribile a Manu, por favor, para armar una reunión la semana que viene, ofrecerle a hacer en mi ⏎  oficina o mit el lunes podría ser a las diez o a las dieciséis y ofrecerle mi
+34160 │ 2026-10-16 22:29:18 │ telegram │ saliente │ Diego │ Se cortó el mensaje al final ("ofrecerle mi..."). ¿Qué más querés ofrecerle a Manu además de la oficina o virtual, y los horarios del lunes 10 o 16hs?
+34161 │ 2026-10-16 22:29:18 │ telegram │ entrante │ Diego │ Si no también podría ser el juez por la tarde. ⏎  Un hora y media por la duración de la reunión.
+34163 │ 2026-10-16 22:29:43 │ telegram │ saliente │ Diego │ Antes de escribirle a Manu, ojo: el lunes a las 16hs tenés "Seguimiento Diego/Nico" a las 17hs, y la reunión de 1 hora y media (16 a 17:30) se pisaría media hora con eso. ¿Querés que igual ofrezca ese horario, o prefiero ajustarlo (por ejemplo terminar antes, o directamente no ofrecer esa franja)?
+34166 │ 2026-10-17 04:00:19 │ telegram │ saliente │ Diego │ ☀️ *Buen día, Diego.* sábado, 17 de octubre. ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy) ⏎  ⏎ *Cumpleaños hoy* ⏎ 🎂 Veronica Ciccarelli ⏎  ⏎ *📝 Pendientes* ⏎ 1. iProt Seguridad ⏎ 2. Llamar a Poggetti ⏎ 3. Llamar a Tono por droguería ⏎ 4. Reunión Telefónica Gobierno ⏎ 5. Reunión Software elecciones
+34167 │ 2026-10-17 06:39:41 │ telegram │ entrante │ Diego │ Si, ofrécele igual a manu esas opciones
+34169 │ 2026-10-17 06:39:58 │ sistema │ interno │ Diego │ acción ejecutada: enviar_wa
+34170 │ 2026-10-17 06:39:58 │ sistema │ interno │ Diego │ acción ejecutada: agregar_pendiente
+34172 │ 2026-10-17 06:40:00 │ telegram │ saliente │ Diego │ Dale, le mando ahora a Manu por WhatsApp con las 3 opciones (lunes 10hs, lunes 16hs, jueves por la tarde) y la opción de oficina o Meet. Apenas me conteste te aviso y coordino.
+34173 │ 2026-10-17 06:49:06 │ telegram │ saliente │ Diego │ ⚠️ cron: git push lleva 10 ticks fallando — los snapshots/outbox NO están subiendo (¿token del remote?). fetch+deploy siguen OK. Fix: git remote set-url con el PAT.
+34174 │ 2026-10-17 07:00:20 │ gmail │ saliente │ Natali Funez │ ☀️ *Buen día, Natali Funez.* sábado, 17 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ llovizna leve, mín 8° / máx 13° ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy)
+34176 │ 2026-10-17 08:01:09 │ sistema │ interno │  │ mb-verif: cold-send #294 a Manu Der / 5491141604674 — veredicto por foto: enviado (burbuja + hora 8:00 AM ✓✓ + cuadro vacío)
+34177 │ 2026-10-17 08:01:10 │ whatsapp │ saliente │ Diego │ Hola Manu! Soy Maria, asistente de Diego Paez. Te escribo para coordinar una reunión la semana que viene (duración aprox. 1 hora y media). Te paso las opciones de horario: ⏎ - Lunes 19/10 a las 10:00 ⏎ - Lunes 19/10 a las 16:00 ⏎ - Jueves 22/10 por la tarde ⏎  ⏎ Puede ser en la oficina de Diego (Carlos Pellegrini 1521, piso 8, CABA) o por videollamada (Meet), lo que te quede más cómodo. ¿Cuál opción te sirve?
+── acciones fallidas / errores con metadata ──
+── claude_call: tipo, n, ms prom, max ──
+telegram|10|11724
+moderacion|9|5531
+whatsapp|5|15114
+mb-verif|2|12058
+unknown-flow|1|5284
+memoria-curada|1|13319
+gmail-presentacion|1|11618
+── wa_outbox 72h ──
+292 │ entregado │ 2 │ 5491156920073 │ 2026-10-16 13:28:41 │ 2026-10-16 13:32:12 │ Hola! Soy Maria, la secretaria de Diego. Quería consultarles si hoy tienen sándwiches de milanesa, o si no, si me podrían pasar la carta. Muchas gracias! │ {"destinoOriginal":"5491156920073@c.us","canalOrigen":"telegram","cold_fallos":1,"cold_motivo":"timeout_sin_boton","verif_foto":{"veredicto":"enviado","motivo":"Burbuja con hora 1:31 PM, tildes ✓✓, cuadro vacío","url":"https://intensa.io/_dl/verif-292-47814469.png","arbol":"inconcluso","ts":"2026-10-16T16:32:12.060Z"}}
+293 │ entregado │ 1 │ 5491156920073 │ 2026-10-16 13:37:19 │ 2026-10-16 13:41:21 │ Hola! Les hago un pedido de Diego: 4 sándwiches "Clásico de mila de peceto" y 4 alfajores de nuez. ¿Me avisan cuando estén listos para retirar? Gracias! │ {"destinoOriginal":"5491156920073@c.us","canalOrigen":"telegram"}
+294 │ entregado │ 1 │ 5491141604674 │ 2026-10-17 06:39:58 │ 2026-10-17 08:01:10 │ Hola Manu! Soy Maria, asistente de Diego Paez. Te escribo para coordinar una reunión la semana que viene (duración aprox. 1 hora y media). Te paso las opciones de horario: - Lunes 19/10 a las 10:00 - Lunes 19/10 a las 16:00 - Jueves 22/10 por la tarde  Puede ser en la oficina de Diego (Carlos Pelleg │ {"destinoOriginal":"5491141604674@c.us","canalOrigen":"telegram","verif_foto":{"veredicto":"enviado","motivo":"burbuja + hora 8:00 AM ✓✓ + cuadro vacío","url":"https://intensa.io/_dl/verif-294-82727fb9.png","arbol":"inconcluso","ts":"2026-10-17T11:01:09.879Z"}}
+── pendientes creados/cerrados 72h ──
+351 │ cerrado │ maria │ trigger_externo │ 2026-10-16 13:28:41 │ 2026-10-16 13:35:03 │ Esperando respuesta de 5491156920073@c.us (WA): "Hola! Soy Maria, la secretaria de Diego. Quería consultarles si hoy tienen sándwiches de milanesa, o si no, si me podrían pasar la carta. Mu…"
+352 │ cerrado │ maria │ trigger_externo │ 2026-10-16 13:28:41 │ 2026-10-16 13:35:03 │ Esperar respuesta de Farinelli (sándwiches de milanesa / carta) y reenviarle la info a Diego
+353 │ cerrado │ maria │ trigger_externo │ 2026-10-16 13:37:19 │ 2026-10-16 13:44:31 │ Esperando respuesta de 5491156920073@c.us (WA): "Hola! Les hago un pedido de Diego: 4 sándwiches "Clásico de mila de peceto" y 4 alfajores de nuez. ¿Me avisan cuando estén listos para retir…"
+354 │ cerrado │ maria │ trigger_externo │ 2026-10-16 13:37:19 │ 2026-10-16 14:01:39 │ Esperar que Farinelli avise que está listo el pedido (4 sándwiches de milanesa + 4 alfajores de nuez) y avisarle a Diego para que lo pase a buscar
+355 │ abierto │ maria │ trigger_externo │ 2026-10-17 06:39:58 │  │ Esperando respuesta de 5491141604674@c.us (WA): "Hola Manu! Soy Maria, asistente de Diego Paez. Te escribo para coordinar una reunión la semana que viene (duración aprox. 1 hora y media). T…"
+356 │ abierto │ maria │ trigger_externo │ 2026-10-17 06:39:58 │  │ Esperar que Manu Der confirme día/horario y modalidad (oficina o Meet) para la reunión con Diego, y agendarla / avisarle a Diego
+── follow_ups 72h ──
+76 │ 2026-10-17 09:39:58 │ 1 │ Esperar que Manu Der confirme día/horario y modalidad (oficina o Meet) para la reunión con Diego, y agendarla / avisarle a Diego │ 5491141604674@c.us │ whatsapp │ 2026-10-19 09:39:58 │ abierto │  │  │ {"origen":"auto_pendiente"}
+75 │ 2026-10-16 16:37:19 │ 1 │ Esperar que Farinelli avise que está listo el pedido (4 sándwiches de milanesa + 4 alfajores de nuez) y avisarle a Diego para que lo pase a buscar │ 5491156920073@c.us │ whatsapp │ 2026-10-18 16:37:19 │ cancelado │  │ 2026-10-16 17:01:39 │ {"origen":"auto_pendiente"}
+74 │ 2026-10-16 16:28:41 │ 1 │ Esperar respuesta de Farinelli (sándwiches de milanesa / carta) y reenviarle la info a Diego │ 5491156920073@c.us │ whatsapp │ 2026-10-18 16:28:41 │ cancelado │  │ 2026-10-16 16:35:03 │ {"origen":"auto_pendiente"}
+── programados 72h ──
+1822 │ 2026-10-14 14:48:16 │ 2026-10-14T16:30:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Reunion CP MI - DP (01:45 p. m.) @Monroe 932, CABA (casa de Cielo)
+Con: hola@cielopipkinarq.com, matias.israel@moovingargentina.com.ar
+👤 Cielo Pipkin — Arquitecta, profesional independiente — Cielo Pipkin Arquitectura (Buenos Aires): Dirección: Monroe 932, CABA
+👤 Matias Israel (moovingargentina.com.ar) — Socio-Gerente General / CEO en Mooving │ 1 │ meeting_prep:1:4k04b2hca09fofe46kn77qjjpc │ {"eventoId":"4k04b2hca09fofe46kn77qjjpc","summary":"Reunion CP MI - DP","inicio":"2026-10-14T13:45:00-03:00"} │ 1
+1823 │ 2026-10-14 15:03:16 │ 2026-10-14T16:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Revisión Cientifica Express  (02:00 p. m.)
+Con: fabio.boschetto@vrainz.com, carlosdmino@gmail.com, fboero@luminaconsultora.com, pilar.rojas@vrainz.com, ruben.ward@sondeosglobal.com
+👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a…
+👤 Carlosdmino — No hay coincidencia confiable con esta persona específica. sin datos │ 1 │ meeting_prep:1:3l6n31a1u0dvvv1uc4emi6cob6 │ {"eventoId":"3l6n31a1u0dvvv1uc4emi6cob6","summary":"Revisión Cientifica Express ","inicio":"2026-10-14T14:00:00-03:00"} │ 1
+1824 │ 2026-10-14 16:33:16 │ 2026-10-14T18:15:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Personal (03:30 p. m.) │ 1 │ meeting_prep:1:0288bf309fj562uqa2in670igq_20261014T183000Z │ {"eventoId":"0288bf309fj562uqa2in670igq_20261014T183000Z","summary":"Personal","inicio":"2026-10-14T15:30:00-03:00"} │ 1
+1825 │ 2026-10-15 09:03:16 │ 2026-10-15T10:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Yoga (08:00 a. m.) │ 1 │ meeting_prep:1:2g3bldk466u8up7fjmgrb2r7s2_20261015T110000Z │ {"eventoId":"2g3bldk466u8up7fjmgrb2r7s2_20261015T110000Z","summary":"Yoga","inicio":"2026-10-15T08:00:00-03:00"} │ 1
+1826 │ 2026-10-15 13:03:16 │ 2026-10-15T14:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: GN + VR Weekly (12:00 p. m.)
+Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com
+👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un contacto de trabajo al que le escribimos vía WhatsApp para coordinar reuniones. Está asociado a Vra…
+👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a… │ 1 │ meeting_prep:1:eclncjav5ls9lp0s7tmbrevkhr_20261015T150000Z │ {"eventoId":"eclncjav5ls9lp0s7tmbrevkhr_20261015T150000Z","summary":"GN + VR Weekly","inicio":"2026-10-1
+1827 │ 2026-10-15 15:58:16 │ 2026-10-15T16:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: GN + VR Weekly (02:00 p. m.)
+Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com
+👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un contacto de trabajo al que le escribimos vía WhatsApp para coordinar reuniones. Está asociado a Vra…
+👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a… │ 1 │ meeting_prep:1:eclncjav5ls9lp0s7tmbrevkhr_20261015T150000Z │ {"eventoId":"eclncjav5ls9lp0s7tmbrevkhr_20261015T150000Z","summary":"GN + VR Weekly","inicio":"2026-10-1
+1828 │ 2026-10-15 17:03:16 │ 2026-10-15T18:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Intro  Javier Fiasche /Diego (04:00 p. m.)
+Con: jfiasche@gmail.com
+Hola Diego, gracias por tu tiempo y un placer que nos podamos poner en contacto. Saludos Javier. │ 1 │ meeting_prep:1:24jfddhg10v6q53get3rs4otcb │ {"eventoId":"24jfddhg10v6q53get3rs4otcb","summary":"Intro  Javier Fiasche /Diego","inicio":"2026-10-15T16:00:00-03:00"} │ 1
+1829 │ 2026-10-15 18:03:16 │ 2026-10-15T19:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Froneus Financiero (05:00 p. m.) @https://meet.google.com/vmp-gudj-eqz
+Con: mariela.nigro@areait.com.ar, rsaune@froneus.com, dwinograd@froneus.com
+👤 Mariela Nigro — No encontré su rol/cargo específico con confianza razonable, solo que su email está asociado a AreaIT (proveedor registrado ante el estado argentino). sin datos
+👤 Rsaune — No hay información confiable sobre esta persona específica. sin datos │ 1 │ meeting_prep:1:jkanbtrlrnog4ebl30kcm4ofid_20261015T200000Z │ {"eventoId":"jkanbtrlrnog4ebl30kcm4ofid_20261015T200000Z","summary":"Froneus Financiero","inicio":"2026-10-15T17:00:00-03:00"} │ 1
+1830 │ 2026-10-15 18:53:16 │ 2026-10-15T20:15:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: DL (05:30 p. m.) │ 1 │ meeting_prep:1:730alk63ajp06a8l27l4ieespr │ {"eventoId":"730alk63ajp06a8l27l4ieespr","summary":"DL","inicio":"2026-10-15T17:30:00-03:00"} │ 1
+1831 │ 2026-10-15 19:03:16 │ 2026-10-15T20:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Dario (06:00 p. m.) │ 1 │ meeting_prep:1:0erlk1ak5ausm9j4lp6v20q1u3 │ {"eventoId":"0erlk1ak5ausm9j4lp6v20q1u3","summary":"Dario","inicio":"2026-10-15T18:00:00-03:00"} │ 1
+1832 │ 2026-10-15 20:03:16 │ 2026-10-15T21:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Galería de Arte Gallego (07:00 p. m.) @Posadas 1487, CABA
+Con: nfunez@iplan.com.ar
+👤 Natali Funez — Líder de Fidelización & Retención B2B / Corporate en IPLAN: Natali es mi esposa. Trabajamos en mundos bastante distintos: ella es Líder de Fidelización y Retención en iPlan Telecom… │ 1 │ meeting_prep:1:62snfbntpeme0me2mu79nknfek │ {"eventoId":"62snfbntpeme0me2mu79nknfek","summary":"Galería de Arte Gallego","inicio":"2026-10-15T19:00:00-03:00"} │ 1
+1833 │ 2026-10-16 12:03:16 │ 2026-10-16T13:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Reunión en CrediMundo (11:00 a. m.) @CrediMundo (dirección a confirmar - cerca de calle Moreno, CABA)
+Reunión presencial en las oficinas de CrediMundo. Dirección exacta pendiente de confirmar. │ 1 │ meeting_prep:1:auofijl96bh64861r2for2o408 │ {"eventoId":"auofijl96bh64861r2for2o408","summary":"Reunión en CrediMundo","inicio":"2026-10-16T11:00:00-03:00"} │ 1
+1834 │ 2026-10-16 14:03:16 │ 2026-10-16T15:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: PV (01:00 p. m.) │ 1 │ meeting_prep:1:033eth4r2b1cd76gd177snovej │ {"eventoId":"033eth4r2b1cd76gd177snovej","summary":"PV","inicio":"2026-10-16T13:00:00-03:00"} │ 1
+1835 │ 2026-10-16 17:03:17 │ 2026-10-16T18:45:00.000Z │ whatsapp │ 34342575317160@lid │  │ ⏰ *En 15min*: Facu (04:00 p. m.) │ 1 │ meeting_prep:1:6idfrkp1ueargpq9svshnsiv2p │ {"eventoId":"6idfrkp1ueargpq9svshnsiv2p","summary":"Facu","inicio":"2026-10-16T16:00:00-03:00"} │ 1
+── out.log 72h (sin 'al día', sin MB upd) ──
+2026-10-17 04:00:19: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-17 04:00:19: [morning-brief/Diego] ✓ enviado a 590589920
+2026-10-17 06:39:58: [wa-outbox] #294 encolado → +5491141604674 (Hola Manu! Soy Maria, asistente de Diego…)
+2026-10-17 06:49:06: [wa-send] internal-api/send-wa: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-17 07:00:20: [wa-send] morning-brief/Natali Funez: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Natali Funez
+2026-10-17 07:00:20: [morning-brief/Natali Funez] ✓ enviado a nfunez@iplan.com.ar
+2026-10-17 08:00:25: [MB v4.10] 08:00:25 I [frio] abriendo chat 5491141604674 (#294)
+2026-10-17 08:00:35: [MB v4.10] 08:00:27 I [frio] botón send encontrado — 'escribiendo' 20s antes de enviar
+2026-10-17 08:00:56: [MB v4.10] 08:00:49 I [frio] verificación #294 lectura 1/3: inconcluso:entry_otro_texto
+2026-10-17 08:00:56: [MB v4.10] 08:00:51 I [frio] verificación #294 lectura 2/3: inconcluso:entry_otro_texto
+2026-10-17 08:00:56: [MB v4.10] 08:00:54 I [frio] verificación #294 lectura 3/3: inconcluso:entry_otro_texto
+2026-10-17 08:00:56: [MB v4.10] 08:00:54 W [frio] #294: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+2026-10-17 08:00:56: [MB v4.10] 08:00:54 I [frio] #294: foto → VPS (estado árbol: inconcluso)
+2026-10-17 08:01:09: [MB-VERIF] #294 árbol=inconcluso → enviado (burbuja + hora 8:00 AM ✓✓ + cuadro vacío) https://intensa.io/_dl/verif-294-82727fb9.png
+2026-10-17 08:01:10: [wa-outbox] #294 entregado por el teléfono
+2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [frio] #294: veredicto por foto = enviado (http 200)
+2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [frio] verificación #294: ENVIADO (por foto)
+2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [outbox] enviado EN FRÍO (accesibilidad) → 5491141604674
+── error.log 72h agrupado ──
+      4 error (reintento en 15s): fetch failed
+      1 fallo: HTTP N
+      1 en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le mando ahora a Manu por WhatsApp con las 3 opciones (lunes 10hs, lunes 1"
+── error.log 72h últimas 40 crudas (sin TG poll) ──
+2026-10-17 04:00:18: [morning-brief/Diego] clima fallo: HTTP 503
+2026-10-17 06:40:00: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le mando ahora a Manu por WhatsApp con las 3 opciones (lunes 10hs, lunes 1"
+
+████████ sofia-bruscoli ████████
+── conversación completa (sin telemetría) ──
+582 │ 2026-10-15 07:30:17 │ telegram │ saliente │ Noelia Bruscoli │ ☀️ *Buen día, Noelia Bruscoli.* jueves, 15 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ chaparrones, mín 14° / máx 19° · 92% prob. de lluvia ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy)
+583 │ 2026-10-16 07:30:18 │ telegram │ saliente │ Noelia Bruscoli │ ☀️ *Buen día, Noelia Bruscoli.* viernes, 16 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ llovizna leve, mín 11° / máx 16° ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy)
+584 │ 2026-10-17 07:30:19 │ telegram │ saliente │ Noelia Bruscoli │ ☀️ *Buen día, Noelia Bruscoli.* sábado, 17 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ llovizna leve, mín 8° / máx 13° ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy)
+── acciones fallidas / errores con metadata ──
+── claude_call: tipo, n, ms prom, max ──
+── wa_outbox 72h ──
+── pendientes creados/cerrados 72h ──
+── follow_ups 72h ──
+── programados 72h ──
+── out.log 72h (sin 'al día', sin MB upd) ──
+2026-10-17 07:30:19: [wa-send] morning-brief/Noelia Bruscoli: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli
+2026-10-17 07:30:19: [morning-brief/Noelia Bruscoli] ✓ enviado a 6927380975
+── error.log 72h agrupado ──
+      1 error (reintento en 15s): fetch failed
+── error.log 72h últimas 40 crudas (sin TG poll) ──
+
+── pm2 ──
+maria-paez online restarts 7 up_h 155.5 mem_MB 203
+sofia-bruscoli online restarts 7 up_h 155.5 mem_MB 186
+intensa-api online restarts 2 up_h 155.5 mem_MB 80
+pm2-logrotate online restarts 6 up_h 912.2 mem_MB 85
+── disco/mem ──
+/dev/sda1        38G   17G   20G  47% /
+               total        used        free      shared  buff/cache   available
+Mem:            3819         999         372           5        2748        2820
+
+# exit=0
