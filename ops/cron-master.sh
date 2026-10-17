@@ -344,7 +344,9 @@ if ! git diff --cached --quiet; then
 fi
 
 # ───── 4b. Alerta de pushes fallidos (2026-07-02) ─────
-# El fallo conocido (token del remote perdido → "could not read Username") deja
+# Fallos conocidos ("could not read Username"): token del remote perdido (jun/2026)
+# o GitHub redirige el push a maria.git/ y git descarta el token embebido en la URL
+# (17/10/2026 — fix: credential.helper store + ~/.git-credentials en el VPS). Ambos dejan
 # de subir snapshots EN SILENCIO por días; fetch+deploy siguen andando así que
 # nada grita. Contador persistente + aviso WA al owner UNA vez al cruzar el
 # umbral (archivo .alerted evita spam; se limpia solo cuando vuelve a andar).
@@ -371,7 +373,7 @@ elif ! git diff --quiet HEAD 2>/dev/null || [ -n "$(git log origin/main..HEAD --
       if [ -n "$_port" ] && [ -n "$_own" ] && [ -n "$_sec" ]; then
         curl -s -m 10 -X POST "http://127.0.0.1:$_port/send-wa" \
           -H "x-intensa-secret: $_sec" -H 'Content-Type: application/json' \
-          -d "{\"to\":\"$_own\",\"body\":\"⚠️ cron: git push lleva $N ticks fallando — los snapshots/outbox NO están subiendo (¿token del remote?). fetch+deploy siguen OK. Fix: git remote set-url con el PAT.\"}" \
+          -d "{\"to\":\"$_own\",\"body\":\"⚠️ cron: git push lleva $N ticks fallando — los snapshots/outbox NO están subiendo fetch+deploy siguen OK. Causas vistas: token perdido del remote (jun) o redirección de GitHub que descarta el token de la URL (17/10). Diagnóstico por SSH: cd /root/secretaria && GIT_TERMINAL_PROMPT=0 GIT_CURL_VERBOSE=1 git push origin main. Si dice 'redirecting', el fix es el credential.helper store (ver reference_cron_push_token).\"}" \
           >/dev/null 2>&1 && touch "$PUSHFAIL_F.alerted"
       fi
     fi
