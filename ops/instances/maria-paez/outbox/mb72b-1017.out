@@ -1,0 +1,45 @@
+# ejecutado: 2026-10-17T11:04:03-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: lo mismo pero en los logs rotados (16/10)
+#   cd /root/secretaria/logs/maria-paez
+#   ls -la | head -20
+#   T=$(mktemp); for f in out*.gz; do zcat "$f"; done > $T 2>/dev/null; cat out.log >> $T
+#   for w in "2026-10-15 15:4" "2026-10-16 13:2" "2026-10-16 13:3" "2026-10-16 13:4" "2026-10-16 14:0"; do
+#     echo "════ $w ════"; grep "^$w" $T | grep -v -E "al día|meeting-prep|programados\]" | cut -c1-330
+#   done
+#   echo "════ upd/instalador 14-17/10 ════"
+#   grep -E "^2026-10-1[4-7]" $T | grep -E "\[upd\]|instalador|0-tap" | grep -v "al día" | cut -c1-250 | tail -25
+#   rm -f $T
+
+# ───── output ─────
+total 152
+drwxr-xr-x+ 2 root root 4096 Oct 17 00:00 .
+drwxr-xr-x+ 6 root root 4096 Sep  9 10:47 ..
+-rw-r--r--+ 1 root root  206 Oct  4 00:00 error__2026-10-04_00-00-00.log
+-rw-r--r--+ 1 root root  626 Oct  5 00:00 error__2026-10-05_00-00-00.log
+-rw-r--r--+ 1 root root  556 Oct  6 00:00 error__2026-10-06_00-00-00.log
+-rw-r--r--+ 1 root root 1370 Oct  7 00:00 error__2026-10-07_00-00-00.log
+-rw-r--r--+ 1 root root  468 Oct  8 00:00 error__2026-10-08_00-00-00.log
+-rw-r--r--+ 1 root root  790 Oct  9 00:00 error__2026-10-09_00-00-00.log
+-rw-r--r--+ 1 root root  896 Oct 10 00:00 error__2026-10-10_00-00-00.log
+-rw-r--r--+ 1 root root 1164 Oct 11 00:00 error__2026-10-11_00-00-00.log
+-rw-r--r--+ 1 root root  556 Oct 12 00:00 error__2026-10-12_00-00-00.log
+-rw-r--r--+ 1 root root  556 Oct 13 00:00 error__2026-10-13_00-00-00.log
+-rw-r--r--+ 1 root root  978 Oct 14 00:00 error__2026-10-14_00-00-00.log
+-rw-r--r--+ 1 root root  556 Oct 15 00:00 error__2026-10-15_00-00-00.log
+-rw-r--r--+ 1 root root  838 Oct 16 00:00 error__2026-10-16_00-00-00.log
+-rw-r--r--+ 1 root root 2285 Oct 17 00:00 error__2026-10-17_00-00-00.log
+-rw-r--r--  1 root root  553 Oct 17 09:58 error.log
+-rw-r--r--+ 1 root root  785 Oct  4 00:00 out__2026-10-04_00-00-00.log
+-rw-r--r--+ 1 root root 1265 Oct  5 00:00 out__2026-10-05_00-00-00.log
+════ 2026-10-15 15:4 ════
+════ 2026-10-16 13:2 ════
+════ 2026-10-16 13:3 ════
+════ 2026-10-16 13:4 ════
+════ 2026-10-16 14:0 ════
+════ upd/instalador 14-17/10 ════
+
+# exit=0
