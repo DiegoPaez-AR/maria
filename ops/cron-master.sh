@@ -373,7 +373,7 @@ elif ! git diff --quiet HEAD 2>/dev/null || [ -n "$(git log origin/main..HEAD --
       if [ -n "$_port" ] && [ -n "$_own" ] && [ -n "$_sec" ]; then
         curl -s -m 10 -X POST "http://127.0.0.1:$_port/send-wa" \
           -H "x-intensa-secret: $_sec" -H 'Content-Type: application/json' \
-          -d "{\"to\":\"$_own\",\"body\":\"⚠️ cron: git push lleva $N ticks fallando — los snapshots/outbox NO están subiendo fetch+deploy siguen OK. Causas vistas: token perdido del remote (jun) o redirección de GitHub que descarta el token de la URL (17/10). Diagnóstico por SSH: cd /root/secretaria && GIT_TERMINAL_PROMPT=0 GIT_CURL_VERBOSE=1 git push origin main. Si dice 'redirecting', el fix es el credential.helper store (ver reference_cron_push_token).\"}" \
+          -d "{\"to\":\"$_own\",\"body\":\"⚠️ cron: git push lleva $N ticks fallando — los snapshots/outbox NO están subiendo fetch+deploy siguen OK. Causas vistas: token perdido del remote (jun) o redirección de GitHub que descarta el token de la URL (17/10). Diagnóstico por SSH: cd /root/secretaria && GIT_TERMINAL_PROMPT=0 GIT_CURL_VERBOSE=1 git push origin main. Si dice 'redirecting', el fix es git config --global credential.helper store + PAT en ~/.git-credentials.\"}" \
           >/dev/null 2>&1 && touch "$PUSHFAIL_F.alerted"
       fi
     fi
