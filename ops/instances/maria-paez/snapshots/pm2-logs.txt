@@ -1,11 +1,31 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-17 01:35:17: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-17 04:00:18: [morning-brief/Diego] clima fallo: HTTP 503
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-17 00:31:28: [MB v4.10] 00:31:21 I [upd] al día (v4.10 code=35, mío=35)
 0|maria-pa | 2026-10-17 04:00:19: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-17 04:00:19: [morning-brief/Diego] ✓ enviado a 590589920
 0|maria-pa | 2026-10-17 06:31:24: [MB v4.10] 06:31:23 I [upd] al día (v4.10 code=35, mío=35)
+0|maria-pa | 2026-10-17 06:39:58: [wa-outbox] #294 encolado → +5491141604674 (Hola Manu! Soy Maria, asistente de Diego…)
+0|maria-pa | 2026-10-17 06:49:06: [wa-send] internal-api/send-wa: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+0|maria-pa | 2026-10-17 07:00:20: [wa-send] morning-brief/Natali Funez: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Natali Funez
+0|maria-pa | 2026-10-17 07:00:20: [morning-brief/Natali Funez] ✓ enviado a nfunez@iplan.com.ar
+0|maria-pa | 2026-10-17 08:00:25: [MB v4.10] 08:00:25 I [frio] abriendo chat 5491141604674 (#294)
+0|maria-pa | 2026-10-17 08:00:35: [MB v4.10] 08:00:27 I [frio] botón send encontrado — 'escribiendo' 20s antes de enviar
+0|maria-pa | 2026-10-17 08:00:56: [MB v4.10] 08:00:49 I [frio] verificación #294 lectura 1/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-10-17 08:00:56: [MB v4.10] 08:00:51 I [frio] verificación #294 lectura 2/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-10-17 08:00:56: [MB v4.10] 08:00:54 I [frio] verificación #294 lectura 3/3: inconcluso:entry_otro_texto
+0|maria-pa | 2026-10-17 08:00:56: [MB v4.10] 08:00:54 W [frio] #294: sin veredicto por accesibilidad (inconcluso) — mando foto al VPS
+0|maria-pa | 2026-10-17 08:00:56: [MB v4.10] 08:00:54 I [frio] #294: foto → VPS (estado árbol: inconcluso)
+0|maria-pa | 2026-10-17 08:01:09: [MB-VERIF] #294 árbol=inconcluso → enviado (burbuja + hora 8:00 AM ✓✓ + cuadro vacío) https://intensa.io/_dl/verif-294-82727fb9.png
+0|maria-pa | 2026-10-17 08:01:10: [wa-outbox] #294 entregado por el teléfono
+0|maria-pa | 2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [frio] #294: veredicto por foto = enviado (http 200)
+0|maria-pa | 2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [frio] verificación #294: ENVIADO (por foto)
+0|maria-pa | 2026-10-17 08:01:15: [MB v4.10] 08:01:11 I [outbox] enviado EN FRÍO (accesibilidad) → 5491141604674
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-17 01:35:17: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-17 04:00:18: [morning-brief/Diego] clima fallo: HTTP 503
+0|maria-pa | 2026-10-17 06:40:00: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le mando ahora a Manu por WhatsApp con las 3 opciones (lunes 10hs, lunes 1"
+0|maria-pa | 2026-10-17 08:07:16: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-17 09:16:21: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-17 09:58:24: [TG] poll error (reintento en 15s): fetch failed
 
