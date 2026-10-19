@@ -11,6 +11,10 @@
 // Uso:
 //   node daily-report.js                    # corre y manda
 //   DRY_RUN=1 node daily-report.js          # solo imprime, no manda
+//   node daily-report.js --dias 7 --solo maria-paez,sofia-bruscoli --sin-funnel
+//       → modo SEMANAL (19/10/2026, pedido Diego: Maria y Sofia ya estables,
+//         pasa de diario a semanal, solo esas dos instancias, sin funnel).
+//         Lee los logs rotados de logs/<slug>/ (pm2 logs solo trae el día).
 
 const fs = require('fs');
 const path = require('path');
@@ -20,6 +24,18 @@ const Database = require('better-sqlite3');
 const ROOT = __dirname;
 const INSTANCES_DIR = path.join(ROOT, 'config', 'instances');
 const DRY_RUN = !!process.env.DRY_RUN;
+const _args = process.argv.slice(2);
+const _arg = (k, def) => { const i = _args.indexOf(k); return i >= 0 && _args[i + 1] ? _args[i + 1] : def; };
+const DIAS = Math.max(1, Number(_arg('--dias', 1)) || 1);
+const VENTANA_MS = DIAS * 24 * 3600 * 1000;
+const SOLO = _arg('--solo', null) ? _arg('--solo').split(',').map(x => x.trim()).filter(Boolean) : null;
+const SIN_FUNNEL = _args.includes('--sin-funnel');
+const SEMANAL = DIAS > 1;
+const L_VENT = SEMANAL ? `${DIAS} días` : '24h';            // "últimas 24h" / "últimos 7 días"
+const L_ULT = SEMANAL ? `últimos ${DIAS} días` : 'últimas 24h';
+const L_PREV = SEMANAL ? 'sem. anterior' : 'ayer';
+const L_ACT = SEMANAL ? 'Semana' : 'Hoy';
+const TITULO = SEMANAL ? 'Reporte semanal' : 'Reporte diario';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -44,6 +60,7 @@ function listarConfs() {
   if (!fs.existsSync(INSTANCES_DIR)) return [];
   return fs.readdirSync(INSTANCES_DIR)
     .filter(f => f.endsWith('.conf'))
+    .filter(f => !SOLO || SOLO.includes(path.basename(f, '.conf')))
     .map(f => path.join(INSTANCES_DIR, f))
     .sort();
 }
@@ -65,6 +82,27 @@ function fmtMs(ms) {
   if (ms == null) return '?';
   if (ms >= 1000) return (ms / 1000).toFixed(1) + 's';
   return ms + 'ms';
+}
+
+// Modo semanal: pm2 logs solo ve el archivo del día (pm2-logrotate rota a las
+// 00:00), así que leemos out/error rotados de logs/<slug>/ y los devolvemos con
+// el prefijo "0|slug | " que espera el parser, ordenados por timestamp.
+function _logsRotados(env, slug) {
+  const dir = path.join(env.MARIA_LOGS_DIR || path.join(ROOT, 'logs'), slug);
+  const desdeMs = Date.now() - VENTANA_MS - 24 * 3600 * 1000;
+  let files = [];
+  try {
+    files = fs.readdirSync(dir).filter(f => /^(out|error)(__.*)?\.log$/.test(f))
+      .map(f => path.join(dir, f)).filter(f => fs.statSync(f).mtimeMs >= desdeMs);
+  } catch { return ''; }
+  const lines = [];
+  for (const f of files) {
+    for (const l of fs.readFileSync(f, 'utf8').split('\n')) {
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}:/.test(l)) lines.push(l);
+    }
+  }
+  lines.sort((a, b) => a.slice(0, 19).localeCompare(b.slice(0, 19)));
+  return lines.map(l => `0|${slug} | ${l}`).join('\n');
 }
 
 // ─── Stats por instancia ──────────────────────────────────────────────────
@@ -127,9 +165,9 @@ function statsInstancia(env) {
   //             2ª pasada correlaciona SIGINT con boot siguiente (deploy vs crash)
   //             y eventos de seguridad con el [WA ←] previo (snippet + remitente).
   try {
-    const logs = execSync(`pm2 logs ${slug} --lines 10000 --nostream 2>&1 | tail -10000`,
+    const logs = SEMANAL ? _logsRotados(env, slug) : execSync(`pm2 logs ${slug} --lines 10000 --nostream 2>&1 | tail -10000`,
       { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 });
-    const hace24h = Date.now() - 24 * 3600 * 1000;
+    const hace24h = Date.now() - VENTANA_MS;
 
     // line objects: { ts (ms), tsStr ('YYYY-MM-DD HH:MM:SS'), text (resto), raw }
     const events = [];
@@ -239,7 +277,7 @@ function statsInstancia(env) {
       // lexicográfica falla: " " (32) < "T" (84) → eventos del mismo día con
       // hora >= la del cutoff quedan FUERA. Por eso normalizamos a formato
       // SQLite antes de comparar.
-      const desde = new Date(Date.now() - 24 * 3600 * 1000)
+      const desde = new Date(Date.now() - VENTANA_MS)
         .toISOString().replace('T', ' ').slice(0, 19);
 
       const evs = db.prepare(`
@@ -459,7 +497,7 @@ function statsInstancia(env) {
       const usuarios = db.prepare(`SELECT id, nombre, rol, COALESCE(pausado,0) AS pausado FROM usuarios WHERE activo=1 ORDER BY rol DESC, id`).all();
       // USO por usuario (pedido Diego 27/8): mensajes ENTRANTES en las últimas
       // 24h y en las 24h anteriores, para ver la tendencia de un vistazo.
-      const _desdeAyer = new Date(Date.parse(desde.replace(' ', 'T') + 'Z') - 24 * 3600 * 1000)
+      const _desdeAyer = new Date(Date.parse(desde.replace(' ', 'T') + 'Z') - VENTANA_MS)
         .toISOString().replace('T', ' ').slice(0, 19);
       const _qUso = db.prepare(`SELECT COUNT(*) AS n FROM eventos
         WHERE usuario_id=? AND direccion='entrante' AND canal IN ('whatsapp','telegram','gmail')
@@ -499,7 +537,7 @@ function statsInstancia(env) {
 function statsFunnel() {
   const f = { ok:false, nota:null, visitasRaw:0, visitasHumanas:0, ipsHumanas:0,
               iniciados:null, pagos:0, altas:0, activos:0, totalClientes:0, cancelados:0 };
-  const cutoff = Date.now() - 24*60*60*1000;
+  const cutoff = Date.now() - VENTANA_MS;
   const MES = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
   const ES_BOT = /bot|spider|crawl|slurp|facebookexternal|headless|curl|wget|python-requests|scanner|monitor|uptime|pingdom|lighthouse|tlm-audit|claude-user|adsbot|preview/i;
 
@@ -566,11 +604,11 @@ function statsFunnel() {
 
 function renderTexto(allStats, fechaStr, funnel) {
   const lines = [];
-  lines.push(`📊 Reporte diario VPS Maria — ${fechaStr}`);
+  lines.push(`📊 ${TITULO} VPS Maria — ${fechaStr}`);
   lines.push('');
   lines.push(`Instancias activas: ${allStats.length}`);
   const _gastoTotal = allStats.reduce((t, s) => t + (s.gasto ? s.gasto.total_usd : 0), 0);
-  lines.push(`Gasto Claude total 24h: $${_gastoTotal.toFixed(2)} USD`);
+  lines.push(`Gasto Claude total ${L_VENT}: $${_gastoTotal.toFixed(2)} USD`);
   lines.push('');
   for (const s of allStats) {
     lines.push('═══════════════════════════════════════════');
@@ -583,7 +621,7 @@ function renderTexto(allStats, fechaStr, funnel) {
     }
     lines.push(`WhatsApp: ${s.eventos.wa_in}↓ / ${s.eventos.wa_out}↑ (${s.eventos.audios} audios)`);
     lines.push(`Gmail:    ${s.eventos.gmail_in}↓ / ${s.eventos.gmail_out}↑`);
-    if (s.telegram) lines.push(`Telegram: ${s.eventos.tg_in}↓ / ${s.eventos.tg_out}↑ · vinculados ${s.telegram.vinculados}/${s.telegram.total}${s.telegram.vinculos_24h ? ` (+${s.telegram.vinculos_24h} hoy)` : ''} · bot ${s.telegram.bot_ok === false ? '🔴 NO RESPONDE' : 'OK'}`);
+    if (s.telegram) lines.push(`Telegram: ${s.eventos.tg_in}↓ / ${s.eventos.tg_out}↑ · vinculados ${s.telegram.vinculados}/${s.telegram.total}${s.telegram.vinculos_24h ? ` (+${s.telegram.vinculos_24h} ${SEMANAL ? 'en el período' : 'hoy'})` : ''} · bot ${s.telegram.bot_ok === false ? '🔴 NO RESPONDE' : 'OK'}`);
     lines.push(`Calendar: ${s.eventos.cal_creados} creados · ${s.eventos.cal_modificados} modificados · ${s.eventos.cal_borrados} borrados`);
     if (e.wa_disconnect.length) lines.push(`⚠️ WA disconnect x${e.wa_disconnect.length}`);
     if (e.claude_fail)          lines.push(`⚠️ Claude falló: ${e.claude_fail}`);
@@ -593,7 +631,7 @@ function renderTexto(allStats, fechaStr, funnel) {
 
     // ── Rendimiento: latencia Claude + cola de programados ──
     if (s.latencia && s.latencia.total) {
-      lines.push(`Latencia Claude 24h (${s.latencia.total} llamadas):`);
+      lines.push(`Latencia Claude ${L_VENT} (${s.latencia.total} llamadas):`);
       for (const c of s.latencia.contextos) {
         lines.push(`   · ${c.ctx}: p50 ${fmtMs(c.p50)} · p95 ${fmtMs(c.p95)} · máx ${fmtMs(c.max)}  (${c.n})`);
       }
@@ -608,7 +646,7 @@ function renderTexto(allStats, fechaStr, funnel) {
     }
     if (s.gasto) {
       const sinCosto = s.gasto.calls - s.gasto.con_costo;
-      lines.push(`💵 Gasto Claude 24h: $${s.gasto.total_usd.toFixed(2)} USD (${s.gasto.calls} llamadas${sinCosto > 0 ? `, ${sinCosto} sin costo informado` : ''})`);
+      lines.push(`💵 Gasto Claude ${L_VENT}: $${s.gasto.total_usd.toFixed(2)} USD (${s.gasto.calls} llamadas${sinCosto > 0 ? `, ${sinCosto} sin costo informado` : ''})`);
       // Costo POR TURNO: es el número que hay que vigilar con las sesiones
       // prendidas. Si sube, la sesión se está alargando (bajar la rotación).
       for (const c of (s.gasto.por_canal || []).filter(x => x.turnos > 0 && x.usd >= 0.01)) {
@@ -617,7 +655,7 @@ function renderTexto(allStats, fechaStr, funnel) {
     }
     const NR = s.no_ruteado;
     if (NR && (NR.desconocidos.length || NR.avisos.length || NR.rebotes.length || NR.prospectos)) {
-      lines.push('📥 No ruteado / rebotes (24h):');
+      lines.push(`📥 No ruteado / rebotes (${L_VENT}):`);
       if (NR.rebotes.length) {
         lines.push(`   ✉️ Rebotes de email ×${NR.rebotes.length}:`);
         for (const r of NR.rebotes) lines.push(`      ${r.hhmm}  ${r.de} — "${r.asunto}"`);
@@ -671,7 +709,7 @@ function renderTexto(allStats, fechaStr, funnel) {
       const tag = p.rol === 'owner' ? ' [owner]' : (p.pausado ? ' [pausado]' : '');
       const delta = (p.msgsHoy || 0) - (p.msgsAyer || 0);
       const flecha = delta > 0 ? `↑${delta}` : delta < 0 ? `↓${-delta}` : '=';
-      lines.push(`  ${p.nombre}${tag}: ${p.abiertos} abiertos (+${p.nuevosHoy} -${p.cerradosHoy}) · uso ${p.msgsHoy || 0} msg (ayer ${p.msgsAyer || 0}, ${flecha})`);
+      lines.push(`  ${p.nombre}${tag}: ${p.abiertos} abiertos (+${p.nuevosHoy} -${p.cerradosHoy}) · uso ${p.msgsHoy || 0} msg (${L_PREV} ${p.msgsAyer || 0}, ${flecha})`);
     }
     lines.push('');
   }
@@ -736,7 +774,7 @@ function renderHTML(allStats, fechaStr, funnel) {
 
 <!-- Header -->
 <tr><td style="background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:24px;border-radius:12px 12px 0 0;color:#fff;">
-  <div style="font-size:13px;opacity:0.85;text-transform:uppercase;letter-spacing:1px;">Reporte diario</div>
+  <div style="font-size:13px;opacity:0.85;text-transform:uppercase;letter-spacing:1px;">${TITULO}</div>
   <div style="font-size:26px;font-weight:700;margin-top:4px;">📊 VPS Maria</div>
   <div style="font-size:14px;opacity:0.9;margin-top:6px;">${_esc(fechaStr)} · ${allStats.length} instancia${allStats.length === 1 ? '' : 's'} · 💵 $${allStats.reduce((t, x) => t + (x.gasto ? x.gasto.total_usd : 0), 0).toFixed(2)} USD Claude</div>
 </td></tr>`);
@@ -770,7 +808,7 @@ function renderHTML(allStats, fechaStr, funnel) {
       <td align="right" style="padding:4px 0;">uptime <strong>${fmtUptime(s.pm2.uptime_ms)}</strong></td>
     </tr>
     <tr>
-      <td style="padding:4px 0;color:#64748b;">deploys 24h: <strong style="color:#1f2937;">${e.deploys}</strong> · crashes 24h: <strong style="color:${e.crashes > 0 ? '#dc2626' : '#16a34a'};">${e.crashes}</strong> <span style="color:#94a3b8;font-size:11px;">(lifetime: ${s.pm2.restart_time})</span></td>
+      <td style="padding:4px 0;color:#64748b;">deploys ${L_VENT}: <strong style="color:#1f2937;">${e.deploys}</strong> · crashes ${L_VENT}: <strong style="color:${e.crashes > 0 ? '#dc2626' : '#16a34a'};">${e.crashes}</strong> <span style="color:#94a3b8;font-size:11px;">(lifetime: ${s.pm2.restart_time})</span></td>
       <td align="right" style="padding:4px 0;color:#64748b;">${s.pm2.memory_mb} MB · ${s.pm2.cpu}% CPU</td>
     </tr>
   </table>
@@ -779,7 +817,7 @@ function renderHTML(allStats, fechaStr, funnel) {
 
 <!-- Actividad -->
 <tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
-  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:12px;">Actividad últimas 24h</div>
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:12px;">Actividad ${L_ULT}</div>
   <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-size:13px;">
     <tr><td style="padding:6px 0;width:90px;"><span style="color:#16a34a;">●</span> WhatsApp</td>
         <td style="padding:6px 8px;">${_bar(totalTraf, maxTraf, '#16a34a')}</td>
@@ -812,7 +850,7 @@ function renderHTML(allStats, fechaStr, funnel) {
       }
       if (e.anomalias.length > 6) erroresHtml.push(`<div style="font-size:11px;color:#64748b;margin-bottom:6px;">…+${e.anomalias.length - 6} anomalía(s) más sin clasificar</div>`);
     }
-    if (!erroresHtml.length) erroresHtml.push(`<div style="padding:8px 10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:3px;font-size:13px;color:#065f46;">✓ sin errores destacados${e.deploys > 0 ? ` · ${e.deploys} deploy${e.deploys === 1 ? '' : 's'} normal${e.deploys === 1 ? '' : 'es'} en 24h` : ''}</div>`);
+    if (!erroresHtml.length) erroresHtml.push(`<div style="padding:8px 10px;background:#f0fdf4;border-left:3px solid #10b981;border-radius:3px;font-size:13px;color:#065f46;">✓ sin errores destacados${e.deploys > 0 ? ` · ${e.deploys} deploy${e.deploys === 1 ? '' : 's'} normal${e.deploys === 1 ? '' : 'es'} en ${L_VENT}` : ''}</div>`);
     html.push(erroresHtml.join(''));
     html.push(`</td></tr>`);
 
@@ -825,7 +863,7 @@ function renderHTML(allStats, fechaStr, funnel) {
       <td style="padding:6px 0;font-size:13px;">${_esc(c.ctx)} <span style="color:#94a3b8;font-size:11px;">×${c.n}</span></td>
       <td align="right" style="padding:6px 0;font-size:13px;font-variant-numeric:tabular-nums;color:#64748b;">p50 <strong style="color:#1f2937;">${fmtMs(c.p50)}</strong> · p95 <strong style="color:#1f2937;">${fmtMs(c.p95)}</strong> · máx <strong style="color:${c.max > 60000 ? '#dc2626' : c.max > 30000 ? '#d97706' : '#1f2937'};">${fmtMs(c.max)}</strong></td>
     </tr>`).join('')
-        : `<tr><td style="padding:6px 0;font-size:13px;color:#94a3b8;">sin llamadas claude_call registradas en 24h</td></tr>`;
+        : `<tr><td style="padding:6px 0;font-size:13px;color:#94a3b8;">sin llamadas claude_call registradas en ${L_VENT}</td></tr>`;
       const slowNote = (L && L.lentas30)
         ? `<div style="margin-top:8px;padding:5px 10px;background:${L.lentas60 ? '#fee2e2' : '#fef3c7'};border-left:3px solid ${L.lentas60 ? '#dc2626' : '#f59e0b'};border-radius:3px;font-size:12px;">${L.lentas60 ? '🔴' : '⚠️'} ${L.lentas30} llamada${L.lentas30 === 1 ? '' : 's'} &gt;30s · ${L.lentas60} &gt;60s</div>`
         : '';
@@ -841,10 +879,10 @@ function renderHTML(allStats, fechaStr, funnel) {
           ).join('')
         : '';
       const gastoLine = s.gasto
-        ? `<div style="margin-top:10px;font-size:13px;color:#1f2937;">💵 Gasto Claude 24h: <strong>$${s.gasto.total_usd.toFixed(2)} USD</strong> <span style="color:#94a3b8;font-size:12px;">· ${s.gasto.calls} llamada${s.gasto.calls === 1 ? '' : 's'}${s.gasto.calls - s.gasto.con_costo > 0 ? ` · ${s.gasto.calls - s.gasto.con_costo} sin costo informado` : ''}</span></div>${_gastoCanales}`
+        ? `<div style="margin-top:10px;font-size:13px;color:#1f2937;">💵 Gasto Claude ${L_VENT}: <strong>$${s.gasto.total_usd.toFixed(2)} USD</strong> <span style="color:#94a3b8;font-size:12px;">· ${s.gasto.calls} llamada${s.gasto.calls === 1 ? '' : 's'}${s.gasto.calls - s.gasto.con_costo > 0 ? ` · ${s.gasto.calls - s.gasto.con_costo} sin costo informado` : ''}</span></div>${_gastoCanales}`
         : '';
       html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
-  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">Rendimiento — latencia Claude (24h)</div>
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">Rendimiento — latencia Claude (${L_VENT})</div>
   <table cellpadding="0" cellspacing="0" border="0" width="100%">${filasLat}</table>
   ${slowNote}${gastoLine}${progLine}${reconLine}
 </td></tr>`);
@@ -875,7 +913,7 @@ function renderHTML(allStats, fechaStr, funnel) {
           bloques.push(`<div style="padding:8px 10px;background:#f0f9ff;border-left:3px solid #0ea5e9;border-radius:3px;margin-bottom:6px;font-size:13px;"><strong>👤 Prospectos esperando confirmación del owner: ${NR.prospectos}</strong></div>`);
         }
         html.push(`<tr><td style="padding:16px 24px;border-top:1px solid #f1f5f9;">
-  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">📥 No ruteado / rebotes (24h)</div>
+  <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;font-weight:600;margin-bottom:8px;">📥 No ruteado / rebotes (${L_VENT})</div>
   ${bloques.join('')}
 </td></tr>`);
       }
@@ -926,8 +964,8 @@ function renderHTML(allStats, fechaStr, funnel) {
     <tr style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;">
       <td style="padding:4px 0;">Usuario</td>
       <td align="right" style="padding:4px 12px;">Abiertos</td>
-      <td align="right" style="padding:4px 12px;">Hoy</td>
-      <td align="right" style="padding:4px 0;">Uso (vs ayer)</td>
+      <td align="right" style="padding:4px 12px;">${L_ACT}</td>
+      <td align="right" style="padding:4px 0;">Uso (vs ${L_PREV})</td>
     </tr>`);
       for (const p of s.pendientes_por_usuario) {
         const tag = p.rol === 'owner' ? ' <span style="background:#ddd6fe;color:#5b21b6;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:600;letter-spacing:0.3px;">OWNER</span>' : '';
@@ -939,7 +977,7 @@ function renderHTML(allStats, fechaStr, funnel) {
           ? `<span style="color:#16a34a;">▲${_d}</span>`
           : _d < 0 ? `<span style="color:#dc2626;">▼${-_d}</span>` : `<span style="color:#cbd5e1;">=</span>`;
         const uso = (p.msgsHoy || p.msgsAyer)
-          ? `<span style="font-variant-numeric:tabular-nums;">${p.msgsHoy || 0} msg</span> <span style="color:#94a3b8;font-size:11px;">(ayer ${p.msgsAyer || 0})</span> ${_flecha}`
+          ? `<span style="font-variant-numeric:tabular-nums;">${p.msgsHoy || 0} msg</span> <span style="color:#94a3b8;font-size:11px;">(${L_PREV} ${p.msgsAyer || 0})</span> ${_flecha}`
           : `<span style="color:#cbd5e1;">sin uso</span>`;
         const tagPausa = p.pausado ? ' <span style="background:#f1f5f9;color:#94a3b8;padding:1px 6px;border-radius:8px;font-size:10px;">PAUSADO</span>' : '';
         html.push(`<tr style="border-top:1px solid #f8fafc;">
@@ -993,7 +1031,7 @@ ${_frow('Altas (clientes nuevos)', F.altas, 'fila en control DB', gap ? '#dc2626
 
   html.push(`<!-- Footer -->
 <tr><td style="padding:20px 24px;background:#1f2937;color:#94a3b8;border-radius:0 0 12px 12px;font-size:12px;">
-  <div style="opacity:0.8;">Reporte automático · daily-report.js · 06:00 ART</div>
+  <div style="opacity:0.8;">Reporte automático · daily-report.js · ${SEMANAL ? 'lunes ' : ''}06:00 ART</div>
 </td></tr>
 
 </table>
@@ -1030,7 +1068,7 @@ async function main() {
 
   const fecha = new Date();
   const fechaStr = fecha.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', year: 'numeric' });
-  const funnel = statsFunnel();
+  const funnel = SIN_FUNNEL ? null : statsFunnel();
   const { texto, html } = renderReporte(allStats, fechaStr, funnel);
 
   console.log('\n────── PREVIEW (texto) ──────');
@@ -1061,7 +1099,7 @@ async function main() {
   }
   await g.enviarEmail({
     to: destino,
-    asunto: `📊 Reporte diario VPS Maria — ${fechaStr}`,
+    asunto: SEMANAL ? `📊 Reporte semanal Maria y Sofia — al ${fechaStr}` : `📊 Reporte diario VPS Maria — ${fechaStr}`,
     texto,
     html,
   });

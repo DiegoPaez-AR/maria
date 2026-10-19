@@ -327,4 +327,14 @@ function _avisarDueno(row, texto, metadata) {
     .catch(e => console.warn(`[wa-outbox] aviso #${row.id} a ${dest.nombre} falló: ${e.message}`));
 }
 
-module.exports = { encolar, siguiente, confirmar, confirmarUltimo, registrarFalloCold };
+// ¿Cuándo sale lo que se encola AHORA? (19/10/2026, caso Manu: Maria dijo "le
+// mando ahora" a las 06:39 y salió a las 08:01 por la ventana horaria).
+// null = dentro de la ventana; si no, 'hoy a las 8' / 'mañana a las 8'.
+function salidaDiferida() {
+  if (_enVentana()) return null;
+  const h = _horaLocal();
+  const hh = String(HORA_DESDE).padStart(2, '0');
+  return h < HORA_DESDE ? `hoy a las ${hh}:00` : `mañana a las ${hh}:00`;
+}
+
+module.exports = { encolar, siguiente, confirmar, confirmarUltimo, registrarFalloCold, salidaDiferida };

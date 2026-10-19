@@ -328,12 +328,24 @@ class WaSendService : AccessibilityService() {
         }
     }
 
+    private val PLACEHOLDER_RE = Regex(
+        "^(mensaje|message|escribe un mensaje|escribí un mensaje|escribir un mensaje|type a message)$",
+        RegexOption.IGNORE_CASE)
+
     // ── Verificación positiva (v4.7) ────────────────────────────────────────
     // Devuelve "enviado" | "trabado" | "inconcluso" mirando la pantalla UNA vez.
     private fun _leerEstadoEnvio(pkg: String, texto: String): String {
         val root = rootInActiveWindow ?: return "inconcluso:root_null"
         val entry = buscarPorId(root, "$pkg:id/entry") ?: return "inconcluso:sin_entry"
-        val textoEntry = entry.text?.toString() ?: ""
+        var textoEntry = entry.text?.toString() ?: ""
+        // v4.11: con el cuadro VACÍO, WhatsApp expone el placeholder ("Mensaje",
+        // "Message"…) como text → se leía "entry_otro_texto" en TODOS los envíos
+        // y la decisión caía siempre en la foto. Placeholder = vacío.
+        val hint = entry.hintText?.toString()?.trim() ?: ""
+        if (entry.isShowingHintText || (hint.isNotEmpty() && textoEntry.trim() == hint) ||
+            PLACEHOLDER_RE.matches(textoEntry.trim())) {
+            textoEntry = ""
+        }
         val firma = texto.trim().lineSequence().firstOrNull()?.trim()?.take(40) ?: ""
         if (textoEntry.isNotBlank()) {
             // el texto sigue en el cuadro → no salió (si es OTRO texto, raro: inconcluso)

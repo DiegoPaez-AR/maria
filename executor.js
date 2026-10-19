@@ -804,6 +804,14 @@ async function _enviarWA(a, ctx) {
       metadata: { destinoOriginal: a.a, canalOrigen: ctx.canalOrigen || null },
     });
     const gestion = _autoGestionTercero(a, ctx);
+    const _sale = require('./wa-outbox').salidaDiferida();
+    if (_sale) {
+      return {
+        a: a.a, encolado: true, enviado: false, via: 'telefono', outboxId: id, gestion_auto: gestion, sale: _sale,
+        nota: `QUEDÓ EN COLA y NO sale ahora: WhatsApp solo manda mensajes que inicio yo entre las 8 y las 23. Sale ${_sale}. ` +
+              `Decíselo al usuario así ("se lo mando ${_sale}"), NUNCA "ahora" ni "ya se lo mandé".`,
+      };
+    }
     return {
       a: a.a, encolado: true, enviado: false, via: 'telefono', outboxId: id, gestion_auto: gestion,
       // La capa de comportamiento humano (22/8) mete jitter de 30s-4min y
@@ -977,6 +985,30 @@ function _agregarPendiente(a, ctx) {
   }
 
   const id = mem.agregarPendiente(ctx.usuario.id, a.desc, meta);
+
+  // Un solo pendiente por gestión (19/10/2026, pedido Diego): enviar_wa a un
+  // tercero ya registra un "Esperando respuesta de…" automático. Si el modelo
+  // crea además su pendiente explícito esperando al MISMO número (más rico y con
+  // follow-up), el explícito absorbe al automático. El orden inverso
+  // (agregar_pendiente primero) ya lo cubre el dedupe de _autoGestionTercero.
+  if (meta.esperando_de) {
+    try {
+      const digs = String(meta.esperando_de).replace(/\D/g, '');
+      if (digs.length >= 8) {
+        const vars = require('./telefonos').variantes(digs);
+        const autos = mem.db.prepare(
+          `SELECT id, meta_json FROM pendientes WHERE usuario_id = ? AND estado = 'abierto' AND id <> ?
+             AND meta_json LIKE '%auto_enviar_wa%' AND creado >= datetime('now', '-30 minutes')`
+        ).all(ctx.usuario.id, id);
+        for (const p of autos) {
+          if (vars.some(v => String(p.meta_json || '').includes(v))) {
+            mem.db.prepare(`UPDATE pendientes SET estado = 'cerrado', cerrado = CURRENT_TIMESTAMP WHERE id = ?`).run(p.id);
+            console.log(`[agregar_pendiente] #${p.id} (auto enviar_wa) absorbido por #${id}`);
+          }
+        }
+      }
+    } catch (e) { console.warn('[agregar_pendiente] dedupe con el auto de enviar_wa:', e.message); }
+  }
   return { id, desc: a.desc, dueno: a.dueno, disparador: a.disparador, agregado: true, follow_up: followUp };
 }
 
