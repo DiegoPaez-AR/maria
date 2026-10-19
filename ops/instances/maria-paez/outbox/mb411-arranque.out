@@ -1,0 +1,68 @@
+# ejecutado: 2026-10-19T11:59:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: arranque de MariaBridge 4.11 en ambos teléfonos + qué despierta la pantalla en el de Sofia
+#   cd /root/secretaria/logs
+#   for s in maria-paez sofia-bruscoli; do
+#     echo "════ $s ════"
+#     grep -h "\[MB " $s/out__2026-10-1[89]*.log $s/out.log 2>/dev/null | grep -v "al día" | awk '$1>="2026-10-19"' | tail -40 | cut -c1-230
+#     echo "── despertares / ctl / instalador 7 días ──"
+#     cat $s/out__*.log $s/out.log 2>/dev/null | grep "\[MB " | grep -i -E "despert|wake|instalador|0-tap|\[ctl\]|frio\] abriendo" | awk '$1>="2026-10-12"' | tail -25 | cut -c1-200
+#   done
+
+# ───── output ─────
+════ maria-paez ════
+2026-10-19 11:53:08: [MB v4.10] 11:53:05 I [upd] versión nueva v4.11 (code 36 > 35) — descargando
+2026-10-19 11:53:08: [MB v4.10] 11:53:07 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-19 11:53:08: [MB v4.10] 11:53:07 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-10-19 11:53:08: [MB v4.10] 11:53:07 W [upd] Cancel está centrado (361 vs 359) — sin espejo confiable, no toco
+2026-10-19 11:53:08: [MB v4.10] 11:53:08 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 507,955 (intento 1/3)
+2026-10-19 11:53:44: [MB v4.11] 11:53:33 I [notif] listener creado
+2026-10-19 11:53:44: [MB v4.11] 11:53:34 I [notif] listener conectado — barrido cada 3min (marca=1792336820218)
+2026-10-19 11:53:44: [MB v4.11] 11:53:34 I [frio] accesibilidad conectada
+2026-10-19 11:53:52: [MB v4.11] 11:53:49 I [svc] OutboxService arrancó (loop nuevo)
+── despertares / ctl / instalador 7 días ──
+2026-10-15 12:30:08: [MB v4.9] 12:30:03 I [upd] instalador visible — ventana=true clickables=Back[ImageView],Overview[ImageView],Home[ImageView]
+2026-10-15 12:30:08: [MB v4.9] 12:30:03 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 469,411 (intento 1/3)
+2026-10-16 13:30:19: [MB v4.10] 13:30:10 I [frio] abriendo chat 5491156920073 (#292)
+2026-10-16 13:30:39: [MB v4.10] 13:30:35 I [ctl] comando #auto-292: shot {}
+2026-10-16 13:30:39: [MB v4.10] 13:30:36 I [ctl] #auto-292 → OK shot 360x806
+2026-10-16 13:31:49: [MB v4.10] 13:31:41 I [frio] abriendo chat 5491156920073 (#292)
+2026-10-17 08:00:25: [MB v4.10] 08:00:25 I [frio] abriendo chat 5491141604674 (#294)
+2026-10-19 11:53:08: [MB v4.10] 11:53:07 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-10-19 11:53:08: [MB v4.10] 11:53:08 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 507,955 (intento 1/3)
+════ sofia-bruscoli ════
+2026-10-19 11:45:18: [MB v4.10] 11:45:06 I [notif] listener creado
+2026-10-19 11:45:18: [MB v4.10] 11:45:06 I [frio] accesibilidad conectada
+2026-10-19 11:45:18: [MB v4.10] 11:45:06 I [notif] listener conectado — barrido cada 3min (marca=1792097399506)
+2026-10-19 11:47:57: [MB v4.10] 11:47:55 I [boot] teléfono booteó — arrancando servicio
+2026-10-19 11:47:57: [MB v4.10] 11:47:55 I [svc] OutboxService arrancó (loop nuevo)
+2026-10-19 11:48:26: [MB v4.10] 11:48:25 I [upd] versión nueva v4.11 (code 36 > 35) — descargando
+2026-10-19 11:48:36: [MB v4.10] 11:48:29 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-19 11:51:57: [MB v4.10] 11:51:49 I [notif] entrante de "+54 9 11 6861-3446": Gracias!
+2026-10-19 11:51:57: [MB v4.10] 11:51:49 I [notif] entrante de "Claro Argentina": 🔴 Aviso sobre tu línea Claro
+2026-10-19 11:52:37: [MB v4.10] 11:52:35 I [upd] versión nueva v4.11 (code 36 > 35) — descargando
+2026-10-19 11:52:47: [MB v4.10] 11:52:38 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-19 11:52:47: [MB v4.10] 11:52:40 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
+2026-10-19 11:52:47: [MB v4.10] 11:52:40 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 1/3)
+2026-10-19 11:52:47: [MB v4.10] 11:52:40 I [upd] auto-tap 'actualizar' (ancestro clickable a 0 salto(s))
+2026-10-19 11:52:47: [MB v4.10] 11:52:40 I [upd] auto-tap 'actualizar' (ancestro clickable a 0 salto(s))
+2026-10-19 11:53:17: [MB v4.10] 11:53:14 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
+2026-10-19 11:53:17: [MB v4.10] 11:53:14 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 2/3)
+2026-10-19 11:53:29: [MB v4.11] 11:53:18 I [notif] listener creado
+2026-10-19 11:53:29: [MB v4.11] 11:53:18 I [frio] accesibilidad conectada
+2026-10-19 11:53:29: [MB v4.11] 11:53:18 I [notif] listener conectado — barrido cada 3min (marca=1792421509658)
+2026-10-19 11:53:29: [MB v4.11] 11:53:18 I [upd] instalador visible — ventana=false clickables=LISTO[Button],ABRIR[Button]
+2026-10-19 11:53:29: [MB v4.11] 11:53:25 I [svc] OutboxService arrancó (loop nuevo)
+── despertares / ctl / instalador 7 días ──
+2026-10-15 12:30:28: [MB v4.9] 12:30:20 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
+2026-10-15 12:30:28: [MB v4.9] 12:30:20 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 1/3)
+2026-10-19 11:52:47: [MB v4.10] 11:52:40 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
+2026-10-19 11:52:47: [MB v4.10] 11:52:40 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 1/3)
+2026-10-19 11:53:17: [MB v4.10] 11:53:14 I [upd] instalador visible — ventana=true clickables=CANCELAR[Button]
+2026-10-19 11:53:17: [MB v4.10] 11:53:14 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 154,872 (intento 2/3)
+2026-10-19 11:53:29: [MB v4.11] 11:53:18 I [upd] instalador visible — ventana=false clickables=LISTO[Button],ABRIR[Button]
+
+# exit=0
