@@ -1,0 +1,115 @@
+# ejecutado: 2026-10-19T11:39:22-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # 19/10 (aprobado Diego "vamos con todos"): cerrar #237/#239, dry-run del reporte semanal,
+#   # ver crontab de reportes, lanzar build MariaBridge 4.11
+#   cd /root/secretaria
+#   echo "── HEAD desplegado ──"; git log --format='%h %s' -1; grep -c "salidaDiferida" executor.js wa-outbox.js
+#   echo "── cerrar pendientes 237 / 239 ──"
+#   ( set -a; . config/instances/maria-paez.conf; set +a
+#     sqlite3 "$MARIA_DB" "UPDATE pendientes SET estado='cerrado', cerrado=CURRENT_TIMESTAMP WHERE id IN (237,239) AND estado='abierto'; SELECT id, estado, cerrado, substr(\"desc\",1,60) FROM pendientes WHERE id IN (237,239);"
+#     sqlite3 "$MARIA_DB" "UPDATE follow_ups SET estado='cancelado' WHERE estado IN ('abierto','disparado') AND id IN (SELECT json_extract(meta_json,'\$.follow_up_id') FROM pendientes WHERE id IN (237,239));" 2>&1 )
+#   echo "── crontab (reportes) ──"; crontab -l | grep -n -E "daily-report|weekly-review|resumen"
+#   echo "── dry-run semanal ──"
+#   timeout 150 env DRY_RUN=1 node daily-report.js --dias 7 --solo maria-paez,sofia-bruscoli --sin-funnel 2>&1 | sed -n '/PREVIEW/,/HTML LENGTH/p' | head -150
+#   echo "── build MariaBridge 4.11 ──"
+#   setsid bash /root/mb-build-worker.sh < /dev/null > /root/mariabridge-build.log 2>&1 &
+#   echo "lanzado pid $!"
+
+# ───── output ─────
+── HEAD desplegado ──
+7befb265137 inbox: mejoras-1019
+executor.js:1
+wa-outbox.js:2
+── cerrar pendientes 237 / 239 ──
+237|cerrado|2026-10-19 14:39:22|confirmarle a Doris la reserva en Coronado (MALBA) para 2 pe
+239|cerrado|2026-10-19 14:39:22|Esperar que Caterina (Paraná Muebles Logística) confirme la 
+── crontab (reportes) ──
+3:0 6 * * * cd /root/secretaria && /usr/bin/node daily-report.js >> /root/secretaria/logs/ops/daily-report.log 2>&1
+9:0 5 * * 0 cd /root/secretaria && /usr/bin/node ops/scripts/weekly-review.js >> /root/secretaria/logs/ops/weekly-review.log 2>&1
+── dry-run semanal ──
+────── PREVIEW (texto) ──────
+📊 Reporte semanal VPS Maria — 19/10/2026
+
+Instancias activas: 2
+Gasto Claude total 7 días: $7.03 USD
+
+═══════════════════════════════════════════
+INSTANCIA: maria-paez (Maria Paez)
+═══════════════════════════════════════════
+pm2: online · pid 2537195 · uptime 0m · 115.6 MB · 82% CPU
+Proceso: 1 deploys · 0 crashes (restarts lifetime: 8)
+WhatsApp: 8↓ / 10↑ (0 audios)
+Gmail:    1↓ / 9↑
+Telegram: 17↓ / 53↑ · vinculados 1/16 · bot OK
+Calendar: 1 creados · 0 modificados · 0 borrados
+Latencia Claude 7 días (43 llamadas):
+   · telegram: p50 13.8s · p95 31.1s · máx 38.0s  (17)
+   · moderacion: p50 5.6s · p95 6.1s · máx 6.5s  (12)
+   · whatsapp: p50 18.0s · p95 33.0s · máx 57.0s  (7)
+   · memoria-curada: p50 13.0s · p95 13.0s · máx 13.3s  (2)
+   · mb-verif: p50 10.8s · p95 10.8s · máx 13.3s  (2)
+   · enriquecer-contacto: p50 13.0s · p95 13.0s · máx 13.0s  (1)
+   · gmail-presentacion: p50 11.6s · p95 11.6s · máx 11.6s  (1)
+   · unknown-flow: p50 5.3s · p95 5.3s · máx 5.3s  (1)
+   ⚠️ 4 llamada(s) >30s · 0 >60s
+Programados en cola: 2
+💵 Gasto Claude 7 días: $7.03 USD (43 llamadas)
+   · telegram: 17 turno(s) · $3.84 · $0.226/turno · cache escrito 810k, leído 1888k
+   · whatsapp: 7 turno(s) · $2.35 · $0.336/turno · cache escrito 559k, leído 275k
+   · moderacion: 12 turno(s) · $0.25 · $0.021/turno · cache escrito 175k, leído 90k
+   · mb-verif: 2 turno(s) · $0.16 · $0.078/turno · cache escrito 30k, leído 62k
+   · memoria-curada: 2 turno(s) · $0.16 · $0.078/turno · cache escrito 33k, leído 0k
+   · enriquecer-contacto: 1 turno(s) · $0.12 · $0.122/turno · cache escrito 28k, leído 27k
+   · gmail-presentacion: 1 turno(s) · $0.10 · $0.098/turno · cache escrito 22k, leído 0k
+   · unknown-flow: 1 turno(s) · $0.07 · $0.069/turno · cache escrito 18k, leído 0k
+📥 No ruteado / rebotes (7 días):
+   ❓ Desconocidos sin rutear ×1:
+      07:48 p. m. [gmail] The Google Workspace Team <workspace-noreply@google.com>: "[Product Update] Google Tasks included in Google Workspace Intelligence admin controls starting Nov "
+⚠️ Anomalías sin clasificar: 3
+   ×52  13:21  [TG] poll error (reintento en 15s): fetch failed
+   ×7  22:12  [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"des
+   ×1  22:14  [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"des
+  Hernan Fulco [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Natali Funez: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Fernando Boero: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Santiago Bignone [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Doris Capurro [pausado]: 0 abiertos (+0 -1) · uso 0 msg (sem. anterior 0, =)
+  Nicolas Kosinski [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Walter Vera [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Cristian Ruiz [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Sebastian Ameijeira [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Enrique Sosa [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Santiago Capurro [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Andres Neumann [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Gabriela Echaniz [pausado]: 6 abiertos (+0 -1) · uso 0 msg (sem. anterior 0, =)
+  Jaime Cibils [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Alfonso Amat [pausado]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Lionel Chamorro: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+  Diego [owner]: 5 abiertos (+7 -12) · uso 26 msg (sem. anterior 12, ↑14)
+
+═══════════════════════════════════════════
+INSTANCIA: sofia-bruscoli (Sofia Bruscoli)
+═══════════════════════════════════════════
+pm2: online · pid 2537216 · uptime 0m · 122.8 MB · 72.1% CPU
+Proceso: 1 deploys · 0 crashes (restarts lifetime: 8)
+WhatsApp: 0↓ / 0↑ (0 audios)
+Gmail:    0↓ / 0↑
+Telegram: 0↓ / 9↑ · vinculados 1/1 · bot OK
+Calendar: 0 creados · 0 modificados · 0 borrados
+Programados en cola: 1
+💵 Gasto Claude 7 días: $0.00 USD (0 llamadas)
+⚠️ Anomalías sin clasificar: 2
+   ×53  16:04  [TG] poll error (reintento en 15s): fetch failed
+   ×1  22:12  [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"des
+  Noelia Bruscoli [owner]: 0 abiertos (+0 -0) · uso 0 msg (sem. anterior 0, =)
+
+—
+Reporte automático generado por daily-report.js
+────── HTML LENGTH ────── 30174 bytes
+── build MariaBridge 4.11 ──
+lanzado pid 2537284
+
+# exit=0
