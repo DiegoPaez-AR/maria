@@ -1,4 +1,12 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-19 00:54:58: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-19 02:14:34: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-19 07:05:19: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-19 10:54:54: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, tengo guardado "Lchamorro" con el mail lchamorro@froneus.com (se agregó solo"
+0|maria-pa | 2026-10-19 10:55:28: [wa-validate] sin cliente WA — normalizado offline "5491157745516@c.us" → 5491157745516@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-10-19 10:56:00: [wa-validate] sin cliente WA — normalizado offline "5491157745516@c.us" → 5491157745516@c.us (SIN verificar en Meta)
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-19 00:31:49: [MB v4.10] 00:31:47 I [upd] al día (v4.10 code=35, mío=35)
 0|maria-pa | 2026-10-19 04:00:21: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -11,10 +19,11 @@
 0|maria-pa | 2026-10-19 10:03:17: [meeting-prep/Diego] + id=1836 Intro nuevo banquero @ 2026-10-19T14:45:00.000Z
 0|maria-pa | 2026-10-19 10:54:31: [TG] transcribiendo audio…
 0|maria-pa | 2026-10-19 10:54:39: [TG audio→texto] María, tenés el contacto de Lionel Chamorro.
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-19 00:54:58: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-19 02:14:34: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-19 07:05:19: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-19 10:54:54: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, tengo guardado "Lchamorro" con el mail lchamorro@froneus.com (se agregó solo"
+0|maria-pa | 2026-10-19 10:55:20: [TG sesion/Diego] rotando sesión (turnos=12, creada=2026-10-16T16:28:44.667Z)
+0|maria-pa | 2026-10-19 10:55:28: [upsert_contacto] stub "Lchamorro" (#602, solo email) absorbido por "Lionel Chamorro"
+0|maria-pa | 2026-10-19 10:55:30: [TG] transcribiendo audio…
+0|maria-pa | 2026-10-19 10:55:34: [gcontacts] "Lionel Chamorro" creado en Google Contacts
+0|maria-pa | 2026-10-19 10:55:40: [TG audio→texto] ese es el google salt de lio y agente guardarlo en la agenda por favor y dalo
+0|maria-pa | 2026-10-19 10:55:40:  delta como usuario por favor gracias
+0|maria-pa | 2026-10-19 10:56:00: [executor] usuario creado: id=21 nombre=Lionel Chamorro (sin calendar_id todavía)
 
