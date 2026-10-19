@@ -1,0 +1,16 @@
+# ejecutado: 2026-10-19T12:27:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Build MariaBridge 4.12 (aprobado Diego 19/10) — el worker publica latest.json
+#   cd /root/secretaria; grep -E "versionCode|versionName" ops/mariabridge/app/build.gradle
+#   setsid bash /root/mb-build-worker.sh < /dev/null > /root/mariabridge-build.log 2>&1 &
+#   echo "lanzado $!"
+
+# ───── output ─────
+        versionCode 37
+        versionName '4.12'
+lanzado 2602023
+
+# exit=0
