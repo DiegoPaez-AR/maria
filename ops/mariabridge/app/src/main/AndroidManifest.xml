@@ -53,6 +53,9 @@
         <receiver android:name=".BootReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <!-- v4.12: al instalarse una versión nueva Android frena la app y
+                     nadie relanzaba OutboxService (hacía falta el doble toque) -->
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
 

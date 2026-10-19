@@ -554,7 +554,7 @@ class WaSendService : AccessibilityService() {
         try {
             val pm = getSystemService(POWER_SERVICE) as PowerManager
             val wl = pm.newWakeLock(
-                PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP or PowerManager.ON_AFTER_RELEASE,
+                PowerManager.SCREEN_DIM_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP  /* v4.12: DIM — no subir el brillo al máximo (fotos y toques andan igual) */ or PowerManager.ON_AFTER_RELEASE,
                 "MariaBridge:coldsend")
             wl.acquire(8000)
         } catch (_: Exception) {}
