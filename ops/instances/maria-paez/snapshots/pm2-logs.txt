@@ -1,4 +1,14 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-20 01:14:51: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-20 02:30:42: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-20 04:46:37: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-20 13:39:40: [wa-validate] sin cliente WA — normalizado offline "5491168917913@c.us" → 5491168917913@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-10-20 20:31:09: [wa-outbox] #298 DESCARTADO por viejo → 5491137646922: el destinatario escribió después y ya se le respondió: "Perdón, una corrección al pedido anterior: el último stadium"
+0|maria-pa | 2026-10-20 20:54:30: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-20 22:11:54: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-10-20 22:14:09: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-20 04:00:25: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-20 04:00:25: [morning-brief/Diego] ✓ enviado a 590589920
@@ -103,14 +113,6 @@
 0|maria-pa | 2026-10-20 20:33:14: [prompt-builder] tercero slim: system 60904→51515c, user 26410→18842c
 0|maria-pa | 2026-10-20 20:33:22: [MB v4.11] 20:33:14 I [notif] entrante de "Poch Burgers": A vosss🧡🍔
 0|maria-pa | 2026-10-20 20:33:22: [MB v4.11] 20:33:14 I [notif] dup ignorado de "Poch Burgers"
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-20 01:14:51: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-20 02:30:42: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-20 04:46:37: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-20 13:39:40: [wa-validate] sin cliente WA — normalizado offline "5491168917913@c.us" → 5491168917913@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-10-20 20:31:09: [wa-outbox] #298 DESCARTADO por viejo → 5491137646922: el destinatario escribió después y ya se le respondió: "Perdón, una corrección al pedido anterior: el último stadium"
-0|maria-pa | 2026-10-20 20:54:30: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-20 22:11:54: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-0|maria-pa | 2026-10-20 22:14:09: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-10-20 23:54:45: [MB v4.11] 23:54:43 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+0|maria-pa | 2026-10-20 23:54:55: [MB v4.11] 23:54:51 I [upd] descargado 3156KB — ofreciendo instalar
 
