@@ -1,4 +1,19 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-22 03:10:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 04:07:15: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 06:26:25: [wa-outbox] #300 VENCIDO sin entregar → 5491130471497: "Hola Bryan! Diego me confirma: el viaje lo pagás vos, como h"
+0|maria-pa | 2026-10-22 06:48:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todo bien de mi lado. El brief SÍ salió, lo mandé por Telegram a las 04:00 am — "
+0|maria-pa | 2026-10-22 06:48:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Buenísimo. Cualquier cosa me avisás."
+0|maria-pa | 2026-10-22 06:50:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, cancelado. Ya cerré el pendiente de La Carreta y también dejé de vigilar "
+0|maria-pa | 2026-10-22 11:34:12: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 14:13:28: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 14:39:00: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 15:15:47: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 17:22:51: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendado: martes 3/11 de 13 a 15hs "Reunion Alexis - DP", con Meet inclui"
+0|maria-pa | 2026-10-22 17:30:25: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Perfecto, no hace falta invitar a nadie entonces, queda así como está. Gracias p"
+0|maria-pa | 2026-10-22 17:31:34: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-22 00:25:48: [TG] transcribiendo audio…
 0|maria-pa | 2026-10-22 00:25:57: [TG audio→texto] Bueno, decirle que el viaje que lo paga él, en principio, hacemos como siempre que él paga.
@@ -46,19 +61,6 @@
 0|maria-pa | 2026-10-22 17:15:25: [programados] ✓ id=1847 (telegram/590589920) [meeting_prep:1:eaj4dlabfacr6onvogluli9ogc]
 0|maria-pa | 2026-10-22 17:22:11: [TG] transcribiendo audio…
 0|maria-pa | 2026-10-22 17:22:22: [TG audio→texto] Te debía lo de Alexis, que se chocaba con otra reunión, agendamelo de 13 a 15 para el martes 3. Gracias.
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-22 03:10:56: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 04:07:15: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 06:26:25: [wa-outbox] #300 VENCIDO sin entregar → 5491130471497: "Hola Bryan! Diego me confirma: el viaje lo pagás vos, como h"
-0|maria-pa | 2026-10-22 06:48:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todo bien de mi lado. El brief SÍ salió, lo mandé por Telegram a las 04:00 am — "
-0|maria-pa | 2026-10-22 06:48:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Buenísimo. Cualquier cosa me avisás."
-0|maria-pa | 2026-10-22 06:50:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, cancelado. Ya cerré el pendiente de La Carreta y también dejé de vigilar "
-0|maria-pa | 2026-10-22 11:34:12: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 14:13:28: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 14:39:00: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 15:15:47: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 17:22:51: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendado: martes 3/11 de 13 a 15hs "Reunion Alexis - DP", con Meet inclui"
-0|maria-pa | 2026-10-22 17:30:25: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Perfecto, no hace falta invitar a nadie entonces, queda así como está. Gracias p"
-0|maria-pa | 2026-10-22 17:31:34: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 17:55:10: [MB v4.11] 17:55:06 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+0|maria-pa | 2026-10-22 17:55:20: [MB v4.11] 17:55:15 I [upd] descargado 3156KB — ofreciendo instalar
 
