@@ -1,4 +1,13 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-22 03:10:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 04:07:15: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 06:26:25: [wa-outbox] #300 VENCIDO sin entregar → 5491130471497: "Hola Bryan! Diego me confirma: el viaje lo pagás vos, como h"
+0|maria-pa | 2026-10-22 06:48:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todo bien de mi lado. El brief SÍ salió, lo mandé por Telegram a las 04:00 am — "
+0|maria-pa | 2026-10-22 06:48:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Buenísimo. Cualquier cosa me avisás."
+0|maria-pa | 2026-10-22 06:50:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, cancelado. Ya cerré el pendiente de La Carreta y también dejé de vigilar "
+0|maria-pa | 2026-10-22 11:34:12: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-22 00:25:48: [TG] transcribiendo audio…
 0|maria-pa | 2026-10-22 00:25:57: [TG audio→texto] Bueno, decirle que el viaje que lo paga él, en principio, hacemos como siempre que él paga.
@@ -32,13 +41,7 @@
 0|maria-pa | 2026-10-22 08:13:16: [wa-hook] deadline: respuesta a n:bryan tafel stasheada para su próximo mensaje
 0|maria-pa | 2026-10-22 08:13:17: [prompt-builder] tercero slim: system 60904→51515c, user 23644→16006c
 0|maria-pa | 2026-10-22 10:04:25: [meeting-prep/Diego] + id=1846 GN + VR Weekly @ 2026-10-22T14:45:00.000Z
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-22 03:10:56: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 04:07:15: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-22 06:26:25: [wa-outbox] #300 VENCIDO sin entregar → 5491130471497: "Hola Bryan! Diego me confirma: el viaje lo pagás vos, como h"
-0|maria-pa | 2026-10-22 06:48:53: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todo bien de mi lado. El brief SÍ salió, lo mandé por Telegram a las 04:00 am — "
-0|maria-pa | 2026-10-22 06:48:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Buenísimo. Cualquier cosa me avisás."
-0|maria-pa | 2026-10-22 06:50:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, cancelado. Ya cerré el pendiente de La Carreta y también dejé de vigilar "
-0|maria-pa | 2026-10-22 11:34:12: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-22 11:39:24: [poda-eventos] telemetría borrada: 48 · archivados: 0
+0|maria-pa | 2026-10-22 11:39:40: [memoria-curada] Diego × Bryan Tafel: nota actualizada (7 eventos nuevos, 2432 chars)
+0|maria-pa | 2026-10-22 11:39:41: [memoria-curada] tick: 1/445 contactos curados
 
