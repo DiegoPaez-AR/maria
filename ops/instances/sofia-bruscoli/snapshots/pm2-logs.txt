@@ -1,4 +1,24 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
+1|sofia-br | 2026-10-23 00:02:40: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-23 00:17:37: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-23 01:16:57: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-23 02:33:33: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-23 08:34:25: [meeting-prep] gcontacts sync "Comercial" falló: <!DOCTYPE html>
+1|sofia-br | 2026-10-23 08:34:25: <html lang=en>
+1|sofia-br | 2026-10-23 08:34:25:   <meta charset=utf-8>
+1|sofia-br | 2026-10-23 08:34:25:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+1|sofia-br | 2026-10-23 08:34:25:   <title>Error 502 (Server Error)!!1</title>
+1|sofia-br | 2026-10-23 08:34:25:   <style>
+1|sofia-br | 2026-10-23 08:34:25:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+1|sofia-br | 2026-10-23 08:34:25:   </style>
+1|sofia-br | 2026-10-23 08:34:25:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+1|sofia-br | 2026-10-23 08:34:25:   <p><b>502.</b> <ins>That’s an error.</ins>
+1|sofia-br | 2026-10-23 08:34:25:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+1|sofia-br | 2026-10-23 08:34:25: 
+1|sofia-br | 2026-10-23 10:08:04: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-23 13:17:46: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/sofia-bruscoli/out.log last 200 lines:
 1|sofia-br | 2026-10-23 05:54:22: [MB v4.11] 05:54:17 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
 1|sofia-br | 2026-10-23 05:54:22: [MB v4.11] 05:54:19 I [upd] descargado 3156KB — ofreciendo instalar
@@ -45,24 +65,5 @@
 1|sofia-br | 2026-10-23 12:45:27: [programados] ✓ id=60 (gmail/stortora@luminaconsultora.com) [meeting_prep:3:uvbfifltmkrcnkq4fgpcg80is4]
 1|sofia-br | 2026-10-23 13:04:25: [meeting-prep/Noelia Bruscoli] + id=62 Inicio Manatal @ 2026-10-23T17:45:00.000Z
 1|sofia-br | 2026-10-23 13:04:25: [meeting-prep/Sol Tortora] + id=63 Llamar a Telextorage Eliana  @ 2026-10-23T17:45:00.000Z
-
-/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
-1|sofia-br | 2026-10-23 00:02:40: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-23 00:17:37: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-23 01:16:57: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-23 02:33:33: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-23 08:34:25: [meeting-prep] gcontacts sync "Comercial" falló: <!DOCTYPE html>
-1|sofia-br | 2026-10-23 08:34:25: <html lang=en>
-1|sofia-br | 2026-10-23 08:34:25:   <meta charset=utf-8>
-1|sofia-br | 2026-10-23 08:34:25:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
-1|sofia-br | 2026-10-23 08:34:25:   <title>Error 502 (Server Error)!!1</title>
-1|sofia-br | 2026-10-23 08:34:25:   <style>
-1|sofia-br | 2026-10-23 08:34:25:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
-1|sofia-br | 2026-10-23 08:34:25:   </style>
-1|sofia-br | 2026-10-23 08:34:25:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
-1|sofia-br | 2026-10-23 08:34:25:   <p><b>502.</b> <ins>That’s an error.</ins>
-1|sofia-br | 2026-10-23 08:34:25:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
-1|sofia-br | 2026-10-23 08:34:25: 
-1|sofia-br | 2026-10-23 10:08:04: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-23 13:17:46: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-23 13:34:25: [meeting-prep/Sol Tortora] + id=64 Reunión Plataforma SendyPop @ 2026-10-23T18:15:00.000Z
 
