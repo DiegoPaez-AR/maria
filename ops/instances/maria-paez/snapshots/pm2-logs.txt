@@ -1,4 +1,11 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-23 00:42:28: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 04:51:51: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 10:32:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 11:26:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 13:38:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le escribo a Farinelli pidiendo el menú ahora, en unos minutos sale el men"
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-23 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-23 04:00:26: [morning-brief/Diego] ✓ enviado a 590589920
@@ -14,11 +21,7 @@
 0|maria-pa | 2026-10-23 13:38:15: [TG] transcribiendo audio…
 0|maria-pa | 2026-10-23 13:38:24: [TG audio→texto] María me pedís el menú a Farinelli a ver qué tienen.
 0|maria-pa | 2026-10-23 13:38:38: [wa-outbox] #302 encolado → +5491156920073 (Hola! Soy Maria, asistente de Diego Paez…)
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-23 00:42:28: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 04:51:51: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 10:32:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 11:26:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 13:38:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le escribo a Farinelli pidiendo el menú ahora, en unos minutos sale el men"
+0|maria-pa | 2026-10-23 13:40:46: [MB v4.11] 13:40:44 I [frio] abriendo chat 5491156920073 (#302)
+0|maria-pa | 2026-10-23 13:40:46: [MB v4.11] 13:40:46 I [frio] botón send encontrado — 'escribiendo' 11s antes de enviar
+0|maria-pa | 2026-10-23 13:40:58: [wa-outbox] #302 entregado por el teléfono
 
