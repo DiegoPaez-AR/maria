@@ -910,6 +910,9 @@ function _autoGestionTercero(a, ctx) {
 // ─── Memoria (pendientes + contactos + programados + hechos) ─────────────
 
 function _agregarPendiente(a, ctx) {
+  // Alias de campo (23/10/2026, caso Farinelli/ensalada): crear_follow_up usa
+  // `descripcion` y el modelo a veces lo trae acá. Mismo dato, otro nombre.
+  if (a.desc == null) a.desc = a.descripcion != null ? a.descripcion : a.description;
   _requerir(a, ['desc', 'dueno', 'disparador']);
   // dueno/disparador van en la raíz de la acción. El resto de meta queda libre.
   const meta = { ...(a.meta || {}), dueno: a.dueno, disparador: a.disparador };
@@ -1178,6 +1181,7 @@ function _cancelarProgramado(a, ctx) {
 }
 
 function _crearFollowUp(a, ctx) {
+  if (a.descripcion == null) a.descripcion = a.desc != null ? a.desc : a.description;  // alias simétrico (23/10/2026)
   _requerir(a, ['descripcion', 'esperando_de', 'vence_en_dias']);
   const dias = Number(a.vence_en_dias);
   if (!Number.isFinite(dias) || dias < 0 || dias > 365) {
