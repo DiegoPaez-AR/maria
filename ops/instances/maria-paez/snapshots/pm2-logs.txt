@@ -1,4 +1,13 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-23 00:42:28: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 04:51:51: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 10:32:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 11:26:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-23 13:38:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le escribo a Farinelli pidiendo el menú ahora, en unos minutos sale el men"
+0|maria-pa | 2026-10-23 13:45:13: [executor] acción #0 (agregar_pendiente) falló: Faltan campos requeridos: desc
+0|maria-pa | 2026-10-23 13:45:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le pido a Farinelli la ensalada de espinaca, calabaza y nueces para que te"
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-23 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-23 04:00:26: [morning-brief/Diego] ✓ enviado a 590589920
@@ -39,13 +48,7 @@
 0|maria-pa | 2026-10-23 13:44:50: [TG] transcribiendo audio…
 0|maria-pa | 2026-10-23 13:45:00: [TG audio→texto] Pedíles la sala de espinaca, calabaza y nueces que te avisen cuando esté y la paso a buscar, gracias.
 0|maria-pa | 2026-10-23 13:45:13: [wa-outbox] #303 encolado → +5491156920073 (Te pido la ensalada de espinaca, calabaz…)
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-23 00:42:28: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 04:51:51: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 10:32:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 11:26:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-23 13:38:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le escribo a Farinelli pidiendo el menú ahora, en unos minutos sale el men"
-0|maria-pa | 2026-10-23 13:45:13: [executor] acción #0 (agregar_pendiente) falló: Faltan campos requeridos: desc
-0|maria-pa | 2026-10-23 13:45:20: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, le pido a Farinelli la ensalada de espinaca, calabaza y nueces para que te"
+0|maria-pa | 2026-10-23 13:47:26: [MB v4.11] 13:47:17 I [humano] espero 10s antes de responder a "Farinelli Arroyo"
+0|maria-pa | 2026-10-23 13:47:26: [wa-outbox] #303 entregado por el teléfono
+0|maria-pa | 2026-10-23 13:47:36: [MB v4.11] 13:47:27 I [outbox] respondido (silencioso) → Farinelli Arroyo
 
