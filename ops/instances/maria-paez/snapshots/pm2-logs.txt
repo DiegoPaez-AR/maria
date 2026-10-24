@@ -1,13 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-24 02:12:40: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-24 03:34:31: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-24 03:56:18: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-24 04:03:44: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-24 05:25:35: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-24 11:49:58: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sigue vivo (pendiente id 367): la última posta que tengo es el chiste de "no hay"
-0|maria-pa | 2026-10-24 11:50:03: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, cualquier cosa avisame si necesitás que gestione algo con Nebelia."
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-24 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-24 04:00:26: [morning-brief/Diego] ✓ enviado a 590589920
@@ -32,4 +23,14 @@
 0|maria-pa | 2026-10-24 11:59:43: [MB v4.11] 11:59:43 I [notif] reply inline a "Poch Burgers": ENVIADA
 0|maria-pa | 2026-10-24 11:59:43: [MB v4.11] 11:59:43 I [humano] espero 11s antes de responder a "Bryan Tafel"
 0|maria-pa | 2026-10-24 12:00:03: [MB v4.11] 11:59:55 I [notif] reply inline a "Bryan Tafel": ENVIADA
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-24 02:12:40: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-24 03:34:31: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-24 03:56:18: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-24 04:03:44: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-24 05:25:35: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-24 11:49:58: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sigue vivo (pendiente id 367): la última posta que tengo es el chiste de "no hay"
+0|maria-pa | 2026-10-24 11:50:03: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, cualquier cosa avisame si necesitás que gestione algo con Nebelia."
+0|maria-pa | 2026-10-24 12:07:20: [TG] poll error (reintento en 15s): fetch failed
 
