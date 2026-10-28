@@ -1,16 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-27 05:17:56: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 08:30:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 11:29:06: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 14:40:39: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 19:32:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, tengo el de Matías Israel: +54 9 11 5482-4124 (WA: 5491154824124)."
-0|maria-pa | 2026-10-27 20:03:49: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, todavía no respondió. Apenas lo haga te aviso."
-0|maria-pa | 2026-10-27 20:05:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, les mando el pedido a Poch en unos minutos y les pregunto a qué hora podés"
-0|maria-pa | 2026-10-27 20:22:46: [wa-validate] sin cliente WA — normalizado offline "5491154824124@c.us" → 5491154824124@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-10-27 20:23:05: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, Matías Israel ya quedó dado de alta como usuario. Le mandé el mensaje de "
-0|maria-pa | 2026-10-27 21:38:02: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todavía no, Matías no contestó nada. Apenas me escriba te aviso."
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-27 04:00:29: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-27 04:00:29: [morning-brief/Diego] ✓ enviado a 590589920
@@ -79,4 +67,21 @@
 0|maria-pa | 2026-10-27 21:37:59: [claude-client] consulta verificar_respuesta("5491154824124@c.us") → 0 entrantes
 0|maria-pa | 2026-10-27 21:41:29: [GMAIL poll] 1 email(s) nuevo(s)
 0|maria-pa | 2026-10-27 21:41:29: [GMAIL ←] Diego Paez <diego@paez.is> | "Reunión Mónaco"
+0|maria-pa | 2026-10-27 21:42:42: [GMAIL acciones-mcp/Diego] 2/2 ejecutadas en vivo
+0|maria-pa | 2026-10-27 21:42:42: [GMAIL/Diego] responder_email ya salió por tool — no duplico desde respuesta_a_remitente
+0|maria-pa | 2026-10-27 21:42:42: [GMAIL/Diego] 1a17ff0f3f69452a — sin acciones ni respuesta, queda no-leído
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-27 05:17:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 08:30:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 11:29:06: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 14:40:39: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 19:32:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, tengo el de Matías Israel: +54 9 11 5482-4124 (WA: 5491154824124)."
+0|maria-pa | 2026-10-27 20:03:49: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, todavía no respondió. Apenas lo haga te aviso."
+0|maria-pa | 2026-10-27 20:05:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, les mando el pedido a Poch en unos minutos y les pregunto a qué hora podés"
+0|maria-pa | 2026-10-27 20:22:46: [wa-validate] sin cliente WA — normalizado offline "5491154824124@c.us" → 5491154824124@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-10-27 20:23:05: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, Matías Israel ya quedó dado de alta como usuario. Le mandé el mensaje de "
+0|maria-pa | 2026-10-27 21:38:02: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todavía no, Matías no contestó nada. Apenas me escriba te aviso."
+0|maria-pa | 2026-10-27 21:42:40: [agregar_pendiente] no creo follow_up auto (ricardo@lank.app, stefano@lank.app, mteubal@dragonesvc.com, dfainguersch@dragonesvc.com, carlos@monaco.gg): email "ricardo@lank.app, stefano@lank.app, mteubal@dragonesvc.com, dfainguersch@dragonesvc.com, carlos@monaco.gg" no está en libreta ni es usuario activo
+0|maria-pa | 2026-10-27 21:42:42: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya respondí al hilo con dos opciones de horario (lunes 2/11 de 8:30 a 10:00 o mi"
 
