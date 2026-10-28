@@ -882,6 +882,9 @@ function _autoGestionTercero(a, ctx) {
     const digs = String(a.a).replace(/\D/g, '');
     if (digs.length < 8) return null;
     if (usuarios.resolverPorWa(`${digs}@c.us`)) return null;          // es usuario → no es outreach
+    // (28/10/2026) el id de WA del usuario puede ser @lid (Diego): el @c.us de
+    // sus dígitos no resuelve y quedaba "esperando respuesta" de sí mismo.
+    try { if (usuarios.resolverPorWa(String(a.a))) return null; } catch { /* noop */ }
     // dedupe: ya hay gestión abierta esperando a este mismo número (del LLM o previa)
     let abierto = null;
     for (const v of require('./telefonos').variantes(digs)) {
@@ -929,6 +932,19 @@ function _agregarPendiente(a, ctx) {
     // gestion quedaba SIN red de seguridad, en silencio (casos Nati y Fico,
     // 22/8). Si el valor no tiene forma de wid ni de email pero matchea UN
     // solo contacto de la libreta, lo resolvemos nosotros.
+    // (28/10/2026, Reunión Mónaco) varios destinatarios en un solo campo
+    // ("a@x.com, b@y.com, …") no matcheaban nada → sin follow-up y sin
+    // vínculo. Guardamos la lista completa y el follow-up va al primero válido.
+    if (/[,;]/.test(String(a.meta.esperando_de))) {
+      const lista = String(a.meta.esperando_de).split(/[,;]/).map(x => x.trim()).filter(Boolean);
+      meta.esperando_de_todos = lista;
+      const valido = lista.find(x => {
+        try { return seguridad.validarDestinatario({ usuario: ctx.usuario, canal: x.includes('@') && !x.endsWith('@c.us') ? 'email' : 'wa', destino: x }).ok; }
+        catch { return false; }
+      });
+      a.meta.esperando_de = valido || lista[0];
+      meta.esperando_de = a.meta.esperando_de;
+    }
     const _crudo = String(a.meta.esperando_de).trim();
     const _pareceId = _crudo.includes('@') || _crudo.replace(/\D/g, '').length >= 8;
     if (!_pareceId) {

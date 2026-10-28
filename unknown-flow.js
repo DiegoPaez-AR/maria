@@ -549,6 +549,32 @@ function _esRemitenteSistemaAutomatico(senderEmail) {
 /*
  * Handler para Gmail. Mismo esquema que WA pero el canal es email.
  */
+// ¿De qué usuario es este hilo de Gmail? Mira los mails del hilo que quedaron
+// asociados a un usuario (los que él mandó, los que Maria respondió en su
+// nombre vía inReplyTo) — ignorando los registros de desconocidos, que se
+// cuelgan del owner sin ser suyos. Devuelve el usuario solo si es UNO y activo.
+function _usuarioDelHilo(threadId) {
+  if (!threadId) return null;
+  try {
+    const rows = mem.db.prepare(`
+      SELECT DISTINCT usuario_id FROM eventos
+       WHERE canal = 'gmail' AND usuario_id IS NOT NULL
+         AND COALESCE(json_extract(metadata_json, '$.tipo'), '') NOT LIKE 'unknown%'
+         AND COALESCE(json_extract(metadata_json, '$.tipo'), '') NOT LIKE 'descartado%'
+         AND ( json_extract(metadata_json, '$.threadId') = ?
+            OR json_extract(metadata_json, '$.inReplyTo') IN (
+                 SELECT json_extract(metadata_json, '$.messageId') FROM eventos
+                  WHERE canal = 'gmail' AND json_extract(metadata_json, '$.threadId') = ?) )
+    `).all(threadId, threadId);
+    if (rows.length !== 1) return null;
+    const u = usuarios.obtener(rows[0].usuario_id);
+    return u && u.activo ? u : null;
+  } catch (e) {
+    console.warn('[unknown-flow/gmail] _usuarioDelHilo:', e.message);
+    return null;
+  }
+}
+
 async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEmailFn }) {
   const remitenteId = email.de; // header From completo
   const m = String(remitenteId || '').match(/<([^>]+)>/);
@@ -580,6 +606,40 @@ async function handleEmail({ waClient, email, reprocesarComoUsuario, responderEm
       });
     }
     console.log(`[unknown-flow/gmail] prospecto pendiente ya existente para ${remitenteId} — esperando owner`);
+    return true;
+  }
+
+  // (28/10/2026, caso Reunión Mónaco) Hilo conocido: si este mail responde a un
+  // hilo donde ya escribió un usuario o donde Maria contestó en su nombre, es
+  // parte de SU gestión — va directo, sin la pregunta "¿para quién es?" (que a
+  // Stefano le llegó en un hilo que Maria misma había abierto 10 min antes).
+  const usuarioHilo = _usuarioDelHilo(email.threadId);
+  if (usuarioHilo) {
+    limpiarEstado('gmail', remitenteId);
+    const cuerpoH = email.cuerpo || email.snippet || '';
+    console.log(`[unknown-flow/gmail] ${senderEmail} responde en un hilo de ${usuarioHilo.nombre} (thread ${email.threadId}) → directo`);
+    mem.log({
+      usuarioId: usuarioHilo.id,
+      canal: 'gmail', direccion: 'entrante',
+      de: email.de, asunto: email.asunto, cuerpo: cuerpoH,
+      metadata: { tipo: 'unknown_llm_tercero', messageId: email.id, threadId: email.threadId,
+        razon: `responde en un hilo de mail de ${usuarioHilo.nombre}`, via: 'hilo_conocido' },
+    });
+    try {
+      await reprocesarComoUsuario(usuarioHilo, {
+        de: email.de, email: email.de,
+        asunto: email.asunto, cuerpo: cuerpoH,
+        messageId: email.id,
+        contextoRemitente: {
+          esTercero: true,
+          razon: `responde en un hilo de mail donde ya interviene ${usuarioHilo.nombre} (gestión en curso)`,
+          via: 'hilo_conocido',
+          identificadoComo: 'tercero_de_usuario',
+        },
+      });
+    } catch (err) {
+      console.error('[unknown-flow/gmail] reprocesar por hilo conocido falló:', err.message);
+    }
     return true;
   }
 
