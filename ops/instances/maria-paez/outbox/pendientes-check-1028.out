@@ -1,0 +1,68 @@
+# ejecutado: 2026-10-28T09:28:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: verificación de lo deployado 19-23/10
+#   cd /root/secretaria/logs
+#   for s in maria-paez sofia-bruscoli; do
+#     echo "════ $s: MB desde 19/10 (upd/boot/svc) ════"
+#     cat $s/out__2026-10-2*.log $s/out.log 2>/dev/null | grep "\[MB " | grep -E "\[boot\]|\[svc\]|versión nueva|instalador|listener creado" | awk '$1>="2026-10-19"' | tail -12 | cut -c1-200
+#     echo "── versión reportada hoy ──"; grep "\[MB v" $s/out.log | tail -1 | grep -o "MB v[0-9.]*"
+#   done
+#   echo "════ envíos en frío desde 19/10: verificación ════"
+#   cat maria-paez/out__2026-10-2*.log maria-paez/out.log 2>/dev/null | grep -E "verificación #[0-9]+: ENVIADO|veredicto por foto|lectura [0-9]/3" | awk '$1>="2026-10-19"' | cut -c1-170 | tail -25
+#   echo "════ reporte semanal (lunes 26/10) ════"; grep -E "enviado|falló|Error" ops/daily-report.log | tail -4
+#   echo "════ avisos de 'sale a las 8' ════"; cd /root/secretaria; ( set -a; . config/instances/maria-paez.conf; set +a; sqlite3 "$MARIA_DB" "select count(*) from eventos where metadata_json like '%\"sale\":%' and timestamp>='2026-10-19';" )
+
+# ───── output ─────
+════ maria-paez: MB desde 19/10 (upd/boot/svc) ════
+2026-10-25 11:55:41: [MB v4.11] 11:55:37 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-25 17:55:45: [MB v4.11] 17:55:39 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-25 23:55:40: [MB v4.11] 23:55:40 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 05:55:45: [MB v4.11] 05:55:42 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 11:55:49: [MB v4.11] 11:55:44 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 17:55:54: [MB v4.11] 17:55:46 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 23:55:48: [MB v4.11] 23:55:48 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 05:55:53: [MB v4.11] 05:55:49 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 11:55:57: [MB v4.11] 11:55:51 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 17:55:52: [MB v4.11] 17:55:53 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 23:56:07: [MB v4.11] 23:56:05 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-28 05:56:11: [MB v4.11] 05:56:07 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+── versión reportada hoy ──
+MB v4.11
+════ sofia-bruscoli: MB desde 19/10 (upd/boot/svc) ════
+2026-10-25 11:54:33: [MB v4.11] 11:54:29 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-25 17:54:36: [MB v4.11] 17:54:30 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-25 23:54:39: [MB v4.11] 23:54:31 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 05:54:43: [MB v4.11] 05:54:33 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 11:54:36: [MB v4.11] 11:54:34 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 17:54:40: [MB v4.11] 17:54:35 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-26 23:54:43: [MB v4.11] 23:54:37 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 05:54:46: [MB v4.11] 05:54:38 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 11:54:50: [MB v4.11] 11:54:39 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 17:54:43: [MB v4.11] 17:54:41 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-27 23:54:47: [MB v4.11] 23:54:42 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-28 05:54:50: [MB v4.11] 05:54:44 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+── versión reportada hoy ──
+MB v4.11
+════ envíos en frío desde 19/10: verificación ════
+2026-10-20 13:42:16: [MB v4.11] 13:42:12 I [frio] verificación #296 lectura 1/3: enviado
+2026-10-20 13:42:16: [MB v4.11] 13:42:12 I [frio] verificación #296: ENVIADO (burbuja visible)
+2026-10-20 20:25:32: [MB v4.11] 20:25:32 I [frio] verificación #297 lectura 1/3: enviado
+2026-10-20 20:25:32: [MB v4.11] 20:25:32 I [frio] verificación #297: ENVIADO (burbuja visible)
+2026-10-21 21:05:03: [MB v4.11] 21:04:57 I [frio] verificación #299 lectura 1/3: enviado
+2026-10-21 21:05:03: [MB v4.11] 21:04:57 I [frio] verificación #299: ENVIADO (burbuja visible)
+2026-10-23 13:41:06: [MB v4.11] 13:40:59 I [frio] verificación #302 lectura 1/3: enviado
+2026-10-23 13:41:06: [MB v4.11] 13:40:59 I [frio] verificación #302: ENVIADO (burbuja visible)
+2026-10-27 19:39:53: [MB v4.11] 19:39:49 I [frio] verificación #304 lectura 1/3: enviado
+2026-10-27 19:39:53: [MB v4.11] 19:39:49 I [frio] verificación #304: ENVIADO (burbuja visible)
+════ reporte semanal (lunes 26/10) ════
+✓ enviado a diego@paez.is
+✓ enviado a diego@paez.is
+   ×3  08:09    <title>Error 502 (Server Error)!!1</title>
+✓ enviado a diego@paez.is
+════ avisos de 'sale a las 8' ════
+2
+
+# exit=0
