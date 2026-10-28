@@ -1,4 +1,19 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-27 05:17:56: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 08:30:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 11:29:06: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 14:40:39: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-27 19:32:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, tengo el de Matías Israel: +54 9 11 5482-4124 (WA: 5491154824124)."
+0|maria-pa | 2026-10-27 20:03:49: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, todavía no respondió. Apenas lo haga te aviso."
+0|maria-pa | 2026-10-27 20:05:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, les mando el pedido a Poch en unos minutos y les pregunto a qué hora podés"
+0|maria-pa | 2026-10-27 20:22:46: [wa-validate] sin cliente WA — normalizado offline "5491154824124@c.us" → 5491154824124@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-10-27 20:23:05: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, Matías Israel ya quedó dado de alta como usuario. Le mandé el mensaje de "
+0|maria-pa | 2026-10-27 21:38:02: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todavía no, Matías no contestó nada. Apenas me escriba te aviso."
+0|maria-pa | 2026-10-27 21:42:40: [agregar_pendiente] no creo follow_up auto (ricardo@lank.app, stefano@lank.app, mteubal@dragonesvc.com, dfainguersch@dragonesvc.com, carlos@monaco.gg): email "ricardo@lank.app, stefano@lank.app, mteubal@dragonesvc.com, dfainguersch@dragonesvc.com, carlos@monaco.gg" no está en libreta ni es usuario activo
+0|maria-pa | 2026-10-27 21:42:42: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya respondí al hilo con dos opciones de horario (lunes 2/11 de 8:30 a 10:00 o mi"
+0|maria-pa | 2026-10-27 22:11:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-27 04:00:29: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-27 04:00:29: [morning-brief/Diego] ✓ enviado a 590589920
@@ -83,19 +98,6 @@
 0|maria-pa | 2026-10-27 22:07:07: [wa-send] enviar_wa/usuario:Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-27 22:07:07: [GMAIL acciones/Diego] 1/1 ejecutadas
 0|maria-pa | 2026-10-27 22:07:07: [unknown-flow/gmail] FSM routeó Stefano De Giuda <stefano@lank.app> → Diego
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-27 05:17:56: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 08:30:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 11:29:06: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 14:40:39: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-27 19:32:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, tengo el de Matías Israel: +54 9 11 5482-4124 (WA: 5491154824124)."
-0|maria-pa | 2026-10-27 20:03:49: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No, todavía no respondió. Apenas lo haga te aviso."
-0|maria-pa | 2026-10-27 20:05:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, les mando el pedido a Poch en unos minutos y les pregunto a qué hora podés"
-0|maria-pa | 2026-10-27 20:22:46: [wa-validate] sin cliente WA — normalizado offline "5491154824124@c.us" → 5491154824124@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-10-27 20:23:05: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, Matías Israel ya quedó dado de alta como usuario. Le mandé el mensaje de "
-0|maria-pa | 2026-10-27 21:38:02: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todavía no, Matías no contestó nada. Apenas me escriba te aviso."
-0|maria-pa | 2026-10-27 21:42:40: [agregar_pendiente] no creo follow_up auto (ricardo@lank.app, stefano@lank.app, mteubal@dragonesvc.com, dfainguersch@dragonesvc.com, carlos@monaco.gg): email "ricardo@lank.app, stefano@lank.app, mteubal@dragonesvc.com, dfainguersch@dragonesvc.com, carlos@monaco.gg" no está en libreta ni es usuario activo
-0|maria-pa | 2026-10-27 21:42:42: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya respondí al hilo con dos opciones de horario (lunes 2/11 de 8:30 a 10:00 o mi"
-0|maria-pa | 2026-10-27 22:11:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-10-27 23:56:07: [MB v4.11] 23:56:05 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+0|maria-pa | 2026-10-27 23:56:17: [MB v4.11] 23:56:14 I [upd] descargado 3156KB — ofreciendo instalar
 
