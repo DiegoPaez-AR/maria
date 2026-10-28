@@ -1,4 +1,14 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-28 01:20:47: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 01:28:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 06:32:25: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 08:04:47: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 08:46:12: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tenés razón — sólo Stefano contestó confirmando el miércoles 4/11 10:00 a 11:30."
+0|maria-pa | 2026-10-28 08:47:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, les mandé el mail a Carlos, Martín y Dario pidiéndoles que avisen si no l"
+0|maria-pa | 2026-10-28 08:49:38: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 11:03:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya le mando el mensaje a Farinelli pidiéndole la carta (en unos minutos sa"
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-28 04:00:29: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-28 04:00:29: [morning-brief/Diego] ✓ enviado a 590589920
@@ -67,14 +77,10 @@
 0|maria-pa | 2026-10-28 10:10:12: [GMAIL acciones/Diego] 1/1 ejecutadas
 0|maria-pa | 2026-10-28 11:03:17: [wa-outbox] #306 encolado → +5491156920073 (Hola! Soy Maria, asistente de Diego Paez…)
 0|maria-pa | 2026-10-28 11:03:17: [agregar_pendiente] #375 (auto enviar_wa) absorbido por #376
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-28 01:20:47: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 01:28:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 06:32:25: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 08:04:47: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 08:46:12: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tenés razón — sólo Stefano contestó confirmando el miércoles 4/11 10:00 a 11:30."
-0|maria-pa | 2026-10-28 08:47:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, les mandé el mail a Carlos, Martín y Dario pidiéndoles que avisen si no l"
-0|maria-pa | 2026-10-28 08:49:38: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 11:03:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya le mando el mensaje a Farinelli pidiéndole la carta (en unos minutos sa"
+0|maria-pa | 2026-10-28 11:07:15: [MB v4.11] 11:07:08 I [frio] abriendo chat 5491156920073 (#306)
+0|maria-pa | 2026-10-28 11:07:15: [MB v4.11] 11:07:11 I [frio] botón send encontrado — 'escribiendo' 9s antes de enviar
+0|maria-pa | 2026-10-28 11:07:20: [wa-outbox] #306 entregado por el teléfono
+0|maria-pa | 2026-10-28 11:07:25: [MB v4.11] 11:07:22 I [frio] verificación #306 lectura 1/3: enviado
+0|maria-pa | 2026-10-28 11:07:25: [MB v4.11] 11:07:22 I [frio] verificación #306: ENVIADO (burbuja visible)
+0|maria-pa | 2026-10-28 11:07:25: [MB v4.11] 11:07:22 I [outbox] enviado EN FRÍO (accesibilidad) → 5491156920073
 
