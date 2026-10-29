@@ -1,15 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-29 02:27:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 02:30:55: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 09:19:33: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 09:30:00: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 10:09:44: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 13:49:09: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 15:25:16: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-29 16:25:15: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé el almuerzo con Javier Guevara el lunes 2/11 de 13:00 a 14:30, con"
-0|maria-pa | 2026-10-29 16:38:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No hay respuesta de Nespresso Argentina todavía sobre el depósito de agua de la "
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-29 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-29 04:00:26: [morning-brief/Diego] ✓ enviado a 590589920
@@ -117,4 +106,16 @@
 0|maria-pa | 2026-10-29 20:00:25: [wa-send] cumple-avisos/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-29 20:00:25: [cumple-avisos/Diego] ✓ aviso de 1 cumple(s) de mañana
 0|maria-pa | 2026-10-29 20:32:27: [MB v4.12] 20:32:28 I [upd] al día (v4.12 code=37, mío=37)
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-29 02:27:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 02:30:55: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 09:19:33: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 09:30:00: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 10:09:44: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 13:49:09: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 15:25:16: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-29 16:25:15: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé el almuerzo con Javier Guevara el lunes 2/11 de 13:00 a 14:30, con"
+0|maria-pa | 2026-10-29 16:38:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No hay respuesta de Nespresso Argentina todavía sobre el depósito de agua de la "
+0|maria-pa | 2026-10-29 20:57:35: [TG] poll error (reintento en 15s): fetch failed
 
