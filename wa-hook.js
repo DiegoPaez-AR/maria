@@ -286,8 +286,30 @@ async function procesar(body) {
         const exactos = mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) = ?`).all(n);
         if (exactos.length) return exactos;
         if (n.length < 4) return [];
-        return mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) LIKE ? || '%'`).all(n)
+        const porPrefijo = mem.db.prepare(`SELECT usuario_id, nombre, whatsapp FROM contactos WHERE lower(trim(nombre)) LIKE ? || '%'`).all(n)
           .filter(r => _matchNombreLibreta(r.nombre));
+        if (porPrefijo.length) return porPrefijo;
+        // (29/10/2026, caso Nespresso) el nombre verificado puede tener palabras
+        // EN EL MEDIO: ficha "Nespresso Argentina", visible "Nespresso
+        // Professional Argentina". Match por palabras (todas las de la ficha
+        // están en el nombre visible, o al revés, ≥2 palabras) SOLO contra
+        // fichas a cuyo número Maria le escribió en las últimas 24h — la
+        // respuesta a algo que ella misma inició, no un nombre parecido suelto.
+        const _tok = s2 => String(s2 || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .split(/[^a-z0-9]+/).filter(w => w.length >= 3);
+        const tv = new Set(_tok(n));
+        const recientes = mem.db.prepare(
+          `SELECT DISTINCT c.usuario_id, c.nombre, c.whatsapp FROM contactos c
+             JOIN wa_outbox o ON replace(replace(COALESCE(c.whatsapp,''),'@c.us',''),'+','') LIKE '%' || substr(o.numero, -10)
+            WHERE o.creado >= datetime('now','-24 hours') AND c.whatsapp IS NOT NULL`
+        ).all();
+        return recientes.filter(r => {
+          const tc = _tok(r.nombre);
+          if (tc.length < 2 && tv.size < 2) return false;
+          const fichaEnVisible = tc.length >= 2 && tc.every(w => tv.has(w));
+          const visibleEnFicha = tv.size >= 2 && [...tv].every(w => tc.includes(w));
+          return fichaEnVisible || visibleEnFicha;
+        });
       } catch { return []; }
     })();
     const _enLibreta = _contactosPorNombre.length > 0;
