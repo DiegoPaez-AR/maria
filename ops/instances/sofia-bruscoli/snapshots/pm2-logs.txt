@@ -1,4 +1,12 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
+1|sofia-br | 2026-10-29 00:49:16: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-29 02:15:37: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-29 08:41:48: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-29 11:15:04: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-29 11:30:05: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-29 16:39:36: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/sofia-bruscoli/out.log last 200 lines:
 1|sofia-br | 2026-10-29 05:54:54: [MB v4.11] 05:54:49 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
 1|sofia-br | 2026-10-29 05:55:04: [MB v4.11] 05:54:56 I [upd] descargado 3156KB — ofreciendo instalar
@@ -24,12 +32,41 @@
 1|sofia-br | 2026-10-29 09:15:25: [programados] ✓ id=82 (gmail/stortora@luminaconsultora.com) [meeting_prep:3:0ojcnskl2bbm79g952glui84ph]
 1|sofia-br | 2026-10-29 14:31:48: [MB v4.12] 14:31:47 I [upd] al día (v4.12 code=37, mío=37)
 1|sofia-br | 2026-10-29 15:19:25: [meeting-prep/Sol Tortora] + id=83 Chequear Linkedin @ 2026-10-29T20:00:00.000Z
-
-/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
-1|sofia-br | 2026-10-29 00:49:16: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-29 02:15:37: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-29 08:41:48: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-29 11:15:04: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-29 11:30:05: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-29 16:39:36: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-29 16:45:24: 
+1|sofia-br | 2026-10-29 16:45:24: ▸ SIGINT recibido, cerrando…
+1|sofia-br | 2026-10-29 16:45:25: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|sofia-br | 2026-10-29 16:45:25: ▸ Sofia Bruscoli [sofia-bruscoli] iniciando…
+1|sofia-br | 2026-10-29 16:45:25:   Owner:      Noelia Bruscoli (id=2)
+1|sofia-br | 2026-10-29 16:45:25:   Usuarios:   2 activo(s) → Noelia Bruscoli, Sol Tortora
+1|sofia-br | 2026-10-29 16:45:25:   Gmail poll: cada 300s
+1|sofia-br | 2026-10-29 16:45:25: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1|sofia-br | 2026-10-29 16:45:25: ✓ whisper OK
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando telegram-handler (canal de respaldo, long polling)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando poll de Gmail (cada 300s)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando loop de recordatorios (cada 30min)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando dispatcher de programados (cada 60s)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando morning-brief (por usuario, ventana 4h)
+1|sofia-br | 2026-10-29 16:45:25: [morning-brief] activo, ventana 4h, cada usuario en su tz
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando meeting-prep (cada 5min)
+1|sofia-br | 2026-10-29 16:45:25: [meeting-prep] activo, cada 5min, alerta 15min antes (multi-user)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando calendar-watch (cada 8h)
+1|sofia-br | 2026-10-29 16:45:25: [calendar-watch] activo, cada 8.0h
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando follow-ups (cada 5min)
+1|sofia-br | 2026-10-29 16:45:25: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando memoria-curada (cada 24h)
+1|sofia-br | 2026-10-29 16:45:25: [memoria-curada] activo, cada 24.0h (min 3 eventos nuevos para curar)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando maria-worker (cada 30min, tareas dueno=maria)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando cumple-avisos (noche anterior, tz usuario)
+1|sofia-br | 2026-10-29 16:45:25: [cumple-avisos] activo, ventana 20-23h tz usuario
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando resumen-semanal (domingos, tz usuario)
+1|sofia-br | 2026-10-29 16:45:25: [resumen-semanal] activo, día 0 (0=dom) 19-22h tz usuario
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando poda-eventos (diario)
+1|sofia-br | 2026-10-29 16:45:25: [poda-eventos] activo: telemetría >60d se borra, resto >540d a eventos_archivo
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando watchdog del canal WA v2 (teléfono/AutoResponder)
+1|sofia-br | 2026-10-29 16:45:25: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando revisión de usuarios dormidos (1º de cada mes)
+1|sofia-br | 2026-10-29 16:45:25: [dormidos] activo (revisión el 1º de cada mes, umbral 30 días)
+1|sofia-br | 2026-10-29 16:45:25: ▸ arrancando drainer de diferidos (horas de silencio)
+1|sofia-br | 2026-10-29 16:45:25: [diferidos] drainer activo (cada 5min)
+1|sofia-br | 2026-10-29 16:45:25: [internal-api] escuchando en 127.0.0.1:4502 (slug=sofia-bruscoli)
 
