@@ -1,0 +1,50 @@
+# ejecutado: 2026-10-29T11:32:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: arranque de la 4.12 en ambos teléfonos
+#   cd /root/secretaria/logs
+#   for s in maria-paez sofia-bruscoli; do
+#     echo "════ $s"
+#     grep "\[MB " $s/out.log | awk '$1>="2026-10-29"' | grep -v "al día" | grep -E "upd|boot|svc|listener|accesibilidad|instalador|0-tap|outbox|frio|notif\] entrante" | tail -20 | cut -c1-220
+#     echo "── última línea MB ──"; grep "\[MB " $s/out.log | tail -1 | cut -c1-160
+#   done
+#   echo "── polls a pendiente.txt últimos 10 min ──"
+#   L=/var/log/nginx/intensa.io.access.log; desde=$(date -d '-10 min' '+%H:%M')
+#   grep "pendiente.txt" $L | grep "$(date '+%d/%b/%Y'):" | awk -v d="$desde" '{t=substr($4,14,5); if (t>=d) {split($7,p,"/"); k=p[3]; n[k]++; last[k]=substr($4,14,8)}} END {for (k in n) print "  " k ": " n[k] " polls, último " last[k]}'
+
+# ───── output ─────
+════ maria-paez
+2026-10-29 05:56:30: [MB v4.11] 05:56:25 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-29 05:56:40: [MB v4.11] 05:56:33 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-29 08:31:32: [MB v4.11] 08:31:23 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-29 08:31:32: [MB v4.11] 08:31:31 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-29 08:31:32: [MB v4.11] 08:31:32 I [upd] instalador visible — ventana=true clickables=Back[ImageView],Overview[ImageView],Home[ImageView]
+2026-10-29 08:31:32: [MB v4.11] 08:31:32 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 507,932 (intento 1/3)
+2026-10-29 08:31:42: [MB v4.11] 08:31:38 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [notif] listener creado
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [boot] versión nueva instalada — relanzo el servicio
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [frio] accesibilidad conectada
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [notif] listener conectado — barrido cada 3min (marca=1793214995372)
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [svc] OutboxService arrancó (loop nuevo)
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [upd] instalador visible — ventana=false clickables=Done[Button],Open[Button]
+── última línea MB ──
+2026-10-29 08:32:25: [MB v4.12] 08:32:17 I [upd] al día (v4.12 code=37, mío=37)
+════ sofia-bruscoli
+2026-10-29 05:54:54: [MB v4.11] 05:54:49 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-29 05:55:04: [MB v4.11] 05:54:56 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-29 08:31:06: [MB v4.11] 08:31:03 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-29 08:31:25: [MB v4.12] 08:31:14 I [notif] listener creado
+2026-10-29 08:31:25: [MB v4.12] 08:31:14 I [boot] versión nueva instalada — relanzo el servicio
+2026-10-29 08:31:25: [MB v4.12] 08:31:14 I [notif] listener conectado — barrido cada 3min (marca=1792852791574)
+2026-10-29 08:31:25: [MB v4.12] 08:31:14 I [svc] OutboxService arrancó (loop nuevo)
+2026-10-29 08:31:25: [MB v4.12] 08:31:14 I [frio] accesibilidad conectada
+2026-10-29 08:31:35: [MB v4.12] 08:31:33 I [svc] OutboxService ya corría — no apilo otro loop
+── última línea MB ──
+2026-10-29 08:31:55: [MB v4.12] 08:31:44 I [upd] al día (v4.12 code=37, mío=37)
+── polls a pendiente.txt últimos 10 min ──
+  wa-sofia-bruscoli: 20 polls, último 11:31:46
+  wa-maria: 20 polls, último 11:31:46
+
+# exit=0
