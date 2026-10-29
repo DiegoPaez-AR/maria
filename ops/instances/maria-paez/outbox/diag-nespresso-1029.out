@@ -1,0 +1,90 @@
+# ejecutado: 2026-10-29T16:40:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: gestión Nespresso
+#   cd /root/secretaria
+#   ( set -a; . config/instances/maria-paez.conf; set +a
+#     Q="(lower(cuerpo) like '%nespres%' or lower(coalesce(asunto,'')) like '%nespres%' or lower(coalesce(metadata_json,'')) like '%nespres%' or lower(coalesce(nombre,'')) like '%nespres%' or lower(coalesce(de,'')) like '%nespres%')"
+#     echo "── menciones ──"; sqlite3 "$MARIA_DB" "select min(id), max(id), datetime(min(timestamp),'-3 hours'), datetime(max(timestamp),'-3 hours'), count(*) from eventos where $Q;"
+#     MIN=$(sqlite3 "$MARIA_DB" "select min(id) from eventos where $Q and timestamp >= '2026-10-20';")
+#     echo "── hilo desde la primera mención reciente (sin telemetría) ──"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, datetime(timestamp,'-3 hours'), canal, direccion, coalesce(nombre,de,''), replace(substr(coalesce(asunto||' :: ','')||cuerpo,1,1500),char(10),' ⏎ '), case when cuerpo like 'acci%' or cuerpo like 'unknown-flow%' or cuerpo like 'mb-%' then substr(coalesce(metadata_json,''),1,800) else '' end from eventos where id >= ${MIN:-999999999} - 2 and cuerpo not like 'claude_call%' and cuerpo not like 'meeting-prep:%' and cuerpo not like 'poda-%' order by id;"
+#     echo "── outbox / pendientes / follow-ups hoy ──"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, intentos, numero, datetime(creado,'-3 hours'), datetime(entregado,'-3 hours'), replace(substr(texto,1,300),char(10),' '), substr(coalesce(metadata_json,''),1,500) from wa_outbox where creado >= '2026-10-29';"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, dueno, datetime(creado,'-3 hours'), datetime(cerrado,'-3 hours'), substr(\"desc\",1,250) from pendientes where creado >= '2026-10-29' or cerrado >= '2026-10-29';"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, datetime(creado,'-3 hours'), substr(descripcion,1,200), esperando_de, vence_en from follow_ups where creado >= '2026-10-29';" )
+#   echo "── logs hoy (sin ruido) ──"
+#   grep -h "^2026-10-29" logs/maria-paez/out.log logs/maria-paez/error.log | grep -v -E "al día|\[TG\] poll|meeting-prep|programados\]|barrido" | sort | cut -c1-450 | tail -90
+
+# ───── output ─────
+── menciones ──
+34660|34694|2026-10-28 15:55:57|2026-10-29 16:38:57|16
+── hilo desde la primera mención reciente (sin telemetría) ──
+34658 │ 2026-10-28 15:55:42 │ telegram │ saliente │ Diego │ Decime, ese número +54 9 11 2181-7870 para qué es? Es de algún contacto nuevo que querés que guarde, o es para alguna gestión en particular? │ 
+34659 │ 2026-10-28 15:55:45 │ telegram │ entrante │ Diego │ María, este es el WhatsApp de N.Espreso Argentina. ⏎  Tengo una cafetera, que ahora te voy a decir la marca, que se me rompió el vaso. ⏎  Quiero que consulte si tienen en esto y cuánto vale el vaso para poner el agua, ¿no? │ 
+34660 │ 2026-10-28 15:55:57 │ sistema │ interno │  │ acción ejecutada: upsert_contacto │ {"accion":{"tipo":"upsert_contacto","nombre":"Nespresso Argentina","whatsapp":"5491121817870@c.us","notas":"WhatsApp oficial de atención al cliente de Nespresso Argentina"},"resultado":{"id":618,"nombre":"Nespresso Argentina","visibilidad":"privada","cumple":null},"canalOrigen":"telegram"}
+34662 │ 2026-10-28 15:55:59 │ telegram │ saliente │ Diego │ Listo, guardé el contacto de Nespresso Argentina. Pasame la marca/modelo de la cafetera y te escribo para consultar si tienen el vaso (depósito de agua) y el precio. │ 
+34663 │ 2026-10-28 15:56:07 │ telegram │ entrante │ Diego │ Nespresso CitiZ │ 
+34665 │ 2026-10-28 15:56:17 │ sistema │ interno │  │ acción ejecutada: enviar_wa │ {"accion":{"tipo":"enviar_wa","a":"5491121817870@c.us","texto":"Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a la que se le rompió el vaso (depósito de agua). ¿Tienen el repuesto disponible y me podrían pasar el precio? Gracias!"},"resultado":{"a":"5491121817870@c.us","encolado":true,"enviado":false,"via":"telefono","outboxId":307,"gestion_auto":{"id":377,"nota":"gestión registrada automáticamente"},"nota":"QUEDÓ EN COLA, todavía NO salió. El teléfono lo manda en unos minutos (hay una pausa deliberada para que el uso parezca humano). Decile al usuario \"se lo mando ahora/en unos minutos\", NUNCA \"ya se lo mandé\". Si te preguntan si respondió, aclarales que puede ni haber salido todavía."},"canalOrigen":"telegram"}
+34666 │ 2026-10-28 15:56:17 │ sistema │ interno │  │ acción ejecutada: agregar_pendiente │ {"accion":{"tipo":"agregar_pendiente","desc":"Esperando que Nespresso Argentina responda sobre disponibilidad y precio del depósito de agua (vaso) para cafetera CitiZ","dueno":"maria","disparador":"trigger_externo","meta":{"esperando_de":"5491121817870@c.us","esperando_canal":"WA"}},"resultado":{"id":378,"desc":"Esperando que Nespresso Argentina responda sobre disponibilidad y precio del depósito de agua (vaso) para cafetera CitiZ","dueno":"maria","disparador":"trigger_externo","agregado":true,"follow_up":{"id":84,"vence_en":"2026-10-30 18:56:17","esperando_de":"5491121817870@c.us"}},"canalOrigen":"telegram"}
+34668 │ 2026-10-28 15:56:19 │ telegram │ saliente │ Diego │ Ya le mando el mensaje a Nespresso en unos minutos (consultando por el depósito de agua de la CitiZ y el precio). Apenas respondan te cuento. │ 
+34669 │ 2026-10-28 15:59:02 │ whatsapp │ saliente │ 5491121817870@c.us │ Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a la que se le rompió el vaso (depósito de agua). ¿Tienen el repuesto disponible y me podrían pasar el precio? Gracias! │ 
+34670 │ 2026-10-28 15:59:10 │ sistema │ interno │  │ wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) │ 
+34671 │ 2026-10-28 15:59:10 │ telegram │ saliente │ Diego │ ⚠️ Descarté un WhatsApp de *Nespresso Professional Argentina* porque no pude verificar quién es. ⏎  ⏎ Decía: "¡Hola! 👋 Gracias por contactarte con Nespresso Professional. ⏎  ⏎ Para poder ayudarte, indicanos por favor: ⏎  ⏎ • CUIT ⏎ • Razón Social de la cuenta ⏎ • Breve descr" ⏎  ⏎ Si es legítimo, agendalo en la libreta y volvé a pedirle que escriba. │ 
+34672 │ 2026-10-28 16:00:48 │ sistema │ interno │  │ wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) │ 
+34673 │ 2026-10-28 16:02:12 │ sistema │ interno │  │ wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) │ 
+34674 │ 2026-10-28 16:10:35 │ sistema │ interno │  │ wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) │ 
+34675 │ 2026-10-28 16:16:27 │ sistema │ interno │  │ wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) │ 
+34676 │ 2026-10-28 16:16:34 │ sistema │ interno │  │ wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) │ 
+34677 │ 2026-10-28 20:09:24 │ sistema │ interno │  │ follow-up #82 cerrado: 5491137646922@c.us respondió antes del vencimiento (Esperando que Poch Burgers confirme a qué hora Diego puede pasar a buscar el pedido (1 solo carne simple c/papas, 1 stadium doble c/papas, 1 stadium simple c/aros)) │ 
+34678 │ 2026-10-29 04:00:26 │ telegram │ saliente │ Diego │ ☀️ *Buen día, Diego.* jueves, 29 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ llovizna, mín 14° / máx 22° · 47% prob. de lluvia ⏎  ⏎ *📅 Agenda del día* ⏎ • 08:00 a. m. — Yoga ⏎ • 12:00 p. m. — GN + VR Weekly ⏎  ⏎ *📝 Pendientes* ⏎ 1. iProt Seguridad ⏎ 2. Reunión Telefónica Gobierno ⏎ 3. Guevara Nico ⏎  ⏎ *🔄 Gestionando para vos* ⏎ - Esperando respuesta de 5491154824124@c.us (WA): "Hola Matías! Soy María, asistente de Diego Páez. Diego quiere coordinar con vos una reunión o una llamada para charlar sobre el tema del edi…" ⏎ - Esperando que Nespresso Argentina responda sobre disponibilidad y precio del depósito de agua (vaso) para cafetera CitiZ │ 
+34680 │ 2026-10-29 07:00:26 │ gmail │ saliente │ Natali Funez │ Maria Paez — tu brief de hoy :: ☀️ *Buen día, Natali Funez.* jueves, 29 de octubre. ⏎  ⏎ *🌡️ Clima en Buenos Aires, AR* ⏎ 🌦️ llovizna, mín 14° / máx 22° · 47% prob. de lluvia ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy) │ 
+34681 │ 2026-10-29 07:00:27 │ gmail │ saliente │ Lionel Chamorro │ Maria Paez — tu brief de hoy :: ☀️ *Buen día, Lionel Chamorro.* jueves, 29 de octubre. ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy) │ 
+34682 │ 2026-10-29 07:00:27 │ gmail │ saliente │ Matías Israel │ Maria Paez — tu brief de hoy :: ☀️ *Buen día, Matías Israel.* jueves, 29 de octubre. ⏎  ⏎ *📅 Agenda del día* ⏎ (sin eventos hoy) │ 
+34683 │ 2026-10-29 07:45:25 │ telegram │ saliente │ 590589920 │ ⏰ *En 15min*: Yoga (08:00 a. m.) │ 
+34686 │ 2026-10-29 11:45:25 │ telegram │ saliente │ 590589920 │ ⏰ *En 15min*: GN + VR Weekly (12:00 p. m.) ⏎ Con: javier.guevara@vrainz.com, fabio.boschetto@vrainz.com, enrique.sosa@globalnetmobile.com ⏎ 👤 Javier Guevara — CEO, Vrainz Accelerator: Javier Guevara es un contacto de trabajo al que le escribimos vía WhatsApp para coordinar reuniones. Está asociado a Vra… ⏎ 👤 Fabio Boschetto — CFO en Vrainz Accelerator (aceleradora; contenidos para telcos, Bs As): Fabio Boschetto es un contacto profesional con quien vengo coordinando reuniones de trabajo. Su cumpleaños es el 1° de a… │ 
+34687 │ 2026-10-29 16:24:51 │ telegram │ entrante │ Diego │ Agendamos un almuerzo para el lunes con Javier Guevara, de 13 a 14.30. ⏎  Si no tenés el mail de Javier, ha avisado el contacto y se mete lo paso. ⏎  Ahí, en la reunión de Brains, que me avisaste hace un rato, ⏎  es uno de los participantes. Javier. Guevara@brains.com. │ 
+34688 │ 2026-10-29 16:25:13 │ calendar │ saliente │  │ creado: Almuerzo JG - DP (2026-11-02T13:00:00-03:00 → 2026-11-02T14:30:00-03:00) · Meet: https://meet.google.com/isj-njbe-rvr │ 
+34689 │ 2026-10-29 16:25:13 │ sistema │ interno │  │ acción ejecutada: crear_evento │ {"accion":{"tipo":"crear_evento","summary":"Almuerzo JG - DP","start":"2026-11-02T13:00:00-03:00","end":"2026-11-02T14:30:00-03:00","attendees":["javier.guevara@vrainz.com"],"meet":true},"resultado":{"id":"7532qu156gsb7gpodmlkd5m3g8","summary":"Almuerzo JG - DP","link":"https://www.google.com/calendar/event?eid=NzUzMnF1MTU2Z3NiN2dwb2RtbGtkNW0zZzggZGllZ29AcGFlei5pcw","meetLink":"https://meet.google.com/isj-njbe-rvr","calendarId":"diego@paez.is","tier":"tier_2","invitados":1},"canalOrigen":"telegram"}
+34691 │ 2026-10-29 16:25:15 │ telegram │ saliente │ Diego │ Listo, agendé el almuerzo con Javier Guevara el lunes 2/11 de 13:00 a 14:30, con invitación mandada a javier.guevara@vrainz.com (el mail que ya tenía guardado de él, coincide con el que me pasaste). │ 
+34692 │ 2026-10-29 16:38:49 │ telegram │ entrante │ Diego │ Ayer descardato un mensaje y me dijiste de un expreso profesional argentina en expreso, ⏎  tal vez que te pedí el tema de la de la cafetera. │ 
+34694 │ 2026-10-29 16:38:57 │ telegram │ saliente │ Diego │ No hay respuesta de Nespresso Argentina todavía sobre el depósito de agua de la CitiZ (le escribí ayer a la tarde, sigo esperando). Apenas conteste te aviso con disponibilidad y precio. │ 
+── outbox / pendientes / follow-ups hoy ──
+── logs hoy (sin ruido) ──
+2026-10-29 04:00:26: [morning-brief/Diego] ✓ enviado a 590589920
+2026-10-29 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-29 05:56:30: [MB v4.11] 05:56:25 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-29 05:56:40: [MB v4.11] 05:56:33 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-29 07:00:26: [morning-brief/Natali Funez] ✓ enviado a nfunez@iplan.com.ar
+2026-10-29 07:00:26: [wa-send] morning-brief/Natali Funez: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Natali Funez
+2026-10-29 07:00:27: [morning-brief/Lionel Chamorro] ✓ enviado a lchamorro@froneus.com
+2026-10-29 07:00:27: [morning-brief/Matías Israel] ✓ enviado a matias.israel@gmail.com
+2026-10-29 07:00:27: [wa-send] morning-brief/Lionel Chamorro: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Lionel Chamorro
+2026-10-29 07:00:27: [wa-send] morning-brief/Matías Israel: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Matías Israel
+2026-10-29 07:45:25: [wa-send] programados/1857: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-29 08:31:32: [MB v4.11] 08:31:23 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
+2026-10-29 08:31:32: [MB v4.11] 08:31:31 I [upd] descargado 3156KB — ofreciendo instalar
+2026-10-29 08:31:32: [MB v4.11] 08:31:32 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 507,932 (intento 1/3)
+2026-10-29 08:31:32: [MB v4.11] 08:31:32 I [upd] instalador visible — ventana=true clickables=Back[ImageView],Overview[ImageView],Home[ImageView]
+2026-10-29 08:31:42: [MB v4.11] 08:31:38 I [upd] instalador visible — ventana=true clickables=Cancel[Button]
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [boot] versión nueva instalada — relanzo el servicio
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [frio] accesibilidad conectada
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [notif] listener creado
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [svc] OutboxService arrancó (loop nuevo)
+2026-10-29 08:31:55: [MB v4.12] 08:31:46 I [upd] instalador visible — ventana=false clickables=Done[Button],Open[Button]
+2026-10-29 09:24:36: [memoria-curada] Diego × Farinelli Arroyo: nota actualizada (5 eventos nuevos, 2798 chars)
+2026-10-29 09:24:37: [memoria-curada] tick: 1/448 contactos curados
+2026-10-29 11:45:25: [wa-send] programados/1858: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-29 16:24:35: [TG] transcribiendo audio…
+2026-10-29 16:24:51:  Ahí, en la reu
+2026-10-29 16:24:51:  Si no tenés el mail de Javier, ha avisado el contacto y se mete lo paso.
+2026-10-29 16:24:51: [TG audio→texto] Agendamos un almuerzo para el lunes con Javier Guevara, de 13 a 14.30.
+2026-10-29 16:25:15: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, agendé el almuerzo con Javier Guevara el lunes 2/11 de 13:00 a 14:30, con"
+2026-10-29 16:38:37: [TG] transcribiendo audio…
+2026-10-29 16:38:49:  tal vez que te pedí el tema de la de la cafetera.
+2026-10-29 16:38:49: [TG audio→texto] Ayer descardato un mensaje y me dijiste de un expreso profesional argentina en expreso,
+2026-10-29 16:38:57: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "No hay respuesta de Nespresso Argentina todavía sobre el depósito de agua de la "
+
+# exit=0
