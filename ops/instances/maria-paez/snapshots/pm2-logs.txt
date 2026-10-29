@@ -1,18 +1,4 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-28 01:20:47: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 01:28:14: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 06:32:25: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 08:04:47: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 08:46:12: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tenés razón — sólo Stefano contestó confirmando el miércoles 4/11 10:00 a 11:30."
-0|maria-pa | 2026-10-28 08:47:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, les mandé el mail a Carlos, Martín y Dario pidiéndoles que avisen si no l"
-0|maria-pa | 2026-10-28 08:49:38: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-28 11:03:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya le mando el mensaje a Farinelli pidiéndole la carta (en unos minutos sa"
-0|maria-pa | 2026-10-28 15:55:57: [wa-validate] sin cliente WA — normalizado offline "5491121817870@c.us" → 5491121817870@c.us (SIN verificar en Meta)
-0|maria-pa | 2026-10-28 15:55:59: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé el contacto de Nespresso Argentina. Pasame la marca/modelo de la c"
-0|maria-pa | 2026-10-28 15:56:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le mando el mensaje a Nespresso en unos minutos (consultando por el depósito "
-0|maria-pa | 2026-10-28 18:33:36: [TG] poll error (reintento en 15s): fetch failed
-
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-28 04:00:29: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
 0|maria-pa | 2026-10-28 04:00:29: [morning-brief/Diego] ✓ enviado a 590589920
@@ -140,4 +126,19 @@
 0|maria-pa | 2026-10-28 17:56:20: [MB v4.11] 17:56:21 I [upd] versión nueva v4.12 (code 37 > 36) — descargando
 0|maria-pa | 2026-10-28 17:56:30: [MB v4.11] 17:56:30 I [upd] descargado 3156KB — ofreciendo instalar
 0|maria-pa | 2026-10-28 20:09:24: [follow-ups] #82 cerrado: hubo respuesta de 5491137646922@c.us
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-28 01:20:47: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 01:28:14: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 06:32:25: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 08:04:47: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 08:46:12: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Tenés razón — sólo Stefano contestó confirmando el miércoles 4/11 10:00 a 11:30."
+0|maria-pa | 2026-10-28 08:47:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, les mandé el mail a Carlos, Martín y Dario pidiéndoles que avisen si no l"
+0|maria-pa | 2026-10-28 08:49:38: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 11:03:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, ya le mando el mensaje a Farinelli pidiéndole la carta (en unos minutos sa"
+0|maria-pa | 2026-10-28 15:55:57: [wa-validate] sin cliente WA — normalizado offline "5491121817870@c.us" → 5491121817870@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-10-28 15:55:59: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, guardé el contacto de Nespresso Argentina. Pasame la marca/modelo de la c"
+0|maria-pa | 2026-10-28 15:56:19: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le mando el mensaje a Nespresso en unos minutos (consultando por el depósito "
+0|maria-pa | 2026-10-28 18:33:36: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-28 22:12:00: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
 
