@@ -1,0 +1,33 @@
+# ejecutado: 2026-10-30T08:50:24-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: ¿contestó Nespresso AR? ¿se descartó algo? ¿recargó el código?
+#   cd /root/secretaria; sleep 15
+#   git log --format='%h %s' -1; grep -c "_cubre" wa-hook.js
+#   pm2 jlist | python3 -c "import json,sys,time;[print(p['name'],p['pm2_env']['status'],p['pm2_env']['restart_time'],round((time.time()*1000-p['pm2_env']['pm_uptime'])/1000),'s') for p in json.load(sys.stdin) if p['name'] in ('maria-paez','sofia-bruscoli')]"
+#   ( set -a; . config/instances/maria-paez.conf; set +a
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, datetime(timestamp,'-3 hours'), canal, direccion, coalesce(nombre,de,''), replace(substr(cuerpo,1,400),char(10),' ⏎ ') from eventos where timestamp >= '2026-10-30 11:45' and cuerpo not like 'claude_call%' order by id;" )
+#   grep -E "^2026-10-30 08:(4[5-9]|5)" logs/maria-paez/out.log | grep -i -E "nespresso|wa-hook|notif\] entrante|descart" | cut -c1-250
+
+# ───── output ─────
+9ff8f541243 inbox: ver-nesp-1030 (solo lectura)
+2
+maria-paez online 12 16 s
+sofia-bruscoli online 12 15 s
+34723 │ 2026-10-30 08:45:06 │ telegram │ entrante │ Diego │ y proba nuevamente lo de nespresso con este numero de WA +54 9 11 3335 0233
+34725 │ 2026-10-30 08:45:13 │ telegram │ saliente │ Diego │ Che, ese es el mismo número que ya probé hace un rato (+54 9 11 3335 0233) y rebotó como "chat equivocado" — no es un WhatsApp válido. ¿Tenés otro número para Nespresso o querés que busque el oficial por otro lado?
+34726 │ 2026-10-30 08:45:36 │ whatsapp │ saliente │ 5491133350233@c.us │ Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a la que se le rompió el vaso (depósito de agua). ¿Tienen el repuesto disponible y me podrían pasar el precio? Gracias!
+34727 │ 2026-10-30 08:45:50 │ sistema │ interno │  │ wa-hook: "Nespresso AR" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable)
+34728 │ 2026-10-30 08:45:50 │ telegram │ saliente │ Diego │ ⚠️ Descarté un WhatsApp de *Nespresso AR* porque no pude verificar quién es. ⏎  ⏎ Decía: "Entiendo que necesitás el depósito de agua para una máquina CitiZ. ☕ ⏎  ⏎ Te comento que en Argentina los repuestos de Nespresso no se comercializan a través de nue" ⏎  ⏎ Si es legítimo, agendalo en la libreta y volvé a pedirle que escriba.
+34729 │ 2026-10-30 08:50:23 │ sistema │ interno │  │ shutdown por SIGINT
+34730 │ 2026-10-30 08:50:25 │ sistema │ interno │  │ Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (18 usuarios)
+2026-10-30 08:45:50: [wa-send] wa-hook/descarte-identidad: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-30 08:45:52: [MB v4.13] 08:45:51 I [notif] entrante de "Nespresso AR": Entiendo que necesitás el depósito de agua para una máquina 
+2026-10-30 08:45:52: [MB v4.13] 08:45:51 I [notif] dup ignorado de "Nespresso AR"
+2026-10-30 08:45:52: [MB v4.13] 08:45:52 I [notif] dup ignorado de "Nespresso AR"
+2026-10-30 08:46:22: [MB v4.13] 08:46:18 I [notif] dup ignorado de "Nespresso AR"
+2026-10-30 08:50:25: [wa-hook-watchdog] activo (cada 30min — teléfono 12h, gmail 2h)
+
+# exit=0
