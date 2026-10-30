@@ -1,0 +1,49 @@
+# ejecutado: 2026-10-30T09:07:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: nuevo descarte de Nespresso después de las 08:50
+#   cd /root/secretaria
+#   git log --format='%h %ci %s' -1 -- wa-hook.js; grep -c "_cubre" wa-hook.js
+#   ( set -a; . config/instances/maria-paez.conf; set +a
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, datetime(timestamp,'-3 hours'), canal, direccion, coalesce(nombre,de,''), replace(substr(cuerpo,1,500),char(10),' ⏎ '), substr(coalesce(metadata_json,''),1,300) from eventos where timestamp >= '2026-10-30 11:50' and cuerpo not like 'claude_call%' order by id;"
+#     echo "── contactos nespresso ──"; sqlite3 "$MARIA_DB" "select id, usuario_id, nombre, whatsapp from contactos where lower(nombre) like '%nespresso%';"
+#     echo "── join outbox 24h ──"; sqlite3 "$MARIA_DB" "SELECT DISTINCT c.id, c.nombre, c.whatsapp, o.numero FROM contactos c JOIN wa_outbox o ON replace(replace(COALESCE(c.whatsapp,''),'@c.us',''),'+','') LIKE '%' || substr(o.numero, -10) WHERE o.creado >= datetime('now','-24 hours') AND c.whatsapp IS NOT NULL;" )
+#   grep -E "^2026-10-30 0(8:5|9:)" logs/maria-paez/out.log logs/maria-paez/error.log | grep -i -E "nespresso|wa-hook|notif\] entrante|descart|error" | cut -c1-300 | tail -20
+#   sed -n '/const _confiable/,/+3p' wa-hook.js | head -5
+
+# ───── output ─────
+725cc662780 2026-10-30 11:49:30 +0000 wa-hook: match por palabras igual al bridge 4.13 (tildes, signos, abreviaturas) — caso Nespresso AR
+2
+34729 │ 2026-10-30 08:50:23 │ sistema │ interno │  │ shutdown por SIGINT │ 
+34730 │ 2026-10-30 08:50:25 │ sistema │ interno │  │ Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (18 usuarios) │ 
+── contactos nespresso ──
+618|1|Nespresso Professional Argentina|5491121817870@c.us
+619|1|Nespresso Argentina (alternativo)|5491133350233@c.us
+── join outbox 24h ──
+165|Matias Israel|5491154824124@c.us|5491154824124
+619|Nespresso Argentina (alternativo)|5491133350233@c.us|5491133350233
+logs/maria-paez/error.log:2026-10-30 08:50:49:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 
+logs/maria-paez/error.log:2026-10-30 08:50:49:   </style>
+logs/maria-paez/error.log:2026-10-30 08:50:49:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+logs/maria-paez/error.log:2026-10-30 08:50:49:   <p><b>502.</b> <ins>That’s an error.</ins>
+logs/maria-paez/error.log:2026-10-30 08:50:49:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+logs/maria-paez/error.log:2026-10-30 08:50:49: 
+logs/maria-paez/error.log:2026-10-30 08:50:50: [gcontacts] arranque: usuario "Jaime Cibils" falló: Resource has been exhausted (e.g. check quota).
+logs/maria-paez/error.log:2026-10-30 08:50:51: [gcontacts] arranque: usuario "Matías Israel" falló: <!DOCTYPE html>
+logs/maria-paez/error.log:2026-10-30 08:50:51: <html lang=en>
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <meta charset=utf-8>
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <title>Error 502 (Server Error)!!1</title>
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <style>
+logs/maria-paez/error.log:2026-10-30 08:50:51:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 
+logs/maria-paez/error.log:2026-10-30 08:50:51:   </style>
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <p><b>502.</b> <ins>That’s an error.</ins>
+logs/maria-paez/error.log:2026-10-30 08:50:51:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+logs/maria-paez/error.log:2026-10-30 08:50:51: 
+logs/maria-paez/error.log:2026-10-30 09:02:51: [TG] poll error (reintento en 15s): fetch failed
+sed: -e expression #1, char 23: unterminated address regex
+
+# exit=0
