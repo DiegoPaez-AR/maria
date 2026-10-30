@@ -1,4 +1,21 @@
 [TAILING] Tailing last 200 lines for [sofia-bruscoli] process (change the value with --lines option)
+/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
+1|sofia-br | 2026-10-30 03:51:21: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-30 07:56:58: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-30 08:50:45: [gcontacts] arranque: usuario "Noelia Bruscoli" falló: <!DOCTYPE html>
+1|sofia-br | 2026-10-30 08:50:45: <html lang=en>
+1|sofia-br | 2026-10-30 08:50:45:   <meta charset=utf-8>
+1|sofia-br | 2026-10-30 08:50:45:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+1|sofia-br | 2026-10-30 08:50:45:   <title>Error 502 (Server Error)!!1</title>
+1|sofia-br | 2026-10-30 08:50:45:   <style>
+1|sofia-br | 2026-10-30 08:50:45:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+1|sofia-br | 2026-10-30 08:50:45:   </style>
+1|sofia-br | 2026-10-30 08:50:45:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+1|sofia-br | 2026-10-30 08:50:45:   <p><b>502.</b> <ins>That’s an error.</ins>
+1|sofia-br | 2026-10-30 08:50:45:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+1|sofia-br | 2026-10-30 08:50:45: 
+1|sofia-br | 2026-10-30 10:08:19: [TG] poll error (reintento en 15s): fetch failed
+
 /root/secretaria/logs/sofia-bruscoli/out.log last 200 lines:
 1|sofia-br | 2026-10-30 02:31:55: [MB v4.12] 02:31:49 I [upd] al día (v4.12 code=37, mío=37)
 1|sofia-br | 2026-10-30 07:00:26: [meeting-prep/Sol Tortora] + id=84 Mensaje de seguimiento | como viene con la busqueda +54 9 11 6330-2198 @ 2026-10-30T11:45:00.000Z
@@ -76,21 +93,7 @@
 1|sofia-br | 2026-10-30 10:00:25: [programados] 1 mensaje(s) debidos, despachando…
 1|sofia-br | 2026-10-30 10:00:25: [wa-send] programados/87: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Sol Tortora
 1|sofia-br | 2026-10-30 10:00:25: [programados] ✓ id=87 (gmail/stortora@luminaconsultora.com) [meeting_prep:3:3c6fi6eva1l5qpb56hginarves]
-
-/root/secretaria/logs/sofia-bruscoli/error.log last 200 lines:
-1|sofia-br | 2026-10-30 03:51:21: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-30 07:56:58: [TG] poll error (reintento en 15s): fetch failed
-1|sofia-br | 2026-10-30 08:50:45: [gcontacts] arranque: usuario "Noelia Bruscoli" falló: <!DOCTYPE html>
-1|sofia-br | 2026-10-30 08:50:45: <html lang=en>
-1|sofia-br | 2026-10-30 08:50:45:   <meta charset=utf-8>
-1|sofia-br | 2026-10-30 08:50:45:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
-1|sofia-br | 2026-10-30 08:50:45:   <title>Error 502 (Server Error)!!1</title>
-1|sofia-br | 2026-10-30 08:50:45:   <style>
-1|sofia-br | 2026-10-30 08:50:45:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
-1|sofia-br | 2026-10-30 08:50:45:   </style>
-1|sofia-br | 2026-10-30 08:50:45:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
-1|sofia-br | 2026-10-30 08:50:45:   <p><b>502.</b> <ins>That’s an error.</ins>
-1|sofia-br | 2026-10-30 08:50:45:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
-1|sofia-br | 2026-10-30 08:50:45: 
-1|sofia-br | 2026-10-30 10:08:19: [TG] poll error (reintento en 15s): fetch failed
+1|sofia-br | 2026-10-30 10:15:25: [programados] 1 mensaje(s) debidos, despachando…
+1|sofia-br | 2026-10-30 10:15:25: [wa-send] programados/88: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Sol Tortora
+1|sofia-br | 2026-10-30 10:15:25: [programados] ✓ id=88 (gmail/stortora@luminaconsultora.com) [meeting_prep:3:2fv16t80amrr2ngph7m7mtdsgh]
 
