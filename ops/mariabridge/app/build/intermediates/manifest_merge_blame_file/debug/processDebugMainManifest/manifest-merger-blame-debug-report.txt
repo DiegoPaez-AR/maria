@@ -1,8 +1,8 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 3    package="io.intensa.mariabridge"
-4    android:versionCode="35"
-5    android:versionName="4.10" >
+4    android:versionCode="38"
+5    android:versionName="4.13" >
 6
 7    <uses-sdk
 8        android:minSdkVersion="26"
@@ -45,7 +45,7 @@
 24-->[androidx.core:core:1.13.1] /root/.gradle/caches/transforms-4/eecbda8adc5521377f06f41deda43748/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
 25
 26    <application
-26-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:15:5-81:19
+26-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:15:5-84:19
 27        android:allowBackup="false"
 27-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:18:9-36
 28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
@@ -128,125 +128,132 @@
 71
 72        <!-- Arranca solo al bootear el teléfono -->
 73        <receiver
-73-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:53:9-57:20
+73-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:53:9-60:20
 74            android:name="io.intensa.mariabridge.BootReceiver"
 74-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:53:19-47
 75            android:exported="true" >
 75-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:53:48-71
 76            <intent-filter>
-76-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:54:13-56:29
+76-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:54:13-59:29
 77                <action android:name="android.intent.action.BOOT_COMPLETED" />
 77-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:55:17-78
 77-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:55:25-76
-78            </intent-filter>
-79        </receiver>
-80
-81        <!-- Envío en frío: toca "enviar" de WhatsApp por accesibilidad -->
-82        <service
-82-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:60:9-70:19
-83            android:name="io.intensa.mariabridge.WaSendService"
-83-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:61:13-42
-84            android:exported="false"
-84-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:63:13-37
-85            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
-85-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:62:13-79
-86            <intent-filter>
-86-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:64:13-66:29
-87                <action android:name="android.accessibilityservice.AccessibilityService" />
-87-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:65:17-91
-87-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:65:25-89
-88            </intent-filter>
-89
-90            <meta-data
-90-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:67:13-69:59
-91                android:name="android.accessibilityservice"
-91-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:68:17-60
-92                android:resource="@xml/wa_accessibility" />
-92-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:69:17-57
-93        </service>
+78                <!--
+79                     v4.12: al instalarse una versión nueva Android frena la app y
+80                     nadie relanzaba OutboxService (hacía falta el doble toque)
+81                -->
+82                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+82-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:58:17-83
+82-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:58:25-81
+83            </intent-filter>
+84        </receiver>
+85
+86        <!-- Envío en frío: toca "enviar" de WhatsApp por accesibilidad -->
+87        <service
+87-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:63:9-73:19
+88            android:name="io.intensa.mariabridge.WaSendService"
+88-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:64:13-42
+89            android:exported="false"
+89-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:66:13-37
+90            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+90-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:65:13-79
+91            <intent-filter>
+91-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:67:13-69:29
+92                <action android:name="android.accessibilityservice.AccessibilityService" />
+92-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:68:17-91
+92-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:68:25-89
+93            </intent-filter>
 94
-95        <provider
-95-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:72:9-80:20
-96            android:name="androidx.core.content.FileProvider"
-96-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:73:13-62
-97            android:authorities="io.intensa.mariabridge.fileprovider"
-97-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:74:13-70
-98            android:exported="false"
-98-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:75:13-37
-99            android:grantUriPermissions="true" >
-99-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:76:13-47
-100            <meta-data
-100-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:77:13-79:53
-101                android:name="android.support.FILE_PROVIDER_PATHS"
-101-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:78:17-67
-102                android:resource="@xml/file_paths" />
-102-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:79:17-51
-103        </provider>
-104        <provider
-104-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
-105            android:name="androidx.startup.InitializationProvider"
-105-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
-106            android:authorities="io.intensa.mariabridge.androidx-startup"
-106-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
-107            android:exported="false" >
-107-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
-108            <meta-data
-108-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
-109                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-109-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
-110                android:value="androidx.startup" />
-110-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
-111            <meta-data
-111-->[androidx.lifecycle:lifecycle-process:2.6.2] /root/.gradle/caches/transforms-4/268940990c9a0cc9b2e07b4c29f87a74/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
-112                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-112-->[androidx.lifecycle:lifecycle-process:2.6.2] /root/.gradle/caches/transforms-4/268940990c9a0cc9b2e07b4c29f87a74/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
-113                android:value="androidx.startup" />
-113-->[androidx.lifecycle:lifecycle-process:2.6.2] /root/.gradle/caches/transforms-4/268940990c9a0cc9b2e07b4c29f87a74/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
-114            <meta-data
-114-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
-115                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-115-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
-116                android:value="androidx.startup" />
-116-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
-117        </provider>
-118
-119        <receiver
-119-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
-120            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-120-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
-121            android:directBootAware="false"
-121-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
-122            android:enabled="true"
-122-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
-123            android:exported="true"
-123-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
-124            android:permission="android.permission.DUMP" >
-124-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
-125            <intent-filter>
-125-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
-126                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-126-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
-126-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
-127            </intent-filter>
-128            <intent-filter>
-128-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
-129                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-129-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
-129-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
-130            </intent-filter>
-131            <intent-filter>
-131-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
-132                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-132-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
-132-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
-133            </intent-filter>
-134            <intent-filter>
-134-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
-135                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-135-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
-135-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
-136            </intent-filter>
-137        </receiver>
-138    </application>
-139
-140</manifest>
+95            <meta-data
+95-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:70:13-72:59
+96                android:name="android.accessibilityservice"
+96-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:71:17-60
+97                android:resource="@xml/wa_accessibility" />
+97-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:72:17-57
+98        </service>
+99
+100        <provider
+100-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:75:9-83:20
+101            android:name="androidx.core.content.FileProvider"
+101-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:76:13-62
+102            android:authorities="io.intensa.mariabridge.fileprovider"
+102-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:77:13-70
+103            android:exported="false"
+103-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:78:13-37
+104            android:grantUriPermissions="true" >
+104-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:79:13-47
+105            <meta-data
+105-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:80:13-82:53
+106                android:name="android.support.FILE_PROVIDER_PATHS"
+106-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:81:17-67
+107                android:resource="@xml/file_paths" />
+107-->/root/secretaria/ops/mariabridge/app/src/main/AndroidManifest.xml:82:17-51
+108        </provider>
+109        <provider
+109-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+110            android:name="androidx.startup.InitializationProvider"
+110-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:25:13-67
+111            android:authorities="io.intensa.mariabridge.androidx-startup"
+111-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:26:13-68
+112            android:exported="false" >
+112-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:27:13-37
+113            <meta-data
+113-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+114                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+114-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+115                android:value="androidx.startup" />
+115-->[androidx.emoji2:emoji2:1.3.0] /root/.gradle/caches/transforms-4/868a55f7d79383792b26d5b53f15b066/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+116            <meta-data
+116-->[androidx.lifecycle:lifecycle-process:2.6.2] /root/.gradle/caches/transforms-4/268940990c9a0cc9b2e07b4c29f87a74/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
+117                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+117-->[androidx.lifecycle:lifecycle-process:2.6.2] /root/.gradle/caches/transforms-4/268940990c9a0cc9b2e07b4c29f87a74/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
+118                android:value="androidx.startup" />
+118-->[androidx.lifecycle:lifecycle-process:2.6.2] /root/.gradle/caches/transforms-4/268940990c9a0cc9b2e07b4c29f87a74/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
+119            <meta-data
+119-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+120                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+120-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+121                android:value="androidx.startup" />
+121-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+122        </provider>
+123
+124        <receiver
+124-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+125            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+125-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+126            android:directBootAware="false"
+126-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+127            android:enabled="true"
+127-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+128            android:exported="true"
+128-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+129            android:permission="android.permission.DUMP" >
+129-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+130            <intent-filter>
+130-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+131                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+132            </intent-filter>
+133            <intent-filter>
+133-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+134                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+134-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+134-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+135            </intent-filter>
+136            <intent-filter>
+136-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+137                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+138            </intent-filter>
+139            <intent-filter>
+139-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+140                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+140-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+140-->[androidx.profileinstaller:profileinstaller:1.3.1] /root/.gradle/caches/transforms-4/fd50654ca51de888bd7dc200a40f860e/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+141            </intent-filter>
+142        </receiver>
+143    </application>
+144
+145</manifest>

@@ -1,0 +1,19 @@
+# ejecutado: 2026-10-30T08:27:01-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Build MariaBridge 4.13 (aprobado Diego 30/10) — sincrónico con tope, el build tarda ~40s
+#   cd /root/secretaria; grep -E "versionCode|versionName" ops/mariabridge/app/build.gradle
+#   timeout 240 bash /root/mb-build-worker.sh < /dev/null > /root/mariabridge-build.log 2>&1; echo "exit=$?"
+#   grep -E "error:|e: |BUILD|APK_OK" /root/mariabridge-build.log | tail -8; cat /var/www/intensa.io/_dl/mariabridge-latest.json
+
+# ───── output ─────
+        versionCode 38
+        versionName '4.13'
+exit=0
+BUILD SUCCESSFUL in 43s
+APK_OK url=https://intensa.io/_dl/mb-a32d26c8bc98ec70.apk size=3.1M latest.json=v4.13(38)
+{"versionCode": 38, "versionName": "4.13", "url": "https://intensa.io/_dl/mb-a32d26c8bc98ec70.apk"}
+
+# exit=0

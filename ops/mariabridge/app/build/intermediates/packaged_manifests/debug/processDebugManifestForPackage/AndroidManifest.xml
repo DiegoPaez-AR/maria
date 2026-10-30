@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.intensa.mariabridge"
-    android:versionCode="35"
-    android:versionName="4.10" >
+    android:versionCode="38"
+    android:versionName="4.13" >
 
     <uses-sdk
         android:minSdkVersion="26"
@@ -75,6 +75,11 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!--
+                     v4.12: al instalarse una versión nueva Android frena la app y
+                     nadie relanzaba OutboxService (hacía falta el doble toque)
+                -->
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 
