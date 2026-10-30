@@ -1,0 +1,42 @@
+# ejecutado: 2026-10-30T08:26:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: envío #309 a Nespresso (número hogar) 30/10
+#   cd /root/secretaria
+#   ( set -a; . config/instances/maria-paez.conf; set +a
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, intentos, numero, datetime(creado,'-3 hours'), datetime(entregado,'-3 hours'), substr(coalesce(metadata_json,''),1,500) from wa_outbox where id>=309;"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, datetime(timestamp,'-3 hours'), canal, direccion, replace(substr(cuerpo,1,600),char(10),' ⏎ ') from eventos where timestamp >= '2026-10-30 11:09' and cuerpo not like 'claude_call%' order by id;"
+#     sqlite3 "$MARIA_DB" "select id, nombre, whatsapp from contactos where id in (618,619);" )
+#   grep -h "^2026-10-30 08:[0-5]" logs/maria-paez/out.log | grep -E "frio|MB-FALLO|wa-outbox|MB-VERIF|ctl|notif\] entrante|wa-hook" | cut -c1-300 | tail -40
+
+# ───── output ─────
+309 │ vencido │ 5 │ 5491133350233 │ 2026-10-30 08:09:08 │  │ {"destinoOriginal":"5491133350233@c.us","canalOrigen":"telegram","cold_fallos":5,"cold_motivo":"chat_equivocado"}
+34711 │ 2026-10-30 08:09:01 │ sistema │ interno │ acción ejecutada: upsert_contacto
+34713 │ 2026-10-30 08:09:08 │ sistema │ interno │ acción ejecutada: enviar_wa
+34715 │ 2026-10-30 08:09:11 │ telegram │ saliente │ Sigue sin responder el primer número de Nespresso. Ya le mando el mensaje al número alternativo que me pasaste (sale en unos minutos). Apenas tenga novedades de cualquiera de los dos te aviso.
+34716 │ 2026-10-30 08:19:02 │ sistema │ interno │ wa-outbox: entrega FALLIDA definitiva #309 a 5491133350233 (chat_equivocado) — aviso al dueño
+34717 │ 2026-10-30 08:19:02 │ telegram │ saliente │ ⚠️ No pude entregar un WhatsApp a 5491133350233: no pude entregarlo tras 5 intentos. El mensaje decía: "Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a l…". No tiene email en la libreta.
+618|Nespresso Professional Argentina|5491121817870@c.us
+619|Nespresso Argentina (alternativo)|5491133350233@c.us
+2026-10-30 08:09:08: [wa-outbox] #309 encolado → +5491133350233 (Hola! Soy Maria, asistente de Diego Paez…)
+2026-10-30 08:13:03: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":1,"definitivo":false}
+2026-10-30 08:13:07: [MB v4.12] 08:13:02 I [frio] abriendo chat 5491133350233 (#309)
+2026-10-30 08:13:07: [MB v4.12] 08:13:04 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
+2026-10-30 08:14:35: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":2,"definitivo":false}
+2026-10-30 08:14:37: [MB v4.12] 08:14:35 I [frio] abriendo chat 5491133350233 (#309)
+2026-10-30 08:14:37: [MB v4.12] 08:14:36 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
+2026-10-30 08:16:02: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":3,"definitivo":false}
+2026-10-30 08:16:07: [MB v4.12] 08:16:02 I [frio] abriendo chat 5491133350233 (#309)
+2026-10-30 08:16:07: [MB v4.12] 08:16:03 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
+2026-10-30 08:17:34: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":4,"definitivo":false}
+2026-10-30 08:17:37: [MB v4.12] 08:17:34 I [frio] abriendo chat 5491133350233 (#309)
+2026-10-30 08:17:37: [MB v4.12] 08:17:35 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
+2026-10-30 08:19:02: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":5,"definitivo":true}
+2026-10-30 08:19:02: [wa-send] wa-outbox/aviso: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-30 08:19:02: [wa-outbox] aviso #309 → Diego por telegram
+2026-10-30 08:19:07: [MB v4.12] 08:19:01 I [frio] abriendo chat 5491133350233 (#309)
+2026-10-30 08:19:07: [MB v4.12] 08:19:03 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
+
+# exit=0
