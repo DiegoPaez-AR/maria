@@ -295,9 +295,22 @@ async function procesar(body) {
         // están en el nombre visible, o al revés, ≥2 palabras) SOLO contra
         // fichas a cuyo número Maria le escribió en las últimas 24h — la
         // respuesta a algo que ella misma inició, no un nombre parecido suelto.
-        const _tok = s2 => String(s2 || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-          .split(/[^a-z0-9]+/).filter(w => w.length >= 3);
-        const tv = new Set(_tok(n));
+        // Misma regla que el bridge 4.13 (30/10, "Nespresso AR"): sin tildes ni
+        // signos; cada palabra del nombre más corto es igual o prefijo de una
+        // palabra distinta del otro, con al menos una idéntica de ≥4 letras.
+        const _tok = s2 => [...new Set(String(s2 || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .split(/[^a-z0-9]+/).filter(w => w.length >= 2))];
+        const _cubre = (corto, largo) => {
+          const libres = [...largo]; let exacta = false;
+          for (const w of corto) {
+            let i = libres.indexOf(w); if (i < 0) i = libres.findIndex(l => l.startsWith(w));
+            if (i < 0) return false;
+            if (libres[i] === w && w.length >= 4) exacta = true;
+            libres.splice(i, 1);
+          }
+          return exacta;
+        };
+        const tv = _tok(n);
         const recientes = mem.db.prepare(
           `SELECT DISTINCT c.usuario_id, c.nombre, c.whatsapp FROM contactos c
              JOIN wa_outbox o ON replace(replace(COALESCE(c.whatsapp,''),'@c.us',''),'+','') LIKE '%' || substr(o.numero, -10)
@@ -305,10 +318,8 @@ async function procesar(body) {
         ).all();
         return recientes.filter(r => {
           const tc = _tok(r.nombre);
-          if (tc.length < 2 && tv.size < 2) return false;
-          const fichaEnVisible = tc.length >= 2 && tc.every(w => tv.has(w));
-          const visibleEnFicha = tv.size >= 2 && [...tv].every(w => tc.includes(w));
-          return fichaEnVisible || visibleEnFicha;
+          if (!tc.length || !tv.length) return false;
+          return tv.length <= tc.length ? _cubre(tv, tc) : _cubre(tc, tv);
         });
       } catch { return []; }
     })();
