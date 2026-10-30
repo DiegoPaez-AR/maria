@@ -500,11 +500,30 @@ class WaSendService : AccessibilityService() {
         // v3.1: match por PALABRAS (subset de tokens en cualquier dirección):
         // "diego" ✓ "diego paez"; DB "Natali Funez" ✓ agenda "Natali Funez";
         // un chat ajeno no comparte tokens → jamás pasa. O match por número.
-        fun toks(x: String) = x.split(Regex("\\s+")).filter { it.length >= 2 }.toSet()
+        // v4.13 (30/10, casos Matías y Nespresso): sin tildes ni signos
+        // ("matias israel" ✓ "Matías Israel"; "(alternativo)" → "alternativo"),
+        // y abreviaturas: cada palabra del nombre MÁS CORTO tiene que ser igual
+        // o prefijo de una palabra distinta del otro, con al menos una palabra
+        // de ≥4 letras idéntica ("nespresso ar" ✓ "Nespresso Argentina (alternativo)").
+        fun toks(x: String): List<String> = java.text.Normalizer.normalize(x.lowercase(), java.text.Normalizer.Form.NFD)
+            .replace(Regex("\\p{Mn}+"), "")
+            .split(Regex("[^a-z0-9]+")).filter { it.length >= 2 }.distinct()
         val te = toks(esperadoNombre)
+        fun cubre(corto: List<String>, largo: List<String>): Boolean {
+            val libres = largo.toMutableList()
+            var exactaLarga = false
+            for (w in corto) {
+                val i = libres.indexOfFirst { it == w }.let { if (it >= 0) it else libres.indexOfFirst { l -> l.startsWith(w) } }
+                if (i < 0) return false
+                if (libres[i] == w && w.length >= 4) exactaLarga = true
+                libres.removeAt(i)
+            }
+            return exactaLarga
+        }
         fun nombreOkEn(x: String): Boolean {
             val tv = toks(x)
-            return esperadoNombre.isNotBlank() && te.isNotEmpty() && tv.isNotEmpty() && (tv.containsAll(te) || te.containsAll(tv))
+            if (esperadoNombre.isBlank() || te.isEmpty() || tv.isEmpty()) return false
+            return if (tv.size <= te.size) cubre(tv, te) else cubre(te, tv)
         }
         fun numeroOkEn(x: String): Boolean { val d = _dig9(x); return d.length >= 10 && d.takeLast(10) == dEsperado.takeLast(10) }
         val ok = nombreOkEn(visto) || numeroOkEn(visto) || (subt.isNotBlank() && (nombreOkEn(subt) || numeroOkEn(subt)))
