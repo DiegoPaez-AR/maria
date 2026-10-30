@@ -1,0 +1,85 @@
+# ejecutado: 2026-10-30T08:12:02-03:00
+# host: ubuntu-4gb-nbg1-2
+# instancia: maria-paez
+# script:
+#   #!/bin/bash
+#   # Solo lectura: qué pasó con Matías Israel (mensaje que no se pudo mandar)
+#   cd /root/secretaria
+#   ( set -a; . config/instances/maria-paez.conf; set +a
+#     echo "── eventos desde 29/10 12:00 con Matías / fallos / Diego ──"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select e.id, datetime(e.timestamp,'-3 hours'), e.canal, e.direccion, coalesce(u.nombre,e.nombre,e.de,''), replace(substr(coalesce(e.asunto||' :: ','')||e.cuerpo,1,1200),char(10),' ⏎ '), case when e.cuerpo like 'acci%' or e.cuerpo like 'follow%' or e.cuerpo like 'wa-hook%' or e.cuerpo like '%no verific%' then substr(coalesce(e.metadata_json,''),1,900) else '' end from eventos e left join usuarios u on u.id=e.usuario_id where e.timestamp >= '2026-10-29 15:00' and e.cuerpo not like 'claude_call%' and e.cuerpo not like 'meeting-prep:%' and e.cuerpo not like 'poda-%' and e.cuerpo not like '☀️%' order by e.id;"
+#     echo "── outbox desde 29/10 ──"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, intentos, numero, datetime(creado,'-3 hours'), datetime(entregado,'-3 hours'), replace(substr(texto,1,250),char(10),' '), substr(coalesce(metadata_json,''),1,600) from wa_outbox where creado >= '2026-10-29 15:00';"
+#     echo "── pendientes/follow-ups Matías ──"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, datetime(creado,'-3 hours'), datetime(cerrado,'-3 hours'), substr(\"desc\",1,200) from pendientes where meta_json like '%54824124%' or \"desc\" like '%Matías%' or \"desc\" like '%Matias%';"
+#     sqlite3 -separator ' │ ' "$MARIA_DB" "select id, estado, datetime(creado,'-3 hours'), substr(descripcion,1,150), esperando_de, vence_en, disparado_en from follow_ups where esperando_de like '%54824124%';" 2>&1 )
+#   echo "── logs ──"
+#   grep -h -E "^2026-10-(29 1[5-9]|29 2|30)" logs/maria-paez/out.log logs/maria-paez/error.log logs/maria-paez/out__2026-10-30*.log logs/maria-paez/error__2026-10-30*.log 2>/dev/null | grep -i -E "matias|matías|54824124|fall|error|follow|wa-outbox|frio|enviar|outbox|vencid" | grep -v "TG\] poll" | sort -u | cut -c1-400 | tail -60
+
+# ───── output ─────
+── eventos desde 29/10 12:00 con Matías / fallos / Diego ──
+34687 │ 2026-10-29 16:24:51 │ telegram │ entrante │ Diego │ Agendamos un almuerzo para el lunes con Javier Guevara, de 13 a 14.30. ⏎  Si no tenés el mail de Javier, ha avisado el contacto y se mete lo paso. ⏎  Ahí, en la reunión de Brains, que me avisaste hace un rato, ⏎  es uno de los participantes. Javier. Guevara@brains.com. │ 
+34688 │ 2026-10-29 16:25:13 │ calendar │ saliente │ Diego │ creado: Almuerzo JG - DP (2026-11-02T13:00:00-03:00 → 2026-11-02T14:30:00-03:00) · Meet: https://meet.google.com/isj-njbe-rvr │ 
+34689 │ 2026-10-29 16:25:13 │ sistema │ interno │ Diego │ acción ejecutada: crear_evento │ {"accion":{"tipo":"crear_evento","summary":"Almuerzo JG - DP","start":"2026-11-02T13:00:00-03:00","end":"2026-11-02T14:30:00-03:00","attendees":["javier.guevara@vrainz.com"],"meet":true},"resultado":{"id":"7532qu156gsb7gpodmlkd5m3g8","summary":"Almuerzo JG - DP","link":"https://www.google.com/calendar/event?eid=NzUzMnF1MTU2Z3NiN2dwb2RtbGtkNW0zZzggZGllZ29AcGFlei5pcw","meetLink":"https://meet.google.com/isj-njbe-rvr","calendarId":"diego@paez.is","tier":"tier_2","invitados":1},"canalOrigen":"telegram"}
+34691 │ 2026-10-29 16:25:15 │ telegram │ saliente │ Diego │ Listo, agendé el almuerzo con Javier Guevara el lunes 2/11 de 13:00 a 14:30, con invitación mandada a javier.guevara@vrainz.com (el mail que ya tenía guardado de él, coincide con el que me pasaste). │ 
+34692 │ 2026-10-29 16:38:49 │ telegram │ entrante │ Diego │ Ayer descardato un mensaje y me dijiste de un expreso profesional argentina en expreso, ⏎  tal vez que te pedí el tema de la de la cafetera. │ 
+34694 │ 2026-10-29 16:38:57 │ telegram │ saliente │ Diego │ No hay respuesta de Nespresso Argentina todavía sobre el depósito de agua de la CitiZ (le escribí ayer a la tarde, sigo esperando). Apenas conteste te aviso con disponibilidad y precio. │ 
+34695 │ 2026-10-29 16:45:23 │ sistema │ interno │  │ shutdown por SIGINT │ 
+34696 │ 2026-10-29 16:45:25 │ sistema │ interno │ Diego │ Maria arrancó — WA, Gmail, recordatorios, programados, brief y meeting-prep activos (18 usuarios) │ 
+34699 │ 2026-10-29 19:40:38 │ sistema │ interno │ Diego │ follow-up #81 re-ping automático a 5491154824124@c.us — reprogramado a 2026-10-31 22:40:38 (Esperando que Matías Israel proponga día/horario (28/10 o 30/10) para reunión/llamada con Diego sobre el edificio a construir) │ {"tipo":"follow_up_reping","followUpId":81,"esperando_de":"5491154824124@c.us"}
+34700 │ 2026-10-29 19:50:52 │ sistema │ interno │ Diego │ wa-outbox: entrega FALLIDA definitiva #308 a 5491154824124 (chat_equivocado) — aviso al dueño │ 
+34701 │ 2026-10-29 19:50:53 │ telegram │ saliente │ Diego │ ⚠️ No pude entregar un WhatsApp a Matias Israel: no pude entregarlo tras 5 intentos. El mensaje decía: "Hola Matías! Te escribo de nuevo porque Diego sigue esperando coordinar ese rato…". Tiene email en la libreta (matias.israel@gmail.com) — decime si querés que se lo mande por mail. │ 
+34702 │ 2026-10-29 20:00:25 │ telegram │ saliente │ Diego │ 🎂 *Mañana cumple años:* ⏎ • Nicolas Erlich (sin WhatsApp en libreta) ⏎  ⏎ ¿Le mando un saludo de tu parte? Decime el tono o pasame el texto y lo mando mañana a primera hora. Si no, ignorá este mensaje. │ 
+34707 │ 2026-10-30 08:08:45 │ telegram │ entrante │ Diego │ maria, como esta el tema de nespresso? proba consultando en este otro numero: +54 9 11 3335 0233 │ 
+34708 │ 2026-10-30 08:08:57 │ sistema │ interno │ Diego │ acción FALLÓ: enviar_wa — enviar_wa: WA "5491133350233@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme. │ {"accion":{"tipo":"enviar_wa","a":"5491133350233@c.us","texto":"Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a la que se le rompió el vaso (depósito de agua). ¿Tienen el repuesto disponible y me podrían pasar el precio? Gracias!"},"error":"enviar_wa: WA \"5491133350233@c.us\" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.","canalOrigen":"telegram"}
+34709 │ 2026-10-30 08:08:59 │ sistema │ interno │ Diego │ pendiente "Esperando que Nespresso Argentina (número alternativo) responda sobre disponibil" quedo SIN follow-up automatico: no pude identificar a "5491133350233@c.us" (WA "5491133350233@c.us" no está en libreta ni es usuario activo) │ 
+34710 │ 2026-10-30 08:08:59 │ sistema │ interno │ Diego │ acción ejecutada: agregar_pendiente │ {"accion":{"tipo":"agregar_pendiente","desc":"Esperando que Nespresso Argentina (número alternativo) responda sobre disponibilidad y precio del depósito de agua (vaso) para cafetera CitiZ","dueno":"maria","disparador":"trigger_externo","meta":{"esperando_de":"5491133350233@c.us","esperando_canal":"WA"}},"resultado":{"id":379,"desc":"Esperando que Nespresso Argentina (número alternativo) responda sobre disponibilidad y precio del depósito de agua (vaso) para cafetera CitiZ","dueno":"maria","disparador":"trigger_externo","agregado":true,"follow_up":null},"canalOrigen":"telegram"}
+34711 │ 2026-10-30 08:09:01 │ sistema │ interno │ Diego │ acción ejecutada: upsert_contacto │ {"accion":{"tipo":"upsert_contacto","nombre":"Nespresso Argentina (alternativo)","whatsapp":"5491133350233@c.us","notas":"Número alternativo de WhatsApp de Nespresso Argentina pasado por Diego"},"resultado":{"id":619,"nombre":"Nespresso Argentina (alternativo)","visibilidad":"privada","cumple":null},"canalOrigen":"telegram"}
+34713 │ 2026-10-30 08:09:08 │ sistema │ interno │ Diego │ acción ejecutada: enviar_wa │ {"accion":{"tipo":"enviar_wa","a":"5491133350233@c.us","texto":"Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a la que se le rompió el vaso (depósito de agua). ¿Tienen el repuesto disponible y me podrían pasar el precio? Gracias!"},"resultado":{"a":"5491133350233@c.us","encolado":true,"enviado":false,"via":"telefono","outboxId":309,"gestion_auto":null,"nota":"QUEDÓ EN COLA, todavía NO salió. El teléfono lo manda en unos minutos (hay una pausa deliberada para que el uso parezca humano). Decile al usuario \"se lo mando ahora/en unos minutos\", NUNCA \"ya se lo mandé\". Si te preguntan si respondió, aclarales que puede ni haber salido todavía."},"canalOrigen":"telegram"}
+34715 │ 2026-10-30 08:09:11 │ telegram │ saliente │ Diego │ Sigue sin responder el primer número de Nespresso. Ya le mando el mensaje al número alternativo que me pasaste (sale en unos minutos). Apenas tenga novedades de cualquiera de los dos te aviso. │ 
+── outbox desde 29/10 ──
+308 │ vencido │ 5 │ 5491154824124 │ 2026-10-29 19:40:38 │  │ Hola Matías! Te escribo de nuevo porque Diego sigue esperando coordinar ese rato para charlar sobre el edificio. ¿Pudiste ver si el miércoles 28/10 o el viernes 30/10 te queda bien? Cualquier horario que me confirmes lo coordinamos. │ {"tipo":"follow_up_reping","followUpId":81,"esperando_de":"5491154824124@c.us","via":"outbox_bridge","tag":"follow-ups/re-ping","cold_fallos":5,"cold_motivo":"chat_equivocado"}
+309 │ pendiente │ 0 │ 5491133350233 │ 2026-10-30 08:09:08 │  │ Hola! Soy Maria, asistente de Diego Paez. Tengo una cafetera Nespresso CitiZ a la que se le rompió el vaso (depósito de agua). ¿Tienen el repuesto disponible y me podrían pasar el precio? Gracias! │ {"destinoOriginal":"5491133350233@c.us","canalOrigen":"telegram"}
+── pendientes/follow-ups Matías ──
+19 │ cerrado │ 2026-04-21 20:47:09 │ 2026-04-21 22:46:05 │ Coordinar reunión Diego + Rubén Ward + Matías Pacheco — tema: grupo tecno — 4 o 5 de mayo, 2hs — esperando disponibilidad de Rubén y Matías
+108 │ cerrado │ 2026-05-30 10:30:29 │ 2026-06-03 09:55:10 │ Cuando Matías Israel responda sobre el almuerzo con Diego (semana del 8/6, martes a viernes), verificar agenda de Diego esa semana y confirmar fecha con Matías.
+120 │ cerrado │ 2026-06-03 09:55:10 │ 2026-06-03 11:41:41 │ Cuando Matías Israel responda sobre el almuerzo con Diego (semana del 8/6, martes a viernes), verificar agenda de Diego esa semana y proponerle a Matías slots disponibles de 13 a 15. Confirmar fecha y
+121 │ cerrado │ 2026-06-03 11:41:41 │ 2026-06-10 09:18:10 │ Cuando Matías Israel confirme un día para el almuerzo con Diego (semana 8/6, 13-15hs), crear el evento en el calendar de Diego e informarle.
+370 │ abierto │ 2026-10-27 19:36:43 │  │ Esperando respuesta de 5491154824124@c.us (WA): "Hola Matías! Soy María, asistente de Diego Páez. Diego quiere coordinar con vos una reunión o una llamada para charlar sobre el tema del edi…"
+81 │ abierto │ 2026-10-27 19:36:43 │ Esperando que Matías Israel proponga día/horario (28/10 o 30/10) para reunión/llamada con Diego sobre el edificio a construir │ 5491154824124@c.us │ 2026-10-31 22:40:38 │ 
+── logs ──
+2026-10-29 16:45:25: ▸ arrancando follow-ups (cada 5min)
+2026-10-29 16:45:25: [follow-ups] activo, cada 5min (re-ping automático a terceros: ON)
+2026-10-29 16:45:25:   Usuarios:   18 activo(s) → Diego, Hernan Fulco, Natali Funez, Fernando Boero, Santiago Bignone, Doris Capurro, Nicolas Kosinski, Walter Vera, Cristian Ruiz, Sebastian Ameijeira, Enrique Sosa, Santiago Capurro, Andres Neumann, Gabriela Echaniz, Jaime Cibils, Alfonso Amat, Lionel Chamorro, Matías Israel
+2026-10-29 19:40:38: [follow-ups] #81 re-ping (whatsapp) → 5491154824124@c.us (nuevo vencimiento 2026-10-31 22:40:38 UTC)
+2026-10-29 19:40:38: [wa-outbox] #308 encolado → +5491154824124 (Hola Matías! Te escribo de nuevo porque …)
+2026-10-29 19:40:38: [wa-send] follow-ups/re-ping: sin waClient → outbox #308 (bridge)
+2026-10-29 19:44:53: [MB-FALLO] #308 motivo=chat_equivocado → {"id":308,"cold_fallos":1,"definitivo":false}
+2026-10-29 19:44:56: [MB v4.12] 19:44:52 I [frio] abriendo chat 5491154824124 (#308)
+2026-10-29 19:44:56: [MB v4.12] 19:44:54 E [frio] #308: chat ABIERTO ES OTRO ("matias israel" / subtítulo "" ≠ "Matías Israel"/5491154824124) — ABORTO sin tocar
+2026-10-29 19:44:56: [MB v4.12] 19:44:54 I [outbox] cold-send #308 no verificado — queda en cola
+2026-10-29 19:46:24: [MB-FALLO] #308 motivo=chat_equivocado → {"id":308,"cold_fallos":2,"definitivo":false}
+2026-10-29 19:46:26: [MB v4.12] 19:46:24 I [frio] abriendo chat 5491154824124 (#308)
+2026-10-29 19:46:26: [MB v4.12] 19:46:25 E [frio] #308: chat ABIERTO ES OTRO ("matias israel" / subtítulo "" ≠ "Matías Israel"/5491154824124) — ABORTO sin tocar
+2026-10-29 19:46:26: [MB v4.12] 19:46:25 I [outbox] cold-send #308 no verificado — queda en cola
+2026-10-29 19:47:55: [MB-FALLO] #308 motivo=chat_equivocado → {"id":308,"cold_fallos":3,"definitivo":false}
+2026-10-29 19:47:56: [MB v4.12] 19:47:55 I [frio] abriendo chat 5491154824124 (#308)
+2026-10-29 19:47:56: [MB v4.12] 19:47:56 E [frio] #308: chat ABIERTO ES OTRO ("matias israel" / subtítulo "" ≠ "Matías Israel"/5491154824124) — ABORTO sin tocar
+2026-10-29 19:47:56: [MB v4.12] 19:47:56 I [outbox] cold-send #308 no verificado — queda en cola
+2026-10-29 19:49:21: [MB-FALLO] #308 motivo=chat_equivocado → {"id":308,"cold_fallos":4,"definitivo":false}
+2026-10-29 19:49:26: [MB v4.12] 19:49:21 I [frio] abriendo chat 5491154824124 (#308)
+2026-10-29 19:49:26: [MB v4.12] 19:49:22 E [frio] #308: chat ABIERTO ES OTRO ("matias israel" / subtítulo "" ≠ "Matías Israel"/5491154824124) — ABORTO sin tocar
+2026-10-29 19:49:26: [MB v4.12] 19:49:22 I [outbox] cold-send #308 no verificado — queda en cola
+2026-10-29 19:50:52: [MB-FALLO] #308 motivo=chat_equivocado → {"id":308,"cold_fallos":5,"definitivo":true}
+2026-10-29 19:50:53: [wa-outbox] aviso #308 → Diego por telegram
+2026-10-29 19:50:53: [wa-send] wa-outbox/aviso: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
+2026-10-29 19:50:56: [MB v4.12] 19:50:53 I [frio] abriendo chat 5491154824124 (#308)
+2026-10-29 19:50:56: [MB v4.12] 19:50:54 E [frio] #308: chat ABIERTO ES OTRO ("matias israel" / subtítulo "" ≠ "Matías Israel"/5491154824124) — ABORTO sin tocar
+2026-10-29 19:50:56: [MB v4.12] 19:50:54 I [outbox] cold-send #308 no verificado — queda en cola
+2026-10-30 07:00:29: [morning-brief/Matías Israel] ✓ enviado a matias.israel@gmail.com
+2026-10-30 07:00:29: [wa-send] morning-brief/Matías Israel: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Matías Israel
+2026-10-30 08:08:57: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "5491133350233@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+2026-10-30 08:08:59: [agregar_pendiente] no creo follow_up auto (5491133350233@c.us): WA "5491133350233@c.us" no está en libreta ni es usuario activo
+2026-10-30 08:09:08: [wa-outbox] #309 encolado → +5491133350233 (Hola! Soy Maria, asistente de Diego Paez…)
+
+# exit=0
