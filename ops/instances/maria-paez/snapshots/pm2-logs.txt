@@ -1,4 +1,12 @@
 [TAILING] Tailing last 200 lines for [maria-paez] process (change the value with --lines option)
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-31 06:46:04: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-31 08:51:12: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-31 11:48:29: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-31 13:12:09: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-31 14:27:19: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
+0|maria-pa | 2026-10-31 14:27:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+
 /root/secretaria/logs/maria-paez/out.log last 200 lines:
 0|maria-pa | 2026-10-31 02:39:08: [MB v4.13] 02:39:06 I [upd] al día (v4.13 code=38, mío=38)
 0|maria-pa | 2026-10-31 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
@@ -13,12 +21,5 @@
 0|maria-pa | 2026-10-31 08:50:25: [poda-eventos] telemetría borrada: 3 · archivados: 0
 0|maria-pa | 2026-10-31 08:50:40: [memoria-curada] Diego × Nespresso Argentina (alternativo): nota actualizada (19 eventos nuevos, 2593 chars)
 0|maria-pa | 2026-10-31 08:50:41: [memoria-curada] tick: 1/449 contactos curados
-
-/root/secretaria/logs/maria-paez/error.log last 200 lines:
-0|maria-pa | 2026-10-31 06:46:04: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-31 08:51:12: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-31 11:48:29: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-31 13:12:09: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-31 14:27:19: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":504,"description":"Gateway Timeout"}
-0|maria-pa | 2026-10-31 14:27:49: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-10-31 14:33:54: [TG] poll recuperado tras 11 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti)
 
