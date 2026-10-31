@@ -1,71 +1,3 @@
-0|maria-pa | 2026-10-30 08:50:51:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
-0|maria-pa | 2026-10-30 08:50:51: 
-0|maria-pa | 2026-10-30 09:02:51: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-30 09:11:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando tus datos a Lorena en unos minutos (DNI 92.297.127 y mail diego@paez.is"
-0|maria-pa | 2026-10-30 09:22:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, ya le escribí a Pilar Rojas (pilar.rojas@vrainz.com, te dejé copiado) pid"
-0|maria-pa | 2026-10-30 11:52:25: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-30 17:47:45: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-30 20:54:03: [TG] poll error (reintento en 15s): fetch failed
-0|maria-pa | 2026-10-30 22:12:17: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
-
-/root/secretaria/logs/maria-paez/out.log last 200 lines:
-0|maria-pa | 2026-10-30 02:32:32: [MB v4.12] 02:32:30 I [upd] al día (v4.12 code=37, mío=37)
-0|maria-pa | 2026-10-30 04:00:26: [wa-send] morning-brief/Diego: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-10-30 04:00:26: [morning-brief/Diego] ✓ enviado a 590589920
-0|maria-pa | 2026-10-30 07:00:27: [wa-send] morning-brief/Natali Funez: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Natali Funez
-0|maria-pa | 2026-10-30 07:00:27: [morning-brief/Natali Funez] ✓ enviado a nfunez@iplan.com.ar
-0|maria-pa | 2026-10-30 07:00:28: [wa-send] morning-brief/Lionel Chamorro: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Lionel Chamorro
-0|maria-pa | 2026-10-30 07:00:28: [morning-brief/Lionel Chamorro] ✓ enviado a lchamorro@froneus.com
-0|maria-pa | 2026-10-30 07:00:29: [wa-send] morning-brief/Matías Israel: entregado por EMAIL (politica_v4_usuarios_sin_wa) a Matías Israel
-0|maria-pa | 2026-10-30 07:00:29: [morning-brief/Matías Israel] ✓ enviado a matias.israel@gmail.com
-0|maria-pa | 2026-10-30 08:09:03: [gcontacts] "Nespresso Argentina (alternativo)" creado en Google Contacts
-0|maria-pa | 2026-10-30 08:09:08: [wa-outbox] #309 encolado → +5491133350233 (Hola! Soy Maria, asistente de Diego Paez…)
-0|maria-pa | 2026-10-30 08:13:03: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":1,"definitivo":false}
-0|maria-pa | 2026-10-30 08:13:07: [MB v4.12] 08:13:02 I [frio] abriendo chat 5491133350233 (#309)
-0|maria-pa | 2026-10-30 08:13:07: [MB v4.12] 08:13:04 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
-0|maria-pa | 2026-10-30 08:13:07: [MB v4.12] 08:13:04 I [outbox] cold-send #309 no verificado — queda en cola
-0|maria-pa | 2026-10-30 08:14:35: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":2,"definitivo":false}
-0|maria-pa | 2026-10-30 08:14:37: [MB v4.12] 08:14:35 I [frio] abriendo chat 5491133350233 (#309)
-0|maria-pa | 2026-10-30 08:14:37: [MB v4.12] 08:14:36 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
-0|maria-pa | 2026-10-30 08:14:37: [MB v4.12] 08:14:36 I [outbox] cold-send #309 no verificado — queda en cola
-0|maria-pa | 2026-10-30 08:16:02: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":3,"definitivo":false}
-0|maria-pa | 2026-10-30 08:16:07: [MB v4.12] 08:16:02 I [frio] abriendo chat 5491133350233 (#309)
-0|maria-pa | 2026-10-30 08:16:07: [MB v4.12] 08:16:03 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
-0|maria-pa | 2026-10-30 08:16:07: [MB v4.12] 08:16:03 I [outbox] cold-send #309 no verificado — queda en cola
-0|maria-pa | 2026-10-30 08:17:34: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":4,"definitivo":false}
-0|maria-pa | 2026-10-30 08:17:37: [MB v4.12] 08:17:34 I [frio] abriendo chat 5491133350233 (#309)
-0|maria-pa | 2026-10-30 08:17:37: [MB v4.12] 08:17:35 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
-0|maria-pa | 2026-10-30 08:17:37: [MB v4.12] 08:17:35 I [outbox] cold-send #309 no verificado — queda en cola
-0|maria-pa | 2026-10-30 08:19:02: [MB-FALLO] #309 motivo=chat_equivocado → {"id":309,"cold_fallos":5,"definitivo":true}
-0|maria-pa | 2026-10-30 08:19:02: [wa-send] wa-outbox/aviso: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-10-30 08:19:02: [wa-outbox] aviso #309 → Diego por telegram
-0|maria-pa | 2026-10-30 08:19:07: [MB v4.12] 08:19:01 I [frio] abriendo chat 5491133350233 (#309)
-0|maria-pa | 2026-10-30 08:19:07: [MB v4.12] 08:19:03 E [frio] #309: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Argentina (alternativo)"/5491133350233) — ABORTO sin tocar
-0|maria-pa | 2026-10-30 08:19:07: [MB v4.12] 08:19:03 I [outbox] cold-send #309 no verificado — queda en cola
-0|maria-pa | 2026-10-30 08:32:37: [MB v4.12] 08:32:37 I [upd] versión nueva v4.13 (code 38 > 37) — descargando
-0|maria-pa | 2026-10-30 08:32:47: [MB v4.12] 08:32:46 I [upd] descargado 3157KB — ofreciendo instalar
-0|maria-pa | 2026-10-30 08:37:47: [MB v4.12] 08:37:43 I [upd] versión nueva v4.13 (code 38 > 37) — descargando
-0|maria-pa | 2026-10-30 08:37:47: [MB v4.12] 08:37:46 I [upd] descargado 3157KB — ofreciendo instalar
-0|maria-pa | 2026-10-30 08:37:47: [MB v4.12] 08:37:47 I [upd] instalador visible — ventana=true clickables=https://intensa.io/h[EditText],cfS1IoCOSxNtVUwIzomS[EditText],Guardar y arrancar[Button],① Permiso: acceso a [Button],② Quitar restricción[Button],③ Permiso: accesibil[Button],④ Permiso: todos los[But
-0|maria-pa | 2026-10-30 08:38:07: [MB v4.12] 08:38:00 I [upd] versión nueva v4.13 (code 38 > 37) — descargando
-0|maria-pa | 2026-10-30 08:38:07: [MB v4.12] 08:38:03 I [upd] descargado 3157KB — ofreciendo instalar
-0|maria-pa | 2026-10-30 08:38:07: [MB v4.12] 08:38:03 I [upd] instalador visible — ventana=true clickables=
-0|maria-pa | 2026-10-30 08:38:07: [MB v4.12] 08:38:03 I [upd] 0-tap plan B: 'Update' no está en el árbol — toco el espejo de Cancel en 469,411 (intento 1/3)
-0|maria-pa | 2026-10-30 08:38:21: [MB v4.13] 08:38:13 I [notif] listener creado
-0|maria-pa | 2026-10-30 08:38:21: [MB v4.13] 08:38:13 I [boot] versión nueva instalada — relanzo el servicio
-0|maria-pa | 2026-10-30 08:38:21: [MB v4.13] 08:38:13 I [frio] accesibilidad conectada
-0|maria-pa | 2026-10-30 08:38:21: [MB v4.13] 08:38:13 I [notif] listener conectado — barrido cada 3min (marca=1793214995372)
-0|maria-pa | 2026-10-30 08:38:21: [MB v4.13] 08:38:13 I [svc] OutboxService arrancó (loop nuevo)
-0|maria-pa | 2026-10-30 08:38:51: [MB v4.13] 08:38:43 I [upd] al día (v4.13 code=38, mío=38)
-0|maria-pa | 2026-10-30 08:45:22: [MB v4.13] 08:45:18 I [frio] abriendo chat 5491133350233 (#309)
-0|maria-pa | 2026-10-30 08:45:22: [MB v4.13] 08:45:21 I [frio] botón send encontrado — 'escribiendo' 14s antes de enviar
-0|maria-pa | 2026-10-30 08:45:36: [wa-outbox] #309 entregado por el teléfono
-0|maria-pa | 2026-10-30 08:45:42: [MB v4.13] 08:45:37 I [frio] verificación #309 lectura 1/3: enviado
-0|maria-pa | 2026-10-30 08:45:42: [MB v4.13] 08:45:37 I [frio] verificación #309: ENVIADO (burbuja visible)
-0|maria-pa | 2026-10-30 08:45:42: [MB v4.13] 08:45:37 I [outbox] enviado EN FRÍO (accesibilidad) → 5491133350233
-0|maria-pa | 2026-10-30 08:45:50: [wa-send] wa-hook/descarte-identidad: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego
-0|maria-pa | 2026-10-30 08:45:52: [MB v4.13] 08:45:51 I [notif] entrante de "Nespresso AR": Entiendo que necesitás el depósito de agua para una máquina 
-0|maria-pa | 2026-10-30 08:45:52: [MB v4.13] 08:45:51 I [notif] dup ignorado de "Nespresso AR"
 0|maria-pa | 2026-10-30 08:45:52: [MB v4.13] 08:45:52 I [notif] dup ignorado de "Nespresso AR"
 0|maria-pa | 2026-10-30 08:46:22: [MB v4.13] 08:46:18 I [notif] dup ignorado de "Nespresso AR"
 0|maria-pa | 2026-10-30 08:50:23: 
@@ -197,4 +129,72 @@
 0|maria-pa | 2026-10-30 20:05:25: [cumple-avisos/Diego] ✓ aviso de 1 cumple(s) de mañana
 0|maria-pa | 2026-10-30 20:39:13: [MB v4.13] 20:39:04 I [upd] al día (v4.13 code=38, mío=38)
 0|maria-pa | 2026-10-30 22:14:21: [TG] poll recuperado tras 2 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti)
+
+/root/secretaria/logs/maria-paez/error.log last 200 lines:
+0|maria-pa | 2026-10-30 01:16:03: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 02:15:22: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 04:43:22: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 08:08:57: [executor] acción #0 (enviar_wa) falló: enviar_wa: WA "5491133350233@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al usuario que confirme.
+0|maria-pa | 2026-10-30 08:08:59: [agregar_pendiente] no creo follow_up auto (5491133350233@c.us): WA "5491133350233@c.us" no está en libreta ni es usuario activo
+0|maria-pa | 2026-10-30 08:09:01: [wa-validate] sin cliente WA — normalizado offline "5491133350233@c.us" → 5491133350233@c.us (SIN verificar en Meta)
+0|maria-pa | 2026-10-30 08:09:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sigue sin responder el primer número de Nespresso. Ya le mando el mensaje al núm"
+0|maria-pa | 2026-10-30 08:44:40: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, descarté el pendiente con Matías. De paso cerré también el del número alt"
+0|maria-pa | 2026-10-30 08:45:13: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Che, ese es el mismo número que ya probé hace un rato (+54 9 11 3335 0233) y reb"
+0|maria-pa | 2026-10-30 08:50:46: [gcontacts] arranque: usuario "Fernando Boero" falló: <!DOCTYPE html>
+0|maria-pa | 2026-10-30 08:50:46: <html lang=en>
+0|maria-pa | 2026-10-30 08:50:46:   <meta charset=utf-8>
+0|maria-pa | 2026-10-30 08:50:46:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+0|maria-pa | 2026-10-30 08:50:46:   <title>Error 502 (Server Error)!!1</title>
+0|maria-pa | 2026-10-30 08:50:46:   <style>
+0|maria-pa | 2026-10-30 08:50:46:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+0|maria-pa | 2026-10-30 08:50:46:   </style>
+0|maria-pa | 2026-10-30 08:50:46:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+0|maria-pa | 2026-10-30 08:50:46:   <p><b>502.</b> <ins>That’s an error.</ins>
+0|maria-pa | 2026-10-30 08:50:46:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+0|maria-pa | 2026-10-30 08:50:46: 
+0|maria-pa | 2026-10-30 08:50:48: [gcontacts] arranque: usuario "Cristian Ruiz" falló: <!DOCTYPE html>
+0|maria-pa | 2026-10-30 08:50:48: <html lang=en>
+0|maria-pa | 2026-10-30 08:50:48:   <meta charset=utf-8>
+0|maria-pa | 2026-10-30 08:50:48:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+0|maria-pa | 2026-10-30 08:50:48:   <title>Error 502 (Server Error)!!1</title>
+0|maria-pa | 2026-10-30 08:50:48:   <style>
+0|maria-pa | 2026-10-30 08:50:48:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+0|maria-pa | 2026-10-30 08:50:48:   </style>
+0|maria-pa | 2026-10-30 08:50:48:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+0|maria-pa | 2026-10-30 08:50:48:   <p><b>502.</b> <ins>That’s an error.</ins>
+0|maria-pa | 2026-10-30 08:50:48:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+0|maria-pa | 2026-10-30 08:50:48: 
+0|maria-pa | 2026-10-30 08:50:49: [gcontacts] arranque: usuario "Santiago Capurro" falló: <!DOCTYPE html>
+0|maria-pa | 2026-10-30 08:50:49: <html lang=en>
+0|maria-pa | 2026-10-30 08:50:49:   <meta charset=utf-8>
+0|maria-pa | 2026-10-30 08:50:49:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+0|maria-pa | 2026-10-30 08:50:49:   <title>Error 502 (Server Error)!!1</title>
+0|maria-pa | 2026-10-30 08:50:49:   <style>
+0|maria-pa | 2026-10-30 08:50:49:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+0|maria-pa | 2026-10-30 08:50:49:   </style>
+0|maria-pa | 2026-10-30 08:50:49:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+0|maria-pa | 2026-10-30 08:50:49:   <p><b>502.</b> <ins>That’s an error.</ins>
+0|maria-pa | 2026-10-30 08:50:49:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+0|maria-pa | 2026-10-30 08:50:49: 
+0|maria-pa | 2026-10-30 08:50:50: [gcontacts] arranque: usuario "Jaime Cibils" falló: Resource has been exhausted (e.g. check quota).
+0|maria-pa | 2026-10-30 08:50:51: [gcontacts] arranque: usuario "Matías Israel" falló: <!DOCTYPE html>
+0|maria-pa | 2026-10-30 08:50:51: <html lang=en>
+0|maria-pa | 2026-10-30 08:50:51:   <meta charset=utf-8>
+0|maria-pa | 2026-10-30 08:50:51:   <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+0|maria-pa | 2026-10-30 08:50:51:   <title>Error 502 (Server Error)!!1</title>
+0|maria-pa | 2026-10-30 08:50:51:   <style>
+0|maria-pa | 2026-10-30 08:50:51:     *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+0|maria-pa | 2026-10-30 08:50:51:   </style>
+0|maria-pa | 2026-10-30 08:50:51:   <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+0|maria-pa | 2026-10-30 08:50:51:   <p><b>502.</b> <ins>That’s an error.</ins>
+0|maria-pa | 2026-10-30 08:50:51:   <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.  <ins>That’s all we know.</ins>
+0|maria-pa | 2026-10-30 08:50:51: 
+0|maria-pa | 2026-10-30 09:02:51: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 09:11:06: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Le mando tus datos a Lorena en unos minutos (DNI 92.297.127 y mail diego@paez.is"
+0|maria-pa | 2026-10-30 09:22:11: [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, ya le escribí a Pilar Rojas (pilar.rojas@vrainz.com, te dejé copiado) pid"
+0|maria-pa | 2026-10-30 11:52:25: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 17:47:45: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 20:54:03: [TG] poll error (reintento en 15s): fetch failed
+0|maria-pa | 2026-10-30 22:12:17: [TG] poll error (reintento en 15s): telegram getUpdates: {"ok":false,"error_code":502,"description":"Bad Gateway"}
+0|maria-pa | 2026-10-30 23:32:09: [TG] poll error (reintento en 15s): fetch failed
 
