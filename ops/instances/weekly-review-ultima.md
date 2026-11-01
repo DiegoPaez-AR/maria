@@ -1,206 +1,221 @@
-# Revisión semanal 2026-W43
+# Revisión semanal 2026-W44
 
-_Últimos 7 días (desde 2026-10-18) · generada 25/10/2026, 05:00:01_
+_Últimos 7 días (desde 2026-10-25) · generada 1/11/2026, 05:00:01_
 
-**Resumen**: Maria Paez US$13.12 / 79 llamadas, 1 fallidas, MB v4.11 · Sofia Bruscoli US$1.98 / 10 llamadas, 0 fallidas, MB v4.11
+**Resumen**: Maria Paez US$15.40 / 89 llamadas, 1 fallidas, MB v4.13 · Sofia Bruscoli US$0.17 / 1 llamadas, 0 fallidas, MB v4.13
 
-**VPS**: disco 48% usado (19G libres) · RAM 1047/3819 MB · logs: 908K · pm2: maria-paez: online, 9 restarts, up 39h · sofia-bruscoli: online, 9 restarts, up 39h · intensa-api: online, 2 restarts, up 341h · pm2-logrotate: online, 6 restarts, up 1098h
+**VPS**: disco 47% usado (20G libres) · RAM 1026/3819 MB · logs: 956K · pm2: maria-paez: online, 12 restarts, up 44h · sofia-bruscoli: online, 12 restarts, up 44h · intensa-api: online, 2 restarts, up 509h · pm2-logrotate: online, 6 restarts, up 1266h
 
 ### Cambios deployados en la semana
 
 ```
-23/10 17:20 executor: agregar_pendiente acepta descripcion/description como alias de desc (y crear_follow_up acepta desc)
-19/10 15:26 MariaBridge 4.12: se relanza solo tras actualizarse (MY_PACKAGE_REPLACED) y despierta la pantalla con brillo bajo
-19/10 14:38 Mejoras 19/10: aviso de ventana WA al encolar, un pendiente por gestión, MariaBridge 4.11 (placeholder = cuadro vacío), daily-report con modo semanal
+30/10 11:49 wa-hook: match por palabras igual al bridge 4.13 (tildes, signos, abreviaturas) — caso Nespresso AR
+30/10 11:26 MariaBridge 4.13: control de chat sin tildes/signos y con abreviaturas (casos Matías y Nespresso 29-30/10)
+29/10 19:44 wa-hook: nombre verificado con palabras en el medio (caso Nespresso 29/10)
+28/10 12:23 Caso Reunión Mónaco (28/10): hilo de mail conocido va directo al usuario, regla de confirmaciones en reuniones de varios, esperando_de con varios mails, sin gestión auto a usuarios (@lid)
 ```
 
 ---
 
 ## Maria Paez (maria-paez)
 
-**Usuarios**: 17 activos (16 atendidos, 13 pausados, 1 con Telegram) · **contactos nuevos**: 4 · **MariaBridge**: v4.11
+**Usuarios**: 18 activos (17 atendidos, 14 pausados, 1 con Telegram) · **contactos nuevos**: 4 · **MariaBridge**: v4.13
 
-**Gasto**: US$13.12 en 79 llamadas (US$0.17 por llamada) · modo prosa: 12 · cortes Telegram: 65 · acciones fallidas: 1
+**Gasto**: US$15.40 en 89 llamadas (US$0.17 por llamada) · modo prosa: 20 · cortes Telegram: 60 · acciones fallidas: 1
 
 ### Actividad por día
 | día | TG in | TG out | WA in | WA out | mail in | mail out | cal |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-18 | 1 | 4 | 0 | 1 | 0 | 2 | 1 |
-| 2026-10-19 | 4 | 7 | 0 | 0 | 0 | 2 | 0 |
-| 2026-10-20 | 7 | 13 | 10 | 7 | 0 | 3 | 0 |
-| 2026-10-21 | 5 | 10 | 2 | 2 | 0 | 2 | 0 |
-| 2026-10-22 | 6 | 11 | 3 | 2 | 0 | 2 | 1 |
-| 2026-10-23 | 2 | 5 | 4 | 5 | 0 | 2 | 0 |
-| 2026-10-24 | 2 | 3 | 2 | 2 | 0 | 2 | 0 |
-| 2026-10-25 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-25 | 1 | 2 | 0 | 0 | 0 | 4 | 0 |
+| 2026-10-26 | 4 | 8 | 0 | 0 | 0 | 2 | 0 |
+| 2026-10-27 | 7 | 13 | 4 | 4 | 2 | 5 | 1 |
+| 2026-10-28 | 7 | 14 | 2 | 4 | 1 | 5 | 0 |
+| 2026-10-29 | 2 | 7 | 0 | 0 | 0 | 3 | 1 |
+| 2026-10-30 | 8 | 15 | 11 | 8 | 2 | 6 | 0 |
+| 2026-10-31 | 1 | 3 | 0 | 0 | 0 | 3 | 0 |
+| 2026-11-01 | 0 | 2 | 0 | 0 | 0 | 0 | 0 |
 
 ### Gasto por día
 | día | llamadas | USD |
 | --- | --- | --- |
-| 2026-10-18 | 2 | 0.42 |
-| 2026-10-19 | 6 | 1.45 |
-| 2026-10-20 | 27 | 3.96 |
-| 2026-10-21 | 11 | 1.93 |
-| 2026-10-22 | 13 | 2.11 |
-| 2026-10-23 | 13 | 2.1 |
-| 2026-10-24 | 7 | 1.15 |
+| 2026-10-25 | 1 | 0.36 |
+| 2026-10-26 | 4 | 0.74 |
+| 2026-10-27 | 24 | 3.61 |
+| 2026-10-28 | 20 | 2.52 |
+| 2026-10-29 | 5 | 0.74 |
+| 2026-10-30 | 33 | 7.04 |
+| 2026-10-31 | 2 | 0.39 |
 
 ### Gasto por tipo de llamada
 | tipo | n | USD |
 | --- | --- | --- |
-| telegram | 27 | 6.39 |
-| whatsapp | 21 | 5.72 |
-| moderacion | 24 | 0.49 |
-| memoria-curada | 6 | 0.46 |
-| enriquecer-contacto | 1 | 0.06 |
+| telegram | 31 | 7.29 |
+| whatsapp | 17 | 4.41 |
+| gmail | 6 | 2.5 |
+| moderacion | 28 | 0.66 |
+| memoria-curada | 4 | 0.3 |
+| unknown-flow | 1 | 0.13 |
+| follow-ups | 1 | 0.06 |
+| gmail-presentacion | 1 | 0.04 |
 
 ### Quién escribió
 | quién | canal | n |
 | --- | --- | --- |
-| Diego | telegram | 27 |
-| Poch Burgers | whatsapp | 11 |
-| Bryan Tafel | whatsapp | 4 |
-| Farinelli Arroyo | whatsapp | 4 |
-| La Carreta (empanadas) | whatsapp | 2 |
+| Diego | telegram | 30 |
+| Nespresso Argentina (alternativo) | whatsapp | 11 |
+| Poch Burgers | whatsapp | 4 |
+| "María del Pilar Rojas" <pilar.rojas@vrainz.com> | gmail | 2 |
+| Farinelli Arroyo | whatsapp | 2 |
+| Carlos Carvalho <carlos@monaco.gg> | gmail | 1 |
+| Diego Paez <diego@paez.is> | gmail | 1 |
+| Stefano De Giuda <stefano@lank.app> | gmail | 1 |
 
 ### Acciones ejecutadas
 | acción | n |
 | --- | --- |
-|  enviar_wa | 12 |
-|  quitar_pendiente | 10 |
-|  buscar_contacto_global | 10 |
-|  agregar_pendiente | 6 |
+|  quitar_pendiente | 14 |
+|  agregar_pendiente | 11 |
+|  enviar_wa | 10 |
+|  responder_email | 6 |
+|  crear_follow_up | 3 |
 |  upsert_contacto | 2 |
 |  crear_evento | 2 |
+|  enviar_email | 1 |
+|  enviar_archivo_wa | 1 |
 |  crear_usuario | 1 |
-|  cerrar_follow_up | 1 |
 
 ### Acciones FALLIDAS
 | cuándo | qué |
 | --- | --- |
-| 2026-10-23 13:45:13 | acción FALLÓ: agregar_pendiente — Faltan campos requeridos: desc |
+| 2026-10-30 08:08:57 | acción FALLÓ: enviar_wa — enviar_wa: WA "5491133350233@c.us" no está en libreta ni es usuario activo. Cargá el contacto primero (upsert_contacto) o pedile al us |
 
 ### Avisos de sistema (no rutinarios)
 | cuándo | qué |
 | --- | --- |
-| 2026-10-20 20:31:09 | wa-outbox: mensaje #298 a 5491137646922 descartado por viejo (el destinatario escribió después de encolarlo y ya se le respondió): "Perdón, una corrección al pedido anter |
-| 2026-10-22 06:26:25 | wa-outbox: mensaje #300 a 5491130471497 VENCIÓ sin entregarse: "Hola Bryan! Diego me confirma: el viaje lo pagás vos, como h" |
-| 2026-10-24 08:16:25 | follow-up #80 cerrado: 5491130471497@c.us respondió antes del vencimiento (Esperando que Bryan aclare si sigue en pie organizar el crucero (le reconfirmé que el viaje lo  |
-| 2026-10-25 04:12:37 | gcontacts-reconcile semanal (maria-paez): 462 ok, 0 fallidos |
+| 2026-10-27 21:42:40 | pendiente "Esperando confirmación de horario para "Reunión Mónaco" (cadena con Ricardo Rein" quedo SIN follow-up automatico: no pude identificar a "ricardo@lank.app, stef |
+| 2026-10-27 21:52:06 | unknown-flow/gmail LLM: desconocido · Stefano de Giuda no matchea ningún usuario activo, y aunque el hilo de Gmail (Reunión Mónaco, con Ricardo, Carlos, Martín) muestra u |
+| 2026-10-27 22:07:00 | razonamiento Gmail 1a17ffcdd6470bca (Diego): Stefano confirmó horario libre en agenda; cerré evento con Meet, confirmé por mail y cerré el pendiente. |
+| 2026-10-28 10:10:03 | razonamiento Gmail 1a1829e069515330 (Diego): Carlos confirma horario ya agendado; respondo en el hilo grupal y aviso a Diego el estado de confirmaciones (regla Reunión Mó |
+| 2026-10-28 15:59:10 | wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-10-28 16:00:48 | wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-10-28 16:02:12 | wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-10-28 16:10:35 | wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-10-28 16:16:27 | wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-10-28 16:16:34 | wa-hook: "Nespresso Professional Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-10-28 20:09:24 | follow-up #82 cerrado: 5491137646922@c.us respondió antes del vencimiento (Esperando que Poch Burgers confirme a qué hora Diego puede pasar a buscar el pedido (1 solo car |
+| 2026-10-29 19:40:38 | follow-up #81 re-ping automático a 5491154824124@c.us — reprogramado a 2026-10-31 22:40:38 (Esperando que Matías Israel proponga día/horario (28/10 o 30/10) para reunión/ |
+| 2026-10-29 19:50:52 | wa-outbox: entrega FALLIDA definitiva #308 a 5491154824124 (chat_equivocado) — aviso al dueño |
+| 2026-10-30 08:08:59 | pendiente "Esperando que Nespresso Argentina (número alternativo) responda sobre disponibil" quedo SIN follow-up automatico: no pude identificar a "5491133350233@c.us" (W |
+| 2026-10-30 08:19:02 | wa-outbox: entrega FALLIDA definitiva #309 a 5491133350233 (chat_equivocado) — aviso al dueño |
+| 2026-10-30 08:45:50 | wa-hook: "Nespresso AR" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-11-01 02:50:26 | usuario PAUSADO por inactividad (32 días) — aviso enviado a nfunez@iplan.com.ar |
+| 2026-11-01 04:12:41 | gcontacts-reconcile semanal (maria-paez): 467 ok, 0 fallidos |
 
 ### WhatsApp saliente (wa_outbox)
 | estado | n |
 | --- | --- |
-| descartado | 1 |
 | entregado | 7 |
 | vencido | 1 |
 
 No entregados:
 | id | cuándo | número | estado | intentos | texto |
 | --- | --- | --- | --- | --- | --- |
-| 298 | 2026-10-20 20:26:41 | 5491137646922 | descartado | 0 | Perdón, una corrección al pedido anterior: el último stadium con papas |
-| 300 | 2026-10-22 00:26:10 | 5491130471497 | vencido | 0 | Hola Bryan! Diego me confirma: el viaje lo pagás vos, como hacemos sie |
+| 308 | 2026-10-29 19:40:38 | 5491154824124 | vencido | 5 | Hola Matías! Te escribo de nuevo porque Diego sigue esperando coordina |
 
 ### Follow-ups vivos
-_(nada)_
+| id | estado | creado | qué |
+| --- | --- | --- | --- |
+| 89 | abierto | 2026-10-30 16:01:29 | Seguimiento actualización de facturación A (Mediacel SA, CUIT 30714399051) en Nespresso —  |
+| 88 | abierto | 2026-10-30 10:07:25 | Confirmar que Pilar (Mediacel) reenvió la documentación de factura A a comprobantes@nespre |
+| 87 | abierto | 2026-10-30 09:38:45 | Esperar respuesta de Nespresso sobre disponibilidad del tanque de agua para la máquina Cit |
+| 81 | disparado | 2026-10-27 19:36:43 | Esperando que Matías Israel proponga día/horario (28/10 o 30/10) para reunión/llamada con  |
 
 ### Pendientes abiertos
 | id | dueño | qué |
 | --- | --- | --- |
-| 367 | maria | Esperando que Bryan aclare si sigue en pie organizar el crucero (le reconfirmé que el viaj |
-| 363 | usuario | Pagarle a Nina |
-| 335 | usuario | Reunión Software elecciones |
+| 385 | maria | Seguimiento actualización de facturación A (Mediacel SA, CUIT 30714399051) en Nespresso —  |
+| 384 | maria | Esperar respuesta de Nespresso sobre disponibilidad del tanque de agua para la máquina Cit |
+| 374 | usuario | Guevara Nico |
 | 334 | usuario | Reunión Telefónica Gobierno |
-| 308 | usuario | Llamar a Tono por droguería |
 | 236 | usuario | Agregar al calendar las fechas posibles de colación y de revistas de arte, cuando estén |
 | 235 | usuario | Pedir los certificados de Ley Micaela |
 | 234 | usuario | Agregar la visita a Art Haus |
 | 233 | usuario | Chequear la perfo de Tosorarti con Eva |
 | 232 | usuario | Llamar a Todorati por su mesa en las jornadas y por si alguien quiere sumarse con material |
 | 231 | usuario | Diplomaturas de Diego en 3 partes |
-| 189 | usuario | Llamar a Poggetti |
+| 5 | usuario | iProt Seguridad |
 
 ### error.log agrupado (sin cortes de Telegram)
 | n | línea |
 | --- | --- |
+| 8 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, |
+| 4 | <html lang=en> |
+| 4 | <meta charset=utf-8> |
+| 4 | <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width"> |
+| 4 | <title>Error 502 (Server Error)!!1</title> |
+| 4 | <style> |
+| 4 | *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#N;padding:15px} |
+| 4 | </style> |
+| 4 | <a href=//www.google.com/><span id=logo aria-label=Google></span></a> |
+| 4 | <p><b>502.</b> <ins>That’s an error.</ins> |
+| 4 | <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 se |
 | 3 | [wa-validate] sin cliente WA — normalizado offline "<num>@c.us" → <num>@c.us (SIN verificar en Meta) |
-| 2 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo, |
-| 2 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, l |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo. |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sí, ten |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo D |
-| 1 | 1. El contacto de Lionel ya tiene guardado el Wh" |
-| 1 | [wa-outbox] #N DESCARTADO por viejo → <num>: el destinatario escribió después y ya se le respondió: "Perdón, u |
-| 1 | [wa-outbox] #N VENCIDO sin entregar → <num>: "Hola Bryan! Diego me confirma: el viaje lo pagás vos, como h" |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Todo bi |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Buenísi |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Perfect |
-| 1 | [executor] acción #N (agregar_pendiente) falló: Faltan campos requeridos: desc |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Sigue v |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Dale, c |
+| 1 | 6. Pagarle a Nina |
+| 1 | 2. Llamar a Poggetti |
+| 1 | 3. Llamar a Tono por drogue" |
 
 ### out.log: warnings / fallos agrupados
 | n | línea |
 | --- | --- |
-| 1 | [TG] poll recuperado tras 10 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti) |
+| 2 | [wa-send] wa-hook/descarte-identidad: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Diego |
+| 1 | [meeting-prep/Diego] + id=1855 SND - Presentacion de resultados del mes @ 2026-10-28T.000Z |
+| 1 | [TG] poll recuperado tras 2 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti) |
+| 1 | [TG] poll recuperado tras 11 fallos (telegram getUpdates: {"ok":false,"error_code":502,"descripti) |
 
 ### MariaBridge: warnings / errores
 | n | línea |
 | --- | --- |
-| 2 | [MB v4.11]  W [frio] diálogo ajeno (com.android.stk): "[CLARO] Tu Pack de 2GB x 3 dias a $4000 + WhatsApp grat |
-| 1 | [MB v4.10]  W [upd] Cancel está centrado (361 vs 359) — sin espejo confiable, no toco |
+| 5 | [MB v4.12]  E [frio] #N: chat ABIERTO ES OTRO ("matias israel" / subtítulo "" ≠ "Matías Israel"/<num>) — ABORT |
+| 5 | [MB v4.12]  E [frio] #N: chat ABIERTO ES OTRO ("nespresso ar" / subtítulo "business account" ≠ "Nespresso Arge |
 
 
 ---
 
 ## Sofia Bruscoli (sofia-bruscoli)
 
-**Usuarios**: 2 activos (2 atendidos, 0 pausados, 1 con Telegram) · **contactos nuevos**: 16 · **MariaBridge**: v4.11
+**Usuarios**: 2 activos (2 atendidos, 0 pausados, 1 con Telegram) · **contactos nuevos**: 5 · **MariaBridge**: v4.13
 
-**Gasto**: US$1.98 en 10 llamadas (US$0.20 por llamada) · modo prosa: 2 · cortes Telegram: 59 · acciones fallidas: 0
+**Gasto**: US$0.17 en 1 llamadas (US$0.17 por llamada) · modo prosa: 0 · cortes Telegram: 70 · acciones fallidas: 0
 
 ### Actividad por día
 | día | TG in | TG out | WA in | WA out | mail in | mail out | cal |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-10-18 | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
-| 2026-10-19 | 0 | 5 | 1 | 0 | 0 | 0 | 0 |
-| 2026-10-20 | 1 | 3 | 0 | 0 | 3 | 9 | 0 |
-| 2026-10-21 | 0 | 2 | 0 | 0 | 0 | 4 | 0 |
-| 2026-10-22 | 0 | 1 | 0 | 0 | 0 | 2 | 0 |
-| 2026-10-23 | 0 | 2 | 0 | 0 | 0 | 13 | 0 |
-| 2026-10-24 | 0 | 2 | 1 | 0 | 0 | 1 | 0 |
-| 2026-10-25 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 2026-10-25 | 0 | 2 | 0 | 0 | 0 | 2 | 0 |
+| 2026-10-26 | 0 | 2 | 0 | 0 | 0 | 5 | 0 |
+| 2026-10-27 | 0 | 1 | 0 | 0 | 0 | 3 | 0 |
+| 2026-10-28 | 0 | 1 | 0 | 0 | 0 | 8 | 0 |
+| 2026-10-29 | 0 | 1 | 0 | 0 | 0 | 4 | 0 |
+| 2026-10-30 | 0 | 2 | 0 | 0 | 0 | 8 | 0 |
+| 2026-10-31 | 0 | 2 | 1 | 0 | 0 | 1 | 0 |
+| 2026-11-01 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ### Gasto por día
 | día | llamadas | USD |
 | --- | --- | --- |
-| 2026-10-19 | 1 | 0.17 |
-| 2026-10-20 | 8 | 1.64 |
-| 2026-10-24 | 1 | 0.17 |
+| 2026-10-31 | 1 | 0.17 |
 
 ### Gasto por tipo de llamada
 | tipo | n | USD |
 | --- | --- | --- |
-| gmail | 3 | 1.03 |
-| telegram | 1 | 0.45 |
-| whatsapp | 2 | 0.34 |
-| moderacion | 3 | 0.09 |
-| enriquecer-contacto | 1 | 0.06 |
+| whatsapp | 1 | 0.17 |
 
 ### Quién escribió
 | quién | canal | n |
 | --- | --- | --- |
-| Sol Tortora <stortora@luminaconsultora.com> | gmail | 3 |
-| Soledad Goitia | whatsapp | 2 |
-| Noelia Bruscoli | telegram | 1 |
+| Soledad Goitia | whatsapp | 1 |
 
 ### Acciones ejecutadas
-| acción | n |
-| --- | --- |
-|  responder_email | 2 |
-|  recordar_hecho | 2 |
-|  enviar_wa | 1 |
-|  crear_usuario | 1 |
+_(nada)_
 
 ### Acciones FALLIDAS
 _(nada)_
@@ -208,15 +223,8 @@ _(nada)_
 ### Avisos de sistema (no rutinarios)
 | cuándo | qué |
 | --- | --- |
-| 2026-10-19 11:51:51 | wa-hook: "Claro Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
-| 2026-10-20 10:50:28 | auto-accept calendar share: stortora@luminaconsultora.com → write (role=owner) |
-| 2026-10-20 10:50:29 | auto-accept calendar share: stortora@luminaconsultora.com → write (role=owner) |
-| 2026-10-20 10:50:29 | auto-accept calendar share: stortora@luminaconsultora.com → write (role=owner) |
-| 2026-10-20 10:50:30 | auto-accept calendar share: stortora@luminaconsultora.com → write (role=owner) |
-| 2026-10-20 10:54:26 | auto-accept calendar share: stortora@luminaconsultora.com → write (role=owner) |
-| 2026-10-20 11:09:39 | razonamiento Gmail 1a159a0c9ffb5464 (Sol Tortora): Actualicé el hecho horario_contacto para sumar la restricción de días (lun-vie) además del rango horario ya guardado. |
-| 2026-10-24 11:39:53 | wa-hook: "Claro Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
-| 2026-10-25 04:14:35 | gcontacts-reconcile semanal (sofia-bruscoli): 44 ok, 0 fallidos |
+| 2026-10-31 11:41:12 | wa-hook: "Claro Argentina" escribió sin número visible, no está en ninguna libreta y no hay historial — no ruteo (identidad no verificable) |
+| 2026-11-01 04:13:50 | gcontacts-reconcile semanal (sofia-bruscoli): 49 ok, 0 fallidos |
 
 ### WhatsApp saliente (wa_outbox)
 _(nada)_
@@ -230,26 +238,23 @@ _(nada)_
 ### error.log agrupado (sin cortes de Telegram)
 | n | línea |
 | --- | --- |
-| 3 | <html lang=en> |
-| 3 | <meta charset=utf-8> |
-| 3 | <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width"> |
-| 3 | <title>Error 502 (Server Error)!!1</title> |
-| 3 | <style> |
-| 3 | *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#N;padding:15px} |
-| 3 | </style> |
-| 3 | <a href=//www.google.com/><span id=logo aria-label=Google></span></a> |
-| 3 | <p><b>502.</b> <ins>That’s an error.</ins> |
-| 3 | <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 se |
-| 1 | [wa-validate] sin cliente WA — normalizado offline "<num>@c.us" → <num>@c.us (SIN verificar en Meta) |
-| 1 | [gcontacts] sync de usuario "Sol Tortora" falló: <!DOCTYPE html> |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Ya le r |
-| 1 | [claude-client] respuesta en PROSA (sin JSON) — la uso como `respuesta` en vez de descartar el turno: "Listo: |
-| 1 | [meeting-prep] gcontacts sync "Nbruscoli" falló: <!DOCTYPE html> |
+| 1 | [gcontacts] arranque: usuario "Noelia Bruscoli" falló: <!DOCTYPE html> |
+| 1 | <html lang=en> |
+| 1 | <meta charset=utf-8> |
+| 1 | <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width"> |
+| 1 | <title>Error 502 (Server Error)!!1</title> |
+| 1 | <style> |
+| 1 | *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#N;padding:15px} |
+| 1 | </style> |
+| 1 | <a href=//www.google.com/><span id=logo aria-label=Google></span></a> |
+| 1 | <p><b>502.</b> <ins>That’s an error.</ins> |
+| 1 | <p>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 se |
 
 ### out.log: warnings / fallos agrupados
 | n | línea |
 | --- | --- |
-| 2 | [wa-send] wa-hook/descarte-identidad: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli |
+| 1 | [TG] poll recuperado tras 2 fallos (fetch failed) |
+| 1 | [wa-send] wa-hook/descarte-identidad: entregado por TELEGRAM (politica_v4_usuarios_sin_wa) a Noelia Bruscoli |
 
 ### MariaBridge: warnings / errores
 _(nada)_
